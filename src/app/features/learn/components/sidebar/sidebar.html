@@ -1,0 +1,38 @@
+<aside class="flex flex-col h-full bg-red-500">
+  <div class="p-4 border-b border-gray-300">
+    <h2 class="text-lg font-bold uppercase">{{ courseData.title }}</h2>
+  </div>
+
+  <nav class="flex flex-col gap-4 p-4 overflow-y-auto">
+
+    @for (chapter of courseData.chapters; track chapter.title) {
+
+    <details class="group marker:content-['']" open>
+
+      <summary
+        class="font-bold uppercase cursor-pointer select-none flex items-center justify-between text-gray-900 hover:text-gray-600">
+        {{ chapter.title }}
+        <span class="transform transition-transform group-open:-rotate-180 text-xs">▼</span>
+      </summary>
+
+      <ul class="flex flex-col gap-2 pl-2 border-l border-gray-300 ml-1 mt-3">
+
+        @for (lesson of chapter.lessons; track lesson.id) {
+        <li class="text-sm flex items-center gap-2 cursor-pointer hover:underline text-gray-600"
+          (click)="onSelectLesson(lesson.id)">
+          <span>
+            @if (lesson.isCompleted) {
+            <span class="text-green-800 font-bold">[x]</span>
+            } @else {
+            <span>[ ]</span>
+            }
+          </span>
+          {{ lesson.title }}
+        </li>
+        }
+
+      </ul>
+    </details>
+    }
+  </nav>
+</aside>

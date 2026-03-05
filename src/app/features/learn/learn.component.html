@@ -1,0 +1,18 @@
+<div class="h-screen w-full flex flex-col font-sans text-gray-900 overflow-hidden bg-yellow-500">
+  <app-header class="w-full shrink-0"></app-header>
+
+  <div class="flex h-screen w-full">
+    <app-sidebar [courseData]="lessonService.activeCourse()" [activeLessonId]="activeLessonId"
+      (lessonSelected)="onSelectLesson($event)">
+    </app-sidebar>
+
+    <div class="flex-1 overflow-y-auto">
+
+      @if (lessonService.currentLesson()) {
+      <app-lesson-view [lessonData]="lessonService.currentLesson()" (nextLesson)="goToNextLesson()"
+        (prevLesson)="goToPrevLesson()">
+      </app-lesson-view>
+      }
+    </div>
+  </div>
+</div>

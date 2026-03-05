@@ -1,0 +1,40 @@
+<main class="w-full max-w-5xl mx-auto p-8 h-full flex flex-col bg-green-500">
+  <div class="mb-8 shrink-0">
+    <div class="flex justify-between items-center mb-2">
+
+      <h1 class="text-3xl font-bold">{{ lessonData?.title }}</h1>
+
+      <div class="flex gap-2">
+        <button
+          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded text-sm font-semibold transition-colors"
+          (click)="onPrev()">
+          ← Prev
+        </button>
+        <button
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-semibold transition-colors"
+          (click)="onNext()">
+          Next →
+        </button>
+      </div>
+
+    </div>
+    <hr class="border-gray-300" />
+  </div>
+
+  <article class="prose max-w-none mb-12 shrink-0 lowercase" [innerHTML]="lessonData?.contentHtml">
+  </article>
+
+  @if (lessonData?.interactiveTask; as task) {
+  <section class="flex-1 flex flex-col border-t border-gray-300 pt-8">
+    <div class="gap-8">
+
+      <app-interactive-board class="flex justify-center" [task]="task">
+      </app-interactive-board>
+
+    </div>
+    <div class="flex flex-col">
+      <p class="mb-4 text-sm lowercase">{{ task.instructions }}</p>
+    </div>
+  </section>
+  }
+</main>
