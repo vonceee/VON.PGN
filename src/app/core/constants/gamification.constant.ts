@@ -1,0 +1,12 @@
+export const EXP_REWARDS = {
+  LESSON_READ: 10,
+  PUZZLE_SOLVED: 25,
+  CHAPTER_FINISHED: 100,
+  DAILY_LOGIN: 15,
+} as const;
+
+export const LEVEL_THRESHOLDS = {
+  MAX_LEVEL: 100,
+  BASE_XP_REQUIRED: 100,
+  MULTIPLIER: 1.5,
+} as const;

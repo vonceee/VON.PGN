@@ -1,3 +1,11 @@
-<div class="w-fit h-fit shadow-lg rounded overflow-hidden border border-gray-400">
-    <div #boardRef style="width: 480px; height: 480px;"></div>
+<div
+  class="w-[496px] h-[496px] p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md shadow-lg dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] rounded-xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-100 dark:ring-white/5 relative group transition-colors duration-300"
+>
+  <div
+    class="absolute inset-0 bg-gradient-to-tr from-cyan-200/20 dark:from-cyan-500/5 to-transparent rounded-xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+  ></div>
+  <div
+    #boardRef
+    class="w-[480px] h-[480px] rounded overflow-hidden shadow-inner bg-slate-100 dark:bg-transparent transition-colors duration-300"
+  ></div>
 </div>

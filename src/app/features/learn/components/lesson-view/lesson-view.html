@@ -1,40 +1,75 @@
-<main class="w-full max-w-5xl mx-auto p-8 h-full flex flex-col bg-green-500">
-  <div class="mb-8 shrink-0">
-    <div class="flex justify-between items-center mb-2">
+<main class="w-full max-w-5xl mx-auto p-2 min-h-full flex flex-col bg-transparent">
+  <div class="shrink-0 top-4 z-20">
+    <div class="flex justify-between items-center py-5">
+      <h1 class="text-3xl font-extrabold">{{ lessonData?.title }}</h1>
 
-      <h1 class="text-3xl font-bold">{{ lessonData?.title }}</h1>
-
-      <div class="flex gap-2">
+      <div class="flex gap-4">
         <button
-          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded text-sm font-semibold transition-colors"
-          (click)="onPrev()">
-          ← Prev
+          class="group flex items-center gap-2 px-6 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full text-sm font-semibold transition-all duration-300 shadow-sm hover:shadow-cyan-500/10 dark:hover:shadow-cyan-500/20"
+          (click)="onPrev()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+          Prev
         </button>
         <button
-          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-semibold transition-colors"
-          (click)="onNext()">
-          Next →
+          class="group flex items-center gap-2 px-6 py-2.5 bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-500/10 dark:hover:bg-cyan-400 text-cyan-700 hover:text-cyan-900 dark:text-cyan-400 dark:hover:text-slate-900 border border-cyan-200 hover:border-cyan-300 dark:border-cyan-500/20 dark:hover:border-cyan-400 rounded-full text-sm font-semibold transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] dark:shadow-[0_0_15px_rgba(34,211,238,0.15)] dark:hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]"
+          (click)="onNext()"
+        >
+          Next
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+          </svg>
         </button>
       </div>
-
     </div>
-    <hr class="border-gray-300" />
   </div>
 
-  <article class="prose max-w-none mb-12 shrink-0 lowercase" [innerHTML]="lessonData?.contentHtml">
-  </article>
+  <article
+    class="prose prose-slate dark:prose-invert max-w-none mb-12 shrink-0"
+    [innerHTML]="lessonData?.contentHtml"
+  ></article>
 
   @if (lessonData?.interactiveTask; as task) {
-  <section class="flex-1 flex flex-col border-t border-gray-300 pt-8">
-    <div class="gap-8">
+    <section class="flex-1 flex flex-col pt-4">
+      <div
+        class="flex flex-col mb-8 p-6 bg-cyan-50/50 dark:bg-slate-800/30 backdrop-blur-md rounded-2xl border border-cyan-200/50 dark:border-cyan-500/10 shadow-inner transition-colors duration-300"
+      >
+        <div class="flex items-center gap-3 mb-3">
+          <div
+            class="w-2 h-2 rounded-full bg-cyan-500 dark:bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)] dark:shadow-[0_0_8px_rgba(34,211,238,0.8)] animate-pulse"
+          ></div>
+          <h3
+            class="text-cyan-900 dark:text-white font-semibold uppercase tracking-widest text-sm transition-colors duration-300"
+          >
+            Interactive Task
+          </h3>
+        </div>
+        <p
+          class="text-slate-700 dark:text-slate-300 text-lg leading-relaxed transition-colors duration-300"
+        >
+          {{ task.instructions }}
+        </p>
+      </div>
 
-      <app-interactive-board class="flex justify-center" [task]="task">
-      </app-interactive-board>
-
-    </div>
-    <div class="flex flex-col">
-      <p class="mb-4 text-sm lowercase">{{ task.instructions }}</p>
-    </div>
-  </section>
+      <div class="flex justify-center mb-12">
+        <app-interactive-board [task]="task" class="relative z-10"> </app-interactive-board>
+      </div>
+    </section>
   }
 </main>

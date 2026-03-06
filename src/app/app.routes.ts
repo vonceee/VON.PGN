@@ -1,10 +1,27 @@
 import { Routes } from '@angular/router';
 import { LearnComponent } from './features/learn/learn.component';
+import { ProfileComponent } from './features/profile/profile.component';
+import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
 
 export const routes: Routes = [
   {
-    path: '',
-    component: LearnComponent,
-    title: 'Learn Chess',
+    path: 'login',
+    component: LoginComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+  },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  // {
+  //   path: '',
+  //   component: LearnComponent,
+  //   title: 'Learn Chess',
+  // },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    title: 'User Profile - CHESS.PGN',
   },
 ];
