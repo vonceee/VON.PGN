@@ -45,4 +45,11 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.userService.loadMyProfile();
   }
+
+  // Add this method to the class
+  simulateLectureComplete() {
+    // We will just pass a random dummy ID for now
+    const dummyId = 'lecture-' + Math.floor(Math.random() * 1000);
+    this.userService.completeLecture(dummyId).subscribe();
+  }
 }
