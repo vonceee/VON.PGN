@@ -1,60 +1,45 @@
-// src/app/features/learn/learn.component.ts
 import { Component, inject, OnInit } from '@angular/core';
-import { Header } from './components/header/header';
-import { Sidebar } from './components/sidebar/sidebar';
-import { LessonView } from './components/lesson-view/lesson-view';
 import { LessonService } from '../../core/services/lesson.service';
+import { Header } from './components/header/header';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { LessonView } from './components/lesson-view/lesson-view';
 
 @Component({
   selector: 'app-learn',
   standalone: true,
-  imports: [Header, Sidebar, LessonView],
+  imports: [Header, SidebarComponent, LessonView],
   templateUrl: './learn.component.html',
 })
 export class LearnComponent implements OnInit {
-  public lessonService = inject(LessonService);
+  lessonService = inject(LessonService);
 
-  public activeLessonId: string = '';
+  // Expose the signals to the HTML
+  course = this.lessonService.currentCourse;
+  activeLesson = this.lessonService.activeLesson;
 
   ngOnInit() {
-    const course = this.lessonService.activeCourse();
-    
-    if (course.chapters.length > 0 && course.chapters[0].lessons.length > 0) {
-      this.onSelectLesson(course.chapters[0].lessons[0].id);
-    }
+    // 1. Load our seeded course from Laravel!
+    this.lessonService.loadCourse('chess-basics').subscribe({
+      next: (res) => {
+        // 2. Automatically load the very first lesson so the screen isn't blank
+        const firstLessonSlug = res.data.chapters[0]?.lessons[0]?.id;
+        if (firstLessonSlug) {
+          this.onLessonSelected(firstLessonSlug);
+        }
+      },
+    });
   }
 
-  onSelectLesson(lessonId: string) {
-    this.activeLessonId = lessonId;
-    this.lessonService.loadLesson(lessonId); 
+  // 3. This fires when the user clicks a lesson in the Sidebar
+  onLessonSelected(lessonSlug: string) {
+    this.lessonService.loadLesson(lessonSlug).subscribe();
   }
 
-  private getAllLessonIds(): string[] {
-    const course = this.lessonService.activeCourse();
-    if (!course) return [];
-    
-    return course.chapters.flatMap(chapter => 
-      chapter.lessons.map(lesson => lesson.id)
-    );
+  onNextLesson() {
+    // TODO: navigate to the next lesson
   }
 
-  goToNextLesson() {
-    const allIds = this.getAllLessonIds();
-    const currentIndex = allIds.indexOf(this.activeLessonId);
-
-    if (currentIndex !== -1 && currentIndex < allIds.length - 1) {
-      const nextId = allIds[currentIndex + 1];
-      this.onSelectLesson(nextId); 
-    }
-  }
-
-  goToPrevLesson() {
-    const allIds = this.getAllLessonIds();
-    const currentIndex = allIds.indexOf(this.activeLessonId);
-
-    if (currentIndex > 0) {
-      const prevId = allIds[currentIndex - 1];
-      this.onSelectLesson(prevId);
-    }
+  onPrevLesson() {
+    // TODO: navigate to the previous lesson
   }
 }

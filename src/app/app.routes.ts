@@ -4,6 +4,8 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { authGuard } from './core/guards/auth-guard';
+import { HomeComponent } from './features/home/home.component';
+import { RoadmapComponent } from './features/roadmap/roadmap.component';
 
 export const routes: Routes = [
   {
@@ -14,12 +16,21 @@ export const routes: Routes = [
     path: 'register',
     component: RegisterComponent,
   },
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  // {
-  //   path: '',
-  //   component: LearnComponent,
-  //   title: 'Learn Chess',
-  // },
+  {
+    path: '',
+    component: HomeComponent,
+    title: 'Home - CHESS.PGN',
+  },
+  {
+    path: 'learn',
+    component: LearnComponent,
+    title: 'Learn Chess',
+  },
+  {
+    path: 'roadmap',
+    component: RoadmapComponent,
+    title: 'Tutorials Roadmap - CHESS.PGN',
+  },
   {
     path: 'profile',
     component: ProfileComponent,

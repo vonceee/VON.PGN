@@ -1,0 +1,363 @@
+<div class="h-screen w-full flex flex-col font-sans overflow-x-hidden bg-slate-50 dark:bg-black">
+  <!-- W3Schools styled Header -->
+  <app-header></app-header>
+
+  <!-- Main Scrollable Area -->
+  <div class="flex-1 overflow-y-auto w-full custom-scrollbar">
+    <!-- Hero Section (Dark Theme matching W3Schools) -->
+    <section
+      class="w-full bg-[#282A35] text-white pt-24 pb-20 px-6 flex flex-col items-center justify-center text-center"
+    >
+      <h1 class="text-6xl md:text-7xl font-bold mb-4">Learn to play Chess</h1>
+      <p
+        class="text-xl md:text-2xl text-[#04AA6D] font-bold mb-8 decoration-pink-500 underline decoration-4 underline-offset-4"
+      >
+        With the world's largest chess tutorials site.
+      </p>
+
+      <div class="w-full max-w-2xl flex gap-1 mb-6">
+        <input
+          type="text"
+          placeholder="Search our tutorials, e.g. Sicilian Defense"
+          class="flex-1 px-5 py-4 rounded-l-full text-slate-900 text-lg focus:outline-none"
+        />
+        <button
+          class="bg-[#04AA6D] hover:bg-[#059862] text-white px-8 py-4 rounded-r-full text-lg transition-colors flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <a href="/learn" class="text-white hover:text-slate-200 underline text-xl font-semibold mt-4"
+        >Not sure where to begin?</a
+      >
+    </section>
+
+    <!-- Openings Section (Light Green) -->
+    <section class="w-full bg-[#D9EEE1] py-20 px-6 flex flex-col items-center">
+      <div class="max-w-6xl w-full flex flex-col md:flex-row items-center justify-between gap-12">
+        <div class="md:w-1/2 text-center flex flex-col items-center">
+          <h2 class="text-5xl md:text-6xl font-black text-slate-900 mb-4">Openings</h2>
+          <p class="text-xl text-slate-700 font-semibold mb-8">
+            Master the first moves of the game.
+          </p>
+          <a
+            routerLink="/learn"
+            class="bg-[#04AA6D] hover:bg-[#059862] text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
+            >Learn Openings</a
+          >
+          <a
+            routerLink="/learn"
+            class="bg-[#282A35] hover:bg-black text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
+            >Video Tutorials</a
+          >
+          <a
+            routerLink="/learn"
+            class="bg-[#FFC0C7] hover:bg-[#ffb0b8] text-slate-900 rounded-full px-12 py-4 font-bold text-xl transition-colors w-64 shadow-md"
+            >Opening Explorer</a
+          >
+        </div>
+        <div class="md:w-1/2 w-full">
+          <div
+            class="bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
+          >
+            <div
+              class="bg-slate-200 p-4 font-bold text-slate-700 flex items-center justify-between"
+            >
+              <span>Opening Example:</span>
+            </div>
+            <div class="p-8 text-slate-800 text-lg space-y-4">
+              <div
+                class="font-mono bg-slate-100 p-4 rounded-lg text-slate-600 border border-slate-200 selection:bg-green-200"
+              >
+                <p class="mb-2"><span class="text-blue-600">1.</span> e4 e5</p>
+                <p class="mb-2"><span class="text-blue-600">2.</span> Nf3 Nc6</p>
+                <p>
+                  <span class="text-blue-600">3.</span> Bb5
+                  <span class="text-green-600">// The Ruy Lopez</span>
+                </p>
+              </div>
+              <div class="mt-6 flex justify-center">
+                <a
+                  routerLink="/learn"
+                  class="bg-[#04AA6D] text-white px-8 py-3 rounded text-lg font-bold shadow hover:bg-[#059862]"
+                  >Try it Yourself &raquo;</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Middle Game / Strategy Section (Light Yellow) -->
+    <section class="w-full bg-[#FFF4A3] py-20 px-6 flex flex-col items-center">
+      <div
+        class="max-w-6xl w-full flex flex-col md:flex-row-reverse items-center justify-between gap-12"
+      >
+        <div class="md:w-1/2 text-center flex flex-col items-center">
+          <h2 class="text-5xl md:text-6xl font-black text-slate-900 mb-4">Strategy</h2>
+          <p class="text-xl text-slate-700 font-semibold mb-8">Positional play and planning.</p>
+          <a
+            routerLink="/learn"
+            class="bg-[#04AA6D] hover:bg-[#059862] text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
+            >Learn Strategy</a
+          >
+          <a
+            routerLink="/learn"
+            class="bg-[#282A35] hover:bg-black text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
+            >Strategy Videos</a
+          >
+          <a
+            routerLink="/learn"
+            class="bg-[#FFC0C7] hover:bg-[#ffb0b8] text-slate-900 rounded-full px-12 py-4 font-bold text-xl transition-colors w-64 shadow-md"
+            >Positional Quizzes</a
+          >
+        </div>
+        <div class="md:w-1/2 w-full">
+          <div
+            class="bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
+          >
+            <div
+              class="bg-slate-200 p-4 font-bold text-slate-700 flex items-center justify-between"
+            >
+              <span>Strategy Note:</span>
+            </div>
+            <div class="p-8 text-slate-800 text-lg space-y-4">
+              <div
+                class="font-mono bg-slate-100 p-4 rounded-lg text-slate-600 border border-slate-200"
+              >
+                <p class="mb-4 text-purple-700 font-bold">Key Principle:</p>
+                <p class="mb-2 italic text-slate-800">
+                  "Control the center, develop your pieces, and ensure king safety."
+                </p>
+                <p class="text-sm text-slate-500 mt-4">- Basic Strategy Checklist</p>
+              </div>
+              <div class="mt-6 flex justify-center">
+                <a
+                  routerLink="/learn"
+                  class="bg-[#04AA6D] text-white px-8 py-3 rounded text-lg font-bold shadow hover:bg-[#059862]"
+                  >Try it Yourself &raquo;</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tactics / Puzzles Section (Dark) -->
+    <section class="w-full bg-[#282A35] py-20 px-6 flex flex-col items-center">
+      <div class="max-w-6xl w-full flex flex-col md:flex-row items-center justify-between gap-12">
+        <div class="md:w-1/2 text-center flex flex-col items-center">
+          <h2 class="text-5xl md:text-6xl font-black text-white mb-4">Tactics</h2>
+          <p class="text-xl text-[#04AA6D] font-bold mb-8">Forks, pins, skewers, and checkmates.</p>
+          <a
+            routerLink="/learn"
+            class="bg-[#04AA6D] hover:bg-[#059862] text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
+            >Learn Tactics</a
+          >
+          <a
+            routerLink="/learn"
+            class="bg-[#FFF4A3] hover:bg-[#fff080] text-slate-900 rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
+            >Tactics Videos</a
+          >
+          <a
+            routerLink="/learn"
+            class="bg-[#FFC0C7] hover:bg-[#ffb0b8] text-slate-900 rounded-full px-12 py-4 font-bold text-xl transition-colors w-64 shadow-md"
+            >Solve Puzzles</a
+          >
+        </div>
+        <div class="md:w-1/2 w-full">
+          <div
+            class="bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] overflow-hidden"
+          >
+            <div
+              class="bg-slate-200 p-4 font-bold text-slate-700 flex items-center justify-between"
+            >
+              <span>Tactic: The Fork</span>
+            </div>
+            <div class="p-8 text-slate-800 text-lg space-y-4">
+              <div
+                class="font-mono bg-slate-800 p-4 rounded-lg text-slate-300 border border-slate-700"
+              >
+                <p class="mb-2">
+                  <span class="text-pink-400">let</span> <span class="text-blue-300">knight</span> =
+                  <span class="text-green-300">"Ne7+"</span>;
+                </p>
+                <p class="mb-2">
+                  <span class="text-blue-300">knight</span>.<span class="text-yellow-300"
+                    >attack</span
+                  >(<span class="text-green-300">"King"</span>);
+                </p>
+                <p>
+                  <span class="text-blue-300">knight</span>.<span class="text-yellow-300"
+                    >attack</span
+                  >(<span class="text-green-300">"Queen"</span>);
+                </p>
+                <p class="mt-4 text-slate-500 italic">// A devastating double attack</p>
+              </div>
+              <div class="mt-6 flex justify-center">
+                <a
+                  routerLink="/learn"
+                  class="bg-[#04AA6D] text-white px-8 py-3 rounded text-lg font-bold shadow hover:bg-[#059862]"
+                  >Try it Yourself &raquo;</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Endgames Section (Light Pink) -->
+    <section class="w-full bg-[#FFC0C7] py-20 px-6 flex flex-col items-center">
+      <div
+        class="max-w-6xl w-full flex flex-col md:flex-row-reverse items-center justify-between gap-12"
+      >
+        <div class="md:w-1/2 text-center flex flex-col items-center">
+          <h2 class="text-5xl md:text-6xl font-black text-slate-900 mb-4">Endgames</h2>
+          <p class="text-xl text-slate-700 font-semibold mb-8">How to finish the game.</p>
+          <a
+            routerLink="/learn"
+            class="bg-[#04AA6D] hover:bg-[#059862] text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
+            >Learn Endgames</a
+          >
+          <a
+            routerLink="/learn"
+            class="bg-[#282A35] hover:bg-black text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
+            >Endgame Videos</a
+          >
+          <a
+            routerLink="/learn"
+            class="bg-[#FFF4A3] hover:bg-[#fff080] text-slate-900 rounded-full px-12 py-4 font-bold text-xl transition-colors w-64 shadow-md"
+            >Endgame Drills</a
+          >
+        </div>
+        <div class="md:w-1/2 w-full">
+          <div
+            class="bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden"
+          >
+            <div
+              class="bg-slate-200 p-4 font-bold text-slate-700 flex items-center justify-between"
+            >
+              <span>Rule of the Square</span>
+            </div>
+            <div class="p-8 text-slate-800 text-lg space-y-4">
+              <div
+                class="font-mono bg-slate-100 p-4 rounded-lg text-slate-600 border border-slate-200"
+              >
+                <p>
+                  If the enemy king is <span class="text-red-600 font-bold">outside</span> the
+                  square of the passed pawn, the pawn will successfully promote.
+                </p>
+              </div>
+              <div class="mt-6 flex justify-center">
+                <a
+                  routerLink="/learn"
+                  class="bg-[#04AA6D] text-white px-8 py-3 rounded text-lg font-bold shadow hover:bg-[#059862]"
+                  >Try it Yourself &raquo;</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid Layout Inspired by bottom section -->
+    <section class="w-full bg-[#282A35] py-20 px-6 flex flex-col items-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-10 text-center">
+        Browse all our tutorials
+      </h2>
+
+      <div class="max-w-6xl w-full grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- Pink block -->
+        <a
+          routerLink="/learn"
+          class="bg-[#FFC0C7] rounded-xl p-8 hover:bg-white hover:shadow-lg transition-all text-center flex flex-col justify-center h-48 group"
+        >
+          <h3 class="text-2xl font-bold text-slate-900">King & Pawn</h3>
+          <p class="text-slate-600 mt-2 font-semibold group-hover:block">Endgames</p>
+        </a>
+        <!-- Yellow block -->
+        <a
+          routerLink="/learn"
+          class="bg-[#FFF4A3] rounded-xl p-8 hover:bg-white hover:shadow-lg transition-all text-center flex flex-col justify-center h-48 group"
+        >
+          <h3 class="text-2xl font-bold text-slate-900">Rook</h3>
+          <p class="text-slate-600 mt-2 font-semibold group-hover:block">Endgames</p>
+        </a>
+        <!-- Light Gray block -->
+        <a
+          routerLink="/learn"
+          class="bg-[#F3ECEA] rounded-xl p-8 hover:bg-white hover:shadow-lg transition-all text-center flex flex-col justify-center h-48 group"
+        >
+          <h3 class="text-2xl font-bold text-slate-900">Mating Nets</h3>
+          <p class="text-slate-600 mt-2 font-semibold group-hover:block">Checkmates</p>
+        </a>
+        <!-- Mint block -->
+        <a
+          routerLink="/learn"
+          class="bg-[#D9EEE1] rounded-xl p-8 hover:bg-white hover:shadow-lg transition-all text-center flex flex-col justify-center h-48 group"
+        >
+          <h3 class="text-2xl font-bold text-slate-900">Pawn Structure</h3>
+          <p class="text-slate-600 mt-2 font-semibold group-hover:block">Strategy</p>
+        </a>
+        <!-- Mint block -->
+        <a
+          routerLink="/learn"
+          class="bg-[#D9EEE1] rounded-xl p-8 hover:bg-white hover:shadow-lg transition-all text-center flex flex-col justify-center h-48 group"
+        >
+          <h3 class="text-2xl font-bold text-slate-900">Sicilian</h3>
+          <p class="text-slate-600 mt-2 font-semibold group-hover:block">Openings</p>
+        </a>
+        <!-- Dark block -->
+        <a
+          routerLink="/learn"
+          class="bg-[#383A45] hover:bg-black rounded-xl p-8 shadow-lg transition-all text-center flex flex-col justify-center h-48 group border border-slate-600"
+        >
+          <h3 class="text-2xl font-bold text-white group-hover:text-[#04AA6D] transition-colors">
+            More Topics
+          </h3>
+          <p class="text-slate-400 mt-2 font-semibold group-hover:text-white transition-colors">
+            View All &raquo;
+          </p>
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer Area (similar to W3Schools black footer) -->
+    <footer
+      class="w-full bg-[#1A1C23] py-20 px-6 text-center text-slate-400 flex flex-col items-center"
+    >
+      <h2 class="text-3xl font-bold text-white mb-6">CHESS.PGN</h2>
+      <div class="flex gap-4 justify-center mb-10 flex-wrap">
+        <a href="#" class="hover:text-white transition-colors">FORUM</a>
+        <span class="text-slate-700">|</span>
+        <a href="#" class="hover:text-white transition-colors">ABOUT</a>
+        <span class="text-slate-700">|</span>
+        <a href="#" class="hover:text-white transition-colors">CONTACT</a>
+      </div>
+      <p class="max-w-xl text-sm leading-loose">
+        CHESS.PGN is optimized for learning and training. Examples might be simplified to improve
+        reading and basic understanding. Tutorials, references, and examples are constantly reviewed
+        to avoid errors.
+      </p>
+      <p class="mt-8 text-xs">&copy; 2026 CHESS.PGN. All Rights Reserved.</p>
+    </footer>
+  </div>
+</div>

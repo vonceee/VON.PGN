@@ -3,16 +3,16 @@ import { Course } from '../../../../core/models/course.model';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [],
-  templateUrl: './sidebar.html',
-  styleUrl: './sidebar.css',
+  standalone: true,
+  templateUrl: './sidebar.component.html',
 })
-export class Sidebar {
+export class SidebarComponent {
+  @Input() course: Course | null = null;
   @Input() activeLessonId: string = '';
-  @Input({ required: true }) courseData!: Course;
+
   @Output() lessonSelected = new EventEmitter<string>();
 
-  onSelectLesson(lessonId: string) {
+  onSelect(lessonId: string) {
     this.lessonSelected.emit(lessonId);
   }
 }

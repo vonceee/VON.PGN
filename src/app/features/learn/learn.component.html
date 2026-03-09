@@ -1,11 +1,11 @@
 <div class="h-screen w-full flex flex-col font-sans overflow-hidden">
-  <app-header class="w-full shrink-0 z-10 relative"></app-header>
+  <app-header class="w-full shrink-0 z-50 relative"></app-header>
 
   <div class="flex flex-1 w-full relative pr-4 pl-4 overflow-hidden">
     <app-sidebar
-      [courseData]="lessonService.activeCourse()"
-      [activeLessonId]="activeLessonId"
-      (lessonSelected)="onSelectLesson($event)"
+      [course]="course()"
+      [activeLessonId]="activeLesson()?.id ?? ''"
+      (lessonSelected)="onLessonSelected($event)"
       class="h-full w-80 z-10 shrink-0"
     >
     </app-sidebar>
@@ -15,11 +15,11 @@
         class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] blur-[120px] rounded-full pointer-events-none"
       ></div>
 
-      @if (lessonService.currentLesson()) {
+      @if (lessonService.activeLesson()) {
         <app-lesson-view
-          [lessonData]="lessonService.currentLesson()"
-          (nextLesson)="goToNextLesson()"
-          (prevLesson)="goToPrevLesson()"
+          [lessonData]="lessonService.activeLesson()"
+          (nextLesson)="onNextLesson()"
+          (prevLesson)="onPrevLesson()"
           class="block relative z-10"
         >
         </app-lesson-view>
