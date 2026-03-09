@@ -18,9 +18,14 @@ export interface LessonSummary {
   isCompleted: boolean; // e.g., true if the user has completed the lesson
 }
 
+export interface ContentBlock {
+  type: 'text' | 'board';
+  content?: string; // Only present if type === 'text'
+  task?: InteractiveTask; // Only present if type === 'board'
+}
+
 export interface LessonDetail extends LessonSummary {
-  contentHtml: string; // e.g., "<p>pawns move forward one square at a time, but capture diagonally.</p>"
-  interactiveTask?: InteractiveTask;
+  contentBlocks: ContentBlock[];
 }
 
 export interface InteractiveTask {
