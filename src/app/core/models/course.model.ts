@@ -29,8 +29,6 @@ export interface LessonDetail extends LessonSummary {
 }
 
 export interface InteractiveTask {
-  startingFen: string; // e.g., "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  lichessUrl: string; // e.g., "https://lichess.org/study/embed/DKy0YYJs/ZK3XhnhN"
   instructions: string; // e.g., "move the pawn forward two squares."
-  expectedMoves?: string[]; // e.g., ["e2e4"]
-  successMessage?: string; // e.g., "correct! you moved the pawn forward two squares."
 }

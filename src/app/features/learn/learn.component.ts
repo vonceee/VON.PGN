@@ -16,6 +16,7 @@ export class LearnComponent implements OnInit {
   // Expose the signals to the HTML
   course = this.lessonService.currentCourse;
   activeLesson = this.lessonService.activeLesson;
+  isLoadingLesson = this.lessonService.isLoadingLesson;
 
   ngOnInit() {
     // 1. Load our seeded course from Laravel!
@@ -35,11 +36,29 @@ export class LearnComponent implements OnInit {
     this.lessonService.loadLesson(lessonSlug).subscribe();
   }
 
+  private get allLessons() {
+    return this.course()?.chapters.flatMap((c) => c.lessons) || [];
+  }
+
   onNextLesson() {
-    // TODO: navigate to the next lesson
+    const lessons = this.allLessons;
+    const currentId = this.activeLesson()?.id;
+    if (!currentId) return;
+
+    const currentIndex = lessons.findIndex((l) => l.id === currentId);
+    if (currentIndex >= 0 && currentIndex < lessons.length - 1) {
+      this.onLessonSelected(lessons[currentIndex + 1].id);
+    }
   }
 
   onPrevLesson() {
-    // TODO: navigate to the previous lesson
+    const lessons = this.allLessons;
+    const currentId = this.activeLesson()?.id;
+    if (!currentId) return;
+
+    const currentIndex = lessons.findIndex((l) => l.id === currentId);
+    if (currentIndex > 0) {
+      this.onLessonSelected(lessons[currentIndex - 1].id);
+    }
   }
 }
