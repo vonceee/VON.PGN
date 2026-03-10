@@ -1,6 +1,17 @@
-import { Component, ElementRef, ViewChild, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  OnInit,
+  inject,
+  NgZone,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TacticsService, Puzzle } from '../../core/services/tactics.service';
+import { UserService } from '../../core/services/user.service';
+import { Header } from '../learn/components/header/header';
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
@@ -8,52 +19,64 @@ import { Api } from 'chessground/api';
 @Component({
   selector: 'app-tactics',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Header],
   templateUrl: './tactics.component.html',
 })
 export class TacticsComponent implements OnInit {
   private tacticsService = inject(TacticsService);
+  private userService = inject(UserService);
+  private ngZone = inject(NgZone);
 
   @ViewChild('boardRef', { static: true }) boardRef!: ElementRef;
 
   private board!: Api;
   private chess = new Chess();
 
-  currentPuzzle: Puzzle | null = null;
+  currentPuzzle = signal<Puzzle | null>(null);
   solutionMoves: string[] = [];
   currentMoveIndex = 0;
 
-  userColor: 'white' | 'black' = 'white';
-
-  // UI States
-  status: 'playing' | 'success' | 'failed' = 'playing';
-  ratingChange: number | null = null;
-  newRating: number | null = null;
+  // UI Signals
+  isLoading = signal<boolean>(true);
+  hasRevealedSolution = signal<boolean>(false);
+  userColor = signal<'white' | 'black'>('white');
+  status = signal<'playing' | 'success' | 'failed'>('playing');
+  ratingChange = signal<number | null>(null);
+  newRating = signal<number | null>(null);
+  streak = signal<number>(0);
+  userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
 
   ngOnInit() {
+    this.userService.loadMyProfile();
     this.loadNextPuzzle();
   }
 
   loadNextPuzzle() {
-    this.status = 'playing';
-    this.ratingChange = null;
+    this.status.set('playing');
+    this.ratingChange.set(null);
+    this.isLoading.set(true);
+    this.hasRevealedSolution.set(false);
 
     this.tacticsService.getDailyPuzzle().subscribe((res) => {
-      this.currentPuzzle = res.data;
-      if (!this.currentPuzzle) {
-        // No puzzles available in database yet!
+      this.currentPuzzle.set(res.data);
+      this.isLoading.set(false);
+
+      const p = this.currentPuzzle();
+      if (!p) {
+        // no puzzles available in database yet!
         return;
       }
-      this.solutionMoves = this.currentPuzzle.moves.split(' ');
+      this.solutionMoves = p.moves.split(' ');
       this.currentMoveIndex = 0;
       this.initPuzzle();
     });
   }
 
   initPuzzle() {
-    if (!this.currentPuzzle) return;
+    const p = this.currentPuzzle();
+    if (!p) return;
 
-    this.chess.load(this.currentPuzzle.fen);
+    this.chess.load(p.fen);
 
     // 1. Lichess puzzles start by making the opponent's move automatically!
     const opponentInitialMove = this.solutionMoves[this.currentMoveIndex];
@@ -61,26 +84,31 @@ export class TacticsComponent implements OnInit {
     this.currentMoveIndex++;
 
     // 2. The user's color is whoever's turn it is NOW
-    this.userColor = this.chess.turn() === 'w' ? 'white' : 'black';
+    this.userColor.set(this.chess.turn() === 'w' ? 'white' : 'black');
 
     // 3. Render the board
     this.board = Chessground(this.boardRef.nativeElement, {
       fen: this.chess.fen(),
-      orientation: this.userColor,
-      turnColor: this.userColor,
+      orientation: this.userColor(),
+      turnColor: this.userColor(),
       movable: {
-        color: this.userColor,
+        color: this.userColor(),
         free: false,
         dests: this.calculateDests(),
         events: {
-          after: (orig, dest) => this.onUserMove(orig, dest),
+          // 2. Tell Angular to watch this event!
+          after: (orig, dest) => {
+            this.ngZone.run(() => {
+              this.onUserMove(orig, dest);
+            });
+          },
         },
       },
     });
   }
 
   onUserMove(orig: any, dest: any) {
-    if (this.status !== 'playing') return;
+    if (this.status() !== 'playing') return;
 
     // Check if the move matches the solution sequence
     const expectedMove = this.solutionMoves[this.currentMoveIndex];
@@ -92,15 +120,30 @@ export class TacticsComponent implements OnInit {
       this.chess.move(this.parseUciMove(expectedMove));
       this.currentMoveIndex++;
 
+      // Sync the visual board with the internal logic
+      this.board.set({
+        fen: this.chess.fen(),
+        turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
+      });
+
       // Did they finish the whole puzzle?
       if (this.currentMoveIndex >= this.solutionMoves.length) {
         this.winPuzzle();
       } else {
         // Not done yet! The engine plays the next opponent move automatically
-        setTimeout(() => this.playOpponentMove(), 500);
+        setTimeout(() => {
+          this.playOpponentMove();
+        }, 500);
       }
     } else {
       // WRONG MOVE!
+
+      // Revert the visual board to the last correct FEN so the wrong move doesn't stay on the board
+      this.board.set({
+        fen: this.chess.fen(),
+        turnColor: this.userColor(),
+      });
+
       this.failPuzzle();
     }
   }
@@ -112,29 +155,62 @@ export class TacticsComponent implements OnInit {
 
     this.board.set({
       fen: this.chess.fen(),
-      turnColor: this.userColor,
+      turnColor: this.userColor(),
       movable: { dests: this.calculateDests() },
     });
   }
 
   winPuzzle() {
-    this.status = 'success';
+    this.status.set('success');
+    this.streak.update((s) => s + 1);
     this.board.set({ movable: { color: undefined } }); // Lock board
 
-    this.tacticsService.solvePuzzle(this.currentPuzzle!.id, true).subscribe((res) => {
-      this.ratingChange = res.rating_change;
-      this.newRating = res.new_rating;
+    const pId = this.currentPuzzle()?.id;
+    if (!pId) return;
+
+    this.tacticsService.solvePuzzle(pId, true).subscribe((res) => {
+      this.ratingChange.set(res.rating_change);
+      this.newRating.set(res.new_rating);
+      // Reload profile to reflect new XP and rating network-wide
+      this.userService.loadMyProfile();
     });
   }
 
   failPuzzle() {
-    this.status = 'failed';
+    this.status.set('failed');
+    this.streak.set(0);
     this.board.set({ movable: { color: undefined } }); // Lock board
 
-    this.tacticsService.solvePuzzle(this.currentPuzzle!.id, false).subscribe((res) => {
-      this.ratingChange = res.rating_change;
-      this.newRating = res.new_rating;
+    const pId = this.currentPuzzle()?.id;
+    if (!pId) return;
+
+    this.tacticsService.solvePuzzle(pId, false).subscribe((res) => {
+      this.ratingChange.set(res.rating_change);
+      this.newRating.set(res.new_rating);
+      this.userService.loadMyProfile();
     });
+  }
+
+  revealSolution() {
+    this.hasRevealedSolution.set(true);
+
+    // Play the rest of the solution automatically
+    const playNextMove = () => {
+      if (this.currentMoveIndex >= this.solutionMoves.length) return;
+
+      const move = this.solutionMoves[this.currentMoveIndex];
+      this.chess.move(this.parseUciMove(move));
+      this.currentMoveIndex++;
+
+      this.board.set({
+        fen: this.chess.fen(),
+        turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
+      });
+
+      setTimeout(playNextMove, 750);
+    };
+
+    playNextMove();
   }
 
   private calculateDests() {

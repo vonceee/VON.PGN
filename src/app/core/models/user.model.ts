@@ -25,6 +25,7 @@ export interface UserProgress {
   currentStreakDays: number;
   experiencePoints: number;
   currentLevel: number;
+  puzzleRating: number;
   earnedBadges: Badge[];
 }
 
