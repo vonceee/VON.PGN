@@ -1,6 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { ToastService } from './toast.service';
+import { UserService } from './user.service';
 
 export interface Puzzle {
   id: number;
@@ -15,13 +18,16 @@ export interface SolveResponse {
   success: boolean;
   new_rating: number;
   rating_change: number;
-  xp_earned: number;
   new_streak: number;
+  xp_earned: number;
+  leveled_up: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
 export class TacticsService {
   private http = inject(HttpClient);
+  private toastService = inject(ToastService);
+  private userService = inject(UserService);
   private apiUrl = 'http://127.0.0.1:8000/api';
 
   getDailyPuzzle(): Observable<{ data: Puzzle }> {
@@ -32,6 +38,20 @@ export class TacticsService {
     return this.http.post<SolveResponse>(`${this.apiUrl}/tactics/solve`, {
       puzzle_id: puzzleId,
       success: success,
-    });
+    }).pipe(
+      tap((response) => {
+        if (response.leveled_up) {
+          this.toastService.show(
+            'Level Up! New Level ' + this.userService.currentUser()?.progress.currentLevel,
+            'level-up',
+            6000
+          );
+        }
+
+        if (this.userService.currentUser()) {
+          this.userService.loadMyProfile().subscribe();
+        }
+      })
+    );
   }
 }

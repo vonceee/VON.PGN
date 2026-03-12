@@ -1,6 +1,7 @@
 import { Component, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/services/user.service';
+import { ToastService } from '../../core/services/toast.service';
 import { Header } from '../learn/components/header/header';
 
 @Component({
@@ -19,13 +20,15 @@ export class ProfileComponent implements OnInit {
   currentXp = computed(() => this.user()?.progress.experiencePoints || 0);
   level = computed(() => this.user()?.progress.currentLevel || 1);
 
-  // Simple RPG Math: Each level requires (Level * 100) total EXP.
-  xpForNextLevel = computed(() => this.level() * 100);
+  xpTotalForNextLevel = computed(() => (this.level() + 1) * 100);
+
+  // how much XP is still needed to hit the next level
+  xpToNextLevel = computed(() => Math.max(this.xpTotalForNextLevel() - this.currentXp(), 0));
 
   // Calculate the exact percentage for the cyan progress bar
   xpProgressPercent = computed(() => {
     const current = this.currentXp();
-    const target = this.xpForNextLevel();
+    const target = this.xpTotalForNextLevel();
     if (target === 0) return 0;
 
     // Math.min ensures the bar never visually exceeds 100%
@@ -42,14 +45,9 @@ export class ProfileComponent implements OnInit {
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   });
 
+  toastService = inject(ToastService);
+
   ngOnInit() {
     this.userService.loadMyProfile().subscribe();
-  }
-
-  // Add this method to the class
-  simulateLectureComplete() {
-    // We will just pass a random dummy ID for now
-    const dummyId = 'lecture-' + Math.floor(Math.random() * 1000);
-    this.userService.completeLecture(dummyId).subscribe();
   }
 }

@@ -16,6 +16,7 @@ import { Course, LessonDetail } from '../../../../core/models/course.model';
 import { InteractiveBoardComponent } from '../interactive-board/interactive-board.component';
 import { UserService } from '../../../../core/services/user.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-lesson-view',
@@ -27,6 +28,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   userService = inject(UserService);
   authService = inject(AuthService);
+  toastService = inject(ToastService);
   @Input() courseData: Course | null = null;
   @Input() lessonData: LessonDetail | null = null;
   @Output() startCourse = new EventEmitter<string>();
@@ -105,7 +107,14 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
     this.isCompleted = true;
 
     this.userService.completeLecture(lessonId).subscribe({
-      next: () => {
+      next: (response) => {
+        // the backend returns a `leveled_up` flag so we can give instant
+        // feedback; the service already pushes the new profile into the
+        // signal so the level/value itself will update automatically.
+        if (response.leveled_up) {
+          this.toastService.show('You levelled up!', 'level-up');
+        }
+
         this.observer?.disconnect();
       },
     });

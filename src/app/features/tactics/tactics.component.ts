@@ -46,6 +46,7 @@ export class TacticsComponent implements OnInit {
   ratingChange = signal<number | null>(null);
   newRating = signal<number | null>(null);
   newStreak = signal<number>(0);
+  xpEarned = signal<number | null>(null);
   userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
   ngOnInit() {
@@ -59,6 +60,7 @@ export class TacticsComponent implements OnInit {
   loadNextPuzzle() {
     this.status.set('playing');
     this.ratingChange.set(null);
+    this.xpEarned.set(null);
     this.isLoading.set(true);
     this.hasRevealedSolution.set(false);
 
@@ -166,7 +168,7 @@ export class TacticsComponent implements OnInit {
   winPuzzle() {
     this.status.set('success');
     this.newStreak.update((s) => s + 1);
-    this.board.set({ movable: { color: undefined } }); // Lock board
+    this.board.set({ movable: { color: undefined } });
 
     const pId = this.currentPuzzle()?.id;
     if (!pId) return;
@@ -175,6 +177,7 @@ export class TacticsComponent implements OnInit {
       this.ratingChange.set(res.rating_change);
       this.newRating.set(res.new_rating);
       this.newStreak.set(res.new_streak);
+      this.xpEarned.set(res.xp_earned);
       this.userService.loadMyProfile().subscribe();
     });
   }
@@ -182,7 +185,7 @@ export class TacticsComponent implements OnInit {
   failPuzzle() {
     this.status.set('failed');
     this.newStreak.set(0);
-    this.board.set({ movable: { color: undefined } }); // Lock board
+    this.board.set({ movable: { color: undefined } });
 
     const pId = this.currentPuzzle()?.id;
     if (!pId) return;
@@ -191,6 +194,7 @@ export class TacticsComponent implements OnInit {
       this.ratingChange.set(res.rating_change);
       this.newRating.set(res.new_rating);
       this.newStreak.set(res.new_streak);
+      this.xpEarned.set(res.xp_earned);
       this.userService.loadMyProfile().subscribe();
     });
   }

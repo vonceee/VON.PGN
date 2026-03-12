@@ -1,0 +1,22 @@
+<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+
+  @for (toast of toastService.toasts(); track toast.id) {
+  <div
+    class="pointer-events-auto transform transition-all duration-300 ease-out translate-y-0 opacity-100 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border"
+    [class]="
+        toast.type === 'level-up' 
+        ? 'bg-linear-to-r from-cyan-950 to-slate-900 border-cyan-500/50 text-cyan-50 shadow-cyan-500/20' 
+        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100'
+      ">
+    <span class="font-semibold text-sm">{{ toast.message }}</span>
+
+    <button (click)="toastService.remove(toast.id)" class="ml-2 text-slate-400 hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd"
+          d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+          clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
+  }
+</div>
