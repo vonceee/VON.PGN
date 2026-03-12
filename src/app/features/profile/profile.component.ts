@@ -43,7 +43,7 @@ export class ProfileComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.userService.loadMyProfile();
+    this.userService.loadMyProfile().subscribe();
   }
 
   // Add this method to the class

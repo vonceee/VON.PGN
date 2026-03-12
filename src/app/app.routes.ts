@@ -30,6 +30,11 @@ export const routes: Routes = [
   },
   {
     path: 'learn',
+    redirectTo: 'learn/chess-basics',
+    pathMatch: 'full',
+  },
+  {
+    path: 'learn/:courseSlug',
     component: LearnComponent,
     title: 'Learn Chess',
   },

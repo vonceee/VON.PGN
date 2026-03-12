@@ -2,6 +2,7 @@ export interface Course {
   id: string;
   title: string; // e.g., "Chess Basics"
   description: string; // e.g., "Learn Chess from Zero"
+  prerequisites?: string[];
   chapters: Chapter[];
 }
 

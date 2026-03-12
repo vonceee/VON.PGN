@@ -14,6 +14,7 @@ export class LessonService {
   allCourses = signal<Course[]>([]);
   currentCourse = signal<Course | null>(null);
   activeLesson = signal<LessonDetail | null>(null);
+  isLoadingCourse = signal<boolean>(false);
   isLoadingLesson = signal<boolean>(false);
 
   // 4. Fetch all available courses
@@ -27,9 +28,16 @@ export class LessonService {
 
   // 1. Fetch the Course (for the sidebar)
   loadCourse(slug: string) {
+    this.isLoadingCourse.set(true);
     return this.http.get<{ data: Course }>(`${this.apiUrl}/courses/${slug}`).pipe(
       tap((response) => {
-        this.currentCourse.set(response.data);
+        // ensure prerequisites array exists so UI can rely on it
+        const course = response.data;
+        if (!course.prerequisites) {
+          course.prerequisites = ['no required prerequisites for this course'];
+        }
+        this.currentCourse.set(course);
+        this.isLoadingCourse.set(false);
       }),
     );
   }

@@ -11,7 +11,7 @@ import {
   SimpleChanges,
   inject,
 } from '@angular/core';
-import { LessonDetail } from '../../../../core/models/course.model';
+import { Course, LessonDetail } from '../../../../core/models/course.model';
 import { InteractiveBoardComponent } from '../interactive-board/interactive-board.component';
 import { UserService } from '../../../../core/services/user.service';
 
@@ -24,9 +24,12 @@ import { UserService } from '../../../../core/services/user.service';
 })
 export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
   userService = inject(UserService);
+  @Input() courseData: Course | null = null;
   @Input() lessonData: LessonDetail | null = null;
+  @Output() startCourse = new EventEmitter<string>();
   @Output() nextLesson = new EventEmitter<string>();
   @Output() prevLesson = new EventEmitter<string>();
+  @Output() backToCourse = new EventEmitter<void>();
 
   @ViewChild('bottomTrigger') bottomTrigger!: ElementRef;
 
@@ -41,6 +44,13 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
     if (changes['lessonData'] && !changes['lessonData'].isFirstChange()) {
       this.isCompleted = false;
       this.setupObserver();
+    }
+  }
+
+  onStartCourse() {
+    const firstLessonId = this.courseData?.chapters[0].lessons[0].id;
+    if (firstLessonId) {
+      this.startCourse.emit(firstLessonId);
     }
   }
 
@@ -78,6 +88,28 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
         this.observer?.disconnect();
       },
     });
+  }
+
+  // metadata helpers for course overview
+  get chapterCount() {
+    return this.courseData?.chapters.length ?? 0;
+  }
+
+  get estimatedTime() {
+    // 10 units per chapter (minutes)
+    const mins = this.chapterCount * 10;
+    return `${mins} min`;
+  }
+
+  get difficulty() {
+    const c = this.chapterCount;
+    if (c < 10) return 'Beginner';
+    if (c < 20) return 'Intermediate';
+    return 'Advanced';
+  }
+
+  get prerequisites() {
+    return this.courseData?.prerequisites ?? ['None'];
   }
 
   ngOnDestroy() {

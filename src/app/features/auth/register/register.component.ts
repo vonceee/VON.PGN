@@ -8,7 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   template: `
-    <div class="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center p-4">
+    <div class="h-screen flex flex-col items-center justify-center p-4">
       <div
         class="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-gray-200 dark:border-zinc-800 p-8 sm:p-10 transition-colors"
       >
@@ -16,7 +16,7 @@ import { AuthService } from '../../../core/services/auth.service';
           <h2 class="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">
             Create Account
           </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Sign up to get started.</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">sign up to get started.</p>
         </div>
 
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
@@ -58,7 +58,7 @@ import { AuthService } from '../../../core/services/auth.service';
               placeholder="••••••••"
             />
             <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
-              Must be at least 8 characters long.
+              must be at least 8 characters long.
             </p>
           </div>
 
@@ -104,11 +104,11 @@ import { AuthService } from '../../../core/services/auth.service';
         </form>
 
         <p class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          Already have an account?
+          already have an account?
           <a
             routerLink="/login"
             class="font-medium text-black dark:text-white hover:underline underline-offset-4 decoration-1 transition-all"
-            >Sign in</a
+            >sign in</a
           >
         </p>
       </div>

@@ -16,6 +16,7 @@ export interface SolveResponse {
   new_rating: number;
   rating_change: number;
   xp_earned: number;
+  new_streak: number;
 }
 
 @Injectable({ providedIn: 'root' })

@@ -1,7 +1,12 @@
 @if (course) {
   <aside class="flex flex-col h-full">
     <div>
-      <h2 class="px-5 py-2 mt-2 font-medium select-none">{{ course.title }}</h2>
+      <h2
+        class="px-5 py-2 mt-2 font-medium select-none cursor-pointer hover:text-cyan-600"
+        (click)="onSelect('')"
+      >
+        {{ course.title }}
+      </h2>
     </div>
 
     <nav class="flex flex-col flex-1 overflow-y-auto custom-scrollbar">
@@ -36,7 +41,7 @@
               >
                 <!-- Active Line Indicator -->
                 @if (activeLessonId === lesson.id) {
-                  <div class="absolute left-0 top-1 bottom-1 w-[2px] bg-cyan-400"></div>
+                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-cyan-400"></div>
                 }
 
                 <span class="text-sm ml-2">{{ lesson.title }}</span>
@@ -55,5 +60,46 @@
         </details>
       }
     </nav>
+  </aside>
+} @else {
+  <aside class="flex flex-col h-full animate-pulse mt-2">
+    <div class="px-5 py-2">
+      <div class="h-6 bg-slate-200 dark:bg-slate-800/80 rounded w-2/3"></div>
+    </div>
+
+    <div class="flex flex-col flex-1 mt-4 space-y-6">
+      <!-- Skeleton Chapter 1 -->
+      <div>
+        <div class="px-5 py-2">
+          <div class="h-5 bg-slate-200 dark:bg-slate-800/80 rounded w-3/4"></div>
+        </div>
+        <ul class="flex flex-col mt-1 mb-2 space-y-1">
+          <li class="py-2 px-4 mx-2">
+            <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-5/6 ml-2"></div>
+          </li>
+          <li class="py-2 px-4 mx-2">
+            <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-4/5 ml-2"></div>
+          </li>
+          <li class="py-2 px-4 mx-2">
+            <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-11/12 ml-2"></div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Skeleton Chapter 2 -->
+      <div>
+        <div class="px-5 py-2">
+          <div class="h-5 bg-slate-200 dark:bg-slate-800/80 rounded w-2/3"></div>
+        </div>
+        <ul class="flex flex-col mt-1 mb-2 space-y-1">
+          <li class="py-2 px-4 mx-2">
+            <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-4/5 ml-2"></div>
+          </li>
+          <li class="py-2 px-4 mx-2">
+            <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-full ml-2"></div>
+          </li>
+        </ul>
+      </div>
+    </div>
   </aside>
 }

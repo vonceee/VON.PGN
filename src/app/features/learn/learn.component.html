@@ -11,13 +11,9 @@
     </app-sidebar>
 
     <div class="flex-1 overflow-y-auto w-full relative custom-scrollbar">
-      <div
-        class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] blur-[120px] rounded-full pointer-events-none"
-      ></div>
-
-      @if (isLoadingLesson()) {
+      @if (isLoadingCourse() || isLoadingLesson()) {
         <main
-          class="w-full max-w-5xl mx-auto p-2 min-h-full flex flex-col bg-transparent animate-pulse"
+          class="w-full mx-auto p-2 min-h-full flex flex-col bg-transparent animate-pulse"
         >
           <div class="shrink-0 top-4 z-20">
             <div class="flex justify-between items-center py-5">
@@ -33,7 +29,7 @@
             </div>
           </div>
 
-          <article class="max-w-none mb-12 shrink-0 mt-6">
+          <article class="max-w-5xl mb-12 shrink-0 mt-6">
             <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-full mb-4"></div>
             <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-11/12 mb-4"></div>
             <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-4/5 mb-10"></div>
@@ -41,16 +37,16 @@
             <div
               class="flex flex-col mb-6 p-6 bg-slate-200 dark:bg-slate-800/30 rounded-2xl h-40"
             ></div>
-            <div
-              class="h-[400px] sm:h-[600px] w-full bg-slate-200 dark:bg-slate-800/30 rounded-2xl mx-auto max-w-lg mb-6"
-            ></div>
           </article>
         </main>
-      } @else if (activeLesson()) {
+      } @else if (course()) {
         <app-lesson-view
+          [courseData]="course()"
           [lessonData]="activeLesson()"
+          (startCourse)="onLessonSelected($event)"
           (nextLesson)="onNextLesson()"
           (prevLesson)="onPrevLesson()"
+          (backToCourse)="onLessonSelected('')"
           class="block relative z-10 animate-fade-in"
         >
         </app-lesson-view>

@@ -26,11 +26,7 @@ export class RoadmapComponent implements OnInit {
   }
 
   selectCourse(courseId: string) {
-    this.lessonService.loadCourse(courseId).subscribe({
-      next: () => {
-        // Optionally navigate to learn using router or specific lesson
-        this.router.navigate(['/learn']);
-      },
-    });
+    // Navigate to the learn page with the course slug — LearnComponent will load it from the URL param
+    this.router.navigate(['/learn', courseId]);
   }
 }

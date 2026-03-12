@@ -13,14 +13,16 @@ export class UserService {
   currentUser = signal<UserProfile | null>(null);
 
   loadMyProfile() {
-    this.http.get<{ data: UserProfile }>(`http://127.0.0.1:8000/api/profile`).subscribe({
-      next: (response) => {
-        this.currentUser.set(response.data);
-      },
-      error: (err) => {
-        console.error('Failed to load user profile', err);
-      },
-    });
+    return this.http.get<{ data: UserProfile }>(`http://127.0.0.1:8000/api/profile`).pipe(
+      tap({
+        next: (response) => {
+          this.currentUser.set(response.data);
+        },
+        error: (err) => {
+          console.error('Failed to load user profile', err);
+        },
+      }),
+    );
   }
 
   // Inside user.service.ts
@@ -40,7 +42,7 @@ export class UserService {
           this.currentUser.set(response.user.data);
 
           if (response.leveled_up) {
-            console.log('🎉 LEVEL UP!'); // You can trigger a toast notification here later!
+            // console.log('🎉 LEVEL UP!'); // You can trigger a toast notification here later!
           }
         }),
       );

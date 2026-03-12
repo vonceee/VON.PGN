@@ -4,6 +4,13 @@
   --font-sans:
     'Google Sans', 'Outfit', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-border-theme: theme(colors.slate.400);
+}
+
+/* Switch border color in dark mode */
+.dark {
+  --color-border-theme: rgb(255 255 255 / 0.15);
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

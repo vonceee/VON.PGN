@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { LessonService } from '../../core/services/lesson.service';
 import { Header } from './components/header/header';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -12,27 +13,26 @@ import { LessonView } from './components/lesson-view/lesson-view';
 })
 export class LearnComponent implements OnInit {
   lessonService = inject(LessonService);
+  private route = inject(ActivatedRoute);
 
-  // Expose the signals to the HTML
   course = this.lessonService.currentCourse;
   activeLesson = this.lessonService.activeLesson;
+  isLoadingCourse = this.lessonService.isLoadingCourse;
   isLoadingLesson = this.lessonService.isLoadingLesson;
 
   ngOnInit() {
-    // 1. Load our seeded course from Laravel!
-    this.lessonService.loadCourse('chess-basics').subscribe({
-      next: (res) => {
-        // 2. Automatically load the very first lesson so the screen isn't blank
-        const firstLessonSlug = res.data.chapters[0]?.lessons[0]?.id;
-        if (firstLessonSlug) {
-          this.onLessonSelected(firstLessonSlug);
-        }
-      },
-    });
+    const courseSlug = this.route.snapshot.paramMap.get('slug') ?? 'chess-basics';
+
+    if (courseSlug) {
+      this.lessonService.loadCourse(courseSlug).subscribe({});
+    }
   }
 
-  // 3. This fires when the user clicks a lesson in the Sidebar
   onLessonSelected(lessonSlug: string) {
+    if (!lessonSlug) {
+      this.lessonService.activeLesson.set(null);
+      return;
+    }
     this.lessonService.loadLesson(lessonSlug).subscribe();
   }
 

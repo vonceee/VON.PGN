@@ -8,19 +8,10 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   template: `
-    <div class="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center p-4">
+    <div class="h-screen flex flex-col items-center justify-center p-4">
       <div
         class="w-full max-w-sm bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-gray-200 dark:border-zinc-800 p-8 sm:p-10 transition-colors"
       >
-        <div class="mb-8 text-center">
-          <h2 class="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">
-            Welcome back
-          </h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            Please enter your details to sign in.
-          </p>
-        </div>
-
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
           <div class="space-y-1.5">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="email"
@@ -45,7 +36,7 @@ import { AuthService } from '../../../core/services/auth.service';
               <a
                 href="#"
                 class="text-xs font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
-                >Forgot password?</a
+                >forgot password?</a
               >
             </div>
             <input
@@ -99,11 +90,11 @@ import { AuthService } from '../../../core/services/auth.service';
         </form>
 
         <p class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          Don't have an account?
+          don't have an account?
           <a
             routerLink="/register"
             class="font-medium text-black dark:text-white hover:underline underline-offset-4 decoration-1 transition-all"
-            >Sign up</a
+            >sign up</a
           >
         </p>
       </div>
