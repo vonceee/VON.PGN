@@ -9,11 +9,13 @@ import {
   OnDestroy,
   OnChanges,
   SimpleChanges,
+  OnInit,
   inject,
 } from '@angular/core';
 import { Course, LessonDetail } from '../../../../core/models/course.model';
 import { InteractiveBoardComponent } from '../interactive-board/interactive-board.component';
 import { UserService } from '../../../../core/services/user.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-lesson-view',
@@ -22,8 +24,9 @@ import { UserService } from '../../../../core/services/user.service';
   templateUrl: './lesson-view.html',
   styleUrl: './lesson-view.css',
 })
-export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
+export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   userService = inject(UserService);
+  authService = inject(AuthService);
   @Input() courseData: Course | null = null;
   @Input() lessonData: LessonDetail | null = null;
   @Output() startCourse = new EventEmitter<string>();
@@ -35,6 +38,14 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
 
   private observer: IntersectionObserver | null = null;
   isCompleted = false;
+
+  ngOnInit() {
+    // ensure profile data is loaded if we're authenticated; this prevents UI flash and
+    // allows other computed getters to function later.
+    if (this.authService.isAuthenticated() && !this.userService.currentUser()) {
+      this.userService.loadMyProfile().subscribe();
+    }
+  }
 
   ngAfterViewInit() {
     this.setupObserver();
@@ -54,6 +65,15 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
+  get isAlreadyCompleted(): boolean {
+    const user = this.userService.currentUser();
+    const lessonId = this.lessonData?.id;
+
+    if (!user || !lessonId) return false;
+
+    return user.progress.completedLessonIds.includes(lessonId);
+  }
+
   private setupObserver() {
     if (this.observer) this.observer.disconnect();
 
@@ -63,9 +83,10 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
 
         if (
           triggerDiv.isIntersecting &&
+          !this.isAlreadyCompleted &&
           !this.isCompleted &&
           this.lessonData?.id &&
-          this.userService.currentUser()
+          this.authService.isAuthenticated()
         ) {
           this.finishLecture(this.lessonData.id);
         }
@@ -90,13 +111,48 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-  // metadata helpers for course overview
+  /** convenience getter used in tests/template */
+  get isLoggedIn() {
+    return this.authService.isAuthenticated();
+  }
+
+  /**
+  * Functions for Progress Bar, (Completed Chapters / Total Chapters) * 100 )
+  */
   get chapterCount() {
     return this.courseData?.chapters.length ?? 0;
   }
 
+  get progressPercent() {
+    const course = this.courseData;
+    const userProfile = this.userService.currentUser();
+
+    if (!course || !userProfile) return 0;
+
+    const allLessonIds = course.chapters.flatMap((chapter) =>
+      chapter.lessons.map((lesson) => lesson.id)
+    );
+
+    const totalLessons = allLessonIds.length;
+    if (totalLessons === 0) return 0;
+
+    const completedCount = allLessonIds.filter((id) =>
+      userProfile.progress.completedLessonIds.includes(id)
+    ).length;
+
+    return Math.round((completedCount / totalLessons) * 100);
+  }
+
+  /**
+  * Functions for Meta Data, Course Overview
+  */
+  get chapters() {
+    return this.courseData?.chapters
+      .slice()
+      .sort((a, b) => a.order - b.order) ?? [];
+  }
+
   get estimatedTime() {
-    // 10 units per chapter (minutes)
     const mins = this.chapterCount * 10;
     return `${mins} min`;
   }
@@ -109,7 +165,7 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   get prerequisites() {
-    return this.courseData?.prerequisites ?? ['None'];
+    return this.courseData?.prerequisites ?? ['none']; // TODO
   }
 
   ngOnDestroy() {

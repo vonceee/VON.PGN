@@ -9,7 +9,6 @@ import { tap } from 'rxjs';
 export class UserService {
   private http = inject(HttpClient);
 
-  // signal that holds our user data. starts as null.
   currentUser = signal<UserProfile | null>(null);
 
   loadMyProfile() {
@@ -25,10 +24,7 @@ export class UserService {
     );
   }
 
-  // Inside user.service.ts
-
   completeLecture(lessonId: string) {
-    // We send a POST request with the lesson ID
     return this.http
       .post<{
         message: string;
@@ -37,13 +33,7 @@ export class UserService {
       }>(`http://127.0.0.1:8000/api/progress/complete-lecture`, { lesson_id: lessonId })
       .pipe(
         tap((response) => {
-          // BOOM! The moment this succeeds, we overwrite the Signal.
-          // Angular will instantly recalculate the math and animate the progress bar!
           this.currentUser.set(response.user.data);
-
-          if (response.leveled_up) {
-            // console.log('🎉 LEVEL UP!'); // You can trigger a toast notification here later!
-          }
         }),
       );
   }

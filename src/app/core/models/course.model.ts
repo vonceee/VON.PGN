@@ -21,8 +21,8 @@ export interface LessonSummary {
 
 export interface ContentBlock {
   type: 'text' | 'board';
-  content?: string; // Only present if type === 'text'
-  task?: InteractiveTask; // Only present if type === 'board'
+  content?: string; // only present if type === 'text'
+  task?: InteractiveTask; // only present if type === 'board'
 }
 
 export interface LessonDetail extends LessonSummary {
