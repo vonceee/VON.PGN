@@ -42,8 +42,6 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   isCompleted = false;
 
   ngOnInit() {
-    // ensure profile data is loaded if we're authenticated; this prevents UI flash and
-    // allows other computed getters to function later.
     if (this.authService.isAuthenticated() && !this.userService.currentUser()) {
       this.userService.loadMyProfile().subscribe();
     }
@@ -108,9 +106,6 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
 
     this.userService.completeLecture(lessonId).subscribe({
       next: (response) => {
-        // the backend returns a `leveled_up` flag so we can give instant
-        // feedback; the service already pushes the new profile into the
-        // signal so the level/value itself will update automatically.
         if (response.leveled_up) {
           this.toastService.show('You levelled up!', 'level-up');
         }

@@ -21,7 +21,7 @@ export class LearnComponent implements OnInit {
   isLoadingLesson = this.lessonService.isLoadingLesson;
 
   ngOnInit() {
-    const courseSlug = this.route.snapshot.paramMap.get('slug') ?? 'chess-basics';
+    const courseSlug = this.route.snapshot.paramMap.get('courseSlug');
 
     if (courseSlug) {
       this.lessonService.loadCourse(courseSlug).subscribe({});

@@ -120,7 +120,6 @@
               @for (course of allCourses; track course.id) {
                 <div class="flex items-center gap-3">
                   <a
-                    [routerLink]="['/learn']"
                     (click)="selectCourse(course.id)"
                     class="text-[17px] hover:text-cyan-400 transition-colors truncate"
                   >
