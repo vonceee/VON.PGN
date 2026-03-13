@@ -2,7 +2,7 @@ import { Component, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../core/services/user.service';
 import { ToastService } from '../../core/services/toast.service';
-import { Header } from '../learn/components/header/header';
+import { Header } from '../../shared/components/header/header';
 
 @Component({
   selector: 'app-profile',

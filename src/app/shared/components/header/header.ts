@@ -1,8 +1,8 @@
 import { Component, inject, signal, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ThemeService } from '../../../../core/services/theme.service';
-import { UserService } from '../../../../core/services/user.service';
-import { AuthService } from '../../../../core/services/auth.service';
+import { ThemeService } from '../../../core/services/theme.service';
+import { UserService } from '../../../core/services/user.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
