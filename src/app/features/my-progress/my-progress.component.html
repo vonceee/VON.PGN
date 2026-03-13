@@ -1,7 +1,7 @@
 <div class="h-screen w-full flex flex-col overflow-hidden">
   <app-header class="w-full shrink-0 z-50 relative"></app-header>
 
-  <div class="flex-1 w-full relative overflow-y-auto custom-scrollbar py-12 px-4 sm:px-8">
+  <div class="flex-1 w-full relative overflow-y-auto custom-scrollbar py-12 px-4">
     <div class="mx-auto flex flex-col gap-8">
       
       @if (startedCourses().length === 0) {
@@ -57,7 +57,7 @@
                   <span class="text-[10px] uppercase tracking-wider font-bold opacity-70 mb-0.5">
                     {{ data?.isFinished ? 'Review Lesson' : 'Up Next' }}
                   </span>
-                  <span class="text-sm font-semibold truncate max-w-[200px]">{{ data?.resumeLesson?.title }}</span>
+                  <span class="text-sm font-semibold truncate max-w-50">{{ data?.resumeLesson?.title }}</span>
                 </div>
                 
                 <svg class="w-5 h-5 transition-transform group-hover/btn:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
