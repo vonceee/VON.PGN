@@ -22,9 +22,16 @@ export class LearnComponent implements OnInit {
 
   ngOnInit() {
     const courseSlug = this.route.snapshot.paramMap.get('courseSlug');
+    const targetLessonId = this.route.snapshot.queryParamMap.get('lesson');
 
     if (courseSlug) {
-      this.lessonService.loadCourse(courseSlug).subscribe({});
+      this.lessonService.loadCourse(courseSlug).subscribe({
+        next: () => {
+          if (targetLessonId) {
+            this.onLessonSelected(targetLessonId);
+          }
+        },
+      });
     }
   }
 

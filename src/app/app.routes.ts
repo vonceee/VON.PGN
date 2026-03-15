@@ -36,11 +36,6 @@ export const routes: Routes = [
     title: 'My Progress - CHESS.PGN',
   },
   {
-    path: 'learn',
-    redirectTo: 'learn/chess-basics',
-    pathMatch: 'full',
-  },
-  {
     path: 'learn/:courseSlug',
     component: LearnComponent,
     title: 'Learn Chess',
