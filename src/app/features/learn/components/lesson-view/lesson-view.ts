@@ -39,7 +39,11 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   @ViewChild('bottomTrigger') bottomTrigger!: ElementRef;
 
   private observer: IntersectionObserver | null = null;
+  private speechSynthesis: SpeechSynthesis | null = null;
+  private currentUtterance: SpeechSynthesisUtterance | null = null;
   isCompleted = false;
+  isSpeaking = false;
+  isPaused = false;
 
   ngOnInit() {
     if (this.authService.isAuthenticated() && !this.userService.currentUser()) {
@@ -174,8 +178,94 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
 
   ngOnDestroy() {
     this.observer?.disconnect();
+    this.stopSpeaking();
   }
 
+  /**
+  * Functions for Read Aloud
+  */
+  toggleReadAloud() {
+    if (this.isSpeaking && !this.isPaused) {
+      this.pauseSpeaking();
+    } else if (this.isPaused) {
+      this.resumeSpeaking();
+    } else {
+      this.speakContent();
+    }
+  }
+
+  private speakContent() {
+    if (!this.lessonData?.contentBlocks) return;
+
+    const textContent = this.lessonData.contentBlocks
+      .filter((block) => block.type === 'text' && block.content)
+      .map((block) => this.stripHtml(block.content || ''))
+      .join(' ');
+
+    if (!textContent.trim()) {
+      return;
+    }
+
+    this.speechSynthesis = window.speechSynthesis;
+
+    if (!this.speechSynthesis) {
+      return;
+    }
+
+    this.currentUtterance = new SpeechSynthesisUtterance(textContent);
+    this.currentUtterance.lang = 'en-US';
+    this.currentUtterance.rate = 1.0;
+
+    this.currentUtterance.onend = () => {
+      this.isSpeaking = false;
+      this.isPaused = false;
+      this.currentUtterance = null;
+    };
+
+    this.currentUtterance.onerror = () => {
+      this.isSpeaking = false;
+      this.isPaused = false;
+      this.currentUtterance = null;
+    };
+
+    this.isSpeaking = true;
+    this.isPaused = false;
+    this.speechSynthesis.speak(this.currentUtterance);
+  }
+
+  private pauseSpeaking() {
+    if (this.speechSynthesis) {
+      this.speechSynthesis.pause();
+      this.isPaused = true;
+    }
+  }
+
+  private resumeSpeaking() {
+    if (this.speechSynthesis) {
+      this.speechSynthesis.resume();
+      this.isPaused = false;
+    }
+  }
+
+  stopSpeaking() {
+    if (this.speechSynthesis) {
+      this.speechSynthesis.cancel();
+      this.speechSynthesis = null;
+    }
+    this.isSpeaking = false;
+    this.isPaused = false;
+    this.currentUtterance = null;
+  }
+
+  private stripHtml(html: string): string {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  }
+
+  /**
+   * Functions for Navigation
+   */
   onNext() {
     this.nextLesson.emit();
   }
