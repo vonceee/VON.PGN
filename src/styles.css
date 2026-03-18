@@ -19,24 +19,52 @@
 @import 'chessground/assets/chessground.brown.css';
 @import 'chessground/assets/chessground.cburnett.css';
 
+/* Chessboard Resizing */
+.board-resize-wrapper {
+  container-type: inline-size;
+}
+
+/* Chess Coordinates */
+.cg-wrap coords {
+  text-transform: lowercase !important;
+  font-size: max(9px, 2.5cqw) !important;
+}
+
+.cg-wrap coords.files {
+  left: 4px !important;
+  bottom: 1px !important;
+  text-align: left !important;
+}
+
+.cg-wrap coords.ranks {
+  right: 4px !important;
+  left: auto !important;
+  text-align: right !important;
+}
+
 /* Minimalist Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(148, 163, 184, 0.3);
   border-radius: 4px;
 }
+
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.6);
 }
+
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
