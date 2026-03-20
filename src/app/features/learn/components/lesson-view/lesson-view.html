@@ -113,14 +113,7 @@
     <article class="prose prose-slate dark:prose-invert max-w-none my-6" [innerHTML]="block.content"></article>
     } @else if (block.type === 'board' && block.task) {
     <section class="flex flex-col my-10">
-      <div class="flex flex-col mb-6 p-6 rounded-2xl border border-border-theme">
-        <p class="text-md leading-relaxed">
-          {{ block.task.instructions }}
-        </p>
-      </div>
-
       <app-interactive-board [task]="block.task"></app-interactive-board>
-
     </section>
     }
     }

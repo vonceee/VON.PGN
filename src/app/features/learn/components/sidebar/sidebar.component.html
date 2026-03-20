@@ -2,7 +2,7 @@
   <aside class="flex flex-col h-full">
     <div>
       <h2
-        class="px-5 py-2 mt-2 font-medium select-none cursor-pointer hover:text-cyan-600"
+        class="px-5 py-2 mt-2 font-black select-none cursor-pointer hover:text-cyan-600"
         (click)="onSelect('')"
       >
         {{ course.title }}
@@ -11,7 +11,7 @@
 
     <nav class="flex flex-col flex-1 overflow-y-auto custom-scrollbar">
       @for (chapter of course.chapters; track chapter.id) {
-        <details class="group marker:content-['']" open>
+        <details class="group marker:content-['']">
           <summary
             class="px-5 py-2 font-medium cursor-pointer select-none flex items-center justify-between"
           >

@@ -51,6 +51,13 @@ export class AuthService {
   }
 
   private handleAuthentication(response: AuthResponse) {
+    if (response.user && !response.user.email_verified_at) {
+      localStorage.removeItem(this.tokenKey);
+      this.currentUser.set(null);
+      this.router.navigate(['/verify-email']);
+      return;
+    }
+
     localStorage.setItem(this.tokenKey, response.access_token);
     this.currentUser.set(response.user);
     this.router.navigate(['/profile']);

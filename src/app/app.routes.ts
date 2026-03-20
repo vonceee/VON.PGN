@@ -3,6 +3,7 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { MyProgressComponent } from './features/my-progress/my-progress.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
+import { VerifyEmailComponent } from './features/auth/verify-email/verify-email.component';
 import { authGuard } from './core/guards/auth-guard';
 import { HomeComponent } from './features/home/home.component';
 import { RoadmapComponent } from './features/roadmap/roadmap.component';
@@ -13,10 +14,17 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+    title: 'Login - CHESS.PGN',
   },
   {
     path: 'register',
     component: RegisterComponent,
+    title: 'Register - CHESS.PGN',
+  },
+  {
+    path: 'verify-email',
+    component: VerifyEmailComponent,
+    title: 'Verify Email - CHESS.PGN',
   },
   {
     path: '',
