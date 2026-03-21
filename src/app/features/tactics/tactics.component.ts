@@ -37,8 +37,6 @@ export class TacticsComponent implements OnInit {
   currentPuzzle = signal<Puzzle | null>(null);
   solutionMoves: string[] = [];
   currentMoveIndex = 0;
-
-  // UI Signals
   isLoading = signal<boolean>(true);
   hasRevealedSolution = signal<boolean>(false);
   userColor = signal<'white' | 'black'>('white');
@@ -51,7 +49,6 @@ export class TacticsComponent implements OnInit {
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
   ngOnInit() {
     this.userService.loadMyProfile().subscribe(() => {
-      // Seed the streak from the DB value after profile loads
       this.newStreak.set(this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
     });
     this.loadNextPuzzle();
@@ -70,7 +67,6 @@ export class TacticsComponent implements OnInit {
 
       const p = this.currentPuzzle();
       if (!p) {
-        // no puzzles available in database yet!
         return;
       }
       this.solutionMoves = p.moves.split(' ');
@@ -85,19 +81,16 @@ export class TacticsComponent implements OnInit {
 
     this.chess.load(p.fen);
 
-    // 1. lichess puzzles start by making the opponent's move automatically!
     const opponentInitialMove = this.solutionMoves[this.currentMoveIndex];
     this.chess.move(this.parseUciMove(opponentInitialMove));
     this.currentMoveIndex++;
-
-    // 2. the user's color is whoever's turn it is NOW
     this.userColor.set(this.chess.turn() === 'w' ? 'white' : 'black');
 
-    // 3. Render the board
     this.board = Chessground(this.boardRef.nativeElement, {
       fen: this.chess.fen(),
       orientation: this.userColor(),
       turnColor: this.userColor(),
+      coordinates: false,
       movable: {
         color: this.userColor(),
         free: false,
@@ -116,17 +109,13 @@ export class TacticsComponent implements OnInit {
   onUserMove(orig: any, dest: any) {
     if (this.status() !== 'playing') return;
 
-    // check if the move matches the solution sequence
     const expectedMove = this.solutionMoves[this.currentMoveIndex];
     const userMoveStr = `${orig}${dest}`; // e.g., "e2e4"
 
-    // to handle pawn promotion syntax (e.g., e7e8q), we check if it starts with the expected move
     if (expectedMove.startsWith(userMoveStr)) {
-      // CORRECT MOVE! apply it to the internal brain
       this.chess.move(this.parseUciMove(expectedMove));
       this.currentMoveIndex++;
 
-      // sync the visual board with the internal logic
       this.board.set({
         fen: this.chess.fen(),
         turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
@@ -135,15 +124,11 @@ export class TacticsComponent implements OnInit {
       if (this.currentMoveIndex >= this.solutionMoves.length) {
         this.winPuzzle();
       } else {
-        // the engine plays the next opponent move automatically
         setTimeout(() => {
           this.playOpponentMove();
         }, 500);
       }
     } else {
-      // WRONG MOVE!
-
-      // revert the visual board to the last correct FEN so the wrong move doesn't stay on the board
       this.board.set({
         fen: this.chess.fen(),
         turnColor: this.userColor(),
@@ -202,7 +187,6 @@ export class TacticsComponent implements OnInit {
   revealSolution() {
     this.hasRevealedSolution.set(true);
 
-    // play the rest of the solution automatically
     const playNextMove = () => {
       if (this.currentMoveIndex >= this.solutionMoves.length) return;
 

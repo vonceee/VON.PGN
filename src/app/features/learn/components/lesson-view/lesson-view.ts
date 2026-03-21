@@ -125,8 +125,8 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   }
 
   /**
-  * Functions for Progress Bar, (Completed Chapters / Total Chapters) * 100 )
-  */
+   * Functions for Progress Bar, (Completed Chapters / Total Chapters) * 100 )
+   */
   get chapterCount() {
     return this.courseData?.chapters.length ?? 0;
   }
@@ -138,26 +138,24 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
     if (!course || !userProfile) return 0;
 
     const allLessonIds = course.chapters.flatMap((chapter) =>
-      chapter.lessons.map((lesson) => lesson.id)
+      chapter.lessons.map((lesson) => lesson.id),
     );
 
     const totalLessons = allLessonIds.length;
     if (totalLessons === 0) return 0;
 
     const completedCount = allLessonIds.filter((id) =>
-      userProfile.progress.completedLessonIds.includes(id)
+      userProfile.progress.completedLessonIds.includes(id),
     ).length;
 
     return Math.round((completedCount / totalLessons) * 100);
   }
 
   /**
-  * Functions for Meta Data, Course Overview
-  */
+   * Functions for Meta Data, Course Overview
+   */
   get chapters() {
-    return this.courseData?.chapters
-      .slice()
-      .sort((a, b) => a.order - b.order) ?? [];
+    return this.courseData?.chapters.slice().sort((a, b) => a.order - b.order) ?? [];
   }
 
   get estimatedTime() {
@@ -182,8 +180,8 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   }
 
   /**
-  * Functions for Read Aloud
-  */
+   * Functions for Read Aloud
+   */
   toggleReadAloud() {
     if (this.isSpeaking && !this.isPaused) {
       this.pauseSpeaking();
