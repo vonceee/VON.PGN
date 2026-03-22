@@ -1,108 +1,100 @@
-<div class="h-screen w-full flex flex-col overflow-x-hidden">
-  <app-header></app-header>
-
-  <!-- Main Scrollable Area -->
-  <div class="flex-1 overflow-y-auto w-full custom-scrollbar">
-    <!-- Hero Section -->
-    <section
-      class="w-full h-screen pb-20 px-6 flex flex-col items-center justify-center text-center"
+<div class="w-full flex flex-col">
+  <!-- Hero Section -->
+  <section class="w-full h-screen pb-20 px-6 flex flex-col items-center justify-center text-center">
+    <h1 class="text-6xl md:text-7xl font-bold mb-4">Learn to play Chess</h1>
+    <p
+      class="text-xl md:text-2xl text-cyan-400 font-bold mb-8 decoration-black dark:decoration-white underline decoration-4 underline-offset-4"
     >
-      <h1 class="text-6xl md:text-7xl font-bold mb-4">Learn to play Chess</h1>
-      <p
-        class="text-xl md:text-2xl text-cyan-400 font-bold mb-8 decoration-black dark:decoration-white underline decoration-4 underline-offset-4"
-      >
-        With the world's largest chess tutorials site.
-      </p>
+      With the world's largest chess tutorials site.
+    </p>
 
-      <div class="flex items-center justify-center relative w-full">
-        <div class="w-full relative" style="width: 50vw !important">
-          <div class="flex items-center px-8 py-5 bg-white border border-gray-300 rounded-full">
-            <!-- Search Icon -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-4.35-4.35m1.85-5.4a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-
-            <!-- Input -->
-            <input
-              type="text"
-              [(ngModel)]="searchQuery"
-              (keydown.enter)="onSearch()"
-              placeholder="Search our tutorials, e.g. Sicilian Defense"
-              class="flex-1 mx-4 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-xl"
+    <div class="flex items-center justify-center relative w-full">
+      <div class="w-full relative" style="width: 50vw !important">
+        <div class="flex items-center px-8 py-5 bg-white border border-gray-300 rounded-full">
+          <!-- Search Icon -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-4.35-4.35m1.85-5.4a7 7 0 11-14 0 7 7 0 0114 0z"
             />
-          </div>
+          </svg>
 
-          <!-- Search Results Dropdown -->
+          <!-- Input -->
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (keydown.enter)="onSearch()"
+            placeholder="Search our tutorials, e.g. Sicilian Defense"
+            class="flex-1 mx-4 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-xl"
+          />
+        </div>
+
+        <!-- Search Results Dropdown -->
+        <div
+          *ngIf="searchResults().length > 0"
+          class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl max-h-96 overflow-y-auto search-results-dropdown text-left"
+        >
           <div
-            *ngIf="searchResults().length > 0"
-            class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl max-h-96 overflow-y-auto search-results-dropdown text-left"
+            *ngFor="let course of searchResults()"
+            (click)="navigateToCourse(course.id)"
+            class="px-8 py-4 hover:bg-slate-50 cursor-pointer border-b border-gray-100 last:border-0"
           >
-            <div
-              *ngFor="let course of searchResults()"
-              (click)="navigateToCourse(course.id)"
-              class="px-8 py-4 hover:bg-slate-50 cursor-pointer border-b border-gray-100 last:border-0"
-            >
-              <div class="text-gray-800 text-lg">{{ course.title }}</div>
-            </div>
+            <div class="text-gray-800 text-lg">{{ course.title }}</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <a href="/roadmap" class="hover:text-cyan-400 underline text-xl font-semibold mt-4"
-        >Not sure where to begin?</a
-      >
-    </section>
+    <a href="/roadmap" class="hover:text-cyan-400 underline text-xl font-semibold mt-4"
+      >Not sure where to begin?</a
+    >
+  </section>
 
-    <!-- Openings Section -->
-    <section class="w-full h-screen py-20 px-6 flex flex-col items-center">
-      <div class="max-w-6xl w-full flex flex-col md:flex-row items-center justify-between gap-12">
-        <div class="md:w-1/2 text-center flex flex-col items-center">
-          <h2 class="text-5xl md:text-6xl font-black mb-4">New to Chess?</h2>
-          <p class="text-xl font-semibold mb-8">Master the basics of the game.</p>
-          <a
-            routerLink="/roadmap"
-            class="bg-cyan-400 hover:bg-cyan-600 rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64"
-            >Start Learning</a
-          >
-        </div>
-        <div class="md:w-1/2 w-full">
-          <div class="bg-white rounded-xl overflow-hidden">
-            <div class="p-8 text-slate-800 text-lg space-y-4">
-              <div class="mt-6 flex justify-center"></div>
-            </div>
+  <!-- Openings Section -->
+  <section class="w-full h-screen py-20 px-6 flex flex-col items-center">
+    <div class="max-w-6xl w-full flex flex-col md:flex-row items-center justify-between gap-12">
+      <div class="md:w-1/2 text-center flex flex-col items-center">
+        <h2 class="text-5xl md:text-6xl font-black mb-4">New to Chess?</h2>
+        <p class="text-xl font-semibold mb-8">Master the basics of the game.</p>
+        <a
+          routerLink="/roadmap"
+          class="bg-cyan-400 hover:bg-cyan-600 rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64"
+          >Start Learning</a
+        >
+      </div>
+      <div class="md:w-1/2 w-full">
+        <div class="bg-white rounded-xl overflow-hidden">
+          <div class="p-8 text-slate-800 text-lg space-y-4">
+            <div class="mt-6 flex justify-center"></div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Tactics / Puzzles Section (Dark) -->
-    <section class="w-full h-screen py-20 px-6 flex flex-col items-center">
-      <div class="max-w-6xl w-full flex flex-col md:flex-row items-center justify-between gap-12">
-        <div class="md:w-1/2 text-center flex flex-col items-center">
-          <h2 class="text-5xl md:text-6xl font-black mb-4">Tactics</h2>
-          <p class="text-xl font-bold mb-8">Forks, pins, skewers, and checkmates.</p>
-          <a
-            routerLink="/learn"
-            class="bg-cyan-400 hover:bg-cyan-600 text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64 shadow-md"
-            >Solve Tactics</a
-          >
-        </div>
-        <div class="md:w-1/2 w-full"></div>
+  <!-- Tactics / Puzzles Section (Dark) -->
+  <section class="w-full h-screen py-20 px-6 flex flex-col items-center">
+    <div class="max-w-6xl w-full flex flex-col md:flex-row items-center justify-between gap-12">
+      <div class="md:w-1/2 text-center flex flex-col items-center">
+        <h2 class="text-5xl md:text-6xl font-black mb-4">Tactics</h2>
+        <p class="text-xl font-bold mb-8">Forks, pins, skewers, and checkmates.</p>
+        <a
+          routerLink="/learn"
+          class="bg-cyan-400 hover:bg-cyan-600 text-white rounded-full px-12 py-4 font-bold text-xl transition-colors mb-4 w-64"
+          >Solve Tactics</a
+        >
       </div>
-    </section>
+      <div class="md:w-1/2 w-full"></div>
+    </div>
+  </section>
 
-    <!-- Global Footer -->
-    <app-footer></app-footer>
-  </div>
+  <!-- Global Footer -->
 </div>

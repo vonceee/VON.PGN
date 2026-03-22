@@ -1,14 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { Header } from '../../shared/components/header/header';
 import { LessonService } from '../../core/services/lesson.service';
 import { Course } from '../../core/models/course.model';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, RouterModule, Header],
+  imports: [CommonModule, RouterModule],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css',
 })

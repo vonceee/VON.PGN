@@ -1,0 +1,46 @@
+<div class="mx-auto p-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold m-0">Course Management</h1>
+    <a
+      routerLink="/admin/course/new"
+      class="px-4 py-2 rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors"
+      >+ New Course</a
+    >
+  </div>
+
+  <div *ngIf="loading()" class="text-center py-8 text-slate-500 dark:text-slate-400">
+    Loading courses...
+  </div>
+
+  <div class="flex flex-col gap-4" *ngIf="!loading()">
+    <div
+      class="border border-border-theme rounded-lg p-6 flex justify-between items-center"
+      *ngFor="let course of courses()"
+    >
+      <div class="flex flex-col">
+        <h3 class="m-0 mb-2 text-xl font-semibold">{{ course.title }}</h3>
+        <p class="m-0">{{ course.chapters?.length || 0 }} chapters</p>
+      </div>
+      <div class="flex gap-2">
+        <a
+          [routerLink]="['/admin/course', course.id]"
+          class="px-4 py-2 rounded font-medium bg-slate-100 hover:bg-slate-200 dark:hover:bg-slate-600"
+          >Edit Course</a
+        >
+        <button
+          (click)="deleteCourse(course.id)"
+          class="px-4 py-2 rounded font-medium bg-red-500 hover:bg-red-600"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <div
+      *ngIf="courses().length === 0"
+      class="text-center p-12 rounded-lg border border-dashed border-border-theme"
+    >
+      <p>No courses found. Create one to get started.</p>
+    </div>
+  </div>
+</div>

@@ -4,6 +4,7 @@ export interface UserProfile {
   username: string; // e.g, "yunah_afk, will be for tags e.g, @yunah_afk --unique"
   displayName?: string; // e.g, "Noh Yunah --not unique"
   avatarUrl?: string;
+  is_admin: string;
   createdAt: string;
 
   // nested objects keep the database clean and organized

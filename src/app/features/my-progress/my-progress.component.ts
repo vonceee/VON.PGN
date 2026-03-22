@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { LessonService } from '../../core/services/lesson.service';
-import { Header } from '../../shared/components/header/header';
 
 @Component({
   selector: 'app-my-progress',
   standalone: true,
-  imports: [CommonModule, RouterModule, Header],
+  imports: [CommonModule, RouterModule],
   templateUrl: './my-progress.component.html',
 })
 export class MyProgressComponent implements OnInit {

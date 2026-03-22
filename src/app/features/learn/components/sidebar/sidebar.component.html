@@ -22,7 +22,7 @@
               viewBox="0 0 24 24"
               stroke-width="2.5"
               stroke="currentColor"
-              class="w-3.5 h-3.5 transform transition-transform duration-200 group-open:rotate-90 opacity-40"
+              class="w-3.5 h-3.5 transform transition-transform group-open:rotate-90 opacity-40"
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
             </svg>
@@ -31,7 +31,7 @@
           <ul class="flex flex-col mt-1 mb-2">
             @for (lesson of chapter.lessons; track lesson.id) {
               <li
-                class="relative flex items-center justify-between py-2 px-4 mx-2 my-0.5 cursor-pointer rounded-lg transition-all duration-200
+                class="relative flex items-center justify-between py-2 px-4 mx-2 my-0.5 cursor-pointer rounded-lg  
                 {{
                   activeLessonId === lesson.id
                     ? 'bg-slate-100 dark:bg-white/10'
@@ -49,9 +49,7 @@
                 <div class="flex items-center gap-2">
                   <!-- Completed Indicator -->
                   @if (lesson.isCompleted) {
-                    <div
-                      class="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 shadow-[0_0_6px_rgba(6,182,212,0.8)]"
-                    ></div>
+                    <div class="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400"></div>
                   }
                 </div>
               </li>

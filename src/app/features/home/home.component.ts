@@ -2,15 +2,13 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Header } from '../../shared/components/header/header';
-import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { LessonService } from '../../core/services/lesson.service';
 import { Course } from '../../core/models/course.model';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, Header, FooterComponent],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })

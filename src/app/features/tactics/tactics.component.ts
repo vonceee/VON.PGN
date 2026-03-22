@@ -11,7 +11,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { TacticsService, Puzzle } from '../../core/services/tactics.service';
 import { UserService } from '../../core/services/user.service';
-import { Header } from '../../shared/components/header/header';
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
@@ -19,7 +18,7 @@ import { Api } from 'chessground/api';
 @Component({
   selector: 'app-tactics',
   standalone: true,
-  imports: [CommonModule, Header],
+  imports: [CommonModule],
   templateUrl: './tactics.component.html',
 })
 export class TacticsComponent implements OnInit {

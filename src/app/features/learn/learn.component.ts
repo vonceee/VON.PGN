@@ -1,14 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LessonService } from '../../core/services/lesson.service';
-import { Header } from '../../shared/components/header/header';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { LessonView } from './components/lesson-view/lesson-view';
 
 @Component({
   selector: 'app-learn',
   standalone: true,
-  imports: [Header, SidebarComponent, LessonView],
+  imports: [SidebarComponent, LessonView],
   templateUrl: './learn.component.html',
 })
 export class LearnComponent implements OnInit {

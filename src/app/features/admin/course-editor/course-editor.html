@@ -1,0 +1,114 @@
+<div class="mx-auto p-8">
+  <div class="flex justify-between items-center mb-8">
+    <div class="flex items-center gap-4">
+      <button
+        (click)="location.back()"
+        class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
+      >
+        Back
+      </button>
+      <h1 class="text-3xl font-bold m-0">{{ courseId() ? 'Edit Course' : 'New Course' }}</h1>
+    </div>
+    <button
+      [disabled]="saving() || courseForm.invalid"
+      (click)="saveCourse()"
+      class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+    >
+      {{ saving() ? 'Saving...' : 'Save Course' }}
+    </button>
+  </div>
+
+  <div *ngIf="loading()" class="text-center py-8">Loading course...</div>
+
+  <div *ngIf="!loading()">
+    <div class="border border-border-theme rounded-lg p-6 mb-8">
+      <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">
+        Course Details
+      </h2>
+      <form [formGroup]="courseForm" (ngSubmit)="saveCourse()">
+        <div class="mb-6">
+          <label class="block mb-2 font-medium">Title</label>
+          <input
+            type="text"
+            formControlName="title"
+            placeholder="e.g. Chess Basics"
+            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400"
+          />
+        </div>
+
+        <div class="mb-6">
+          <label class="block mb-2 font-medium">Slug (optional)</label>
+          <input
+            type="text"
+            formControlName="slug"
+            placeholder="e.g. chess-basics"
+            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"
+          />
+          <small class="block text-slate-400 mt-1 text-sm"
+            >Leave blank to auto-generate from title</small
+          >
+        </div>
+
+        <div class="mb-6">
+          <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400"
+            >Description (HTML allowed)</label
+          >
+          <textarea
+            formControlName="description"
+            rows="5"
+            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"
+          ></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- Chapters Section (Only visible if editing an existing course) -->
+    <div class="border border-border-theme rounded-lg p-6 mb-8" *ngIf="courseId()">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="mt-0 mb-0 text-2xl font-semibold">Chapters</h2>
+        <a
+          [routerLink]="['/admin/course', courseId(), 'chapter', 'new']"
+          class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+          >+ Add Chapter</a
+        >
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div
+          class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 p-4 rounded flex justify-between items-center"
+          *ngFor="let chapter of course()?.chapters"
+        >
+          <div class="flex items-center gap-4">
+            <span class="bg-slate-200 dark:bg-white/10 px-2 py-1 rounded text-xs font-bold"
+              >#{{ chapter.order }}</span
+            >
+            <h3 class="m-0 text-lg font-semibold">{{ chapter.title }}</h3>
+            <span class="text-slate-500 dark:text-slate-400 text-sm"
+              >{{ chapter.lessons?.length || 0 }} lessons</span
+            >
+          </div>
+          <div class="flex gap-2">
+            <a
+              [routerLink]="['/admin/course', courseId(), 'chapter', chapter.id]"
+              class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white text-slate-800"
+              >Edit</a
+            >
+            <button
+              (click)="deleteChapter(chapter.id)"
+              class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-red-500 hover:bg-red-600 text-white"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div
+          *ngIf="!course()?.chapters?.length"
+          class="text-center p-12 bg-slate-50 dark:bg-white/5 rounded-lg text-slate-500 dark:text-slate-400 border border-dashed border-slate-300 dark:border-slate-700"
+        >
+          <p>No chapters yet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
