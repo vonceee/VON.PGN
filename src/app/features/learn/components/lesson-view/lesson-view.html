@@ -72,13 +72,13 @@
         <h1 class="text-3xl font-extrabold">{{ lessonData.title }}</h1>
 
         <!-- Read Aloud -->
-        <div class="flex gap-4">
+        <div class="flex flex-wrap items-center gap-4">
           <button
-            class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold"
-            [class.text-cyan-400]="isSpeaking && !isPaused"
+            class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-cyan-400 hover:cursor-pointer"
+            [class.text-cyan-400]="isSpeaking() && !isPaused()"
             (click)="toggleReadAloud()"
           >
-            @if (isSpeaking && !isPaused) {
+            @if (isSpeaking() && !isPaused()) {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -87,12 +87,7 @@
                 stroke="currentColor"
                 class="w-4 h-4"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M5.25 7.5c-.694.723-1.25 1.733-1.25 2.998 0 1.095.392 2.065 1.04 2.813M5.25 7.5h4.5M5.25 7.5l4 4.5m0 0l4-4.5"
-                />
-                <rect x="9" y="5" width="6" height="14" rx="1" fill="currentColor" />
+                <rect x="6" y="6" width="12" height="12" rx="1.5" />
               </svg>
               <span>Stop</span>
             } @else {
@@ -113,6 +108,71 @@
               <span>Read Aloud</span>
             }
           </button>
+
+          @if (availableVoices().length > 0) {
+            <div class="relative flex items-center">
+              <button
+                class="hover:text-cyan-400 hover:cursor-pointer"
+                (click)="toggleSettings()"
+                title="Read Aloud Settings"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+                  />
+                </svg>
+              </button>
+
+              @if (isSettingsOpen()) {
+                <div
+                  class="absolute right-0 sm:left-auto mt-2 w-56 bg-white dark:bg-black border border-border-theme rounded-lg shadow-xl z-50 p-4 flex flex-col gap-4"
+                  [style.top]="'100%'"
+                >
+                  <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-bold uppercase tracking-wider"
+                      >Voice Selection</label
+                    >
+                    <select
+                      class="text-xs text-black bg-white border border-border-theme rounded-md px-3 py-2 w-full cursor-pointer appearance-none"
+                      [value]="selectedVoiceURI()"
+                      (change)="onVoiceChange($event)"
+                    >
+                      @for (voice of availableVoices(); track voice.voiceURI) {
+                        <option [value]="voice.voiceURI" class="bg-white text-black text-xs">
+                          {{ voice.name }}
+                        </option>
+                      }
+                    </select>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-bold uppercase tracking-wider"
+                      >Playback Speed</label
+                    >
+                    <select
+                      class="text-xs text-black bg-white border border-border-theme rounded-md px-3 py-2 w-full cursor-pointer appearance-none"
+                      [value]="playbackRate()"
+                      (change)="onRateChange($event)"
+                    >
+                      @for (rate of playbackRates; track rate) {
+                        <option [value]="rate" class="bg-white text-black text-xs">
+                          {{ rate }}x
+                        </option>
+                      }
+                    </select>
+                  </div>
+                </div>
+              }
+            </div>
+          }
           <button
             class="group flex items-center gap-2 px-6 py-2.5 text-sm font-semibold"
             (click)="onPrev()"
@@ -153,20 +213,72 @@
       </div>
     </div>
 
-    <article class="prose prose-slate dark:prose-invert max-w-none mb-12 shrink-0">
+    <div class="mb-12 shrink-0">
       @for (block of lessonData.contentBlocks; track $index) {
         @if (block.type === 'text') {
-          <article
-            class="prose prose-slate dark:prose-invert max-w-none my-6"
-            [innerHTML]="block.content"
-          ></article>
+          <div
+            class="group relative my-6 rounded-lg transition-all duration-300 border border-transparent"
+            [class.bg-cyan-50]="activeBlockIndex() === $index"
+            [class.dark:bg-cyan-950/30]="activeBlockIndex() === $index"
+            [class.!border-cyan-400]="activeBlockIndex() === $index"
+            [class.shadow-sm]="activeBlockIndex() === $index"
+            [class.px-4]="activeBlockIndex() === $index"
+            [class.py-2]="activeBlockIndex() === $index"
+          >
+            <!-- Play from here button overlay -->
+            <button
+              class="absolute right-3 flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-cyan-400 opacity-0 group-hover:opacity-100 z-10"
+              [class]="
+                activeBlockIndex() === $index ? '!opacity-100 !text-cyan-400 !border-cyan-400' : ''
+              "
+              type="button"
+              [title]="activeBlockIndex() === $index ? 'Reading...' : 'Play from here'"
+              (click)="activeBlockIndex() === $index ? toggleReadAloud() : readFromBlock($index)"
+            >
+              @if (activeBlockIndex() === $index && isSpeaking() && !isPaused()) {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2.5"
+                  stroke="currentColor"
+                  class="w-3.5 h-3.5"
+                >
+                  <rect x="6" y="6" width="12" height="12" rx="1.5" />
+                </svg>
+                <span class="text-xs font-semibold">Stop</span>
+              } @else {
+                <!-- Speaker Icon -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2.5"
+                  stroke="currentColor"
+                  class="w-3.5 h-3.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9 9 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
+                  />
+                </svg>
+                <span class="text-xs font-semibold">Read Aloud</span>
+              }
+            </button>
+
+            <article
+              class="prose prose-slate dark:prose-invert max-w-none pr-32"
+              [innerHTML]="block.content"
+            ></article>
+          </div>
         } @else if (block.type === 'board' && block.task) {
           <section class="flex flex-col my-10">
             <app-interactive-board [task]="block.task"></app-interactive-board>
           </section>
         }
       }
-    </article>
+    </div>
     <div #bottomTrigger class="h-16 w-full mt-8 px-4 flex justify-between items-center rounded-xl">
       <button
         class="group flex items-center gap-2 px-6 py-2.5 hover:cursor-pointer font-semibold"

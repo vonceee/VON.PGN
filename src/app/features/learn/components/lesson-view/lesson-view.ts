@@ -11,6 +11,10 @@ import {
   SimpleChanges,
   OnInit,
   inject,
+  HostListener,
+  NgZone,
+  ChangeDetectorRef,
+  signal,
 } from '@angular/core';
 import { Course, LessonDetail } from '../../../../core/models/course.model';
 import { InteractiveBoardComponent } from '../interactive-board/interactive-board.component';
@@ -29,6 +33,8 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   userService = inject(UserService);
   authService = inject(AuthService);
   toastService = inject(ToastService);
+  ngZone = inject(NgZone);
+  cdr = inject(ChangeDetectorRef);
   @Input() courseData: Course | null = null;
   @Input() lessonData: LessonDetail | null = null;
   @Output() startCourse = new EventEmitter<string>();
@@ -42,12 +48,19 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   private speechSynthesis: SpeechSynthesis | null = null;
   private currentUtterance: SpeechSynthesisUtterance | null = null;
   isCompleted = false;
-  isSpeaking = false;
-  isPaused = false;
+  isSpeaking = signal(false);
+  isPaused = signal(false);
 
   ngOnInit() {
     if (this.authService.isAuthenticated() && !this.userService.currentUser()) {
       this.userService.loadMyProfile().subscribe();
+    }
+
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      this.loadVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = () => this.loadVoices();
+      }
     }
   }
 
@@ -174,6 +187,11 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
     return this.courseData?.prerequisites ?? ['none']; // TODO
   }
 
+  @HostListener('window:beforeunload')
+  onBeforeUnload() {
+    this.stopSpeaking();
+  }
+
   ngOnDestroy() {
     this.observer?.disconnect();
     this.stopSpeaking();
@@ -182,66 +200,139 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   /**
    * Functions for Read Aloud
    */
-  toggleReadAloud() {
-    if (this.isSpeaking && !this.isPaused) {
-      this.pauseSpeaking();
-    } else if (this.isPaused) {
-      this.resumeSpeaking();
-    } else {
-      this.speakContent();
+  availableVoices = signal<SpeechSynthesisVoice[]>([]);
+  selectedVoiceURI = signal<string>('');
+  playbackRates: number[] = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
+  playbackRate = signal<number>(1.0);
+  activeBlockIndex = signal<number>(-1);
+  isSettingsOpen = signal(false);
+
+  toggleSettings() {
+    this.isSettingsOpen.update((v) => !v);
+  }
+
+  loadVoices() {
+    this.availableVoices.set(window.speechSynthesis.getVoices());
+    if (this.availableVoices().length > 0 && !this.selectedVoiceURI()) {
+      const defaultVoice =
+        this.availableVoices().find((v) => v.lang.startsWith('en') && v.name.includes('Google')) ||
+        this.availableVoices().find((v) => v.lang.startsWith('en')) ||
+        this.availableVoices()[0];
+      this.selectedVoiceURI.set(defaultVoice.voiceURI);
     }
   }
 
-  private speakContent() {
+  onVoiceChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.selectedVoiceURI.set(target.value);
+    if (this.isSpeaking() && !this.isPaused()) {
+      this.readFromBlock(this.activeBlockIndex() !== -1 ? this.activeBlockIndex() : 0);
+    }
+  }
+
+  onRateChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.playbackRate.set(parseFloat(target.value));
+    if (this.isSpeaking() && !this.isPaused()) {
+      this.readFromBlock(this.activeBlockIndex() !== -1 ? this.activeBlockIndex() : 0);
+    }
+  }
+
+  toggleReadAloud() {
+    if (this.isSpeaking() && !this.isPaused()) {
+      this.pauseSpeaking();
+    } else if (this.isPaused()) {
+      this.resumeSpeaking();
+    } else {
+      this.readFromBlock(0);
+    }
+  }
+
+  readFromBlock(startIndex: number) {
     if (!this.lessonData?.contentBlocks) return;
+    this.stopSpeaking();
+    this.isSpeaking.set(true);
+    this.isPaused.set(false);
+    this.playBlockRecursive(startIndex);
+  }
 
-    const textContent = this.lessonData.contentBlocks
-      .filter((block) => block.type === 'text' && block.content)
-      .map((block) => this.stripHtml(block.content || ''))
-      .join(' ');
-
-    if (!textContent.trim()) {
+  private playBlockRecursive(index: number) {
+    if (!this.lessonData?.contentBlocks || index >= this.lessonData.contentBlocks.length) {
+      this.finishReading();
       return;
     }
 
+    const block = this.lessonData.contentBlocks[index];
+    if (block.type !== 'text' || !block.content) {
+      // Skip non-text blocks
+      this.playBlockRecursive(index + 1);
+      return;
+    }
+
+    const textContent = this.stripHtml(block.content).trim();
+    if (!textContent) {
+      this.playBlockRecursive(index + 1);
+      return;
+    }
+
+    this.activeBlockIndex.set(index);
+    this.cdr.detectChanges();
+    
     this.speechSynthesis = window.speechSynthesis;
-
-    if (!this.speechSynthesis) {
-      return;
-    }
 
     this.currentUtterance = new SpeechSynthesisUtterance(textContent);
     this.currentUtterance.lang = 'en-US';
-    this.currentUtterance.rate = 1.0;
+    this.currentUtterance.rate = this.playbackRate();
+
+    if (this.selectedVoiceURI()) {
+      const voice = this.availableVoices().find((v) => v.voiceURI === this.selectedVoiceURI());
+      if (voice) {
+        this.currentUtterance.voice = voice;
+      }
+    }
 
     this.currentUtterance.onend = () => {
-      this.isSpeaking = false;
-      this.isPaused = false;
-      this.currentUtterance = null;
+      this.ngZone.run(() => {
+        // Only proceed if we are still marked as speaking and this is the active block
+        if (this.isSpeaking() && this.activeBlockIndex() === index) {
+          this.playBlockRecursive(index + 1);
+        }
+      });
     };
 
-    this.currentUtterance.onerror = () => {
-      this.isSpeaking = false;
-      this.isPaused = false;
-      this.currentUtterance = null;
+    this.currentUtterance.onerror = (e) => {
+      this.ngZone.run(() => {
+        console.error('SpeechSynthesis error:', e);
+        if (e.error !== 'canceled' && e.error !== 'interrupted') {
+          this.finishReading();
+        }
+      });
     };
 
-    this.isSpeaking = true;
-    this.isPaused = false;
     this.speechSynthesis.speak(this.currentUtterance);
+  }
+
+  private finishReading() {
+    this.isSpeaking.set(false);
+    this.isPaused.set(false);
+    this.activeBlockIndex.set(-1);
+    this.currentUtterance = null;
+    this.cdr.detectChanges();
   }
 
   private pauseSpeaking() {
     if (this.speechSynthesis) {
       this.speechSynthesis.pause();
-      this.isPaused = true;
+      this.isPaused.set(true);
+      this.cdr.detectChanges();
     }
   }
 
   private resumeSpeaking() {
     if (this.speechSynthesis) {
       this.speechSynthesis.resume();
-      this.isPaused = false;
+      this.isPaused.set(false);
+      this.cdr.detectChanges();
     }
   }
 
@@ -250,9 +341,7 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
       this.speechSynthesis.cancel();
       this.speechSynthesis = null;
     }
-    this.isSpeaking = false;
-    this.isPaused = false;
-    this.currentUtterance = null;
+    this.finishReading();
   }
 
   private stripHtml(html: string): string {
