@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { UserProfile } from '../models/user.model';
+import { UserProfile, Badge } from '../models/user.model';
 import { tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -30,6 +30,7 @@ export class UserService {
       .post<{
         message: string;
         leveled_up: boolean;
+        new_badges: Badge[];
         user: { data: UserProfile };
       }>(`${environment.apiUrl}/progress/complete-lecture`, { lesson_id: lessonId })
       .pipe(

@@ -152,6 +152,12 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
           this.toastService.show('You levelled up!', 'level-up');
         }
 
+        if (response.new_badges && response.new_badges.length > 0) {
+          response.new_badges.forEach((badge: any) => {
+            this.toastService.show(`🏆 Badge Unlocked: ${badge.name}!`, 'achievement', 5000);
+          });
+        }
+
         this.observer?.disconnect();
       },
     });
