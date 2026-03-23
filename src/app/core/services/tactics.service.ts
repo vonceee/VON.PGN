@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ToastService } from './toast.service';
 import { UserService } from './user.service';
+import { environment } from '../../../environments/environment';
 
 export interface Puzzle {
   id: number;
@@ -28,7 +29,7 @@ export class TacticsService {
   private http = inject(HttpClient);
   private toastService = inject(ToastService);
   private userService = inject(UserService);
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = environment.apiUrl;
 
   getDailyPuzzle(): Observable<{ data: Puzzle }> {
     return this.http.get<{ data: Puzzle }>(`${this.apiUrl}/tactics/next`);

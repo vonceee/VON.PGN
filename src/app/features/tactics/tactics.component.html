@@ -1,5 +1,4 @@
 <div class="w-full h-full flex flex-col overflow-hidden">
-
   <div
     class="flex-1 w-full relative overflow-y-auto custom-scrollbar flex flex-col items-center py-8 px-4"
   >
@@ -35,7 +34,7 @@
 
                 @if (status() === 'failed' && ratingChange() !== null) {
                   <span
-                    class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full text-sm font-bold border border-red-500/30 animate-in fade-in zoom-in duration-300"
+                    class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full text-sm font-bold border border-red-500/30"
                   >
                     {{ ratingChange() }}
                   </span>

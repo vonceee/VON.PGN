@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { AuthService } from './auth.service';
 export class AdminService {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
-  private apiUrl = 'http://127.0.0.1:8000/api/admin';
+  private apiUrl = environment.apiUrl + '/admin';
 
   private get headers() {
     return {

@@ -4,6 +4,7 @@ import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
+import { environment } from '../../../environments/environment';
 
 export interface AuthResponse {
   message: string;
@@ -20,7 +21,7 @@ export class AuthService {
   private router = inject(Router);
   private userService = inject(UserService);
 
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = environment.apiUrl;
   private tokenKey = 'chess_auth_token';
 
   currentUser = signal<any | null>(null);
