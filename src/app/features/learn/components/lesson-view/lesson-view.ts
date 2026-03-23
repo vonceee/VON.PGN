@@ -16,16 +16,18 @@ import {
   ChangeDetectorRef,
   signal,
 } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { Course, LessonDetail } from '../../../../core/models/course.model';
 import { InteractiveBoardComponent } from '../interactive-board/interactive-board.component';
 import { UserService } from '../../../../core/services/user.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ToastService } from '../../../../core/services/toast.service';
+import { LessonService } from '../../../../core/services/lesson.service';
 
 @Component({
   selector: 'app-lesson-view',
   standalone: true,
-  imports: [InteractiveBoardComponent],
+  imports: [InteractiveBoardComponent, RouterLink],
   templateUrl: './lesson-view.html',
   styleUrl: './lesson-view.css',
 })
@@ -33,6 +35,8 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   userService = inject(UserService);
   authService = inject(AuthService);
   toastService = inject(ToastService);
+  lessonService = inject(LessonService);
+  router = inject(Router);
   ngZone = inject(NgZone);
   cdr = inject(ChangeDetectorRef);
   @Input() courseData: Course | null = null;
@@ -62,6 +66,10 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
         window.speechSynthesis.onvoiceschanged = () => this.loadVoices();
       }
     }
+
+    if (this.lessonService.allCourses().length === 0) {
+      this.lessonService.loadAllCourses().subscribe();
+    }
   }
 
   ngAfterViewInit() {
@@ -89,6 +97,23 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
     if (!user || !lessonId) return false;
 
     return user.progress.completedLessonIds.includes(lessonId);
+  }
+
+  get isLastLesson(): boolean {
+    if (!this.courseData || !this.lessonData) return false;
+    const allLessons = this.courseData.chapters.flatMap((c) => c.lessons);
+    if (!allLessons.length) return false;
+    return allLessons[allLessons.length - 1].id === this.lessonData.id;
+  }
+
+  get suggestedCourses() {
+    return this.lessonService.allCourses()
+      .filter(c => c.id !== this.courseData?.id)
+      .slice(0, 3);
+  }
+
+  getStripedDescription(html: string) {
+    return this.stripHtml(html);
   }
 
   private setupObserver() {
@@ -358,5 +383,8 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   }
   onPrev() {
     this.prevLesson.emit();
+  }
+  onFinish() {
+    this.router.navigate(['/profile']);
   }
 }

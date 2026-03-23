@@ -195,9 +195,9 @@
           </button>
           <button
             class="group flex items-center gap-2 px-6 py-2.5 hover:cursor-pointer hover:text-cyan-400 text-sm font-semibold"
-            (click)="onNext()"
+            (click)="isLastLesson ? onFinish() : onNext()"
           >
-            Next
+            {{ isLastLesson ? 'Finish' : 'Next' }}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -313,9 +313,9 @@
 
       <button
         class="group flex items-center gap-2 px-6 py-2.5 hover:cursor-pointer hover:text-cyan-400 text-sm font-semibold"
-        (click)="onNext()"
+        (click)="isLastLesson ? onFinish() : onNext()"
       >
-        <span class="text-sm">Next</span>
+        <span class="text-sm">{{ isLastLesson ? 'Finish' : 'Next' }}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -328,5 +328,24 @@
         </svg>
       </button>
     </div>
+
+    @if (isLastLesson) {
+      <div class="mt-8 mb-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-border-theme">
+        <h3 class="text-xl font-bold mb-6">What to learn next?</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          @for (course of suggestedCourses; track course.id) {
+            <a
+              [routerLink]="['/learn', course.id]"
+              class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer bg-white dark:bg-black"
+            >
+              <h4 class="font-bold text-lg mb-2 group-hover:text-cyan-400 transition-colors">{{ course.title }}</h4>
+              <p class="text-sm text-slate-500 line-clamp-2">{{ getStripedDescription(course.description) }}</p>
+            </a>
+          } @empty {
+            <p class="text-sm text-slate-500">More courses coming soon!</p>
+          }
+        </div>
+      </div>
+    }
   }
 </main>
