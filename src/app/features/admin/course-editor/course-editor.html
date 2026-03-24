@@ -3,7 +3,7 @@
     <div class="flex items-center gap-4">
       <button
         (click)="location.back()"
-        class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
+        class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
       >
         Back
       </button>
@@ -12,7 +12,7 @@
     <button
       [disabled]="saving() || courseForm.invalid"
       (click)="saveCourse()"
-      class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+      class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
     >
       {{ saving() ? 'Saving...' : 'Save Course' }}
     </button>
@@ -68,7 +68,7 @@
         <h2 class="mt-0 mb-0 text-2xl font-semibold">Chapters</h2>
         <a
           [routerLink]="['/admin/course', courseId(), 'chapter', 'new']"
-          class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+          class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-cyan-400 hover:bg-cyan-500 text-slate-900"
           >+ Add Chapter</a
         >
       </div>
@@ -90,12 +90,12 @@
           <div class="flex gap-2">
             <a
               [routerLink]="['/admin/course', courseId(), 'chapter', chapter.id]"
-              class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white text-slate-800"
+              class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white text-slate-800"
               >Edit</a
             >
             <button
               (click)="deleteChapter(chapter.id)"
-              class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors bg-red-500 hover:bg-red-600 text-white"
+              class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-red-500 hover:bg-red-600 text-white"
             >
               Delete
             </button>

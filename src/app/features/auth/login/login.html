@@ -4,6 +4,29 @@
     class="flex-1 flex flex-col justify-center px-6 py-8 lg:px-20 xl:px-32 overflow-y-auto lg:overflow-y-hidden"
   >
     <div class="mx-auto w-full max-w-sm">
+      <div class="mb-8">
+        <a
+          routerLink="/"
+          class="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            />
+          </svg>
+          Back to Home
+        </a>
+      </div>
+
       <div class="mb-6">
         <h1 class="text-3xl font-bold tracking-tight">
           Sign in to <span class="text-cyan-400">VON.CHESS</span>
@@ -29,7 +52,7 @@
             <label for="password" class="text-sm font-medium"> Password </label>
             <a
               href="#"
-              class="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors"
+              class="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
               >forgot password?</a
             >
           </div>
@@ -130,15 +153,11 @@
 
       <p class="mt-8 text-center text-[11px] leading-relaxed">
         By signing in, you agree to our <br />
-        <a
-          href="#"
-          class="hover:text-zinc-900 dark:hover:text-white transition-colors underline underline-offset-2"
+        <a href="#" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
           >Terms of Service</a
         >
         and
-        <a
-          href="#"
-          class="hover:text-zinc-900 dark:hover:text-white transition-colors underline underline-offset-2"
+        <a href="#" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
           >Privacy Policy</a
         >
       </p>
@@ -204,14 +223,11 @@
 
       <div class="mt-8 flex justify-between items-center text-[10px] text-zinc-500 font-medium">
         <span
-          >Need help?
-          <a href="#" class="text-zinc-300 hover:text-cyan-400 transition-colors"
-            >visit our FAQ</a
-          ></span
+          >Need help? <a href="#" class="text-zinc-300 hover:text-cyan-400">visit our FAQ</a></span
         >
         <div class="flex gap-4">
-          <a href="#" class="hover:text-zinc-300 transition-colors">Twitter</a>
-          <a href="#" class="hover:text-zinc-300 transition-colors">Discord</a>
+          <a href="#" class="hover:text-zinc-300">Twitter</a>
+          <a href="#" class="hover:text-zinc-300">Discord</a>
         </div>
       </div>
     </div>

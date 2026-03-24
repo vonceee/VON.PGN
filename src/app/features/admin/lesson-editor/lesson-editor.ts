@@ -28,7 +28,6 @@ export class LessonEditorComponent implements OnInit {
     title: ['', Validators.required],
     slug: [''],
     order: [1, [Validators.required, Validators.min(1)]],
-    xp_reward: [10, Validators.required],
     content_blocks: this.fb.array([])
   });
 
@@ -59,8 +58,7 @@ export class LessonEditorComponent implements OnInit {
         this.lessonForm.patchValue({
           title: lesson.title,
           slug: lesson.slug,
-          order: lesson.order,
-          xp_reward: lesson.xp_reward
+          order: lesson.order
         });
 
         if (lesson.content_blocks) {

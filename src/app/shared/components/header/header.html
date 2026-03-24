@@ -9,7 +9,7 @@
   <div class="flex items-center gap-6 ml-auto">
     <button
       (click)="themeService.toggleTheme()"
-      class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 transition-colors"
+      class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-white/10"
       aria-label="Toggle Dark Mode"
     >
       @if (themeService.isDarkMode()) {
@@ -79,7 +79,7 @@
               <a
                 [routerLink]="['/profile']"
                 (click)="toggleProfileDropdown()"
-                class="text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1 group w-max"
+                class="text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1 group w-max"
               >
                 edit profile
                 <svg
@@ -103,7 +103,7 @@
                 <a
                   routerLink="/admin"
                   (click)="toggleProfileDropdown()"
-                  class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-slate-900 dark:text-white font-semibold text-[15px]"
+                  class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-[15px]"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +130,7 @@
               <a
                 routerLink="/dashboard"
                 (click)="toggleProfileDropdown()"
-                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-slate-900 dark:text-white font-semibold text-[15px]"
+                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-[15px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +152,7 @@
               <a
                 routerLink="/my-progress"
                 (click)="toggleProfileDropdown()"
-                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-slate-900 dark:text-white font-semibold text-[15px]"
+                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-[15px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -174,7 +174,7 @@
               <a
                 routerLink="/league"
                 (click)="toggleProfileDropdown()"
-                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-slate-900 dark:text-white font-semibold text-[15px]"
+                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-[15px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +196,7 @@
               <a
                 routerLink="/bookmarks"
                 (click)="toggleProfileDropdown()"
-                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-slate-900 dark:text-white font-semibold text-[15px]"
+                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-[15px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +218,7 @@
               <a
                 routerLink="/certificates"
                 (click)="toggleProfileDropdown()"
-                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-slate-900 dark:text-white font-semibold text-[15px]"
+                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-[15px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -240,7 +240,7 @@
               <a
                 routerLink="/spaces"
                 (click)="toggleProfileDropdown()"
-                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-slate-900 dark:text-white font-semibold text-[15px]"
+                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-[15px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -268,7 +268,7 @@
               <a
                 routerLink="/billing"
                 (click)="toggleProfileDropdown()"
-                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors text-slate-900 dark:text-white font-semibold text-[15px]"
+                class="flex items-center gap-4 px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-[15px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -294,7 +294,7 @@
 
               <button
                 (click)="logout()"
-                class="w-full text-left flex items-center gap-4 px-6 py-2.5 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-red-600 dark:text-red-400 font-semibold text-[15px]"
+                class="w-full text-left flex items-center gap-4 px-6 py-2.5 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold text-[15px]"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -305,7 +305,7 @@
         </div>
       } @else if (isAlreadyCompleted) {
         <div class="text-cyan-400 font-bold flex items-center gap-2 text-sm sm:text-base">
-          <span class="whitespace-nowrap">Lesson Completed</span>
+          <span class="whitespace-nowrap">+10 EXP</span>
         </div>
       } @else {
         <div class="w-4 sm:w-5"></div>
@@ -330,7 +330,9 @@
     </div>
 
     @if (isLastLesson) {
-      <div class="mt-8 mb-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-border-theme">
+      <div
+        class="mt-8 mb-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-border-theme"
+      >
         <h3 class="text-xl font-bold mb-6">What to learn next?</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           @for (course of suggestedCourses; track course.id) {
@@ -338,8 +340,12 @@
               [routerLink]="['/learn', course.id]"
               class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer bg-white dark:bg-black"
             >
-              <h4 class="font-bold text-lg mb-2 group-hover:text-cyan-400 transition-colors">{{ course.title }}</h4>
-              <p class="text-sm text-slate-500 line-clamp-2">{{ getStripedDescription(course.description) }}</p>
+              <h4 class="font-bold text-lg mb-2 group-hover:text-cyan-400">
+                {{ course.title }}
+              </h4>
+              <p class="text-sm text-slate-500 line-clamp-2">
+                {{ getStripedDescription(course.description) }}
+              </p>
             </a>
           } @empty {
             <p class="text-sm text-slate-500">More courses coming soon!</p>

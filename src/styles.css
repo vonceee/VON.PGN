@@ -6,11 +6,12 @@
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   --color-border-theme: theme(colors.slate.400);
+  --color-chess-grid: rgba(0, 0, 0, 0.04);
 }
 
-/* Switch border color in dark mode */
 .dark {
   --color-border-theme: rgb(255 255 255 / 0.15);
+  --color-chess-grid: rgba(148, 163, 184, 0.12);
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -18,6 +19,18 @@
 @import 'chessground/assets/chessground.base.css';
 @import 'chessground/assets/chessground.brown.css';
 @import 'chessground/assets/chessground.cburnett.css';
+
+.chess-grid {
+  background-image: conic-gradient(
+    var(--color-chess-grid) 90deg,
+    transparent 90deg 180deg,
+    var(--color-chess-grid) 180deg 270deg,
+    transparent 270deg
+  );
+  background-size: 160px 160px;
+  width: 100%;
+  height: 100%;
+}
 
 /* Chessboard Resizing */
 .board-resize-wrapper {
