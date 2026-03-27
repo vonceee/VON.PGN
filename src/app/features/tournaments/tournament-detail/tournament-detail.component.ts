@@ -21,17 +21,13 @@ export class TournamentDetailComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    console.log('[TournamentDetail] Looking for tournament with id:', id);
 
     if (id) {
       // First try local
       this.tournament = this.tournamentService.getTournamentById(id);
 
       if (this.tournament) {
-        console.log('[TournamentDetail] Found tournament locally:', this.tournament.name);
         this.setupMap();
-      } else {
-        console.log('[TournamentDetail] Not in local, fetching from API...');
       }
 
       // Always fetch from API for latest data
@@ -50,13 +46,7 @@ export class TournamentDetailComponent implements OnInit {
       // Stop checking after 5 seconds
       setTimeout(() => {
         clearInterval(checkInterval);
-        if (!this.tournament) {
-          console.error('[TournamentDetail] Tournament not found after API fetch. Available ids:',
-            this.tournamentService.tournaments().map(t => t.id));
-        }
       }, 5000);
-    } else {
-      console.error('[TournamentDetail] No id parameter in route');
     }
   }
 

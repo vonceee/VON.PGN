@@ -214,12 +214,9 @@ export class TournamentEditorComponent implements OnInit {
         if (apiTournament) {
           this.tournamentId.set(apiTournament.id);
           this.populateForm(apiTournament);
-          console.log('[TournamentEditor] Loaded tournament from API, db id:', apiTournament.id);
         }
       },
-      error: (err) => {
-        console.error('[TournamentEditor] Failed to load tournament from API:', err);
-      }
+      error: () => {}
     });
   }
 
@@ -352,14 +349,11 @@ export class TournamentEditorComponent implements OnInit {
       schedule: tournamentData['schedule'] || null,
     };
 
-    console.log('[TournamentEditor] Saving to API:', apiPayload);
-
     const tid = this.tournamentId();
     if (tid) {
       // Update existing
       this.adminService.updateTournament(tid, apiPayload).subscribe({
-        next: (res) => {
-          console.log('[TournamentEditor] Updated successfully:', res);
+        next: () => {
           this.tournamentService.fetchTournaments();
           this.saving.set(false);
           this.showPreview.set(false);
@@ -367,7 +361,6 @@ export class TournamentEditorComponent implements OnInit {
           this.router.navigate(['/admin/tournaments']);
         },
         error: (err) => {
-          console.error('[TournamentEditor] Update failed:', err);
           this.saving.set(false);
           alert('Failed to update tournament: ' + (err.error?.message || err.message));
         }
@@ -375,8 +368,7 @@ export class TournamentEditorComponent implements OnInit {
     } else {
       // Create new
       this.adminService.createTournament(apiPayload).subscribe({
-        next: (res) => {
-          console.log('[TournamentEditor] Created successfully:', res);
+        next: () => {
           this.tournamentService.fetchTournaments();
           this.saving.set(false);
           this.showPreview.set(false);
@@ -384,7 +376,6 @@ export class TournamentEditorComponent implements OnInit {
           this.router.navigate(['/admin/tournaments']);
         },
         error: (err) => {
-          console.error('[TournamentEditor] Create failed:', err);
           this.saving.set(false);
           alert('Failed to create tournament: ' + (err.error?.message || err.message));
         }

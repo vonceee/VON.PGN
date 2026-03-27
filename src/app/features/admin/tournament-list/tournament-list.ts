@@ -26,11 +26,9 @@ export class TournamentListComponent implements OnInit {
     if (confirm('Are you sure you want to delete this tournament?')) {
       this.adminService.deleteTournament(id).subscribe({
         next: () => {
-          console.log('[TournamentList] Deleted tournament:', id);
           this.tournamentService.fetchTournaments();
         },
         error: (err) => {
-          console.error('[TournamentList] Delete failed:', err);
           alert('Failed to delete tournament: ' + (err.error?.message || err.message));
         }
       });
