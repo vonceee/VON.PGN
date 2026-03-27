@@ -16,19 +16,20 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 export class HomeComponent implements OnInit {
   private lessonService = inject(LessonService);
   private router = inject(Router);
-  
-  popularOpenings = [
-    { title: 'Sicilian Defense', description: 'The most popular response to e4.', icon: '♟️', slug: 'sicilian' },
-    { title: 'Ruy Lopez', description: 'A classic and versatile opening.', icon: '🛡️', slug: 'ruy-lopez' },
-    { title: 'Queen\'s Gambit', description: 'Dynamic and strategically rich.', icon: '👑', slug: 'queens-gambit' }
-  ];
 
-  featuredTactic = {
-    title: 'Find the Fork!',
-    description: 'White to move and win material using a knight fork.',
-    difficulty: 'Intermediate',
-    xpAward: 25
-  };
+  popularOpenings = [
+    {
+      title: 'Sicilian Defense',
+      description: 'The most popular response to e4.',
+      slug: 'sicilian',
+    },
+    { title: 'Ruy Lopez', description: 'A classic and versatile opening.', slug: 'ruy-lopez' },
+    {
+      title: "Queen's Gambit",
+      description: 'Dynamic and strategically rich.',
+      slug: 'queens-gambit',
+    },
+  ];
 
   featuredCoursesList = computed(() => {
     return this.allCourses().slice(0, 3);
@@ -59,7 +60,7 @@ export class HomeComponent implements OnInit {
   onSearch() {
     const results = this.searchResults();
     if (results.length > 0) {
-      this.navigateToCourse(results[0].id); // Assuming id is the slug or similar
+      this.navigateToCourse(results[0].id);
     }
   }
 }
