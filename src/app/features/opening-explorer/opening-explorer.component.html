@@ -1,0 +1,74 @@
+<div class="px-8 py-8 mx-auto flex flex-row gap-6">
+
+  <div class="board-section">
+    <app-chess-board
+      [fen]="currentFen()"
+      (fenChange)="onFenChanged($event)"
+    ></app-chess-board>
+  </div>
+
+  <div class="data-section border border-border-theme p-4 rounded-lg">
+
+    @if (isLoading()) {
+      <div class="animate-pulse">
+        <div class="h-6 bg-slate-200 dark:bg-slate-800/80 rounded w-2/3 mb-6"></div>
+        <div class="border-collapse w-full">
+          <div class="flex gap-4 py-2 border-b border-border-theme mb-2">
+            <div class="h-5 bg-slate-200 dark:bg-slate-800/80 rounded w-16"></div>
+            <div class="h-5 bg-slate-200 dark:bg-slate-800/80 rounded w-16"></div>
+            <div class="h-5 bg-slate-200 dark:bg-slate-800/80 rounded w-40"></div>
+          </div>
+          @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+            <div class="flex gap-4 py-3 border-b border-border-theme">
+              <div class="h-5 bg-slate-200 dark:bg-slate-800/80 rounded w-10 shrink-0"></div>
+              <div class="h-5 bg-slate-200 dark:bg-slate-800/80 rounded w-16 shrink-0"></div>
+              <div class="h-5 bg-slate-200 dark:bg-slate-800/80 rounded flex-1"></div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (!isLoading() && explorerData(); as data) {
+      @if (data.opening) {
+        <div class="mb-4">
+          <strong>{{ data.opening.eco }}</strong>: {{ data.opening.name }}
+        </div>
+      }
+
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-border-theme">
+            <th class="py-2">Move</th>
+            <th class="py-2">Games</th>
+            <th class="py-2 text-center">Results (White / Draw / Black)</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (move of data.moves; track move.san) {
+            <tr class="border-b border-border-theme hover:bg-cyan-400 cursor-pointer">
+              <td class="py-2 font-semibold">{{ move.san }}</td>
+              <td class="py-2 text-sm">{{ move.white + move.draws + move.black | number }}</td>
+              <td class="py-2">
+                <div class="flex h-5 w-full rounded overflow-hidden mt-1">
+                  <div class="bg-gray-200 h-full text-xs text-black flex items-center justify-center"
+                       [style.width.%]="getWinRates(move).white">{{ move.white }}</div>
+                  <div class="bg-gray-400 h-full text-xs text-black/50 flex items-center justify-center"
+                       [style.width.%]="getWinRates(move).draws">{{ move.draws }}</div>
+                  <div class="bg-gray-800 h-full text-xs text-white flex items-center justify-center"
+                       [style.width.%]="getWinRates(move).black">{{ move.black }}</div>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (data.moves.length === 0) {
+        <div class="mt-4 text-gray-500">
+          No master games found for this position.
+        </div>
+      }
+    }
+  </div>
+</div>

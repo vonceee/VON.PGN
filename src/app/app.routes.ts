@@ -9,6 +9,7 @@ import { HomeComponent } from './features/home/home.component';
 import { RoadmapComponent } from './features/roadmap/roadmap.component';
 import { LearnComponent } from './features/learn/learn.component';
 import { TacticsComponent } from './features/tactics/tactics.component';
+import { OpeningExplorerComponent } from './features/opening-explorer/opening-explorer.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
 
@@ -63,6 +64,11 @@ export const routes: Routes = [
         path: 'tactics',
         component: TacticsComponent,
         title: 'Tactics - CHESS.PGN',
+      },
+      {
+        path: 'explorer',
+        component: OpeningExplorerComponent,
+        title: 'Opening Explorer - CHESS.PGN',
       },
     ],
   },

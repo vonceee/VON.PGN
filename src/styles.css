@@ -40,7 +40,8 @@
 /* Chess Coordinates */
 .cg-wrap coords {
   text-transform: lowercase !important;
-  font-size: max(9px, 2.5cqw) !important;
+  font-size: max(7px, 1.8cqw) !important;
+  font-weight: 500 !important;
 }
 
 .cg-wrap coords.files {
