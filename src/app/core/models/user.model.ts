@@ -5,6 +5,7 @@ export interface UserProfile {
   displayName?: string; // e.g, "Noh Yunah --not unique"
   avatarUrl?: string;
   is_admin: string;
+  email_verified_at: string | null;
   createdAt: string;
 
   // nested objects keep the database clean and organized

@@ -10,7 +10,12 @@ export interface AuthResponse {
   message: string;
   access_token: string;
   token_type: string;
-  user: any; // TODO
+  user: any;
+}
+
+interface LoginCredentials {
+  email?: string | null;
+  password?: string | null;
 }
 
 @Injectable({
@@ -25,7 +30,9 @@ export class AuthService {
   private tokenKey = 'chess_auth_token';
 
   currentUser = signal<any | null>(null);
-  isAuthenticated = computed(() => this.currentUser() !== null || !!this.getToken());
+  isAuthenticated = computed(() => this.currentUser() !== null);
+
+  private lastCredentials: LoginCredentials | null = null;
 
   initAuth() {
     if (!this.getToken()) {
@@ -49,6 +56,7 @@ export class AuthService {
   }
 
   login(credentials: any) {
+    this.lastCredentials = credentials;
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/login`, credentials)
       .pipe(tap((response) => this.handleAuthentication(response)));
@@ -71,7 +79,9 @@ export class AuthService {
 
   private handleAuthentication(response: AuthResponse) {
     if (response.user && !response.user.email_verified_at) {
-      localStorage.removeItem(this.tokenKey);
+      // Keep the token so we can re-check verification status,
+      // but don't set currentUser — this blocks auth-guarded routes.
+      localStorage.setItem(this.tokenKey, response.access_token);
       this.currentUser.set(null);
       this.userService.currentUser.set(null);
       this.router.navigate(['/verify-email']);
@@ -97,5 +107,25 @@ export class AuthService {
 
   public getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  retryLogin() {
+    if (!this.lastCredentials) {
+      this.router.navigate(['/login']);
+      return of(null as any);
+    }
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/login`, this.lastCredentials)
+      .pipe(tap((response) => this.handleAuthentication(response)));
+  }
+
+  resendVerificationEmail() {
+    return this.http.post<{ message: string }>(
+      `${this.apiUrl}/email/verification-notification`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+      }
+    );
   }
 }

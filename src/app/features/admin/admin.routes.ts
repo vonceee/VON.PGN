@@ -43,4 +43,22 @@ export const ADMIN_ROUTES: Routes = [
       import('./lesson-editor/lesson-editor').then((m) => m.LessonEditorComponent),
     title: 'Edit Lesson',
   },
+  {
+    path: 'tournaments',
+    loadComponent: () =>
+      import('./tournament-list/tournament-list').then((m) => m.TournamentListComponent),
+    title: 'Manage Tournaments - CHESS.PGN',
+  },
+  {
+    path: 'tournament/new',
+    loadComponent: () =>
+      import('./tournament-editor/tournament-editor').then((m) => m.TournamentEditorComponent),
+    title: 'New Tournament',
+  },
+  {
+    path: 'tournament/:tournamentId',
+    loadComponent: () =>
+      import('./tournament-editor/tournament-editor').then((m) => m.TournamentEditorComponent),
+    title: 'Edit Tournament',
+  },
 ];

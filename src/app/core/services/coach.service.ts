@@ -20,9 +20,10 @@ export class CoachService {
         '1992 National Junior Chess Champion'
       ],
       teachingExperience: [
-        'FIDE Trainer Certificate (2007)',
-        'Singapore ASEAN Chess Academy Trainer (2011-2016)',
-        'Philippine Head Coach (2011-2016)',
+        'FIDE Trainer (2007)',
+        'Singapore ASEAN Chess Academy Trainer (2006-2010)',
+        'Far Eastern University Head Coach (2011-2016)',
+        'Philippine Chess Team Head Coach (2011-2016)',
         'Ateneo De Manila University Head Coach (2016-PRESENT)',
         'Former Coach of GM John Paul Gomez, IM Paulo Bersamina, and IM Cyrus Low'
       ],
@@ -67,7 +68,7 @@ export class CoachService {
         'Building a practical opening repertoire',
         'Tournament psychology and time management'
       ],
-      coachingType: 'Online & Onsite', 
+      coachingType: 'Online & Onsite',
       socialMedia: {
         instagram: 'https://instagram.com/luffe_chess',
         youtube: 'https://youtube.com/@LuffeMagdalagaChess'

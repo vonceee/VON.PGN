@@ -1,5 +1,4 @@
-<div class="overflow-hidden">
-  <header class="relative z-50 w-full flex justify-between items-center px-16 py-3">
+<header class="relative z-50 w-full flex justify-between items-center px-16 py-3">
     <a routerLink="/" class="text-xl font-bold flex items-center gap-2"> <img src="assets/images/VON-PGN_LOGO.svg"
         alt="VON PGN Logo" class="w-32 dark:invert" />
     </a>
@@ -8,7 +7,7 @@
       <a routerLink="/roadmap" class="hover:text-cyan-400 font-bold">Roadmap</a>
       <a routerLink="/tactics" class="hover:text-cyan-400 font-bold">Tactics</a>
       <a routerLink="/explorer" class="hover:text-cyan-400 font-bold">Opening Explorer</a>
-      <a routerLink="/" class="hover:text-cyan-400 font-bold">Tournaments</a>
+      <a routerLink="/tournaments" class="hover:text-cyan-400 font-bold">Tournaments</a>
       <a routerLink="/coaches" class="hover:text-cyan-400 font-bold">Coaches</a>
     </div>
 
@@ -50,7 +49,6 @@
       }
     </div>
   </header>
-</div>
 
 @if (authService.isAuthenticated() && isProfileDropdownOpen()) {
 <!-- Dropdown Menu -->

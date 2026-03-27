@@ -12,6 +12,8 @@ import { TacticsComponent } from './features/tactics/tactics.component';
 import { OpeningExplorerComponent } from './features/opening-explorer/opening-explorer.component';
 import { CoachesComponent } from './features/coaches/coaches.component';
 import { CoachDetailComponent } from './features/coaches/coach-detail/coach-detail.component';
+import { TournamentsComponent } from './features/tournaments/tournaments.component';
+import { TournamentDetailComponent } from './features/tournaments/tournament-detail/tournament-detail.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
 
@@ -81,6 +83,16 @@ export const routes: Routes = [
         path: 'coaches/:id',
         component: CoachDetailComponent,
         title: 'Coach Profile - CHESS.PGN',
+      },
+      {
+        path: 'tournaments',
+        component: TournamentsComponent,
+        title: 'Tournaments - CHESS.PGN',
+      },
+      {
+        path: 'tournaments/:id',
+        component: TournamentDetailComponent,
+        title: 'Tournament Details - CHESS.PGN',
       }
     ],
   },

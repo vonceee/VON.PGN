@@ -1,0 +1,54 @@
+<div class="mx-auto p-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold m-0">Tournament Management</h1>
+    <a
+      routerLink="/admin/tournament/new"
+      class="px-4 py-2 rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+    >+ New Tournament</a>
+  </div>
+
+  <div class="flex flex-col gap-4">
+    @for (tournament of tournaments(); track tournament.id) {
+      <div class="border border-border-theme rounded-lg p-6 flex justify-between items-center">
+        <div class="flex flex-col">
+          <div class="flex items-center gap-3 mb-1">
+            <h3 class="m-0 text-xl font-semibold">{{ tournament.name }}</h3>
+            <span class="px-2 py-0.5 text-xs font-bold rounded-full"
+              [ngClass]="{
+                'bg-green-500/10 text-green-500': tournament.status === 'ongoing',
+                'bg-blue-500/10 text-blue-500': tournament.status === 'upcoming',
+                'bg-slate-500/10 text-slate-500': tournament.status === 'past'
+              }">
+              {{ tournament.status }}
+            </span>
+          </div>
+          <p class="m-0 text-sm text-slate-500 dark:text-slate-400">
+            {{ formatDate(tournament.dates.start) }} – {{ formatDate(tournament.dates.end) }}
+            &middot;
+            {{ tournament.location }}
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <a
+            [routerLink]="['/tournaments', tournament.id]"
+            class="px-4 py-2 rounded font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
+          >View</a>
+          <a
+            [routerLink]="['/admin/tournament', tournament.id]"
+            class="px-4 py-2 rounded font-medium text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
+          >Edit</a>
+          <button
+            (click)="deleteTournament(tournament.id)"
+            class="px-4 py-2 rounded font-medium text-sm bg-red-500 hover:bg-red-600 text-white"
+          >Delete</button>
+        </div>
+      </div>
+    }
+
+    @if (tournaments().length === 0) {
+      <div class="text-center p-12 rounded-lg border border-dashed border-border-theme">
+        <p>No tournaments found. Create one to get started.</p>
+      </div>
+    }
+  </div>
+</div>
