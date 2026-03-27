@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TournamentService } from '../../../core/services/tournament.service';
+import { AdminService } from '../../../core/services/admin.service';
 
 @Component({
   selector: 'app-tournament-list',
@@ -10,13 +11,29 @@ import { TournamentService } from '../../../core/services/tournament.service';
   templateUrl: './tournament-list.html',
   styleUrls: ['./tournament-list.css']
 })
-export class TournamentListComponent {
+export class TournamentListComponent implements OnInit {
   tournamentService = inject(TournamentService);
+  private adminService = inject(AdminService);
   tournaments = this.tournamentService.tournaments;
+  loading = this.tournamentService.loading;
 
-  deleteTournament(id: string) {
+  ngOnInit() {
+    this.tournamentService.fetchTournaments();
+  }
+
+  deleteTournament(tournament: any) {
+    const id = tournament.id;
     if (confirm('Are you sure you want to delete this tournament?')) {
-      this.tournamentService.tournaments.update(list => list.filter(t => t.id !== id));
+      this.adminService.deleteTournament(id).subscribe({
+        next: () => {
+          console.log('[TournamentList] Deleted tournament:', id);
+          this.tournamentService.fetchTournaments();
+        },
+        error: (err) => {
+          console.error('[TournamentList] Delete failed:', err);
+          alert('Failed to delete tournament: ' + (err.error?.message || err.message));
+        }
+      });
     }
   }
 

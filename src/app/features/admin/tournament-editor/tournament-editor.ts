@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TournamentService } from '../../../core/services/tournament.service';
+import { AdminService } from '../../../core/services/admin.service';
 
 interface Section { key: string; label: string; }
 
@@ -16,12 +17,15 @@ interface Section { key: string; label: string; }
 export class TournamentEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private tournamentService = inject(TournamentService);
+  private adminService = inject(AdminService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   public location = inject(Location);
 
-  tournamentId = signal<string | null>(null);
+  tournamentId = signal<number | null>(null);
+  tournamentSlug = signal<string | null>(null);
   saving = signal(false);
+  showPreview = signal(false);
   activeSection = signal<string>('basic');
 
   sections: Section[] = [
@@ -59,11 +63,13 @@ export class TournamentEditorComponent implements OnInit {
     categories: this.fb.array([])
   });
 
+  previewData = computed(() => this.buildTournamentData());
+
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       const id = params.get('tournamentId');
       if (id) {
-        this.tournamentId.set(id);
+        this.tournamentSlug.set(id);
         this.loadTournament(id);
       }
     });
@@ -193,42 +199,67 @@ export class TournamentEditorComponent implements OnInit {
     this.getCategorySpecialAwards(catIndex).removeAt(awardIndex);
   }
 
-  loadTournament(id: string) {
-    const t = this.tournamentService.getTournamentById(id);
-    if (!t) return;
+  loadTournament(slug: string) {
+    // First try local signal
+    let t = this.tournamentService.getTournamentById(slug);
+
+    if (t) {
+      this.populateForm(t);
+    }
+
+    // Also fetch from API to get the database ID and latest data
+    this.adminService.getTournaments().subscribe({
+      next: (res) => {
+        const apiTournament = res.data?.find((item: any) => item.id === slug);
+        if (apiTournament) {
+          this.tournamentId.set(apiTournament.id);
+          this.populateForm(apiTournament);
+          console.log('[TournamentEditor] Loaded tournament from API, db id:', apiTournament.id);
+        }
+      },
+      error: (err) => {
+        console.error('[TournamentEditor] Failed to load tournament from API:', err);
+      }
+    });
+  }
+
+  private populateForm(t: any) {
+    if (this.eligibilityArray.length > 0 || this.scheduleDaysArray.length > 0 || this.categoriesArray.length > 0) {
+      return;
+    }
 
     this.tournamentForm.patchValue({
       name: t.name,
       description: t.description,
       bannerImage: t.bannerImage,
       status: t.status,
-      startDate: t.dates.start,
-      endDate: t.dates.end,
-      registrationDeadline: t.registrationDeadline,
+      startDate: t.dates?.start || t.start_date,
+      endDate: t.dates?.end || t.end_date,
+      registrationDeadline: t.registrationDeadline || t.registration_deadline,
       location: t.location,
-      lat: t.coordinates.lat,
-      lng: t.coordinates.lng,
+      lat: t.coordinates?.lat || t.latitude,
+      lng: t.coordinates?.lng || t.longitude,
       format: t.format,
-      timeControl: t.timeControl,
+      timeControl: t.timeControl || t.time_control,
       rounds: t.rounds,
-      entryFee: t.entryFee,
-      prizePool: t.prizePool,
-      maxParticipants: t.participants.max,
-      currentParticipants: t.participants.current,
+      entryFee: t.entryFee || t.entry_fee,
+      prizePool: t.prizePool || t.prize_pool,
+      maxParticipants: t.participants?.max || t.max_participants,
+      currentParticipants: t.participants?.current || t.current_participants,
       organizer: t.organizer,
-      contactEmail: t.contactEmail
+      contactEmail: t.contactEmail || t.contact_email
     });
 
-    if (t.eligibility) {
-      t.eligibility.forEach(item => {
+    if (t.eligibility && Array.isArray(t.eligibility)) {
+      t.eligibility.forEach((item: string) => {
         this.eligibilityArray.push(this.fb.control(item));
       });
     }
 
-    if (t.schedule) {
-      Object.values(t.schedule).forEach(day => {
+    if (t.schedule && typeof t.schedule === 'object') {
+      Object.values(t.schedule as Record<string, any>).forEach((day: any) => {
         const eventsArray = this.fb.array(
-          day.events.map(e => this.fb.group({ name: [e.name], time: [e.time] }))
+          (day.events || []).map((e: any) => this.fb.group({ name: [e.name], time: [e.time] }))
         );
         this.scheduleDaysArray.push(this.fb.group({
           date: [day.date],
@@ -237,27 +268,27 @@ export class TournamentEditorComponent implements OnInit {
       });
     }
 
-    if (t.categories) {
-      Object.entries(t.categories).forEach(([catName, cat]) => {
+    if (t.categories && typeof t.categories === 'object') {
+      Object.entries(t.categories as Record<string, any>).forEach(([catName, cat]) => {
         const elArray = this.fb.array(
-          cat.eligibility.map(e => this.fb.control(e))
+          (cat.eligibility || []).map((e: string) => this.fb.control(e))
         );
         const awardsArray = this.fb.array(
-          Object.entries(cat.specialAwards || {}).map(([awardName, award]) => {
-            if (typeof award === 'object') {
+          Object.entries(cat.specialAwards || {}).map(([awardName, award]: [string, any]) => {
+            if (typeof award === 'object' && award !== null && '1st' in award) {
               return this.fb.group({
                 name: [awardName],
                 type: ['nested'],
                 value: [''],
-                '1st': [award['1st']],
-                '2nd': [award['2nd']],
-                '3rd': [award['3rd']]
+                '1st': [(award as any)['1st'] || ''],
+                '2nd': [(award as any)['2nd'] || ''],
+                '3rd': [(award as any)['3rd'] || '']
               });
             }
             return this.fb.group({
               name: [awardName],
               type: ['simple'],
-              value: [award],
+              value: [award as string],
               '1st': [''],
               '2nd': [''],
               '3rd': ['']
@@ -268,13 +299,13 @@ export class TournamentEditorComponent implements OnInit {
         this.categoriesArray.push(this.fb.group({
           name: [catName],
           eligibility: elArray,
-          champion: [cat.prizes.champion || ''],
-          '2nd_place': [cat.prizes['2nd_place'] || ''],
-          '3rd_place': [cat.prizes['3rd_place'] || ''],
-          '4th_place': [cat.prizes['4th_place'] || ''],
-          '5th_place': [cat.prizes['5th_place'] || ''],
-          '6th_to_10th': [cat.prizes['6th_to_10th'] || ''],
-          '11th_to_15th': [cat.prizes['11th_to_15th'] || ''],
+          champion: [cat.prizes?.champion || ''],
+          '2nd_place': [cat.prizes?.['2nd_place'] || ''],
+          '3rd_place': [cat.prizes?.['3rd_place'] || ''],
+          '4th_place': [cat.prizes?.['4th_place'] || ''],
+          '5th_place': [cat.prizes?.['5th_place'] || ''],
+          '6th_to_10th': [cat.prizes?.['6th_to_10th'] || ''],
+          '11th_to_15th': [cat.prizes?.['11th_to_15th'] || ''],
           specialAwards: awardsArray
         }));
       });
@@ -283,8 +314,94 @@ export class TournamentEditorComponent implements OnInit {
 
   saveTournament() {
     if (this.tournamentForm.invalid) return;
-    this.saving.set(true);
+    this.showPreview.set(true);
+  }
 
+  cancelPreview() {
+    this.showPreview.set(false);
+  }
+
+  confirmSave() {
+    this.saving.set(true);
+    const tournamentData = this.buildTournamentData();
+
+    // Prepare API payload (convert from frontend format to backend format)
+    const apiPayload = {
+      name: tournamentData['name'],
+      slug: tournamentData['id'],
+      banner_image: tournamentData['bannerImage'],
+      status: tournamentData['status'],
+      start_date: tournamentData['dates']['start'],
+      end_date: tournamentData['dates']['end'],
+      registration_deadline: tournamentData['registrationDeadline'],
+      location: tournamentData['location'],
+      latitude: tournamentData['coordinates']['lat'],
+      longitude: tournamentData['coordinates']['lng'],
+      format: tournamentData['format'],
+      time_control: tournamentData['timeControl'],
+      entry_fee: tournamentData['entryFee'],
+      prize_pool: tournamentData['prizePool'],
+      organizer: tournamentData['organizer'],
+      contact_email: tournamentData['contactEmail'],
+      description: tournamentData['description'],
+      rounds: tournamentData['rounds'],
+      current_participants: tournamentData['participants']['current'],
+      max_participants: tournamentData['participants']['max'],
+      eligibility: tournamentData['eligibility'] || null,
+      categories: tournamentData['categories'] || null,
+      schedule: tournamentData['schedule'] || null,
+    };
+
+    console.log('[TournamentEditor] Saving to API:', apiPayload);
+
+    const tid = this.tournamentId();
+    if (tid) {
+      // Update existing
+      this.adminService.updateTournament(tid, apiPayload).subscribe({
+        next: (res) => {
+          console.log('[TournamentEditor] Updated successfully:', res);
+          this.tournamentService.fetchTournaments();
+          this.saving.set(false);
+          this.showPreview.set(false);
+          alert('Tournament updated successfully');
+          this.router.navigate(['/admin/tournaments']);
+        },
+        error: (err) => {
+          console.error('[TournamentEditor] Update failed:', err);
+          this.saving.set(false);
+          alert('Failed to update tournament: ' + (err.error?.message || err.message));
+        }
+      });
+    } else {
+      // Create new
+      this.adminService.createTournament(apiPayload).subscribe({
+        next: (res) => {
+          console.log('[TournamentEditor] Created successfully:', res);
+          this.tournamentService.fetchTournaments();
+          this.saving.set(false);
+          this.showPreview.set(false);
+          alert('Tournament created successfully');
+          this.router.navigate(['/admin/tournaments']);
+        },
+        error: (err) => {
+          console.error('[TournamentEditor] Create failed:', err);
+          this.saving.set(false);
+          alert('Failed to create tournament: ' + (err.error?.message || err.message));
+        }
+      });
+    }
+  }
+
+  formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  }
+
+  private buildTournamentData(): Record<string, any> {
     const v = this.tournamentForm.value;
 
     const eligibility = this.eligibilityArray.value.filter((e: string) => e.trim());
@@ -330,7 +447,7 @@ export class TournamentEditorComponent implements OnInit {
       };
     });
 
-    const tournamentData: Record<string, any> = {
+    return {
       id: v.name!.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
       name: v.name,
       description: v.description || '',
@@ -352,21 +469,5 @@ export class TournamentEditorComponent implements OnInit {
       ...(Object.keys(schedule).length ? { schedule } : {}),
       ...(Object.keys(categories).length ? { categories } : {})
     };
-
-    const tid = this.tournamentId();
-    if (tid) {
-      const current = this.tournamentService.tournaments();
-      const idx = current.findIndex(t => t.id === tid);
-      if (idx !== -1) {
-        current[idx] = { ...current[idx], ...tournamentData } as any;
-        this.tournamentService.tournaments.set([...current]);
-      }
-    } else {
-      this.tournamentService.tournaments.update(list => [...list, tournamentData as any]);
-    }
-
-    this.saving.set(false);
-    alert(tid ? 'Tournament updated successfully' : 'Tournament created successfully');
-    this.router.navigate(['/admin/tournaments']);
   }
 }

@@ -7,7 +7,11 @@
     >+ New Tournament</a>
   </div>
 
-  <div class="flex flex-col gap-4">
+  <div *ngIf="loading()" class="text-center py-8 text-slate-500 dark:text-slate-400">
+    Loading tournaments...
+  </div>
+
+  <div class="flex flex-col gap-4" *ngIf="!loading()">
     @for (tournament of tournaments(); track tournament.id) {
       <div class="border border-border-theme rounded-lg p-6 flex justify-between items-center">
         <div class="flex flex-col">
@@ -38,7 +42,7 @@
             class="px-4 py-2 rounded font-medium text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
           >Edit</a>
           <button
-            (click)="deleteTournament(tournament.id)"
+            (click)="deleteTournament(tournament)"
             class="px-4 py-2 rounded font-medium text-sm bg-red-500 hover:bg-red-600 text-white"
           >Delete</button>
         </div>

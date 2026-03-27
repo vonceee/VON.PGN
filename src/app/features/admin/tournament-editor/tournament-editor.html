@@ -10,11 +10,11 @@
       <h1 class="text-3xl font-bold m-0">{{ tournamentId() ? 'Edit Tournament' : 'New Tournament' }}</h1>
     </div>
     <button
-      [disabled]="saving() || tournamentForm.invalid"
+      [disabled]="tournamentForm.invalid"
       (click)="saveTournament()"
       class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
     >
-      {{ saving() ? 'Saving...' : 'Save Tournament' }}
+      {{ tournamentId() ? 'Save Changes' : 'Create Tournament' }}
     </button>
   </div>
 
@@ -38,25 +38,21 @@
     @if (activeSection() === 'basic') {
       <div class="border border-border-theme rounded-lg p-6">
         <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">Basic Information</h2>
-
         <div class="mb-6">
           <label class="block mb-2 font-medium">Tournament Name</label>
           <input type="text" formControlName="name" placeholder="e.g. Manila Open Chess Championship 2026"
             class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
         </div>
-
         <div class="mb-6">
           <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400">Description</label>
           <textarea formControlName="description" rows="5"
             class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"></textarea>
         </div>
-
         <div class="mb-6">
           <label class="block mb-2 font-medium">Banner Image URL</label>
           <input type="text" formControlName="bannerImage" placeholder="https://..."
             class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
         </div>
-
         <div class="mb-6">
           <label class="block mb-2 font-medium">Status</label>
           <select formControlName="status"
@@ -73,7 +69,6 @@
     @if (activeSection() === 'dates') {
       <div class="border border-border-theme rounded-lg p-6">
         <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">Dates & Location</h2>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label class="block mb-2 font-medium">Start Date</label>
@@ -86,19 +81,16 @@
               class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
           </div>
         </div>
-
         <div class="mb-6">
           <label class="block mb-2 font-medium">Registration Deadline</label>
           <input type="date" formControlName="registrationDeadline"
             class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
         </div>
-
         <div class="mb-6">
           <label class="block mb-2 font-medium">Venue Location</label>
           <input type="text" formControlName="location" placeholder="e.g. SMX Convention Center, Pasay City, Philippines"
             class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label class="block mb-2 font-medium">Latitude</label>
@@ -118,7 +110,6 @@
     @if (activeSection() === 'format') {
       <div class="border border-border-theme rounded-lg p-6">
         <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">Format & Rules</h2>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label class="block mb-2 font-medium">Format</label>
@@ -131,7 +122,6 @@
               class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
           </div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div>
             <label class="block mb-2 font-medium">Rounds</label>
@@ -149,7 +139,6 @@
               class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
           </div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label class="block mb-2 font-medium">Entry Fee</label>
@@ -169,13 +158,11 @@
     @if (activeSection() === 'organizer') {
       <div class="border border-border-theme rounded-lg p-6">
         <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">Organizer</h2>
-
         <div class="mb-6">
           <label class="block mb-2 font-medium">Organizer Name</label>
           <input type="text" formControlName="organizer" placeholder="e.g. National Chess Federation of the Philippines"
             class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
         </div>
-
         <div class="mb-6">
           <label class="block mb-2 font-medium">Contact Email</label>
           <input type="email" formControlName="contactEmail" placeholder="e.g. tournaments@ncfph.org"
@@ -192,7 +179,6 @@
           <button type="button" (click)="addEligibilityItem()"
             class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900">+ Add Requirement</button>
         </div>
-
         <div class="space-y-3">
           @for (control of eligibilityArray.controls; track $index; let i = $index) {
             <div class="flex gap-2 items-center">
@@ -217,11 +203,9 @@
           <button type="button" (click)="addCategory()"
             class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900">+ Add Category</button>
         </div>
-
         @if (categoriesArray.length === 0) {
           <p class="text-slate-500 text-sm mb-4">No prize categories added. The total prize pool will be displayed instead.</p>
         }
-
         <div class="space-y-6">
           @for (cat of categoriesArray.controls; track $index; let ci = $index) {
             <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-lg p-5">
@@ -230,14 +214,11 @@
                 <button type="button" (click)="removeCategory(ci)"
                   class="px-2 py-1 text-xs rounded font-medium bg-red-500 hover:bg-red-600 text-white">Remove</button>
               </div>
-
               <div class="mb-4">
                 <label class="block mb-1 text-sm font-medium">Category Name</label>
                 <input type="text" [formControl]="$any(categoryGroup(ci).get('name'))" placeholder="e.g. Open, Under 14"
                   class="w-full p-2.5 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
               </div>
-
-              <!-- Category Eligibility -->
               <div class="mb-4">
                 <div class="flex justify-between items-center mb-2">
                   <label class="text-sm font-medium">Category Eligibility</label>
@@ -253,8 +234,6 @@
                   </div>
                 }
               </div>
-
-              <!-- Main Prizes -->
               <div class="mb-4">
                 <label class="text-sm font-medium block mb-2">Main Prizes</label>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -295,8 +274,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Special Awards -->
               <div>
                 <div class="flex justify-between items-center mb-2">
                   <label class="text-sm font-medium">Special Awards</label>
@@ -346,11 +323,9 @@
           <button type="button" (click)="addScheduleDay()"
             class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900">+ Add Day</button>
         </div>
-
         @if (scheduleDaysArray.length === 0) {
           <p class="text-slate-500 text-sm">No schedule days added. Click "Add Day" to build the tournament schedule.</p>
         }
-
         <div class="space-y-4">
           @for (day of scheduleDaysArray.controls; track $index; let di = $index) {
             <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-lg p-5">
@@ -367,7 +342,6 @@
                     class="px-2 py-1 text-xs rounded font-medium bg-red-500 hover:bg-red-600 text-white">Remove Day</button>
                 </div>
               </div>
-
               <div class="space-y-2">
                 @for (event of getScheduleEvents(di).controls; track $index; let ei = $index) {
                   <div class="flex gap-2 items-center">
@@ -389,4 +363,187 @@
       </div>
     }
   </form>
+
+  <!-- Preview Modal -->
+  @if (showPreview()) {
+    <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/60 overflow-y-auto py-8" (click)="cancelPreview()">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-4xl mx-4 shadow-2xl" (click)="$event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-border-theme rounded-t-2xl px-8 py-5 flex justify-between items-center z-10">
+          <div>
+            <h2 class="text-xl font-bold m-0">Preview</h2>
+            <p class="text-sm text-slate-500 m-0 mt-1">Review how this tournament will appear to users</p>
+          </div>
+          <button (click)="cancelPreview()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Preview Content -->
+        <div class="p-8">
+          @if (previewData(); as data) {
+            @if ($any(data)['bannerImage']) {
+              <div class="relative h-48 overflow-hidden rounded-xl mb-8">
+                <img [src]="$any(data)['bannerImage']" alt="Banner" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-4 left-4">
+                  <span class="px-2.5 py-1 text-xs font-bold rounded-full"
+                    [ngClass]="{
+                      'bg-green-500 text-white': $any(data)['status'] === 'ongoing',
+                      'bg-blue-500 text-white': $any(data)['status'] === 'upcoming',
+                      'bg-slate-500 text-white': $any(data)['status'] === 'past'
+                    }">
+                    {{ $any(data)['status'] }}
+                  </span>
+                </div>
+              </div>
+            }
+
+            <h2 class="text-2xl font-bold mb-2">{{ $any(data)['name'] }}</h2>
+            @if ($any(data)['description']) {
+              <p class="text-slate-600 dark:text-slate-300 mb-6">{{ $any(data)['description'] }}</p>
+            }
+
+            <!-- Key Info Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Dates</span>
+                <span class="text-sm font-semibold">{{ formatDate($any(data)['dates']['start']) }} – {{ formatDate($any(data)['dates']['end']) }}</span>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Location</span>
+                <span class="text-sm font-semibold">{{ $any(data)['location'] || '—' }}</span>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Format</span>
+                <span class="text-sm font-semibold">{{ $any(data)['format'] || '—' }}</span>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time Control</span>
+                <span class="text-sm font-semibold">{{ $any(data)['timeControl'] || '—' }}</span>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Rounds</span>
+                <span class="text-sm font-semibold">{{ $any(data)['rounds'] }}</span>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Entry Fee</span>
+                <span class="text-sm font-semibold">{{ $any(data)['entryFee'] || '—' }}</span>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Prize Pool</span>
+                <span class="text-sm font-semibold">{{ $any(data)['prizePool'] || '—' }}</span>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
+                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Participants</span>
+                <span class="text-sm font-semibold">{{ $any(data)['participants']['current'] }} / {{ $any(data)['participants']['max'] }}</span>
+              </div>
+            </div>
+
+            @if ($any(data)['organizer']) {
+              <div class="mb-6">
+                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">Organizer</h3>
+                <p class="text-sm font-semibold">{{ $any(data)['organizer'] }}</p>
+                @if ($any(data)['contactEmail']) {
+                  <p class="text-sm text-cyan-500">{{ $any(data)['contactEmail'] }}</p>
+                }
+              </div>
+            }
+
+            @if ($any(data)['eligibility']?.length) {
+              <div class="mb-6">
+                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">Eligibility</h3>
+                <ul class="space-y-1">
+                  @for (req of $any(data)['eligibility']; track req) {
+                    <li class="text-sm flex items-start gap-2">
+                      <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
+                      {{ req }}
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+
+            @if ($any(data)['categories']) {
+              <div class="mb-6">
+                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-3">Prizes by Category</h3>
+                @for (cat of ($any(data)['categories'] | keyvalue); track cat.key) {
+                  <div class="mb-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold mb-2 capitalize">{{ $any(cat.key).replace('_', ' ') }}</h4>
+                    <table class="w-full text-sm">
+                      <tbody>
+                        @for (prize of ($any(cat.value)['prizes'] | keyvalue); track prize.key) {
+                          <tr class="border-t border-border-theme first:border-0">
+                            <td class="py-1.5 font-semibold capitalize">{{ $any(prize.key).replace('_', ' ') }}</td>
+                            <td class="py-1.5 text-right text-slate-600 dark:text-slate-400">{{ prize.value }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                    @if ($any(cat.value)['specialAwards']) {
+                      <div class="mt-3 pt-3 border-t border-border-theme">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Special Awards</span>
+                        <div class="mt-1 space-y-1">
+                          @for (award of ($any(cat.value)['specialAwards'] | keyvalue); track award.key) {
+                            <div class="text-sm flex gap-2">
+                              <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
+                              <span>
+                                <span class="font-semibold">{{ award.key }}:</span>
+                                <span class="text-slate-600 dark:text-slate-400 ml-1">{{ $any(award.value) | json }}</span>
+                              </span>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+
+            @if ($any(data)['schedule']) {
+              <div class="mb-6">
+                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-3">Schedule</h3>
+                @for (day of ($any(data)['schedule'] | keyvalue); track day.key) {
+                  <div class="mb-3 border border-border-theme rounded-lg overflow-hidden">
+                    <div class="bg-slate-50 dark:bg-slate-800/50 px-4 py-2 border-b border-border-theme">
+                      <span class="text-xs font-bold text-cyan-500 uppercase">{{ $any(day.key).replace('_', ' ') }}</span>
+                      <span class="text-sm text-slate-600 dark:text-slate-400 ml-2">{{ formatDate(day.value.date) }}</span>
+                    </div>
+                    <table class="w-full text-sm">
+                      <tbody>
+                        @for (event of day.value.events; track event.name) {
+                          <tr class="border-t border-border-theme first:border-0">
+                            <td class="px-4 py-1.5 font-semibold">{{ event.name }}</td>
+                            <td class="px-4 py-1.5 text-right text-slate-600 dark:text-slate-400">{{ event.time }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                }
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-border-theme rounded-b-2xl px-8 py-4 flex justify-end gap-3">
+          <button
+            (click)="cancelPreview()"
+            class="px-5 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors">
+            Go Back & Edit
+          </button>
+          <button
+            [disabled]="saving()"
+            (click)="confirmSave()"
+            class="px-5 py-2.5 rounded-lg font-medium text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900 disabled:opacity-50 transition-colors">
+            {{ saving() ? 'Saving...' : (tournamentId() ? 'Confirm Update' : 'Confirm & Create') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 </div>

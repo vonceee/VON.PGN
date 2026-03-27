@@ -21,13 +21,50 @@ export class TournamentDetailComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+    console.log('[TournamentDetail] Looking for tournament with id:', id);
+
     if (id) {
+      // First try local
       this.tournament = this.tournamentService.getTournamentById(id);
+
       if (this.tournament) {
-        const { lat, lng } = this.tournament.coordinates;
-        const url = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
-        this.mapUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        console.log('[TournamentDetail] Found tournament locally:', this.tournament.name);
+        this.setupMap();
+      } else {
+        console.log('[TournamentDetail] Not in local, fetching from API...');
       }
+
+      // Always fetch from API for latest data
+      this.tournamentService.fetchTournament(id);
+
+      // Subscribe to signal changes
+      const checkInterval = setInterval(() => {
+        const t = this.tournamentService.getTournamentById(id);
+        if (t) {
+          this.tournament = t;
+          this.setupMap();
+          clearInterval(checkInterval);
+        }
+      }, 100);
+
+      // Stop checking after 5 seconds
+      setTimeout(() => {
+        clearInterval(checkInterval);
+        if (!this.tournament) {
+          console.error('[TournamentDetail] Tournament not found after API fetch. Available ids:',
+            this.tournamentService.tournaments().map(t => t.id));
+        }
+      }, 5000);
+    } else {
+      console.error('[TournamentDetail] No id parameter in route');
+    }
+  }
+
+  private setupMap() {
+    if (this.tournament && !this.mapUrl()) {
+      const { lat, lng } = this.tournament.coordinates;
+      const url = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+      this.mapUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
     }
   }
 
