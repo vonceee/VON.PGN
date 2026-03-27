@@ -10,6 +10,8 @@ import { RoadmapComponent } from './features/roadmap/roadmap.component';
 import { LearnComponent } from './features/learn/learn.component';
 import { TacticsComponent } from './features/tactics/tactics.component';
 import { OpeningExplorerComponent } from './features/opening-explorer/opening-explorer.component';
+import { CoachesComponent } from './features/coaches/coaches.component';
+import { CoachDetailComponent } from './features/coaches/coach-detail/coach-detail.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
 
@@ -70,6 +72,16 @@ export const routes: Routes = [
         component: OpeningExplorerComponent,
         title: 'Opening Explorer - CHESS.PGN',
       },
+      {
+        path: 'coaches',
+        component: CoachesComponent,
+        title: 'Find a Coach - CHESS.PGN',
+      },
+      {
+        path: 'coaches/:id',
+        component: CoachDetailComponent,
+        title: 'Coach Profile - CHESS.PGN',
+      }
     ],
   },
   {

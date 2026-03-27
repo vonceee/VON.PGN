@@ -34,8 +34,11 @@ import { Key } from 'chessground/types';
           title="Board size"
         />
         <span class="size-label">{{ boardSize }}px</span>
-        <button (click)="resetBoard()" class="text-sm px-4 py-2 border border-border-theme rounded hover:bg-cyan-400" title="Reset to starting position">
-          Reset
+        <button (click)="resetBoard()" class="p-2 border border-border-theme rounded hover:bg-cyan-400" title="Reset to starting position">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
         </button>
       </div>
     </div>
