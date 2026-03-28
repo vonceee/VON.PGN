@@ -8,6 +8,11 @@ export interface UserProfile {
   email_verified_at: string | null;
   createdAt: string;
 
+  // Follow stats
+  followers_count: number;
+  following_count: number;
+  is_following: boolean;
+
   // nested objects keep the database clean and organized
   preferences: UserPreferences;
   progress: UserProgress;
@@ -40,4 +45,21 @@ export interface Badge {
   description: string; // e.g., 'completed all piece movement lessons.'
   imageUrl: string; // e.g., '/assets/badges/rook-badge.svg'
   earnedAt: string; // the exact date/time they unlocked it
+}
+
+export interface FollowUser {
+  uid: string;
+  username: string;
+  displayName: string;
+  is_following: boolean;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
 }

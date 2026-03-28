@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, APP_INITIALIZER, inject } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideAppInitializer, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
@@ -11,13 +11,11 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => {
-        const authService = inject(AuthService);
-        return () => authService.initAuth();
-      },
-      multi: true,
-    },
+    provideAppInitializer(() => {
+      const authService = inject(AuthService);
+      // initAuth() returns an Observable; Angular subscribes and waits for it
+      // to complete before the first route is activated.
+      return authService.initAuth();
+    }),
   ],
 };

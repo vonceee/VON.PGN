@@ -1,7 +1,6 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { tap, catchError, map, of, finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { environment } from '../../../environments/environment';
@@ -32,20 +31,48 @@ export class AuthService {
   currentUser = signal<any | null>(null);
   isAuthenticated = computed(() => this.currentUser() !== null);
 
+  /** false while the initial token->profile restore is in-flight */
+  isInitialized = signal(false);
+
   private lastCredentials: LoginCredentials | null = null;
 
   initAuth() {
-    if (!this.getToken()) {
+    const token = this.getToken();
+
+    if (!token) {
+      this.isInitialized.set(true);
       return of(null);
     }
+
+    // Restore cached profile immediately so the user appears logged in
+    // while the API refresh happens in the background.
+    const cached = this.userService.getCachedProfile();
+    if (cached) {
+      this.currentUser.set(cached);
+      this.userService.currentUser.set(cached);
+    }
+
     return this.userService.loadMyProfile().pipe(
-      tap((res) => {
-        this.currentUser.set(res.data);
+      tap({
+        next: (res) => {
+          this.currentUser.set(res.data);
+        },
+        error: () => {
+          // Only clear auth if there was no cached profile to fall back on.
+          if (!cached) {
+            this.clearAuthWithoutRedirect();
+          }
+        },
       }),
       catchError(() => {
-        this.clearAuthWithoutRedirect();
+        if (!cached) {
+          this.clearAuthWithoutRedirect();
+        }
         return of(null);
-      })
+      }),
+      finalize(() => {
+        this.isInitialized.set(true);
+      }),
     );
   }
 
@@ -78,19 +105,19 @@ export class AuthService {
   }
 
   private handleAuthentication(response: AuthResponse) {
+    localStorage.setItem(this.tokenKey, response.access_token);
+
     if (response.user && !response.user.email_verified_at) {
-      // Keep the token so we can re-check verification status,
-      // but don't set currentUser — this blocks auth-guarded routes.
-      localStorage.setItem(this.tokenKey, response.access_token);
       this.currentUser.set(null);
       this.userService.currentUser.set(null);
+      this.userService.clearCachedProfile();
       this.router.navigate(['/verify-email']);
       return;
     }
 
-    localStorage.setItem(this.tokenKey, response.access_token);
     this.currentUser.set(response.user);
     this.userService.currentUser.set(response.user);
+    this.userService.cacheProfile(response.user);
     this.router.navigate(['/profile']);
   }
 
@@ -103,6 +130,7 @@ export class AuthService {
     localStorage.removeItem(this.tokenKey);
     this.currentUser.set(null);
     this.userService.currentUser.set(null);
+    this.userService.clearCachedProfile();
   }
 
   public getToken(): string | null {

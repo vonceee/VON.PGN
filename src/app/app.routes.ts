@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ProfileComponent } from './features/profile/profile.component';
+import { UserProfileComponent } from './features/user-profile/user-profile.component';
 import { MyProgressComponent } from './features/my-progress/my-progress.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
@@ -46,6 +47,11 @@ export const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
         canActivate: [authGuard],
+        title: 'User Profile - CHESS.PGN',
+      },
+      {
+        path: 'user/:id',
+        component: UserProfileComponent,
         title: 'User Profile - CHESS.PGN',
       },
       {

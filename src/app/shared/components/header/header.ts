@@ -1,12 +1,14 @@
 import { Component, inject, signal, HostListener, ViewChild, ElementRef } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ThemeService } from '../../../core/services/theme.service';
-import { UserService } from '../../../core/services/user.service';
+import { UserService, UserSearchResult } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, FormsModule],
   templateUrl: './header.html',
   styleUrl: './header.css',
   host: {
@@ -17,10 +19,57 @@ export class Header {
   themeService = inject(ThemeService);
   userService = inject(UserService);
   authService = inject(AuthService);
+  private router = inject(Router);
 
   @ViewChild('profileContainer') profileContainer!: ElementRef;
+  @ViewChild('searchContainer') searchContainer!: ElementRef;
 
   isProfileDropdownOpen = signal(false);
+  searchQuery = signal('');
+  searchResults = signal<UserSearchResult[]>([]);
+  isSearchOpen = signal(false);
+  isSearching = signal(false);
+
+  private searchSubject = new Subject<string>();
+
+  constructor() {
+    this.searchSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((query) => {
+          if (query.length < 2) {
+            return of([]);
+          }
+          this.isSearching.set(true);
+          return this.userService.searchUsers(query);
+        }),
+      )
+      .subscribe({
+        next: (results) => {
+          this.searchResults.set(results);
+          this.isSearching.set(false);
+          this.isSearchOpen.set(results.length > 0);
+        },
+        error: () => {
+          this.isSearching.set(false);
+          this.searchResults.set([]);
+        },
+      });
+  }
+
+  onSearchInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+    this.searchSubject.next(value);
+  }
+
+  viewUserProfile(user: UserSearchResult) {
+    this.isSearchOpen.set(false);
+    this.searchQuery.set('');
+    this.searchResults.set([]);
+    this.router.navigate(['/user', user.uid]);
+  }
 
   toggleProfileDropdown() {
     this.isProfileDropdownOpen.update((v) => !v);
@@ -38,6 +87,13 @@ export class Header {
       !this.profileContainer.nativeElement.contains(event.target as Node)
     ) {
       this.isProfileDropdownOpen.set(false);
+    }
+    if (
+      this.isSearchOpen() &&
+      this.searchContainer &&
+      !this.searchContainer.nativeElement.contains(event.target as Node)
+    ) {
+      this.isSearchOpen.set(false);
     }
   }
 }

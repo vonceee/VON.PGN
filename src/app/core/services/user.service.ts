@@ -1,8 +1,26 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { UserProfile, Badge } from '../models/user.model';
-import { tap } from 'rxjs';
+import { UserProfile, Badge, FollowUser, PaginatedResponse } from '../models/user.model';
+import { tap, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
+
+export interface UserSearchResult {
+  uid: string;
+  username: string;
+  displayName: string;
+}
+
+export interface FollowStatusResponse {
+  is_following: boolean;
+  followers_count: number;
+  following_count: number;
+}
+
+export interface FollowActionResponse {
+  message: string;
+  is_following: boolean;
+  followers_count: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -10,19 +28,84 @@ import { environment } from '../../../environments/environment';
 export class UserService {
   private http = inject(HttpClient);
 
+  private readonly profileKey = 'chess_user_profile';
+
   currentUser = signal<UserProfile | null>(null);
+
+  getCachedProfile(): UserProfile | null {
+    const data = localStorage.getItem(this.profileKey);
+    if (!data) return null;
+    try {
+      return JSON.parse(data);
+    } catch {
+      localStorage.removeItem(this.profileKey);
+      return null;
+    }
+  }
+
+  cacheProfile(profile: UserProfile): void {
+    localStorage.setItem(this.profileKey, JSON.stringify(profile));
+  }
+
+  clearCachedProfile(): void {
+    localStorage.removeItem(this.profileKey);
+  }
 
   loadMyProfile() {
     return this.http.get<{ data: UserProfile }>(`${environment.apiUrl}/profile`).pipe(
       tap({
         next: (response) => {
           this.currentUser.set(response.data);
+          this.cacheProfile(response.data);
         },
         error: (err) => {
           console.error('Failed to load user profile', err);
         },
       }),
     );
+  }
+
+  searchUsers(query: string) {
+    return this.http
+      .get<{ data: UserSearchResult[] }>(`${environment.apiUrl}/users/search`, {
+        params: { q: query },
+      })
+      .pipe(map((res) => res.data));
+  }
+
+  getUserProfile(id: string) {
+    return this.http
+      .get<{ data: UserProfile }>(`${environment.apiUrl}/users/${id}`)
+      .pipe(map((res) => res.data));
+  }
+
+  followUser(userId: string) {
+    return this.http
+      .post<FollowActionResponse>(`${environment.apiUrl}/users/${userId}/follow`, {});
+  }
+
+  unfollowUser(userId: string) {
+    return this.http
+      .delete<FollowActionResponse>(`${environment.apiUrl}/users/${userId}/follow`);
+  }
+
+  getFollowStatus(userId: string) {
+    return this.http
+      .get<FollowStatusResponse>(`${environment.apiUrl}/users/${userId}/follow-status`);
+  }
+
+  getFollowers(userId: string, page = 1, search = '') {
+    const params: Record<string, string> = { page: page.toString(), per_page: '15' };
+    if (search) params['search'] = search;
+    return this.http
+      .get<PaginatedResponse<FollowUser>>(`${environment.apiUrl}/users/${userId}/followers`, { params });
+  }
+
+  getFollowing(userId: string, page = 1, search = '') {
+    const params: Record<string, string> = { page: page.toString(), per_page: '15' };
+    if (search) params['search'] = search;
+    return this.http
+      .get<PaginatedResponse<FollowUser>>(`${environment.apiUrl}/users/${userId}/following`, { params });
   }
 
   completeLecture(lessonId: string) {
@@ -36,6 +119,7 @@ export class UserService {
       .pipe(
         tap((response) => {
           this.currentUser.set(response.user.data);
+          this.cacheProfile(response.user.data);
         }),
       );
   }

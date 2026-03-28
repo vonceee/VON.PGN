@@ -1,23 +1,32 @@
 import { Component, inject, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
-import { ToastService } from '../../core/services/toast.service';
-import { FollowUser } from '../../core/models/user.model';
+import { AuthService } from '../../core/services/auth.service';
+import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-profile',
+  selector: 'app-user-profile',
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule],
-  templateUrl: './profile.component.html',
+  templateUrl: './user-profile.component.html',
 })
-export class ProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit {
+  private route = inject(ActivatedRoute);
   private userService = inject(UserService);
+  private authService = inject(AuthService);
 
-  user = this.userService.currentUser;
+  user = signal<UserProfile | null>(null);
+  isLoading = signal(true);
+  error = signal<string | null>(null);
 
-  activeTab = signal<'followers' | 'following'>('following');
+  isFollowing = signal(false);
+  followersCount = signal(0);
+  followingCount = signal(0);
+  isFollowLoading = signal(false);
+
+  activeTab = signal<'followers' | 'following'>('followers');
   tabUsers = signal<FollowUser[]>([]);
   tabLoading = signal(false);
   tabCurrentPage = signal(1);
@@ -25,13 +34,20 @@ export class ProfileComponent implements OnInit {
   tabSearchQuery = signal('');
   isLoadingMore = signal(false);
 
+  isAuthenticated = this.authService.isAuthenticated;
+
+  isOwnProfile = computed(() => {
+    const currentUser = this.authService.currentUser();
+    const profileUser = this.user();
+    if (!currentUser || !profileUser) return false;
+    return String(currentUser.id) === profileUser.uid;
+  });
+
   currentXp = computed(() => this.user()?.progress.experiencePoints || 0);
   level = computed(() => this.user()?.progress.currentLevel || 1);
 
   xpTotalForNextLevel = computed(() => (this.level() + 1) * 100);
-
   xpToNextLevel = computed(() => Math.max(this.xpTotalForNextLevel() - this.currentXp(), 0));
-
   xpProgressPercent = computed(() => {
     const current = this.currentXp();
     const target = this.xpTotalForNextLevel();
@@ -41,20 +57,66 @@ export class ProfileComponent implements OnInit {
 
   memberSince = computed(() => {
     const dateString = this.user()?.createdAt;
-    if (!dateString) return 'Loading...';
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   });
 
-  formattedFollowersCount = computed(() => this.formatCount(this.user()?.followers_count || 0));
-  formattedFollowingCount = computed(() => this.formatCount(this.user()?.following_count || 0));
-
-  toastService = inject(ToastService);
+  formattedFollowersCount = computed(() => this.formatCount(this.followersCount()));
+  formattedFollowingCount = computed(() => this.formatCount(this.followingCount()));
 
   ngOnInit() {
-    this.userService.loadMyProfile().subscribe({
-      next: () => {
+    const userId = this.route.snapshot.paramMap.get('id');
+    if (!userId) {
+      this.error.set('User not found');
+      this.isLoading.set(false);
+      return;
+    }
+
+    this.userService.getUserProfile(userId).subscribe({
+      next: (profile) => {
+        this.user.set(profile);
+        this.isFollowing.set(profile.is_following);
+        this.followersCount.set(profile.followers_count);
+        this.followingCount.set(profile.following_count);
+        this.isLoading.set(false);
         this.loadTabUsers();
+      },
+      error: () => {
+        this.error.set('User not found');
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  toggleFollow() {
+    if (!this.isAuthenticated() || this.isOwnProfile() || this.isFollowLoading()) return;
+
+    const userId = this.user()?.uid;
+    if (!userId) return;
+
+    this.isFollowLoading.set(true);
+    const wasFollowing = this.isFollowing();
+
+    // Optimistic update
+    this.isFollowing.set(!wasFollowing);
+    this.followersCount.update((c) => wasFollowing ? c - 1 : c + 1);
+
+    const request = wasFollowing
+      ? this.userService.unfollowUser(userId)
+      : this.userService.followUser(userId);
+
+    request.subscribe({
+      next: (res) => {
+        this.isFollowing.set(res.is_following);
+        this.followersCount.set(res.followers_count);
+        this.isFollowLoading.set(false);
+      },
+      error: () => {
+        // Rollback
+        this.isFollowing.set(wasFollowing);
+        this.followersCount.update((c) => wasFollowing ? c + 1 : c - 1);
+        this.isFollowLoading.set(false);
       },
     });
   }
@@ -66,13 +128,13 @@ export class ProfileComponent implements OnInit {
   }
 
   loadTabUsers() {
-    const userId = this.user()?.uid;
-    if (!userId) return;
+    if (!this.user()) return;
 
     this.tabLoading.set(true);
     this.tabCurrentPage.set(1);
     this.tabUsers.set([]);
 
+    const userId = this.user()!.uid;
     const request = this.activeTab() === 'followers'
       ? this.userService.getFollowers(userId, 1, this.tabSearchQuery())
       : this.userService.getFollowing(userId, 1, this.tabSearchQuery());
@@ -136,9 +198,16 @@ export class ProfileComponent implements OnInit {
       : this.userService.followUser(userId);
 
     request.subscribe({
-      next: () => {
-        // Reload profile to get updated counts
-        this.userService.loadMyProfile().subscribe();
+      next: (res) => {
+        this.tabUsers.update((users) =>
+          users.map((u) =>
+            u.uid === userId ? { ...u, is_following: res.is_following } : u
+          )
+        );
+        // Update own following count if on someone else's profile
+        if (!this.isOwnProfile()) {
+          this.followingCount.update((c) => res.is_following ? c + 1 : c - 1);
+        }
       },
       error: () => {
         // Rollback
