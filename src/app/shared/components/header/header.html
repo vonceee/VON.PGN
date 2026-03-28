@@ -163,7 +163,7 @@
       </svg>
       Messages
       @if (chatService.totalUnreadCount() > 0) {
-        <span class="ml-auto min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold">
+        <span class="ml-auto min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold">
           {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
         </span>
       }

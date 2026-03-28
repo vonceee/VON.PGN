@@ -1,8 +1,6 @@
-<div class="chat-list-container h-full flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800">
+<div class="chat-list-container h-full flex flex-col border-r border-border-theme">
   <!-- Header -->
-  <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800">
-    <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-3">Messages</h2>
-
+  <div class="px-4 py-3">
     <!-- Search / New Chat -->
     <div class="relative" #searchContainer>
       <div class="flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 focus-within:border-cyan-500/60 transition-colors">
@@ -14,7 +12,7 @@
         <input
           #searchInput
           type="text"
-          placeholder="Search or start new chat..."
+          placeholder="Search..."
           [value]="searchQuery()"
           (input)="onSearchInput($event)"
           (focus)="searchQuery().length >= 2 && searchResults().length > 0 && isSearchOpen.set(true)"
@@ -96,7 +94,7 @@
                 {{ getLastMessagePreview(conversation) }}
               </span>
               @if (conversation.unread_count > 0) {
-                <span class="shrink-0 min-w-[20px] h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold">
+                <span class="shrink-0 min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold">
                   {{ conversation.unread_count > 99 ? '99+' : conversation.unread_count }}
                 </span>
               }
