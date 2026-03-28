@@ -1,8 +1,9 @@
 import { Component, inject, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
+import { ChatService } from '../../core/services/chat.service';
 import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
 
@@ -16,6 +17,8 @@ export class UserProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private chatService = inject(ChatService);
+  private router = inject(Router);
 
   user = signal<UserProfile | null>(null);
   isLoading = signal(true);
@@ -25,6 +28,7 @@ export class UserProfileComponent implements OnInit {
   followersCount = signal(0);
   followingCount = signal(0);
   isFollowLoading = signal(false);
+  isMessaging = signal(false);
 
   activeTab = signal<'followers' | 'following'>('followers');
   tabUsers = signal<FollowUser[]>([]);
@@ -117,6 +121,25 @@ export class UserProfileComponent implements OnInit {
         this.isFollowing.set(wasFollowing);
         this.followersCount.update((c) => wasFollowing ? c + 1 : c - 1);
         this.isFollowLoading.set(false);
+      },
+    });
+  }
+
+  messageUser() {
+    if (!this.isAuthenticated() || this.isOwnProfile() || this.isMessaging()) return;
+
+    const userId = this.user()?.uid;
+    if (!userId) return;
+
+    this.isMessaging.set(true);
+
+    this.chatService.openConversationWith(parseInt(userId)).subscribe({
+      next: () => {
+        this.isMessaging.set(false);
+        this.router.navigate(['/chat']);
+      },
+      error: () => {
+        this.isMessaging.set(false);
       },
     });
   }

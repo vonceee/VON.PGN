@@ -1,0 +1,83 @@
+@if (chatService.activeConversationId()) {
+  <div class="chat-window h-full flex flex-col bg-slate-50 dark:bg-slate-950">
+    <!-- Chat Header -->
+    <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+      <div class="relative shrink-0">
+        <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-sm font-semibold text-slate-700 dark:text-white uppercase">
+          {{ getConversationName().charAt(0) || '?' }}
+        </div>
+        @if (isUserOnline()) {
+          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+        }
+      </div>
+      <div class="flex flex-col">
+        <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ getConversationName() }}</span>
+        <span [class]="'text-xs ' + (isUserOnline() ? 'text-emerald-500' : 'text-slate-400 dark:text-slate-500')">
+          {{ getLastSeenText() }}
+        </span>
+      </div>
+
+      <div class="ml-auto flex items-center gap-1">
+        @if (chatService.isConnected()) {
+          <span class="w-2 h-2 rounded-full bg-emerald-500" title="Connected"></span>
+        } @else {
+          <span class="w-2 h-2 rounded-full bg-amber-500" title="Reconnecting..."></span>
+        }
+      </div>
+    </div>
+
+    <!-- Messages Area -->
+    <div
+      #messagesContainer
+      (scroll)="onScroll()"
+      class="flex-1 overflow-y-auto px-4 py-3 scrollbar-thin">
+      @if (chatService.isLoadingMessages() && chatService.messages().length === 0) {
+        <div class="flex items-center justify-center h-full">
+          <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      } @else if (chatService.messages().length === 0) {
+        <div class="flex flex-col items-center justify-center h-full text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-12 h-12 text-slate-300 dark:text-slate-600 mb-3">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+          </svg>
+          <p class="text-sm text-slate-500 dark:text-slate-400">No messages yet</p>
+          <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Send a message to start the conversation</p>
+        </div>
+      } @else {
+        @if (chatService.hasMoreMessages()) {
+          <div class="flex justify-center py-2">
+            <button
+              (click)="chatService.loadMoreMessages()"
+              class="text-xs text-cyan-500 hover:text-cyan-600 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium transition-colors">
+              Load earlier messages
+            </button>
+          </div>
+        }
+        @for (message of chatService.messages(); track trackByMessageId($index, message)) {
+          <app-message-bubble [message]="message" />
+        }
+        <!-- Scroll trigger: fires on every render; internally schedules
+             scrollToBottom via rAF only when the message count actually grew. -->
+        {{ onMessagesChanged() }}
+      }
+    </div>
+
+    <!-- Message Input -->
+    <app-message-input />
+  </div>
+} @else {
+  <!-- Empty State -->
+  <div class="h-full flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 text-center px-8">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor"
+      class="w-20 h-20 text-slate-200 dark:text-slate-800 mb-4">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+    </svg>
+    <h3 class="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-1">Select a conversation</h3>
+    <p class="text-sm text-slate-400 dark:text-slate-500 max-w-xs">
+      Choose a conversation from the sidebar or search for a user to start a new chat
+    </p>
+  </div>
+}

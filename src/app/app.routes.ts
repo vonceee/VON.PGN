@@ -15,6 +15,7 @@ import { CoachesComponent } from './features/coaches/coaches.component';
 import { CoachDetailComponent } from './features/coaches/coach-detail/coach-detail.component';
 import { TournamentsComponent } from './features/tournaments/tournaments.component';
 import { TournamentDetailComponent } from './features/tournaments/tournament-detail/tournament-detail.component';
+import { ChatComponent } from './features/chat/chat.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
 
@@ -99,6 +100,12 @@ export const routes: Routes = [
         path: 'tournaments/:id',
         component: TournamentDetailComponent,
         title: 'Tournament Details - CHESS.PGN',
+      },
+      {
+        path: 'chat',
+        component: ChatComponent,
+        canActivate: [authGuard],
+        title: 'Messages - CHESS.PGN',
       }
     ],
   },

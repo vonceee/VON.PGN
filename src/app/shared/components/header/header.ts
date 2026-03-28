@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ThemeService } from '../../../core/services/theme.service';
 import { UserService, UserSearchResult } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ChatService } from '../../../core/services/chat.service';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 
 @Component({
@@ -19,6 +20,7 @@ export class Header {
   themeService = inject(ThemeService);
   userService = inject(UserService);
   authService = inject(AuthService);
+  chatService = inject(ChatService);
   private router = inject(Router);
 
   @ViewChild('profileContainer') profileContainer!: ElementRef;
@@ -33,6 +35,10 @@ export class Header {
   private searchSubject = new Subject<string>();
 
   constructor() {
+    if (this.authService.isAuthenticated()) {
+      this.chatService.loadUnreadCount();
+    }
+
     this.searchSubject
       .pipe(
         debounceTime(300),
