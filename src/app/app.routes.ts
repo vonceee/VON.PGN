@@ -16,6 +16,8 @@ import { CoachDetailComponent } from './features/coaches/coach-detail/coach-deta
 import { TournamentsComponent } from './features/tournaments/tournaments.component';
 import { TournamentDetailComponent } from './features/tournaments/tournament-detail/tournament-detail.component';
 import { ChatComponent } from './features/chat/chat.component';
+import { MatchmakingComponent } from './features/play/matchmaking/matchmaking.component';
+import { LiveGameComponent } from './features/play/live-game/live-game.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
 
@@ -106,6 +108,18 @@ export const routes: Routes = [
         component: ChatComponent,
         canActivate: [authGuard],
         title: 'Messages - CHESS.PGN',
+      },
+      {
+        path: 'play',
+        component: MatchmakingComponent,
+        canActivate: [authGuard],
+        title: 'Play - CHESS.PGN',
+      },
+      {
+        path: 'play/:gameId',
+        component: LiveGameComponent,
+        canActivate: [authGuard],
+        title: 'Game - CHESS.PGN',
       }
     ],
   },
