@@ -4,8 +4,14 @@
   >
     <div class="w-full flex flex-row gap-8 items-start">
       <div class="w-full flex flex-col items-center">
-        <div class="w-full max-w-125 aspect-square">
-          <div #boardRef class="w-full h-full"></div>
+        <div class="w-full max-w-125 aspect-square relative">
+          <app-tactics-board
+            [puzzle]="currentPuzzle()"
+            (puzzleSolved)="onPuzzleSolved()"
+            (puzzleFailed)="onPuzzleFailed()"
+            (userColorChange)="onUserColorChange($event)"
+            class="absolute inset-0 block">
+          </app-tactics-board>
         </div>
       </div>
 

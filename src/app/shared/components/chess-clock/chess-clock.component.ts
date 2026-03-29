@@ -14,7 +14,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="clock-container"
+      class="clock-container border border-border-theme"
       [class.clock-active]="isActive"
       [class.clock-low]="displayTime < 10000"
       [class.clock-critical]="displayTime < 3000"
@@ -30,8 +30,6 @@ import {
       justify-content: space-between;
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
-      background: rgb(30 41 59);
-      border: 2px solid transparent;
       min-width: 160px;
       transition: border-color 0.2s, background-color 0.2s;
     }
@@ -50,13 +48,11 @@ import {
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
-      color: rgb(148 163 184);
     }
     .clock-time {
       font-size: 1.5rem;
       font-weight: 700;
       font-variant-numeric: tabular-nums;
-      color: rgb(226 232 240);
       font-family: 'SF Mono', 'Fira Code', monospace;
     }
     @keyframes pulse-critical {

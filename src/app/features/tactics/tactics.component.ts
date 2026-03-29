@@ -1,41 +1,31 @@
 import {
   Component,
-  ElementRef,
   ViewChild,
   OnInit,
   inject,
-  NgZone,
   signal,
   computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TacticsService, Puzzle } from '../../core/services/tactics.service';
 import { UserService } from '../../core/services/user.service';
-import { Chess } from 'chess.js';
-import { Chessground } from 'chessground';
-import { Api } from 'chessground/api';
+import { TacticsBoardComponent } from '../../shared/components/tactics-board/tactics-board.component';
 
 @Component({
   selector: 'app-tactics',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TacticsBoardComponent],
   templateUrl: './tactics.component.html',
 })
 export class TacticsComponent implements OnInit {
   private tacticsService = inject(TacticsService);
   private userService = inject(UserService);
-  private ngZone = inject(NgZone);
 
   currentUser = this.userService.currentUser;
 
-  @ViewChild('boardRef', { static: true }) boardRef!: ElementRef;
-
-  private board!: Api;
-  private chess = new Chess();
+  @ViewChild(TacticsBoardComponent) boardComponent!: TacticsBoardComponent;
 
   currentPuzzle = signal<Puzzle | null>(null);
-  solutionMoves: string[] = [];
-  currentMoveIndex = 0;
   isLoading = signal<boolean>(true);
   hasRevealedSolution = signal<boolean>(false);
   userColor = signal<'white' | 'black'>('white');
@@ -46,6 +36,7 @@ export class TacticsComponent implements OnInit {
   xpEarned = signal<number | null>(null);
   userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
+
   ngOnInit() {
     this.userService.loadMyProfile().subscribe(() => {
       this.newStreak.set(this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
@@ -63,96 +54,12 @@ export class TacticsComponent implements OnInit {
     this.tacticsService.getDailyPuzzle().subscribe((res) => {
       this.currentPuzzle.set(res.data);
       this.isLoading.set(false);
-
-      const p = this.currentPuzzle();
-      if (!p) {
-        return;
-      }
-      this.solutionMoves = p.moves.split(' ');
-      this.currentMoveIndex = 0;
-      this.initPuzzle();
     });
   }
 
-  initPuzzle() {
-    const p = this.currentPuzzle();
-    if (!p) return;
-
-    this.chess.load(p.fen);
-
-    const opponentInitialMove = this.solutionMoves[this.currentMoveIndex];
-    this.chess.move(this.parseUciMove(opponentInitialMove));
-    this.currentMoveIndex++;
-    this.userColor.set(this.chess.turn() === 'w' ? 'white' : 'black');
-
-    this.board = Chessground(this.boardRef.nativeElement, {
-      fen: this.chess.fen(),
-      orientation: this.userColor(),
-      turnColor: this.userColor(),
-      coordinates: false,
-      movable: {
-        color: this.userColor(),
-        free: false,
-        dests: this.calculateDests(),
-        events: {
-          after: (orig, dest) => {
-            this.ngZone.run(() => {
-              this.onUserMove(orig, dest);
-            });
-          },
-        },
-      },
-    });
-  }
-
-  onUserMove(orig: any, dest: any) {
-    if (this.status() !== 'playing') return;
-
-    const expectedMove = this.solutionMoves[this.currentMoveIndex];
-    const userMoveStr = `${orig}${dest}`; // e.g., "e2e4"
-
-    if (expectedMove.startsWith(userMoveStr)) {
-      this.chess.move(this.parseUciMove(expectedMove));
-      this.currentMoveIndex++;
-
-      this.board.set({
-        fen: this.chess.fen(),
-        turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
-      });
-
-      if (this.currentMoveIndex >= this.solutionMoves.length) {
-        this.winPuzzle();
-      } else {
-        setTimeout(() => {
-          this.playOpponentMove();
-        }, 500);
-      }
-    } else {
-      this.board.set({
-        fen: this.chess.fen(),
-        turnColor: this.userColor(),
-      });
-
-      this.failPuzzle();
-    }
-  }
-
-  playOpponentMove() {
-    const oppMove = this.solutionMoves[this.currentMoveIndex];
-    this.chess.move(this.parseUciMove(oppMove));
-    this.currentMoveIndex++;
-
-    this.board.set({
-      fen: this.chess.fen(),
-      turnColor: this.userColor(),
-      movable: { dests: this.calculateDests() },
-    });
-  }
-
-  winPuzzle() {
+  onPuzzleSolved() {
     this.status.set('success');
     this.newStreak.update((s) => s + 1);
-    this.board.set({ movable: { color: undefined } });
 
     const pId = this.currentPuzzle()?.id;
     if (!pId) return;
@@ -166,10 +73,9 @@ export class TacticsComponent implements OnInit {
     });
   }
 
-  failPuzzle() {
+  onPuzzleFailed() {
     this.status.set('failed');
     this.newStreak.set(0);
-    this.board.set({ movable: { color: undefined } });
 
     const pId = this.currentPuzzle()?.id;
     if (!pId) return;
@@ -183,41 +89,15 @@ export class TacticsComponent implements OnInit {
     });
   }
 
+  onUserColorChange(color: 'white' | 'black') {
+    this.userColor.set(color);
+  }
+
   revealSolution() {
     this.hasRevealedSolution.set(true);
-
-    const playNextMove = () => {
-      if (this.currentMoveIndex >= this.solutionMoves.length) return;
-
-      const move = this.solutionMoves[this.currentMoveIndex];
-      this.chess.move(this.parseUciMove(move));
-      this.currentMoveIndex++;
-
-      this.board.set({
-        fen: this.chess.fen(),
-        turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
-      });
-
-      setTimeout(playNextMove, 750);
-    };
-
-    playNextMove();
-  }
-
-  private calculateDests() {
-    const dests = new Map();
-    this.chess.moves({ verbose: true }).forEach((m) => {
-      if (!dests.has(m.from)) dests.set(m.from, []);
-      dests.get(m.from).push(m.to);
-    });
-    return dests;
-  }
-
-  private parseUciMove(uci: string): { from: string; to: string; promotion?: string } {
-    return {
-      from: uci.substring(0, 2),
-      to: uci.substring(2, 4),
-      promotion: uci.length > 4 ? uci.substring(4, 5) : undefined,
-    };
+    if (this.boardComponent) {
+      this.boardComponent.revealSolution();
+    }
   }
 }
+
