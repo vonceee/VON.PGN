@@ -20,6 +20,7 @@ import { MatchmakingComponent } from './features/play/matchmaking/matchmaking.co
 import { LiveGameComponent } from './features/play/live-game/live-game.component';
 import { adminGuard } from './core/guards/admin.guard';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
+import { environment } from '../environments/environment';
 
 export const routes: Routes = [
   {
@@ -109,18 +110,20 @@ export const routes: Routes = [
         canActivate: [authGuard],
         title: 'Messages - CHESS.PGN',
       },
-      {
-        path: 'play',
-        component: MatchmakingComponent,
-        canActivate: [authGuard],
-        title: 'Play - CHESS.PGN',
-      },
-      {
-        path: 'play/:gameId',
-        component: LiveGameComponent,
-        canActivate: [authGuard],
-        title: 'Game - CHESS.PGN',
-      }
+      ...(environment.production ? [] : [
+        {
+          path: 'play',
+          component: MatchmakingComponent,
+          canActivate: [authGuard],
+          title: 'Play - CHESS.PGN',
+        },
+        {
+          path: 'play/:gameId',
+          component: LiveGameComponent,
+          canActivate: [authGuard],
+          title: 'Game - CHESS.PGN',
+        }
+      ])
     ],
   },
   {

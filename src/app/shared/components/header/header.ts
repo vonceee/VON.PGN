@@ -6,6 +6,7 @@ import { UserService, UserSearchResult } from '../../../core/services/user.servi
 import { AuthService } from '../../../core/services/auth.service';
 import { ChatService } from '../../../core/services/chat.service';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +28,7 @@ export class Header {
   @ViewChild('searchContainer') searchContainer!: ElementRef;
 
   isProfileDropdownOpen = signal(false);
+  isProduction = environment.production;
   searchQuery = signal('');
   searchResults = signal<UserSearchResult[]>([]);
   isSearchOpen = signal(false);
