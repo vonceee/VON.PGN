@@ -1,549 +1,784 @@
-<div class="mx-auto p-8">
+<div class="wizard-container">
+  <!-- Header -->
   <div class="flex justify-between items-center mb-8">
     <div class="flex items-center gap-4">
-      <button
-        (click)="location.back()"
-        class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
-      >
+      <button (click)="location.back()"
+        class="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
         Back
       </button>
       <h1 class="text-3xl font-bold m-0">{{ tournamentId() ? 'Edit Tournament' : 'New Tournament' }}</h1>
     </div>
-    <button
-      [disabled]="tournamentForm.invalid"
-      (click)="saveTournament()"
-      class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-    >
-      {{ tournamentId() ? 'Save Changes' : 'Create Tournament' }}
-    </button>
   </div>
 
-  <!-- Section Tabs -->
-  <div class="flex gap-1 mb-8 border-b border-border-theme overflow-x-auto">
-    @for (section of sections; track section.key) {
-      <button
-        (click)="setSection(section.key)"
-        class="px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors"
-        [ngClass]="{
-          'text-cyan-400 border-b-2 border-cyan-400': activeSection() === section.key,
-          'text-slate-500 hover:text-slate-900 dark:hover:text-white': activeSection() !== section.key
-        }">
-        {{ section.label }}
-      </button>
-    }
+  <!-- Progress Indicator -->
+  <div class="progress-bar mb-10">
+    <div class="progress-steps">
+      @for (step of steps; track step.key; let i = $index) {
+      <div class="step-item" [ngClass]="'step-' + getStepStatus(i)">
+        <!-- Connector line (before step) -->
+        @if (i > 0) {
+        <div class="step-connector" [ngClass]="{'completed': stepsCompleted().has(i)}"></div>
+        }
+        <!-- Step circle -->
+        <button type="button" class="step-circle" [disabled]="!isStepClickable(i)" (click)="goToStep(i)">
+          @if (getStepStatus(i) === 'completed') {
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+            <path fill-rule="evenodd"
+              d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+              clip-rule="evenodd" />
+          </svg>
+          } @else {
+          {{ i + 1 }}
+          }
+        </button>
+        <!-- Step label -->
+        <span class="step-label">{{ step.label }}</span>
+      </div>
+      }
+    </div>
   </div>
 
+  <!-- Form -->
   <form [formGroup]="tournamentForm">
-    <!-- Basic Info -->
-    @if (activeSection() === 'basic') {
-      <div class="border border-border-theme rounded-lg p-6">
-        <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">Basic Information</h2>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium">Tournament Name</label>
-          <input type="text" formControlName="name" placeholder="e.g. Manila Open Chess Championship 2026"
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-        </div>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400">Description</label>
-          <textarea formControlName="description" rows="5"
-            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"></textarea>
-        </div>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium">Banner Image URL</label>
-          <input type="text" formControlName="bannerImage" placeholder="https://..."
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-        </div>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium">Status</label>
-          <select formControlName="status"
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 bg-white dark:bg-slate-900">
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="past">Past</option>
-          </select>
-        </div>
-      </div>
-    }
 
-    <!-- Dates & Location -->
-    @if (activeSection() === 'dates') {
-      <div class="border border-border-theme rounded-lg p-6">
-        <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">Dates & Location</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label class="block mb-2 font-medium">Start Date</label>
-            <input type="date" formControlName="startDate"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-          <div>
-            <label class="block mb-2 font-medium">End Date</label>
-            <input type="date" formControlName="endDate"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
+    <!-- Step 1: Basic Info -->
+    @if (currentStep() === 0) {
+    <div class="step-content">
+      <h2 class="step-title">Basic Information</h2>
+      <div class="field-group">
+        <label class="field-label required">Tournament Name</label>
+        <input type="text" formControlName="name" placeholder="e.g. Mobile Chess Bus Tournament 2026"
+          [class]="inputClass('name')" (blur)="hasError('name')" />
+        @if (hasError('name')) {
+        <div class="field-error">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+            <path fill-rule="evenodd"
+              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+              clip-rule="evenodd" />
+          </svg>
+          {{ getError('name') }}
         </div>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium">Registration Deadline</label>
-          <input type="date" formControlName="registrationDeadline"
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-        </div>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium">Venue Location</label>
-          <input type="text" formControlName="location" placeholder="e.g. SMX Convention Center, Pasay City, Philippines"
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label class="block mb-2 font-medium">Latitude</label>
-            <input type="number" step="0.0001" formControlName="lat"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-          <div>
-            <label class="block mb-2 font-medium">Longitude</label>
-            <input type="number" step="0.0001" formControlName="lng"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-        </div>
-      </div>
-    }
-
-    <!-- Format -->
-    @if (activeSection() === 'format') {
-      <div class="border border-border-theme rounded-lg p-6">
-        <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">Format & Rules</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label class="block mb-2 font-medium">Format</label>
-            <input type="text" formControlName="format" placeholder="e.g. Swiss System, 9 Rounds"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-          <div>
-            <label class="block mb-2 font-medium">Time Control</label>
-            <input type="text" formControlName="timeControl" placeholder="e.g. 90 min + 30 sec increment"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div>
-            <label class="block mb-2 font-medium">Rounds</label>
-            <input type="number" formControlName="rounds"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-          <div>
-            <label class="block mb-2 font-medium">Max Participants</label>
-            <input type="number" formControlName="maxParticipants"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-          <div>
-            <label class="block mb-2 font-medium">Current Participants</label>
-            <input type="number" formControlName="currentParticipants"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label class="block mb-2 font-medium">Entry Fee</label>
-            <input type="text" formControlName="entryFee" placeholder="e.g. ₱2,500"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-          <div>
-            <label class="block mb-2 font-medium">Total Prize Pool</label>
-            <input type="text" formControlName="prizePool" placeholder="e.g. ₱500,000"
-              class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-          </div>
-        </div>
-      </div>
-    }
-
-    <!-- Organizer -->
-    @if (activeSection() === 'organizer') {
-      <div class="border border-border-theme rounded-lg p-6">
-        <h2 class="mt-0 mb-6 border-b border-border-theme pb-2 text-2xl font-semibold">Organizer</h2>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium">Organizer Name</label>
-          <input type="text" formControlName="organizer" placeholder="e.g. National Chess Federation of the Philippines"
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-        </div>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium">Contact Email</label>
-          <input type="email" formControlName="contactEmail" placeholder="e.g. tournaments@ncfph.org"
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-        </div>
-      </div>
-    }
-
-    <!-- Eligibility -->
-    @if (activeSection() === 'eligibility') {
-      <div class="border border-border-theme rounded-lg p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="mt-0 mb-0 text-2xl font-semibold">Eligibility Requirements</h2>
-          <button type="button" (click)="addEligibilityItem()"
-            class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900">+ Add Requirement</button>
-        </div>
-        <div class="space-y-3">
-          @for (control of eligibilityArray.controls; track $index; let i = $index) {
-            <div class="flex gap-2 items-center">
-              <input type="text" [formControl]="eligibilityControl(i)" placeholder="e.g. Bonafide NCFP member"
-                class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-              <button type="button" (click)="removeEligibilityItem(i)"
-                class="p-2 rounded bg-red-500 hover:bg-red-600 text-white text-sm">✕</button>
-            </div>
-          }
-          @if (eligibilityArray.length === 0) {
-            <p class="text-slate-500 text-sm">No eligibility requirements added. Click "Add Requirement" to add one.</p>
-          }
-        </div>
-      </div>
-    }
-
-    <!-- Prizes -->
-    @if (activeSection() === 'prizes') {
-      <div class="border border-border-theme rounded-lg p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="mt-0 mb-0 text-2xl font-semibold">Prize Categories</h2>
-          <button type="button" (click)="addCategory()"
-            class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900">+ Add Category</button>
-        </div>
-        @if (categoriesArray.length === 0) {
-          <p class="text-slate-500 text-sm mb-4">No prize categories added. The total prize pool will be displayed instead.</p>
         }
-        <div class="space-y-6">
-          @for (cat of categoriesArray.controls; track $index; let ci = $index) {
-            <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-lg p-5">
-              <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg m-0">Category {{ ci + 1 }}</h3>
-                <button type="button" (click)="removeCategory(ci)"
-                  class="px-2 py-1 text-xs rounded font-medium bg-red-500 hover:bg-red-600 text-white">Remove</button>
-              </div>
-              <div class="mb-4">
-                <label class="block mb-1 text-sm font-medium">Category Name</label>
-                <input type="text" [formControl]="$any(categoryGroup(ci).get('name'))" placeholder="e.g. Open, Under 14"
-                  class="w-full p-2.5 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-              </div>
-              <div class="mb-4">
-                <div class="flex justify-between items-center mb-2">
-                  <label class="text-sm font-medium">Category Eligibility</label>
-                  <button type="button" (click)="addCategoryEligibility(ci)"
-                    class="text-xs text-cyan-500 hover:text-cyan-400">+ Add</button>
-                </div>
-                @for (el of getCategoryEligibility(ci).controls; track $index; let ei = $index) {
-                  <div class="flex gap-2 items-center mb-2">
-                    <input type="text" [formControl]="categoryEligibilityControl(ci, ei)" placeholder="e.g. Bonafide NCFP member"
-                      class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                    <button type="button" (click)="removeCategoryEligibility(ci, ei)"
-                      class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs">✕</button>
-                  </div>
-                }
-              </div>
-              <div class="mb-4">
-                <label class="text-sm font-medium block mb-2">Main Prizes</label>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label class="block mb-1 text-xs text-slate-500">Champion</label>
-                    <input type="text" [formControl]="$any(categoryGroup(ci).get('champion'))" placeholder="₱50,000 + trophy"
-                      class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                  </div>
-                  <div>
-                    <label class="block mb-1 text-xs text-slate-500">2nd Place</label>
-                    <input type="text" [formControl]="$any(categoryGroup(ci).get('2nd_place'))"
-                      class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                  </div>
-                  <div>
-                    <label class="block mb-1 text-xs text-slate-500">3rd Place</label>
-                    <input type="text" [formControl]="$any(categoryGroup(ci).get('3rd_place'))"
-                      class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                  </div>
-                  <div>
-                    <label class="block mb-1 text-xs text-slate-500">4th Place</label>
-                    <input type="text" [formControl]="$any(categoryGroup(ci).get('4th_place'))"
-                      class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                  </div>
-                  <div>
-                    <label class="block mb-1 text-xs text-slate-500">5th Place</label>
-                    <input type="text" [formControl]="$any(categoryGroup(ci).get('5th_place'))"
-                      class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                  </div>
-                  <div>
-                    <label class="block mb-1 text-xs text-slate-500">6th–10th</label>
-                    <input type="text" [formControl]="$any(categoryGroup(ci).get('6th_to_10th'))"
-                      class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                  </div>
-                  <div>
-                    <label class="block mb-1 text-xs text-slate-500">11th–15th</label>
-                    <input type="text" [formControl]="$any(categoryGroup(ci).get('11th_to_15th'))"
-                      class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between items-center mb-2">
-                  <label class="text-sm font-medium">Special Awards</label>
-                  <button type="button" (click)="addSpecialAward(ci)"
-                    class="text-xs text-cyan-500 hover:text-cyan-400">+ Add</button>
-                </div>
-                @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
-                  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded p-3 mb-3">
-                    <div class="flex gap-2 items-center mb-2">
-                      <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('name'))" placeholder="Award name"
-                        class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                      <select [formControl]="$any(specialAwardGroup(ci, ai).get('type'))"
-                        class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 bg-white dark:bg-slate-900">
-                        <option value="simple">Simple</option>
-                        <option value="nested">1st/2nd/3rd</option>
-                      </select>
-                      <button type="button" (click)="removeSpecialAward(ci, ai)"
-                        class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs">✕</button>
-                    </div>
-                    @if ($any(specialAwardGroup(ci, ai).get('type')).value === 'simple') {
-                      <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('value'))" placeholder="Prize value"
-                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                    } @else {
-                      <div class="grid grid-cols-3 gap-2">
-                        <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('1st'))" placeholder="1st prize"
-                          class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                        <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('2nd'))" placeholder="2nd prize"
-                          class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                        <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('3rd'))" placeholder="3rd prize"
-                          class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            </div>
-          }
-        </div>
       </div>
-    }
-
-    <!-- Schedule -->
-    @if (activeSection() === 'schedule') {
-      <div class="border border-border-theme rounded-lg p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="mt-0 mb-0 text-2xl font-semibold">Schedule</h2>
-          <button type="button" (click)="addScheduleDay()"
-            class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900">+ Add Day</button>
+      <div class="field-group">
+        <label class="field-label optional">Description</label>
+        <textarea formControlName="description" rows="5"
+          placeholder="you can add description, social media links, etc..."
+          class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label required">Status</label>
+        <select formControlName="status" [class]="inputClass('status')">
+          <option value="upcoming">Upcoming</option>
+          <option value="ongoing">Ongoing</option>
+          <option value="past">Past</option>
+        </select>
+        @if (hasError('status')) {
+        <div class="field-error">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+            <path fill-rule="evenodd"
+              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+              clip-rule="evenodd" />
+          </svg>
+          {{ getError('status') }}
         </div>
-        @if (scheduleDaysArray.length === 0) {
-          <p class="text-slate-500 text-sm">No schedule days added. Click "Add Day" to build the tournament schedule.</p>
         }
-        <div class="space-y-4">
-          @for (day of scheduleDaysArray.controls; track $index; let di = $index) {
-            <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-lg p-5">
-              <div class="flex justify-between items-center mb-4">
-                <div class="flex items-center gap-3">
-                  <span class="bg-slate-200 dark:bg-white/10 px-2 py-1 rounded text-xs font-bold">Day {{ di + 1 }}</span>
-                  <input type="date" [formControl]="$any(scheduleDayGroup(di).get('date'))"
-                    class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                </div>
-                <div class="flex gap-2">
-                  <button type="button" (click)="addScheduleEvent(di)"
-                    class="px-2 py-1 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900">+ Event</button>
-                  <button type="button" (click)="removeScheduleDay(di)"
-                    class="px-2 py-1 text-xs rounded font-medium bg-red-500 hover:bg-red-600 text-white">Remove Day</button>
-                </div>
-              </div>
-              <div class="space-y-2">
-                @for (event of getScheduleEvents(di).controls; track $index; let ei = $index) {
-                  <div class="flex gap-2 items-center">
-                    <input type="text" [formControl]="$any(scheduleEventGroup(di, ei).get('name'))" placeholder="Event name"
-                      class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                    <input type="text" [formControl]="$any(scheduleEventGroup(di, ei).get('time'))" placeholder="Time (e.g. 9:00 AM - 12:00 PM)"
-                      class="w-56 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400" />
-                    <button type="button" (click)="removeScheduleEvent(di, ei)"
-                      class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs">✕</button>
-                  </div>
-                }
-                @if (getScheduleEvents(di).length === 0) {
-                  <p class="text-slate-500 text-xs">No events for this day. Click "+ Event" to add one.</p>
-                }
-              </div>
-            </div>
-          }
-        </div>
       </div>
+    </div>
     }
-  </form>
 
-  <!-- Preview Modal -->
-  @if (showPreview()) {
-    <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/60 overflow-y-auto py-8" (click)="cancelPreview()">
-      <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-4xl mx-4 shadow-2xl" (click)="$event.stopPropagation()">
-        <!-- Modal Header -->
-        <div class="sticky top-0 bg-white dark:bg-slate-900 border-b border-border-theme rounded-t-2xl px-8 py-5 flex justify-between items-center z-10">
-          <div>
-            <h2 class="text-xl font-bold m-0">Preview</h2>
-            <p class="text-sm text-slate-500 m-0 mt-1">Review how this tournament will appear to users</p>
-          </div>
-          <button (click)="cancelPreview()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+    <!-- Step 2: Dates & Location -->
+    @if (currentStep() === 1) {
+    <div class="step-content">
+      <h2 class="step-title">Dates & Location</h2>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label required">Start Date</label>
+          <input type="date" formControlName="startDate" [class]="inputClass('startDate')" />
+          @if (hasError('startDate')) {
+          <div class="field-error">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+              <path fill-rule="evenodd"
+                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                clip-rule="evenodd" />
             </svg>
-          </button>
-        </div>
-
-        <!-- Preview Content -->
-        <div class="p-8">
-          @if (previewData(); as data) {
-            @if ($any(data)['bannerImage']) {
-              <div class="relative h-48 overflow-hidden rounded-xl mb-8">
-                <img [src]="$any(data)['bannerImage']" alt="Banner" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                <div class="absolute bottom-4 left-4">
-                  <span class="px-2.5 py-1 text-xs font-bold rounded-full"
-                    [ngClass]="{
-                      'bg-green-500 text-white': $any(data)['status'] === 'ongoing',
-                      'bg-blue-500 text-white': $any(data)['status'] === 'upcoming',
-                      'bg-slate-500 text-white': $any(data)['status'] === 'past'
-                    }">
-                    {{ $any(data)['status'] }}
-                  </span>
-                </div>
-              </div>
-            }
-
-            <h2 class="text-2xl font-bold mb-2">{{ $any(data)['name'] }}</h2>
-            @if ($any(data)['description']) {
-              <p class="text-slate-600 dark:text-slate-300 mb-6">{{ $any(data)['description'] }}</p>
-            }
-
-            <!-- Key Info Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Dates</span>
-                <span class="text-sm font-semibold">{{ formatDate($any(data)['dates']['start']) }} – {{ formatDate($any(data)['dates']['end']) }}</span>
-              </div>
-              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Location</span>
-                <span class="text-sm font-semibold">{{ $any(data)['location'] || '—' }}</span>
-              </div>
-              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Format</span>
-                <span class="text-sm font-semibold">{{ $any(data)['format'] || '—' }}</span>
-              </div>
-              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Time Control</span>
-                <span class="text-sm font-semibold">{{ $any(data)['timeControl'] || '—' }}</span>
-              </div>
-              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Rounds</span>
-                <span class="text-sm font-semibold">{{ $any(data)['rounds'] }}</span>
-              </div>
-              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Entry Fee</span>
-                <span class="text-sm font-semibold">{{ $any(data)['entryFee'] || '—' }}</span>
-              </div>
-              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Prize Pool</span>
-                <span class="text-sm font-semibold">{{ $any(data)['prizePool'] || '—' }}</span>
-              </div>
-              <div class="bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3 border border-slate-200 dark:border-slate-700">
-                <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1">Participants</span>
-                <span class="text-sm font-semibold">{{ $any(data)['participants']['current'] }} / {{ $any(data)['participants']['max'] }}</span>
-              </div>
-            </div>
-
-            @if ($any(data)['organizer']) {
-              <div class="mb-6">
-                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">Organizer</h3>
-                <p class="text-sm font-semibold">{{ $any(data)['organizer'] }}</p>
-                @if ($any(data)['contactEmail']) {
-                  <p class="text-sm text-cyan-500">{{ $any(data)['contactEmail'] }}</p>
-                }
-              </div>
-            }
-
-            @if ($any(data)['eligibility']?.length) {
-              <div class="mb-6">
-                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">Eligibility</h3>
-                <ul class="space-y-1">
-                  @for (req of $any(data)['eligibility']; track req) {
-                    <li class="text-sm flex items-start gap-2">
-                      <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
-                      {{ req }}
-                    </li>
-                  }
-                </ul>
-              </div>
-            }
-
-            @if ($any(data)['categories']) {
-              <div class="mb-6">
-                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-3">Prizes by Category</h3>
-                @for (cat of ($any(data)['categories'] | keyvalue); track cat.key) {
-                  <div class="mb-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
-                    <h4 class="font-bold mb-2 capitalize">{{ $any(cat.key).replace('_', ' ') }}</h4>
-                    <table class="w-full text-sm">
-                      <tbody>
-                        @for (prize of ($any(cat.value)['prizes'] | keyvalue); track prize.key) {
-                          <tr class="border-t border-border-theme first:border-0">
-                            <td class="py-1.5 font-semibold capitalize">{{ $any(prize.key).replace('_', ' ') }}</td>
-                            <td class="py-1.5 text-right text-slate-600 dark:text-slate-400">{{ prize.value }}</td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                    @if ($any(cat.value)['specialAwards']) {
-                      <div class="mt-3 pt-3 border-t border-border-theme">
-                        <span class="text-xs font-bold text-slate-500 uppercase">Special Awards</span>
-                        <div class="mt-1 space-y-1">
-                          @for (award of ($any(cat.value)['specialAwards'] | keyvalue); track award.key) {
-                            <div class="text-sm flex gap-2">
-                              <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
-                              <span>
-                                <span class="font-semibold">{{ award.key }}:</span>
-                                <span class="text-slate-600 dark:text-slate-400 ml-1">{{ $any(award.value) | json }}</span>
-                              </span>
-                            </div>
-                          }
-                        </div>
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            }
-
-            @if ($any(data)['schedule']) {
-              <div class="mb-6">
-                <h3 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase mb-3">Schedule</h3>
-                @for (day of ($any(data)['schedule'] | keyvalue); track day.key) {
-                  <div class="mb-3 border border-border-theme rounded-lg overflow-hidden">
-                    <div class="bg-slate-50 dark:bg-slate-800/50 px-4 py-2 border-b border-border-theme">
-                      <span class="text-xs font-bold text-cyan-500 uppercase">{{ $any(day.key).replace('_', ' ') }}</span>
-                      <span class="text-sm text-slate-600 dark:text-slate-400 ml-2">{{ formatDate(day.value.date) }}</span>
-                    </div>
-                    <table class="w-full text-sm">
-                      <tbody>
-                        @for (event of day.value.events; track event.name) {
-                          <tr class="border-t border-border-theme first:border-0">
-                            <td class="px-4 py-1.5 font-semibold">{{ event.name }}</td>
-                            <td class="px-4 py-1.5 text-right text-slate-600 dark:text-slate-400">{{ event.time }}</td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-                }
-              </div>
-            }
+            {{ getError('startDate') }}
+          </div>
           }
         </div>
-
-        <!-- Modal Footer -->
-        <div class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-border-theme rounded-b-2xl px-8 py-4 flex justify-end gap-3">
-          <button
-            (click)="cancelPreview()"
-            class="px-5 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors">
-            Go Back & Edit
+        <div class="field-group">
+          <label class="field-label required">End Date</label>
+          <input type="date" formControlName="endDate" [class]="inputClass('endDate')" />
+          @if (hasError('endDate')) {
+          <div class="field-error">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+              <path fill-rule="evenodd"
+                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                clip-rule="evenodd" />
+            </svg>
+            {{ getError('endDate') }}
+          </div>
+          }
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label optional">Registration Deadline</label>
+        <input type="date" formControlName="registrationDeadline"
+          class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+      </div>
+      <div class="field-group">
+        <label class="field-label required">Venue Location</label>
+        <input type="text" formControlName="location"
+          placeholder="e.g. Kai Mall, Almar, Zabarte, Caloocan City, Metro Manila" [class]="inputClass('location')" />
+        @if (hasError('location')) {
+        <div class="field-error">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+            <path fill-rule="evenodd"
+              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+              clip-rule="evenodd" />
+          </svg>
+          {{ getError('location') }}
+        </div>
+        }
+      </div>
+      <div class="field-group">
+        <label class="field-label optional">Google Maps Link</label>
+        <div class="flex gap-2">
+          <input type="text" [ngModel]="mapsLink()" (ngModelChange)="mapsLink.set($event)"
+            [ngModelOptions]="{standalone: true}" placeholder="Paste a Google Maps share link..."
+            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+          <button type="button" (click)="parseMapsLink()" [disabled]="mapsLinkLoading()"
+            class="px-4 py-3 rounded font-medium text-sm whitespace-nowrap bg-cyan-400 hover:bg-cyan-500 text-slate-900 disabled:opacity-50 transition-colors">
+            {{ mapsLinkLoading() ? 'Resolving...' : 'Parse Link' }}
           </button>
-          <button
-            [disabled]="saving()"
-            (click)="confirmSave()"
-            class="px-5 py-2.5 rounded-lg font-medium text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900 disabled:opacity-50 transition-colors">
-            {{ saving() ? 'Saving...' : (tournamentId() ? 'Confirm Update' : 'Confirm & Create') }}
-          </button>
+        </div>
+        @if (mapsLinkError()) {
+        <p class="text-xs text-red-500 mt-1.5">{{ mapsLinkError() }}</p>
+        }
+        <p class="text-xs text-slate-500 mt-1.5">Click Share on Google Maps, copy the link, and paste it here to
+          auto-fill coordinates</p>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label muted">Latitude</label>
+          <input type="number" step="0.0001" formControlName="lat"
+            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded focus:outline-none text-sm transition-colors" />
+        </div>
+        <div class="field-group">
+          <label class="field-label muted">Longitude</label>
+          <input type="number" step="0.0001" formControlName="lng"
+            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded focus:outline-none text-sm transition-colors" />
         </div>
       </div>
     </div>
-  }
+    }
+
+    <!-- Step 3: Format -->
+    @if (currentStep() === 2) {
+    <div class="step-content">
+      <h2 class="step-title">Format & Rules</h2>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label required">Format</label>
+          <input type="text" formControlName="format" placeholder="e.g. Swiss System, 9 Rounds"
+            [class]="inputClass('format')" />
+          @if (hasError('format')) {
+          <div class="field-error">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+              <path fill-rule="evenodd"
+                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                clip-rule="evenodd" />
+            </svg>
+            {{ getError('format') }}
+          </div>
+          }
+        </div>
+        <div class="field-group">
+          <label class="field-label required">Time Control</label>
+          <input type="text" formControlName="timeControl" placeholder="e.g. 90 min + 30 sec increment"
+            [class]="inputClass('timeControl')" />
+          @if (hasError('timeControl')) {
+          <div class="field-error">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+              <path fill-rule="evenodd"
+                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                clip-rule="evenodd" />
+            </svg>
+            {{ getError('timeControl') }}
+          </div>
+          }
+        </div>
+      </div>
+      <div class="field-row three-col">
+        <div class="field-group">
+          <label class="field-label required">Rounds</label>
+          <input type="number" formControlName="rounds" [class]="inputClass('rounds')" />
+          @if (hasError('rounds')) {
+          <div class="field-error">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+              <path fill-rule="evenodd"
+                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                clip-rule="evenodd" />
+            </svg>
+            {{ getError('rounds') }}
+          </div>
+          }
+        </div>
+        <div class="field-group">
+          <label class="field-label optional">Max Participants</label>
+          <input type="number" formControlName="maxParticipants"
+            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+        </div>
+        <div class="field-group">
+          <label class="field-label optional">Current Participants</label>
+          <input type="number" formControlName="currentParticipants"
+            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label required">Entry Fee</label>
+          <div class="currency-input-wrapper" [class.error]="hasError('entryFee')">
+            <span class="currency-prefix">&#8369;</span>
+            <input type="text" formControlName="entryFee" placeholder="0.00"
+              class="currency-input"
+              (input)="onCurrencyInput('entryFee', $event)"
+              (focus)="onCurrencyFocus($event)"
+              (blur)="onCurrencyBlur('entryFee', $event)" />
+          </div>
+          @if (hasError('entryFee')) {
+          <div class="field-error">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+              <path fill-rule="evenodd"
+                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                clip-rule="evenodd" />
+            </svg>
+            {{ getError('entryFee') }}
+          </div>
+          }
+        </div>
+        <div class="field-group">
+          <label class="field-label optional">Total Prize Pool</label>
+          <div class="currency-input-wrapper">
+            <span class="currency-prefix">&#8369;</span>
+            <input type="text" formControlName="prizePool" placeholder="0.00"
+              class="currency-input"
+              (input)="onCurrencyInput('prizePool', $event)"
+              (focus)="onCurrencyFocus($event)"
+              (blur)="onCurrencyBlur('prizePool', $event)" />
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Step 4: Organizer -->
+    @if (currentStep() === 3) {
+    <div class="step-content">
+      <h2 class="step-title">Organizer</h2>
+      <div class="field-group">
+        <label class="field-label required">Organizer Name</label>
+        <input type="text" formControlName="organizer" placeholder="e.g. National Chess Federation of the Philippines"
+          [class]="inputClass('organizer')" />
+        @if (hasError('organizer')) {
+        <div class="field-error">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+            <path fill-rule="evenodd"
+              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+              clip-rule="evenodd" />
+          </svg>
+          {{ getError('organizer') }}
+        </div>
+        }
+      </div>
+      <div class="field-group">
+        <label class="field-label required">Contact</label>
+        <input type="text" formControlName="contact" placeholder="e.g. tournaments@ncfph.org or 0917-123-4567"
+          [class]="inputClass('contact')" />
+        @if (hasError('contact')) {
+        <div class="field-error">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+            <path fill-rule="evenodd"
+              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+              clip-rule="evenodd" />
+          </svg>
+          {{ getError('contact') }}
+        </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Step 5: Registration -->
+    @if (currentStep() === 4) {
+    <div class="step-content">
+      <h2 class="step-title">Registration Instructions</h2>
+      <p class="text-xs text-slate-500 mb-4">Optional — provide instructions how to join your tournament (e.g. you can put here your google form links).</p>
+      <div class="field-group">
+        <label class="field-label optional">Registration Instructions</label>
+        <textarea formControlName="registrationInstructions" rows="8"
+          placeholder="e.g. to register, fill up this google form, or contact 0917-XXX-XXXX"
+          class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors text-sm"></textarea>
+      </div>
+    </div>
+    }
+
+    <!-- Step 6: Eligibility -->
+    @if (currentStep() === 5) {
+    <div class="step-content">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="step-title mb-0">Eligibility Requirements</h2>
+        <button type="button" (click)="addEligibilityItem()"
+          class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors">+
+          Add Requirement</button>
+      </div>
+      <p class="text-xs text-slate-500 mb-4">Optional — you can add, rating ranges, or other requirements.</p>
+      <div class="space-y-3">
+        @for (control of eligibilityArray.controls; track $index; let i = $index) {
+        <div class="flex gap-2 items-center">
+          <input type="text" [formControl]="eligibilityControl(i)" placeholder="e.g. 2200 & Below"
+            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+          <button type="button" (click)="removeEligibilityItem(i)"
+            class="p-2 rounded bg-red-500 hover:bg-red-600 text-white text-sm transition-colors">✕</button>
+        </div>
+        }
+        @if (eligibilityArray.length === 0) {
+        <p class="text-slate-400 text-sm py-4 text-center">No requirements added yet.</p>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Step 7: Prizes -->
+    @if (currentStep() === 6) {
+    <div class="step-content">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="step-title mb-0">Prize Categories</h2>
+        <button type="button" (click)="addCategory()"
+          class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors">+
+          Add Category</button>
+      </div>
+      <p class="text-xs text-slate-500 mb-4">Optional — skip if you only have a total prize pool (set in Format step).
+      </p>
+      @if (categoriesArray.length === 0) {
+      <p class="text-slate-400 text-sm py-4 text-center">No prize categories added.</p>
+      }
+      <div class="space-y-6">
+        @for (cat of categoriesArray.controls; track $index; let ci = $index) {
+        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-lg p-5">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-lg m-0">Category {{ ci + 1 }}</h3>
+            <button type="button" (click)="removeCategory(ci)"
+              class="px-2 py-1 text-xs rounded font-medium bg-red-500 hover:bg-red-600 text-white transition-colors">Remove</button>
+          </div>
+          <div class="field-group mb-4">
+            <label class="block mb-1 text-sm font-medium">Category Name</label>
+            <input type="text" [formControl]="$any(categoryGroup(ci).get('name'))" placeholder="e.g. Open, Under 14"
+              class="w-full p-2.5 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+          </div>
+          <div class="field-group mb-4">
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-sm font-medium">Category Eligibility</label>
+              <button type="button" (click)="addCategoryEligibility(ci)"
+                class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add</button>
+            </div>
+            @for (el of getCategoryEligibility(ci).controls; track $index; let ei = $index) {
+            <div class="flex gap-2 items-center mb-2">
+              <input type="text" [formControl]="categoryEligibilityControl(ci, ei)"
+                placeholder="e.g. Bonafide NCFP member"
+                class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              <button type="button" (click)="removeCategoryEligibility(ci, ei)"
+                class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs transition-colors">✕</button>
+            </div>
+            }
+          </div>
+          <div class="mb-4">
+            <label class="text-sm font-medium block mb-2">Main Prizes</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label class="block mb-1 text-xs text-slate-500">Champion</label>
+                <input type="text" [formControl]="$any(categoryGroup(ci).get('champion'))"
+                  placeholder="P50,000 + trophy"
+                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              </div>
+              <div>
+                <label class="block mb-1 text-xs text-slate-500">2nd Place</label>
+                <input type="text" [formControl]="$any(categoryGroup(ci).get('2nd_place'))"
+                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              </div>
+              <div>
+                <label class="block mb-1 text-xs text-slate-500">3rd Place</label>
+                <input type="text" [formControl]="$any(categoryGroup(ci).get('3rd_place'))"
+                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              </div>
+              <div>
+                <label class="block mb-1 text-xs text-slate-500">4th Place</label>
+                <input type="text" [formControl]="$any(categoryGroup(ci).get('4th_place'))"
+                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              </div>
+              <div>
+                <label class="block mb-1 text-xs text-slate-500">5th Place</label>
+                <input type="text" [formControl]="$any(categoryGroup(ci).get('5th_place'))"
+                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              </div>
+              <div>
+                <label class="block mb-1 text-xs text-slate-500">6th-10th</label>
+                <input type="text" [formControl]="$any(categoryGroup(ci).get('6th_to_10th'))"
+                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              </div>
+              <div>
+                <label class="block mb-1 text-xs text-slate-500">11th-15th</label>
+                <input type="text" [formControl]="$any(categoryGroup(ci).get('11th_to_15th'))"
+                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-sm font-medium">Special Awards</label>
+              <button type="button" (click)="addSpecialAward(ci)"
+                class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add</button>
+            </div>
+            @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded p-3 mb-3">
+              <div class="flex gap-2 items-center mb-2">
+                <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('name'))" placeholder="Award name"
+                  class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+                <select [formControl]="$any(specialAwardGroup(ci, ai).get('type'))"
+                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 bg-white dark:bg-slate-900 transition-colors">
+                  <option value="simple">Simple</option>
+                  <option value="nested">1st/2nd/3rd</option>
+                </select>
+                <button type="button" (click)="removeSpecialAward(ci, ai)"
+                  class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs transition-colors">✕</button>
+              </div>
+              @if ($any(specialAwardGroup(ci, ai).get('type')).value === 'simple') {
+              <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('value'))" placeholder="Prize value"
+                class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              } @else {
+              <div class="grid grid-cols-3 gap-2">
+                <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('1st'))" placeholder="1st prize"
+                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+                <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('2nd'))" placeholder="2nd prize"
+                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+                <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('3rd'))" placeholder="3rd prize"
+                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              </div>
+              }
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Step 8: Schedule -->
+    @if (currentStep() === 7) {
+    <div class="step-content">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="step-title mb-0">Schedule</h2>
+        <button type="button" (click)="addScheduleDay()"
+          class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors">+
+          Add Day</button>
+      </div>
+      <p class="text-xs text-slate-500 mb-4">Optional — you can add, onsite registration time, and/or starting round
+        time.</p>
+      @if (scheduleDaysArray.length === 0) {
+      <p class="text-slate-400 text-sm py-4 text-center">No schedule days added yet.</p>
+      }
+      <div class="space-y-4">
+        @for (day of scheduleDaysArray.controls; track $index; let di = $index) {
+        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-lg p-5">
+          <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center gap-3">
+              <span class="bg-slate-200 dark:bg-white/10 px-2 py-1 rounded text-xs font-bold">Day {{ di + 1 }}</span>
+              <input type="date" [formControl]="$any(scheduleDayGroup(di).get('date'))"
+                class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+            </div>
+            <div class="flex gap-2">
+              <button type="button" (click)="addScheduleEvent(di)"
+                class="px-2 py-1 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors">+
+                Event</button>
+              <button type="button" (click)="removeScheduleDay(di)"
+                class="px-2 py-1 text-xs rounded font-medium bg-red-500 hover:bg-red-600 text-white transition-colors">Remove
+                Day</button>
+            </div>
+          </div>
+          <div class="space-y-2">
+            @for (event of getScheduleEvents(di).controls; track $index; let ei = $index) {
+            <div class="flex gap-2 items-center">
+              <input type="text" [formControl]="$any(scheduleEventGroup(di, ei).get('name'))"
+                placeholder="e.g. Onsite Registration"
+                class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              <input type="text" [formControl]="$any(scheduleEventGroup(di, ei).get('time'))"
+                placeholder="Time (e.g. 9:00 AM - 11:00 AM)"
+                class="w-56 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+              <button type="button" (click)="removeScheduleEvent(di, ei)"
+                class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs transition-colors">✕</button>
+            </div>
+            }
+            @if (getScheduleEvents(di).length === 0) {
+            <p class="text-slate-400 text-xs">No events for this day.</p>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- Step 9: Review -->
+    @if (currentStep() === 8) {
+    <div class="step-content">
+      <h2 class="step-title">Review & Submit</h2>
+      <p class="text-sm text-slate-500 mb-8">Review all information before submitting. Click any section header to go
+        back and edit.</p>
+
+      @if (previewData(); as data) {
+      <!-- Basic Info -->
+      <div class="review-section">
+        <div class="review-header" (click)="goToStep(0)">
+          <h3>Basic Information</h3>
+          <span class="review-edit">Edit</span>
+        </div>
+        <div class="review-grid">
+          <div class="review-item">
+            <span class="review-label">Name</span>
+            <span class="review-value">{{ $any(data)['name'] || '—' }}</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Status</span>
+            <span class="review-value capitalize">{{ $any(data)['status'] }}</span>
+          </div>
+          @if ($any(data)['description']) {
+          <div class="review-item full-width">
+            <span class="review-label">Description</span>
+            <span class="review-value">{{ $any(data)['description'] }}</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Dates & Location -->
+      <div class="review-section">
+        <div class="review-header" (click)="goToStep(1)">
+          <h3>Dates & Location</h3>
+          <span class="review-edit">Edit</span>
+        </div>
+        <div class="review-grid">
+          <div class="review-item">
+            <span class="review-label">Dates</span>
+            <span class="review-value">{{ formatDate($any(data)['dates']['start']) }} - {{
+              formatDate($any(data)['dates']['end']) }}</span>
+          </div>
+          @if ($any(data)['registrationDeadline']) {
+          <div class="review-item">
+            <span class="review-label">Registration Deadline</span>
+            <span class="review-value">{{ formatDate($any(data)['registrationDeadline']) }}</span>
+          </div>
+          }
+          <div class="review-item">
+            <span class="review-label">Location</span>
+            <span class="review-value">{{ $any(data)['location'] || '—' }}</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Coordinates</span>
+            <span class="review-value">{{ $any(data)['coordinates']['lat'] }}, {{ $any(data)['coordinates']['lng']
+              }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Format -->
+      <div class="review-section">
+        <div class="review-header" (click)="goToStep(2)">
+          <h3>Format & Rules</h3>
+          <span class="review-edit">Edit</span>
+        </div>
+        <div class="review-grid">
+          <div class="review-item">
+            <span class="review-label">Format</span>
+            <span class="review-value">{{ $any(data)['format'] || '—' }}</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Time Control</span>
+            <span class="review-value">{{ $any(data)['timeControl'] || '—' }}</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Rounds</span>
+            <span class="review-value">{{ $any(data)['rounds'] }}</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Participants</span>
+            <span class="review-value">{{ $any(data)['participants']['current'] }} / {{
+              $any(data)['participants']['max'] }}</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Entry Fee</span>
+            <span class="review-value">{{ $any(data)['entryFee'] || '—' }}</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Prize Pool</span>
+            <span class="review-value">{{ $any(data)['prizePool'] || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Organizer -->
+      <div class="review-section">
+        <div class="review-header" (click)="goToStep(3)">
+          <h3>Organizer</h3>
+          <span class="review-edit">Edit</span>
+        </div>
+        <div class="review-grid">
+          <div class="review-item">
+            <span class="review-label">Organizer</span>
+            <span class="review-value">{{ $any(data)['organizer'] || '—' }}</span>
+          </div>
+          <div class="review-item">
+            <span class="review-label">Contact</span>
+            <span class="review-value">{{ $any(data)['contact'] || '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Instructions -->
+      <div class="review-section">
+        <div class="review-header" (click)="goToStep(4)">
+          <h3>Registration Instructions</h3>
+          <span class="review-edit">Edit</span>
+        </div>
+        @if ($any(data)['registrationInstructions']) {
+        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2 whitespace-pre-line">{{ $any(data)['registrationInstructions'] }}</p>
+        } @else {
+        <p class="text-sm text-slate-400 mt-2">No registration instructions specified.</p>
+        }
+      </div>
+
+      <!-- Eligibility -->
+      <div class="review-section">
+        <div class="review-header" (click)="goToStep(5)">
+          <h3>Eligibility</h3>
+          <span class="review-edit">Edit</span>
+        </div>
+        @if ($any(data)['eligibility']?.length) {
+        <ul class="space-y-1 mt-2">
+          @for (req of $any(data)['eligibility']; track req) {
+          <li class="text-sm flex items-start gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
+            {{ req }}
+          </li>
+          }
+        </ul>
+        } @else {
+        <p class="text-sm text-slate-400 mt-2">No eligibility requirements specified.</p>
+        }
+      </div>
+
+      <!-- Prizes -->
+      <div class="review-section">
+        <div class="review-header" (click)="goToStep(6)">
+          <h3>Prizes</h3>
+          <span class="review-edit">Edit</span>
+        </div>
+        @if ($any(data)['categories']) {
+        @for (cat of ($any(data)['categories'] | keyvalue); track cat.key) {
+        <div class="mt-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+          <h4 class="font-bold mb-2 capitalize">{{ $any(cat.key).replace('_', ' ') }}</h4>
+          <table class="w-full text-sm">
+            <tbody>
+              @for (prize of ($any(cat.value)['prizes'] | keyvalue); track prize.key) {
+              <tr class="border-t border-border-theme first:border-0">
+                <td class="py-1.5 font-semibold capitalize">{{ $any(prize.key).replace('_', ' ') }}</td>
+                <td class="py-1.5 text-right text-slate-600 dark:text-slate-400">{{ prize.value }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+        } @else {
+        <p class="text-sm text-slate-400 mt-2">No prize categories specified.</p>
+        }
+      </div>
+
+      <!-- Schedule -->
+      <div class="review-section">
+        <div class="review-header" (click)="goToStep(7)">
+          <h3>Schedule</h3>
+          <span class="review-edit">Edit</span>
+        </div>
+        @if ($any(data)['schedule']) {
+        @for (day of ($any(data)['schedule'] | keyvalue); track day.key) {
+        <div class="mt-3 border border-border-theme rounded-lg overflow-hidden">
+          <div class="bg-slate-50 dark:bg-slate-800/50 px-4 py-2 border-b border-border-theme">
+            <span class="text-xs font-bold text-cyan-500 uppercase">{{ $any(day.key).replace('_', ' ') }}</span>
+            <span class="text-sm text-slate-600 dark:text-slate-400 ml-2">{{ formatDate(day.value.date) }}</span>
+          </div>
+          <table class="w-full text-sm">
+            <tbody>
+              @for (event of day.value.events; track event.name) {
+              <tr class="border-t border-border-theme first:border-0">
+                <td class="px-4 py-1.5 font-semibold">{{ event.name }}</td>
+                <td class="px-4 py-1.5 text-right text-slate-600 dark:text-slate-400">{{ event.time }}</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        }
+        } @else {
+        <p class="text-sm text-slate-400 mt-2">No schedule specified.</p>
+        }
+      </div>
+      }
+    </div>
+    }
+
+    <!-- Navigation Buttons -->
+    <div class="step-nav">
+      @if (currentStep() > 0) {
+      <button type="button" (click)="prevStep()" class="btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+          <path fill-rule="evenodd"
+            d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
+            clip-rule="evenodd" />
+        </svg>
+        Back
+      </button>
+      } @else {
+      <div></div>
+      }
+
+      @if (isReviewStep) {
+      <button type="button" (click)="confirmSave()" [disabled]="saving()" class="btn-primary">
+        @if (saving()) {
+        <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        Saving...
+        } @else {
+        {{ tournamentId() ? 'Save Changes' : 'Create Tournament' }}
+        }
+      </button>
+      } @else {
+      <button type="button" (click)="nextStep()" class="btn-primary">
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+          <path fill-rule="evenodd"
+            d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+      }
+    </div>
+  </form>
 </div>

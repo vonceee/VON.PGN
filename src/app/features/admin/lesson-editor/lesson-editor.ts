@@ -3,6 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-lesson-editor',
@@ -14,6 +15,7 @@ import { AdminService } from '../../../core/services/admin.service';
 export class LessonEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private adminService = inject(AdminService);
+  private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   public location = inject(Location);
@@ -127,7 +129,7 @@ export class LessonEditorComponent implements OnInit {
       this.adminService.updateLesson(lId, data).subscribe({
         next: () => {
           this.saving.set(false);
-          alert('Lesson updated successfully');
+          this.toastService.show('Lesson updated successfully', 'success');
         },
         error: () => this.saving.set(false)
       });

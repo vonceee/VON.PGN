@@ -3,6 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-chapter-editor',
@@ -14,6 +15,7 @@ import { AdminService } from '../../../core/services/admin.service';
 export class ChapterEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private adminService = inject(AdminService);
+  private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   public location = inject(Location);
@@ -72,7 +74,7 @@ export class ChapterEditorComponent implements OnInit {
       this.adminService.updateChapter(chId, data).subscribe({
         next: () => {
           this.saving.set(false);
-          alert('Chapter updated successfully');
+          this.toastService.show('Chapter updated successfully', 'success');
         },
         error: () => this.saving.set(false)
       });
@@ -87,11 +89,29 @@ export class ChapterEditorComponent implements OnInit {
     }
   }
 
-  deleteLesson(id: number) {
-    if (confirm('Are you sure you want to delete this lesson?')) {
-      this.adminService.deleteLesson(id).subscribe(() => {
+  deleteLessonTarget = signal<number | null>(null);
+
+  requestDeleteLesson(id: number) {
+    this.deleteLessonTarget.set(id);
+  }
+
+  cancelDeleteLesson() {
+    this.deleteLessonTarget.set(null);
+  }
+
+  confirmDeleteLesson() {
+    const id = this.deleteLessonTarget();
+    if (!id) return;
+    this.adminService.deleteLesson(id).subscribe({
+      next: () => {
+        this.toastService.show('Lesson deleted successfully', 'success');
+        this.deleteLessonTarget.set(null);
         this.loadChapter();
-      });
-    }
+      },
+      error: (err) => {
+        this.toastService.show('Failed to delete: ' + (err.error?.message || err.message), 'error');
+        this.deleteLessonTarget.set(null);
+      }
+    });
   }
 }

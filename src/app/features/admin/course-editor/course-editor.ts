@@ -3,6 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-course-editor',
@@ -14,6 +15,7 @@ import { AdminService } from '../../../core/services/admin.service';
 export class CourseEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private adminService = inject(AdminService);
+  private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   public location = inject(Location);
@@ -70,7 +72,7 @@ export class CourseEditorComponent implements OnInit {
       this.adminService.updateCourse(cid, data).subscribe({
         next: (res) => {
           this.saving.set(false);
-          alert('Course updated successfully');
+          this.toastService.show('Course updated successfully', 'success');
         },
         error: () => this.saving.set(false)
       });
@@ -85,11 +87,29 @@ export class CourseEditorComponent implements OnInit {
     }
   }
 
-  deleteChapter(id: number) {
-    if (confirm('Are you sure you want to delete this chapter?')) {
-      this.adminService.deleteChapter(id).subscribe(() => {
+  deleteChapterTarget = signal<number | null>(null);
+
+  requestDeleteChapter(id: number) {
+    this.deleteChapterTarget.set(id);
+  }
+
+  cancelDeleteChapter() {
+    this.deleteChapterTarget.set(null);
+  }
+
+  confirmDeleteChapter() {
+    const id = this.deleteChapterTarget();
+    if (!id) return;
+    this.adminService.deleteChapter(id).subscribe({
+      next: () => {
+        this.toastService.show('Chapter deleted successfully', 'success');
+        this.deleteChapterTarget.set(null);
         this.loadCourse();
-      });
-    }
+      },
+      error: (err) => {
+        this.toastService.show('Failed to delete: ' + (err.error?.message || err.message), 'error');
+        this.deleteChapterTarget.set(null);
+      }
+    });
   }
 }

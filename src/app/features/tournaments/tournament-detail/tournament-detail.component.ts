@@ -18,6 +18,7 @@ export class TournamentDetailComponent implements OnInit {
 
   tournament: Tournament | undefined;
   mapUrl = signal<SafeResourceUrl | null>(null);
+  showRegisterModal = signal(false);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -94,5 +95,9 @@ export class TournamentDetailComponent implements OnInit {
   getSimpleAward(value: unknown): string | null {
     if (typeof value === 'string') return value;
     return null;
+  }
+
+  toggleRegisterModal() {
+    this.showRegisterModal.set(!this.showRegisterModal());
   }
 }

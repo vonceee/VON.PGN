@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,9 +13,11 @@ import { AdminService } from '../../../core/services/admin.service';
 })
 export class AdminDashboardComponent implements OnInit {
   private adminService = inject(AdminService);
-  
+  private toastService = inject(ToastService);
+
   courses = signal<any[]>([]);
   loading = signal(true);
+  deleteCourseTarget = signal<number | null>(null);
 
   ngOnInit() {
     this.loadCourses();
@@ -34,11 +37,27 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  deleteCourse(id: number) {
-    if (confirm('Are you sure you want to delete this course?')) {
-      this.adminService.deleteCourse(id).subscribe(() => {
+  requestDeleteCourse(id: number) {
+    this.deleteCourseTarget.set(id);
+  }
+
+  cancelDeleteCourse() {
+    this.deleteCourseTarget.set(null);
+  }
+
+  confirmDeleteCourse() {
+    const id = this.deleteCourseTarget();
+    if (!id) return;
+    this.adminService.deleteCourse(id).subscribe({
+      next: () => {
+        this.toastService.show('Course deleted successfully', 'success');
+        this.deleteCourseTarget.set(null);
         this.loadCourses();
-      });
-    }
+      },
+      error: (err) => {
+        this.toastService.show('Failed to delete: ' + (err.error?.message || err.message), 'error');
+        this.deleteCourseTarget.set(null);
+      }
+    });
   }
 }

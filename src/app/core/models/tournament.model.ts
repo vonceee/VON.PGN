@@ -34,7 +34,6 @@ export interface ScheduleDay {
 export interface Tournament {
   id: string;
   name: string;
-  bannerImage: string;
   status: TournamentStatus;
   dates: { start: string; end: string };
   location: string;
@@ -45,8 +44,9 @@ export interface Tournament {
   registrationDeadline: string;
   prizePool: string;
   organizer: string;
-  contactEmail: string;
+  contact: string;
   description: string;
+  registrationInstructions?: string;
   rounds: number;
   participants: { current: number; max: number };
   eligibility?: string[];

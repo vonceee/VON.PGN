@@ -42,7 +42,7 @@
             class="px-4 py-2 rounded font-medium text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
           >Edit</a>
           <button
-            (click)="deleteTournament(tournament)"
+            (click)="requestDelete(tournament)"
             class="px-4 py-2 rounded font-medium text-sm bg-red-500 hover:bg-red-600 text-white"
           >Delete</button>
         </div>
@@ -56,3 +56,13 @@
     }
   </div>
 </div>
+
+@if (deleteTarget()) {
+  <app-confirm-delete-modal
+    [itemName]="deleteTarget().name"
+    itemType="tournament"
+    [loading]="deleting()"
+    (confirm)="confirmDelete()"
+    (cancel)="cancelDelete()"
+  />
+}

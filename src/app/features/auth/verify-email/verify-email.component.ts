@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [FormsModule],
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.css',
 })
