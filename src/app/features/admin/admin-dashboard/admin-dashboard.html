@@ -5,11 +5,13 @@
       <a
         routerLink="/admin/tournaments"
         class="px-4 py-2 rounded font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
-      >Manage Tournaments</a>
+        >Manage Tournaments</a
+      >
       <a
         routerLink="/admin/course/new"
         class="px-4 py-2 rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-      >+ New Course</a>
+        >+ New Course</a
+      >
     </div>
   </div>
 
@@ -27,14 +29,12 @@
         <p class="m-0">{{ course.chapters?.length || 0 }} chapters</p>
       </div>
       <div class="flex gap-2">
-        <a
-          [routerLink]="['/admin/course', course.id]"
-          class="px-4 py-2 rounded font-medium bg-slate-100 hover:bg-slate-200 dark:hover:bg-slate-600"
+        <a [routerLink]="['/admin/course', course.id]" class="px-4 py-2 font-medium hover:underline"
           >Edit Course</a
         >
         <button
           (click)="deleteCourse(course.id)"
-          class="px-4 py-2 rounded font-medium bg-red-500 hover:bg-red-600"
+          class="px-4 py-2 font-medium text-red-400 hover:underline hover:cursor-pointer"
         >
           Delete
         </button>
