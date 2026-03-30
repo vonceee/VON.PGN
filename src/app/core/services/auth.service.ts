@@ -31,6 +31,8 @@ export class AuthService {
   currentUser = signal<any | null>(null);
   isAuthenticated = computed(() => this.currentUser() !== null);
 
+  unverifiedEmail = signal<string | null>(null);
+
   /** false while the initial token->profile restore is in-flight */
   isInitialized = signal(false);
 
@@ -108,6 +110,7 @@ export class AuthService {
     localStorage.setItem(this.tokenKey, response.access_token);
 
     if (response.user && !response.user.email_verified_at) {
+      this.unverifiedEmail.set(response.user.email);
       this.currentUser.set(null);
       this.userService.currentUser.set(null);
       this.userService.clearCachedProfile();
@@ -129,6 +132,7 @@ export class AuthService {
   private clearAuthWithoutRedirect() {
     localStorage.removeItem(this.tokenKey);
     this.currentUser.set(null);
+    this.unverifiedEmail.set(null);
     this.userService.currentUser.set(null);
     this.userService.clearCachedProfile();
   }
@@ -155,5 +159,29 @@ export class AuthService {
         headers: { Authorization: `Bearer ${this.getToken()}` },
       }
     );
+  }
+
+  updateEmail(email: string) {
+    return this.http.put<{ message: string, user: any }>(
+      `${this.apiUrl}/email/update`,
+      { email },
+      {
+        headers: { Authorization: `Bearer ${this.getToken()}` },
+      }
+    ).pipe(
+      tap(response => {
+        if (response.user && response.user.email) {
+          this.unverifiedEmail.set(response.user.email);
+        }
+      })
+    );
+  }
+
+  sendPasswordResetLink(email: string) {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(data: any) {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/reset-password`, data);
   }
 }

@@ -39,6 +39,16 @@ export const routes: Routes = [
     title: 'Verify Email - CHESS.PGN',
   },
   {
+    path: 'forgot-password',
+    loadComponent: () => import('./features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+    title: 'Forgot Password - CHESS.PGN',
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () => import('./features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent),
+    title: 'Reset Password - CHESS.PGN',
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     children: [

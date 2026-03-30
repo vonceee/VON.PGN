@@ -29,11 +29,45 @@
         Verify your <span class="text-cyan-400">Email</span>
       </h1>
 
-      <p class="text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">
-        we've sent a secure link to your email address, please click it to verify your account and
-        start your journey on
-        <span class="font-semibold text-zinc-900 dark:text-white">VON.CHESS</span>.
-      </p>
+      @if (!isEditingEmail) {
+        <p class="text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">
+          We've sent a secure link to
+          <span class="font-semibold text-zinc-900 dark:text-white">{{ unverifiedEmail() || 'your email address' }}</span>.
+          <button (click)="startEditEmail()" class="text-xs text-cyan-500 hover:text-cyan-600 underline underline-offset-2 ml-1">Wrong email?</button><br/>
+          Please click it to verify your account and start your journey on
+          <span class="font-semibold text-zinc-900 dark:text-white">VON.CHESS</span>.
+        </p>
+      } @else {
+        <div class="mb-8 p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-800 text-left shadow-sm">
+          <label class="block text-sm font-medium mb-2">Update Email Address</label>
+          <div class="flex gap-2">
+            <input 
+              type="email" 
+              [(ngModel)]="newEmailInput" 
+              class="flex-1 px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white"
+              placeholder="Enter new email"
+              (keyup.enter)="updateEmail()"
+            >
+            <button 
+              (click)="updateEmail()" 
+              [disabled]="isUpdatingEmail || !newEmailInput"
+              class="px-4 py-2 bg-black hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-black rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors"
+            >
+              {{ isUpdatingEmail ? 'Saving...' : 'Save' }}
+            </button>
+            <button 
+              (click)="cancelEditEmail()" 
+              [disabled]="isUpdatingEmail"
+              class="px-4 py-2 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+          @if (updateEmailMessage) {
+            <p class="mt-2 text-xs text-red-500">{{ updateEmailMessage }}</p>
+          }
+        </div>
+      }
 
       <a
         routerLink="/login"
