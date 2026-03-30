@@ -1,7 +1,17 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+
+function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.get('password')?.value;
+  const passwordConfirmation = control.get('password_confirmation')?.value;
+
+  if (password && passwordConfirmation && password !== passwordConfirmation) {
+    return { passwordsMismatch: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-register',
@@ -16,12 +26,41 @@ export class RegisterComponent {
 
   isLoading = false;
   errorMessage = '';
+  showPassword = false;
+  showConfirmPassword = false;
 
-  registerForm = this.fb.group({
-    username: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-  });
+  registerForm = this.fb.group(
+    {
+      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/), // Requires mixed case and number
+        ],
+      ],
+      password_confirmation: ['', Validators.required],
+    },
+    { validators: passwordsMatchValidator },
+  );
+
+  get passwordStrength(): string {
+    const pwd = this.registerForm.get('password')?.value || '';
+    if (!pwd) return '';
+    if (pwd.length < 8) return 'weak';
+
+    let score = 0;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[^a-zA-Z\d]/.test(pwd)) score++;
+
+    if (pwd.length >= 8 && score >= 4) return 'strong';
+    if (pwd.length >= 8 && score >= 3) return 'medium';
+    return 'weak';
+  }
 
   onSubmit() {
     if (this.registerForm.invalid) return;
@@ -34,8 +73,14 @@ export class RegisterComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage =
-          err.error?.message || 'Registration failed. Username or email may be taken.';
+        let msg = 'Registration failed. Username or email may be taken.';
+        if (err.error?.errors) {
+          const firstKey = Object.keys(err.error.errors)[0];
+          msg = err.error.errors[firstKey][0];
+        } else if (err.error?.message) {
+          msg = err.error.message;
+        }
+        this.errorMessage = msg;
         this.isLoading = false;
       },
     });

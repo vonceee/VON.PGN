@@ -5,8 +5,12 @@
         <h1 class="text-5xl font-bold">Roadmap</h1>
       </div>
 
+      <!-- Error State -->
+      @if (hasError()) {
+        <app-server-maintenance></app-server-maintenance>
+      }
       <!-- Skeleton Loading -->
-      @if (allCourses.length === 0) {
+      @else if (isLoading()) {
         <div
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-12 w-full animate-pulse"
         >
@@ -89,12 +93,14 @@
             </div>
           </div>
         </div>
+      } @else if (allCourses().length === 0) {
+        <app-server-maintenance></app-server-maintenance>
       } @else {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-16 gap-y-12">
           <div>
             <h2 class="text-2xl font-semibold mb-6">Fundamentals</h2>
             <div class="flex flex-col space-y-4">
-              @for (course of allCourses; track course.id) {
+              @for (course of allCourses(); track course.id) {
                 <div class="flex items-center gap-3">
                   <a
                     (click)="selectCourse(course.id)"

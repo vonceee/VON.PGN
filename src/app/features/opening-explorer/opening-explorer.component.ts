@@ -1,13 +1,15 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { OpeningExplorerService } from '../../core/services/opening-explorer.service';
 import { LichessExplorerResponse, LichessExplorerMove } from '../../core/models/opening.model';
 import { ChessBoardComponent } from '../../shared/components/chess-board/chess-board.component';
+import { RouterLink } from '@angular/router';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-opening-explorer',
   standalone: true,
-  imports: [DecimalPipe, ChessBoardComponent],
+  imports: [DecimalPipe, ChessBoardComponent, RouterLink],
   templateUrl: './opening-explorer.component.html',
   styleUrls: ['./opening-explorer.component.css']
 })
@@ -16,13 +18,18 @@ export class OpeningExplorerComponent implements OnInit {
   explorerData = signal<LichessExplorerResponse | null>(null);
   isLoading = signal(false);
 
+  currentUser = inject(UserService).currentUser;
+
   constructor(private explorerService: OpeningExplorerService) {}
 
   ngOnInit() {
-    this.fetchOpeningData(this.currentFen());
+    if (this.currentUser()) {
+      this.fetchOpeningData(this.currentFen());
+    }
   }
 
   onFenChanged(newFen: string) {
+    if (!this.currentUser()) return;
     this.currentFen.set(newFen);
     this.fetchOpeningData(newFen);
   }

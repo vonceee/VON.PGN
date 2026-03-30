@@ -16,6 +16,7 @@ export class LoginComponent {
 
   isLoading = false;
   errorMessage = '';
+  showPassword = false;
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

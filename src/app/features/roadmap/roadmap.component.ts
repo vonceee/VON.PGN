@@ -1,13 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LessonService } from '../../core/services/lesson.service';
 import { Course } from '../../core/models/course.model';
+import { ServerMaintenanceComponent } from '../../shared/components/server-maintenance/server-maintenance.component';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ServerMaintenanceComponent],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css',
 })
@@ -15,12 +16,21 @@ export class RoadmapComponent implements OnInit {
   private lessonService = inject(LessonService);
   private router = inject(Router);
 
-  get allCourses(): Course[] {
-    return this.lessonService.allCourses();
-  }
+  hasError = signal(false);
+  isLoading = signal(true);
+
+  allCourses = this.lessonService.allCourses;
 
   ngOnInit() {
-    this.lessonService.loadAllCourses().subscribe();
+    this.lessonService.loadAllCourses().subscribe({
+      next: () => {
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.hasError.set(true);
+      }
+    });
   }
 
   selectCourse(courseId: string) {

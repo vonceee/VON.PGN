@@ -36,8 +36,8 @@ export class VerifyEmailComponent {
         this.resendMessage = res.message || 'Verification email sent!';
         this.isResending = false;
       },
-      error: () => {
-        this.resendMessage = 'Failed to send email. Please try again.';
+      error: (err) => {
+        this.resendMessage = err.error?.message || 'Failed to send email. Please try again.';
         this.isResending = false;
       },
     });

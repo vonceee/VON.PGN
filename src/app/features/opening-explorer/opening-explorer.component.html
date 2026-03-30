@@ -1,4 +1,5 @@
-<div class="px-8 py-8 mx-auto flex flex-row gap-6">
+@if (currentUser()) {
+  <div class="px-8 py-8 mx-auto flex flex-row gap-6">
 
   <div class="board-section">
     <app-chess-board
@@ -72,3 +73,26 @@
     }
   </div>
 </div>
+} @else {
+  <div class="h-full w-full flex flex-col items-center justify-center py-20 px-8 animate-in fade-in duration-300">
+    <div class="border border-border-theme rounded-3xl p-12 flex flex-col items-center max-w-lg text-center bg-slate-900 shadow-2xl">
+      <div class="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center mb-8">
+        <svg class="w-12 h-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      </div>
+      <h2 class="text-3xl font-bold mb-4">Login Required</h2>
+      <p class="text-slate-400 text-lg leading-relaxed mb-10">
+        You must be logged in to unlock the world-class master games database and opening explorer. Connect deeply with the chess community!
+      </p>
+      <div class="flex gap-4 w-full justify-center text-sm md:text-base">
+        <a routerLink="/login" class="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-colors">
+          Login
+        </a>
+        <a routerLink="/register" class="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors border border-border-theme">
+          Register
+        </a>
+      </div>
+    </div>
+  </div>
+}
