@@ -2,13 +2,46 @@
   <div class="absolute inset-0 pointer-events-none z-[-1]">
     <div class="h-full w-full"></div>
   </div>
+
+  <!-- Tournaments Section -->
+  <section class="w-full py-32 px-6 flex flex-col items-center">
+    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-16">
+      <div class="w-full text-left">
+        <h2 class="text-5xl mb-10 leading-tight">
+          Compete in <span class="text-cyan-400">Tournaments.</span><br />
+          discover chess tournaments across the Philippines, browse events posted by the community,
+          with detailed information, and find the right competition to test your skills.
+        </h2>
+        <a
+          routerLink="/tournaments"
+          class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"
+        >
+          Browse Tournaments
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
   <!-- Hero Section -->
-  <section class="relative w-full h-screen pb-50 px-6 flex flex-col items-center justify-center text-center overflow-hidden">
+  <section
+    class="relative w-full h-screen pb-50 px-6 flex flex-col items-center justify-center text-center overflow-hidden"
+  >
     <!-- Spline 3D Background -->
-    <div #splineContainer class="absolute bottom-0 left-0 right-0 z-0 pointer-events-auto scale-200" style="height: 65%;">
+    <div
+      #splineContainer
+      class="absolute bottom-0 left-0 right-0 z-0 pointer-events-auto scale-200"
+      style="height: 65%"
+    >
       <spline-viewer
         url="https://prod.spline.design/mKF3Hg9Gn2TjH5hF/scene.splinecode"
-        style="width: 100%; height: 100%; display: block;"
+        style="width: 100%; height: 100%; display: block"
       ></spline-viewer>
     </div>
 
@@ -253,33 +286,6 @@
           class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"
         >
           View Courses
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Tournaments Section -->
-  <section class="w-full py-32 px-6 flex flex-col items-center">
-    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-16">
-      <div class="w-full text-left">
-        <h2 class="text-5xl mb-10 leading-tight">
-          Compete in <span class="text-cyan-400">Tournaments.</span><br />
-          join daily tournaments, climb the leaderboards, and prove your skills against other
-          players.
-        </h2>
-        <a
-          routerLink="/tournaments"
-          class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"
-        >
-          Browse Tournaments
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               stroke-linecap="round"

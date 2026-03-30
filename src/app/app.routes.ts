@@ -80,6 +80,11 @@ export const routes: Routes = [
         title: 'Learn Chess',
       },
       {
+        path: 'documentation',
+        loadComponent: () => import('./features/documentation/documentation.component').then(m => m.DocumentationComponent),
+        title: 'Documentation - CHESS.PGN',
+      },
+      {
         path: 'roadmap',
         component: RoadmapComponent,
         title: 'Tutorials Roadmap - CHESS.PGN',

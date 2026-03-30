@@ -29,7 +29,7 @@
 
       <div class="mb-6">
         <h1 class="text-3xl font-bold tracking-tight">
-          Sign in to <span class="text-cyan-400">VON.CHESS</span>
+          Sign in to <span class="text-cyan-400">vonchess</span>
         </h1>
       </div>
 
@@ -42,6 +42,7 @@
             type="email"
             formControlName="email"
             placeholder="hello@email.com"
+            (input)="clearError()"
             class="w-full px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white"
           />
         </div>
@@ -62,6 +63,7 @@
               [type]="showPassword ? 'text' : 'password'"
               formControlName="password"
               placeholder="••••••••"
+              (input)="clearError()"
               class="w-full px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-10"
             />
             <button
@@ -70,9 +72,37 @@
               class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus:outline-none"
             >
               @if (showPassword) {
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                  ></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
               } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
               }
             </button>
           </div>
@@ -83,12 +113,19 @@
           <div class="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg">
             {{ errorMessage }}
           </div>
+        } @else if (loginAttempts > 0) {
+          <div
+            class="p-3 text-sm text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded-lg"
+          >
+            {{ loginAttempts }}/{{ 5 }} failed attempts. {{ 5 - loginAttempts }} remaining before
+            lockout.
+          </div>
         }
 
         <!-- Submit Button -->
         <button
           type="submit"
-          [disabled]="loginForm.invalid || isLoading"
+          [disabled]="loginForm.invalid || isLoading || isLockedOut"
           class="w-full py-2.5 px-4 bg-black hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-black rounded-lg text-sm font-semibold disabled:cursor-not-allowed flex justify-center items-center"
         >
           @if (isLoading) {
@@ -112,6 +149,8 @@
               ></path>
             </svg>
             Logging in...
+          } @else if (isLockedOut) {
+            Try again in {{ lockoutSecondsRemaining }}s
           } @else {
             Continue
           }
@@ -189,7 +228,7 @@
     <div class="relative z-10">
       <!-- 
       <div class="flex items-center gap-2 mb-12">
-        <span class="text-xl font-bold tracking-tighter">VON.CHESS</span>
+        <span class="text-xl font-bold tracking-tighter">vonchess</span>
       </div> 
       -->
 
@@ -198,7 +237,7 @@
           MASTER THE GAME OF <span class="text-cyan-400">CHESS.</span>
         </h2>
         <p class="mt-4 text-zinc-400 font-medium leading-relaxed">
-          PLAY AND LEARN ON VON.CHESS — THE ULTIMATE <br class="hidden xl:block" />
+          PLAY AND LEARN ON vonchess — THE ULTIMATE <br class="hidden xl:block" />
           PLATFORM FOR PLAYERS WHO AIM FOR THE <span class="text-cyan-400">TOP.</span>
         </p>
 
