@@ -27,6 +27,7 @@ import { TermsOfServiceComponent } from './features/terms-of-service/terms-of-se
 import { CookiePolicyComponent } from './features/cookie-policy/cookie-policy.component';
 import { AboutComponent } from './features/about/about.component';
 import { ContactComponent } from './features/contact/contact.component';
+import { BookmarksComponent } from './features/bookmarks/bookmarks.component';
 import { environment } from '../environments/environment';
 
 function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
@@ -106,6 +107,14 @@ export const routes: Routes = [
         canActivate: [authGuard],
         title: 'My Progress - CHESS.PGN',
         data: { description: 'Track your chess learning progress, completed courses, and puzzle ratings.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'bookmarks',
+        component: BookmarksComponent,
+        canActivate: [authGuard],
+        title: 'Bookmarks - CHESS.PGN',
+        data: { description: 'View your bookmarked tournaments for quick access.' },
         resolve: { seo: seoResolver },
       },
       {

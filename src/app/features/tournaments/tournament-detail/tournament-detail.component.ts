@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -27,38 +27,27 @@ export class TournamentDetailComponent implements OnInit {
   bookmarkLoading = signal(false);
   shareMenuOpen = signal(false);
 
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-
-    if (id) {
-      // First try local
-      this.tournament = this.tournamentService.getTournamentById(id);
-
-      if (this.tournament) {
-        this.isBookmarked.set(this.tournament.isBookmarked ?? false);
-        this.setupMap();
-        this.updateSeo(this.tournament);
-      }
-
-      // Always fetch from API for latest data
-      this.tournamentService.fetchTournament(id);
-
-      // Subscribe to signal changes
-      const checkInterval = setInterval(() => {
+  constructor() {
+    effect(() => {
+      const id = this.route.snapshot.paramMap.get('id');
+      if (id) {
         const t = this.tournamentService.getTournamentById(id);
         if (t) {
           this.tournament = t;
           this.isBookmarked.set(t.isBookmarked ?? false);
           this.setupMap();
           this.updateSeo(t);
-          clearInterval(checkInterval);
         }
-      }, 100);
+      }
+    });
+  }
 
-      // Stop checking after 5 seconds
-      setTimeout(() => {
-        clearInterval(checkInterval);
-      }, 5000);
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      // Always fetch from API for latest data
+      this.tournamentService.fetchTournament(id);
     }
   }
 
