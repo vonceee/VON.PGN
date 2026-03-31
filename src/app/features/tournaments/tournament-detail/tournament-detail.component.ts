@@ -83,8 +83,11 @@ export class TournamentDetailComponent implements OnInit {
     }
   }
 
-  formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+  formatDate(dateStr: string | null | undefined): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return '';
+    return date.toLocaleDateString('en-US', {
       month: 'long',
       day: 'numeric',
       year: 'numeric'

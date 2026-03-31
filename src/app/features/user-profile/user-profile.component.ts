@@ -4,7 +4,9 @@ import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ChatService } from '../../core/services/chat.service';
+import { TournamentService } from '../../core/services/tournament.service';
 import { UserProfile, FollowUser } from '../../core/models/user.model';
+import { Tournament } from '../../core/models/tournament.model';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -18,6 +20,7 @@ export class UserProfileComponent implements OnInit {
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private chatService = inject(ChatService);
+  private tournamentService = inject(TournamentService);
   private router = inject(Router);
 
   user = signal<UserProfile | null>(null);
@@ -40,6 +43,9 @@ export class UserProfileComponent implements OnInit {
   isLoadingMore = signal(false);
 
   isAuthenticated = this.authService.isAuthenticated;
+
+  userTournaments = signal<Tournament[]>([]);
+  tournamentsLoading = signal(false);
 
   isOwnProfile = computed(() => {
     const currentUser = this.authService.currentUser();
@@ -85,6 +91,7 @@ export class UserProfileComponent implements OnInit {
         this.followersCount.set(profile.followers_count);
         this.followingCount.set(profile.following_count);
         this.isLoading.set(false);
+        this.loadUserTournaments(userId);
       },
       error: () => {
         this.error.set('User not found');
@@ -251,6 +258,27 @@ export class UserProfileComponent implements OnInit {
           )
         );
       },
+    });
+  }
+
+  private loadUserTournaments(userId: string) {
+    this.tournamentsLoading.set(true);
+    this.tournamentService.getUserTournaments(userId).subscribe({
+      next: (tournaments) => {
+        this.userTournaments.set(tournaments);
+        this.tournamentsLoading.set(false);
+      },
+      error: () => {
+        this.tournamentsLoading.set(false);
+      },
+    });
+  }
+
+  formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     });
   }
 

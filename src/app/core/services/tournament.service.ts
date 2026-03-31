@@ -102,4 +102,9 @@ export class TournamentService {
     return this.http.get<{ data: Tournament[] }>(`${this.apiUrl}/tournaments/bookmarks`)
       .pipe(map(res => res.data));
   }
+
+  getUserTournaments(userId: string): Observable<Tournament[]> {
+    return this.http.get<{ data: Tournament[] }>(`${this.apiUrl}/users/${userId}/tournaments`)
+      .pipe(map(res => res.data));
+  }
 }

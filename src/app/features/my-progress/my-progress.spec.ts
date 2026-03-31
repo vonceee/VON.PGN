@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MyProgress } from './my-progress';
+import { MyProgressComponent } from './my-progress.component';
 
-describe('MyProgress', () => {
-  let component: MyProgress;
-  let fixture: ComponentFixture<MyProgress>;
+describe('MyProgressComponent', () => {
+  let component: MyProgressComponent;
+  let fixture: ComponentFixture<MyProgressComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MyProgress],
+      imports: [MyProgressComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MyProgress);
+    fixture = TestBed.createComponent(MyProgressComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

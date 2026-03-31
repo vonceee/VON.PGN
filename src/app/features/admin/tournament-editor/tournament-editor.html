@@ -229,12 +229,12 @@
         </div>
         <div class="field-group">
           <label class="field-label optional">Max Participants</label>
-          <input type="number" formControlName="maxParticipants"
+          <input type="number" formControlName="maxParticipants" (input)="onNumberInput('maxParticipants', $event)"
             class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
         </div>
         <div class="field-group">
           <label class="field-label optional">Current Participants</label>
-          <input type="number" formControlName="currentParticipants"
+          <input type="number" formControlName="currentParticipants" (input)="onNumberInput('currentParticipants', $event)"
             class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
         </div>
       </div>
@@ -316,12 +316,22 @@
     @if (currentStep() === 4) {
     <div class="step-content">
       <h2 class="step-title">Registration Instructions</h2>
-      <p class="text-xs text-slate-500 mb-4">Optional — provide instructions how to join your tournament (e.g. you can put here your google form links).</p>
+      <p class="text-xs text-slate-500 mb-4">Provide instructions how to join your tournament (e.g. you can put here your google form links).</p>
       <div class="field-group">
-        <label class="field-label optional">Registration Instructions</label>
+        <label class="field-label required">Registration Instructions</label>
         <textarea formControlName="registrationInstructions" rows="8"
           placeholder="e.g. to register, fill up this google form, or contact 0917-XXX-XXXX"
-          class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors text-sm"></textarea>
+          [class]="inputClass('registrationInstructions')"></textarea>
+        @if (hasError('registrationInstructions')) {
+        <div class="field-error">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
+            <path fill-rule="evenodd"
+              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+              clip-rule="evenodd" />
+          </svg>
+          {{ getError('registrationInstructions') }}
+        </div>
+        }
       </div>
     </div>
     }

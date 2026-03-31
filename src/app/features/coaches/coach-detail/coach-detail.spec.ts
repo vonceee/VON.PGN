@@ -1,17 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
-import { CoachDetail } from './coach-detail';
+import { CoachDetailComponent } from './coach-detail.component';
 
-describe('CoachDetail', () => {
-  let component: CoachDetail;
-  let fixture: ComponentFixture<CoachDetail>;
+describe('CoachDetailComponent', () => {
+  let component: CoachDetailComponent;
+  let fixture: ComponentFixture<CoachDetailComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CoachDetail],
+      imports: [CoachDetailComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CoachDetail);
+    fixture = TestBed.createComponent(CoachDetailComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

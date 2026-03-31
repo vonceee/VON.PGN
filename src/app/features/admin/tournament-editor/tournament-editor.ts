@@ -54,7 +54,7 @@ export class TournamentEditorComponent implements OnInit {
     { key: 'dates', label: 'Dates & Location', fields: ['startDate', 'endDate', 'location'] },
     { key: 'format', label: 'Format', fields: ['format', 'timeControl', 'rounds', 'entryFee'] },
     { key: 'organizer', label: 'Organizer', fields: ['organizer', 'contact'] },
-    { key: 'registration', label: 'Registration', fields: [] },
+    { key: 'registration', label: 'Registration', fields: ['registrationInstructions'] },
     { key: 'eligibility', label: 'Eligibility', fields: [] },
     { key: 'prizes', label: 'Prizes', fields: [] },
     { key: 'schedule', label: 'Schedule', fields: [] },
@@ -84,7 +84,7 @@ export class TournamentEditorComponent implements OnInit {
     currentParticipants: [0],
     organizer: ['', Validators.required],
     contact: ['', Validators.required],
-    registrationInstructions: [''],
+    registrationInstructions: ['', Validators.required],
     eligibility: this.fb.array([]),
     scheduleDays: this.fb.array([]),
     categories: this.fb.array([])
@@ -231,6 +231,14 @@ export class TournamentEditorComponent implements OnInit {
 
     input.value = value;
     this.tournamentForm.get(fieldName)?.setValue(value, { emitEvent: false });
+  }
+
+  onNumberInput(fieldName: string, event: Event) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value === '' ? 0 : parseInt(input.value, 10);
+    if (!isNaN(value) && value >= 0) {
+      this.tournamentForm.get(fieldName)?.setValue(value, { emitEvent: false });
+    }
   }
 
   private parseCurrency(value: string | number | undefined): string {
@@ -446,7 +454,11 @@ export class TournamentEditorComponent implements OnInit {
   }
 
   private populateForm(t: any) {
-    if (this.eligibilityArray.length > 0 || this.scheduleDaysArray.length > 0 || this.categoriesArray.length > 0) return;
+    this.eligibilityArray.clear();
+    this.scheduleDaysArray.clear();
+    this.categoriesArray.clear();
+    this.mapsLink.set('');
+    this.mapsLinkError.set('');
 
     this.tournamentForm.patchValue({
       name: t.name,
@@ -533,21 +545,21 @@ export class TournamentEditorComponent implements OnInit {
       status: tournamentData['status'],
       start_date: tournamentData['dates']['start'],
       end_date: tournamentData['dates']['end'],
-      registration_deadline: tournamentData['registrationDeadline'],
-      location: tournamentData['location'],
-      latitude: tournamentData['coordinates']['lat'],
-      longitude: tournamentData['coordinates']['lng'],
-      format: tournamentData['format'],
-      time_control: tournamentData['timeControl'],
-      entry_fee: tournamentData['entryFee'],
-      prize_pool: tournamentData['prizePool'],
-      organizer: tournamentData['organizer'],
-      contact_email: tournamentData['contact'],
-      description: tournamentData['description'],
-      registration_instructions: tournamentData['registrationInstructions'],
-      rounds: tournamentData['rounds'],
-      current_participants: tournamentData['participants']['current'],
-      max_participants: tournamentData['participants']['max'],
+      registration_deadline: tournamentData['registrationDeadline'] || null,
+      location: tournamentData['location'] || null,
+      latitude: tournamentData['coordinates']['lat'] || null,
+      longitude: tournamentData['coordinates']['lng'] || null,
+      format: tournamentData['format'] || null,
+      time_control: tournamentData['timeControl'] || null,
+      entry_fee: tournamentData['entryFee'] || null,
+      prize_pool: tournamentData['prizePool'] || null,
+      organizer: tournamentData['organizer'] || null,
+      contact_email: tournamentData['contact'] || null,
+      description: tournamentData['description'] || null,
+      registration_instructions: tournamentData['registrationInstructions'] || null,
+      rounds: tournamentData['rounds'] || 0,
+      current_participants: tournamentData['participants']['current'] || 0,
+      max_participants: tournamentData['participants']['max'] || 0,
       eligibility: tournamentData['eligibility'] || null,
       categories: tournamentData['categories'] || null,
       schedule: tournamentData['schedule'] || null,
