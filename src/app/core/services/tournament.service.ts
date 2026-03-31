@@ -39,15 +39,16 @@ export class TournamentService {
     this.loading.set(true);
     this.error.set(null);
 
-    this.http.get<{ data: Tournament }>(`${this.apiUrl}/tournaments/${slug}`).subscribe({
+    this.http.get<{ data: Tournament; is_bookmarked?: boolean }>(`${this.apiUrl}/tournaments/${slug}`).subscribe({
       next: (res) => {
+        const tournament = { ...res.data, isBookmarked: res.is_bookmarked ?? false };
         const current = this.tournaments();
         const idx = current.findIndex(t => t.id === slug);
         if (idx !== -1) {
-          current[idx] = res.data;
+          current[idx] = tournament;
           this.tournaments.set([...current]);
         } else {
-          this.tournaments.update(list => [...list, res.data]);
+          this.tournaments.update(list => [...list, tournament]);
         }
         this.loading.set(false);
       },
@@ -89,5 +90,16 @@ export class TournamentService {
 
   deleteMyTournament(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/my/tournaments/${id}`);
+  }
+
+  toggleBookmark(slug: string): Observable<{ is_bookmarked: boolean; message: string }> {
+    return this.http.post<{ is_bookmarked: boolean; message: string }>(
+      `${this.apiUrl}/tournaments/${slug}/bookmark`, {}
+    );
+  }
+
+  getBookmarkedTournaments(): Observable<Tournament[]> {
+    return this.http.get<{ data: Tournament[] }>(`${this.apiUrl}/tournaments/bookmarks`)
+      .pipe(map(res => res.data));
   }
 }

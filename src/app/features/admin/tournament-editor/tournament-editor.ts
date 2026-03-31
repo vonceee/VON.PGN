@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed, Input } from '@angular/core';
+import { Component, inject, OnInit, signal, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormArray, FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
@@ -8,6 +8,7 @@ import { AdminService } from '../../../core/services/admin.service';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { environment } from '../../../../environments/environment';
+import html2canvas from 'html2canvas-pro';
 
 interface Step {
   key: string;
@@ -42,6 +43,11 @@ export class TournamentEditorComponent implements OnInit {
   mapsLink = signal('');
   mapsLinkError = signal('');
   mapsLinkLoading = signal(false);
+
+  posterTheme = signal<'dark' | 'light'>('dark');
+  downloadingPoster = signal(false);
+  @ViewChild('posterDark') posterDarkRef!: ElementRef<HTMLElement>;
+  @ViewChild('posterLight') posterLightRef!: ElementRef<HTMLElement>;
 
   steps: Step[] = [
     { key: 'basic', label: 'Basic Info', fields: ['name', 'status'] },
@@ -83,8 +89,6 @@ export class TournamentEditorComponent implements OnInit {
     scheduleDays: this.fb.array([]),
     categories: this.fb.array([])
   });
-
-  previewData = computed(() => this.buildTournamentData());
 
   ngOnInit() {
     const routeData = this.route.snapshot.data;
@@ -599,7 +603,7 @@ export class TournamentEditorComponent implements OnInit {
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   }
 
-  private buildTournamentData(): Record<string, any> {
+  buildTournamentData(): Record<string, any> {
     const v = this.tournamentForm.value;
     const eligibility = this.eligibilityArray.value.filter((e: string) => e.trim());
 
@@ -669,5 +673,64 @@ export class TournamentEditorComponent implements OnInit {
       ...(Object.keys(schedule).length ? { schedule } : {}),
       ...(Object.keys(categories).length ? { categories } : {})
     };
+  }
+
+  // ---- Poster Generation ----
+
+  togglePosterTheme() {
+    this.posterTheme.set(this.posterTheme() === 'dark' ? 'light' : 'dark');
+  }
+
+  async downloadPoster(theme?: 'dark' | 'light') {
+    const t = theme || this.posterTheme();
+    const el = t === 'dark' ? this.posterDarkRef?.nativeElement : this.posterLightRef?.nativeElement;
+    if (!el) return;
+    this.downloadingPoster.set(true);
+    try {
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: t === 'dark' ? '#0f172a' : '#ffffff',
+        width: 540,
+        height: 675,
+        windowWidth: 540,
+        windowHeight: 675
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      const data = this.buildTournamentData();
+      const slug = (data['name'] || 'tournament').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const link = document.createElement('a');
+      link.download = `${slug}-poster-${t}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch {
+      this.toastService.show('Failed to generate poster image.', 'error');
+    } finally {
+      this.downloadingPoster.set(false);
+    }
+  }
+
+  get posterDate(): string {
+    const data = this.buildTournamentData();
+    if (!data['dates']?.start) return '';
+    const start = this.formatDate(data['dates']['start']);
+    const end = data['dates']['end'] ? this.formatDate(data['dates']['end']) : '';
+    return end && end !== start ? `${start} — ${end}` : start;
+  }
+
+  get posterPrizeRows(): { place: string; value: string }[] {
+    const data = this.buildTournamentData();
+    const cats = data['categories'];
+    if (!cats) return [];
+    const rows: { place: string; value: string }[] = [];
+    for (const [catName, cat] of Object.entries(cats as Record<string, any>)) {
+      const prizes = cat.prizes || {};
+      const label = catName.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+      for (const [key, val] of Object.entries(prizes)) {
+        const place = key.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+        rows.push({ place: `${label} — ${place}`, value: val as string });
+      }
+    }
+    return rows;
   }
 }

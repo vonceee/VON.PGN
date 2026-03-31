@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { SeoService } from '../../../core/services/seo.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { Tournament } from '../../../core/models/tournament.model';
 
 @Component({
@@ -17,10 +18,14 @@ export class TournamentDetailComponent implements OnInit {
   private tournamentService = inject(TournamentService);
   private sanitizer = inject(DomSanitizer);
   private seo = inject(SeoService);
+  authService = inject(AuthService);
 
   tournament: Tournament | undefined;
   mapUrl = signal<SafeResourceUrl | null>(null);
   showRegisterModal = signal(false);
+  isBookmarked = signal(false);
+  bookmarkLoading = signal(false);
+  shareMenuOpen = signal(false);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -30,6 +35,7 @@ export class TournamentDetailComponent implements OnInit {
       this.tournament = this.tournamentService.getTournamentById(id);
 
       if (this.tournament) {
+        this.isBookmarked.set(this.tournament.isBookmarked ?? false);
         this.setupMap();
         this.updateSeo(this.tournament);
       }
@@ -42,6 +48,7 @@ export class TournamentDetailComponent implements OnInit {
         const t = this.tournamentService.getTournamentById(id);
         if (t) {
           this.tournament = t;
+          this.isBookmarked.set(t.isBookmarked ?? false);
           this.setupMap();
           this.updateSeo(t);
           clearInterval(checkInterval);
@@ -116,5 +123,51 @@ export class TournamentDetailComponent implements OnInit {
 
   toggleRegisterModal() {
     this.showRegisterModal.set(!this.showRegisterModal());
+  }
+
+  toggleBookmark() {
+    if (!this.authService.isAuthenticated() || this.bookmarkLoading() || !this.tournament) return;
+
+    this.bookmarkLoading.set(true);
+    this.tournamentService.toggleBookmark(this.tournament.id).subscribe({
+      next: (res) => {
+        this.isBookmarked.set(res.is_bookmarked);
+        this.bookmarkLoading.set(false);
+      },
+      error: () => {
+        this.bookmarkLoading.set(false);
+      }
+    });
+  }
+
+  toggleShareMenu() {
+    this.shareMenuOpen.set(!this.shareMenuOpen());
+  }
+
+  copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      this.shareMenuOpen.set(false);
+    });
+  }
+
+  shareToFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
+    this.shareMenuOpen.set(false);
+  }
+
+  shareToTwitter() {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(this.tournament?.name ?? 'Check out this tournament!');
+    window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
+    this.shareMenuOpen.set(false);
+  }
+
+  formatViewCount(count: number | undefined): string {
+    if (!count) return '0';
+    if (count >= 1000000) return (count / 1000000).toFixed(1) + 'M';
+    if (count >= 1000) return (count / 1000).toFixed(1) + 'K';
+    return count.toString();
   }
 }

@@ -419,3 +419,340 @@
 .dark .currency-input {
   color: #f1f5f9;
 }
+
+/* ===== Poster Section (inline) ===== */
+.poster-section {
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.dark .poster-section {
+  --border-color: #334155;
+}
+
+.poster-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.poster-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.poster-theme-toggle {
+  display: flex;
+  gap: 0.25rem;
+  background: #f1f5f9;
+  border-radius: 0.5rem;
+  padding: 0.2rem;
+}
+
+.dark .poster-theme-toggle {
+  background: #1e293b;
+}
+
+.poster-theme-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.poster-theme-btn.active {
+  background: white;
+  color: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark .poster-theme-btn.active {
+  background: #334155;
+  color: #f1f5f9;
+}
+
+.poster-preview-wrapper {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.dark .poster-preview-wrapper {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.poster-preview-scale {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.poster-preview-scale .poster-canvas {
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+}
+
+.poster-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+/* ===== Hidden Poster Capture Elements ===== */
+.poster-capture-element {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ===== Poster Canvas (shared) ===== */
+.poster-canvas {
+  width: 540px;
+  height: 675px;
+  position: relative;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 36px;
+  box-sizing: border-box;
+}
+
+/* Dark Theme */
+.poster-canvas.poster-dark {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.poster-canvas.poster-dark .poster-top-accent {
+  background: linear-gradient(90deg, #22d3ee, #06b6d4, #0891b2, #22d3ee);
+}
+
+.poster-canvas.poster-dark .poster-title {
+  color: #ffffff;
+}
+
+.poster-canvas.poster-dark .poster-subtitle {
+  color: #94a3b8;
+}
+
+.poster-canvas.poster-dark .poster-meta-chunk {
+  color: #22d3ee;
+}
+
+.poster-canvas.poster-dark .poster-divider {
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+}
+
+.poster-canvas.poster-dark .poster-prizes-header {
+  color: #64748b;
+}
+
+.poster-canvas.poster-dark .poster-prize-row {
+  border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+
+.poster-canvas.poster-dark .poster-prize-place {
+  color: #94a3b8;
+}
+
+.poster-canvas.poster-dark .poster-prize-value {
+  color: #f1f5f9;
+}
+
+.poster-canvas.poster-dark .poster-organizer {
+  color: #e2e8f0;
+}
+
+.poster-canvas.poster-dark .poster-contact {
+  color: #64748b;
+}
+
+.poster-canvas.poster-dark .poster-branding {
+  color: rgba(34, 211, 238, 0.25);
+}
+
+/* Light Theme */
+.poster-canvas.poster-light {
+  background: #ffffff;
+  color: #1e293b;
+}
+
+.poster-canvas.poster-light .poster-top-accent {
+  background: linear-gradient(90deg, #0891b2, #06b6d4, #22d3ee, #0891b2);
+}
+
+.poster-canvas.poster-light .poster-title {
+  color: #0f172a;
+}
+
+.poster-canvas.poster-light .poster-subtitle {
+  color: #64748b;
+}
+
+.poster-canvas.poster-light .poster-meta-chunk {
+  color: #0891b2;
+}
+
+.poster-canvas.poster-light .poster-divider {
+  background: linear-gradient(90deg, transparent, rgba(8, 145, 178, 0.15), transparent);
+}
+
+.poster-canvas.poster-light .poster-prizes-header {
+  color: #94a3b8;
+}
+
+.poster-canvas.poster-light .poster-prize-row {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.poster-canvas.poster-light .poster-prize-place {
+  color: #64748b;
+}
+
+.poster-canvas.poster-light .poster-prize-value {
+  color: #0f172a;
+}
+
+.poster-canvas.poster-light .poster-organizer {
+  color: #1e293b;
+}
+
+.poster-canvas.poster-light .poster-contact {
+  color: #94a3b8;
+}
+
+.poster-canvas.poster-light .poster-branding {
+  color: rgba(8, 145, 178, 0.2);
+}
+
+/* ===== Poster Layout ===== */
+.poster-top-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.poster-header {
+  text-align: center;
+  padding-top: 40px;
+  width: 100%;
+}
+
+.poster-title {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.poster-subtitle {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.poster-meta-row {
+  margin-top: 12px;
+}
+
+.poster-meta-chunk {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.poster-divider {
+  width: 100%;
+  height: 1px;
+  margin: 16px 0;
+  flex-shrink: 0;
+}
+
+.poster-prizes-section {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 32px;
+  align-content: start;
+}
+
+.poster-prizes-header {
+  grid-column: 1 / -1;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-bottom: 10px;
+}
+
+.poster-prize-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid transparent;
+}
+
+.poster-prize-place {
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55%;
+}
+
+.poster-prize-value {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.poster-footer {
+  text-align: center;
+  flex-shrink: 0;
+  padding: 12px 0;
+}
+
+.poster-organizer {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.poster-contact {
+  display: block;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.poster-branding {
+  position: absolute;
+  bottom: 14px;
+  right: 20px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
