@@ -28,6 +28,7 @@ export class Header {
   @ViewChild('searchContainer') searchContainer!: ElementRef;
 
   isProfileDropdownOpen = signal(false);
+  isMobileMenuOpen = signal(false);
   isProduction = environment.production;
   searchQuery = signal('');
   searchResults = signal<UserSearchResult[]>([]);
@@ -81,6 +82,10 @@ export class Header {
 
   toggleProfileDropdown() {
     this.isProfileDropdownOpen.update((v) => !v);
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen.update((v) => !v);
   }
 
   logout() {

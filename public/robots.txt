@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+Disallow: /chat
+Disallow: /profile
+Disallow: /my-progress
+Disallow: /play
+
+Sitemap: https://vonchess.com/sitemap.xml

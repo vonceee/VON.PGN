@@ -30,6 +30,7 @@ export class UserProfileComponent implements OnInit {
   isFollowLoading = signal(false);
   isMessaging = signal(false);
 
+  showFollowModal = signal(false);
   activeTab = signal<'followers' | 'following'>('followers');
   tabUsers = signal<FollowUser[]>([]);
   tabLoading = signal(false);
@@ -84,7 +85,6 @@ export class UserProfileComponent implements OnInit {
         this.followersCount.set(profile.followers_count);
         this.followingCount.set(profile.following_count);
         this.isLoading.set(false);
-        this.loadTabUsers();
       },
       error: () => {
         this.error.set('User not found');
@@ -148,6 +148,17 @@ export class UserProfileComponent implements OnInit {
     this.activeTab.set(tab);
     this.tabSearchQuery.set('');
     this.loadTabUsers();
+  }
+
+  openFollowModal(tab: 'followers' | 'following') {
+    this.activeTab.set(tab);
+    this.tabSearchQuery.set('');
+    this.showFollowModal.set(true);
+    this.loadTabUsers();
+  }
+
+  closeFollowModal() {
+    this.showFollowModal.set(false);
   }
 
   loadTabUsers() {

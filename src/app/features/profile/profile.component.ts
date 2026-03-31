@@ -1,8 +1,9 @@
 import { Component, inject, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { ToastService } from '../../core/services/toast.service';
+import { PaymentService } from '../../core/services/payment.service';
 import { FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
 
@@ -14,9 +15,18 @@ import { FormsModule } from '@angular/forms';
 })
 export class ProfileComponent implements OnInit {
   private userService = inject(UserService);
+  private toastService = inject(ToastService);
+  private paymentService = inject(PaymentService);
+  private route = inject(ActivatedRoute);
 
   user = this.userService.currentUser;
 
+  isEditingBio = signal(false);
+  bioDraft = signal('');
+  isSavingBio = signal(false);
+  isUpgrading = signal(false);
+
+  showFollowModal = signal(false);
   activeTab = signal<'followers' | 'following'>('following');
   tabUsers = signal<FollowUser[]>([]);
   tabLoading = signal(false);
@@ -49,13 +59,32 @@ export class ProfileComponent implements OnInit {
   formattedFollowersCount = computed(() => this.formatCount(this.user()?.followers_count || 0));
   formattedFollowingCount = computed(() => this.formatCount(this.user()?.following_count || 0));
 
-  toastService = inject(ToastService);
-
   ngOnInit() {
-    this.userService.loadMyProfile().subscribe({
-      next: () => {
-        this.loadTabUsers();
+    // Handle payment callback
+    const paymentStatus = this.route.snapshot.queryParamMap.get('payment');
+    if (paymentStatus === 'success') {
+      this.toastService.show('Payment successful! You are now a verified organizer.', 'success');
+      // Reload profile to get updated verified_organizer status
+      this.userService.loadMyProfile().subscribe();
+    } else if (paymentStatus === 'cancelled') {
+      this.toastService.show('Payment was cancelled.', 'error');
+    } else {
+      this.userService.loadMyProfile().subscribe();
+    }
+  }
+
+  upgradeToVerified() {
+    if (this.isUpgrading()) return;
+
+    this.isUpgrading.set(true);
+    this.paymentService.createCheckout().subscribe({
+      next: (res) => {
+        window.location.href = res.checkout_url;
       },
+      error: () => {
+        this.isUpgrading.set(false);
+        this.toastService.show('Failed to start payment. Please try again.', 'error');
+      }
     });
   }
 
@@ -63,6 +92,17 @@ export class ProfileComponent implements OnInit {
     this.activeTab.set(tab);
     this.tabSearchQuery.set('');
     this.loadTabUsers();
+  }
+
+  openFollowModal(tab: 'followers' | 'following') {
+    this.activeTab.set(tab);
+    this.tabSearchQuery.set('');
+    this.showFollowModal.set(true);
+    this.loadTabUsers();
+  }
+
+  closeFollowModal() {
+    this.showFollowModal.set(false);
   }
 
   loadTabUsers() {
@@ -147,6 +187,35 @@ export class ProfileComponent implements OnInit {
             u.uid === userId ? { ...u, is_following: wasFollowing } : u
           )
         );
+      },
+    });
+  }
+
+  startEditBio() {
+    this.bioDraft.set(this.user()?.bio || '');
+    this.isEditingBio.set(true);
+  }
+
+  cancelEditBio() {
+    this.isEditingBio.set(false);
+    this.bioDraft.set('');
+  }
+
+  saveBio() {
+    if (this.isSavingBio()) return;
+
+    this.isSavingBio.set(true);
+    this.userService.updateBio(this.bioDraft()).subscribe({
+      next: (updatedUser) => {
+        this.userService.currentUser.set(updatedUser);
+        this.userService.cacheProfile(updatedUser);
+        this.isEditingBio.set(false);
+        this.isSavingBio.set(false);
+        this.toastService.show('Bio updated', 'success');
+      },
+      error: () => {
+        this.isSavingBio.set(false);
+        this.toastService.show('Failed to update bio', 'error');
       },
     });
   }

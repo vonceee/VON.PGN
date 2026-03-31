@@ -329,13 +329,8 @@
     <!-- Step 6: Eligibility -->
     @if (currentStep() === 5) {
     <div class="step-content">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="step-title mb-0">Eligibility Requirements</h2>
-        <button type="button" (click)="addEligibilityItem()"
-          class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors">+
-          Add Requirement</button>
-      </div>
-      <p class="text-xs text-slate-500 mb-4">Optional — you can add, rating ranges, or other requirements.</p>
+      <h2 class="step-title">Eligibility Requirements</h2>
+      <p class="text-xs text-slate-500 mb-4">Optional — you can add rating ranges, or other requirements.</p>
       <div class="space-y-3">
         @for (control of eligibilityArray.controls; track $index; let i = $index) {
         <div class="flex gap-2 items-center">
@@ -345,9 +340,8 @@
             class="p-2 rounded bg-red-500 hover:bg-red-600 text-white text-sm transition-colors">✕</button>
         </div>
         }
-        @if (eligibilityArray.length === 0) {
-        <p class="text-slate-400 text-sm py-4 text-center">No requirements added yet.</p>
-        }
+        <button type="button" (click)="addEligibilityItem()"
+          class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add Requirement</button>
       </div>
     </div>
     }
@@ -355,12 +349,7 @@
     <!-- Step 7: Prizes -->
     @if (currentStep() === 6) {
     <div class="step-content">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="step-title mb-0">Prize Categories</h2>
-        <button type="button" (click)="addCategory()"
-          class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors">+
-          Add Category</button>
-      </div>
+      <h2 class="step-title">Prize Categories</h2>
       <p class="text-xs text-slate-500 mb-4">Optional — skip if you only have a total prize pool (set in Format step).
       </p>
       @if (categoriesArray.length === 0) {
@@ -424,17 +413,27 @@
                 <input type="text" [formControl]="$any(categoryGroup(ci).get('5th_place'))"
                   class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
               </div>
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">6th-10th</label>
-                <input type="text" [formControl]="$any(categoryGroup(ci).get('6th_to_10th'))"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              </div>
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">11th-15th</label>
-                <input type="text" [formControl]="$any(categoryGroup(ci).get('11th_to_15th'))"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              </div>
             </div>
+            @if (getCategoryExtraPrizes(ci).length > 0) {
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+              @for (ep of getCategoryExtraPrizes(ci).controls; track $index; let ei = $index) {
+              <div class="flex gap-2 items-start">
+                <div class="flex-1">
+                  <div class="flex gap-2 items-center mb-1">
+                    <input type="text" [formControl]="$any(extraPrizeGroup(ci, ei).get('label'))" placeholder="e.g. 6th Place"
+                      class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+                    <button type="button" (click)="removeExtraPrize(ci, ei)"
+                      class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs transition-colors">✕</button>
+                  </div>
+                  <input type="text" [formControl]="$any(extraPrizeGroup(ci, ei).get('value'))" placeholder="Prize value"
+                    class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+                </div>
+              </div>
+              }
+            </div>
+            }
+            <button type="button" (click)="addExtraPrize(ci)"
+              class="mt-3 text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add Place</button>
           </div>
           <div>
             <div class="flex justify-between items-center mb-2">
@@ -473,6 +472,8 @@
           </div>
         </div>
         }
+        <button type="button" (click)="addCategory()"
+          class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add Category</button>
       </div>
     </div>
     }
@@ -480,13 +481,8 @@
     <!-- Step 8: Schedule -->
     @if (currentStep() === 7) {
     <div class="step-content">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="step-title mb-0">Schedule</h2>
-        <button type="button" (click)="addScheduleDay()"
-          class="px-3 py-1.5 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors">+
-          Add Day</button>
-      </div>
-      <p class="text-xs text-slate-500 mb-4">Optional — you can add, onsite registration time, and/or starting round
+      <h2 class="step-title">Schedule</h2>
+      <p class="text-xs text-slate-500 mb-4">Optional — you can add onsite registration time, and/or starting round
         time.</p>
       @if (scheduleDaysArray.length === 0) {
       <p class="text-slate-400 text-sm py-4 text-center">No schedule days added yet.</p>
@@ -528,6 +524,8 @@
           </div>
         </div>
         }
+        <button type="button" (click)="addScheduleDay()"
+          class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add Day</button>
       </div>
     </div>
     }
@@ -692,7 +690,7 @@
           <h4 class="font-bold mb-2 capitalize">{{ $any(cat.key).replace('_', ' ') }}</h4>
           <table class="w-full text-sm">
             <tbody>
-              @for (prize of ($any(cat.value)['prizes'] | keyvalue); track prize.key) {
+              @for (prize of ($any(cat.value)['prizes'] | keyvalue: comparePrizeKeys); track prize.key) {
               <tr class="border-t border-border-theme first:border-0">
                 <td class="py-1.5 font-semibold capitalize">{{ $any(prize.key).replace('_', ' ') }}</td>
                 <td class="py-1.5 text-right text-slate-600 dark:text-slate-400">{{ prize.value }}</td>

@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Tournament, TournamentStatus } from '../models/tournament.model';
 import { environment } from '../../../environments/environment';
+import { Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -63,5 +64,30 @@ export class TournamentService {
 
   getByStatus(status: TournamentStatus): Tournament[] {
     return this.tournaments().filter(t => t.status === status);
+  }
+
+  // User-level CRUD
+  getMyTournaments(): Observable<Tournament[]> {
+    return this.http.get<{ data: Tournament[] }>(`${this.apiUrl}/my/tournaments`)
+      .pipe(map(res => res.data));
+  }
+
+  getMyTournament(id: string): Observable<Tournament> {
+    return this.http.get<{ data: Tournament }>(`${this.apiUrl}/my/tournaments/${id}`)
+      .pipe(map(res => res.data));
+  }
+
+  createMyTournament(data: any): Observable<Tournament> {
+    return this.http.post<{ data: Tournament }>(`${this.apiUrl}/my/tournaments`, data)
+      .pipe(map(res => res.data));
+  }
+
+  updateMyTournament(id: string, data: any): Observable<Tournament> {
+    return this.http.put<{ data: Tournament }>(`${this.apiUrl}/my/tournaments/${id}`, data)
+      .pipe(map(res => res.data));
+  }
+
+  deleteMyTournament(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/my/tournaments/${id}`);
   }
 }

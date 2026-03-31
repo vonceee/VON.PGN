@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { TournamentService } from '../../../core/services/tournament.service';
+import { SeoService } from '../../../core/services/seo.service';
 import { Tournament } from '../../../core/models/tournament.model';
 
 @Component({
@@ -15,6 +16,7 @@ export class TournamentDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private tournamentService = inject(TournamentService);
   private sanitizer = inject(DomSanitizer);
+  private seo = inject(SeoService);
 
   tournament: Tournament | undefined;
   mapUrl = signal<SafeResourceUrl | null>(null);
@@ -29,6 +31,7 @@ export class TournamentDetailComponent implements OnInit {
 
       if (this.tournament) {
         this.setupMap();
+        this.updateSeo(this.tournament);
       }
 
       // Always fetch from API for latest data
@@ -40,6 +43,7 @@ export class TournamentDetailComponent implements OnInit {
         if (t) {
           this.tournament = t;
           this.setupMap();
+          this.updateSeo(t);
           clearInterval(checkInterval);
         }
       }, 100);
@@ -49,6 +53,19 @@ export class TournamentDetailComponent implements OnInit {
         clearInterval(checkInterval);
       }, 5000);
     }
+  }
+
+  private updateSeo(t: Tournament) {
+    const desc = t.description
+      ? t.description.substring(0, 160)
+      : `${t.name} — a ${t.format} chess tournament in ${t.location}.`;
+
+    this.seo.update({
+      title: t.name,
+      description: desc,
+      url: `https://vonchess.com/tournaments/${t.id}`,
+      type: 'article',
+    });
   }
 
   private setupMap() {

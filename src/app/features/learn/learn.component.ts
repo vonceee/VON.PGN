@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LessonService } from '../../core/services/lesson.service';
+import { SeoService } from '../../core/services/seo.service';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { LessonView } from './components/lesson-view/lesson-view';
 
@@ -13,6 +14,7 @@ import { LessonView } from './components/lesson-view/lesson-view';
 export class LearnComponent implements OnInit {
   lessonService = inject(LessonService);
   private route = inject(ActivatedRoute);
+  private seo = inject(SeoService);
 
   course = this.lessonService.currentCourse;
   activeLesson = this.lessonService.activeLesson;
@@ -26,6 +28,15 @@ export class LearnComponent implements OnInit {
     if (courseSlug) {
       this.lessonService.loadCourse(courseSlug).subscribe({
         next: () => {
+          const c = this.course();
+          if (c) {
+            this.seo.update({
+              title: c.title,
+              description: c.description?.substring(0, 160) || `Study ${c.title} on VON.PGN.`,
+              url: `https://vonchess.com/learn/${courseSlug}`,
+              type: 'article',
+            });
+          }
           if (targetLessonId) {
             this.onLessonSelected(targetLessonId);
           }

@@ -1,24 +1,25 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { AdminService } from '../../../core/services/admin.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { ConfirmDeleteModalComponent } from '../../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
+import { TournamentService } from '../../core/services/tournament.service';
+import { ToastService } from '../../core/services/toast.service';
+import { Tournament } from '../../core/models/tournament.model';
+import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 
 @Component({
-  selector: 'app-tournament-list',
+  selector: 'app-my-tournaments',
   standalone: true,
   imports: [CommonModule, RouterLink, ConfirmDeleteModalComponent],
-  templateUrl: './tournament-list.html',
-  styleUrls: ['./tournament-list.css']
+  templateUrl: './my-tournaments.component.html',
 })
-export class TournamentListComponent implements OnInit {
-  private adminService = inject(AdminService);
+export class MyTournamentsComponent implements OnInit {
+  private tournamentService = inject(TournamentService);
   private toastService = inject(ToastService);
-  tournaments = signal<any[]>([]);
+
+  tournaments = signal<Tournament[]>([]);
   loading = signal(true);
 
-  deleteTarget = signal<any>(null);
+  deleteTarget = signal<Tournament | null>(null);
   deleting = signal(false);
 
   ngOnInit() {
@@ -27,19 +28,19 @@ export class TournamentListComponent implements OnInit {
 
   private loadTournaments() {
     this.loading.set(true);
-    this.adminService.getTournaments().subscribe({
-      next: (res) => {
-        this.tournaments.set(res.data || res || []);
+    this.tournamentService.getMyTournaments().subscribe({
+      next: (data) => {
+        this.tournaments.set(data);
         this.loading.set(false);
       },
       error: (err) => {
-        this.toastService.show('Failed to load tournaments: ' + (err.error?.message || err.message), 'error');
+        this.toastService.show('Failed to load tournaments', 'error');
         this.loading.set(false);
       }
     });
   }
 
-  requestDelete(tournament: any) {
+  requestDelete(tournament: Tournament) {
     this.deleteTarget.set(tournament);
   }
 
@@ -52,15 +53,15 @@ export class TournamentListComponent implements OnInit {
     if (!target) return;
 
     this.deleting.set(true);
-    this.adminService.deleteTournament(target.id).subscribe({
+    this.tournamentService.deleteMyTournament(target.id).subscribe({
       next: () => {
-        this.toastService.show('Tournament deleted successfully', 'success');
+        this.toastService.show('Tournament deleted', 'success');
         this.deleting.set(false);
         this.deleteTarget.set(null);
         this.loadTournaments();
       },
-      error: (err) => {
-        this.toastService.show('Failed to delete: ' + (err.error?.message || err.message), 'error');
+      error: () => {
+        this.toastService.show('Failed to delete tournament', 'error');
         this.deleting.set(false);
       }
     });

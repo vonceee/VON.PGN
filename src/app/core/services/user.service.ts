@@ -123,4 +123,10 @@ export class UserService {
         }),
       );
   }
+
+  updateBio(bio: string) {
+    return this.http
+      .put<{ data: UserProfile }>(`${environment.apiUrl}/profile/bio`, { bio })
+      .pipe(map((res) => res.data));
+  }
 }

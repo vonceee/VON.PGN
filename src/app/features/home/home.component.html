@@ -4,10 +4,10 @@
   </div>
 
   <!-- Tournaments Section -->
-  <section class="w-full py-32 px-6 flex flex-col items-center">
-    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-16">
+  <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
+    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <h2 class="text-5xl mb-10 leading-tight">
+        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           Compete in <span class="text-cyan-400">Tournaments.</span><br />
           discover chess tournaments across the Philippines, browse events posted by the community,
           with detailed information, and find the right competition to test your skills.
@@ -31,12 +31,12 @@
   </section>
   <!-- Hero Section -->
   <section
-    class="relative w-full h-screen pb-50 px-6 flex flex-col items-center justify-center text-center overflow-hidden"
+    class="relative w-full h-screen pb-24 md:pb-50 px-4 md:px-6 flex flex-col items-center justify-center text-center overflow-hidden"
   >
     <!-- Spline 3D Background -->
     <div
       #splineContainer
-      class="absolute bottom-0 left-0 right-0 z-0 pointer-events-auto scale-200"
+      class="absolute bottom-0 left-0 right-0 z-0 pointer-events-none scale-150 md:scale-200"
       style="height: 65%"
     >
       <spline-viewer
@@ -46,16 +46,18 @@
     </div>
 
     <!-- Hero Content Overlay -->
-    <div class="relative z-10 flex flex-col items-center">
+    <div class="relative z-10 flex flex-col items-center px-4">
       <img
         src="assets/images/VON-PGN_LOGO.svg"
         alt="VON PGN Logo"
-        class="w-40 md:w-56 h-auto mb-4 dark:invert"
+        class="w-28 md:w-56 h-auto mb-4 dark:invert"
       />
-      <h1 class="text-7xl mb-16">Learn to play Chess</h1>
+      <h1 class="text-4xl md:text-7xl mb-8 md:mb-16">Learn to play Chess</h1>
       <div class="flex items-center justify-center relative w-full">
-        <div class="w-full relative" style="width: 50vw !important">
-          <div class="flex items-center px-8 py-5 bg-white border border-gray-300 rounded-full">
+        <div class="w-full relative md:!w-[50vw]">
+          <div
+            class="flex items-center px-4 md:px-8 py-3 md:py-5 bg-white border border-gray-300 rounded-full"
+          >
             <!-- Search Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +80,7 @@
               [(ngModel)]="searchQuery"
               (keydown.enter)="onSearch()"
               placeholder="Search our tutorials, e.g. Sicilian Defense"
-              class="flex-1 mx-4 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-lg"
+              class="flex-1 mx-2 md:mx-4 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-base md:text-lg"
             />
           </div>
 
@@ -98,26 +100,28 @@
         </div>
       </div>
 
-      <a href="/roadmap" class="hover:text-cyan-400 underline text-xl font-semibold mt-4"
+      <a
+        href="/roadmap"
+        class="hover:text-cyan-400 underline text-base md:text-xl font-semibold mt-4"
         >Not sure where to begin?</a
       >
     </div>
   </section>
 
   <!-- Openings Section -->
-  <section class="w-full min-h-screen py-32 px-16 flex flex-col">
-    <div class="max-w-4xl flex flex-row justify-between gap-16">
+  <section class="w-full min-h-screen py-16 md:py-32 px-6 md:px-16 flex flex-col">
+    <div class="max-w-4xl flex flex-col md:flex-row justify-between gap-8 md:gap-16">
       <div class="text-left">
-        <h2 class="text-5xl mb-10 leading-tight">
+        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           Explore <span class="text-cyan-400">Openings.</span><br />
           learn the theory behind the most popular chess openings and start your games with a clear
           advantage.
         </h2>
 
-        <div class="space-y-3 mb-10">
+        <div class="space-y-3 mb-6 md:mb-10">
           <div
             *ngFor="let opening of popularOpenings"
-            class="w-sm p-4 border-b border-border-theme hover:border-cyan-400 transition-colors flex items-center justify-between group cursor-pointer"
+            class="w-full max-w-sm p-4 border-b border-border-theme hover:border-cyan-400 transition-colors flex items-center justify-between group cursor-pointer"
           >
             <div class="flex items-center gap-4">
               <div>
@@ -160,10 +164,12 @@
   </section>
 
   <!-- Tactics Section -->
-  <section class="w-full min-h-screen py-32 px-6 flex flex-col items-center">
-    <div class="w-full flex flex-col md:flex-row-reverse items-center justify-between gap-16">
-      <div class="md:w-1/2 text-left lg:pl-16">
-        <h2 class="text-5xl mb-10 leading-tight">
+  <section class="w-full min-h-screen py-16 md:py-32 px-6 flex flex-col items-center">
+    <div
+      class="w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8 md:gap-16"
+    >
+      <div class="md:w-1/2 text-left md:pl-8 lg:pl-16">
+        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           Train your <span class="text-cyan-400">Tactics.</span><br />
           train your pattern recognition with thousands of puzzles curated for your level.
         </h2>
@@ -217,7 +223,9 @@
                   ></path>
                 </svg>
               </div>
-              <h3 class="text-3xl font-black text-white mb-8">Puzzle Solved!</h3>
+              <h3 class="text-2xl md:text-3xl font-black text-white mb-6 md:mb-8">
+                Puzzle Solved!
+              </h3>
               <a
                 routerLink="/tactics"
                 class="px-8 py-4 bg-white text-black hover:bg-slate-100 font-bold rounded-xl transition-all hover:-translate-y-1 shadow-xl hover:shadow-cyan-500/20"
@@ -249,7 +257,9 @@
                   ></path>
                 </svg>
               </div>
-              <h3 class="text-3xl font-black text-white mb-8">Incorrect Move</h3>
+              <h3 class="text-2xl md:text-3xl font-black text-white mb-6 md:mb-8">
+                Incorrect Move
+              </h3>
               <a
                 routerLink="/tactics"
                 class="px-8 py-4 bg-white text-black hover:bg-slate-100 font-bold rounded-xl transition-all hover:-translate-y-1 shadow-xl hover:shadow-red-500/20 text-center"
@@ -274,10 +284,10 @@
   </section>
 
   <!-- Featured Courses Section -->
-  <section class="w-full py-32 px-6 flex flex-col items-center">
-    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-16">
+  <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
+    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <h2 class="text-5xl mb-10 leading-tight">
+        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           Read our <span class="text-cyan-400">Courses.</span><br />
           learn from handcrafted courses for players of all levels.
         </h2>
@@ -300,10 +310,10 @@
   </section>
 
   <!-- Coaches Section -->
-  <section class="w-full py-32 px-6 flex flex-col items-center">
-    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-16">
+  <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
+    <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <h2 class="text-5xl mb-10 leading-tight">
+        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           Find Your <span class="text-cyan-400">Coach.</span><br />
           accelerate your progress with personalized 1-on-1 lessons from titled players and
           experienced trainers.

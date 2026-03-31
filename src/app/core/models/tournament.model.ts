@@ -6,8 +6,6 @@ export interface Prizes {
   '3rd_place': string;
   '4th_place'?: string;
   '5th_place'?: string;
-  '6th_to_10th'?: string;
-  '11th_to_15th'?: string;
   [key: string]: string | undefined;
 }
 
@@ -29,6 +27,12 @@ export interface ScheduleEvent {
 export interface ScheduleDay {
   date: string;
   events: ScheduleEvent[];
+}
+
+export interface TournamentCreator {
+  id: number;
+  name: string;
+  verified_organizer: boolean;
 }
 
 export interface Tournament {
@@ -54,4 +58,5 @@ export interface Tournament {
   schedule?: { [key: string]: ScheduleDay };
   winner?: string;
   standings?: { rank: number; player: string; score: number }[];
+  creator?: TournamentCreator;
 }

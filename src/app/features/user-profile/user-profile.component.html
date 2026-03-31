@@ -29,6 +29,14 @@
                     {{ profile.displayName || profile.username }}
                   </h1>
                   <p class="text-sm mt-0.5">{{ '@' + profile.username }}</p>
+                  @if (profile.verified_organizer) {
+                    <div class="mt-2 flex items-center gap-1.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-cyan-500 shrink-0">
+                        <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm font-semibold text-cyan-500">Verified Organizer</span>
+                    </div>
+                  }
                 </div>
 
                 <!-- Action Buttons -->
@@ -84,12 +92,12 @@
 
               <!-- Follower/Following Counts -->
               <div class="mt-3 flex gap-4 text-sm">
-                <button (click)="setTab('followers')"
+                <button (click)="openFollowModal('followers')"
                   class="hover:text-cyan-500 transition-colors cursor-pointer">
                   <span class="font-bold text-slate-900 dark:text-white">{{ formattedFollowersCount() }}</span>
                   <span class="text-slate-500 dark:text-slate-400 ml-1">Followers</span>
                 </button>
-                <button (click)="setTab('following')"
+                <button (click)="openFollowModal('following')"
                   class="hover:text-cyan-500 transition-colors cursor-pointer">
                   <span class="font-bold text-slate-900 dark:text-white">{{ formattedFollowingCount() }}</span>
                   <span class="text-slate-500 dark:text-slate-400 ml-1">Following</span>
@@ -127,142 +135,156 @@
           </div>
         </div>
 
-        <!-- Followers/Following Tab Section -->
-        <div class="rounded-2xl border border-border-theme p-5">
-          <!-- Tab Headers -->
-          <div class="flex items-center gap-4 mb-5">
-            <button (click)="setTab('followers')"
-              class="text-xs font-semibold uppercase tracking-widest pb-1 border-b-2 transition-colors cursor-pointer"
-              [class.border-cyan-500]="activeTab() === 'followers'"
-              [class.text-slate-900]="activeTab() === 'followers'"
-              [class.dark:text-white]="activeTab() === 'followers'"
-              [class.border-transparent]="activeTab() !== 'followers'"
-              [class.text-slate-400]="activeTab() !== 'followers'"
-              [class.hover:text-slate-600]="activeTab() !== 'followers'">
-              Followers
-            </button>
-            <button (click)="setTab('following')"
-              class="text-xs font-semibold uppercase tracking-widest pb-1 border-b-2 transition-colors cursor-pointer"
-              [class.border-cyan-500]="activeTab() === 'following'"
-              [class.text-slate-900]="activeTab() === 'following'"
-              [class.dark:text-white]="activeTab() === 'following'"
-              [class.border-transparent]="activeTab() !== 'following'"
-              [class.text-slate-400]="activeTab() !== 'following'"
-              [class.hover:text-slate-600]="activeTab() !== 'following'">
-              Following
-            </button>
-          </div>
-
-          <!-- Search -->
-          <div class="mb-4">
-            <div class="flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 focus-within:border-cyan-500/60 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                class="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-              </svg>
-              <input
-                type="text"
-                [value]="tabSearchQuery()"
-                (input)="onTabSearch($event)"
-                [placeholder]="'Search ' + activeTab() + '...'"
-                class="ml-2 bg-transparent outline-none text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 w-full"
-              />
-            </div>
-          </div>
-
-          <!-- User List -->
-          @if (tabLoading()) {
-            <div class="flex flex-col gap-3">
-              @for (i of [1,2,3,4]; track i) {
-                <div class="flex items-center gap-3 p-3 rounded-xl animate-pulse">
-                  <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800"></div>
-                  <div class="flex-1">
-                    <div class="h-4 w-32 bg-slate-200 dark:bg-slate-800 rounded mb-1.5"></div>
-                    <div class="h-3 w-20 bg-slate-100 dark:bg-slate-700 rounded"></div>
-                  </div>
+        <!-- Followers/Following Modal -->
+        @if (showFollowModal()) {
+          <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="closeFollowModal()">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg mx-4 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[80vh] flex flex-col" (click)="$event.stopPropagation()">
+              <!-- Modal Header -->
+              <div class="flex items-center justify-between px-5 pt-5 pb-0">
+                <div class="flex items-center gap-4">
+                  <button (click)="activeTab.set('followers'); loadTabUsers()"
+                    class="text-xs font-semibold uppercase tracking-widest pb-1 border-b-2 transition-colors cursor-pointer"
+                    [class.border-cyan-500]="activeTab() === 'followers'"
+                    [class.text-slate-900]="activeTab() === 'followers'"
+                    [class.dark:text-white]="activeTab() === 'followers'"
+                    [class.border-transparent]="activeTab() !== 'followers'"
+                    [class.text-slate-400]="activeTab() !== 'followers'"
+                    [class.hover:text-slate-600]="activeTab() !== 'followers'">
+                    Followers
+                  </button>
+                  <button (click)="activeTab.set('following'); loadTabUsers()"
+                    class="text-xs font-semibold uppercase tracking-widest pb-1 border-b-2 transition-colors cursor-pointer"
+                    [class.border-cyan-500]="activeTab() === 'following'"
+                    [class.text-slate-900]="activeTab() === 'following'"
+                    [class.dark:text-white]="activeTab() === 'following'"
+                    [class.border-transparent]="activeTab() !== 'following'"
+                    [class.text-slate-400]="activeTab() !== 'following'"
+                    [class.hover:text-slate-600]="activeTab() !== 'following'">
+                    Following
+                  </button>
                 </div>
-              }
-            </div>
-          } @else if (tabUsers().length === 0) {
-            <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border-theme text-slate-400">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor"
-                class="w-10 h-10 text-slate-300 dark:text-slate-600">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-              </svg>
-              <p class="text-sm">
-                @if (tabSearchQuery()) {
-                  No results found
-                } @else if (activeTab() === 'followers') {
-                  No followers yet
-                } @else {
-                  Not following anyone yet
-                }
-              </p>
-            </div>
-          } @else {
-            <div class="flex flex-col gap-1">
-              @for (userItem of tabUsers(); track userItem.uid) {
-                <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
-                  <a [routerLink]="['/user', userItem.uid]"
-                    class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-sm font-semibold text-slate-700 dark:text-white uppercase shrink-0">
-                    {{ userItem.displayName.charAt(0) || 'U' }}
-                  </a>
-                  <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', userItem.uid]"
-                      class="text-sm font-semibold text-slate-900 dark:text-white truncate block hover:text-cyan-500 transition-colors">
-                      {{ userItem.displayName }}
-                    </a>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ '@' + userItem.username }}</span>
-                  </div>
-                  @if (isAuthenticated()) {
-                    <button
-                      (click)="toggleTabUserFollow(userItem)"
-                      class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer shrink-0"
-                      [class.bg-cyan-500]="!userItem.is_following"
-                      [class.text-white]="!userItem.is_following"
-                      [class.hover:bg-cyan-600]="!userItem.is_following"
-                      [class.bg-slate-100]="userItem.is_following"
-                      [class.dark:bg-white/10]="userItem.is_following"
-                      [class.text-slate-700]="userItem.is_following"
-                      [class.dark:text-slate-300]="userItem.is_following"
-                      [class.hover:bg-red-50]="userItem.is_following"
-                      [class.dark:hover:bg-red-900/20]="userItem.is_following"
-                      [class.border]="userItem.is_following"
-                      [class.border-slate-200]="userItem.is_following"
-                      [class.dark:border-white/10]="userItem.is_following"
-                      [class.hover:text-red-500]="userItem.is_following"
-                      [class.hover:border-red-200]="userItem.is_following"
-                      [class.dark:hover:border-red-800]="userItem.is_following">
-                      @if (userItem.is_following) {
-                        <span>Following</span>
-                      } @else {
-                        Follow
-                      }
-                    </button>
-                  }
-                </div>
-              }
-            </div>
-
-            <!-- Load More -->
-            @if (tabCurrentPage() < tabLastPage()) {
-              <div class="mt-4 flex justify-center">
-                <button
-                  (click)="loadMoreTabUsers()"
-                  [disabled]="isLoadingMore()"
-                  class="px-4 py-2 text-sm font-semibold text-cyan-500 hover:text-cyan-600 transition-colors cursor-pointer disabled:opacity-50">
-                  @if (isLoadingMore()) {
-                    <div class="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
-                  } @else {
-                    Load more
-                  }
+                <button (click)="closeFollowModal()"
+                  class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
                 </button>
               </div>
-            }
-          }
-        </div>
+
+              <!-- Search -->
+              <div class="px-5 pt-4 pb-0">
+                <div class="flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 focus-within:border-cyan-500/60 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                    class="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                  </svg>
+                  <input
+                    type="text"
+                    [value]="tabSearchQuery()"
+                    (input)="onTabSearch($event)"
+                    [placeholder]="'Search ' + activeTab() + '...'"
+                    class="ml-2 bg-transparent outline-none text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 w-full"
+                  />
+                </div>
+              </div>
+
+              <!-- User List -->
+              <div class="flex-1 overflow-y-auto px-5 py-4 custom-scrollbar">
+                @if (tabLoading()) {
+                  <div class="flex flex-col gap-3">
+                    @for (i of [1,2,3,4]; track i) {
+                      <div class="flex items-center gap-3 p-3 rounded-xl animate-pulse">
+                        <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800"></div>
+                        <div class="flex-1">
+                          <div class="h-4 w-32 bg-slate-200 dark:bg-slate-800 rounded mb-1.5"></div>
+                          <div class="h-3 w-20 bg-slate-100 dark:bg-slate-700 rounded"></div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                } @else if (tabUsers().length === 0) {
+                  <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border-theme text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor"
+                      class="w-10 h-10 text-slate-300 dark:text-slate-600">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                    </svg>
+                    <p class="text-sm">
+                      @if (tabSearchQuery()) {
+                        No results found
+                      } @else if (activeTab() === 'followers') {
+                        No followers yet
+                      } @else {
+                        Not following anyone yet
+                      }
+                    </p>
+                  </div>
+                } @else {
+                  <div class="flex flex-col gap-1">
+                    @for (userItem of tabUsers(); track userItem.uid) {
+                      <div class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
+                        <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.uid]"
+                          class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-sm font-semibold text-slate-700 dark:text-white uppercase shrink-0">
+                          {{ userItem.displayName.charAt(0) || 'U' }}
+                        </a>
+                        <div class="flex-1 min-w-0">
+                          <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.uid]"
+                            class="text-sm font-semibold text-slate-900 dark:text-white truncate block hover:text-cyan-500 transition-colors">
+                            {{ userItem.displayName }}
+                          </a>
+                          <span class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ '@' + userItem.username }}</span>
+                        </div>
+                        @if (isAuthenticated()) {
+                          <button
+                            (click)="toggleTabUserFollow(userItem)"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer shrink-0"
+                            [class.bg-cyan-500]="!userItem.is_following"
+                            [class.text-white]="!userItem.is_following"
+                            [class.hover:bg-cyan-600]="!userItem.is_following"
+                            [class.bg-slate-100]="userItem.is_following"
+                            [class.dark:bg-white/10]="userItem.is_following"
+                            [class.text-slate-700]="userItem.is_following"
+                            [class.dark:text-slate-300]="userItem.is_following"
+                            [class.hover:bg-red-50]="userItem.is_following"
+                            [class.dark:hover:bg-red-900/20]="userItem.is_following"
+                            [class.border]="userItem.is_following"
+                            [class.border-slate-200]="userItem.is_following"
+                            [class.dark:border-white/10]="userItem.is_following"
+                            [class.hover:text-red-500]="userItem.is_following"
+                            [class.hover:border-red-200]="userItem.is_following"
+                            [class.dark:hover:border-red-800]="userItem.is_following">
+                            @if (userItem.is_following) {
+                              <span>Following</span>
+                            } @else {
+                              Follow
+                            }
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Load More -->
+                  @if (tabCurrentPage() < tabLastPage()) {
+                    <div class="mt-4 flex justify-center">
+                      <button
+                        (click)="loadMoreTabUsers()"
+                        [disabled]="isLoadingMore()"
+                        class="px-4 py-2 text-sm font-semibold text-cyan-500 hover:text-cyan-600 transition-colors cursor-pointer disabled:opacity-50">
+                        @if (isLoadingMore()) {
+                          <div class="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                        } @else {
+                          Load more
+                        }
+                      </button>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        }
 
         <!-- Body: two columns -->
         <div class="flex flex-col lg:flex-row gap-6">
@@ -286,62 +308,23 @@
                 </div>
               </div>
             </div>
-
-            <!-- Badges count teaser -->
-            <div class="rounded-2xl border border-border-theme p-5 flex items-center justify-between">
-              <div>
-                <h3 class="text-xs font-semibold uppercase tracking-widest mb-1">Badges Earned</h3>
-                <span class="text-3xl font-bold">{{ profile.progress.earnedBadges.length }}</span>
-              </div>
-              <div class="w-12 h-12 rounded-xl bg-cyan-400/10 border border-cyan-400/20 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                  class="text-cyan-500">
-                  <circle cx="12" cy="8" r="6" />
-                  <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
-                </svg>
-              </div>
-            </div>
           </div>
 
-          <!-- Right column: Badges Grid -->
+          <!-- Right column: Bio -->
           <div class="flex-1 rounded-2xl border border-border-theme p-5">
-            <div class="flex items-center justify-between mb-5">
-              <h3 class="text-xs font-semibold uppercase tracking-widest">Earned Badges</h3>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              @for (badge of profile.progress.earnedBadges; track badge.id) {
-                <div class="flex gap-4 p-4 rounded-xl border border-border-theme hover:border-cyan-400/40 bg-slate-50 dark:bg-slate-800/50 hover:bg-cyan-400/5 cursor-default group">
-                  <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 border border-border-theme flex items-center justify-center shrink-0 group-hover:border-cyan-400/30">
-                    @if (badge.imageUrl) {
-                      <img [src]="badge.imageUrl" [alt]="badge.title" class="w-7 h-7 object-contain" />
-                    } @else {
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                        class="text-cyan-400">
-                        <circle cx="12" cy="8" r="6" />
-                        <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
-                      </svg>
-                    }
-                  </div>
-                  <div class="flex flex-col justify-center min-w-0">
-                    <h4 class="text-sm font-semibold truncate">{{ badge.title }}</h4>
-                    <p class="text-xs mt-0.5 line-clamp-2 leading-relaxed">{{ badge.description }}</p>
-                  </div>
-                </div>
-              } @empty {
-                <div class="col-span-full py-14 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border-theme text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                    class="text-slate-300 dark:text-slate-600">
-                    <circle cx="12" cy="8" r="6" />
-                    <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
-                  </svg>
-                  <p class="text-sm">No badges earned yet</p>
-                </div>
-              }
-            </div>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor" class="w-5 h-5 text-cyan-500">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+              About Me
+            </h2>
+            @if (profile.bio) {
+              <p class="text-slate-600 dark:text-slate-300 leading-relaxed">{{ profile.bio }}</p>
+            } @else {
+              <p class="text-sm text-slate-400 italic">This user hasn't written a bio yet.</p>
+            }
           </div>
         </div>
       </div>
