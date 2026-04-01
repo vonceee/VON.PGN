@@ -54,6 +54,7 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
   isCompleted = false;
   isSpeaking = signal(false);
   isPaused = signal(false);
+  isTransitioning = signal(false);
 
   ngOnInit() {
     if (this.authService.isAuthenticated() && !this.userService.currentUser()) {
@@ -80,7 +81,15 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
     if (changes['lessonData'] && !changes['lessonData'].isFirstChange()) {
       this.isCompleted = false;
       this.setupObserver();
+      this.triggerTransition();
     }
+  }
+
+  private triggerTransition() {
+    this.isTransitioning.set(true);
+    setTimeout(() => {
+      this.isTransitioning.set(false);
+    }, 250);
   }
 
   onStartCourse() {
@@ -106,6 +115,13 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
     return allLessons[allLessons.length - 1].id === this.lessonData.id;
   }
 
+  get isFirstLesson(): boolean {
+    if (!this.courseData || !this.lessonData) return false;
+    const allLessons = this.courseData.chapters.flatMap((c) => c.lessons);
+    if (!allLessons.length) return false;
+    return allLessons[0].id === this.lessonData.id;
+  }
+
   get suggestedCourses() {
     return this.lessonService.allCourses()
       .filter(c => c.id !== this.courseData?.id)
@@ -118,6 +134,10 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
 
   private setupObserver() {
     if (this.observer) this.observer.disconnect();
+
+    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
 
     this.observer = new IntersectionObserver(
       (entries) => {
@@ -391,6 +411,6 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
     this.prevLesson.emit();
   }
   onFinish() {
-    this.router.navigate(['/profile']);
+    this.router.navigate(['/roadmap']);
   }
 }

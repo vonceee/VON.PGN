@@ -13,7 +13,7 @@ export class CoachService {
       shortInfo: 'The best way to learn fast is to observe, listen, practice, and play!',
       fideRating: 2368,
       hourlyRate: 'negotiable',
-      profilePicture: 'https://players.chessbase.com/picture/Ran22836',
+      profilePicture: 'assets/images/f7399af5-b7da-4d24-ada0-9e458fca0bab.jpg',
       playingExperience: [
         'Peak FIDE rating (2467)',
         'Multiple Times Philippine Representative in Asia & Europe Tournaments',
@@ -48,7 +48,7 @@ export class CoachService {
       shortInfo: 'Dedicated chess coach focused on building strong tactical foundations and tournament readiness.',
       fideRating: 2040,
       hourlyRate: 'negotiable',
-      profilePicture: 'https://ui-avatars.com/api/?name=Luffe+Magdalaga&background=2563EB&color=fff',
+      profilePicture: 'assets/images/4afc6b0b-6d57-41b8-8fac-5d1a8fd0b929.jpg',
       playingExperience: [
         'Former Varsity Player for the Far East University (FEU) Chess Team',
         'Multiple-time medalist in the Philippine National Age Group Chess Championships',

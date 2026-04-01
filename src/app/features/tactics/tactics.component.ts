@@ -35,7 +35,6 @@ export class TacticsComponent implements OnInit {
   ratingChange = signal<number | null>(null);
   newRating = signal<number | null>(null);
   newStreak = signal<number>(0);
-  xpEarned = signal<number | null>(null);
   userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
 
@@ -51,7 +50,6 @@ export class TacticsComponent implements OnInit {
   loadNextPuzzle() {
     this.status.set('playing');
     this.ratingChange.set(null);
-    this.xpEarned.set(null);
     this.isLoading.set(true);
     this.hasError.set(false);
     this.hasRevealedSolution.set(false);
@@ -81,7 +79,6 @@ export class TacticsComponent implements OnInit {
         this.ratingChange.set(res.rating_change);
         this.newRating.set(res.new_rating);
         this.newStreak.set(res.new_streak);
-        this.xpEarned.set(res.xp_earned);
         this.userService.loadMyProfile().subscribe();
       });
     }
@@ -89,7 +86,7 @@ export class TacticsComponent implements OnInit {
 
   onPuzzleFailed() {
     this.status.set('failed');
-    
+
     if (this.currentUser()) {
       this.newStreak.set(0);
 
@@ -100,7 +97,6 @@ export class TacticsComponent implements OnInit {
         this.ratingChange.set(res.rating_change);
         this.newRating.set(res.new_rating);
         this.newStreak.set(res.new_streak);
-        this.xpEarned.set(res.xp_earned);
         this.userService.loadMyProfile().subscribe();
       });
     }

@@ -1,0 +1,11 @@
+/* Lesson content transition */
+.lesson-content-wrapper {
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.lesson-content-transitioning {
+  opacity: 0.4;
+  transform: translateY(4px);
+}

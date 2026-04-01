@@ -1,9 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Course } from '../../../../core/models/course.model';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {

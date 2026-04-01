@@ -1,23 +1,24 @@
 <div class="w-full h-full flex flex-col overflow-hidden">
   <div
-    class="flex-1 w-full relative overflow-y-auto custom-scrollbar flex flex-col items-center py-8 px-4"
+    class="flex-1 w-full relative overflow-y-auto custom-scrollbar flex flex-col items-center py-6 px-4 md:py-8 md:px-6"
   >
     @if (hasError() || (!isLoading() && !currentPuzzle() && status() === 'playing')) {
       <app-server-maintenance></app-server-maintenance>
     } @else if (isLoading()) {
-      <div class="w-full flex flex-row gap-8 items-start animate-pulse">
-        <div class="w-full flex flex-col items-center">
-          <div class="w-full max-w-125 aspect-square relative bg-slate-200 dark:bg-slate-800/80 rounded"></div>
+      <div class="w-full max-w-5xl flex flex-col md:flex-row gap-6 md:gap-8 items-start animate-pulse">
+        <div class="w-full md:w-1/2 flex flex-col items-center">
+          <div class="w-full max-w-125 aspect-square relative bg-slate-200 dark:bg-slate-800/80 rounded-xl"></div>
         </div>
-        <div class="w-full flex flex-col gap-6">
+        <div class="w-full md:w-1/2 flex flex-col gap-5">
+          <div class="h-24 bg-slate-200 dark:bg-slate-800/80 rounded-2xl w-full"></div>
+          <div class="h-14 bg-slate-200 dark:bg-slate-800/80 rounded-2xl w-full"></div>
           <div class="h-28 bg-slate-200 dark:bg-slate-800/80 rounded-2xl w-full"></div>
-          <div class="h-16 bg-slate-200 dark:bg-slate-800/80 rounded-2xl w-full"></div>
-          <div class="h-32 bg-slate-200 dark:bg-slate-800/80 rounded-2xl w-full"></div>
         </div>
       </div>
     } @else {
-      <div class="w-full flex flex-row gap-8 items-start">
-        <div class="w-full flex flex-col items-center">
+      <div class="w-full max-w-5xl flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+        <!-- Board Column -->
+        <div class="w-full md:w-1/2 flex flex-col items-center">
           <div class="w-full max-w-125 aspect-square relative">
             <app-tactics-board
               [puzzle]="currentPuzzle()"
@@ -30,34 +31,27 @@
           </div>
         </div>
 
-        <div class="w-full flex flex-col gap-6">
+        <!-- Side Panel -->
+        <div class="w-full md:w-1/2 flex flex-col gap-5">
           @if (currentUser()) {
-            <!-- Live Player Stats -->
+            <!-- Player Stats Card -->
             <div
-              class="border border-border-theme rounded-2xl p-6 flex items-center justify-between"
+              class="border border-border-theme rounded-2xl p-4 md:p-6 flex items-center justify-between"
             >
               <div class="flex flex-col">
+                <span class="text-xs uppercase tracking-wider text-slate-400 font-medium mb-1">Rating</span>
                 <div class="flex items-center gap-2">
-                  <span class="text-3xl font-black">{{ userRating() }}</span>
+                  <span class="text-2xl md:text-3xl font-black">{{ userRating() }}</span>
                   @if (status() === 'success' && ratingChange() !== null) {
                     <span
-                      class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full text-sm font-bold border border-green-500/30"
+                      class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full text-xs md:text-sm font-bold border border-green-500/30"
                     >
                       {{ (ratingChange() || 0) > 0 ? '+' : '' }}{{ ratingChange() }}
                     </span>
-
-                    @if ((xpEarned() || 0) > 0) {
-                      <span
-                        class="bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full text-sm font-bold border border-cyan-500/30"
-                      >
-                        +{{ xpEarned() }} XP
-                      </span>
-                    }
                   }
-
                   @if (status() === 'failed' && ratingChange() !== null) {
                     <span
-                      class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full text-sm font-bold border border-red-500/30"
+                      class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full text-xs md:text-sm font-bold border border-red-500/30"
                     >
                       {{ ratingChange() }}
                     </span>
@@ -65,6 +59,7 @@
                 </div>
               </div>
               <div class="flex flex-col items-end">
+                <span class="text-xs uppercase tracking-wider text-slate-400 font-medium mb-1">Streak</span>
                 <div class="flex items-center gap-2">
                   <svg class="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
                     <path
@@ -80,10 +75,10 @@
           } @else {
             <!-- Guest: Login Prompt -->
             <div
-              class="border border-border-theme rounded-2xl p-6 flex flex-col items-center gap-4 text-center"
+              class="border border-border-theme rounded-2xl p-5 md:p-6 flex items-center gap-4"
             >
               <svg
-                class="w-8 h-8 text-slate-400"
+                class="w-8 h-8 text-slate-400 shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -96,22 +91,31 @@
                 />
               </svg>
               <div>
-                <p class="font-semibold">create an account to save progress</p>
+                <p class="font-semibold text-sm md:text-base">Create an account to save progress</p>
+                <p class="text-xs text-slate-400 mt-0.5">Track your rating and streak</p>
               </div>
             </div>
           }
 
-          <div class="border border-border-theme rounded-2xl p-6">
-            <p class="text-sm">
-              <span class="font-medium">{{ userColor() }}</span> to play.
+          <!-- Turn Indicator -->
+          <div class="border border-border-theme rounded-2xl p-4 md:p-5 flex items-center gap-3">
+            <div
+              class="w-4 h-4 rounded-full shrink-0"
+              [class.bg-white]="userColor() === 'white'"
+              [class.border-2]="userColor() === 'black'"
+              [class.border-slate-300]="userColor() === 'black'"
+              [class.bg-slate-800]="userColor() === 'black'"
+            ></div>
+            <p class="text-sm md:text-base">
+              <span class="font-semibold capitalize">{{ userColor() }}</span>
+              <span class="text-slate-400"> to play</span>
             </p>
-
-
           </div>
 
+          <!-- Result Card: Success -->
           @if (status() === 'success') {
             <div
-              class="bg-green-500/10 border border-green-500/30 rounded-2xl p-6 flex flex-col items-center text-center"
+              class="bg-green-500/10 border border-green-500/30 rounded-2xl p-5 md:p-6 flex flex-col items-center text-center"
             >
               <div
                 class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-4"
@@ -130,18 +134,20 @@
                   ></path>
                 </svg>
               </div>
+              <p class="text-green-400 font-bold text-lg mb-4">Correct!</p>
               <button
                 (click)="loadNextPuzzle()"
-                class="w-full py-3 bg-green-500 hover:cursor-pointer font-bold rounded-xl"
+                class="w-full py-3.5 min-h-12 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold rounded-xl transition-colors cursor-pointer"
               >
                 Next Puzzle
               </button>
             </div>
           }
 
+          <!-- Result Card: Failed -->
           @if (status() === 'failed') {
             <div
-              class="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4"
+              class="bg-red-500/10 border border-red-500/30 rounded-2xl p-5 md:p-6 flex flex-col items-center text-center"
             >
               <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mb-4">
                 <svg
@@ -158,18 +164,19 @@
                   ></path>
                 </svg>
               </div>
+              <p class="text-red-400 font-bold text-lg mb-4">Not quite</p>
               <div class="flex flex-col w-full gap-2">
                 @if (!hasRevealedSolution()) {
                   <button
                     (click)="revealSolution()"
-                    class="w-full py-3 bg-red-500/20 hover:cursor-pointer font-bold rounded-xl"
+                    class="w-full py-3.5 min-h-12 bg-red-500/20 hover:bg-red-500/30 active:bg-red-500/40 text-red-400 font-bold rounded-xl transition-colors cursor-pointer"
                   >
                     Reveal Answer
                   </button>
                 } @else {
                   <button
                     (click)="loadNextPuzzle()"
-                    class="w-full py-3 bg-red-500/20 hover:cursor-pointer font-bold rounded-xl"
+                    class="w-full py-3.5 min-h-12 bg-red-500/20 hover:bg-red-500/30 active:bg-red-500/40 text-red-400 font-bold rounded-xl transition-colors cursor-pointer"
                   >
                     Next Puzzle
                   </button>

@@ -19,13 +19,14 @@ export class LearnComponent implements OnInit {
   course = this.lessonService.currentCourse;
   activeLesson = this.lessonService.activeLesson;
   isLoadingCourse = this.lessonService.isLoadingCourse;
-  isLoadingLesson = this.lessonService.isLoadingLesson;
+  isTransitioningLesson = this.lessonService.isTransitioningLesson;
 
   ngOnInit() {
     const courseSlug = this.route.snapshot.paramMap.get('courseSlug');
     const targetLessonId = this.route.snapshot.queryParamMap.get('lesson');
 
     if (courseSlug) {
+      this.lessonService.activeLesson.set(null);
       this.lessonService.loadCourse(courseSlug).subscribe({
         next: () => {
           const c = this.course();
@@ -50,11 +51,24 @@ export class LearnComponent implements OnInit {
       this.lessonService.activeLesson.set(null);
       return;
     }
-    this.lessonService.loadLesson(lessonSlug).subscribe();
+    this.lessonService.loadLesson(lessonSlug).subscribe({
+      next: () => this.prefetchAdjacent(lessonSlug),
+    });
   }
 
   private get allLessons() {
     return this.course()?.chapters.flatMap((c) => c.lessons) || [];
+  }
+
+  private prefetchAdjacent(currentLessonId: string) {
+    const lessons = this.allLessons;
+    const idx = lessons.findIndex((l) => l.id === currentLessonId);
+    if (idx < lessons.length - 1) {
+      this.lessonService.prefetchLesson(lessons[idx + 1].id);
+    }
+    if (idx > 0) {
+      this.lessonService.prefetchLesson(lessons[idx - 1].id);
+    }
   }
 
   onNextLesson() {

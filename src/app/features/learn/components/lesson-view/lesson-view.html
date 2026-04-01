@@ -8,6 +8,15 @@
     <nav aria-label="breadcrumb" class="text-sm mb-4">
       <ul class="flex items-center gap-1">
         <li>
+          <a
+            routerLink="/roadmap"
+            class="cursor-pointer hover:underline hover:text-cyan-400"
+          >
+            Roadmap
+          </a>
+        </li>
+        <li>/</li>
+        <li>
           <span class="cursor-pointer hover:underline" (click)="backToCourse.emit()">
             {{ courseData.title }}
           </span>
@@ -27,7 +36,7 @@
           <h1 class="text-3xl font-extrabold">{{ courseData.title }}</h1>
         </div>
       </div>
-      <p class="text-lg leading-relaxed" [innerHTML]="courseData.description"></p>
+      <div class="text-lg leading-relaxed" [innerHTML]="courseData.description"></div>
 
       <div class="mt-4 text-sm space-y-1">
         <div><strong>Estimated time:</strong> {{ estimatedTime }}</div>
@@ -50,7 +59,7 @@
         </div>
       }
       <button
-        class="group flex items-center gap-2 px-6 py-2.5 mt-12 mb-12 border border-border-theme rounded-full text-md font-semibold hover:text-cyan-400 hover:border-cyan-400 hover:cursor-pointer"
+        class="group flex items-center gap-2 px-6 py-2.5 mt-12 mb-12 border border-border-theme rounded-full text-md font-semibold hover:text-cyan-400 hover:border-cyan-400 hover:cursor-pointer transition-colors duration-200"
         (click)="onStartCourse()"
       >
         Start Course
@@ -71,10 +80,10 @@
       <div class="flex justify-between items-center py-5">
         <h1 class="text-3xl font-extrabold">{{ lessonData.title }}</h1>
 
-        <!-- Read Aloud -->
-        <div class="flex flex-wrap items-center gap-4">
+        <!-- Read Aloud + Navigation -->
+        <div class="flex flex-wrap items-center gap-3">
           <button
-            class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-cyan-400 hover:cursor-pointer"
+            class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-cyan-400 hover:cursor-pointer transition-colors duration-200"
             [class.text-cyan-400]="isSpeaking() && !isPaused()"
             (click)="toggleReadAloud()"
           >
@@ -112,7 +121,7 @@
           @if (availableVoices().length > 0) {
             <div class="relative flex items-center">
               <button
-                class="hover:text-cyan-400 hover:cursor-pointer"
+                class="hover:text-cyan-400 hover:cursor-pointer transition-colors duration-200"
                 (click)="toggleSettings()"
                 title="Read Aloud Settings"
               >
@@ -174,7 +183,9 @@
             </div>
           }
           <button
-            class="group flex items-center gap-2 px-6 py-2.5 text-sm font-semibold"
+            class="group flex items-center gap-2 px-5 py-2 border border-border-theme rounded-full text-sm font-semibold hover:text-cyan-400 hover:border-cyan-400 hover:cursor-pointer transition-colors duration-200"
+            [class.opacity-40]="isFirstLesson"
+            [class.pointer-events-none]="isFirstLesson"
             (click)="onPrev()"
           >
             <svg
@@ -183,7 +194,7 @@
               viewBox="0 0 24 24"
               stroke-width="2.5"
               stroke="currentColor"
-              class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-2"
+              class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1"
             >
               <path
                 stroke-linecap="round"
@@ -194,7 +205,7 @@
             Prev
           </button>
           <button
-            class="group flex items-center gap-2 px-6 py-2.5 hover:cursor-pointer hover:text-cyan-400 text-sm font-semibold"
+            class="group flex items-center gap-2 px-5 py-2 border border-border-theme rounded-full text-sm font-semibold hover:text-cyan-400 hover:border-cyan-400 hover:cursor-pointer transition-colors duration-200"
             (click)="isLastLesson ? onFinish() : onNext()"
           >
             {{ isLastLesson ? 'Finish' : 'Next' }}
@@ -204,7 +215,7 @@
               viewBox="0 0 24 24"
               stroke-width="2.5"
               stroke="currentColor"
-              class="w-3.5 h-3.5 transition-transform group-hover:translate-x-2"
+              class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
             </svg>
@@ -213,145 +224,149 @@
       </div>
     </div>
 
-    <div class="mb-12 shrink-0">
-      @for (block of lessonData.contentBlocks; track $index) {
-        @if (block.type === 'text') {
-          <div
-            class="group relative my-6 rounded-lg transition-all duration-300 border border-transparent"
-            [class.bg-cyan-50]="activeBlockIndex() === $index"
-            [class.dark:bg-cyan-950/30]="activeBlockIndex() === $index"
-            [class.!border-cyan-400]="activeBlockIndex() === $index"
-            [class.shadow-sm]="activeBlockIndex() === $index"
-            [class.px-4]="activeBlockIndex() === $index"
-            [class.py-2]="activeBlockIndex() === $index"
-          >
-            <!-- Play from here button overlay -->
-            <button
-              class="absolute right-3 flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-cyan-400 opacity-0 group-hover:opacity-100 z-10"
-              [class]="
-                activeBlockIndex() === $index ? '!opacity-100 !text-cyan-400 !border-cyan-400' : ''
-              "
-              type="button"
-              [title]="activeBlockIndex() === $index ? 'Reading...' : 'Play from here'"
-              (click)="activeBlockIndex() === $index ? toggleReadAloud() : readFromBlock($index)"
+    <div class="lesson-content-wrapper" [class.lesson-content-transitioning]="isTransitioning()">
+      <div class="mb-12 shrink-0">
+        @for (block of lessonData.contentBlocks; track $index) {
+          @if (block.type === 'text') {
+            <div
+              class="group relative my-6 rounded-lg transition-all duration-300 border border-transparent"
+              [class.bg-cyan-50]="activeBlockIndex() === $index"
+              [class.dark:bg-cyan-950/30]="activeBlockIndex() === $index"
+              [class.!border-cyan-400]="activeBlockIndex() === $index"
+              [class.shadow-sm]="activeBlockIndex() === $index"
+              [class.px-4]="activeBlockIndex() === $index"
+              [class.py-2]="activeBlockIndex() === $index"
             >
-              @if (activeBlockIndex() === $index && isSpeaking() && !isPaused()) {
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="2.5"
-                  stroke="currentColor"
-                  class="w-3.5 h-3.5"
-                >
-                  <rect x="6" y="6" width="12" height="12" rx="1.5" />
-                </svg>
-                <span class="text-xs font-semibold">Stop</span>
-              } @else {
-                <!-- Speaker Icon -->
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="2.5"
-                  stroke="currentColor"
-                  class="w-3.5 h-3.5"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9 9 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
-                  />
-                </svg>
-                <span class="text-xs font-semibold">Read Aloud</span>
-              }
-            </button>
+              <!-- Play from here button overlay -->
+              <button
+                class="absolute right-3 flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-cyan-400 opacity-0 group-hover:opacity-100 z-10"
+                [class]="
+                  activeBlockIndex() === $index ? '!opacity-100 !text-cyan-400 !border-cyan-400' : ''
+                "
+                type="button"
+                [title]="activeBlockIndex() === $index ? 'Reading...' : 'Play from here'"
+                (click)="activeBlockIndex() === $index ? toggleReadAloud() : readFromBlock($index)"
+              >
+                @if (activeBlockIndex() === $index && isSpeaking() && !isPaused()) {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-3.5 h-3.5"
+                  >
+                    <rect x="6" y="6" width="12" height="12" rx="1.5" />
+                  </svg>
+                  <span class="text-xs font-semibold">Stop</span>
+                } @else {
+                  <!-- Speaker Icon -->
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-3.5 h-3.5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9 9 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
+                    />
+                  </svg>
+                  <span class="text-xs font-semibold">Read Aloud</span>
+                }
+              </button>
 
-            <article
-              class="prose prose-slate dark:prose-invert max-w-none pr-32"
-              [innerHTML]="block.content"
-            ></article>
-          </div>
-        } @else if (block.type === 'board' && block.task) {
-          <section class="flex flex-col my-10">
-            <app-interactive-board [task]="block.task"></app-interactive-board>
-          </section>
-        }
-      }
-    </div>
-    <div #bottomTrigger class="h-16 w-full mt-8 px-4 flex justify-between items-center rounded-xl">
-      <button
-        class="group flex items-center gap-2 px-6 py-2.5 hover:cursor-pointer font-semibold"
-        (click)="onPrev()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2.5"
-          stroke="currentColor"
-          class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-        </svg>
-        <span class="text-sm">Prev</span>
-      </button>
-
-      @if (!isLoggedIn) {
-        <div class="text-sm font-medium tracking-wide text-center">login to track progress.</div>
-      } @else if (isCompleted && !isAlreadyCompleted) {
-        <div class="text-cyan-400 font-bold flex items-center gap-2 text-sm">
-          <span class="whitespace-nowrap">+10 XP</span>
-        </div>
-      } @else if (isAlreadyCompleted) {
-        <div class="text-cyan-400 font-bold flex items-center gap-2 text-sm sm:text-base">
-          <span class="whitespace-nowrap">+10 EXP</span>
-        </div>
-      } @else {
-        <div class="w-4 sm:w-5"></div>
-      }
-
-      <button
-        class="group flex items-center gap-2 px-6 py-2.5 hover:cursor-pointer hover:text-cyan-400 text-sm font-semibold"
-        (click)="isLastLesson ? onFinish() : onNext()"
-      >
-        <span class="text-sm">{{ isLastLesson ? 'Finish' : 'Next' }}</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2.5"
-          stroke="currentColor"
-          class="w-3.5 h-3.5 transition-transform group-hover:translate-x-2"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-        </svg>
-      </button>
-    </div>
-
-    @if (isLastLesson) {
-      <div
-        class="mt-8 mb-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-border-theme"
-      >
-        <h3 class="text-xl font-bold mb-6">What to learn next?</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          @for (course of suggestedCourses; track course.id) {
-            <a
-              [routerLink]="['/learn', course.id]"
-              class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer bg-white dark:bg-black"
-            >
-              <h4 class="font-bold text-lg mb-2 group-hover:text-cyan-400">
-                {{ course.title }}
-              </h4>
-              <p class="text-sm text-slate-500 line-clamp-2">
-                {{ getStripedDescription(course.description) }}
-              </p>
-            </a>
-          } @empty {
-            <p class="text-sm text-slate-500">More courses coming soon!</p>
+              <article
+                class="prose prose-slate dark:prose-invert max-w-none pr-32"
+                [innerHTML]="block.content"
+              ></article>
+            </div>
+          } @else if (block.type === 'board' && block.task) {
+            <section class="flex flex-col my-10">
+              <app-interactive-board [task]="block.task"></app-interactive-board>
+            </section>
           }
-        </div>
+        }
       </div>
-    }
+      <div #bottomTrigger class="h-16 w-full mt-8 px-4 flex justify-between items-center rounded-xl">
+        <button
+          class="group flex items-center gap-2 px-5 py-2 border border-border-theme rounded-full text-sm font-semibold hover:text-cyan-400 hover:border-cyan-400 hover:cursor-pointer transition-colors duration-200"
+          [class.opacity-40]="isFirstLesson"
+          [class.pointer-events-none]="isFirstLesson"
+          (click)="onPrev()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+          <span>Prev</span>
+        </button>
+
+        @if (!isLoggedIn) {
+          <div class="text-sm font-medium tracking-wide text-center">login to track progress.</div>
+        } @else if (isCompleted && !isAlreadyCompleted) {
+          <div class="text-cyan-400 font-bold flex items-center gap-2 text-sm">
+            <span class="whitespace-nowrap">+10 XP</span>
+          </div>
+        } @else if (isAlreadyCompleted) {
+          <div class="text-cyan-400 font-bold flex items-center gap-2 text-sm sm:text-base">
+            <span class="whitespace-nowrap">+10 EXP</span>
+          </div>
+        } @else {
+          <div class="w-4 sm:w-5"></div>
+        }
+
+        <button
+          class="group flex items-center gap-2 px-5 py-2 border border-border-theme rounded-full text-sm font-semibold hover:text-cyan-400 hover:border-cyan-400 hover:cursor-pointer transition-colors duration-200"
+          (click)="isLastLesson ? onFinish() : onNext()"
+        >
+          <span>{{ isLastLesson ? 'Finish' : 'Next' }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+          </svg>
+        </button>
+      </div>
+
+      @if (isLastLesson) {
+        <div
+          class="mt-8 mb-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-border-theme"
+        >
+          <h3 class="text-xl font-bold mb-6">What to learn next?</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            @for (course of suggestedCourses; track course.id) {
+              <a
+                [routerLink]="['/learn', course.id]"
+                class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer bg-white dark:bg-black"
+              >
+                <h4 class="font-bold text-lg mb-2 group-hover:text-cyan-400">
+                  {{ course.title }}
+                </h4>
+                <p class="text-sm text-slate-500 line-clamp-2">
+                  {{ getStripedDescription(course.description) }}
+                </p>
+              </a>
+            } @empty {
+              <p class="text-sm text-slate-500">More courses coming soon!</p>
+            }
+          </div>
+        </div>
+      }
+    </div>
   }
 </main>

@@ -10,7 +10,9 @@ import { Header } from '../header/header';
     <div class="h-screen w-full flex flex-col">
       <app-header class="w-full shrink-0 z-50"></app-header>
       <main class="flex-1 overflow-y-auto w-full custom-scrollbar relative">
-        <router-outlet></router-outlet>
+        <div class="max-w-[1600px] mx-auto w-full">
+          <router-outlet></router-outlet>
+        </div>
       </main>
     </div>
   `,

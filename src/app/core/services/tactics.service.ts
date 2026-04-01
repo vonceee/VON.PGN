@@ -2,7 +2,6 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ToastService } from './toast.service';
 import { UserService } from './user.service';
 import { environment } from '../../../environments/environment';
 
@@ -20,14 +19,11 @@ export interface SolveResponse {
   new_rating: number;
   rating_change: number;
   new_streak: number;
-  xp_earned: number;
-  leveled_up: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
 export class TacticsService {
   private http = inject(HttpClient);
-  private toastService = inject(ToastService);
   private userService = inject(UserService);
   private apiUrl = environment.apiUrl;
 
@@ -40,15 +36,7 @@ export class TacticsService {
       puzzle_id: puzzleId,
       success: success,
     }).pipe(
-      tap((response) => {
-        if (response.leveled_up) {
-          this.toastService.show(
-            'Level Up! New Level ' + this.userService.currentUser()?.progress.currentLevel,
-            'level-up',
-            6000
-          );
-        }
-
+      tap(() => {
         if (this.userService.currentUser()) {
           this.userService.loadMyProfile().subscribe();
         }
