@@ -1,4 +1,5 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { UserProfile, Badge, FollowUser, PaginatedResponse } from '../models/user.model';
 import { tap, map } from 'rxjs';
@@ -27,12 +28,18 @@ export interface FollowActionResponse {
 })
 export class UserService {
   private http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
 
   private readonly profileKey = 'chess_user_profile';
+
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
 
   currentUser = signal<UserProfile | null>(null);
 
   getCachedProfile(): UserProfile | null {
+    if (!this.isBrowser) return null;
     const data = localStorage.getItem(this.profileKey);
     if (!data) return null;
     try {
@@ -44,10 +51,12 @@ export class UserService {
   }
 
   cacheProfile(profile: UserProfile): void {
+    if (!this.isBrowser) return;
     localStorage.setItem(this.profileKey, JSON.stringify(profile));
   }
 
   clearCachedProfile(): void {
+    if (!this.isBrowser) return;
     localStorage.removeItem(this.profileKey);
   }
 

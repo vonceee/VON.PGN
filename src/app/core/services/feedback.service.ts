@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 export type FeedbackType = 'bug' | 'suggestion' | 'general';
 
@@ -17,9 +18,16 @@ export interface FeedbackItem {
 })
 export class FeedbackService {
   private readonly storageKey = 'vonpgn_feedback';
+  private platformId = inject(PLATFORM_ID);
+
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
+
   feedbackItems = signal<FeedbackItem[]>(this.loadFromStorage());
 
   private loadFromStorage(): FeedbackItem[] {
+    if (!this.isBrowser) return [];
     try {
       const raw = localStorage.getItem(this.storageKey);
       if (!raw) return [];
@@ -34,6 +42,7 @@ export class FeedbackService {
   }
 
   private saveToStorage() {
+    if (!this.isBrowser) return;
     localStorage.setItem(this.storageKey, JSON.stringify(this.feedbackItems()));
   }
 

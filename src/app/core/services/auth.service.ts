@@ -1,4 +1,5 @@
-import { inject, Injectable, signal, computed } from '@angular/core';
+import { inject, Injectable, signal, computed, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { tap, catchError, map, of, finalize } from 'rxjs';
 import { Router } from '@angular/router';
@@ -24,9 +25,14 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private userService = inject(UserService);
+  private platformId = inject(PLATFORM_ID);
 
   private apiUrl = environment.apiUrl;
   private tokenKey = 'chess_auth_token';
+
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
 
   currentUser = signal<any | null>(null);
   isAuthenticated = computed(() => this.currentUser() !== null);
@@ -107,7 +113,9 @@ export class AuthService {
   }
 
   private handleAuthentication(response: AuthResponse) {
-    localStorage.setItem(this.tokenKey, response.access_token);
+    if (this.isBrowser) {
+      localStorage.setItem(this.tokenKey, response.access_token);
+    }
 
     if (response.user && !response.user.email_verified_at) {
       this.unverifiedEmail.set(response.user.email);
@@ -130,7 +138,9 @@ export class AuthService {
   }
 
   private clearAuthWithoutRedirect() {
-    localStorage.removeItem(this.tokenKey);
+    if (this.isBrowser) {
+      localStorage.removeItem(this.tokenKey);
+    }
     this.currentUser.set(null);
     this.unverifiedEmail.set(null);
     this.userService.currentUser.set(null);
@@ -138,7 +148,7 @@ export class AuthService {
   }
 
   public getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return this.isBrowser ? localStorage.getItem(this.tokenKey) : null;
   }
 
   retryLogin() {
@@ -186,7 +196,9 @@ export class AuthService {
   }
 
   handleGoogleCallback(token: string) {
-    localStorage.setItem(this.tokenKey, token);
+    if (this.isBrowser) {
+      localStorage.setItem(this.tokenKey, token);
+    }
     return this.userService.loadMyProfile().pipe(
       tap({
         next: (res) => {
