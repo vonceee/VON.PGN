@@ -27,6 +27,7 @@ export class TournamentsComponent implements OnInit {
   isTabDropdownOpen = signal(false);
   searchQuery = signal('');
   formatFilter = signal('');
+  sortBy = signal('');
   currentPage = signal(1);
 
   upcomingCount = computed(() => this.tournaments().filter(t => t.status === 'upcoming').length);
@@ -45,8 +46,9 @@ export class TournamentsComponent implements OnInit {
     const query = this.searchQuery().toLowerCase().trim();
     const format = this.formatFilter();
     const tab = this.activeTab();
+    const sort = this.sortBy();
 
-    return this.tournaments().filter(t => {
+    let result = this.tournaments().filter(t => {
       if (t.status !== tab) return false;
       if (format && t.format !== format) return false;
       if (query) {
@@ -61,6 +63,24 @@ export class TournamentsComponent implements OnInit {
       }
       return true;
     });
+
+    if (sort === 'recently_posted') {
+      result = [...result].sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+    } else if (sort === 'starting_soon') {
+      const now = Date.now();
+      result = [...result].filter(t => new Date(t.dates.start).getTime() >= now);
+      result.sort((a, b) => {
+        const dateA = new Date(a.dates.start).getTime();
+        const dateB = new Date(b.dates.start).getTime();
+        return dateA - dateB;
+      });
+    }
+
+    return result;
   });
 
   totalPages = computed(() => Math.max(1, Math.ceil(this.filteredTournaments().length / ITEMS_PER_PAGE)));
@@ -108,6 +128,11 @@ export class TournamentsComponent implements OnInit {
     this.currentPage.set(1);
   }
 
+  onSortChange(event: Event) {
+    this.sortBy.set((event.target as HTMLSelectElement).value);
+    this.currentPage.set(1);
+  }
+
   clearSearch() {
     this.searchQuery.set('');
     this.currentPage.set(1);
@@ -146,6 +171,21 @@ export class TournamentsComponent implements OnInit {
       day: 'numeric',
       year: 'numeric'
     });
+  }
+
+  formatRelativeTime(dateStr: string): string {
+    const now = Date.now();
+    const then = new Date(dateStr).getTime();
+    const diffMs = now - then;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 30) return `${diffDays}d ago`;
+    return this.formatDate(dateStr);
   }
 
   @HostListener('document:click', ['$event'])

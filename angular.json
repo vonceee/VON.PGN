@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "VON.PGN": {
+    "vonchess": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -74,10 +74,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "VON.PGN:build:production"
+              "buildTarget": "vonchess:build:production"
             },
             "development": {
-              "buildTarget": "VON.PGN:build:development"
+              "buildTarget": "vonchess:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -26,7 +26,7 @@ export class CoachDetailComponent implements OnInit {
       if (this.coach) {
         this.seo.update({
           title: `${this.coach.name} - Chess Coach`,
-          description: `Learn chess from ${this.coach.name}. View their profile, specialties, and contact information on VON.PGN.`,
+          description: `Learn chess from ${this.coach.name}. View their profile, specialties, and contact information on vonchess.`,
           url: `https://vonchess.com/coaches/${id}`,
         });
       }

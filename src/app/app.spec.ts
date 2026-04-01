@@ -14,9 +14,9 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should have title signal set to VON.PGN', () => {
+  it('should have title signal set to vonchess', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
-    expect((app as any).title()).toBe('VON.PGN');
+    expect((app as any).title()).toBe('vonchess');
   });
 });

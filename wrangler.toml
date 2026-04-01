@@ -3,5 +3,5 @@ main = "src/_worker.ts"
 compatibility_date = "2025-01-01"
 
 [assets]
-directory = "./dist/VON.PGN/browser"
+directory = "./dist/vonchess/browser"
 not_found_handling = "single-page-application"

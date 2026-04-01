@@ -61,5 +61,6 @@ export interface Tournament {
   standings?: { rank: number; player: string; score: number }[];
   creator?: TournamentCreator;
   viewCount?: number;
+  createdAt?: string;
   isBookmarked?: boolean;
 }

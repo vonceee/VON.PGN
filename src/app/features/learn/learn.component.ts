@@ -32,7 +32,7 @@ export class LearnComponent implements OnInit {
           if (c) {
             this.seo.update({
               title: c.title,
-              description: c.description?.substring(0, 160) || `Study ${c.title} on VON.PGN.`,
+              description: c.description?.substring(0, 160) || `Study ${c.title} on vonchess.`,
               url: `https://vonchess.com/learn/${courseSlug}`,
               type: 'article',
             });

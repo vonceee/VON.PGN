@@ -1,5 +1,5 @@
 {
-  "name": "von.pgn",
+  "name": "vonchess",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:VON.PGN": "node dist/VON.PGN/server/server.mjs"
+    "serve:ssr:vonchess": "node dist/vonchess/server/server.mjs"
   },
   "private": true,
   "packageManager": "npm@10.9.2",

@@ -11,5 +11,5 @@ import { FeedbackButtonComponent } from './shared/components/feedback-button/fee
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('VON.PGN');
+  protected readonly title = signal('vonchess');
 }

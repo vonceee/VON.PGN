@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/VON.PGN/browser",
+  "outputDirectory": "dist/vonchess/browser",
   "rewrites": [
     { "source": "/((?!assets/).*)", "destination": "/index.csr.html" }
   ]

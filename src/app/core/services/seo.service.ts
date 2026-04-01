@@ -11,7 +11,7 @@ export interface SeoConfig {
   author?: string;
 }
 
-const SITE_NAME = 'VON.PGN';
+const SITE_NAME = 'vonchess';
 const DEFAULT_IMAGE = 'https://vonchess.com/assets/images/og-image.png';
 const BASE_URL = 'https://vonchess.vercel.app';
 

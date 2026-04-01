@@ -138,9 +138,9 @@ export class WhatsNewComponent {
       entries: [
         {
           date: 'January 20, 2026',
-          title: 'VON.PGN Launch',
+          title: 'vonchess Launch',
           category: 'New Feature',
-          description: 'Initial release of VON.PGN — the Philippines\' chess platform. Includes interactive lessons, tournament listings, coach directory, and learning roadmap.',
+          description: 'Initial release of vonchess — the Philippines\' chess platform. Includes interactive lessons, tournament listings, coach directory, and learning roadmap.',
         },
         {
           date: 'January 20, 2026',
