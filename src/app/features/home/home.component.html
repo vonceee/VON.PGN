@@ -291,6 +291,41 @@
           Read our <span class="text-cyan-400">Courses.</span><br />
           learn from handcrafted courses for players of all levels.
         </h2>
+
+        @if (isLoading()) {
+          <div class="animate-pulse space-y-4">
+            @for (i of [1, 2, 3]; track i) {
+              <div class="flex items-center gap-3">
+                <div class="h-6 bg-slate-200 dark:bg-slate-800/80 rounded w-2/5"></div>
+                <div class="h-5 w-12 bg-slate-200 dark:bg-slate-800/80 rounded shrink-0"></div>
+                <div class="h-5 w-16 bg-slate-200 dark:bg-slate-800/80 rounded shrink-0"></div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="space-y-4 mb-6 md:mb-10">
+            @for (course of featuredCoursesList(); track course.id) {
+              <div class="flex items-center gap-3">
+                <a
+                  [routerLink]="['/learn', course.id]"
+                  class="text-[17px] hover:text-cyan-400 truncate"
+                >
+                  <span class="text-slate-400 font-normal mr-1.5">Learn</span
+                  ><span class="font-bold">{{ course.title }}</span>
+                </a>
+                <span
+                  class="text-[10px] font-bold uppercase px-1.5 py-0.5 border border-slate-600 rounded text-slate-400 hover:bg-slate-700 cursor-pointer"
+                  >Tutorial</span
+                >
+                <span
+                  class="text-[10px] font-bold uppercase px-1.5 py-0.5 border border-slate-600 rounded text-cyan-400 hover:bg-cyan-400 hover:text-white cursor-pointer"
+                  >Beginner</span
+                >
+              </div>
+            }
+          </div>
+        }
+
         <a
           routerLink="/roadmap"
           class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"

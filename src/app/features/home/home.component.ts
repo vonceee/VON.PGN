@@ -41,6 +41,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   searchQuery = signal<string>('');
   allCourses = this.lessonService.allCourses;
+  isLoading = signal(true);
 
   searchResults = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
@@ -58,7 +59,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
   puzzleStatus = signal<'playing' | 'success' | 'failed'>('playing');
 
   ngOnInit() {
-    this.lessonService.loadAllCourses().subscribe();
+    this.lessonService.loadAllCourses().subscribe({
+      next: () => {
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      },
+    });
     this.loadPuzzle();
   }
 
