@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, ViewChild, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { InteractiveTask } from '../../../../core/models/course.model';
+import { environment } from '../../../../../environments/environment';
 
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
@@ -42,9 +43,9 @@ export class InteractiveBoardComponent {
 
   @Input({ required: true }) set task(value: InteractiveTask) {
     this.isLoading.set(true);
-    const pgnUrl = `${value.lichessUrl}.pgn`;
+    const proxyUrl = `${environment.apiUrl}/lichess/pgn?url=${encodeURIComponent(value.lichessUrl)}`;
 
-    this.http.get(pgnUrl, { responseType: 'text' }).subscribe({
+    this.http.get(proxyUrl, { responseType: 'text' }).subscribe({
       next: (pgnString) => {
         this.initializeStudy(pgnString);
         this.isLoading.set(false);
