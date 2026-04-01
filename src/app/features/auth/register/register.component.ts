@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -84,5 +85,9 @@ export class RegisterComponent {
         this.isLoading = false;
       },
     });
+  }
+
+  loginWithGoogle() {
+    window.location.href = `${environment.apiUrl}/auth/google/redirect`;
   }
 }

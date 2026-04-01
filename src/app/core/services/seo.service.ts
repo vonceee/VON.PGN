@@ -13,7 +13,7 @@ export interface SeoConfig {
 
 const SITE_NAME = 'VON.PGN';
 const DEFAULT_IMAGE = 'https://vonchess.com/assets/images/og-image.png';
-const BASE_URL = 'https://vonchess.com';
+const BASE_URL = 'https://vonchess.vercel.app';
 
 @Injectable({
   providedIn: 'root',

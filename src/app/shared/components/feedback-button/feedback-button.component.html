@@ -1,0 +1,141 @@
+<!-- Floating Feedback Button -->
+<button
+  (click)="openModal()"
+  class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group"
+  aria-label="Send feedback"
+  title="Send feedback"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 group-hover:scale-110 transition-transform">
+    <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.29 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.68-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97ZM6.75 8.25a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H7.5Z" clip-rule="evenodd" />
+  </svg>
+</button>
+
+<!-- Feedback Modal -->
+@if (isOpen()) {
+  <div class="feedback-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="onBackdropClick($event)">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md mx-4 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      
+      @if (!isSubmitted()) {
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 pb-0">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-cyan-500">
+                <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.29 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.68-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 0 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97Z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold">Send Feedback</h2>
+          </div>
+          <button
+            (click)="closeModal()"
+            class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-slate-400">
+              <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+          <p class="text-sm text-slate-500 dark:text-slate-400">
+            We'd love to hear from you. Share your thoughts, report a bug, or suggest an improvement.
+          </p>
+
+          <!-- Name -->
+          <div>
+            <label for="feedback-name" class="block text-sm font-medium mb-1.5">Name</label>
+            <input
+              id="feedback-name"
+              type="text"
+              [(ngModel)]="form.name"
+              name="name"
+              placeholder="Your name (optional)"
+              class="w-full px-3 py-2.5 border border-border-theme rounded-lg text-sm focus:outline-none focus:border-cyan-500 transition-colors bg-white dark:bg-slate-800"
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="feedback-email" class="block text-sm font-medium mb-1.5">Email</label>
+            <input
+              id="feedback-email"
+              type="email"
+              [(ngModel)]="form.email"
+              name="email"
+              placeholder="your@email.com (optional)"
+              class="w-full px-3 py-2.5 border border-border-theme rounded-lg text-sm focus:outline-none focus:border-cyan-500 transition-colors bg-white dark:bg-slate-800"
+            />
+          </div>
+
+          <!-- Feedback Type -->
+          <div>
+            <label for="feedback-type" class="block text-sm font-medium mb-1.5">Feedback Type</label>
+            <select
+              id="feedback-type"
+              [(ngModel)]="form.type"
+              name="type"
+              class="w-full px-3 py-2.5 border border-border-theme rounded-lg text-sm focus:outline-none focus:border-cyan-500 transition-colors bg-white dark:bg-slate-800 appearance-none"
+            >
+              @for (ft of feedbackTypes; track ft.value) {
+                <option [value]="ft.value">{{ ft.label }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Message -->
+          <div>
+            <label for="feedback-message" class="block text-sm font-medium mb-1.5">Message <span class="text-red-500">*</span></label>
+            <textarea
+              id="feedback-message"
+              [(ngModel)]="form.message"
+              name="message"
+              rows="4"
+              placeholder="Describe your feedback, bug, or suggestion..."
+              required
+              class="w-full px-3 py-2.5 border border-border-theme rounded-lg text-sm focus:outline-none focus:border-cyan-500 transition-colors resize-none bg-white dark:bg-slate-800"
+            ></textarea>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-3 pt-2">
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="!form.message.trim() || isSubmitting()"
+              class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-cyan-500 hover:bg-cyan-600 text-slate-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {{ isSubmitting() ? 'Sending...' : 'Submit Feedback' }}
+            </button>
+          </div>
+        </form>
+      } @else {
+        <!-- Success State -->
+        <div class="p-8 text-center">
+          <div class="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-green-500">
+              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h2 class="text-lg font-bold mb-2">Thank You!</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
+            Your feedback has been received. We appreciate you taking the time to help us improve.
+          </p>
+          <button
+            (click)="closeModal()"
+            class="px-6 py-2.5 rounded-lg font-medium text-sm bg-cyan-500 hover:bg-cyan-600 text-slate-900 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

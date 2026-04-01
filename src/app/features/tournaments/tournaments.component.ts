@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, OnInit, HostListener, ElementRef, 
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Tournament, TournamentStatus } from '../../core/models/tournament.model';
 
 const ITEMS_PER_PAGE = 6;
@@ -14,6 +15,7 @@ const ITEMS_PER_PAGE = 6;
 })
 export class TournamentsComponent implements OnInit {
   private tournamentService = inject(TournamentService);
+  authService = inject(AuthService);
 
   @ViewChild('tabDropdownContainer') tabDropdownContainer!: ElementRef;
 

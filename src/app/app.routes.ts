@@ -7,6 +7,7 @@ import { MyProgressComponent } from './features/my-progress/my-progress.componen
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { VerifyEmailComponent } from './features/auth/verify-email/verify-email.component';
+import { GoogleCallbackComponent } from './features/auth/google-callback/google-callback.component';
 import { authGuard } from './core/guards/auth-guard';
 import { HomeComponent } from './features/home/home.component';
 import { RoadmapComponent } from './features/roadmap/roadmap.component';
@@ -28,6 +29,7 @@ import { CookiePolicyComponent } from './features/cookie-policy/cookie-policy.co
 import { AboutComponent } from './features/about/about.component';
 import { ContactComponent } from './features/contact/contact.component';
 import { BookmarksComponent } from './features/bookmarks/bookmarks.component';
+import { WhatsNewComponent } from './features/whats-new/whats-new.component';
 import { environment } from '../environments/environment';
 
 function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
@@ -60,6 +62,11 @@ export const routes: Routes = [
     title: 'Verify Email - CHESS.PGN',
     data: { description: 'Verify your email address to activate your VON.PGN account.' },
     resolve: { seo: seoResolver },
+  },
+  {
+    path: 'auth/google/callback',
+    component: GoogleCallbackComponent,
+    title: 'Signing in... - CHESS.PGN',
   },
   {
     path: 'forgot-password',
@@ -164,6 +171,13 @@ export const routes: Routes = [
         component: AboutComponent,
         title: 'About - CHESS.PGN',
         data: { description: 'Learn about VON.PGN — the Philippines\' chess platform for learning, playing, and competing.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'whats-new',
+        component: WhatsNewComponent,
+        title: "What's New - CHESS.PGN",
+        data: { description: 'Changelog and release notes for VON.PGN — see what\'s been added, improved, and fixed.' },
         resolve: { seo: seoResolver },
       },
       {

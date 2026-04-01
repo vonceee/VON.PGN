@@ -49,6 +49,7 @@ export interface Tournament {
   prizePool: string;
   organizer: string;
   contact: string;
+  link?: string;
   description: string;
   registrationInstructions?: string;
   rounds: number;

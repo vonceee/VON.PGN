@@ -8,4 +8,4 @@ Disallow: /profile
 Disallow: /my-progress
 Disallow: /play
 
-Sitemap: https://vonchess.com/sitemap.xml
+Sitemap: https://vonchess.vercel.app/sitemap.xml

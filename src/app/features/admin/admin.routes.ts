@@ -61,4 +61,10 @@ export const ADMIN_ROUTES: Routes = [
       import('./tournament-editor/tournament-editor').then((m) => m.TournamentEditorComponent),
     title: 'Edit Tournament',
   },
+  {
+    path: 'feedback',
+    loadComponent: () =>
+      import('./feedback-list/feedback-list').then((m) => m.FeedbackListComponent),
+    title: 'Feedback - CHESS.PGN',
+  },
 ];

@@ -2,6 +2,7 @@ import { Component, inject, ChangeDetectorRef, DestroyRef } from '@angular/core'
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 60_000;
@@ -113,5 +114,9 @@ export class LoginComponent {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  loginWithGoogle() {
+    window.location.href = `${environment.apiUrl}/auth/google/redirect`;
   }
 }

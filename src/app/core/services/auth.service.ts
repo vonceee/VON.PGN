@@ -184,4 +184,25 @@ export class AuthService {
   resetPassword(data: any) {
     return this.http.post<{ message: string }>(`${this.apiUrl}/reset-password`, data);
   }
+
+  handleGoogleCallback(token: string) {
+    localStorage.setItem(this.tokenKey, token);
+    return this.userService.loadMyProfile().pipe(
+      tap({
+        next: (res) => {
+          this.currentUser.set(res.data);
+          this.userService.currentUser.set(res.data);
+          this.userService.cacheProfile(res.data);
+          this.router.navigate(['/profile']);
+        },
+        error: () => {
+          this.clearAuth();
+        },
+      }),
+      catchError(() => {
+        this.clearAuth();
+        return of(null);
+      }),
+    );
+  }
 }

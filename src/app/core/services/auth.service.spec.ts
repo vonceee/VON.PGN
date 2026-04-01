@@ -287,4 +287,36 @@ describe('AuthService', () => {
 
     expect(service.unverifiedEmail()).toBe('new@example.com');
   });
+
+  // ─── GOOGLE CALLBACK ──────────────────────────────────────────
+
+  it('should store token and load profile on Google callback', () => {
+    service.handleGoogleCallback('google-token-123').subscribe();
+
+    const req = httpMock.expectOne('http://127.0.0.1:8000/api/profile');
+    req.flush({ data: mockUser });
+
+    expect(localStorage.getItem('chess_auth_token')).toBe('google-token-123');
+    expect(service.currentUser()).toEqual(mockUser);
+  });
+
+  it('should navigate to /profile on successful Google callback', () => {
+    service.handleGoogleCallback('google-token-123').subscribe();
+
+    const req = httpMock.expectOne('http://127.0.0.1:8000/api/profile');
+    req.flush({ data: mockUser });
+
+    expect(router.navigate).toHaveBeenCalledWith(['/profile']);
+  });
+
+  it('should clear auth and navigate to /login on Google callback failure', () => {
+    service.handleGoogleCallback('bad-token').subscribe();
+
+    const req = httpMock.expectOne('http://127.0.0.1:8000/api/profile');
+    req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+
+    expect(localStorage.getItem('chess_auth_token')).toBeNull();
+    expect(service.currentUser()).toBeNull();
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
+  });
 });

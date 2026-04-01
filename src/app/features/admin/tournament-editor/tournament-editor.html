@@ -309,6 +309,12 @@
         </div>
         }
       </div>
+      <div class="field-group">
+        <label class="field-label optional">Link</label>
+        <input type="url" formControlName="link" placeholder="e.g. https://facebook.com/posts/your-tournament-updates"
+          class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
+        <p class="text-xs text-slate-500 mt-1.5">Optional — link to a Facebook post or page for tournament updates</p>
+      </div>
     </div>
     }
 
@@ -652,6 +658,12 @@
             <span class="review-label">Contact</span>
             <span class="review-value">{{ $any(data)['contact'] || '—' }}</span>
           </div>
+          @if ($any(data)['link']) {
+          <div class="review-item">
+            <span class="review-label">Link</span>
+            <span class="review-value">{{ $any(data)['link'] }}</span>
+          </div>
+          }
         </div>
       </div>
 

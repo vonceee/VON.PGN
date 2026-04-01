@@ -84,6 +84,7 @@ export class TournamentEditorComponent implements OnInit {
     currentParticipants: [0],
     organizer: ['', Validators.required],
     contact: ['', Validators.required],
+    link: [''],
     registrationInstructions: ['', Validators.required],
     eligibility: this.fb.array([]),
     scheduleDays: this.fb.array([]),
@@ -479,6 +480,7 @@ export class TournamentEditorComponent implements OnInit {
       currentParticipants: t.participants?.current || t.current_participants,
       organizer: t.organizer,
       contact: t.contact || t.contactEmail || t.contact_email || '',
+      link: t.link || '',
       registrationInstructions: t.registrationInstructions || t.registration_instructions || ''
     });
 
@@ -555,6 +557,7 @@ export class TournamentEditorComponent implements OnInit {
       prize_pool: tournamentData['prizePool'] || null,
       organizer: tournamentData['organizer'] || null,
       contact_email: tournamentData['contact'] || null,
+      link: tournamentData['link'] || null,
       description: tournamentData['description'] || null,
       registration_instructions: tournamentData['registrationInstructions'] || null,
       rounds: tournamentData['rounds'] || 0,
@@ -678,6 +681,7 @@ export class TournamentEditorComponent implements OnInit {
       prizePool: this.formatCurrencyOutput(v.prizePool || ''),
       organizer: v.organizer || '',
       contact: v.contact || '',
+      link: v.link || '',
       rounds: v.rounds || 0,
       registrationInstructions: v.registrationInstructions || '',
       participants: { current: v.currentParticipants || 0, max: v.maxParticipants || 0 },

@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://vonchess.com/</loc>
+    <loc>https://vonchess.vercel.app/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/tournaments</loc>
+    <loc>https://vonchess.vercel.app/tournaments</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/tactics</loc>
+    <loc>https://vonchess.vercel.app/tactics</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/explorer</loc>
+    <loc>https://vonchess.vercel.app/explorer</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/coaches</loc>
+    <loc>https://vonchess.vercel.app/coaches</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/roadmap</loc>
+    <loc>https://vonchess.vercel.app/roadmap</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/about</loc>
+    <loc>https://vonchess.vercel.app/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/contact</loc>
+    <loc>https://vonchess.vercel.app/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/privacy-policy</loc>
+    <loc>https://vonchess.vercel.app/privacy-policy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/terms-of-service</loc>
+    <loc>https://vonchess.vercel.app/terms-of-service</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://vonchess.com/cookie-policy</loc>
+    <loc>https://vonchess.vercel.app/cookie-policy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
