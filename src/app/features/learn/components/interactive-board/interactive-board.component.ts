@@ -1,4 +1,5 @@
-import { Component, ElementRef, Input, ViewChild, inject, signal } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, inject, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { InteractiveTask } from '../../../../core/models/course.model';
 import { environment } from '../../../../../environments/environment';
@@ -27,6 +28,7 @@ interface DrawShape {
 })
 export class InteractiveBoardComponent {
   private http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
 
   @ViewChild('boardContainer') boardContainer!: ElementRef;
 
@@ -229,6 +231,8 @@ export class InteractiveBoardComponent {
   }
 
   private initLichessBoard() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.cgApi = Chessground(this.boardContainer.nativeElement, {
       fen: this.studyPositions[this.currentMoveIndex],
       movable: {

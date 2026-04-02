@@ -9,8 +9,11 @@ import {
   SimpleChanges,
   ViewChild,
   AfterViewInit,
+  inject,
+  PLATFORM_ID,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { isPlatformBrowser } from '@angular/common';
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
@@ -93,6 +96,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   private cgApi!: Api;
   private chess = new Chess();
   private initialized = false;
+  private platformId = inject(PLATFORM_ID);
 
   ngAfterViewInit() {
     this.initBoard();
@@ -115,6 +119,8 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   }
 
   private initBoard() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.chess.load(this.fen);
 
     this.cgApi = Chessground(this.boardEl.nativeElement, {

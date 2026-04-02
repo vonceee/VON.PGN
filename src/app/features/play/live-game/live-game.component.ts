@@ -8,7 +8,9 @@ import {
   AfterViewInit,
   signal,
   ChangeDetectorRef,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GameService } from '../../../core/services/game.service';
@@ -237,6 +239,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private router = inject(Router);
   gameService = inject(GameService);
   private cdr = inject(ChangeDetectorRef);
+  private platformId = inject(PLATFORM_ID);
 
   private cgApi!: Api;
   private chess = new Chess();
@@ -378,6 +381,8 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private tryInitBoard(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const g = this.game();
     if (!g || !this.boardEl) {
       requestAnimationFrame(() => this.tryInitBoard());

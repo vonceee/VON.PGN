@@ -6,7 +6,11 @@ import {
   Output,
   EventEmitter,
   NgZone,
+  afterNextRender,
+  inject,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Puzzle } from '../../../core/services/tactics.service';
 import { Chess } from 'chess.js';
@@ -48,10 +52,13 @@ export class TacticsBoardComponent {
   userColor: 'white' | 'black' = 'white';
   status: 'playing' | 'success' | 'failed' = 'playing';
 
+  private platformId = inject(PLATFORM_ID);
+
   constructor(private ngZone: NgZone) {}
 
   initPuzzle() {
     if (!this.puzzle || !this.boardRef) return;
+    if (!isPlatformBrowser(this.platformId)) return;
 
     this.status = 'playing';
     this.solutionMoves = this.puzzle.moves.split(' ');
