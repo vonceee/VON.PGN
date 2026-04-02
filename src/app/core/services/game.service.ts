@@ -118,12 +118,17 @@ export class GameService implements OnDestroy {
   loadGame(gameId: string): void {
     this.http
       .get<{ game: GameState }>(`${this.apiUrl}/game/${gameId}`)
-      .pipe(catchError(() => of({ game: null })))
+      .pipe(catchError((err) => {
+        console.error('[Game] loadGame error:', err);
+        return of({ game: null });
+      }))
       .subscribe((res) => {
         if (res.game) {
           this.gameState.set(res.game);
           this.ensureEchoConnected();
           this.subscribeToGame(gameId);
+        } else {
+          console.error('[Game] loadGame: no game data in response');
         }
       });
   }
@@ -488,13 +493,18 @@ export class GameService implements OnDestroy {
   private loadGameAndNavigate(gameId: string): void {
     this.http
       .get<{ game: GameState }>(`${this.apiUrl}/game/${gameId}`)
-      .pipe(catchError(() => of({ game: null })))
+      .pipe(catchError((err) => {
+        console.error('[Game] loadGameAndNavigate error:', err);
+        return of({ game: null });
+      }))
       .subscribe((res) => {
         if (res.game) {
           this.gameState.set(res.game);
           this.ensureEchoConnected();
           this.subscribeToGame(gameId);
           this.router.navigate(['/play', gameId]);
+        } else {
+          console.error('[Game] loadGameAndNavigate: no game data');
         }
       });
   }

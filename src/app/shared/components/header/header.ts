@@ -8,7 +8,6 @@ import { ChatService } from '../../../core/services/chat.service';
 import { AudioService, SOUND_THEMES } from '../../../core/services/audio.service';
 import { BoardThemeService, BOARD_THEMES, PIECE_SETS } from '../../../core/services/board-theme.service';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -37,7 +36,6 @@ export class Header {
 
   isProfileDropdownOpen = signal(false);
   isMobileMenuOpen = signal(false);
-  isProduction = environment.production;
   searchQuery = signal('');
   searchResults = signal<UserSearchResult[]>([]);
   isSearchOpen = signal(false);

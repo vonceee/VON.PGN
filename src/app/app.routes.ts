@@ -5,7 +5,6 @@ import { authGuard } from './core/guards/auth-guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { HomeComponent } from './features/home/home.component';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
-import { environment } from '../environments/environment';
 
 function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
   const seo = inject(SeoService);
@@ -219,24 +218,22 @@ export const routes: Routes = [
           import('./features/my-tournaments/my-tournaments.routes').then((m) => m.MY_TOURNAMENTS_ROUTES),
         title: 'My Tournaments - vonchess',
       },
-      ...(environment.production ? [] : [
-        {
-          path: 'play',
-          loadComponent: () => import('./features/play/matchmaking/matchmaking.component').then(m => m.MatchmakingComponent),
-          canActivate: [authGuard],
-          title: 'Play - vonchess',
-          data: { description: 'Find a match and play live chess on vonchess.' },
-          resolve: { seo: seoResolver },
-        },
-        {
-          path: 'play/:gameId',
-          loadComponent: () => import('./features/play/live-game/live-game.component').then(m => m.LiveGameComponent),
-          canActivate: [authGuard],
-          title: 'Game - vonchess',
-          data: { description: 'Watch or continue a live chess game on vonchess.' },
-          resolve: { seo: seoResolver },
-        }
-      ])
+      {
+        path: 'play',
+        loadComponent: () => import('./features/play/matchmaking/matchmaking.component').then(m => m.MatchmakingComponent),
+        canActivate: [authGuard],
+        title: 'Play - vonchess',
+        data: { description: 'Find a match and play live chess on vonchess.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'play/:gameId',
+        loadComponent: () => import('./features/play/live-game/live-game.component').then(m => m.LiveGameComponent),
+        canActivate: [authGuard],
+        title: 'Game - vonchess',
+        data: { description: 'Watch or continue a live chess game on vonchess.' },
+        resolve: { seo: seoResolver },
+      }
     ],
   },
   {

@@ -5,9 +5,7 @@
 
   <!-- Desktop Navigation -->
   <div class="hidden md:flex ml-10 gap-6 mt-1">
-    @if (!isProduction) {
-      <a routerLink="/play" class="hover:text-cyan-400">Play</a>
-    }
+    <a routerLink="/play" class="hover:text-cyan-400">Play</a>
     <a routerLink="/roadmap" class="hover:text-cyan-400">Roadmap</a>
     <a routerLink="/tactics" class="hover:text-cyan-400">Tactics</a>
     <a routerLink="/explorer" class="hover:text-cyan-400">Opening Explorer</a>
@@ -226,9 +224,7 @@
 
     <!-- Mobile Navigation Links -->
     <nav class="flex flex-col py-2">
-      @if (!isProduction) {
-        <a routerLink="/play" (click)="toggleMobileMenu()" class="px-4 py-3 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 font-semibold">Play</a>
-      }
+      <a routerLink="/play" (click)="toggleMobileMenu()" class="px-4 py-3 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 font-semibold">Play</a>
       <a routerLink="/roadmap" (click)="toggleMobileMenu()" class="px-4 py-3 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 font-semibold">Roadmap</a>
       <a routerLink="/tactics" (click)="toggleMobileMenu()" class="px-4 py-3 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 font-semibold">Tactics</a>
       <a routerLink="/explorer" (click)="toggleMobileMenu()" class="px-4 py-3 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 font-semibold">Opening Explorer</a>

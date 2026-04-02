@@ -50,7 +50,7 @@ import { Key } from 'chessground/types';
                 <app-chess-clock
                   [serverTimeMs]="opponentTimeMs()"
                   [serverTimestamp]="g.server_timestamp"
-                  [isActive]="g.status === 'active' && isOpponentTurn()"
+                  [isActive]="g.status === 'active' && isOpponentTurn() && bufferCountdown() === null"
                   [label]="g.my_color === 'white' ? 'Black' : 'White'"
                   (expired)="onClockExpired()"
                 />
@@ -78,7 +78,7 @@ import { Key } from 'chessground/types';
                 <app-chess-clock
                   [serverTimeMs]="myTimeMs()"
                   [serverTimestamp]="g.server_timestamp"
-                  [isActive]="g.status === 'active' && isMyTurn()"
+                  [isActive]="g.status === 'active' && isMyTurn() && bufferCountdown() === null"
                   [label]="g.my_color === 'white' ? 'White' : 'Black'"
                   (expired)="onClockExpired()"
                 />
@@ -168,8 +168,22 @@ import { Key } from 'chessground/types';
               <!-- Action buttons -->
               @if (g.status === 'active') {
                 <div class="flex flex-col gap-2">
-                  @if (abortCountdown() !== null) {
-                    <!-- Abort countdown timer -->
+                  @if (bufferCountdown() !== null) {
+                    <!-- Pre-game buffer countdown -->
+                    <div class="border border-border-theme rounded-lg p-3 text-center">
+                      <div class="text-xs uppercase tracking-wider mb-1">Game Starting</div>
+                      <div class="text-3xl font-bold font-mono">{{ bufferCountdown() }}</div>
+                      <div class="text-xs mt-1">seconds — get settled before the clock starts</div>
+                    </div>
+                    <button
+                      (click)="abort()"
+                      class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                    >
+                      Abort Game
+                    </button>
+                  }
+                  @if (abortCountdown() !== null && bufferCountdown() === null) {
+                    <!-- First move timer (after buffer) -->
                     <div class="border border-border-theme rounded-lg p-3 text-center">
                       <div class="text-xs uppercase tracking-wider mb-1">First Move Timer</div>
                       <div class="text-3xl font-bold font-mono">{{ abortCountdown() }}</div>
@@ -250,6 +264,10 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private boardInitialized = false;
   boardSize = 560;
   private moveSanCache: string[] = [];
+  private static readonly BUFFER_SECONDS = 5;
+  private static readonly ABORT_SECONDS = 15;
+  bufferCountdown = signal<number | null>(null);
+  private bufferInterval: ReturnType<typeof setInterval> | null = null;
   abortCountdown = signal<number | null>(null);
   private abortInterval: ReturnType<typeof setInterval> | null = null;
   drawOfferState = signal<'none' | 'iOffered' | 'opponentOffered'>('none');
@@ -339,13 +357,24 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return g.draw_offered_by !== myUserId;
   };
 
+  needsBuffer = () => {
+    const g = this.game();
+    if (!g || g.status !== 'active') return false;
+    // White needs buffer: no moves yet (buffer before first move)
+    if (g.moves.length === 0 && g.my_color === 'white') return true;
+    // Black needs buffer: exactly 1 move (White moved, Black's buffer)
+    if (g.moves.length === 1 && g.my_color === 'black') return true;
+    return false;
+  };
+
   canOfferDraw = () => {
     const g = this.game();
     return g?.status === 'active'
       && g.moves.length > 0
       && !this.hasPendingDrawOffer()
       && this.drawCooldownRemaining() === 0
-      && this.abortCountdown() === null;
+      && this.abortCountdown() === null
+      && this.bufferCountdown() === null;
   };
 
   resultLabel = () => {
@@ -369,16 +398,17 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.gameService.onDrawOffered.subscribe((data) => this.onDrawOffered(data)),
     );
 
-    this.startAbortCountdownIfNeeded();
     this.initDrawOfferState();
   }
 
   ngAfterViewInit(): void {
     this.tryInitBoard();
+    this.tryStartPreGameCountdown();
   }
 
   ngOnDestroy(): void {
     this.subs.forEach((s) => s.unsubscribe());
+    this.clearBufferCountdown();
     this.clearAbortCountdown();
     this.clearDrawCooldown();
     this.cgApi?.destroy();
@@ -393,33 +423,37 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.chess.load(g.fen);
+    try {
+      this.chess.load(g.fen);
 
-    this.cgApi = Chessground(this.boardEl.nativeElement, {
-      fen: g.fen,
-      orientation: g.my_color,
-      coordinates: true,
-      movable: {
-        free: false,
-        color: this.isMyTurn() ? g.my_color : undefined,
-        dests: this.isMyTurn() ? this.getLegalDestinations(g.legal_moves) : new Map(),
-        events: {
-          after: (orig, dest) => this.onBoardMove(orig, dest),
+      this.cgApi = Chessground(this.boardEl.nativeElement, {
+        fen: g.fen,
+        orientation: g.my_color,
+        coordinates: true,
+        movable: {
+          free: false,
+          color: this.isMyTurn() ? g.my_color : undefined,
+          dests: this.isMyTurn() ? this.getLegalDestinations(g.legal_moves) : new Map(),
+          events: {
+            after: (orig, dest) => this.onBoardMove(orig, dest),
+          },
         },
-      },
-      draggable: {
-        enabled: g.status === 'active',
-      },
-      selectable: {
-        enabled: false,
-      },
-      drawable: {
-        enabled: true,
-      },
-    });
+        draggable: {
+          enabled: g.status === 'active',
+        },
+        selectable: {
+          enabled: false,
+        },
+        drawable: {
+          enabled: true,
+        },
+      });
 
-    this.boardInitialized = true;
-    this.rebuildSanCache();
+      this.boardInitialized = true;
+      this.rebuildSanCache();
+    } catch (err) {
+      console.error('[LiveGame] Board init error:', err);
+    }
   }
 
   private onBoardMove(orig: Key, dest: Key): void {
@@ -470,10 +504,16 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.audioService.playMoveSound(data.san);
     }
 
-    // First move made — clear abort countdown
     const g = this.game();
-    if (g && g.moves.length > 0) {
+    if (g) {
+      // First move made — clear any active buffer/abort countdowns
+      this.clearBufferCountdown();
       this.clearAbortCountdown();
+
+      // If White just made their first move, start Black's pre-game buffer
+      if (g.moves.length === 1 && g.my_color === 'black') {
+        this.startPreGameCountdown();
+      }
     }
 
     // Clear draw offer state on any move
@@ -586,11 +626,68 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  private startPreGameCountdown(): void {
+    // Guard: don't start if countdown already running
+    if (this.bufferInterval || this.abortInterval) return;
+
+    const g = this.game();
+    if (!g || g.status !== 'active') return;
+
+    // Only start countdown if this player needs buffer:
+    // White: no moves yet; Black: exactly 1 move (White just moved)
+    const needsBuffer = (g.moves.length === 0 && g.my_color === 'white') ||
+                        (g.moves.length === 1 && g.my_color === 'black');
+    if (!needsBuffer) return;
+
+    this.startBufferCountdown(() => this.startAbortCountdownIfNeeded());
+  }
+
+  /**
+   * Poll until the game state is loaded, then start the pre-game countdown.
+   * This handles the async case where loadGame completes after ngAfterViewInit.
+   */
+  private tryStartPreGameCountdown(): void {
+    const g = this.game();
+    if (!g) {
+      requestAnimationFrame(() => this.tryStartPreGameCountdown());
+      return;
+    }
+    this.startPreGameCountdown();
+  }
+
+  private startBufferCountdown(onComplete: () => void): void {
+    this.clearBufferCountdown();
+    this.bufferCountdown.set(LiveGameComponent.BUFFER_SECONDS);
+
+    this.bufferInterval = setInterval(() => {
+      const current = this.bufferCountdown();
+      if (current === null || current <= 0) {
+        this.clearBufferCountdown();
+        onComplete();
+        return;
+      }
+      this.bufferCountdown.set(current - 1);
+    }, 1000);
+  }
+
+  private clearBufferCountdown(): void {
+    if (this.bufferInterval) {
+      clearInterval(this.bufferInterval);
+      this.bufferInterval = null;
+    }
+    this.bufferCountdown.set(null);
+  }
+
   private startAbortCountdownIfNeeded(): void {
     const g = this.game();
-    if (!g || g.status !== 'active' || g.moves.length > 0) return;
+    if (!g || g.status !== 'active') return;
 
-    this.abortCountdown.set(15);
+    // Only start abort if this player hasn't made their first move yet
+    const needsAbort = (g.moves.length === 0 && g.my_color === 'white') ||
+                       (g.moves.length === 1 && g.my_color === 'black');
+    if (!needsAbort) return;
+
+    this.abortCountdown.set(LiveGameComponent.ABORT_SECONDS);
 
     this.abortInterval = setInterval(() => {
       const current = this.abortCountdown();
@@ -617,6 +714,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   abort(): void {
+    this.clearBufferCountdown();
     this.clearAbortCountdown();
     this.gameService.abortGame();
   }
