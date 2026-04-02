@@ -1,0 +1,40 @@
+@if (link()) {
+  <a
+    [routerLink]="link()"
+    [class]="variantClasses + ' ' + sizeClasses"
+  >
+    <ng-content></ng-content>
+    @if (showArrow()) {
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2.5"
+        stroke="currentColor"
+        class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+    }
+  </a>
+} @else {
+  <button
+    [type]="type()"
+    [disabled]="disabled()"
+    [class]="variantClasses + ' ' + sizeClasses"
+  >
+    <ng-content></ng-content>
+    @if (showArrow()) {
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2.5"
+        stroke="currentColor"
+        class="w-3.5 h-3.5 transition-transform group-hover:translate-x-1"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+    }
+  </button>
+}

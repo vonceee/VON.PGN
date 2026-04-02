@@ -1,10 +1,7 @@
 <div class="mx-auto p-8">
   <div class="flex justify-between items-center mb-8">
     <h1 class="text-3xl font-bold m-0">Tournament Management</h1>
-    <a
-      routerLink="/admin/tournament/new"
-      class="px-4 py-2 rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-    >+ New Tournament</a>
+    <app-button variant="primary" link="/admin/tournament/new">+ New Tournament</app-button>
   </div>
 
   <div *ngIf="loading()" class="text-center py-8 text-slate-500 dark:text-slate-400">
@@ -33,18 +30,9 @@
           </p>
         </div>
         <div class="flex gap-2">
-          <a
-            [routerLink]="['/tournaments', tournament.id]"
-            class="px-4 py-2 rounded font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
-          >View</a>
-          <a
-            [routerLink]="['/admin/tournament', tournament.id]"
-            class="px-4 py-2 rounded font-medium text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-          >Edit</a>
-          <button
-            (click)="requestDelete(tournament)"
-            class="px-4 py-2 rounded font-medium text-sm bg-red-500 hover:bg-red-600 text-white"
-          >Delete</button>
+          <app-button variant="outline" size="sm" [showArrow]="true" link="/tournaments/{{tournament.id}}">View</app-button>
+          <app-button variant="primary" size="sm" link="/admin/tournament/{{tournament.id}}">Edit</app-button>
+          <app-button variant="danger" size="sm" (click)="requestDelete(tournament)">Delete</app-button>
         </div>
       </div>
     }

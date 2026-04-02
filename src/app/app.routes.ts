@@ -1,35 +1,10 @@
 import { Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { SeoService } from './core/services/seo.service';
-import { ProfileComponent } from './features/profile/profile.component';
-import { UserProfileComponent } from './features/user-profile/user-profile.component';
-import { MyProgressComponent } from './features/my-progress/my-progress.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
-import { VerifyEmailComponent } from './features/auth/verify-email/verify-email.component';
-import { GoogleCallbackComponent } from './features/auth/google-callback/google-callback.component';
 import { authGuard } from './core/guards/auth-guard';
-import { HomeComponent } from './features/home/home.component';
-import { RoadmapComponent } from './features/roadmap/roadmap.component';
-import { LearnComponent } from './features/learn/learn.component';
-import { TacticsComponent } from './features/tactics/tactics.component';
-import { OpeningExplorerComponent } from './features/opening-explorer/opening-explorer.component';
-import { CoachesComponent } from './features/coaches/coaches.component';
-import { CoachDetailComponent } from './features/coaches/coach-detail/coach-detail.component';
-import { TournamentsComponent } from './features/tournaments/tournaments.component';
-import { TournamentDetailComponent } from './features/tournaments/tournament-detail/tournament-detail.component';
-import { ChatComponent } from './features/chat/chat.component';
-import { MatchmakingComponent } from './features/play/matchmaking/matchmaking.component';
-import { LiveGameComponent } from './features/play/live-game/live-game.component';
 import { adminGuard } from './core/guards/admin.guard';
+import { HomeComponent } from './features/home/home.component';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
-import { PrivacyPolicyComponent } from './features/privacy-policy/privacy-policy.component';
-import { TermsOfServiceComponent } from './features/terms-of-service/terms-of-service.component';
-import { CookiePolicyComponent } from './features/cookie-policy/cookie-policy.component';
-import { AboutComponent } from './features/about/about.component';
-import { ContactComponent } from './features/contact/contact.component';
-import { BookmarksComponent } from './features/bookmarks/bookmarks.component';
-import { WhatsNewComponent } from './features/whats-new/whats-new.component';
 import { environment } from '../environments/environment';
 
 function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
@@ -44,28 +19,28 @@ function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
 export const routes: Routes = [
   {
     path: 'login',
-    component: LoginComponent,
+    loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent),
     title: 'Login - vonchess',
     data: { description: 'Log in to your vonchess account to access courses, tournaments, and more.' },
     resolve: { seo: seoResolver },
   },
   {
     path: 'register',
-    component: RegisterComponent,
+    loadComponent: () => import('./features/auth/register/register.component').then(m => m.RegisterComponent),
     title: 'Register - vonchess',
     data: { description: 'Create a free vonchess account and start your chess journey today.' },
     resolve: { seo: seoResolver },
   },
   {
     path: 'verify-email',
-    component: VerifyEmailComponent,
+    loadComponent: () => import('./features/auth/verify-email/verify-email.component').then(m => m.VerifyEmailComponent),
     title: 'Verify Email - vonchess',
     data: { description: 'Verify your email address to activate your vonchess account.' },
     resolve: { seo: seoResolver },
   },
   {
     path: 'auth/google/callback',
-    component: GoogleCallbackComponent,
+    loadComponent: () => import('./features/auth/google-callback/google-callback.component').then(m => m.GoogleCallbackComponent),
     title: 'Signing in... - vonchess',
   },
   {
@@ -95,7 +70,7 @@ export const routes: Routes = [
       },
       {
         path: 'profile',
-        component: ProfileComponent,
+        loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent),
         canActivate: [authGuard],
         title: 'User Profile - vonchess',
         data: { description: 'Edit your vonchess profile, update your avatar, and manage your account settings.' },
@@ -103,14 +78,14 @@ export const routes: Routes = [
       },
       {
         path: 'user/:id',
-        component: UserProfileComponent,
+        loadComponent: () => import('./features/user-profile/user-profile.component').then(m => m.UserProfileComponent),
         title: 'User Profile - vonchess',
         data: { description: 'View a player\'s profile, ratings, and activity on vonchess.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'my-progress',
-        component: MyProgressComponent,
+        loadComponent: () => import('./features/my-progress/my-progress.component').then(m => m.MyProgressComponent),
         canActivate: [authGuard],
         title: 'My Progress - vonchess',
         data: { description: 'Track your chess learning progress, completed courses, and puzzle ratings.' },
@@ -118,7 +93,7 @@ export const routes: Routes = [
       },
       {
         path: 'bookmarks',
-        component: BookmarksComponent,
+        loadComponent: () => import('./features/bookmarks/bookmarks.component').then(m => m.BookmarksComponent),
         canActivate: [authGuard],
         title: 'Bookmarks - vonchess',
         data: { description: 'View your bookmarked tournaments for quick access.' },
@@ -126,7 +101,7 @@ export const routes: Routes = [
       },
       {
         path: 'learn/:courseSlug',
-        component: LearnComponent,
+        loadComponent: () => import('./features/learn/learn.component').then(m => m.LearnComponent),
         title: 'Learn Chess',
         data: { description: 'Study chess lessons with interactive boards, chapter navigation, and course materials.' },
         resolve: { seo: seoResolver },
@@ -140,98 +115,98 @@ export const routes: Routes = [
       },
       {
         path: 'roadmap',
-        component: RoadmapComponent,
+        loadComponent: () => import('./features/roadmap/roadmap.component').then(m => m.RoadmapComponent),
         title: 'Tutorials Roadmap - vonchess',
         data: { description: 'Follow a structured chess curriculum from beginner to advanced with the vonchess roadmap.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'privacy-policy',
-        component: PrivacyPolicyComponent,
+        loadComponent: () => import('./features/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
         title: 'Privacy Policy - vonchess',
         data: { description: 'Read the vonchess privacy policy — how we collect, use, and protect your data.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'terms-of-service',
-        component: TermsOfServiceComponent,
+        loadComponent: () => import('./features/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent),
         title: 'Terms of Service - vonchess',
         data: { description: 'vonchess terms of service — rules and guidelines for using our platform.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'cookie-policy',
-        component: CookiePolicyComponent,
+        loadComponent: () => import('./features/cookie-policy/cookie-policy.component').then(m => m.CookiePolicyComponent),
         title: 'Cookie Policy - vonchess',
         data: { description: 'vonchess cookie policy — how and why we use cookies on our platform.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'about',
-        component: AboutComponent,
+        loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent),
         title: 'About - vonchess',
         data: { description: 'Learn about vonchess — the Philippines\' chess platform for learning, playing, and competing.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'whats-new',
-        component: WhatsNewComponent,
+        loadComponent: () => import('./features/whats-new/whats-new.component').then(m => m.WhatsNewComponent),
         title: "What's New - vonchess",
         data: { description: 'Changelog and release notes for vonchess — see what\'s been added, improved, and fixed.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'contact',
-        component: ContactComponent,
+        loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent),
         title: 'Contact - vonchess',
         data: { description: 'Get in touch with the vonchess team — questions, feedback, and support.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'tactics',
-        component: TacticsComponent,
+        loadComponent: () => import('./features/tactics/tactics.component').then(m => m.TacticsComponent),
         title: 'Tactics - vonchess',
         data: { description: 'Sharpen your chess skills with daily tactical puzzles on vonchess.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'explorer',
-        component: OpeningExplorerComponent,
+        loadComponent: () => import('./features/opening-explorer/opening-explorer.component').then(m => m.OpeningExplorerComponent),
         title: 'Opening Explorer - vonchess',
         data: { description: 'Explore chess openings with an interactive database — study popular lines and variations.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'coaches',
-        component: CoachesComponent,
+        loadComponent: () => import('./features/coaches/coaches.component').then(m => m.CoachesComponent),
         title: 'Find a Coach - vonchess',
         data: { description: 'Browse and connect with verified chess coaches on vonchess.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'coaches/:id',
-        component: CoachDetailComponent,
+        loadComponent: () => import('./features/coaches/coach-detail/coach-detail.component').then(m => m.CoachDetailComponent),
         title: 'Coach Profile - vonchess',
         data: { description: 'View a chess coach\'s profile, specialties, and contact information.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'tournaments',
-        component: TournamentsComponent,
+        loadComponent: () => import('./features/tournaments/tournaments.component').then(m => m.TournamentsComponent),
         title: 'Tournaments - vonchess',
         data: { description: 'Browse upcoming, ongoing, and past chess tournaments across the Philippines.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'tournaments/:id',
-        component: TournamentDetailComponent,
+        loadComponent: () => import('./features/tournaments/tournament-detail/tournament-detail.component').then(m => m.TournamentDetailComponent),
         title: 'Tournament Details - vonchess',
         data: { description: 'View tournament details, schedule, prizes, standings, and registration info.' },
         resolve: { seo: seoResolver },
       },
       {
         path: 'chat',
-        component: ChatComponent,
+        loadComponent: () => import('./features/chat/chat.component').then(m => m.ChatComponent),
         canActivate: [authGuard],
         title: 'Messages - vonchess',
         data: { description: 'Send and receive messages with other vonchess players and coaches.' },
@@ -247,7 +222,7 @@ export const routes: Routes = [
       ...(environment.production ? [] : [
         {
           path: 'play',
-          component: MatchmakingComponent,
+          loadComponent: () => import('./features/play/matchmaking/matchmaking.component').then(m => m.MatchmakingComponent),
           canActivate: [authGuard],
           title: 'Play - vonchess',
           data: { description: 'Find a match and play live chess on vonchess.' },
@@ -255,7 +230,7 @@ export const routes: Routes = [
         },
         {
           path: 'play/:gameId',
-          component: LiveGameComponent,
+          loadComponent: () => import('./features/play/live-game/live-game.component').then(m => m.LiveGameComponent),
           canActivate: [authGuard],
           title: 'Game - vonchess',
           data: { description: 'Watch or continue a live chess game on vonchess.' },

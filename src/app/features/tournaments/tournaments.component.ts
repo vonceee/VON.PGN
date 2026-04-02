@@ -4,13 +4,14 @@ import { RouterModule } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Tournament, TournamentStatus } from '../../core/models/tournament.model';
+import { ButtonComponent } from '../../shared/components/button/button.component';
 
 const ITEMS_PER_PAGE = 6;
 
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ButtonComponent],
   templateUrl: './tournaments.component.html'
 })
 export class TournamentsComponent implements OnInit {

@@ -29,3 +29,13 @@
 .search-results-dropdown {
   animation: fadeInDown 0.2s ease-out;
 }
+
+/* Typewriter */
+.typewriter .tw-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1.1em;
+  background-color: #22d3ee;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}

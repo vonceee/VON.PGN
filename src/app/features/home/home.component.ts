@@ -6,11 +6,12 @@ import { LessonService } from '../../core/services/lesson.service';
 import { TacticsService, Puzzle } from '../../core/services/tactics.service';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { TacticsBoardComponent } from '../../shared/components/tactics-board/tactics-board.component';
+import { TypewriteDirective } from '../../shared/directives/typewrite.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FooterComponent, TacticsBoardComponent],
+  imports: [CommonModule, RouterModule, FormsModule, FooterComponent, TacticsBoardComponent, TypewriteDirective],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -21,6 +22,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private router = inject(Router);
 
   @ViewChild('splineContainer') splineContainer!: ElementRef<HTMLDivElement>;
+
+  splineLoaded = signal(false);
+
+  private loadSplineScript(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector('script[src*="spline-viewer"]')) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'https://unpkg.com/@splinetool/viewer@1.12.73/build/spline-viewer.js';
+      script.onload = () => resolve();
+      script.onerror = () => reject();
+      document.head.appendChild(script);
+    });
+  }
 
   popularOpenings = [
     {
@@ -71,6 +89,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.loadSplineScript()
+      .then(() => {
+        this.splineLoaded.set(true);
+      })
+      .catch(() => {
+        // Spline failed to load, show fallback
+        this.splineLoaded.set(true);
+      });
+
     this.splineContainer.nativeElement.addEventListener(
       'wheel',
       (event: WheelEvent) => {

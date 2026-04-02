@@ -7,8 +7,10 @@
   <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
-          Compete in <span class="text-cyan-400">Tournaments.</span><br />
+        <h2 class="text-3xl md:text-5xl mb-4 md:mb-6 leading-tight">
+          Compete in <span class="text-cyan-400">Tournaments.</span>
+        </h2>
+        <h2 appTypewrite class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           discover chess tournaments across the Philippines, browse events posted by the community,
           with detailed information, and find the right competition to test your skills.
         </h2>
@@ -39,10 +41,12 @@
       class="absolute bottom-0 left-0 right-0 z-0 pointer-events-none scale-150 md:scale-200"
       style="height: 65%"
     >
-      <spline-viewer
-        url="https://prod.spline.design/mKF3Hg9Gn2TjH5hF/scene.splinecode"
-        style="width: 100%; height: 100%; display: block"
-      ></spline-viewer>
+      @if (splineLoaded()) {
+        <spline-viewer
+          url="https://prod.spline.design/mKF3Hg9Gn2TjH5hF/scene.splinecode"
+          style="width: 100%; height: 100%; display: block"
+        ></spline-viewer>
+      }
     </div>
 
     <!-- Hero Content Overlay -->
@@ -112,8 +116,10 @@
   <section class="w-full min-h-screen py-16 md:py-32 px-6 md:px-16 flex flex-col">
     <div class="max-w-4xl flex flex-col md:flex-row justify-between gap-8 md:gap-16">
       <div class="text-left">
-        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
-          Explore <span class="text-cyan-400">Openings.</span><br />
+        <h2 class="text-3xl md:text-5xl mb-4 md:mb-6 leading-tight">
+          Explore <span class="text-cyan-400">Openings.</span>
+        </h2>
+        <h2 appTypewrite class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           learn the theory behind the most popular chess openings and start your games with a clear
           advantage.
         </h2>
@@ -169,8 +175,10 @@
       class="w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8 md:gap-16"
     >
       <div class="md:w-1/2 text-left md:pl-8 lg:pl-16">
-        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
-          Train your <span class="text-cyan-400">Tactics.</span><br />
+        <h2 class="text-3xl md:text-5xl mb-4 md:mb-6 leading-tight">
+          Train your <span class="text-cyan-400">Tactics.</span>
+        </h2>
+        <h2 appTypewrite class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           train your pattern recognition with thousands of puzzles curated for your level.
         </h2>
       </div>
@@ -287,8 +295,10 @@
   <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
-          Read our <span class="text-cyan-400">Courses.</span><br />
+        <h2 class="text-3xl md:text-5xl mb-4 md:mb-6 leading-tight">
+          Read our <span class="text-cyan-400">Courses.</span>
+        </h2>
+        <h2 appTypewrite class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           learn from handcrafted courses for players of all levels.
         </h2>
 
@@ -348,8 +358,10 @@
   <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <h2 class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
-          Find Your <span class="text-cyan-400">Coach.</span><br />
+        <h2 class="text-3xl md:text-5xl mb-4 md:mb-6 leading-tight">
+          Find Your <span class="text-cyan-400">Coach.</span>
+        </h2>
+        <h2 appTypewrite class="text-3xl md:text-5xl mb-6 md:mb-10 leading-tight">
           accelerate your progress with personalized 1-on-1 lessons from titled players and
           experienced trainers.
         </h2>
