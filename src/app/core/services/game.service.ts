@@ -71,6 +71,8 @@ export class GameService implements OnDestroy {
           this.gameState.set(res.game);
           this.ensureEchoConnected();
           this.subscribeToGame(res.game.id);
+        } else {
+          this.gameState.set(null);
         }
       });
   }
@@ -204,6 +206,13 @@ export class GameService implements OnDestroy {
     this.gameState.set(null);
     this.leaveGameChannel();
     this.router.navigate(['/play']);
+  }
+
+  syncClock(gameId: string): void {
+    this.http
+      .post(`${this.apiUrl}/game/${gameId}/sync-clock`, {})
+      .pipe(catchError(() => of(null)))
+      .subscribe();
   }
 
   // ── Echo / WebSocket ────────────────────────────────────────────

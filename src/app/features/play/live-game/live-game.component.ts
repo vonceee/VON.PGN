@@ -14,6 +14,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GameService } from '../../../core/services/game.service';
+import { AudioService } from '../../../core/services/audio.service';
 import { ChessClockComponent } from '../../../shared/components/chess-clock/chess-clock.component';
 import { MovePlayedPayload, GameEndedPayload, DrawOfferedPayload } from '../../../core/models/game.model';
 import { Chess } from 'chess.js';
@@ -51,6 +52,7 @@ import { Key } from 'chessground/types';
                   [serverTimestamp]="g.server_timestamp"
                   [isActive]="g.status === 'active' && isOpponentTurn()"
                   [label]="g.my_color === 'white' ? 'Black' : 'White'"
+                  (expired)="onClockExpired()"
                 />
               </div>
 
@@ -78,6 +80,7 @@ import { Key } from 'chessground/types';
                   [serverTimestamp]="g.server_timestamp"
                   [isActive]="g.status === 'active' && isMyTurn()"
                   [label]="g.my_color === 'white' ? 'White' : 'Black'"
+                  (expired)="onClockExpired()"
                 />
               </div>
             </div>
@@ -240,6 +243,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   gameService = inject(GameService);
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
+  private audioService = inject(AudioService);
 
   private cgApi!: Api;
   private chess = new Chess();
@@ -456,6 +460,16 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.syncBoard();
     this.rebuildSanCache();
 
+    if (data.is_checkmate) {
+      this.audioService.playCheckmate();
+    } else if (data.is_check) {
+      this.audioService.playCheck();
+    } else if (data.is_draw || data.is_stalemate) {
+      this.audioService.playDraw();
+    } else {
+      this.audioService.playMoveSound(data.san);
+    }
+
     // First move made — clear abort countdown
     const g = this.game();
     if (g && g.moves.length > 0) {
@@ -605,6 +619,12 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   abort(): void {
     this.clearAbortCountdown();
     this.gameService.abortGame();
+  }
+
+  onClockExpired(): void {
+    const g = this.game();
+    if (!g || g.status !== 'active') return;
+    this.gameService.syncClock(g.id);
   }
 
   offerDraw(): void {

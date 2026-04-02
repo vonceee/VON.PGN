@@ -1,6 +1,8 @@
 import {
   Component,
+  EventEmitter,
   Input,
+  Output,
   OnChanges,
   OnDestroy,
   SimpleChanges,
@@ -66,12 +68,14 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
   @Input() serverTimestamp: string = '';
   @Input() isActive: boolean = false;
   @Input() label: string = '';
+  @Output() expired = new EventEmitter<void>();
 
   displayTime: number = 0;
 
   private rafId: number | null = null;
   private running = false;
   private lastTickTime: number = 0;
+  private hasExpired = false;
 
   // Track the last server value we actually used so we can detect real changes
   private lastAppliedServerTime: number = -1;
@@ -89,6 +93,7 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
         this.displayTime = newVal;
         this.lastAppliedServerTime = newVal;
         this.lastTickTime = performance.now();
+        this.hasExpired = false;
       }
     }
 
@@ -120,6 +125,11 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
       // Only decrement by the real frame delta, clamped to avoid huge jumps
       if (delta > 0 && delta < 1000) {
         this.displayTime = Math.max(0, this.displayTime - delta);
+      }
+
+      if (this.displayTime <= 0 && !this.hasExpired) {
+        this.hasExpired = true;
+        this.expired.emit();
       }
 
       this.cdr.markForCheck();

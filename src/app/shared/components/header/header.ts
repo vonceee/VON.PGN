@@ -5,6 +5,7 @@ import { ThemeService } from '../../../core/services/theme.service';
 import { UserService, UserSearchResult } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ChatService } from '../../../core/services/chat.service';
+import { AudioService, SOUND_THEMES } from '../../../core/services/audio.service';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -22,7 +23,10 @@ export class Header {
   userService = inject(UserService);
   authService = inject(AuthService);
   chatService = inject(ChatService);
+  audioService = inject(AudioService);
   private router = inject(Router);
+
+  soundThemes = SOUND_THEMES;
 
   @ViewChild('profileContainer') profileContainer!: ElementRef;
   @ViewChild('searchContainer') searchContainer!: ElementRef;
@@ -90,6 +94,16 @@ export class Header {
 
   logout() {
     this.authService.logout();
+  }
+
+  onSoundThemeChange(value: string) {
+    if (value === 'off') {
+      this.audioService.soundEnabled.set(false);
+    } else {
+      this.audioService.soundEnabled.set(true);
+      this.audioService.setTheme(value as any);
+      this.audioService.playMove();
+    }
   }
 
   @HostListener('document:click', ['$event'])

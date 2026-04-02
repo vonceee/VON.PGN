@@ -25,6 +25,7 @@ export interface UserPreferences {
   boardStyle: 'classic' | 'modern' | 'antigravity';
   pieceStyle: 'standard' | 'minimalist';
   soundEnabled: boolean;
+  soundTheme: string;
 }
 
 export interface UserProgress {

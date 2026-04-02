@@ -16,6 +16,7 @@ import { Puzzle } from '../../../core/services/tactics.service';
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
+import { AudioService } from '../../../core/services/audio.service';
 
 @Component({
   selector: 'app-tactics-board',
@@ -53,6 +54,7 @@ export class TacticsBoardComponent {
   status: 'playing' | 'success' | 'failed' = 'playing';
 
   private platformId = inject(PLATFORM_ID);
+  private audioService = inject(AudioService);
 
   constructor(private ngZone: NgZone) {}
 
@@ -99,8 +101,9 @@ export class TacticsBoardComponent {
     const userMoveStr = `${orig}${dest}`;
 
     if (expectedMove.startsWith(userMoveStr)) {
-      this.chess.move(this.parseUciMove(expectedMove));
+      const moveResult = this.chess.move(this.parseUciMove(expectedMove));
       this.currentMoveIndex++;
+      this.audioService.playMoveSound(moveResult?.san || '');
 
       this.board.set({
         fen: this.chess.fen(),
@@ -129,8 +132,9 @@ export class TacticsBoardComponent {
 
   playOpponentMove() {
     const oppMove = this.solutionMoves[this.currentMoveIndex];
-    this.chess.move(this.parseUciMove(oppMove));
+    const moveResult = this.chess.move(this.parseUciMove(oppMove));
     this.currentMoveIndex++;
+    this.audioService.playMoveSound(moveResult?.san || '');
 
     this.board.set({
       fen: this.chess.fen(),

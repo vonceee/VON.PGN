@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { tap, catchError, map, of, finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
+import { AudioService } from './audio.service';
 import { environment } from '../../../environments/environment';
 
 export interface AuthResponse {
@@ -25,6 +26,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private userService = inject(UserService);
+  private audioService = inject(AudioService);
   private platformId = inject(PLATFORM_ID);
 
   private apiUrl = environment.apiUrl;
@@ -58,12 +60,24 @@ export class AuthService {
     if (cached) {
       this.currentUser.set(cached);
       this.userService.currentUser.set(cached);
+      if (cached.preferences?.soundEnabled !== undefined) {
+        this.audioService.soundEnabled.set(cached.preferences.soundEnabled);
+      }
+      if (cached.preferences?.soundTheme) {
+        this.audioService.soundTheme.set(cached.preferences.soundTheme as any);
+      }
     }
 
     return this.userService.loadMyProfile().pipe(
       tap({
         next: (res) => {
           this.currentUser.set(res.data);
+          if (res.data?.preferences?.soundEnabled !== undefined) {
+            this.audioService.soundEnabled.set(res.data.preferences.soundEnabled);
+          }
+          if (res.data?.preferences?.soundTheme) {
+            this.audioService.soundTheme.set(res.data.preferences.soundTheme as any);
+          }
         },
         error: () => {
           // Only clear auth if there was no cached profile to fall back on.

@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { InteractiveTask } from '../../../../core/models/course.model';
 import { environment } from '../../../../../environments/environment';
+import { AudioService } from '../../../../core/services/audio.service';
 
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
@@ -29,6 +30,7 @@ interface DrawShape {
 export class InteractiveBoardComponent {
   private http = inject(HttpClient);
   private platformId = inject(PLATFORM_ID);
+  private audioService = inject(AudioService);
 
   @ViewChild('boardContainer') boardContainer!: ElementRef;
 
@@ -252,6 +254,7 @@ export class InteractiveBoardComponent {
   private onUserMove(orig: Key, dest: Key) {
     try {
       const move = this.chess.move({ from: orig, to: dest, promotion: 'q' });
+      this.audioService.playMoveSound(move.san);
 
       this.moveHistory = this.moveHistory.slice(0, this.currentMoveIndex);
       this.studyPositions = this.studyPositions.slice(0, this.currentMoveIndex + 1);
@@ -281,6 +284,9 @@ export class InteractiveBoardComponent {
     if (this.currentMoveIndex < this.studyPositions.length - 1) {
       this.currentMoveIndex++;
       this.syncBoardToCurrentIndex();
+      if (this.currentMoveIndex > 0 && this.currentMoveIndex <= this.moveHistory.length) {
+        this.audioService.playMoveSound(this.moveHistory[this.currentMoveIndex - 1]);
+      }
     }
   }
 

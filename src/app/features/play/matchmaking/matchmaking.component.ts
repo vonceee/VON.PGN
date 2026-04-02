@@ -78,7 +78,10 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
     ? () => TIME_CONTROLS.find((tc) => tc.value === this.gameService.searchTimeControl())
     : () => undefined;
 
-  activeGameId = () => this.gameService.gameState()?.id ?? null;
+  activeGameId = () => {
+    const g = this.gameService.gameState();
+    return g && g.status === 'active' ? g.id : null;
+  };
 
   categories = [
     { key: 'bullet', label: 'Bullet', controls: TIME_CONTROLS.filter((tc) => tc.category === 'bullet') },

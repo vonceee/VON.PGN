@@ -18,6 +18,7 @@ import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
 import { Key } from 'chessground/types';
+import { AudioService } from '../../../core/services/audio.service';
 
 @Component({
   selector: 'app-chess-board',
@@ -97,6 +98,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   private chess = new Chess();
   private initialized = false;
   private platformId = inject(PLATFORM_ID);
+  private audioService = inject(AudioService);
 
   ngAfterViewInit() {
     this.initBoard();
@@ -179,6 +181,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   private onMove(orig: Key, dest: Key) {
     try {
       const move = this.chess.move({ from: orig, to: dest, promotion: 'q' });
+      this.audioService.playMoveSound(move.san);
       this.syncBoard();
       this.fenChange.emit(this.chess.fen());
       this.moveMade.emit({

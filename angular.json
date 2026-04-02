@@ -72,6 +72,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "allowedHosts": ["localhost", "127.0.0.1", "192.168.254.146"]
+          },
           "configurations": {
             "production": {
               "buildTarget": "vonchess:build:production"
