@@ -5,6 +5,7 @@ import { tap, catchError, map, of, finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
 import { AudioService } from './audio.service';
+import { BoardThemeService } from './board-theme.service';
 import { environment } from '../../../environments/environment';
 
 export interface AuthResponse {
@@ -27,6 +28,7 @@ export class AuthService {
   private router = inject(Router);
   private userService = inject(UserService);
   private audioService = inject(AudioService);
+  private boardThemeService = inject(BoardThemeService);
   private platformId = inject(PLATFORM_ID);
 
   private apiUrl = environment.apiUrl;
@@ -66,6 +68,12 @@ export class AuthService {
       if (cached.preferences?.soundTheme) {
         this.audioService.soundTheme.set(cached.preferences.soundTheme as any);
       }
+      if (cached.preferences?.boardStyle) {
+        this.boardThemeService.boardTheme.set(cached.preferences.boardStyle as any);
+      }
+      if (cached.preferences?.pieceStyle) {
+        this.boardThemeService.pieceSet.set(cached.preferences.pieceStyle as any);
+      }
     }
 
     return this.userService.loadMyProfile().pipe(
@@ -77,6 +85,12 @@ export class AuthService {
           }
           if (res.data?.preferences?.soundTheme) {
             this.audioService.soundTheme.set(res.data.preferences.soundTheme as any);
+          }
+          if (res.data?.preferences?.boardStyle) {
+            this.boardThemeService.boardTheme.set(res.data.preferences.boardStyle as any);
+          }
+          if (res.data?.preferences?.pieceStyle) {
+            this.boardThemeService.pieceSet.set(res.data.preferences.pieceStyle as any);
           }
         },
         error: () => {

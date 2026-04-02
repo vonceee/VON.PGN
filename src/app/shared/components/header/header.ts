@@ -6,6 +6,7 @@ import { UserService, UserSearchResult } from '../../../core/services/user.servi
 import { AuthService } from '../../../core/services/auth.service';
 import { ChatService } from '../../../core/services/chat.service';
 import { AudioService, SOUND_THEMES } from '../../../core/services/audio.service';
+import { BoardThemeService, BOARD_THEMES, PIECE_SETS } from '../../../core/services/board-theme.service';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -24,9 +25,12 @@ export class Header {
   authService = inject(AuthService);
   chatService = inject(ChatService);
   audioService = inject(AudioService);
+  boardThemeService = inject(BoardThemeService);
   private router = inject(Router);
 
   soundThemes = SOUND_THEMES;
+  boardThemes = BOARD_THEMES;
+  pieceSets = PIECE_SETS;
 
   @ViewChild('profileContainer') profileContainer!: ElementRef;
   @ViewChild('searchContainer') searchContainer!: ElementRef;

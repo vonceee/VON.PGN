@@ -22,8 +22,8 @@ export interface UserProfile {
 
 export interface UserPreferences {
   theme: 'dark' | 'light' | 'system';
-  boardStyle: 'classic' | 'modern' | 'antigravity';
-  pieceStyle: 'standard' | 'minimalist';
+  boardStyle: string;
+  pieceStyle: string;
   soundEnabled: boolean;
   soundTheme: string;
 }

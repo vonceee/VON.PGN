@@ -486,6 +486,60 @@
           <option value="off">No sound</option>
         </select>
       </div>
+
+      <!-- Board Theme -->
+      <div
+        (click)="$event.stopPropagation()"
+        (mousedown)="$event.stopPropagation()"
+        class="flex items-center justify-between px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5"
+      >
+        <div class="flex items-center gap-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-5.5 h-5.5 text-slate-700 dark:text-slate-300">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+          </svg>
+          <span class="text-slate-900 dark:text-white font-semibold text-[15px]">Board</span>
+        </div>
+        <select
+          [ngModel]="boardThemeService.boardTheme()"
+          (ngModelChange)="boardThemeService.boardTheme.set($event)"
+          (click)="$event.stopPropagation()"
+          (mousedown)="$event.stopPropagation()"
+          class="text-sm bg-transparent border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 cursor-pointer focus:outline-none focus:ring-1 focus:ring-cyan-500 text-slate-700 dark:text-slate-300"
+        >
+          @for (theme of boardThemes; track theme.value) {
+            <option [value]="theme.value">{{ theme.label }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Piece Set -->
+      <div
+        (click)="$event.stopPropagation()"
+        (mousedown)="$event.stopPropagation()"
+        class="flex items-center justify-between px-6 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5"
+      >
+        <div class="flex items-center gap-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-5.5 h-5.5 text-slate-700 dark:text-slate-300">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.049.58.025 1.193-.14 1.743" />
+          </svg>
+          <span class="text-slate-900 dark:text-white font-semibold text-[15px]">Pieces</span>
+        </div>
+        <select
+          [ngModel]="boardThemeService.pieceSet()"
+          (ngModelChange)="boardThemeService.pieceSet.set($event)"
+          (click)="$event.stopPropagation()"
+          (mousedown)="$event.stopPropagation()"
+          class="text-sm bg-transparent border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 cursor-pointer focus:outline-none focus:ring-1 focus:ring-cyan-500 text-slate-700 dark:text-slate-300"
+        >
+          @for (set of pieceSets; track set.value) {
+            <option [value]="set.value">{{ set.label }}</option>
+          }
+        </select>
+      </div>
     </div>
 
     <!-- Divider -->

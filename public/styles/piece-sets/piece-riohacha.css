@@ -1,0 +1,12 @@
+.cg-wrap piece.king.white { background-image: url(/pieces/riohacha/wK.svg); }
+.cg-wrap piece.king.black { background-image: url(/pieces/riohacha/bK.svg); }
+.cg-wrap piece.queen.white { background-image: url(/pieces/riohacha/wQ.svg); }
+.cg-wrap piece.queen.black { background-image: url(/pieces/riohacha/bQ.svg); }
+.cg-wrap piece.rook.white { background-image: url(/pieces/riohacha/wR.svg); }
+.cg-wrap piece.rook.black { background-image: url(/pieces/riohacha/bR.svg); }
+.cg-wrap piece.bishop.white { background-image: url(/pieces/riohacha/wB.svg); }
+.cg-wrap piece.bishop.black { background-image: url(/pieces/riohacha/bB.svg); }
+.cg-wrap piece.knight.white { background-image: url(/pieces/riohacha/wN.svg); }
+.cg-wrap piece.knight.black { background-image: url(/pieces/riohacha/bN.svg); }
+.cg-wrap piece.pawn.white { background-image: url(/pieces/riohacha/wP.svg); }
+.cg-wrap piece.pawn.black { background-image: url(/pieces/riohacha/bP.svg); }
