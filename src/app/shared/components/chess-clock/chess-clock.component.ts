@@ -64,9 +64,16 @@ import {
   `],
 })
 export class ChessClockComponent implements OnChanges, OnDestroy {
-  @Input() serverTimeMs: number = 0;
-  @Input() serverTimestamp: string = '';
-  @Input() isActive: boolean = false;
+  /**
+   * Lichess-style clock implementation:
+   * - Server stores: time_remaining_ms (after last move), last_move_timestamp
+   * - Client calculates: displayTime = storedTime - (now - lastMoveTimestamp)
+   * - Only the active player's clock ticks down
+   */
+
+  @Input() serverTimeMs: number = 0;      // Time remaining from server (after last move)
+  @Input() serverTimestamp: string = '';   // Server timestamp of last move
+  @Input() isActive: boolean = false;      // Is this clock the active player's turn?
   @Input() label: string = '';
   @Output() expired = new EventEmitter<void>();
 
@@ -74,30 +81,19 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
 
   private rafId: number | null = null;
   private running = false;
-  private lastTickTime: number = 0;
   private hasExpired = false;
 
-  // Track the last server value we actually used so we can detect real changes
-  private lastAppliedServerTime: number = -1;
+  // Stored values for calculation
+  private storedTimeMs: number = 0;
+  private lastMoveTimestamp: number = 0;
 
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // When server sends a new time value, snap displayTime to it
-    if (changes['serverTimeMs']) {
-      const newVal = changes['serverTimeMs'].currentValue;
-      const oldVal = changes['serverTimeMs'].previousValue;
-
-      // Only snap if the value actually changed (not just Angular re-checking)
-      if (newVal !== this.lastAppliedServerTime && newVal > 0) {
-        this.displayTime = newVal;
-        this.lastAppliedServerTime = newVal;
-        this.lastTickTime = performance.now();
-        this.hasExpired = false;
-      }
+    if (changes['serverTimeMs'] || changes['serverTimestamp']) {
+      this.updateStoredValues();
     }
 
-    // Start/stop the tick loop when isActive changes
     if (changes['isActive']) {
       if (this.isActive) {
         this.startTicking();
@@ -111,22 +107,64 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
     this.stopTicking();
   }
 
+  /**
+   * Update stored values from server data.
+   * Called when server sends new time/timestamp.
+   * Also validates for corrupted data.
+   */
+  private updateStoredValues(): void {
+    const timeMs = this.serverTimeMs;
+    const timestamp = this.serverTimestamp;
+
+    // Validate: must be a positive number less than 1 hour
+    const maxValidMs = 3600000; // 1 hour max for any time control
+    
+    if (typeof timeMs === 'number' && timeMs > 0 && timeMs <= maxValidMs) {
+      this.storedTimeMs = timeMs;
+      
+      if (timestamp) {
+        // Use Date.parse to match Date.now() time base
+        const parsed = Date.parse(timestamp);
+        if (!isNaN(parsed)) {
+          this.lastMoveTimestamp = parsed;
+        } else {
+          this.lastMoveTimestamp = Date.now();
+        }
+      } else {
+        this.lastMoveTimestamp = Date.now();
+      }
+      
+      // Display time is just the stored time
+      this.displayTime = this.storedTimeMs;
+      this.hasExpired = false;
+    }
+  }
+
   private startTicking(): void {
     if (this.running) return;
     this.running = true;
-    this.lastTickTime = performance.now();
 
     const tick = (now: number) => {
       if (!this.running) return;
 
-      const delta = now - this.lastTickTime;
-      this.lastTickTime = now;
-
-      // Only decrement by the real frame delta, clamped to avoid huge jumps
-      if (delta > 0 && delta < 1000) {
-        this.displayTime = Math.max(0, this.displayTime - delta);
+      // Use Date.now() to be consistent with Date.parse(timestamp) from server
+      const nowMs = Date.now();
+      
+      // Recalculate from stored values each tick
+      // This ensures we don't have drift and handles updates correctly
+      if (this.lastMoveTimestamp && this.storedTimeMs > 0) {
+        const elapsedMs = nowMs - this.lastMoveTimestamp;
+        
+        // Only tick down if this is the active clock
+        if (this.isActive) {
+          this.displayTime = Math.max(0, this.storedTimeMs - elapsedMs);
+        } else {
+          // Inactive clock shows the stored time
+          this.displayTime = this.storedTimeMs;
+        }
       }
 
+      // Check for expiration - only emit once
       if (this.displayTime <= 0 && !this.hasExpired) {
         this.hasExpired = true;
         this.expired.emit();

@@ -50,7 +50,7 @@ import { Key } from 'chessground/types';
                 <app-chess-clock
                   [serverTimeMs]="opponentTimeMs()"
                   [serverTimestamp]="g.server_timestamp"
-                  [isActive]="g.status === 'active' && isOpponentTurn() && bufferCountdown() === null"
+                  [isActive]="g.status === 'active' && isOpponentTurn() && !isInBuffer()"
                   [label]="g.my_color === 'white' ? 'Black' : 'White'"
                   (expired)="onClockExpired()"
                 />
@@ -78,7 +78,7 @@ import { Key } from 'chessground/types';
                 <app-chess-clock
                   [serverTimeMs]="myTimeMs()"
                   [serverTimestamp]="g.server_timestamp"
-                  [isActive]="g.status === 'active' && isMyTurn() && bufferCountdown() === null"
+                  [isActive]="g.status === 'active' && isMyTurn() && !isInBuffer()"
                   [label]="g.my_color === 'white' ? 'White' : 'Black'"
                   (expired)="onClockExpired()"
                 />
@@ -302,6 +302,25 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return g.my_color === 'white' ? g.black_time_remaining_ms : g.white_time_remaining_ms;
   };
 
+  bufferSecondsRemaining = () => {
+    const g = this.game();
+    if (!g) return 0;
+    // Lichess-style: Buffer is handled entirely client-side
+    // We use local buffer countdown which tracks 5-second pre-game buffer
+    const bc = this.bufferCountdown();
+    return bc !== null ? bc : 0;
+  };
+
+  isInBuffer = () => {
+    const g = this.game();
+    if (!g || g.status !== 'active') return false;
+    // Buffer is active when we have a local countdown running
+    // Before first move: White has buffer, Black has buffer after White moves
+    if (g.moves.length === 0) return this.bufferCountdown() !== null;
+    if (g.moves.length === 1 && g.my_color === 'black') return this.bufferCountdown() !== null;
+    return false;
+  };
+
   isMyTurn = () => {
     const g = this.game();
     return g?.status === 'active' && g.turn === g.my_color;
@@ -399,6 +418,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     this.initDrawOfferState();
+    // No periodic clock monitoring needed - Lichess-style: client calculates locally
   }
 
   ngAfterViewInit(): void {

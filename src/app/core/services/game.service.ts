@@ -135,11 +135,75 @@ export class GameService implements OnDestroy {
 
   sendMove(move: string): void {
     const game = this.gameState();
-    if (!game) return;
+    if (!game) {
+      console.error('[Game] sendMove - no game state');
+      return;
+    }
+    console.log('[Game] sendMove called', { gameId: game.id, move });
+    
     this.http
       .post<any>(`${this.apiUrl}/game/${game.id}/move`, { move })
-      .pipe(catchError(() => of(null)))
-      .subscribe();
+      .pipe(
+        catchError((err) => {
+          console.error('[Game] sendMove HTTP error:', err);
+          return of(null);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (!res) {
+            console.error('[Game] sendMove failed - no response');
+            return;
+          }
+          if (res.message && !res.move) {
+            console.error('[Game] sendMove failed:', res.message);
+            return;
+          }
+          console.log('[Game] sendMove success', res);
+          
+          // Update local state immediately with server response
+          // This ensures the move shows even if WebSocket event is missed
+          this.gameState.update((state) => {
+            if (!state) return state;
+            return {
+              ...state,
+              fen: res.fen,
+              turn: res.turn,
+              moves: [...state.moves, res.move],
+              status: res.status,
+              result: res.result,
+              termination: res.termination,
+              legal_moves: res.legal_moves ?? [],
+              white_time_remaining_ms: res.clock?.white_time_remaining_ms ?? state.white_time_remaining_ms,
+              black_time_remaining_ms: res.clock?.black_time_remaining_ms ?? state.black_time_remaining_ms,
+              server_timestamp: res.clock?.server_timestamp ?? state.server_timestamp,
+            };
+          });
+          
+          // Emit move played event
+          this.movePlayed$.next({
+            game_id: game.id,
+            move: res.move,
+            san: res.san,
+            fen: res.fen,
+            turn: res.turn,
+            white_time_remaining_ms: res.clock?.white_time_remaining_ms ?? 0,
+            black_time_remaining_ms: res.clock?.black_time_remaining_ms ?? 0,
+            server_timestamp: res.clock?.server_timestamp ?? '',
+            status: res.status,
+            result: res.result,
+            termination: res.termination,
+            is_check: res.clock?.is_check ?? false,
+            is_checkmate: res.clock?.is_checkmate ?? false,
+            is_stalemate: res.clock?.is_stalemate ?? false,
+            is_draw: res.clock?.is_draw ?? false,
+            legal_moves: res.legal_moves ?? [],
+          });
+        },
+        error: (err) => {
+          console.error('[Game] sendMove subscription error:', err);
+        }
+      });
   }
 
   resign(): void {
@@ -215,9 +279,51 @@ export class GameService implements OnDestroy {
 
   syncClock(gameId: string): void {
     this.http
-      .post(`${this.apiUrl}/game/${gameId}/sync-clock`, {})
+      .post<any>(`${this.apiUrl}/game/${gameId}/sync-clock`, {})
       .pipe(catchError(() => of(null)))
-      .subscribe();
+      .subscribe((res) => {
+        if (!res) return;
+
+        const currentGame = this.gameState();
+        if (!currentGame || currentGame.id !== gameId) return;
+
+        if (res.game_status === 'completed') {
+          this.gameState.update((state) => {
+            if (!state) return state;
+            return {
+              ...state,
+              status: 'completed',
+              result: res.result,
+              termination: res.termination,
+              white_time_remaining_ms: res.white_time_remaining_ms ?? 0,
+              black_time_remaining_ms: res.black_time_remaining_ms ?? 0,
+              fen: res.fen,
+              buffer_seconds_remaining: 0,
+            };
+          });
+          this.stopPolling();
+          this.gameEnded$.next({
+            game_id: gameId,
+            result: res.result,
+            termination: res.termination,
+            status: 'completed',
+            white_time_remaining_ms: res.white_time_remaining_ms ?? 0,
+            black_time_remaining_ms: res.black_time_remaining_ms ?? 0,
+            fen: res.fen,
+          });
+        } else {
+          this.gameState.update((state) => {
+            if (!state) return state;
+            return {
+              ...state,
+              white_time_remaining_ms: res.white_time_remaining_ms ?? state.white_time_remaining_ms,
+              black_time_remaining_ms: res.black_time_remaining_ms ?? state.black_time_remaining_ms,
+              server_timestamp: res.server_timestamp ?? state.server_timestamp,
+              buffer_seconds_remaining: res.buffer_seconds_remaining ?? 0,
+            };
+          });
+        }
+      });
   }
 
   // ── Echo / WebSocket ────────────────────────────────────────────
@@ -336,6 +442,12 @@ export class GameService implements OnDestroy {
       });
 
       this.gameChannel.listen('.App\\Events\\MovePlayed', (data: MovePlayedPayload) => {
+        console.log('[Game] Received MovePlayed event', {
+          gameId: data.game_id,
+          move: data.move,
+          fen: data.fen,
+          turn: data.turn,
+        });
         this.gameState.update((state) => {
           if (!state) return state;
           return {
@@ -352,6 +464,7 @@ export class GameService implements OnDestroy {
             legal_moves: data.legal_moves,
             draw_offered_by: null,
             draw_offered_at: null,
+            buffer_seconds_remaining: data.buffer_seconds_remaining ?? 0,
           };
         });
         this.movePlayed$.next(data);
@@ -367,10 +480,11 @@ export class GameService implements OnDestroy {
             termination: data.termination,
             white_time_remaining_ms: data.white_time_remaining_ms,
             black_time_remaining_ms: data.black_time_remaining_ms,
-            fen: data.fen,
+            fen: data.fen ?? state.fen,
             legal_moves: [],
             draw_offered_by: null,
             draw_offered_at: null,
+            buffer_seconds_remaining: 0,
           };
         });
         this.stopPolling();
@@ -385,6 +499,7 @@ export class GameService implements OnDestroy {
             white_time_remaining_ms: data.white_time_remaining_ms,
             black_time_remaining_ms: data.black_time_remaining_ms,
             server_timestamp: data.server_timestamp,
+            buffer_seconds_remaining: data.buffer_seconds_remaining ?? 0,
           };
         });
       });
@@ -441,6 +556,12 @@ export class GameService implements OnDestroy {
 
         // Only update if server state diverges (missed WebSocket event)
         if (local.fen !== res.game.fen || local.moves.length !== res.game.moves.length) {
+          console.log('[Game] Polling detected state divergence, updating', {
+            localFen: local.fen,
+            serverFen: res.game.fen,
+            localMoves: local.moves.length,
+            serverMoves: res.game.moves.length,
+          });
           this.gameState.set(res.game);
           this.movePlayed$.next({
             game_id: res.game.id,
@@ -459,6 +580,7 @@ export class GameService implements OnDestroy {
             is_stalemate: false,
             is_draw: false,
             legal_moves: res.game.legal_moves,
+            buffer_seconds_remaining: res.game.buffer_seconds_remaining ?? 0,
           });
         }
 

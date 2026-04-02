@@ -23,6 +23,7 @@ export interface GameState {
   legal_moves: string[];
   draw_offered_by: number | null;
   draw_offered_at: string | null;
+  buffer_seconds_remaining?: number;
 }
 
 export interface GameMatchedPayload {
@@ -53,6 +54,7 @@ export interface MovePlayedPayload {
   is_stalemate: boolean;
   is_draw: boolean;
   legal_moves: string[];
+  buffer_seconds_remaining?: number;
 }
 
 export interface GameEndedPayload {
@@ -62,7 +64,7 @@ export interface GameEndedPayload {
   termination: string;
   white_time_remaining_ms: number;
   black_time_remaining_ms: number;
-  fen: string;
+  fen?: string;
 }
 
 export interface ClockSyncPayload {
@@ -70,6 +72,7 @@ export interface ClockSyncPayload {
   white_time_remaining_ms: number;
   black_time_remaining_ms: number;
   server_timestamp: string;
+  buffer_seconds_remaining?: number;
 }
 
 export interface DrawOfferedPayload {
