@@ -43,23 +43,24 @@ import { Key } from 'chessground/types';
                     <div class="font-semibold text-sm">{{ opponentName() }}</div>
                     <div class="text-xs">{{ g.my_color === 'white' ? 'Black' : 'White' }}</div>
                   </div>
-                  @if (isOpponentTurn()) {
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse ml-1"></span>
-                  }
                 </div>
-                <app-chess-clock
-                  [serverTimeMs]="opponentTimeMs()"
-                  [serverTimestamp]="g.server_timestamp"
-                  [isActive]="g.status === 'active' && isOpponentTurn() && !isInBuffer()"
-                  [label]="g.my_color === 'white' ? 'Black' : 'White'"
-                  (expired)="onClockExpired()"
-                />
+                <div class="flex items-center gap-2">
+                  <span class="text-xs" [style.color]="getLatencyColor()">●</span>
+                  <app-chess-clock
+                    [serverTimeMs]="opponentTimeMs()"
+                    [serverTimestamp]="g.server_timestamp"
+                    [isActive]="g.status === 'active' && isOpponentTurn() && !isInBuffer()"
+                    [label]="g.my_color === 'white' ? 'Black' : 'White'"
+                    (expired)="onClockExpired()"
+                  />
+                </div>
               </div>
 
               <!-- Chess Board -->
-              <div class="board-wrapper" [style.width.px]="boardSize">
+              <div class="board-wrapper" [style.width.px]="boardSize()">
                 <div #boardEl class="board-container"></div>
               </div>
+              <input type="range" min="280" max="560" step="40" [value]="boardSize()" (input)="onBoardSizeChange($event)" class="w-full mt-2 accent-cyan-500" />
 
               <!-- Player info + clock -->
               <div class="w-full max-w-140 flex items-center justify-between">
@@ -71,17 +72,17 @@ import { Key } from 'chessground/types';
                     <div class="font-semibold text-sm">{{ myName() }} (You)</div>
                     <div class="text-xs">{{ g.my_color === 'white' ? 'White' : 'Black' }}</div>
                   </div>
-                  @if (isMyTurn()) {
-                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse ml-1"></span>
-                  }
                 </div>
-                <app-chess-clock
-                  [serverTimeMs]="myTimeMs()"
-                  [serverTimestamp]="g.server_timestamp"
-                  [isActive]="g.status === 'active' && isMyTurn() && !isInBuffer()"
-                  [label]="g.my_color === 'white' ? 'White' : 'Black'"
-                  (expired)="onClockExpired()"
-                />
+                <div class="flex items-center gap-2">
+                  <span class="text-xs" [style.color]="getLatencyColor()">{{ gameService.latency() }}ms</span>
+                  <app-chess-clock
+                    [serverTimeMs]="myTimeMs()"
+                    [serverTimestamp]="g.server_timestamp"
+                    [isActive]="g.status === 'active' && isMyTurn() && !isInBuffer()"
+                    [label]="g.my_color === 'white' ? 'White' : 'Black'"
+                    (expired)="onClockExpired()"
+                  />
+                </div>
               </div>
             </div>
 
@@ -90,12 +91,8 @@ import { Key } from 'chessground/types';
               <!-- Game status -->
               <div class="border border-border-theme rounded-lg p-4">
                 <div class="text-sm">
-                  <div class="flex justify-between mb-1">
-                    <span>{{ g.time_control }}</span>
-                  </div>
                   <div class="flex justify-between">
-                    <span>Status</span>
-                    <span>{{ g.status }}</span>
+                    <span>{{ formatTimeControl(g.time_control) }}</span>
                   </div>
                 </div>
               </div>
@@ -105,9 +102,9 @@ import { Key } from 'chessground/types';
                 <div class="border border-border-theme rounded-lg p-4" >
                   <div class="text-center">
                     <div class="text-2xl font-bold mb-1" >
-                      {{ resultLabel() }}
+                      {{ formatResult(g.result) }}
                     </div>
-                    <div class="text-sm capitalize">{{ g.termination }}</div>
+                    <div class="text-sm capitalize">{{ formatTermination(g.result, g.termination) }}</div>
                   </div>
                 </div>
               }
@@ -148,6 +145,17 @@ import { Key } from 'chessground/types';
                 <div class="border border-border-theme rounded-lg p-3">
                   <div class="flex items-center justify-center gap-2">
                     <span class="text-sm ">Waiting for {{ opponentName() }} to respond...</span>
+                  </div>
+                </div>
+              }
+
+              <!-- Opponent away countdown -->
+              @if (g.status === 'active' && opponentAwayCountdown() !== null) {
+                <div class="border border-amber-500/50 rounded-lg p-3 bg-amber-900/20">
+                  <div class="text-center">
+                    <div class="text-xs uppercase tracking-wider mb-1 text-amber-400">Opponent Away</div>
+                    <div class="text-3xl font-bold font-mono text-amber-400">{{ opponentAwayCountdown() }}</div>
+                    <div class="text-xs mt-1 text-slate-400">seconds until abandonment</div>
                   </div>
                 </div>
               }
@@ -197,16 +205,37 @@ import { Key } from 'chessground/types';
                     </button>
                   }
                   <button
-                    (click)="resign()"
-                    class="w-full px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                    (click)="showResignConfirm.set(true)"
+                    class="w-full px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                   >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
                     Resign
                   </button>
+                  @if (showResignConfirm()) {
+                    <div class="border border-red-500/50 rounded-lg p-3 bg-red-900/20">
+                      <div class="text-xs text-center mb-2">Resign and forfeit this game?</div>
+                      <div class="flex gap-2">
+                        <button
+                          (click)="confirmResign()"
+                          class="flex-1 px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded text-xs font-semibold transition-colors"
+                        >
+                          Yes, Resign
+                        </button>
+                        <button
+                          (click)="showResignConfirm.set(false)"
+                          class="flex-1 px-3 py-1.5 bg-slate-600 hover:bg-slate-500 text-white rounded text-xs font-semibold transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  }
                   @if (canOfferDraw()) {
                     <button
                       (click)="offerDraw()"
-                      class="w-full px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                      class="w-full px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                     >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                       Offer Draw
                     </button>
                   }
@@ -220,10 +249,19 @@ import { Key } from 'chessground/types';
 
               @if (g.status === 'completed' || g.status === 'aborted') {
                 <button
-                  (click)="backToLobby()"
+                  (click)="findNewOpponent()"
                   class="w-full px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-semibold transition-colors"
                 >
-                  New Game
+                  New Opponent
+                </button>
+              }
+
+              @if (g.status === 'active') {
+                <button
+                  (click)="showExitConfirm.set(true)"
+                  class="w-full px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                >
+                  Leave Game
                 </button>
               }
             </div>
@@ -238,6 +276,31 @@ import { Key } from 'chessground/types';
         }
       </div>
     </div>
+
+    @if (showExitConfirm()) {
+      <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
+        <div class="bg-slate-800 border border-slate-600 rounded-lg p-6 max-w-sm w-full">
+          <h3 class="text-lg font-bold mb-2">Leave Game?</h3>
+          <p class="text-slate-400 text-sm mb-4">
+            You have an active game. Leaving will forfeit the game. Are you sure you want to leave?
+          </p>
+          <div class="flex gap-2">
+            <button
+              (click)="confirmExit()"
+              class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
+            >
+              Yes, Leave
+            </button>
+            <button
+              (click)="showExitConfirm.set(false)"
+              class="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm font-semibold transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   `,
   styles: [`
     .board-wrapper {
@@ -259,10 +322,43 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
 
+  showExitConfirm = signal(false);
+
   private cgApi!: Api;
   private chess = new Chess();
   private boardInitialized = false;
-  boardSize = 560;
+  boardSize = signal(this.loadBoardSize());
+
+  private loadBoardSize(): number {
+    if (isPlatformBrowser(this.platformId)) {
+      const saved = localStorage.getItem('boardSize');
+      if (saved) {
+        const size = parseInt(saved, 10);
+        if (size >= 280 && size <= 560) return size;
+      }
+    }
+    return 400;
+  }
+
+  private saveBoardSize(size: number): void {
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('boardSize', size.toString());
+    }
+  }
+
+  resizeBoard(delta: number) {
+    const newSize = this.boardSize() + delta;
+    if (newSize >= 280 && newSize <= 560) {
+      this.boardSize.set(newSize);
+      this.saveBoardSize(newSize);
+    }
+  }
+
+  onBoardSizeChange(event: Event) {
+    const value = parseInt((event.target as HTMLInputElement).value, 10);
+    this.boardSize.set(value);
+    this.saveBoardSize(value);
+  }
   private moveSanCache: string[] = [];
   private static readonly BUFFER_SECONDS = 5;
   private static readonly ABORT_SECONDS = 15;
@@ -271,8 +367,10 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   abortCountdown = signal<number | null>(null);
   private abortInterval: ReturnType<typeof setInterval> | null = null;
   drawOfferState = signal<'none' | 'iOffered' | 'opponentOffered'>('none');
+  showResignConfirm = signal(false);
   drawCooldownRemaining = signal<number>(0);
   private drawCooldownInterval: ReturnType<typeof setInterval> | null = null;
+  opponentAwayCountdown = this.gameService.opponentAwayCountdown;
 
   private subs: Subscription[] = [];
 
@@ -403,6 +501,54 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return '';
   };
 
+  formatTimeControl(timeControl: string): string {
+    if (!timeControl) return '';
+    const match = timeControl.match(/^(\d+)\+(\d+)$/);
+    if (match) {
+      const minutes = Math.floor(parseInt(match[1], 10) / 60);
+      const increment = parseInt(match[2], 10);
+      return `${minutes}+${increment}`;
+    }
+    return timeControl;
+  };
+
+  formatResult(result: string | null): string {
+    return result || '';
+  };
+
+  formatTermination(result: string | null, termination: string | null): string {
+    if (!result || !termination) return '';
+    
+    const isDraw = result === '1/2-1/2';
+    if (isDraw) {
+      if (termination === 'draw') return 'draw';
+      if (termination === 'stalemate') return 'draw by stalemate';
+      if (termination === 'repetition') return 'draw by repetition';
+      if (termination === 'insufficient') return 'draw by insufficient material';
+      return 'draw';
+    }
+
+    const isWhiteWin = result === '1-0';
+    const winner = isWhiteWin ? 'white' : 'black';
+    const loser = isWhiteWin ? 'black' : 'white';
+
+    const reason = termination.toLowerCase();
+    if (reason === 'checkmate') return `${winner} won through checkmate`;
+    if (reason === 'time') return `${loser} ran out of time`;
+    if (reason === 'abandoned') return `${loser} abandoned the game`;
+    if (reason === 'resignation') return `${loser} resigned`;
+    if (reason === 'timeout') return `${loser} ran out of time`;
+    return `${winner} won`;
+  };
+
+  getLatencyColor(): string {
+    const ping = this.gameService.latency();
+    if (ping < 0) return '#ef4444';
+    if (ping < 100) return '#22c55e';
+    if (ping < 200) return '#eab308';
+    return '#ef4444';
+  };
+
   ngOnInit(): void {
     const gameId = this.route.snapshot.paramMap.get('gameId');
     if (gameId) {
@@ -415,10 +561,35 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.gameService.onMovePlayed.subscribe((data) => this.onMovePlayed(data)),
       this.gameService.onGameEnded.subscribe((data) => this.onGameEnded(data)),
       this.gameService.onDrawOffered.subscribe((data) => this.onDrawOffered(data)),
+      this.gameService.onPlayerAbsent.subscribe(() => {}),
+      this.gameService.onPlayerReturned.subscribe(() => {}),
     );
 
     this.initDrawOfferState();
-    // No periodic clock monitoring needed - Lichess-style: client calculates locally
+    this.setupBeforeUnload();
+    this.initOpponentAwayCountdown();
+  }
+
+  private initOpponentAwayCountdown(): void {
+    const g = this.game();
+    if (g && g.opponent_away_countdown !== undefined && g.opponent_away_countdown !== null) {
+      this.gameService.opponentAwayCountdown.set(g.opponent_away_countdown);
+    }
+  }
+
+  private setupBeforeUnload(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      window.addEventListener('beforeunload', this.handleBeforeUnload);
+    }
+  }
+
+  private handleBeforeUnload = (event: BeforeUnloadEvent): string | undefined => {
+    const g = this.game();
+    if (g && g.status === 'active') {
+      event.preventDefault();
+      return 'You have an active game. Are you sure you want to leave?';
+    }
+    return undefined;
   }
 
   ngAfterViewInit(): void {
@@ -427,6 +598,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    }
     this.subs.forEach((s) => s.unsubscribe());
     this.clearBufferCountdown();
     this.clearAbortCountdown();
@@ -545,7 +719,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private onGameEnded(_data: GameEndedPayload): void {
+  private onGameEnded(data: GameEndedPayload): void {
     if (this.cgApi) {
       this.cgApi.set({
         movable: { color: undefined, dests: new Map() },
@@ -553,6 +727,19 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.drawOfferState.set('none');
     this.clearDrawCooldown();
+
+    const g = this.game();
+    if (g) {
+      if (g.result === '1/2-1/2') {
+        this.audioService.playDraw();
+      } else if ((g.result === '1-0' && g.my_color === 'white') ||
+                 (g.result === '0-1' && g.my_color === 'black')) {
+        this.audioService.playVictory();
+      } else {
+        this.audioService.playDefeat();
+      }
+    }
+
     this.cdr.markForCheck();
   }
 
@@ -641,9 +828,12 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   resign(): void {
-    if (confirm('Are you sure you want to resign?')) {
-      this.gameService.resign();
-    }
+    this.showResignConfirm.set(true);
+  }
+
+  confirmResign(): void {
+    this.showResignConfirm.set(false);
+    this.gameService.resign();
   }
 
   private startPreGameCountdown(): void {
@@ -781,6 +971,20 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   backToLobby(): void {
+    this.gameService.clearGame();
+    this.router.navigate(['/play']);
+  }
+
+  findNewOpponent(): void {
+    const g = this.game();
+    if (g) {
+      this.gameService.clearGame();
+      this.gameService.seekGame(g.time_control);
+    }
+  }
+
+  confirmExit(): void {
+    this.showExitConfirm.set(false);
     this.gameService.clearGame();
     this.router.navigate(['/play']);
   }

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ThemeService } from '../../../core/services/theme.service';
 import { UserService, UserSearchResult } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { GameService } from '../../../core/services/game.service';
 import { ChatService } from '../../../core/services/chat.service';
 import { AudioService, SOUND_THEMES } from '../../../core/services/audio.service';
 import { BoardThemeService, BOARD_THEMES, PIECE_SETS } from '../../../core/services/board-theme.service';
@@ -22,6 +23,7 @@ export class Header {
   themeService = inject(ThemeService);
   userService = inject(UserService);
   authService = inject(AuthService);
+  gameService = inject(GameService);
   chatService = inject(ChatService);
   audioService = inject(AudioService);
   boardThemeService = inject(BoardThemeService);
@@ -124,5 +126,17 @@ export class Header {
     ) {
       this.isSearchOpen.set(false);
     }
+  }
+
+  getPing(): number {
+    return this.gameService.latency();
+  }
+
+  getPingColor(): string {
+    const ping = this.gameService.latency();
+    if (ping < 0) return '#ef4444';
+    if (ping < 100) return '#22c55e';
+    if (ping < 200) return '#eab308';
+    return '#ef4444';
   }
 }

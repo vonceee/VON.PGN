@@ -136,6 +136,9 @@
           </div>
         </button>
       </div>
+      <div class="hidden md:flex items-center gap-1 text-xs" [style.color]="getPingColor()">
+        <span>{{ getPing() }}ms</span>
+      </div>
     } @else {
       <a
         routerLink="/login"

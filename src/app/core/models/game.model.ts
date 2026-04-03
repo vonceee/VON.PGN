@@ -24,6 +24,7 @@ export interface GameState {
   draw_offered_by: number | null;
   draw_offered_at: string | null;
   buffer_seconds_remaining?: number;
+  opponent_away_countdown?: number | null;
 }
 
 export interface GameMatchedPayload {
@@ -80,6 +81,15 @@ export interface DrawOfferedPayload {
   offered_by: 'white' | 'black';
   offered_by_user_id: number;
   cooldown_expires_at: string | null;
+}
+
+export interface PlayerAbsentPayload {
+  absent_color: 'white' | 'black';
+  countdown_seconds: number;
+}
+
+export interface PlayerReturnedPayload {
+  returned_color: 'white' | 'black';
 }
 
 export interface TimeControlOption {

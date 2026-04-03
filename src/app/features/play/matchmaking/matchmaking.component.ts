@@ -98,6 +98,14 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
   }
 
   seekGame(tc: TimeControlOption): void {
+    const g = this.gameService.gameState();
+    if (g && g.status === 'active') {
+      this.rejoinGame();
+      return;
+    }
+    if (this.gameService.isSearching()) {
+      return;
+    }
     this.gameService.seekGame(tc.value);
   }
 

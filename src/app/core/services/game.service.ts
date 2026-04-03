@@ -2,6 +2,7 @@ import { Injectable, inject, signal, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { AudioService } from './audio.service';
 import { environment } from '../../../environments/environment';
 import {
   GameState,
@@ -9,6 +10,8 @@ import {
   GameEndedPayload,
   ClockSyncPayload,
   DrawOfferedPayload,
+  PlayerAbsentPayload,
+  PlayerReturnedPayload,
 } from '../models/game.model';
 import { Subject, of, Subscription, timer, interval } from 'rxjs';
 import { catchError, switchMap, takeWhile } from 'rxjs/operators';
@@ -27,11 +30,16 @@ export class GameService implements OnDestroy {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private audioService = inject(AudioService);
 
   private apiUrl = environment.apiUrl;
   private echo: any = null;
   private gameChannel: any = null;
   private echoLoadAttempted = false;
+
+  constructor() {
+    setTimeout(() => this.startLatencyMeasurement(10000), 2000);
+  }
   private pendingGameId: string | null = null;
 
   // Polling
@@ -43,19 +51,55 @@ export class GameService implements OnDestroy {
   searchTimeControl = signal('');
   isConnected = signal(false);
   isLoading = signal(false);
+  latency = signal(0);
+  private latencyInterval: ReturnType<typeof setInterval> | null = null;
 
   private movePlayed$ = new Subject<MovePlayedPayload>();
   private gameEnded$ = new Subject<GameEndedPayload>();
   private drawOffered$ = new Subject<DrawOfferedPayload>();
+  private playerAbsent$ = new Subject<PlayerAbsentPayload>();
+  private playerReturned$ = new Subject<PlayerReturnedPayload>();
 
   get onMovePlayed() { return this.movePlayed$.asObservable(); }
   get onGameEnded() { return this.gameEnded$.asObservable(); }
   get onDrawOffered() { return this.drawOffered$.asObservable(); }
+  get onPlayerAbsent() { return this.playerAbsent$.asObservable(); }
+  get onPlayerReturned() { return this.playerReturned$.asObservable(); }
+
+  opponentAwayCountdown = signal<number | null>(null);
 
   ngOnDestroy(): void {
     this.stopPolling();
     this.stopSeekPolling();
     this.leaveGameChannel();
+    this.stopLatencyMeasurement();
+  }
+
+  measureLatency(): void {
+    const start = performance.now();
+    this.http.get(`${this.apiUrl}/ping`, { responseType: 'text' })
+      .subscribe({
+        next: () => {
+          const rtt = Math.round(performance.now() - start);
+          this.latency.set(rtt);
+        },
+        error: () => {
+          this.latency.set(-1);
+        }
+      });
+  }
+
+  startLatencyMeasurement(intervalMs: number = 5000): void {
+    this.stopLatencyMeasurement();
+    this.measureLatency();
+    this.latencyInterval = setInterval(() => this.measureLatency(), intervalMs);
+  }
+
+  private stopLatencyMeasurement(): void {
+    if (this.latencyInterval) {
+      clearInterval(this.latencyInterval);
+      this.latencyInterval = null;
+    }
   }
 
   // ── Public API ──────────────────────────────────────────────────
@@ -82,7 +126,7 @@ export class GameService implements OnDestroy {
     this.searchTimeControl.set(timeControl);
 
     this.http
-      .post<{ matched: boolean; game_id?: string; message: string }>(
+      .post<{ matched: boolean; game_id?: string; message: string; existing_game?: any }>(
         `${this.apiUrl}/game/seek`,
         { time_control: timeControl },
       )
@@ -95,7 +139,17 @@ export class GameService implements OnDestroy {
         if (res.matched && res.game_id) {
           this.isSearching.set(false);
           this.searchTimeControl.set('');
+          this.audioService.playMatchFound();
           this.loadGameAndNavigate(res.game_id);
+        } else if (res.existing_game) {
+          this.isSearching.set(false);
+          this.searchTimeControl.set('');
+          this.audioService.playMatchFound();
+          this.gameState.set(res.existing_game);
+          this.ensureEchoConnected();
+          this.subscribeToGame(res.existing_game.id);
+          this.startHeartbeat();
+          this.router.navigate(['/play', res.existing_game.id]);
         } else {
           this.startSeekPolling();
         }
@@ -127,6 +181,8 @@ export class GameService implements OnDestroy {
           this.gameState.set(res.game);
           this.ensureEchoConnected();
           this.subscribeToGame(gameId);
+          this.startLatencyMeasurement();
+          this.startHeartbeat();
         } else {
           console.error('[Game] loadGame: no game data in response');
         }
@@ -136,10 +192,8 @@ export class GameService implements OnDestroy {
   sendMove(move: string): void {
     const game = this.gameState();
     if (!game) {
-      console.error('[Game] sendMove - no game state');
       return;
     }
-    console.log('[Game] sendMove called', { gameId: game.id, move });
     
     this.http
       .post<any>(`${this.apiUrl}/game/${game.id}/move`, { move })
@@ -152,14 +206,11 @@ export class GameService implements OnDestroy {
       .subscribe({
         next: (res) => {
           if (!res) {
-            console.error('[Game] sendMove failed - no response');
             return;
           }
           if (res.message && !res.move) {
-            console.error('[Game] sendMove failed:', res.message);
             return;
           }
-          console.log('[Game] sendMove success', res);
           
           // Update local state immediately with server response
           // This ensures the move shows even if WebSocket event is missed
@@ -269,9 +320,42 @@ export class GameService implements OnDestroy {
       });
   }
 
+  // Heartbeat for player presence
+  private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+  private heartbeatIntervalSub: Subscription | null = null;
+
+  startHeartbeat(): void {
+    this.stopHeartbeat();
+    this.sendHeartbeat();
+    this.heartbeatInterval = setInterval(() => {
+      this.sendHeartbeat();
+    }, 10000);
+  }
+
+  stopHeartbeat(): void {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+      this.heartbeatInterval = null;
+    }
+    if (this.heartbeatIntervalSub) {
+      this.heartbeatIntervalSub.unsubscribe();
+      this.heartbeatIntervalSub = null;
+    }
+  }
+
+  private sendHeartbeat(): void {
+    const game = this.gameState();
+    if (!game || game.status !== 'active') return;
+    this.http
+      .post(`${this.apiUrl}/game/${game.id}/heartbeat`, {})
+      .pipe(catchError(() => of(null)))
+      .subscribe();
+  }
+
   clearGame(): void {
     this.stopPolling();
     this.stopSeekPolling();
+    this.stopHeartbeat();
     this.gameState.set(null);
     this.leaveGameChannel();
     this.router.navigate(['/play']);
@@ -311,6 +395,11 @@ export class GameService implements OnDestroy {
             black_time_remaining_ms: res.black_time_remaining_ms ?? 0,
             fen: res.fen,
           });
+          if (res.result === '1/2-1/2') {
+            this.audioService.playDraw();
+          } else {
+            this.audioService.playVictory();
+          }
         } else {
           this.gameState.update((state) => {
             if (!state) return state;
@@ -442,12 +531,6 @@ export class GameService implements OnDestroy {
       });
 
       this.gameChannel.listen('.App\\Events\\MovePlayed', (data: MovePlayedPayload) => {
-        console.log('[Game] Received MovePlayed event', {
-          gameId: data.game_id,
-          move: data.move,
-          fen: data.fen,
-          turn: data.turn,
-        });
         this.gameState.update((state) => {
           if (!state) return state;
           return {
@@ -488,6 +571,8 @@ export class GameService implements OnDestroy {
           };
         });
         this.stopPolling();
+        this.stopHeartbeat();
+        this.opponentAwayCountdown.set(null);
         this.gameEnded$.next(data);
       });
 
@@ -514,6 +599,16 @@ export class GameService implements OnDestroy {
           };
         });
         this.drawOffered$.next(data);
+      });
+
+      this.gameChannel.listen('.App\\Events\\PlayerAbsent', (data: PlayerAbsentPayload) => {
+        this.opponentAwayCountdown.set(data.countdown_seconds);
+        this.playerAbsent$.next(data);
+      });
+
+      this.gameChannel.listen('.App\\Events\\PlayerReturned', (data: PlayerReturnedPayload) => {
+        this.opponentAwayCountdown.set(null);
+        this.playerReturned$.next(data);
       });
     } catch (err) {
       console.error('[Game] Failed to setup game channel:', err);
@@ -556,12 +651,6 @@ export class GameService implements OnDestroy {
 
         // Only update if server state diverges (missed WebSocket event)
         if (local.fen !== res.game.fen || local.moves.length !== res.game.moves.length) {
-          console.log('[Game] Polling detected state divergence, updating', {
-            localFen: local.fen,
-            serverFen: res.game.fen,
-            localMoves: local.moves.length,
-            serverMoves: res.game.moves.length,
-          });
           this.gameState.set(res.game);
           this.movePlayed$.next({
             game_id: res.game.id,
@@ -624,6 +713,7 @@ export class GameService implements OnDestroy {
           this.gameState.set(res.game);
           this.ensureEchoConnected();
           this.subscribeToGame(gameId);
+          this.startHeartbeat();
           this.router.navigate(['/play', gameId]);
         } else {
           console.error('[Game] loadGameAndNavigate: no game data');
@@ -662,9 +752,11 @@ export class GameService implements OnDestroy {
         this.isSearching.set(false);
         this.searchTimeControl.set('');
         this.stopSeekPolling();
+        this.audioService.playMatchFound();
         this.gameState.set(res.game);
         this.ensureEchoConnected();
         this.subscribeToGame(res.game.id);
+        this.startHeartbeat();
         this.router.navigate(['/play', res.game.id]);
       });
   }

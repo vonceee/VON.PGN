@@ -13,7 +13,7 @@ export const SOUND_THEMES: { value: SoundTheme; label: string }[] = [
   { value: 'woodland', label: 'Woodland' },
 ];
 
-type SoundName = 'Move' | 'Capture' | 'Check' | 'Checkmate' | 'Victory' | 'Defeat' | 'Draw';
+type SoundName = 'Move' | 'Capture' | 'Check' | 'Checkmate' | 'Victory' | 'Defeat' | 'Draw' | 'MatchFound';
 
 @Injectable({
   providedIn: 'root',
@@ -127,5 +127,9 @@ export class AudioService {
 
   playDraw(): void {
     this.play('Draw');
+  }
+
+  playMatchFound(): void {
+    this.play('MatchFound');
   }
 }

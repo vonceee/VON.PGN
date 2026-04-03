@@ -37,7 +37,7 @@ import {
     }
     .clock-active {
       border-color: rgb(34 211 238);
-      background: rgb(30 59 70);
+      background: rgba(34, 211, 238, 0.15);
     }
     .clock-low .clock-time {
       color: rgb(251 191 36);
