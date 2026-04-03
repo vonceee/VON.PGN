@@ -69,7 +69,14 @@ export class RegisterComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.register(this.registerForm.value).subscribe({
+    const formValue = this.registerForm.value;
+
+    this.authService.register({
+      username: (formValue.username || '').trim(),
+      email: (formValue.email || '').trim(),
+      password: formValue.password || '',
+      password_confirmation: formValue.password_confirmation || '',
+    }).subscribe({
       next: () => {
         this.isLoading = false;
       },

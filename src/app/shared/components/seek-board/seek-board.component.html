@@ -1,0 +1,56 @@
+<div class="seek-board" [class.compact]="compact()">
+  @if (showAll()) {
+    <div class="seek-header">
+      <h3 class="seek-title">Seek Board</h3>
+      <span class="seek-count">{{ seekCount }} seeking</span>
+    </div>
+  }
+
+  @if (isSearching()) {
+    <div class="searching-indicator">
+      <div class="spinner"></div>
+      <span>Searching for {{ getTimeControlLabel(searchTimeControl()) }} opponent...</span>
+      <button class="cancel-btn" (click)="onCancel()">Cancel</button>
+    </div>
+  }
+
+  @if (seekCount === 0 && !isSearching()) {
+    <div class="empty-state">
+      <p>No players seeking games</p>
+      <button class="seek-btn" (click)="onSeek('300+0')">
+        Create Seek
+      </button>
+    </div>
+  } @else {
+    <div class="seeks-list">
+      @for (seek of visibleSeeks; track seek.id) {
+        <div class="seek-card" [class.own-seek]="isMySeek(seek)">
+          <div class="seek-info">
+            <span class="seek-username">{{ seek.username }}</span>
+            <span class="seek-elo">{{ formatElo(seek.elo) }}</span>
+          </div>
+          <div class="seek-time-control">
+            <span class="tc-label">{{ getTimeControlLabel(seek.time_control) }}</span>
+            <span class="tc-category">{{ getTimeControlCategory(seek.time_control) }}</span>
+          </div>
+          <div class="seek-time-ago">{{ formatTimeAgo(seek.created_at) }}</div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (showAll()) {
+    <div class="quick-seek">
+      <span class="quick-seek-label">Quick seek:</span>
+      @for (tc of timeControls.slice(0, 4); track tc.value) {
+        <button 
+          class="quick-seek-btn" 
+          [disabled]="!canSeek(tc.value)"
+          (click)="onSeek(tc.value)"
+        >
+          {{ tc.label }}
+        </button>
+      }
+    </div>
+  }
+</div>

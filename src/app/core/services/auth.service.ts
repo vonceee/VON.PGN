@@ -41,6 +41,9 @@ export class AuthService {
   currentUser = signal<any | null>(null);
   isAuthenticated = computed(() => this.currentUser() !== null);
 
+  /** Token from Google callback - used by interceptor before hydration completes */
+  pendingGoogleToken = signal<string | null>(null);
+
   unverifiedEmail = signal<string | null>(null);
 
   /** false while the initial token->profile restore is in-flight */
@@ -176,7 +179,10 @@ export class AuthService {
   }
 
   public getToken(): string | null {
-    return this.isBrowser ? localStorage.getItem(this.tokenKey) : null;
+    if (this.isBrowser) {
+      return localStorage.getItem(this.tokenKey);
+    }
+    return null;
   }
 
   retryLogin() {
@@ -224,25 +230,37 @@ export class AuthService {
   }
 
   handleGoogleCallback(token: string) {
-    if (this.isBrowser) {
-      localStorage.setItem(this.tokenKey, token);
+    // Try to store token - this may fail in SSR but that's ok
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(this.tokenKey, token);
+      }
+    } catch (e) {
+      // Ignore - SSR mode
     }
-    return this.userService.loadMyProfile().pipe(
-      tap({
-        next: (res) => {
-          this.currentUser.set(res.data);
-          this.userService.currentUser.set(res.data);
-          this.userService.cacheProfile(res.data);
-          this.router.navigate(['/profile']);
-        },
-        error: () => {
-          this.clearAuth();
-        },
-      }),
-      catchError(() => {
-        this.clearAuth();
-        return of(null);
-      }),
-    );
+    
+    // Use setTimeout to defer to next event loop tick - by then we're in browser context
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        this.userService.loadMyProfile().pipe(
+          tap({
+            next: (res) => {
+              this.currentUser.set(res.data);
+              this.userService.currentUser.set(res.data);
+              this.userService.cacheProfile(res.data);
+              this.router.navigate(['/profile']);
+            },
+            error: () => {
+              this.clearAuth();
+            },
+          }),
+          catchError(() => {
+            this.clearAuth();
+            return of(null);
+          })
+        ).subscribe();
+        resolve();
+      }, 100);
+    });
   }
 }

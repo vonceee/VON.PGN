@@ -13,6 +13,9 @@ import {
   DrawOfferedPayload,
   PlayerAbsentPayload,
   PlayerReturnedPayload,
+  GameSeek,
+  SeekCreatedPayload,
+  SeekRemovedPayload,
 } from '../models/game.model';
 import { Subject, of, Subscription, timer, interval } from 'rxjs';
 import { catchError, switchMap, takeWhile } from 'rxjs/operators';
@@ -53,12 +56,18 @@ export class GameService implements OnDestroy {
   searchTimeControl = signal('');
   isConnected = signal(false);
   isLoading = signal(false);
+  seeks = signal<GameSeek[]>([]);
+  isSeeksConnected = signal(false);
 
   private movePlayed$ = new Subject<MovePlayedPayload>();
   private gameEnded$ = new Subject<GameEndedPayload>();
   private drawOffered$ = new Subject<DrawOfferedPayload>();
   private playerAbsent$ = new Subject<PlayerAbsentPayload>();
   private playerReturned$ = new Subject<PlayerReturnedPayload>();
+
+  // Seeks channel
+  private seeksChannel: any = null;
+  private pendingSeeksSubscription = false;
 
   get onMovePlayed() { return this.movePlayed$.asObservable(); }
   get onGameEnded() { return this.gameEnded$.asObservable(); }
@@ -72,6 +81,7 @@ export class GameService implements OnDestroy {
     this.stopPolling();
     this.stopSeekPolling();
     this.leaveGameChannel();
+    this.leaveSeeksChannel();
   }
 
   // ── Public API ──────────────────────────────────────────────────
@@ -139,6 +149,82 @@ export class GameService implements OnDestroy {
         this.isSearching.set(false);
         this.searchTimeControl.set('');
       });
+  }
+
+  // ── Seeks API ─────────────────────────────────────────────────────
+
+  fetchSeeks(): void {
+    this.http
+      .get<{ seeks: GameSeek[] }>(`${this.apiUrl}/seeks`)
+      .pipe(catchError(() => of({ seeks: [] })))
+      .subscribe((res) => {
+        this.seeks.set(res.seeks);
+      });
+  }
+
+  subscribeToSeeksChannel(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.echo) {
+      this.pendingSeeksSubscription = true;
+      return;
+    }
+    if (!this.isConnected()) {
+      this.pendingSeeksSubscription = true;
+      return;
+    }
+    this.setupSeeksChannel();
+  }
+
+  private setupSeeksChannel(): void {
+    if (this.seeksChannel) return;
+
+    try {
+      this.seeksChannel = this.echo.join('seeks');
+
+      this.seeksChannel.on('pusher:subscription_succeeded', () => {
+        this.isSeeksConnected.set(true);
+        this.fetchSeeks();
+      });
+
+      this.seeksChannel.on('pusher:subscription_error', (status: any) => {
+        console.error('[Game] Seeks subscription error:', status);
+        this.isSeeksConnected.set(false);
+      });
+
+      this.seeksChannel.listen('.App\\Events\\SeekCreated', (data: SeekCreatedPayload) => {
+        const newSeek: GameSeek = {
+          id: data.id,
+          user_id: data.user_id,
+          username: data.username,
+          elo: data.elo,
+          time_control: data.time_control,
+          created_at: data.created_at,
+        };
+        this.seeks.update((seeks) => [...seeks, newSeek]);
+      });
+
+      this.seeksChannel.listen('.App\\Events\\SeekRemoved', (data: SeekRemovedPayload) => {
+        this.seeks.update((seeks) => seeks.filter((s) => s.id !== data.seek_id));
+      });
+    } catch (err) {
+      console.error('[Game] Failed to setup seeks channel:', err);
+    }
+  }
+
+  private leaveSeeksChannel(): void {
+    if (this.seeksChannel && this.echo) {
+      try {
+        this.echo.leave('seeks');
+      } catch { /* */ }
+      this.seeksChannel = null;
+    }
+  }
+
+  private flushPendingSeeksSubscription(): void {
+    if (this.pendingSeeksSubscription) {
+      this.pendingSeeksSubscription = false;
+      this.subscribeToSeeksChannel();
+    }
   }
 
   loadGame(gameId: string): void {
@@ -447,10 +533,12 @@ export class GameService implements OnDestroy {
         pusher.connection.bind('connected', () => {
           this.isConnected.set(true);
           this.flushPendingSubscription();
+          this.flushPendingSeeksSubscription();
         });
 
         pusher.connection.bind('disconnected', () => {
           this.isConnected.set(false);
+          this.isSeeksConnected.set(false);
         });
 
         pusher.connection.bind('error', (err: any) => {

@@ -106,6 +106,29 @@ export interface TimeControlOption {
   category: 'bullet' | 'blitz' | 'rapid';
 }
 
+export interface GameSeek {
+  id: number;
+  user_id: number;
+  username: string;
+  elo: number;
+  time_control: string;
+  created_at: string;
+}
+
+export interface SeekCreatedPayload {
+  id: number;
+  user_id: number;
+  username: string;
+  elo: number;
+  time_control: string;
+  created_at: string;
+}
+
+export interface SeekRemovedPayload {
+  seek_id: number;
+  reason: 'matched' | 'cancelled';
+}
+
 export const TIME_CONTROLS: TimeControlOption[] = [
   { label: '1+0', value: '60+0', baseSeconds: 60, incrementSeconds: 0, category: 'bullet' },
   { label: '2+0', value: '120+0', baseSeconds: 120, incrementSeconds: 0, category: 'bullet' },

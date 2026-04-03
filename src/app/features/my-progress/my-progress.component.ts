@@ -28,7 +28,6 @@ export class MyProgressComponent implements OnInit {
     const completedIds = user.progress?.completedLessonIds || [];
 
     return courses.map(course => {
-      console.log('Course Object Structure:', course);
       const allLessons = course?.chapters?.flatMap(c => c.lessons || []) || [];
       const total = allLessons.length;
 

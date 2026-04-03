@@ -68,7 +68,7 @@ export class UserService {
           this.cacheProfile(response.data);
         },
         error: (err) => {
-          console.error('Failed to load user profile', err);
+          console.error('Failed to load user profile', err.status, err.message);
         },
       }),
     );

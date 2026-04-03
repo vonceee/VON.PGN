@@ -2,12 +2,14 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '../../../core/services/game.service';
 import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
+import { SeekBoardComponent } from '../../../shared/components/seek-board/seek-board.component';
 
 @Component({
   selector: 'app-matchmaking',
   standalone: true,
+  imports: [SeekBoardComponent],
   template: `
-    <div class="flex items-center justify-center px-4">
+    <div class="flex items-start justify-center px-4 py-8 gap-8">
       <div class="max-w-xl w-full">
         @if (!gameService.isSearching()) {
           <div class="space-y-6">
@@ -67,6 +69,12 @@ import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.mode
           </div>
         }
       </div>
+
+      @if (!gameService.isSearching()) {
+        <div class="w-80 flex-shrink-0">
+          <app-seek-board></app-seek-board>
+        </div>
+      }
     </div>
   `,
 })
