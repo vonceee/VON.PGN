@@ -1,6 +1,8 @@
 export interface GamePlayer {
   id: number;
   name: string;
+  rating?: number;
+  rating_deviation?: number;
 }
 
 export interface GameState {
@@ -66,6 +68,10 @@ export interface GameEndedPayload {
   white_time_remaining_ms: number;
   black_time_remaining_ms: number;
   fen?: string;
+  rating_change?: {
+    white: number;
+    black: number;
+  };
 }
 
 export interface ClockSyncPayload {

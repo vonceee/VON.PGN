@@ -16,6 +16,16 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* smooth dark/light mode transitions */
+*,
+*::before,
+*::after {
+  transition-property:
+    color, background-color, border-color, outline-color, fill, stroke, box-shadow;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+
 @import 'chessground/assets/chessground.base.css';
 @import 'chessground/assets/chessground.brown.css';
 @import 'chessground/assets/chessground.cburnett.css';

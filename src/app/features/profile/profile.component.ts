@@ -59,6 +59,14 @@ export class ProfileComponent implements OnInit {
   formattedFollowersCount = computed(() => this.formatCount(this.user()?.followers_count || 0));
   formattedFollowingCount = computed(() => this.formatCount(this.user()?.following_count || 0));
 
+  bulletRating = computed(() => this.user()?.ratings?.bullet?.rating ?? 1500);
+  blitzRating = computed(() => this.user()?.ratings?.blitz?.rating ?? 1500);
+  rapidRating = computed(() => this.user()?.ratings?.rapid?.rating ?? 1500);
+
+  bulletGames = computed(() => this.user()?.ratings?.bullet?.games ?? 0);
+  blitzGames = computed(() => this.user()?.ratings?.blitz?.games ?? 0);
+  rapidGames = computed(() => this.user()?.ratings?.rapid?.games ?? 0);
+
   ngOnInit() {
     // Handle payment callback
     const paymentStatus = this.route.snapshot.queryParamMap.get('payment');

@@ -15,9 +15,30 @@ export interface UserProfile {
   following_count: number;
   is_following: boolean;
 
+  // Rating data for live chess
+  rating: number;
+  rating_deviation: number;
+  rating_volatility: number;
+  games_played: number;
+  last_game_at: string | null;
+
+  // Per time control ratings (like lichess)
+  ratings?: {
+    bullet?: LiveChessRating;
+    blitz?: LiveChessRating;
+    rapid?: LiveChessRating;
+  };
+
   // nested objects keep the database clean and organized
   preferences: UserPreferences;
   progress: UserProgress;
+}
+
+export interface LiveChessRating {
+  rating: number;
+  rd: number;
+  games: number;
+  prov: boolean;
 }
 
 export interface UserPreferences {

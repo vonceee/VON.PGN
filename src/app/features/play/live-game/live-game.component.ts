@@ -15,8 +15,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GameService } from '../../../core/services/game.service';
 import { AudioService } from '../../../core/services/audio.service';
+import { Glicko2Service, Glicko2Player } from '../../../core/services/rating.service';
+import { UserService } from '../../../core/services/user.service';
 import { ChessClockComponent } from '../../../shared/components/chess-clock/chess-clock.component';
-import { MovePlayedPayload, GameEndedPayload, DrawOfferedPayload } from '../../../core/models/game.model';
+import { MovePlayedPayload, GameEndedPayload, DrawOfferedPayload, GamePlayer, TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
@@ -41,11 +43,12 @@ import { Key } from 'chessground/types';
                   </div>
                   <div>
                     <div class="font-semibold text-sm">{{ opponentName() }}</div>
+                    <div class="text-xs text-slate-400">Rating: {{ getOpponentRating() }}</div>
                     <div class="text-xs">{{ g.my_color === 'white' ? 'Black' : 'White' }}</div>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-xs" [style.color]="getLatencyColor()">●</span>
+                  <span class="text-xs" [style.color]="gameService.isConnected() ? '#22c55e' : '#ef4444'">●</span>
                   <app-chess-clock
                     [serverTimeMs]="opponentTimeMs()"
                     [serverTimestamp]="g.server_timestamp"
@@ -70,11 +73,12 @@ import { Key } from 'chessground/types';
                   </div>
                   <div>
                     <div class="font-semibold text-sm">{{ myName() }} (You)</div>
+                    <div class="text-xs text-cyan-400">Rating: {{ getMyRating() }}<span [class]="getRatingChangeClass()">{{ getRatingChangeText() }}</span></div>
                     <div class="text-xs">{{ g.my_color === 'white' ? 'White' : 'Black' }}</div>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-xs" [style.color]="getLatencyColor()">{{ gameService.latency() }}ms</span>
+                  <span class="text-xs" [style.color]="gameService.isConnected() ? '#22c55e' : '#ef4444'">{{ gameService.isConnected() ? 'Live' : 'Offline' }}</span>
                   <app-chess-clock
                     [serverTimeMs]="myTimeMs()"
                     [serverTimestamp]="g.server_timestamp"
@@ -104,7 +108,12 @@ import { Key } from 'chessground/types';
                     <div class="text-2xl font-bold mb-1" >
                       {{ formatResult(g.result) }}
                     </div>
-                    <div class="text-sm capitalize">{{ formatTermination(g.result, g.termination) }}</div>
+                    <div class="text-sm capitalize mb-2">{{ formatTermination(g.result, g.termination) }}</div>
+                    @if (ratingChange() !== null) {
+                      <div class="text-lg font-semibold" [class]="getRatingChangeClass()">
+                        {{ getMyRating() }} <span class="text-sm">({{ getRatingChangeText() }})</span>
+                      </div>
+                    }
                   </div>
                 </div>
               }
@@ -321,8 +330,14 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
+  private ratingService = inject(Glicko2Service);
+  private userService = inject(UserService);
 
   showExitConfirm = signal(false);
+
+  myRating = signal<number>(1500);
+  opponentRating = signal<number>(1500);
+  ratingChange = signal<number | null>(null);
 
   private cgApi!: Api;
   private chess = new Chess();
@@ -541,13 +556,79 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return `${winner} won`;
   };
 
-  getLatencyColor(): string {
-    const ping = this.gameService.latency();
-    if (ping < 0) return '#ef4444';
-    if (ping < 100) return '#22c55e';
-    if (ping < 200) return '#eab308';
-    return '#ef4444';
-  };
+  getMyRating(): number {
+    const g = this.game();
+    if (!g) return 1500;
+    const player = g.my_color === 'white' ? g.white_player : g.black_player;
+    return player.rating ?? 1500;
+  }
+
+  getOpponentRating(): number {
+    const g = this.game();
+    if (!g) return 1500;
+    const player = g.my_color === 'white' ? g.black_player : g.white_player;
+    return player.rating ?? 1500;
+  }
+
+  getRatingChangeClass(): string {
+    const change = this.ratingChange();
+    if (change === null || change === undefined) return '';
+    if (change > 0) return 'text-green-400';
+    if (change < 0) return 'text-red-400';
+    return 'text-slate-400';
+  }
+
+  getRatingChangeText(): string {
+    const change = this.ratingChange();
+    if (change === null || change === undefined) return '';
+    if (change > 0) return `+${change}`;
+    return change.toString();
+  }
+
+  private calculateNewRatings(result: string | null, myColor: 'white' | 'black'): void {
+    if (!result) return;
+    
+    const g = this.game();
+    if (!g) return;
+
+    const timeControl = g.time_control;
+    const category = this.getTimeControlCategory(timeControl);
+    const user = this.userService.currentUser();
+    const currentRating = user?.ratings?.[category]?.rating ?? 1500;
+    const currentRd = user?.ratings?.[category]?.rd ?? 200;
+
+    const myPlayer: Glicko2Player = {
+      rating: this.getMyRating(),
+      rd: currentRd,
+      vol: 0.06,
+    };
+
+    const oppPlayer: Glicko2Player = {
+      rating: this.getOpponentRating(),
+      rd: 150,
+      vol: 0.06,
+    };
+
+    let score: number;
+    if (result === '1/2-1/2') {
+      score = 0.5;
+    } else if ((result === '1-0' && myColor === 'white') || (result === '0-1' && myColor === 'black')) {
+      score = 1;
+    } else {
+      score = 0;
+    }
+
+    const resultObj = this.ratingService.updateRating(myPlayer, oppPlayer, score);
+    this.ratingChange.set(resultObj.change);
+    this.myRating.set(resultObj.player.rating);
+
+    this.userService.updateLiveChessRating(category, resultObj.player.rating, resultObj.player.rd).subscribe();
+  }
+
+  private getTimeControlCategory(timeControl: string): 'bullet' | 'blitz' | 'rapid' {
+    const tc = TIME_CONTROLS.find(t => t.value === timeControl);
+    return tc?.category ?? 'rapid';
+  }
 
   ngOnInit(): void {
     const gameId = this.route.snapshot.paramMap.get('gameId');
@@ -737,6 +818,17 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
         this.audioService.playVictory();
       } else {
         this.audioService.playDefeat();
+      }
+
+      if (data.rating_change) {
+        const myColor = g.my_color;
+        const change = myColor === 'white' ? data.rating_change.white : data.rating_change.black;
+        this.ratingChange.set(change);
+        
+        const currentRating = this.getMyRating();
+        this.myRating.set(currentRating + change);
+      } else if (g.result) {
+        this.calculateNewRatings(g.result, g.my_color);
       }
     }
 

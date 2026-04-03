@@ -1,6 +1,7 @@
-import { Injectable, inject, signal, OnDestroy } from '@angular/core';
+import { Injectable, inject, signal, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from './auth.service';
 import { AudioService } from './audio.service';
 import { environment } from '../../../environments/environment';
@@ -31,6 +32,7 @@ export class GameService implements OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private audioService = inject(AudioService);
+  private platformId = inject(PLATFORM_ID);
 
   private apiUrl = environment.apiUrl;
   private echo: any = null;
@@ -38,7 +40,7 @@ export class GameService implements OnDestroy {
   private echoLoadAttempted = false;
 
   constructor() {
-    setTimeout(() => this.startLatencyMeasurement(10000), 2000);
+    this.ensureEchoConnected();
   }
   private pendingGameId: string | null = null;
 
@@ -51,8 +53,6 @@ export class GameService implements OnDestroy {
   searchTimeControl = signal('');
   isConnected = signal(false);
   isLoading = signal(false);
-  latency = signal(0);
-  private latencyInterval: ReturnType<typeof setInterval> | null = null;
 
   private movePlayed$ = new Subject<MovePlayedPayload>();
   private gameEnded$ = new Subject<GameEndedPayload>();
@@ -72,34 +72,6 @@ export class GameService implements OnDestroy {
     this.stopPolling();
     this.stopSeekPolling();
     this.leaveGameChannel();
-    this.stopLatencyMeasurement();
-  }
-
-  measureLatency(): void {
-    const start = performance.now();
-    this.http.get(`${this.apiUrl}/ping`, { responseType: 'text' })
-      .subscribe({
-        next: () => {
-          const rtt = Math.round(performance.now() - start);
-          this.latency.set(rtt);
-        },
-        error: () => {
-          this.latency.set(-1);
-        }
-      });
-  }
-
-  startLatencyMeasurement(intervalMs: number = 5000): void {
-    this.stopLatencyMeasurement();
-    this.measureLatency();
-    this.latencyInterval = setInterval(() => this.measureLatency(), intervalMs);
-  }
-
-  private stopLatencyMeasurement(): void {
-    if (this.latencyInterval) {
-      clearInterval(this.latencyInterval);
-      this.latencyInterval = null;
-    }
   }
 
   // ── Public API ──────────────────────────────────────────────────
@@ -181,7 +153,6 @@ export class GameService implements OnDestroy {
           this.gameState.set(res.game);
           this.ensureEchoConnected();
           this.subscribeToGame(gameId);
-          this.startLatencyMeasurement();
           this.startHeartbeat();
         } else {
           console.error('[Game] loadGame: no game data in response');
@@ -418,11 +389,12 @@ export class GameService implements OnDestroy {
   // ── Echo / WebSocket ────────────────────────────────────────────
 
   ensureEchoConnected(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (this.echo) return;
     if (this.echoLoadAttempted) return;
     this.echoLoadAttempted = true;
 
-    if (!window.Pusher) {
+    if (typeof window === 'undefined' || !window.Pusher) {
       const s = document.createElement('script');
       s.src = 'https://cdn.jsdelivr.net/npm/pusher-js@8.4.0-rc2/dist/web/pusher.min.js';
       s.onload = () => this.loadEcho();
@@ -434,6 +406,7 @@ export class GameService implements OnDestroy {
   }
 
   private loadEcho(): void {
+    if (typeof window === 'undefined') return;
     if (window.Echo) { this.initEcho(); return; }
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/laravel-echo@2.0.2/dist/echo.iife.js';
@@ -443,6 +416,7 @@ export class GameService implements OnDestroy {
 
   private initEcho(): void {
     try {
+      if (typeof window === 'undefined') return;
       const token = this.authService.getToken();
       if (!token) return;
 
