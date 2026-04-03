@@ -9,6 +9,7 @@ import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { httpErrorInterceptor } from './core/interceptors/http-error-interceptor';
 import { AuthService } from './core/services/auth.service';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
@@ -16,7 +17,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
+    provideHttpClient(withInterceptors([authInterceptor, httpErrorInterceptor]), withFetch()),
     provideAppInitializer(() => {
       const authService = inject(AuthService);
       // initAuth() returns an Observable; Angular subscribes and waits for it

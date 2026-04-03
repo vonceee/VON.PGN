@@ -160,12 +160,12 @@ export class AuthService {
     this.router.navigate(['/profile']);
   }
 
-  private clearAuth() {
+  clearAuth() {
     this.clearAuthWithoutRedirect();
     this.router.navigate(['/login']);
   }
 
-  private clearAuthWithoutRedirect() {
+  clearAuthWithoutRedirect() {
     if (this.isBrowser) {
       localStorage.removeItem(this.tokenKey);
     }
