@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit {
   tabLastPage = signal(1);
   tabSearchQuery = signal('');
   isLoadingMore = signal(false);
+  showVerifiedFeature = signal(false);
 
   currentXp = computed(() => this.user()?.progress.experiencePoints || 0);
   level = computed(() => this.user()?.progress.currentLevel || 1);
