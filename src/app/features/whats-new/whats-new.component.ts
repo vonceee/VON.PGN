@@ -25,6 +25,36 @@ interface ChangelogRelease {
 export class WhatsNewComponent {
   releases: ChangelogRelease[] = [
     {
+      version: '1.6.0',
+      date: 'April 4, 2026',
+      entries: [
+        {
+          date: 'April 4, 2026',
+          title: 'Tournament Poster Generation',
+          category: 'New Feature',
+          description: 'When creating a tournament, you can now generate promotional posters to easily share and advertise your event.',
+        },
+        {
+          date: 'April 3, 2026',
+          title: 'Lobby View',
+          category: 'New Feature',
+          description: 'Added a lobby view to see active users in real-time. Optimized loading speed for a smoother experience.',
+        },
+        {
+          date: 'April 2, 2026',
+          title: 'Game Optimization',
+          category: 'Improvement',
+          description: 'Improved game performance and stability for a better playing experience.',
+        },
+        {
+          date: 'April 1, 2026',
+          title: 'Google Login Removed',
+          category: 'Bug Fix',
+          description: 'Removed Google login option temporarily while we fix some issues. Standard email login remains available.',
+        },
+      ],
+    },
+    {
       version: '1.5.0',
       date: 'April 1, 2026',
       entries: [

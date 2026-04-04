@@ -20,6 +20,9 @@ export class LessonService {
   isTransitioningLesson = signal<boolean>(false);
 
   loadAllCourses() {
+    if (this.allCourses().length > 0) {
+      return of({ data: this.allCourses() });
+    }
     return this.http.get<{ data: Course[] }>(`${this.apiUrl}/courses`).pipe(
       tap((response) => {
         this.allCourses.set(response.data);

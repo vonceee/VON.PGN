@@ -1,82 +1,14 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '../../../core/services/game.service';
-import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
+import { TIME_CONTROLS, TimeControlOption, GameSeek } from '../../../core/models/game.model';
 import { SeekBoardComponent } from '../../../shared/components/seek-board/seek-board.component';
 
 @Component({
   selector: 'app-matchmaking',
   standalone: true,
   imports: [SeekBoardComponent],
-  template: `
-    <div class="flex items-start justify-center px-4 py-8 gap-8">
-      <div class="max-w-xl w-full">
-        @if (!gameService.isSearching()) {
-          <div class="space-y-6">
-            @for (category of categories; track category.key) {
-              <div>
-                <h3 class="text-sm font-semibold uppercase tracking-wider mb-3">
-                  {{ category.label }}
-                </h3>
-                <div class="grid grid-cols-3 gap-3">
-                  @for (tc of category.controls; track tc.value) {
-                    <button
-                      (click)="seekGame(tc)"
-                      class="border border-border-theme hover:bg-cyan-400 hover:cursor-pointer rounded-lg p-8 text-center transition-all duration-200 group"
-                    >
-                      <div class="text-4xl font-bold">
-                        {{ tc.label }}
-                      </div>
-                      <div class="text-lg mt-1">
-                        {{ tc.category }}
-                      </div>
-                    </button>
-                  }
-                </div>
-              </div>
-            }
-          </div>
-
-          @if (activeGameId()) {
-            <div class="mt-8 text-center">
-              <p class="text-slate-400 mb-2">You have an active game</p>
-              <button
-                (click)="rejoinGame()"
-                class="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg font-semibold transition-colors"
-              >
-                Rejoin Game
-              </button>
-            </div>
-          }
-        } @else {
-          <div class="text-center">
-            <div class="mb-6">
-              <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-800 mb-4">
-                <div class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-              </div>
-              <h2 class="text-2xl font-bold text-white mb-2">Searching...</h2>
-              <p class="text-slate-400">
-                Looking for an opponent at {{ selectedTimeControl()?.label }}
-              </p>
-            </div>
-
-            <button
-              (click)="cancelSearch()"
-              class="px-8 py-3 bg-red-600 hover:bg-red-500 text-white rounded-lg font-semibold transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
-        }
-      </div>
-
-      @if (!gameService.isSearching()) {
-        <div class="w-80 flex-shrink-0">
-          <app-seek-board></app-seek-board>
-        </div>
-      }
-    </div>
-  `,
+  templateUrl: './matchmaking.component.html',
 })
 export class MatchmakingComponent implements OnInit, OnDestroy {
   gameService = inject(GameService);
@@ -119,6 +51,10 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
 
   cancelSearch(): void {
     this.gameService.cancelSeek();
+  }
+
+  onSeekClicked(seek: GameSeek): void {
+    this.gameService.joinSeek(seek.id);
   }
 
   rejoinGame(): void {

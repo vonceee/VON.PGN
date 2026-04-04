@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 type ButtonVariant = 'outline' | 'primary' | 'danger' | 'ghost';
@@ -7,7 +8,7 @@ type ButtonSize = 'sm' | 'md' | 'lg';
 @Component({
   selector: 'app-button',
   standalone: true,
-  imports: [RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './button.component.html',
 })
 export class ButtonComponent {
@@ -17,6 +18,7 @@ export class ButtonComponent {
   disabled = input(false);
   type = input<'button' | 'submit' | 'reset'>('button');
   link = input<string | null>(null);
+  label = input<string>('');
 
   get sizeClasses(): string {
     switch (this.size()) {

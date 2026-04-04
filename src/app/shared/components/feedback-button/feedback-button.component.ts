@@ -1,6 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, NavigationEnd } from '@angular/router';
 import { FeedbackService, FeedbackType } from '../../../core/services/feedback.service';
+import { filter } from 'rxjs';
 
 interface FeedbackForm {
   name: string;
@@ -17,10 +19,16 @@ interface FeedbackForm {
 })
 export class FeedbackButtonComponent {
   private feedbackService = inject(FeedbackService);
+  private router = inject(Router);
 
   isOpen = signal(false);
   isSubmitting = signal(false);
   isSubmitted = signal(false);
+
+  showButton = computed(() => {
+    const url = this.router.url;
+    return url === '/' || url === '' || url === '/home';
+  });
 
   form: FeedbackForm = {
     name: '',

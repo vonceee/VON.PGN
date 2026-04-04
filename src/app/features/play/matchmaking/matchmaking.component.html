@@ -1,0 +1,59 @@
+<div class="grid grid-cols-2 gap-8 p-8 max-w-[1400px] mx-auto max-lg:grid-cols-1">
+  <!-- Left panel: time controls or searching state -->
+  <div class="max-w-[600px]">
+    @if (!gameService.isSearching()) {
+      <div>
+        @for (category of categories; track category.key) {
+          <div class="mb-6">
+            <div class="grid grid-cols-3 gap-2">
+              @for (tc of category.controls; track tc.value) {
+                <button
+                  (click)="seekGame(tc)"
+                  class="flex flex-col items-center px-4 py-10 border border-border-theme rounded-lg cursor-pointer transition-all duration-200 hover:bg-cyan-400 hover:border-cyan-400 group"
+                >
+                  <span class="text-4xl font-bold">{{ tc.label }}</span>
+                  <span class="text-md capitalize">{{ tc.category }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (activeGameId()) {
+        <div
+          class="mt-6 flex items-center justify-between rounded-lg border border-cyan-500 px-4 py-3 text-cyan-500"
+        >
+          <span class="text-sm">You have an active game</span>
+          <button
+            (click)="rejoinGame()"
+            class="rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-900 cursor-pointer border-none"
+          >
+            Rejoin Game
+          </button>
+        </div>
+      }
+    } @else {
+      <div class="flex flex-col items-center gap-4 p-8 text-center">
+        <div
+          class="h-12 w-12 rounded-full border-[3px] border-slate-700 border-t-cyan-500 animate-spin"
+        ></div>
+        <h3 class="m-0 text-slate-100">Searching...</h3>
+        <p class="m-0 text-slate-400">
+          Looking for an opponent at {{ selectedTimeControl()?.label }}
+        </p>
+        <button
+          (click)="cancelSearch()"
+          class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white cursor-pointer border-none"
+        >
+          Cancel
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Right panel: seek board -->
+  <div>
+    <app-seek-board (seekClicked)="onSeekClicked($event)" />
+  </div>
+</div>

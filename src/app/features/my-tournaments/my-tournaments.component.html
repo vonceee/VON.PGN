@@ -4,14 +4,7 @@
       <h1 class="text-3xl font-bold">My Tournaments</h1>
       <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Create and manage your chess tournaments</p>
     </div>
-    <a
-      routerLink="/my-tournaments/new"
-      class="px-4 py-2.5 rounded-lg font-semibold text-sm bg-cyan-500 hover:bg-cyan-600 text-white transition-colors flex items-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-      </svg>
-      New Tournament
-    </a>
+    <app-button variant="primary" size="sm" link="/my-tournaments/new" label="+ New Tournament"></app-button>
   </div>
 
   @if (loading()) {
@@ -58,21 +51,9 @@
             </p>
           </div>
           <div class="flex gap-2">
-            <a
-              [routerLink]="['/tournaments', tournament.id]"
-              class="px-4 py-2 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors">
-              View
-            </a>
-            <a
-              [routerLink]="['/my-tournaments', tournament.id]"
-              class="px-4 py-2 rounded-lg font-medium text-sm bg-cyan-500 hover:bg-cyan-600 text-white transition-colors">
-              Edit
-            </a>
-            <button
-              (click)="requestDelete(tournament)"
-              class="px-4 py-2 rounded-lg font-medium text-sm bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors cursor-pointer">
-              Delete
-            </button>
+            <app-button variant="outline" size="sm" [link]="'/tournaments/' + tournament.id" label="View"></app-button>
+            <app-button variant="primary" size="sm" [link]="'/my-tournaments/' + tournament.id" label="Edit"></app-button>
+            <app-button variant="danger" size="sm" (click)="requestDelete(tournament)" label="Delete"></app-button>
           </div>
         </div>
       }

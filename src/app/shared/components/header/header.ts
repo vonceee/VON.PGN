@@ -62,7 +62,7 @@ export class Header implements OnInit, OnDestroy {
         distinctUntilChanged(),
         switchMap((query) => {
           if (query.length < 2) {
-            return of([]);
+            return of(null);
           }
           this.isSearching.set(true);
           return this.userService.searchUsers(query);
@@ -70,9 +70,11 @@ export class Header implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (results) => {
-          this.searchResults.set(results);
           this.isSearching.set(false);
-          this.isSearchOpen.set(results.length > 0);
+          if (results !== null) {
+            this.searchResults.set(results);
+            this.isSearchOpen.set(results.length > 0);
+          }
         },
         error: () => {
           this.isSearching.set(false);
@@ -118,6 +120,10 @@ export class Header implements OnInit, OnDestroy {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
     this.searchSubject.next(value);
+    if (value.length === 0) {
+      this.searchResults.set([]);
+      this.isSearchOpen.set(false);
+    }
   }
 
   viewUserProfile(user: UserSearchResult) {

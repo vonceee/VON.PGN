@@ -1,55 +1,102 @@
-<div class="seek-board" [class.compact]="compact()">
+<div
+  class="overflow-hidden border border-border-theme"
+  [ngClass]="compact() ? 'rounded-lg' : 'rounded-xl'"
+>
   @if (showAll()) {
-    <div class="seek-header">
-      <h3 class="seek-title">Seek Board</h3>
-      <span class="seek-count">{{ seekCount }} seeking</span>
+    <div class="flex items-center justify-between border-b border-border-theme px-4 py-3">
+      <h3 class="m-0 text-xs font-bold uppercase tracking-widest">Lobby</h3>
     </div>
   }
 
-  @if (isSearching()) {
-    <div class="searching-indicator">
-      <div class="spinner"></div>
-      <span>Searching for {{ getTimeControlLabel(searchTimeControl()) }} opponent...</span>
-      <button class="cancel-btn" (click)="onCancel()">Cancel</button>
-    </div>
-  }
-
-  @if (seekCount === 0 && !isSearching()) {
-    <div class="empty-state">
-      <p>No players seeking games</p>
-      <button class="seek-btn" (click)="onSeek('300+0')">
-        Create Seek
-      </button>
+  @if (seekCount === 0) {
+    <div class="flex flex-col items-center gap-1 px-6 py-8 text-center">
+      <p class="m-0 text-sm">...</p>
     </div>
   } @else {
-    <div class="seeks-list">
+    <div class="flex flex-col">
       @for (seek of visibleSeeks; track seek.id) {
-        <div class="seek-card" [class.own-seek]="isMySeek(seek)">
-          <div class="seek-info">
-            <span class="seek-username">{{ seek.username }}</span>
-            <span class="seek-elo">{{ formatElo(seek.elo) }}</span>
-          </div>
-          <div class="seek-time-control">
-            <span class="tc-label">{{ getTimeControlLabel(seek.time_control) }}</span>
-            <span class="tc-category">{{ getTimeControlCategory(seek.time_control) }}</span>
-          </div>
-          <div class="seek-time-ago">{{ formatTimeAgo(seek.created_at) }}</div>
-        </div>
-      }
-    </div>
-  }
-
-  @if (showAll()) {
-    <div class="quick-seek">
-      <span class="quick-seek-label">Quick seek:</span>
-      @for (tc of timeControls.slice(0, 4); track tc.value) {
-        <button 
-          class="quick-seek-btn" 
-          [disabled]="!canSeek(tc.value)"
-          (click)="onSeek(tc.value)"
+        <div
+          class="grid grid-cols-[20px_1fr_1fr_1fr] items-center gap-2.5 border-b border-slate-800 px-4 py-2 cursor-pointer transition-colors hover:bg-white/[0.03] last:border-b-0"
+          [ngClass]="isMySeek(seek) ? 'border-l-2 border-l-slate-700 pl-[calc(1rem-2px)]' : ''"
+          (click)="onSeekClick(seek)"
+          [class.opacity-50]="isMySeek(seek)"
         >
-          {{ tc.label }}
-        </button>
+          <!-- Category icon -->
+          <div class="flex h-5 w-5 items-center justify-center">
+            @switch (getTimeControlCategory(seek.time_control)) {
+              @case ('bullet') {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              }
+              @case ('blitz') {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"
+                  />
+                </svg>
+              }
+              @case ('rapid') {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              }
+              @default {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M2 20h20M4 20l2-8 4 4 2-8 2 8 4-4 2 8" />
+                </svg>
+              }
+            }
+          </div>
+
+          <!-- Username -->
+          <span class="overflow-hidden text-ellipsis whitespace-nowrap text-[0.8rem] font-medium">
+            {{ seek.username }}
+          </span>
+
+          <!-- Rating -->
+          <span class="text-center text-[0.8rem] font-semibold whitespace-nowrap">
+            {{ formatElo(seek.elo) }}
+          </span>
+
+          <!-- Time control -->
+          <span class="text-right text-[0.8rem] font-semibold whitespace-nowrap">
+            {{ getTimeControlLabel(seek.time_control) }}
+          </span>
+        </div>
       }
     </div>
   }

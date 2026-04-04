@@ -3,8 +3,40 @@
   position: relative;
 }
 
+:host ::ng-deep .group {
+  position: static;
+}
+
+:host ::ng-deep .group > a {
+  position: relative;
+  z-index: 1;
+}
+
+:host ::ng-deep .group > a::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  right: 0;
+  height: 30px;
+  z-index: 1;
+}
+
 :host ::ng-deep .nav-dropdown {
   animation: fadeIn 0.15s ease-out;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+  margin-top: 0;
+}
+
+:host ::ng-deep .group:hover > .nav-dropdown,
+:host ::ng-deep .nav-dropdown:hover {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 150ms;
 }
 
 @keyframes fadeIn {

@@ -153,6 +153,29 @@ export class GameService implements OnDestroy {
 
   // ── Seeks API ─────────────────────────────────────────────────────
 
+  joinSeek(seekId: number): void {
+    this.http
+      .post<{ matched: boolean; game_id?: string; message: string; game?: GameState }>(
+        `${this.apiUrl}/seeks/${seekId}/join`,
+        {},
+      )
+      .pipe(catchError(() => of(null)))
+      .subscribe((res) => {
+        if (!res) return;
+        if (res.matched && res.game_id) {
+          this.audioService.playMatchFound();
+          this.loadGameAndNavigate(res.game_id);
+        } else if (res.game) {
+          this.audioService.playMatchFound();
+          this.gameState.set(res.game);
+          this.ensureEchoConnected();
+          this.subscribeToGame(res.game.id);
+          this.startHeartbeat();
+          this.router.navigate(['/play', res.game.id]);
+        }
+      });
+  }
+
   fetchSeeks(): void {
     this.http
       .get<{ seeks: GameSeek[] }>(`${this.apiUrl}/seeks`)
@@ -163,13 +186,17 @@ export class GameService implements OnDestroy {
   }
 
   subscribeToSeeksChannel(): void {
+    console.log('[Game] subscribeToSeeksChannel called, echo:', !!this.echo, 'connected:', this.isConnected(), 'echoLoadAttempted:', this.echoLoadAttempted);
     if (!isPlatformBrowser(this.platformId)) return;
     if (!this.echo) {
       this.pendingSeeksSubscription = true;
+      console.log('[Game] subscribeToSeeksChannel: no echo yet, queuing subscription, calling ensureEchoConnected');
+      this.ensureEchoConnected();
       return;
     }
     if (!this.isConnected()) {
       this.pendingSeeksSubscription = true;
+      console.log('[Game] subscribeToSeeksChannel: not connected yet, queuing subscription');
       return;
     }
     this.setupSeeksChannel();
@@ -177,11 +204,13 @@ export class GameService implements OnDestroy {
 
   private setupSeeksChannel(): void {
     if (this.seeksChannel) return;
+    console.log('[Game] Setting up seeks channel...');
 
     try {
       this.seeksChannel = this.echo.join('seeks');
 
       this.seeksChannel.on('pusher:subscription_succeeded', () => {
+        console.log('[Game] Seeks channel subscribed successfully');
         this.isSeeksConnected.set(true);
         this.fetchSeeks();
       });
@@ -192,6 +221,7 @@ export class GameService implements OnDestroy {
       });
 
       this.seeksChannel.listen('.App\\Events\\SeekCreated', (data: SeekCreatedPayload) => {
+        console.log('[Game] SeekCreated event received:', data);
         const newSeek: GameSeek = {
           id: data.id,
           user_id: data.user_id,
@@ -204,6 +234,7 @@ export class GameService implements OnDestroy {
       });
 
       this.seeksChannel.listen('.App\\Events\\SeekRemoved', (data: SeekRemovedPayload) => {
+        console.log('[Game] SeekRemoved event received:', data.seek_id);
         this.seeks.update((seeks) => seeks.filter((s) => s.id !== data.seek_id));
       });
     } catch (err) {
@@ -481,12 +512,17 @@ export class GameService implements OnDestroy {
     this.echoLoadAttempted = true;
 
     if (typeof window === 'undefined' || !window.Pusher) {
+      console.log('[Game] Loading Pusher.js...');
       const s = document.createElement('script');
       s.src = 'https://cdn.jsdelivr.net/npm/pusher-js@8.4.0-rc2/dist/web/pusher.min.js';
-      s.onload = () => this.loadEcho();
+      s.onload = () => {
+        console.log('[Game] Pusher.js loaded');
+        this.loadEcho();
+      };
       s.onerror = () => console.warn('[Game] Failed to load Pusher.js');
       document.head.appendChild(s);
     } else {
+      console.log('[Game] Pusher already present');
       this.loadEcho();
     }
   }
@@ -531,12 +567,14 @@ export class GameService implements OnDestroy {
       const pusher = this.echo?.connector?.pusher;
       if (pusher) {
         pusher.connection.bind('connected', () => {
+          console.log('[Game] Echo connected');
           this.isConnected.set(true);
           this.flushPendingSubscription();
           this.flushPendingSeeksSubscription();
         });
 
         pusher.connection.bind('disconnected', () => {
+          console.log('[Game] Echo disconnected');
           this.isConnected.set(false);
           this.isSeeksConnected.set(false);
         });
@@ -544,6 +582,8 @@ export class GameService implements OnDestroy {
         pusher.connection.bind('error', (err: any) => {
           console.error('[Game] Pusher connection error:', err);
         });
+      } else {
+        console.warn('[Game] No pusher instance on echo connector');
       }
     } catch (err) {
       console.error('[Game] Failed to init Echo:', err);

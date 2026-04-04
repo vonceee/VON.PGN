@@ -4,6 +4,7 @@ import { SeoService } from './core/services/seo.service';
 import { authGuard } from './core/guards/auth-guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { HomeComponent } from './features/home/home.component';
+import { TournamentsComponent } from './features/tournaments/tournaments.component';
 import { MainLayoutComponent } from './shared/components/layout/main-layout';
 
 function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
@@ -62,6 +63,13 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        component: TournamentsComponent,
+        title: 'Tournaments - vonchess',
+        data: { description: 'Browse upcoming, ongoing, and past chess tournaments across the Philippines.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'home',
         component: HomeComponent,
         title: 'Home - vonchess',
         data: { description: 'vonchess is the Philippines\' chess platform — learn openings, solve tactics, find coaches, and join tournaments.' },
@@ -138,13 +146,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/cookie-policy/cookie-policy.component').then(m => m.CookiePolicyComponent),
         title: 'Cookie Policy - vonchess',
         data: { description: 'vonchess cookie policy — how and why we use cookies on our platform.' },
-        resolve: { seo: seoResolver },
-      },
-      {
-        path: 'about',
-        loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent),
-        title: 'About - vonchess',
-        data: { description: 'Learn about vonchess — the Philippines\' chess platform for learning, playing, and competing.' },
         resolve: { seo: seoResolver },
       },
       {

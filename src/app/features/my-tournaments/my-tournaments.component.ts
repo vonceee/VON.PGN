@@ -5,11 +5,12 @@ import { TournamentService } from '../../core/services/tournament.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Tournament } from '../../core/models/tournament.model';
 import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-my-tournaments',
   standalone: true,
-  imports: [CommonModule, RouterLink, ConfirmDeleteModalComponent],
+  imports: [CommonModule, ConfirmDeleteModalComponent, ButtonComponent],
   templateUrl: './my-tournaments.component.html',
 })
 export class MyTournamentsComponent implements OnInit {

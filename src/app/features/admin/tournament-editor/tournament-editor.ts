@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AdminService } from '../../../core/services/admin.service';
 import { TournamentService } from '../../../core/services/tournament.service';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { ToastService } from '../../../core/services/toast.service';
 import { environment } from '../../../../environments/environment';
 import html2canvas from 'html2canvas-pro';
@@ -19,7 +20,7 @@ interface Step {
 @Component({
   selector: 'app-tournament-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ButtonComponent],
   templateUrl: './tournament-editor.html',
   styleUrls: ['./tournament-editor.css']
 })
@@ -46,6 +47,18 @@ export class TournamentEditorComponent implements OnInit {
 
   posterTheme = signal<'dark' | 'light'>('dark');
   downloadingPoster = signal(false);
+
+  fieldLimits: Record<string, number> = {
+    name: 255,
+    description: 65535,
+    location: 255,
+    organizer: 255,
+    contact: 255,
+    link: 255,
+    format: 255,
+    timeControl: 255,
+    registrationInstructions: 65535,
+  };
   @ViewChild('posterDark') posterDarkRef!: ElementRef<HTMLElement>;
   @ViewChild('posterLight') posterLightRef!: ElementRef<HTMLElement>;
 
@@ -256,6 +269,37 @@ export class TournamentEditorComponent implements OnInit {
     if (!value) return '';
     const cleaned = value.replace(/,/g, '');
     return '₱' + cleaned;
+  }
+
+  sanitizeInput(fieldName: string, value: string): string {
+    return value
+      .replace(/[\x00-\x1F\x7F]/g, '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      .replace(/\t+/g, ' ')
+      .replace(/  +/g, ' ')
+      .trim();
+  }
+
+  truncateToLimit(value: string, limit: number): string {
+    if (!value) return '';
+    return value.slice(0, limit);
+  }
+
+  getCharCount(fieldName: string): number {
+    const ctrl = this.tournamentForm.get(fieldName);
+    if (!ctrl) return 0;
+    return (ctrl.value || '').length;
+  }
+
+  getCharLimit(fieldName: string): number {
+    return this.fieldLimits[fieldName] || 255;
+  }
+
+  isNearLimit(fieldName: string, threshold = 0.9): boolean {
+    const count = this.getCharCount(fieldName);
+    const limit = this.getCharLimit(fieldName);
+    return count >= limit * threshold;
   }
 
   // ---- Maps link ----
@@ -620,7 +664,23 @@ export class TournamentEditorComponent implements OnInit {
 
   buildTournamentData(): Record<string, any> {
     const v = this.tournamentForm.value;
-    const eligibility = this.eligibilityArray.value.filter((e: string) => e.trim());
+    const sanitize = (val: string, field: string) => {
+      const limit = this.fieldLimits[field] || 255;
+      const sanitized = this.sanitizeInput(field, val || '');
+      return this.truncateToLimit(sanitized, limit);
+    };
+    const sanitizedName = sanitize(v.name || '', 'name');
+    const sanitizedDescription = sanitize(v.description || '', 'description');
+    const sanitizedLocation = sanitize(v.location || '', 'location');
+    const sanitizedOrganizer = sanitize(v.organizer || '', 'organizer');
+    const sanitizedContact = sanitize(v.contact || '', 'contact');
+    const sanitizedLink = sanitize(v.link || '', 'link');
+    const sanitizedFormat = sanitize(v.format || '', 'format');
+    const sanitizedTimeControl = sanitize(v.timeControl || '', 'timeControl');
+    const sanitizedRegInstructions = sanitize(v.registrationInstructions || '', 'registrationInstructions');
+    const eligibility = this.eligibilityArray.value
+      .map((e: string) => this.sanitizeInput('', e))
+      .filter((e: string) => e);
 
     const schedule: Record<string, { date: string; events: { name: string; time: string }[] }> = {};
     this.scheduleDaysArray.controls.forEach((day, i) => {
@@ -667,23 +727,23 @@ export class TournamentEditorComponent implements OnInit {
     });
 
     return {
-      id: v.name!.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-      name: v.name,
-      description: v.description || '',
+      id: sanitizedName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+      name: sanitizedName,
+      description: sanitizedDescription,
       status: v.status,
       dates: { start: v.startDate, end: v.endDate },
-      location: v.location || '',
+      location: sanitizedLocation,
       coordinates: { lat: v.lat || 0, lng: v.lng || 0 },
-      format: v.format || '',
-      timeControl: v.timeControl || '',
+      format: sanitizedFormat || '',
+      timeControl: sanitizedTimeControl || '',
       entryFee: this.formatCurrencyOutput(v.entryFee || ''),
       registrationDeadline: v.registrationDeadline || '',
       prizePool: this.formatCurrencyOutput(v.prizePool || ''),
-      organizer: v.organizer || '',
-      contact: v.contact || '',
-      link: v.link || '',
+      organizer: sanitizedOrganizer || '',
+      contact: sanitizedContact || '',
+      link: sanitizedLink || '',
       rounds: v.rounds || 0,
-      registrationInstructions: v.registrationInstructions || '',
+      registrationInstructions: sanitizedRegInstructions || '',
       participants: { current: v.currentParticipants || 0, max: v.maxParticipants || 0 },
       ...(eligibility.length ? { eligibility } : {}),
       ...(Object.keys(schedule).length ? { schedule } : {}),
@@ -734,19 +794,52 @@ export class TournamentEditorComponent implements OnInit {
     return end && end !== start ? `${start} — ${end}` : start;
   }
 
-  get posterPrizeRows(): { place: string; value: string }[] {
-    const data = this.buildTournamentData();
-    const cats = data['categories'];
-    if (!cats) return [];
-    const rows: { place: string; value: string }[] = [];
-    for (const [catName, cat] of Object.entries(cats as Record<string, any>)) {
-      const prizes = cat.prizes || {};
-      const label = catName.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
-      for (const [key, val] of Object.entries(prizes)) {
-        const place = key.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
-        rows.push({ place: `${label} — ${place}`, value: val as string });
+  get posterPrizeCategories(): { category: string; prizes: { place: string; value: string }[]; specialAwards?: { name: string; value: string }[] }[] {
+    try {
+      const data = this.buildTournamentData();
+      const cats = data?.['categories'];
+      if (!cats) return [];
+      const categories: { category: string; prizes: { place: string; value: string }[]; specialAwards?: { name: string; value: string }[] }[] = [];
+      for (const [catName, cat] of Object.entries(cats as Record<string, any>)) {
+        const prizes = (cat as any)?.prizes || {};
+        const label = catName.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+        const prizeRows: { place: string; value: string }[] = [];
+        for (const [key, val] of Object.entries(prizes)) {
+          if (!val) continue;
+          const place = key.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+          prizeRows.push({ place, value: val as string });
+        }
+
+        const specialAwards: { name: string; value: string }[] = [];
+        const catSpecialAwards = (cat as any)?.specialAwards;
+        if (catSpecialAwards) {
+          for (const [awardName, awardVal] of Object.entries(catSpecialAwards)) {
+            if (typeof awardVal === 'string') {
+              const value = awardVal?.trim();
+              if (value) {
+                specialAwards.push({ name: awardName.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), value });
+              }
+            } else if (typeof awardVal === 'object' && awardVal !== null) {
+              for (const [place, val] of Object.entries(awardVal as Record<string, string>)) {
+                if (val !== undefined && val !== null && val.trim() !== '') {
+                  specialAwards.push({ 
+                    name: `${awardName.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())} ${place.toUpperCase()}`,
+                    value: val.trim()
+                  });
+                }
+              }
+            }
+          }
+        }
+
+        if (prizeRows.length > 0 || specialAwards.length > 0) {
+          categories.push({ category: label, prizes: prizeRows, ...(specialAwards.length > 0 ? { specialAwards } : {}) });
+        }
       }
+      return categories;
+    } catch (e) {
+      console.error('Error in posterPrizeCategories:', e);
+      return [];
     }
-    return rows;
   }
 }

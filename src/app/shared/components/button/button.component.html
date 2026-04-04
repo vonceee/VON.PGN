@@ -4,6 +4,7 @@
     [class]="variantClasses + ' ' + sizeClasses"
   >
     <ng-content></ng-content>
+    {{ label() }}
     @if (showArrow()) {
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -24,6 +25,7 @@
     [class]="variantClasses + ' ' + sizeClasses"
   >
     <ng-content></ng-content>
+    {{ label() }}
     @if (showArrow()) {
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,8 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameService } from '../../../core/services/game.service';
-import { GameSeek, TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
+import { AuthService } from '../../../core/services/auth.service';
+import { GameSeek, TIME_CONTROLS } from '../../../core/models/game.model';
 
 @Component({
   selector: 'app-seek-board',
@@ -11,13 +12,16 @@ import { GameSeek, TIME_CONTROLS, TimeControlOption } from '../../../core/models
 })
 export class SeekBoardComponent implements OnInit {
   private gameService = inject(GameService);
+  private authService = inject(AuthService);
 
   showAll = input(true);
   compact = input(false);
 
+  seekClicked = output<GameSeek>();
+
   seeks = this.gameService.seeks;
-  isSearching = this.gameService.isSearching;
-  searchTimeControl = this.gameService.searchTimeControl;
+  isConnected = this.gameService.isConnected;
+  isSeeksConnected = this.gameService.isSeeksConnected;
 
   timeControls = TIME_CONTROLS;
 
@@ -33,15 +37,6 @@ export class SeekBoardComponent implements OnInit {
     return this.seeks().length;
   }
 
-  get groupedSeeks(): Map<string, GameSeek[]> {
-    const groups = new Map<string, GameSeek[]>();
-    for (const seek of this.seeks()) {
-      const existing = groups.get(seek.time_control) || [];
-      groups.set(seek.time_control, [...existing, seek]);
-    }
-    return groups;
-  }
-
   getTimeControlLabel(value: string): string {
     const tc = this.timeControls.find((t) => t.value === value);
     return tc?.label || value;
@@ -53,35 +48,17 @@ export class SeekBoardComponent implements OnInit {
   }
 
   isMySeek(seek: GameSeek): boolean {
-    return seek.user_id === this.gameService.gameState()?.white_player?.id ||
-           seek.user_id === this.gameService.gameState()?.black_player?.id;
+    const currentUserId = this.authService.currentUser()?.uid;
+    return Number(currentUserId) === seek.user_id;
   }
 
-  canSeek(timeControl: string): boolean {
-    return !this.isSearching();
-  }
-
-  onSeek(timeControl: string): void {
-    if (this.canSeek(timeControl)) {
-      this.gameService.seekGame(timeControl);
+  onSeekClick(seek: GameSeek): void {
+    if (!this.isMySeek(seek)) {
+      this.seekClicked.emit(seek);
     }
-  }
-
-  onCancel(): void {
-    this.gameService.cancelSeek();
   }
 
   formatElo(elo: number): string {
     return elo.toString();
-  }
-
-  formatTimeAgo(dateStr: string): string {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    if (seconds < 60) return `${seconds}s`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m`;
-    return `${Math.floor(minutes / 60)}h`;
   }
 }
