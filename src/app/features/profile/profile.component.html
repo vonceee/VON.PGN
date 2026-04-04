@@ -382,7 +382,7 @@
             </div>
 
             <!-- Get Verified Card (only for non-verified organizers) -->
-            @if (!profile.verified_organizer) {
+            @if (!profile.verified_organizer && showVerifiedFeature()) {
               <div
                 class="rounded-2xl border border-dashed border-cyan-500/30 bg-cyan-50/50 dark:bg-cyan-950/20 p-5"
               >
