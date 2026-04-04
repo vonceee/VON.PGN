@@ -16,6 +16,7 @@ export class ButtonComponent {
   size = input<ButtonSize>('md');
   showArrow = input(false);
   disabled = input(false);
+  loading = input(false);
   type = input<'button' | 'submit' | 'reset'>('button');
   link = input<string | null>(null);
   label = input<string>('');

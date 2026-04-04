@@ -124,7 +124,4 @@ export class LoginComponent {
     });
   }
 
-  loginWithGoogle() {
-    window.location.href = `${environment.apiUrl}/auth/google/redirect`;
-  }
 }

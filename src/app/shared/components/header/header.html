@@ -154,6 +154,18 @@
               >Saved tournaments you want to follow</span
             >
           </a>
+          <a
+            routerLink="/broadcasts"
+            class="group/item flex flex-col gap-0.5 hover:text-cyan-500 dark:hover:text-cyan-400"
+          >
+            <span
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
+              >Broadcasts</span
+            >
+            <span class="text-sm text-slate-500 dark:text-slate-400"
+              >Watch live chess tournaments</span
+            >
+          </a>
         </div>
       </div>
     </div>
@@ -437,6 +449,27 @@
                   />
                 </svg>
                 Bookmarks
+              </a>
+              <a
+                routerLink="/my/broadcasts"
+                (click)="toggleProfileDropdown()"
+                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-4 h-4 text-slate-500 dark:text-slate-400"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9m-9-3h9m9-3h9m-9-3h9m-9-3h9"
+                  />
+                </svg>
+                My Broadcasts
               </a>
 
               <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
@@ -738,6 +771,12 @@
         >Tournaments</a
       >
       <a
+        routerLink="/broadcasts"
+        (click)="toggleMobileMenu()"
+        class="px-4 py-3 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
+        >Broadcasts</a
+      >
+      <a
         routerLink="/coaches"
         (click)="toggleMobileMenu()"
         class="px-4 py-3 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
@@ -800,6 +839,13 @@
           class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
         >
           Bookmarks
+        </a>
+        <a
+          routerLink="/my/broadcasts"
+          (click)="toggleMobileMenu()"
+          class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
+        >
+          My Broadcasts
         </a>
         @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
           <a

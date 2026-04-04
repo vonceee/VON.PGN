@@ -195,7 +195,7 @@ describe('RegisterComponent', () => {
     expect(component.isLoading).toBe(false);
   });
 
-  it('should set errorMessage from validation errors on failure', async () => {
+  it('should set emailError from validation errors on email field', async () => {
     authServiceSpy.register.mockReturnValue(
       throwError(() => ({
         error: {
@@ -216,7 +216,8 @@ describe('RegisterComponent', () => {
     // Allow microtask queue to flush
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(component.errorMessage).toBe('The email has already been taken.');
+    expect(component.emailError).toBe('The email has already been taken.');
+    expect(component.errorMessage).toBe('');
     expect(component.isLoading).toBe(false);
   });
 
@@ -255,7 +256,124 @@ describe('RegisterComponent', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(component.errorMessage).toBe('Registration failed. Username or email may be taken.');
+    expect(component.errorMessage).toBe('Registration failed. Please try again.');
+  });
+
+  it('should set emailError for duplicate email', async () => {
+    authServiceSpy.register.mockReturnValue(
+      throwError(() => ({
+        error: {
+          errors: { email: ['This email is already registered.'] },
+        },
+      })),
+    );
+
+    component.registerForm.patchValue({
+      username: 'newuser',
+      email: 'taken@example.com',
+      password: 'Password123',
+      password_confirmation: 'Password123',
+    });
+
+    component.onSubmit();
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(component.emailError).toBe('This email is already registered.');
+    expect(component.usernameError).toBe('');
+    expect(component.errorMessage).toBe('');
+    expect(component.isLoading).toBe(false);
+  });
+
+  it('should set usernameError for duplicate username', async () => {
+    authServiceSpy.register.mockReturnValue(
+      throwError(() => ({
+        error: {
+          errors: { username: ['This username is already taken.'] },
+        },
+      })),
+    );
+
+    component.registerForm.patchValue({
+      username: 'takenuser',
+      email: 'new@example.com',
+      password: 'Password123',
+      password_confirmation: 'Password123',
+    });
+
+    component.onSubmit();
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(component.usernameError).toBe('This username is already taken.');
+    expect(component.emailError).toBe('');
+    expect(component.errorMessage).toBe('');
+    expect(component.isLoading).toBe(false);
+  });
+
+  it('should set both emailError and usernameError when both are duplicated', async () => {
+    authServiceSpy.register.mockReturnValue(
+      throwError(() => ({
+        error: {
+          errors: {
+            email: ['This email is already registered.'],
+            username: ['This username is already taken.'],
+          },
+        },
+      })),
+    );
+
+    component.registerForm.patchValue({
+      username: 'takenuser',
+      email: 'taken@example.com',
+      password: 'Password123',
+      password_confirmation: 'Password123',
+    });
+
+    component.onSubmit();
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(component.emailError).toBe('This email is already registered.');
+    expect(component.usernameError).toBe('This username is already taken.');
+    expect(component.isLoading).toBe(false);
+  });
+
+  it('should clear field errors before new submission', async () => {
+    authServiceSpy.register
+      .mockReturnValueOnce(
+        throwError(() => ({
+          error: {
+            errors: { email: ['This email is already registered.'] },
+          },
+        })),
+      )
+      .mockReturnValueOnce(of({} as any));
+
+    component.registerForm.patchValue({
+      username: 'testuser',
+      email: 'taken@example.com',
+      password: 'Password123',
+      password_confirmation: 'Password123',
+    });
+
+    component.onSubmit();
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(component.emailError).toBe('This email is already registered.');
+
+    component.registerForm.patchValue({
+      username: 'newuser',
+      email: 'available@example.com',
+    });
+
+    component.onSubmit();
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(component.emailError).toBe('');
+    expect(component.usernameError).toBe('');
   });
 
   // ─── TOGGLE PASSWORD VISIBILITY ─────────────────────────────────

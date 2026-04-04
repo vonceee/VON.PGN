@@ -41,8 +41,6 @@ export class AuthService {
   currentUser = signal<any | null>(null);
   isAuthenticated = computed(() => this.currentUser() !== null);
 
-  /** Token from Google callback - used by interceptor before hydration completes */
-  pendingGoogleToken = signal<string | null>(null);
 
   unverifiedEmail = signal<string | null>(null);
 
@@ -229,38 +227,4 @@ export class AuthService {
     return this.http.post<{ message: string }>(`${this.apiUrl}/reset-password`, data);
   }
 
-  handleGoogleCallback(token: string) {
-    // Try to store token - this may fail in SSR but that's ok
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem(this.tokenKey, token);
-      }
-    } catch (e) {
-      // Ignore - SSR mode
-    }
-    
-    // Use setTimeout to defer to next event loop tick - by then we're in browser context
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        this.userService.loadMyProfile().pipe(
-          tap({
-            next: (res) => {
-              this.currentUser.set(res.data);
-              this.userService.currentUser.set(res.data);
-              this.userService.cacheProfile(res.data);
-              this.router.navigate(['/profile']);
-            },
-            error: () => {
-              this.clearAuth();
-            },
-          }),
-          catchError(() => {
-            this.clearAuth();
-            return of(null);
-          })
-        ).subscribe();
-        resolve();
-      }, 100);
-    });
-  }
 }

@@ -1,0 +1,88 @@
+<div class="mx-auto px-8 py-10">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold">Lichess Broadcasts</h1>
+    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+      Watch live chess tournaments from Lichess
+    </p>
+  </div>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <div class="flex flex-col items-center gap-4">
+        <div
+          class="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"
+        ></div>
+        <p class="text-xs font-semibold tracking-widest uppercase text-slate-400">
+          Loading broadcasts
+        </p>
+      </div>
+    </div>
+  } @else if (lichessBroadcasts().length === 0) {
+    <div class="text-center py-20">
+      <div class="flex flex-col items-center gap-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1"
+          stroke="currentColor"
+          class="w-16 h-16 text-slate-300 dark:text-slate-600"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.358 8.287 8.287 0 0 1 9.916 5.862m-.004-.01a8.016 8.016 0 0 1 .013-.01 8.26 8.26 0 0 1 4.013 0M12 18c-3.60 0-6.467-1.756-8.15-4.788m8.15-4.788a80.14 80.14 0 0 1-8.15 4.788m8.15-4.788a79.187 79.187 0 0 1 4.013 0M9 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
+          />
+        </svg>
+        <div>
+          <p class="text-lg font-semibold text-slate-700 dark:text-slate-300">
+            No broadcasts available
+          </p>
+          <p class="text-sm text-slate-400 mt-1">Check back later for live tournaments</p>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (lichess of lichessBroadcasts(); track lichess.id) {
+        <a
+          [href]="lichess.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block border border-border-theme rounded-2xl p-6 hover:border-orange-500/30 transition-colors"
+        >
+          <div class="flex items-center gap-2 mb-3">
+            <span
+              class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-orange-500/10 text-orange-500"
+            >
+              Lichess
+            </span>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">{{ lichess.name }}</h3>
+          @if (lichess.description) {
+            <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
+              {{ lichess.description }}
+            </p>
+          }
+          <p class="text-sm text-cyan-500 mt-3 flex items-center gap-1">
+            Watch on Lichess
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-4 h-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+              />
+            </svg>
+          </p>
+        </a>
+      }
+    </div>
+  }
+</div>

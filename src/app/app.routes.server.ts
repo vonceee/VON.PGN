@@ -48,11 +48,6 @@ export const serverRoutes: ServerRoute[] = [
     path: 'admin/**',
     renderMode: RenderMode.Server,
   },
-  // Auth callback — server-rendered
-  {
-    path: 'auth/google/callback',
-    renderMode: RenderMode.Server,
-  },
   // All other routes — render on-demand (server-side)
   {
     path: '**',

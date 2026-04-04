@@ -5,6 +5,7 @@ import {
   Input,
   OnChanges,
   OnDestroy,
+  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -80,12 +81,13 @@ import { AudioService } from '../../../core/services/audio.service';
     }
   `],
 })
-export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
   @ViewChild('boardEl') boardEl!: ElementRef<HTMLDivElement>;
 
   @Input() fen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   @Input() orientation: 'white' | 'black' = 'white';
   @Input() interactive: boolean = true;
+  @Input() size: number = 400;
   @Input() minSize: number = 240;
   @Input() maxSize: number = 640;
 
@@ -94,6 +96,11 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   @Output() sizeChange = new EventEmitter<number>();
 
   boardSize: number = 400;
+
+  ngOnInit() {
+    this.boardSize = this.size;
+  }
+
   private cgApi!: Api;
   private chess = new Chess();
   private initialized = false;

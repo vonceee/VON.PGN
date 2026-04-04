@@ -30,7 +30,7 @@ export class ForgotPasswordComponent {
 
     this.authService.sendPasswordResetLink(this.forgotPasswordForm.value.email!).subscribe({
       next: (res) => {
-        this.successMessage = res.message || 'If an account matches, a reset link was sent.';
+        this.successMessage = res.message || 'a reset link was sent.';
         this.isLoading = false;
         this.forgotPasswordForm.reset();
       },

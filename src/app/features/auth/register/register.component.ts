@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, NgZone } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { environment } from '../../../../environments/environment';
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -24,9 +24,13 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
 
   isLoading = false;
   errorMessage = '';
+  emailError = '';
+  usernameError = '';
   showPassword = false;
   showConfirmPassword = false;
 
@@ -68,6 +72,8 @@ export class RegisterComponent {
 
     this.isLoading = true;
     this.errorMessage = '';
+    this.emailError = '';
+    this.usernameError = '';
 
     const formValue = this.registerForm.value;
 
@@ -76,25 +82,49 @@ export class RegisterComponent {
       email: (formValue.email || '').trim(),
       password: formValue.password || '',
       password_confirmation: formValue.password_confirmation || '',
-    }).subscribe({
-      next: () => {
+    })
+    .pipe(
+      finalize(() => {
         this.isLoading = false;
+        this.cdr.detectChanges();
+      })
+    )
+    .subscribe({
+      next: () => {
+        this.zone.run(() => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        });
       },
       error: (err) => {
-        let msg = 'Registration failed. Username or email may be taken.';
-        if (err.error?.errors) {
-          const firstKey = Object.keys(err.error.errors)[0];
-          msg = err.error.errors[firstKey][0];
-        } else if (err.error?.message) {
-          msg = err.error.message;
-        }
-        this.errorMessage = msg;
-        this.isLoading = false;
+        this.zone.run(() => {
+          this.isLoading = false;
+
+          if (err.status === 429) {
+            this.errorMessage = err.error?.message || 'Too many attempts. Please try again later.';
+            this.cdr.detectChanges();
+            return;
+          }
+
+          const errors = err.error?.errors;
+
+          if (errors && typeof errors === 'object') {
+            if (errors.email) {
+              this.emailError = Array.isArray(errors.email) ? errors.email[0] : errors.email;
+            }
+            if (errors.username) {
+              this.usernameError = Array.isArray(errors.username) ? errors.username[0] : errors.username;
+            }
+            
+            if (!errors.email && !errors.username) {
+              this.errorMessage = err.error?.message || 'Registration failed. Please check your information.';
+            }
+          } else {
+            this.errorMessage = err.error?.message || 'An unexpected error occurred. Please try again.';
+          }
+          this.cdr.detectChanges();
+        });
       },
     });
-  }
-
-  loginWithGoogle() {
-    window.location.href = `${environment.apiUrl}/auth/google/redirect`;
   }
 }
