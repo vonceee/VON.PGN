@@ -39,6 +39,27 @@
   transition-delay: 150ms;
 }
 
+:host ::ng-deep .profile-dropdown {
+  display: none;
+  transform-origin: top right;
+  animation: fadeIn 0.15s ease-out;
+}
+
+:host ::ng-deep .profile-dropdown.show {
+  display: block;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

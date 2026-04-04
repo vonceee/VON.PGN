@@ -34,8 +34,8 @@ export class Header implements OnInit, OnDestroy {
   boardThemes = BOARD_THEMES;
   pieceSets = PIECE_SETS;
 
-  @ViewChild('profileContainer') profileContainer!: ElementRef;
-  @ViewChild('searchContainer') searchContainer!: ElementRef;
+  @ViewChild('profileContainer') profileContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild('searchContainer') searchContainer!: ElementRef<HTMLDivElement>;
 
   isProfileDropdownOpen = signal(false);
   isMobileMenuOpen = signal(false);

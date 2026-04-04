@@ -4,7 +4,6 @@ export interface Coach {
   title: string;
   shortInfo: string;
   fideRating: number;
-  hourlyRate: string;
   profilePicture: string;
   
   // In-depth info

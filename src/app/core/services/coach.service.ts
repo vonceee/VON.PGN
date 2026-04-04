@@ -12,7 +12,6 @@ export class CoachService {
       title: 'IM',
       shortInfo: 'The best way to learn fast is to observe, listen, practice, and play!',
       fideRating: 2368,
-      hourlyRate: 'negotiable',
       profilePicture: 'assets/images/f7399af5-b7da-4d24-ada0-9e458fca0bab.jpg',
       playingExperience: [
         'Peak FIDE rating (2467)',
@@ -31,9 +30,9 @@ export class CoachService {
       location: 'Caloocan City, Philippines',
       availability: 'Accepting Students.',
       teachingMethods: [
-        'learner - centered method',
-        'interactive and reflective',
-        'high-quality resources and always up-to-date info',
+        'Learner - centered method',
+        'Interactive and reflective',
+        'High-quality resources and always up-to-date info',
       ],
       coachingType: 'Online & Onsite',
       socialMedia: {
@@ -47,7 +46,6 @@ export class CoachService {
       title: 'NM',
       shortInfo: 'Dedicated chess coach focused on building strong tactical foundations and tournament readiness.',
       fideRating: 2040,
-      hourlyRate: 'negotiable',
       profilePicture: 'assets/images/4afc6b0b-6d57-41b8-8fac-5d1a8fd0b929.jpg',
       playingExperience: [
         'Former Varsity Player for the Far East University (FEU) Chess Team',

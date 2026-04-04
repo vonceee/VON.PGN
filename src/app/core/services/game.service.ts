@@ -512,11 +512,11 @@ export class GameService implements OnDestroy {
     this.echoLoadAttempted = true;
 
     if (typeof window === 'undefined' || !window.Pusher) {
-      console.log('[Game] Loading Pusher.js...');
+      // console.log('[Game] Loading Pusher.js...');
       const s = document.createElement('script');
       s.src = 'https://cdn.jsdelivr.net/npm/pusher-js@8.4.0-rc2/dist/web/pusher.min.js';
       s.onload = () => {
-        console.log('[Game] Pusher.js loaded');
+        // console.log('[Game] Pusher.js loaded');
         this.loadEcho();
       };
       s.onerror = () => console.warn('[Game] Failed to load Pusher.js');
@@ -567,7 +567,7 @@ export class GameService implements OnDestroy {
       const pusher = this.echo?.connector?.pusher;
       if (pusher) {
         pusher.connection.bind('connected', () => {
-          console.log('[Game] Echo connected');
+          // console.log('[Game] Echo connected');
           this.isConnected.set(true);
           this.flushPendingSubscription();
           this.flushPendingSeeksSubscription();

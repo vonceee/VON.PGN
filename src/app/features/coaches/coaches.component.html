@@ -9,22 +9,20 @@
       <div class="border border-border-theme rounded-2xl overflow-hidden transition-shadow flex flex-col md:flex-row h-full relative">
         <img [src]="coach.profilePicture" [alt]="coach.name" class="w-full md:w-40 h-48 md:h-50 object-cover shrink-0">
         <div class="p-4 md:p-5 flex flex-col flex-1 min-w-0">
-          <a [routerLink]="['/coaches', coach.id]"
-             class="group self-start md:absolute md:top-4 md:right-4 flex items-center gap-1 text-sm hover:text-cyan-400 transition-colors mb-2 md:mb-0">
-            <span>More Info</span>
-            <svg class="transition-transform group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14"/>
-              <path d="m12 5 7 7-7 7"/>
-            </svg>
-          </a>
+          <app-button
+            variant="ghost"
+            size="sm"
+            [link]="'/coaches/' + coach.id"
+            [showArrow]="true"
+            label="More Info"
+            class="self-start md:absolute md:top-4 md:right-4 mb-2 md:mb-0"
+          />
           <h2 class="text-base md:text-lg font-bold flex items-center gap-2 mb-1">
             <span class="px-1.5 py-0.5 bg-red-600 text-white text-xs font-bold rounded shrink-0">{{ coach.title }}</span>
             <span class="truncate">{{ coach.name }}</span>
           </h2>
-          <div class="text-sm text-slate-500 dark:text-slate-400 font-semibold mb-3">
-            Rate: <span class="text-slate-900 dark:text-white">{{ coach.hourlyRate }}</span> / hr
-          </div>
-          <p class="text-slate-700 dark:text-slate-300 text-sm grow">
+          
+          <p class="mt-4 text-sm grow">
             {{ coach.shortInfo }}
           </p>
         </div>
