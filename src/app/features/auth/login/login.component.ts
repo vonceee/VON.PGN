@@ -84,10 +84,18 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.invalid || this.isLockedOut) return;
 
+    const { email, password } = this.loginForm.value;
+    
+    // Additional validation to prevent sending empty values
+    if (!email || !password || email.trim() === '' || password.trim() === '') {
+      this.errorMessage = 'Please enter both email and password.';
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.login(this.loginForm.value).subscribe({
+    this.authService.login({ email: email.trim(), password }).subscribe({
       next: () => {
         this.isLoading = false;
         this.loginAttempts = 0;

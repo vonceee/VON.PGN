@@ -39,7 +39,7 @@ export class RegisterComponent {
         [
           Validators.required,
           Validators.minLength(8),
-          Validators.pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/), // Requires mixed case and number
+          Validators.pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
         ],
       ],
       password_confirmation: ['', Validators.required],
