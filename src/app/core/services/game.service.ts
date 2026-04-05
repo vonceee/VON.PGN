@@ -320,6 +320,12 @@ export class GameService implements OnDestroy {
 
     if (this.socket?.connected) return;
 
+    // Don't connect if auth service is not initialized yet
+    if (!this.authService.isInitialized()) {
+      console.log('[Game] Not connecting socket - auth service not initialized');
+      return;
+    }
+
     const token = this.authService.getToken();
     const user = this.authService.currentUser();
 
