@@ -436,7 +436,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isMyTurn = () => {
     const g = this.game();
-    return g?.status === 'active' && g.turn === g.my_color;
+    if (!g) return false;
+    const result = g.status === 'active' && g.turn === g.my_color;
+    return result;
   };
 
   isOpponentTurn = () => {
@@ -710,11 +712,14 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
           color: this.isMyTurn() ? g.my_color : undefined,
           dests: this.isMyTurn() ? this.getLegalDestinations(g.legal_moves) : new Map(),
           events: {
-            after: (orig, dest) => this.onBoardMove(orig, dest),
+            after: (orig, dest) => {
+              this.onBoardMove(orig, dest);
+            },
           },
         },
         draggable: {
           enabled: g.status === 'active',
+          showGhost: true,
         },
         selectable: {
           enabled: false,
@@ -865,15 +870,23 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const isMyTurn = g.status === 'active' && g.turn === g.my_color;
 
-    this.cgApi.set({
+    const cgConfig: any = {
       fen: this.chess.fen(),
       turnColor: g.turn,
       movable: {
+        free: false,
         color: isMyTurn ? g.my_color : undefined,
         dests: isMyTurn ? this.getLegalDestinations(g.legal_moves) : new Map(),
+        showDests: true,
+      },
+      draggable: {
+        enabled: g.status === 'active',
+        showGhost: true,
       },
       check: this.chess.inCheck() ? g.turn : false,
-    });
+    };
+
+    this.cgApi.set(cgConfig);
   }
 
   private getLegalDestinations(legalMoves: string[]): Map<Key, Key[]> {

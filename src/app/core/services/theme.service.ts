@@ -7,15 +7,11 @@ import { isPlatformBrowser } from '@angular/common';
 export class ThemeService {
   private platformId = inject(PLATFORM_ID);
 
-  private get isBrowser(): boolean {
-    return isPlatformBrowser(this.platformId);
-  }
-
   // Use a signal to hold the dark mode state
   public isDarkMode = signal<boolean>(false);
 
   constructor() {
-    if (!this.isBrowser) return;
+    if (!isPlatformBrowser(this.platformId)) return;
 
     this.initTheme();
 
@@ -32,8 +28,7 @@ export class ThemeService {
     });
   }
 
-  private initTheme() {
-    // Check local storage or system preference
+  private initTheme(): void {
     const savedTheme = localStorage.getItem('theme');
     if (
       savedTheme === 'dark' ||
@@ -45,7 +40,7 @@ export class ThemeService {
     }
   }
 
-  public toggleTheme() {
+  public toggleTheme(): void {
     this.isDarkMode.update((v) => !v);
   }
 }

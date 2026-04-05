@@ -63,8 +63,8 @@ export interface MovePlayedPayload {
 export interface GameEndedPayload {
   game_id: string;
   status: string;
-  result: string;
-  termination: string;
+  result: string | null;
+  termination: string | null;
   white_time_remaining_ms: number;
   black_time_remaining_ms: number;
   fen?: string;
@@ -127,6 +127,54 @@ export interface SeekCreatedPayload {
 export interface SeekRemovedPayload {
   seek_id: number;
   reason: 'matched' | 'cancelled';
+}
+
+// Microservice event types
+export interface GameMatchedMicroservicePayload {
+  gameId: string;
+  opponent: {
+    userId: number;
+    name: string;
+  };
+  color: 'white' | 'black';
+  game: GameState;
+}
+
+export interface MoveMadePayload {
+  gameId: string;
+  move: string;
+  san: string;
+  fen: string;
+  turn: 'white' | 'black';
+  whiteTimeRemainingMs: number;
+  blackTimeRemainingMs: number;
+  serverTimestamp: string;
+  status: string;
+  result: string | null;
+  termination: string | null;
+  legalMoves: string[];
+  isCheck: boolean;
+  isCheckmate: boolean;
+  isStalemate: boolean;
+  isDraw: boolean;
+}
+
+export interface GameEndedMicroservicePayload {
+  gameId: string;
+  result: string | null;
+  termination: string | null;
+  status: 'completed';
+}
+
+export interface DrawOfferedMicroservicePayload {
+  gameId: string;
+  offeredBy: 'white' | 'black';
+}
+
+export interface ClockSyncMicroservicePayload {
+  whiteTimeRemainingMs: number;
+  blackTimeRemainingMs: number;
+  serverTimestamp: string;
 }
 
 export const TIME_CONTROLS: TimeControlOption[] = [
