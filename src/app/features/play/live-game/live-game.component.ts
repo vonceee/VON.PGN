@@ -431,7 +431,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   isInBuffer = () => {
     const g = this.game();
     // Buffer is active when server indicates buffer countdown is running
-    return g?.bufferCountdown !== null && g?.bufferCountdown > 0;
+    return g?.bufferCountdown != null && (g?.bufferCountdown ?? 0) > 0;
   };
 
   isMyTurn = () => {
@@ -685,7 +685,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       window.removeEventListener('beforeunload', this.handleBeforeUnload);
     }
     this.subs.forEach((s) => s.unsubscribe());
-    this.clearBufferCountdown();
     this.clearAbortCountdown();
     this.clearDrawCooldown();
     this.cgApi?.destroy();
@@ -786,8 +785,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const g = this.game();
     if (g) {
-      // First move made — clear any active buffer/abort countdowns
-      this.clearBufferCountdown();
+      // First move made — clear any active abort countdowns
       this.clearAbortCountdown();
 
       // If White just made their first move, start Black's pre-game buffer
@@ -954,7 +952,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
                         (g.moves.length === 1 && g.my_color === 'black');
     if (!needsBuffer) return;
 
-    this.startBufferCountdown(() => this.startAbortCountdownIfNeeded());
+    // Buffer countdown is now handled by the server
   }
 
   /**
@@ -1008,7 +1006,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   abort(): void {
-    this.clearBufferCountdown();
     this.clearAbortCountdown();
     this.gameService.abortGame();
   }

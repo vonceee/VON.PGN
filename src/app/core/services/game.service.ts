@@ -198,7 +198,7 @@ export class GameService implements OnDestroy {
       .pipe(catchError(() => of(null)))
       .subscribe((res) => {
         if (!res) return;
-        
+
         const currentGame = this.gameState();
         if (!currentGame || currentGame.id !== gameId) return;
 
@@ -233,8 +233,9 @@ export class GameService implements OnDestroy {
               black_time_remaining_ms: res.black_time_remaining_ms ?? state.black_time_remaining_ms,
               server_timestamp: res.server_timestamp ?? state.server_timestamp,
             };
+          });
+        }
       });
-    }
   }
 
   private updateGameBuffer(gameId: string, secondsRemaining: number): void {
@@ -257,7 +258,6 @@ export class GameService implements OnDestroy {
       });
     }
   }
-}
 
   clearGame(): void {
     this.stopHeartbeat();
@@ -268,6 +268,10 @@ export class GameService implements OnDestroy {
       this.socket.off('clock_sync');
     }
     this.router.navigate(['/play']);
+  }
+
+  hasSocketConnection(): boolean {
+    return !!this.socket && this.socket.connected;
   }
 
   // ── Seeks API (for seek-board component) ────────────────────────
@@ -541,9 +545,5 @@ export class GameService implements OnDestroy {
           }
         });
     }, 3000);
-  }
-
-  hasSocketConnection(): boolean {
-    return !!this.socket && this.socket.connected;
   }
 }
