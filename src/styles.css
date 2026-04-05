@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+@import 'chessground/assets/chessground.base.css';
+@import 'chessground/assets/chessground.brown.css';
+@import 'chessground/assets/chessground.cburnett.css';
 
 @theme {
   --font-sans:
@@ -26,9 +29,7 @@
   transition-timing-function: ease;
 }
 
-@import 'chessground/assets/chessground.base.css';
-@import 'chessground/assets/chessground.brown.css';
-@import 'chessground/assets/chessground.cburnett.css';
+
 
 .chess-grid {
   background-image: conic-gradient(

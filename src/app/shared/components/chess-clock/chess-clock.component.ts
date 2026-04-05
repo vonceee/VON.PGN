@@ -86,6 +86,7 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
   // Stored values for calculation
   private storedTimeMs: number = 0;
   private lastMoveTimestamp: number = 0;
+  private offsetMs: number = 0; // Calibration offset: serverTime - clientTime
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -110,33 +111,41 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
   /**
    * Update stored values from server data.
    * Called when server sends new time/timestamp.
-   * Also validates for corrupted data.
    */
   private updateStoredValues(): void {
     const timeMs = this.serverTimeMs;
     const timestamp = this.serverTimestamp;
 
-    // Validate: must be a positive number less than 1 hour
-    const maxValidMs = 3600000; // 1 hour max for any time control
-    
-    if (typeof timeMs === 'number' && timeMs > 0 && timeMs <= maxValidMs) {
+    if (typeof timeMs === 'number' && timeMs >= 0) {
       this.storedTimeMs = timeMs;
       
       if (timestamp) {
-        // Use Date.parse to match Date.now() time base
         const parsed = Date.parse(timestamp);
         if (!isNaN(parsed)) {
           this.lastMoveTimestamp = parsed;
+          
+          /**
+           * Drift Correction (Lichess style):
+           * The first time we receive a timestamp, or periodically, 
+           * we calculate the delta between our machine time and the server time.
+           * We use the MOST RECENT update to recalibrate.
+           */
+          const nowMs = Date.now();
+          // serverTime = clientTime + offset -> offset = serverTime - clientTime
+          // We assume the server sent the timestamp 'now' (ignoring latency for now)
+          this.offsetMs = parsed - nowMs;
         } else {
           this.lastMoveTimestamp = Date.now();
+          this.offsetMs = 0;
         }
       } else {
         this.lastMoveTimestamp = Date.now();
+        this.offsetMs = 0;
       }
       
-      // Display time is just the stored time
       this.displayTime = this.storedTimeMs;
       this.hasExpired = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -144,27 +153,26 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
     if (this.running) return;
     this.running = true;
 
-    const tick = (now: number) => {
+    const tick = () => {
       if (!this.running) return;
 
-      // Use Date.now() to be consistent with Date.parse(timestamp) from server
       const nowMs = Date.now();
       
-      // Recalculate from stored values each tick
-      // This ensures we don't have drift and handles updates correctly
-      if (this.lastMoveTimestamp && this.storedTimeMs > 0) {
-        const elapsedMs = nowMs - this.lastMoveTimestamp;
+      if (this.lastMoveTimestamp && this.storedTimeMs >= 0) {
+        /**
+         * The elapsed time since the server's lastMoveTimestamp.
+         * We adjust our local 'now' with the calibration offset.
+         */
+        const calibratedNow = nowMs + this.offsetMs;
+        const elapsedMs = Math.max(0, calibratedNow - this.lastMoveTimestamp);
         
-        // Only tick down if this is the active clock
         if (this.isActive) {
           this.displayTime = Math.max(0, this.storedTimeMs - elapsedMs);
         } else {
-          // Inactive clock shows the stored time
           this.displayTime = this.storedTimeMs;
         }
       }
 
-      // Check for expiration - only emit once
       if (this.displayTime <= 0 && !this.hasExpired) {
         this.hasExpired = true;
         this.expired.emit();

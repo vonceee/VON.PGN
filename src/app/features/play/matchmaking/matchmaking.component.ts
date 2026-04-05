@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { GameService } from '../../../core/services/game.service';
 import { TIME_CONTROLS, TimeControlOption, GameSeek } from '../../../core/models/game.model';
 import { SeekBoardComponent } from '../../../shared/components/seek-board/seek-board.component';
+import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
 
 @Component({
   selector: 'app-matchmaking',
   standalone: true,
-  imports: [SeekBoardComponent],
+  imports: [SeekBoardComponent, ServerMaintenanceComponent],
   templateUrl: './matchmaking.component.html',
 })
 export class MatchmakingComponent implements OnInit, OnDestroy {
@@ -22,6 +23,8 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
     const g = this.gameService.gameState();
     return g && g.status === 'active' ? g.id : null;
   };
+
+  isServiceMaintenance = () => this.gameService.isServiceMaintenance();
 
   categories = [
     { key: 'bullet', label: 'Bullet', controls: TIME_CONTROLS.filter((tc) => tc.category === 'bullet') },

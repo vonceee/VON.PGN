@@ -10,6 +10,8 @@ import {
   computed,
   ChangeDetectorRef,
   PLATFORM_ID,
+  viewChild,
+  effect,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,7 +21,15 @@ import { AudioService } from '../../../core/services/audio.service';
 import { Glicko2Service, Glicko2Player } from '../../../core/services/rating.service';
 import { UserService } from '../../../core/services/user.service';
 import { ChessClockComponent } from '../../../shared/components/chess-clock/chess-clock.component';
-import { MovePlayedPayload, GameEndedPayload, DrawOfferedPayload, GamePlayer, TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
+import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
+import {
+  MovePlayedPayload,
+  GameEndedPayload,
+  DrawOfferedPayload,
+  GamePlayer,
+  TIME_CONTROLS,
+  TimeControlOption,
+} from '../../../core/models/game.model';
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
@@ -28,11 +38,16 @@ import { Key } from 'chessground/types';
 @Component({
   selector: 'app-live-game',
   standalone: true,
-  imports: [ChessClockComponent],
+  imports: [ChessClockComponent, ServerMaintenanceComponent],
   template: `
     <div class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-6">
       <div class="max-w-5xl w-full">
-        @if (game(); as g) {
+        @if (gameService.isServiceMaintenance()) {
+          <app-server-maintenance
+            title="Chess Service Maintenance"
+            message="The chess service is currently undergoing maintenance. Your game will resume automatically when the service is back online."
+          ></app-server-maintenance>
+        } @else if (game(); as g) {
           <div class="flex flex-col lg:flex-row gap-6 items-start justify-center">
             <!-- Left: Opponent clock + Board + Player clock -->
             <div class="flex flex-col items-center gap-3 w-full lg:w-auto">
@@ -49,11 +64,15 @@ import { Key } from 'chessground/types';
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-xs" [style.color]="gameService.isConnected() ? '#22c55e' : '#ef4444'">●</span>
+                  <span
+                    class="text-xs"
+                    [style.color]="gameService.isConnected() ? '#22c55e' : '#ef4444'"
+                    >●</span
+                  >
                   <app-chess-clock
                     [serverTimeMs]="opponentTimeMs()"
                     [serverTimestamp]="g.server_timestamp"
-                    [isActive]="g.status === 'active' && isOpponentTurn() && !isInBuffer()"
+                    [isActive]="isOpponentTurn()"
                     [label]="g.my_color === 'white' ? 'Black' : 'White'"
                     (expired)="onClockExpired()"
                   />
@@ -62,28 +81,45 @@ import { Key } from 'chessground/types';
 
               <!-- Chess Board -->
               <div class="board-wrapper" [style.width.px]="boardSize()">
-                <div #boardEl class="board-container"></div>
+                <div #boardEl class="board-container" ngSkipHydration></div>
               </div>
-              <input type="range" min="280" max="560" step="40" [value]="boardSize()" (input)="onBoardSizeChange($event)" class="w-full mt-2 accent-cyan-500" />
+              <input
+                type="range"
+                min="280"
+                max="560"
+                step="40"
+                [value]="boardSize()"
+                (input)="onBoardSizeChange($event)"
+                class="w-full mt-2 accent-cyan-500"
+              />
 
               <!-- Player info + clock -->
               <div class="w-full max-w-140 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold">
+                  <div
+                    class="w-10 h-10 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold"
+                  >
                     {{ myName().charAt(0).toUpperCase() }}
                   </div>
                   <div>
                     <div class="font-semibold text-sm">{{ myName() }} (You)</div>
-                    <div class="text-xs text-cyan-400">Rating: {{ getMyRating() }}<span [class]="getRatingChangeClass()">{{ getRatingChangeText() }}</span></div>
+                    <div class="text-xs text-cyan-400">
+                      Rating: {{ getMyRating()
+                      }}<span [class]="getRatingChangeClass()">{{ getRatingChangeText() }}</span>
+                    </div>
                     <div class="text-xs">{{ g.my_color === 'white' ? 'White' : 'Black' }}</div>
                   </div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-xs" [style.color]="gameService.isConnected() ? '#22c55e' : '#ef4444'">{{ gameService.isConnected() ? 'Live' : 'Offline' }}</span>
+                  <span
+                    class="text-xs"
+                    [style.color]="gameService.isConnected() ? '#22c55e' : '#ef4444'"
+                    >{{ gameService.isConnected() ? 'Live' : 'Offline' }}</span
+                  >
                   <app-chess-clock
                     [serverTimeMs]="myTimeMs()"
                     [serverTimestamp]="g.server_timestamp"
-                    [isActive]="g.status === 'active' && isMyTurn() && !isInBuffer()"
+                    [isActive]="isMyTurn()"
                     [label]="g.my_color === 'white' ? 'White' : 'Black'"
                     (expired)="onClockExpired()"
                   />
@@ -104,15 +140,18 @@ import { Key } from 'chessground/types';
 
               <!-- Result overlay -->
               @if (g.status === 'completed') {
-                <div class="border border-border-theme rounded-lg p-4" >
+                <div class="border border-border-theme rounded-lg p-4">
                   <div class="text-center">
-                    <div class="text-2xl font-bold mb-1" >
+                    <div class="text-2xl font-bold mb-1">
                       {{ formatResult(g.result) }}
                     </div>
-                    <div class="text-sm capitalize mb-2">{{ formatTermination(g.result, g.termination) }}</div>
+                    <div class="text-sm capitalize mb-2">
+                      {{ formatTermination(g.result, g.termination) }}
+                    </div>
                     @if (ratingChange() !== null) {
                       <div class="text-lg font-semibold" [class]="getRatingChangeClass()">
-                        {{ getMyRating() }} <span class="text-sm">({{ getRatingChangeText() }})</span>
+                        {{ getMyRating() }}
+                        <span class="text-sm">({{ getRatingChangeText() }})</span>
                       </div>
                     }
                   </div>
@@ -127,11 +166,29 @@ import { Key } from 'chessground/types';
                 </div>
               }
 
+              <!-- Abandonment Timer / Opponent Disconnected -->
+              @if (g.status === 'active' && opponentAwayCountdown() !== null) {
+                <div class="border border-red-500 rounded-lg p-4 bg-red-900/10">
+                  <div class="text-center">
+                    <div class="text-sm font-bold text-red-500 mb-1">Opponent Disconnected</div>
+                    <div class="text-xs mb-2">
+                      They have until the timer reaches zero to return.
+                    </div>
+                    <div class="text-3xl font-bold font-mono">{{ opponentAwayCountdown() }}</div>
+                    <div class="text-xs mt-2 italic">
+                      You will automatically win if they do not return.
+                    </div>
+                  </div>
+                </div>
+              }
+
               <!-- Draw offer notification (opponent offered) -->
               @if (g.status === 'active' && drawOfferState() === 'opponentOffered') {
                 <div class="border border-border-theme rounded-lg p-4">
                   <div class="text-center mb-3">
-                    <div class="text-sm font-semibold uppercase tracking-wider mb-1">Draw Offered</div>
+                    <div class="text-sm font-semibold uppercase tracking-wider mb-1">
+                      Draw Offered
+                    </div>
                   </div>
                   <div class="flex gap-2">
                     <button
@@ -163,8 +220,12 @@ import { Key } from 'chessground/types';
               @if (g.status === 'active' && opponentAwayCountdown() !== null) {
                 <div class="border border-amber-500/50 rounded-lg p-3 bg-amber-900/20">
                   <div class="text-center">
-                    <div class="text-xs uppercase tracking-wider mb-1 text-amber-400">Opponent Away</div>
-                    <div class="text-3xl font-bold font-mono text-amber-400">{{ opponentAwayCountdown() }}</div>
+                    <div class="text-xs uppercase tracking-wider mb-1 text-amber-400">
+                      Opponent Away
+                    </div>
+                    <div class="text-3xl font-bold font-mono text-amber-400">
+                      {{ opponentAwayCountdown() }}
+                    </div>
                     <div class="text-xs mt-1 text-slate-400">seconds until abandonment</div>
                   </div>
                 </div>
@@ -176,7 +237,7 @@ import { Key } from 'chessground/types';
                 <div class="flex flex-wrap gap-1 text-sm">
                   @for (move of g.moves; track $index; let i = $index) {
                     @if (i % 2 === 0) {
-                      <span class="mr-1">{{ (i / 2) + 1 }}.</span>
+                      <span class="mr-1">{{ i / 2 + 1 }}.</span>
                     }
                     <span class="px-1">{{ getMoveSan(i) }}</span>
                   }
@@ -186,41 +247,40 @@ import { Key } from 'chessground/types';
               <!-- Action buttons -->
               @if (g.status === 'active') {
                 <div class="flex flex-col gap-2">
-                  @if (bufferCountdown() !== null) {
-                    <!-- Pre-game buffer countdown -->
-                    <div class="border border-border-theme rounded-lg p-3 text-center">
-                      <div class="text-xs uppercase tracking-wider mb-1">Game Starting</div>
-                      <div class="text-3xl font-bold font-mono">{{ bufferCountdown() }}</div>
-                      <div class="text-xs mt-1">seconds — get settled before the clock starts</div>
-                    </div>
+                  @if (g.status === 'active' && g.moves.length < 2) {
+                    <!-- Show Abort instead of Resign during the first move of both sides -->
+                    @if (bufferCountdown() !== null || abortCountdown() !== null) {
+                      <div class="border border-border-theme rounded-lg p-3 text-center">
+                        <div class="text-xs uppercase tracking-wider mb-1">
+                          {{ bufferCountdown() !== null ? 'Game Starting' : 'First Move Timer' }}
+                        </div>
+                        <div class="text-3xl font-bold font-mono">
+                          {{ bufferCountdown() !== null ? bufferCountdown() : abortCountdown() }}
+                        </div>
+                        <div class="text-xs mt-1">
+                          {{
+                            bufferCountdown() !== null
+                              ? 'Just a few seconds'
+                              : 'seconds to make first move'
+                          }}
+                        </div>
+                      </div>
+                    }
                     <button
                       (click)="abort()"
-                      class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                      class="w-full px-4 py-2 hover:cursor-pointer text-sm font-semibold transition-colors"
                     >
                       Abort Game
                     </button>
-                  }
-                  @if (abortCountdown() !== null && bufferCountdown() === null) {
-                    <!-- First move timer (after buffer) -->
-                    <div class="border border-border-theme rounded-lg p-3 text-center">
-                      <div class="text-xs uppercase tracking-wider mb-1">First Move Timer</div>
-                      <div class="text-3xl font-bold font-mono">{{ abortCountdown() }}</div>
-                      <div class="text-xs mt-1">seconds to make first move</div>
-                    </div>
+                  } @else if (g.status === 'active' && g.moves.length >= 2) {
+                    <!-- Show Resign only after at least 1 move from both sides -->
                     <button
-                      (click)="abort()"
-                      class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-semibold transition-colors"
+                      (click)="showResignConfirm.set(true)"
+                      class="w-full px-4 py-2 hover:cursor-pointer text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                     >
-                      Abort Game
+                      Resign
                     </button>
                   }
-                  <button
-                    (click)="showResignConfirm.set(true)"
-                    class="w-full px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-                    Resign
-                  </button>
                   @if (showResignConfirm()) {
                     <div class="border border-red-500/50 rounded-lg p-3 bg-red-900/20">
                       <div class="text-xs text-center mb-2">Resign and forfeit this game?</div>
@@ -243,9 +303,8 @@ import { Key } from 'chessground/types';
                   @if (canOfferDraw()) {
                     <button
                       (click)="offerDraw()"
-                      class="w-full px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                      class="w-full px-4 py-2 hover:cursor-pointer text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                       Offer Draw
                     </button>
                   }
@@ -265,21 +324,14 @@ import { Key } from 'chessground/types';
                   New Opponent
                 </button>
               }
-
-              @if (g.status === 'active') {
-                <button
-                  (click)="showExitConfirm.set(true)"
-                  class="w-full px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm font-semibold transition-colors"
-                >
-                  Leave Game
-                </button>
-              }
             </div>
           </div>
         } @else {
           <div class="flex items-center justify-center min-h-100">
             <div class="text-center">
-              <div class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <div
+                class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+              ></div>
               <p class="text-slate-400">Loading game...</p>
             </div>
           </div>
@@ -312,18 +364,39 @@ import { Key } from 'chessground/types';
       </div>
     }
   `,
-  styles: [`
-    .board-wrapper {
-      container-type: inline-size;
-    }
-    .board-container {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-    }
-  `],
+  styles: [
+    `
+      .board-wrapper {
+        container-type: inline-size;
+        aspect-ratio: 1 / 1;
+      }
+      .board-container {
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: relative;
+      }
+    `,
+  ],
 })
 export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('boardEl') boardEl!: ElementRef<HTMLDivElement>;
+  boardEl = viewChild<ElementRef<HTMLDivElement>>('boardEl');
+
+  constructor() {
+    effect(() => {
+      const el = this.boardEl();
+      const g = this.game();
+
+      if (el && g) {
+        const nativeEl = el.nativeElement;
+        if (!this.boardInitialized || nativeEl !== this.lastElement) {
+          this.tryInitBoard();
+        } else {
+          this.syncBoard();
+        }
+      }
+    });
+  }
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -343,6 +416,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private cgApi!: Api;
   private chess = new Chess();
   private boardInitialized = false;
+  private lastElement: HTMLElement | null = null;
   boardSize = signal(this.loadBoardSize());
 
   private loadBoardSize(): number {
@@ -395,6 +469,8 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   game = this.gameService.gameState;
 
+  isServiceMaintenance = () => this.gameService.isServiceMaintenance();
+
   myName = () => {
     const g = this.game();
     if (!g) return '';
@@ -434,32 +510,36 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return g?.bufferCountdown != null && (g?.bufferCountdown ?? 0) > 0;
   };
 
-  isMyTurn = () => {
+  isMyTurn = computed(() => {
     const g = this.game();
     if (!g) return false;
-    const result = g.status === 'active' && g.turn === g.my_color;
-    return result;
-  };
+    return g.status === 'active' && g.turn === g.my_color;
+  });
 
-  isOpponentTurn = () => {
+  isOpponentTurn = computed(() => {
     const g = this.game();
-    return g?.status === 'active' && g.turn !== g.my_color;
-  };
+    if (!g) return false;
+    return g.status === 'active' && g.turn !== g.my_color;
+  });
 
   isWinner = () => {
     const g = this.game();
     if (!g || g.status !== 'completed' || !g.result) return false;
     if (g.result === '1/2-1/2') return false;
-    return (g.result === '1-0' && g.my_color === 'white') ||
-           (g.result === '0-1' && g.my_color === 'black');
+    return (
+      (g.result === '1-0' && g.my_color === 'white') ||
+      (g.result === '0-1' && g.my_color === 'black')
+    );
   };
 
   isLoser = () => {
     const g = this.game();
     if (!g || g.status !== 'completed' || !g.result) return false;
     if (g.result === '1/2-1/2') return false;
-    return (g.result === '0-1' && g.my_color === 'white') ||
-           (g.result === '1-0' && g.my_color === 'black');
+    return (
+      (g.result === '0-1' && g.my_color === 'white') ||
+      (g.result === '1-0' && g.my_color === 'black')
+    );
   };
 
   isDraw = () => {
@@ -474,7 +554,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   hasPendingDrawOffer = () => {
     const g = this.game();
-    return g?.status === 'active' && g?.draw_offered_by !== null && g?.draw_offered_by !== undefined;
+    return (
+      g?.status === 'active' && g?.draw_offered_by !== null && g?.draw_offered_by !== undefined
+    );
   };
 
   isDrawOfferedByMe = () => {
@@ -503,12 +585,12 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   canOfferDraw = () => {
     const g = this.game();
-    return g?.status === 'active'
-      && g.moves.length > 0
-      && !this.hasPendingDrawOffer()
-      && this.drawCooldownRemaining() === 0
-      && this.abortCountdown() === null
-      && this.bufferCountdown() === null;
+    return (
+      g?.status === 'active' &&
+      g.moves.length >= 2 && // Standard: both players must move at least once
+      !this.hasPendingDrawOffer() &&
+      this.drawCooldownRemaining() === 0
+    );
   };
 
   resultLabel = () => {
@@ -527,15 +609,15 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       return `${minutes}+${increment}`;
     }
     return timeControl;
-  };
+  }
 
   formatResult(result: string | null): string {
     return result || '';
-  };
+  }
 
   formatTermination(result: string | null, termination: string | null): string {
     if (!result || !termination) return '';
-    
+
     const isDraw = result === '1/2-1/2';
     if (isDraw) {
       if (termination === 'draw') return 'draw';
@@ -556,7 +638,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     if (reason === 'resignation') return `${loser} resigned`;
     if (reason === 'timeout') return `${loser} ran out of time`;
     return `${winner} won`;
-  };
+  }
 
   getMyRating(): number {
     const g = this.game();
@@ -589,7 +671,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private calculateNewRatings(result: string | null, myColor: 'white' | 'black'): void {
     if (!result) return;
-    
+
     const g = this.game();
     if (!g) return;
 
@@ -614,7 +696,10 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     let score: number;
     if (result === '1/2-1/2') {
       score = 0.5;
-    } else if ((result === '1-0' && myColor === 'white') || (result === '0-1' && myColor === 'black')) {
+    } else if (
+      (result === '1-0' && myColor === 'white') ||
+      (result === '0-1' && myColor === 'black')
+    ) {
       score = 1;
     } else {
       score = 0;
@@ -624,11 +709,13 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ratingChange.set(resultObj.change);
     this.myRating.set(resultObj.player.rating);
 
-    this.userService.updateLiveChessRating(category, resultObj.player.rating, resultObj.player.rd).subscribe();
+    this.userService
+      .updateLiveChessRating(category, resultObj.player.rating, resultObj.player.rd)
+      .subscribe();
   }
 
   private getTimeControlCategory(timeControl: string): 'bullet' | 'blitz' | 'rapid' {
-    const tc = TIME_CONTROLS.find(t => t.value === timeControl);
+    const tc = TIME_CONTROLS.find((t) => t.value === timeControl);
     return tc?.category ?? 'rapid';
   }
 
@@ -673,10 +760,10 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       return 'You have an active game. Are you sure you want to leave?';
     }
     return undefined;
-  }
+  };
 
   ngAfterViewInit(): void {
-    this.tryInitBoard();
+    // tryInitBoard is now handled by the signal effect
     this.tryStartPreGameCountdown();
   }
 
@@ -694,15 +781,19 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!isPlatformBrowser(this.platformId)) return;
 
     const g = this.game();
-    if (!g || !this.boardEl) {
-      requestAnimationFrame(() => this.tryInitBoard());
-      return;
+    const boardEl = this.boardEl();
+    if (!g || !boardEl) return;
+
+    // If we're re-initializing, destroy old instance
+    if (this.cgApi && boardEl.nativeElement !== this.lastElement) {
+      this.cgApi.destroy();
     }
 
     try {
       this.chess.load(g.fen);
+      this.lastElement = boardEl.nativeElement;
 
-      this.cgApi = Chessground(this.boardEl.nativeElement, {
+      this.cgApi = Chessground(boardEl.nativeElement, {
         fen: g.fen,
         orientation: g.my_color,
         coordinates: true,
@@ -743,7 +834,8 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Check for promotion
     const piece = this.chess.get(orig as any);
-    const isPromotion = piece &&
+    const isPromotion =
+      piece &&
       piece.type === 'p' &&
       ((piece.color === 'w' && dest[1] === '8') || (piece.color === 'b' && dest[1] === '1'));
 
@@ -816,8 +908,10 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     if (g) {
       if (g.result === '1/2-1/2') {
         this.audioService.playDraw();
-      } else if ((g.result === '1-0' && g.my_color === 'white') ||
-                 (g.result === '0-1' && g.my_color === 'black')) {
+      } else if (
+        (g.result === '1-0' && g.my_color === 'white') ||
+        (g.result === '0-1' && g.my_color === 'black')
+      ) {
         this.audioService.playVictory();
       } else {
         this.audioService.playDefeat();
@@ -827,7 +921,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
         const myColor = g.my_color;
         const change = myColor === 'white' ? data.rating_change.white : data.rating_change.black;
         this.ratingChange.set(change);
-        
+
         const currentRating = this.getMyRating();
         this.myRating.set(currentRating + change);
       } else if (g.result) {
@@ -905,9 +999,11 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.moveSanCache = [];
     const tempChess = new Chess();
-    tempChess.load(g.fen.startsWith('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
-      ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-      : g.fen);
+    tempChess.load(
+      g.fen.startsWith('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
+        ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+        : g.fen,
+    );
 
     // Rebuild from moves
     tempChess.reset();
@@ -948,8 +1044,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Only start countdown if this player needs buffer:
     // White: no moves yet; Black: exactly 1 move (White just moved)
-    const needsBuffer = (g.moves.length === 0 && g.my_color === 'white') ||
-                        (g.moves.length === 1 && g.my_color === 'black');
+    const needsBuffer =
+      (g.moves.length === 0 && g.my_color === 'white') ||
+      (g.moves.length === 1 && g.my_color === 'black');
     if (!needsBuffer) return;
 
     // Buffer countdown is now handled by the server
@@ -968,15 +1065,14 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startPreGameCountdown();
   }
 
-
-
   private startAbortCountdownIfNeeded(): void {
     const g = this.game();
     if (!g || g.status !== 'active') return;
 
     // Only start abort if this player hasn't made their first move yet
-    const needsAbort = (g.moves.length === 0 && g.my_color === 'white') ||
-                       (g.moves.length === 1 && g.my_color === 'black');
+    const needsAbort =
+      (g.moves.length === 0 && g.my_color === 'white') ||
+      (g.moves.length === 1 && g.my_color === 'black');
     if (!needsAbort) return;
 
     this.abortCountdown.set(LiveGameComponent.ABORT_SECONDS);

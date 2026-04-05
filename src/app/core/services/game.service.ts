@@ -32,6 +32,7 @@ export class GameService implements OnDestroy {
   isConnected = signal(false);
   isLoading = signal(false);
   searchTimeControl = signal('');
+  isServiceMaintenance = signal(false);
 
   private movePlayed$ = new Subject<MovePlayedPayload>();
   private gameEnded$ = new Subject<GameEndedPayload>();
@@ -68,10 +69,18 @@ export class GameService implements OnDestroy {
     this.isLoading.set(true);
     this.http
       .get<{ game: GameState | null }>(`${this.apiUrl}/game/active`)
-      .pipe(catchError(() => of({ game: null })))
+      .pipe(
+        catchError((error) => {
+          if (error.status === 503) {
+            this.isServiceMaintenance.set(true);
+          }
+          return of({ game: null });
+        })
+      )
       .subscribe((res) => {
         this.isLoading.set(false);
         if (res.game) {
+          this.isServiceMaintenance.set(false);
           this.gameState.set(res.game);
           this.connectSocket();
           this.subscribeToGame(res.game.id);
@@ -89,10 +98,15 @@ export class GameService implements OnDestroy {
         `${this.apiUrl}/game/seek`,
         { time_control: timeControl },
       )
-      .pipe(catchError(() => {
-        this.isSearching.set(false);
-        return of(null);
-      }))
+      .pipe(
+        catchError((error) => {
+          this.isSearching.set(false);
+          if (error.status === 503) {
+            this.isServiceMaintenance.set(true);
+          }
+          return of(null);
+        })
+      )
       .subscribe((res) => {
         if (!res) return;
         
@@ -282,7 +296,14 @@ export class GameService implements OnDestroy {
         `${this.apiUrl}/seeks/${seekId}/join`,
         {},
       )
-      .pipe(catchError(() => of(null)))
+      .pipe(
+        catchError((error) => {
+          if (error.status === 503) {
+            this.isServiceMaintenance.set(true);
+          }
+          return of(null);
+        })
+      )
       .subscribe((res) => {
         if (!res) return;
         if (res.matched && res.game_id) {
@@ -415,6 +436,7 @@ export class GameService implements OnDestroy {
           moves: [...state.moves, data.move],
           white_time_remaining_ms: data.whiteTimeRemainingMs,
           black_time_remaining_ms: data.blackTimeRemainingMs,
+          server_timestamp: data.serverTimestamp,
           status: data.status,
           result: data.result,
           termination: data.termination,
@@ -489,27 +511,56 @@ export class GameService implements OnDestroy {
           white_time_remaining_ms: data.whiteTimeRemainingMs,
           black_time_remaining_ms: data.blackTimeRemainingMs,
           server_timestamp: data.serverTimestamp,
+          turn: data.turn || state.turn,
         };
       });
     });
+    
+    this.socket.on('draw_offered', (data: any) => {
+      if (data.gameId !== gameId) return;
+      this.gameState.update(g => g ? ({ ...g, draw_offered_by: data.offered_by_user_id }) : null);
+      this.drawOffered$.next(data);
+    });
 
-    // Load initial state
-    this.http
-      .get<{ game: GameState }>(`${this.apiUrl}/game/${gameId}`)
-      .pipe(catchError(() => of({ game: null })))
-      .subscribe((res) => {
-        if (res.game) {
-          this.gameState.set(res.game);
-        }
-      });
+    this.socket.on('draw_declined', (data: any) => {
+      if (data.gameId !== gameId) return;
+      this.gameState.update(g => g ? ({ ...g, draw_offered_by: null }) : null);
+    });
+
+    this.socket.on('opponent_away_countdown', (data: any) => {
+      if (data.gameId !== gameId) return;
+      const g = this.gameState();
+      if (!g) return;
+      
+      // Update signal ONLY if the user is the one STAYING (not the one who is away)
+      if (data.absentPlayerColor !== g.my_color) {
+        this.opponentAwayCountdown.set(data.secondsRemaining);
+      }
+    });
+
+    this.socket.on('opponent_returned', (data: any) => {
+      if (data.gameId !== gameId) return;
+      this.opponentAwayCountdown.set(null);
+    });
+
+    // The initial state is already set by loadGame/checkActiveGame/pollForMatch
+    // before calling setupGameChannel. We only need to listen for events now.
   }
 
   loadGameAndNavigate(gameId: string): void {
     this.http
       .get<{ game: GameState }>(`${this.apiUrl}/game/${gameId}`)
-      .pipe(catchError(() => of({ game: null })))
+      .pipe(
+        catchError((error) => {
+          if (error.status === 503) {
+            this.isServiceMaintenance.set(true);
+          }
+          return of({ game: null });
+        })
+      )
       .subscribe((res) => {
         if (res.game) {
+          this.isServiceMaintenance.set(false);
           this.gameState.set(res.game);
           this.connectSocket();
           this.subscribeToGame(gameId);
