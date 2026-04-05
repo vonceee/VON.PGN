@@ -331,19 +331,22 @@ export class GameService implements OnDestroy {
 
     console.log('[Game] Connecting socket with auth:', {
       hasToken: !!token,
-      userId: user?.id,
-      userName: user?.name,
+      userId: user?.uid,
+      userName: user?.username,
       isAuthenticated: this.authService.isAuthenticated()
     });
 
-    // Don't connect if user is not authenticated
-    if (!user?.id) {
-      console.log('[Game] Not connecting socket - user not authenticated');
+    // Don't connect if user data is not available
+    if (!user?.uid) {
+      console.log('[Game] Not connecting socket - user data not available');
+      console.log('[Game] Current user object:', user);
+      console.log('[Game] Auth service initialized:', this.authService.isInitialized());
+      console.log('[Game] Is authenticated:', this.authService.isAuthenticated());
       return;
     }
 
     this.socket = io(this.socketUrl, {
-      auth: { token, userId: user.id, userName: user.name },
+      auth: { token, userId: user.uid, userName: user.username },
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionAttempts: 5,
