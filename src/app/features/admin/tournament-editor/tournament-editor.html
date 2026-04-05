@@ -13,1081 +13,137 @@
   </div>
 
   <!-- Progress Indicator -->
-  <div class="progress-bar mb-10">
-    <div class="progress-steps">
-      @for (step of steps; track step.key; let i = $index) {
-      <div class="step-item" [ngClass]="'step-' + getStepStatus(i)">
-        <!-- Connector line (before step) -->
-        @if (i > 0) {
-        <div class="step-connector" [ngClass]="{'completed': stepsCompleted().has(i)}"></div>
-        }
-        <!-- Step circle -->
-        <button type="button" class="step-circle" [disabled]="!isStepClickable(i)" (click)="goToStep(i)">
-          @if (getStepStatus(i) === 'completed') {
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-            <path fill-rule="evenodd"
-              d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
-              clip-rule="evenodd" />
-          </svg>
-          } @else {
-          {{ i + 1 }}
-          }
-        </button>
-        <!-- Step label -->
-        <span class="step-label">{{ step.label }}</span>
-      </div>
-      }
-    </div>
-  </div>
+  <app-step-indicator
+    [steps]="steps"
+    [currentStep]="currentStep()"
+    [stepsCompleted]="stepsCompleted()"
+    [isEditMode]="!!tournamentId()"
+    (goToStep)="goToStep($event)"
+  ></app-step-indicator>
 
   <!-- Form -->
   <form [formGroup]="tournamentForm">
 
     <!-- Step 1: Basic Info -->
     @if (currentStep() === 0) {
-    <div class="step-content">
-      <h2 class="step-title">Basic Information</h2>
-      <div class="field-row" style="grid-template-columns: 7fr 3fr;">
-        <div class="field-group">
-          <label class="field-label required">Tournament Name</label>
-          <div class="flex gap-2 items-start">
-            <input type="text" formControlName="name" placeholder="e.g. Mobile Chess Bus Tournament 2026"
-              class="flex-1 p-3 border rounded focus:outline-none transition-colors" [class]="inputClass('name')" (blur)="hasError('name')" />
-            <span class="char-counter" [class.near-limit]="isNearLimit('name')">{{ getCharCount('name') }}/{{ getCharLimit('name') }}</span>
-          </div>
-          @if (hasError('name')) {
-          <div class="field-error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd"
-                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ getError('name') }}
-          </div>
-          }
-        </div>
-        <div class="field-group">
-          <label class="field-label required">Status</label>
-          <select formControlName="status" [class]="inputClass('status')">
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="past">Past</option>
-          </select>
-          @if (hasError('status')) {
-          <div class="field-error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd"
-                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ getError('status') }}
-          </div>
-          }
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label optional">Description</label>
-        <div class="relative">
-          <textarea formControlName="description" rows="5"
-            placeholder="you can add description, social media links, etc..."
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors pb-6"></textarea>
-          <span class="char-counter textarea-counter" [class.near-limit]="isNearLimit('description')">{{ getCharCount('description') }}/{{ getCharLimit('description') }}</span>
-        </div>
-      </div>
-    </div>
+      <app-step-basic-info
+        [form]="tournamentForm"
+        [getError]="getError.bind(this)"
+      ></app-step-basic-info>
     }
 
     <!-- Step 2: Dates & Location -->
     @if (currentStep() === 1) {
-    <div class="step-content">
-      <h2 class="step-title">Dates & Location</h2>
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label required">Start Date</label>
-          <input type="date" formControlName="startDate" [class]="inputClass('startDate')" />
-          @if (hasError('startDate')) {
-          <div class="field-error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd"
-                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ getError('startDate') }}
-          </div>
-          }
-        </div>
-        <div class="field-group">
-          <label class="field-label required">End Date</label>
-          <input type="date" formControlName="endDate" [class]="inputClass('endDate')" />
-          @if (hasError('endDate')) {
-          <div class="field-error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd"
-                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ getError('endDate') }}
-          </div>
-          }
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label optional">Registration Deadline</label>
-        <input type="date" formControlName="registrationDeadline"
-          class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-      </div>
-      <div class="field-group">
-        <label class="field-label required">Venue Location</label>
-        <div class="flex gap-2">
-          <input type="text" formControlName="location"
-            placeholder="e.g. Kai Mall, Almar, Zabarte, Caloocan City, Metro Manila" [class]="inputClass('location')" />
-          <span class="char-counter" [class.near-limit]="isNearLimit('location')">{{ getCharCount('location') }}/{{ getCharLimit('location') }}</span>
-        </div>
-        @if (hasError('location')) {
-        <div class="field-error">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-            <path fill-rule="evenodd"
-              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-              clip-rule="evenodd" />
-          </svg>
-          {{ getError('location') }}
-        </div>
-        }
-      </div>
-      <div class="field-group">
-        <label class="field-label optional">Google Maps Link</label>
-        <div class="flex gap-2">
-          <input type="text" [ngModel]="mapsLink()" (ngModelChange)="mapsLink.set($event)"
-            [ngModelOptions]="{standalone: true}" placeholder="Paste a Google Maps share link..."
-            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-          <button type="button" (click)="parseMapsLink()" [disabled]="mapsLinkLoading()"
-            class="px-4 py-3 rounded font-medium text-sm whitespace-nowrap bg-cyan-400 hover:bg-cyan-500 text-slate-900 disabled:opacity-50 transition-colors">
-            {{ mapsLinkLoading() ? 'Resolving...' : 'Parse Link' }}
-          </button>
-        </div>
-        @if (mapsLinkError()) {
-        <p class="text-xs text-red-500 mt-1.5">{{ mapsLinkError() }}</p>
-        }
-        <p class="text-xs text-slate-500 mt-1.5">Click Share on Google Maps, copy the link, and paste it here to
-          auto-fill coordinates</p>
-      </div>
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label muted">Latitude</label>
-          <input type="number" step="0.0001" formControlName="lat"
-            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded focus:outline-none text-sm transition-colors" />
-        </div>
-        <div class="field-group">
-          <label class="field-label muted">Longitude</label>
-          <input type="number" step="0.0001" formControlName="lng"
-            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded focus:outline-none text-sm transition-colors" />
-        </div>
-      </div>
-    </div>
+      <app-step-dates-location
+        [form]="tournamentForm"
+        [getError]="getError.bind(this)"
+        [mapsLink]="mapsLink"
+        [mapsLinkLoading]="mapsLinkLoading"
+        [mapsLinkError]="mapsLinkError"
+        [verificationStatus]="verificationStatus"
+        (parseMapsLink)="parseMapsLink()"
+      ></app-step-dates-location>
     }
 
     <!-- Step 3: Format -->
     @if (currentStep() === 2) {
-    <div class="step-content">
-      <h2 class="step-title">Format & Rules</h2>
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label required">Format</label>
-          <div class="flex gap-2">
-            <input type="text" formControlName="format" placeholder="e.g. Swiss System, 9 Rounds"
-              [class]="inputClass('format')" />
-            <span class="char-counter" [class.near-limit]="isNearLimit('format')">{{ getCharCount('format') }}/{{ getCharLimit('format') }}</span>
-          </div>
-          @if (hasError('format')) {
-          <div class="field-error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd"
-                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ getError('format') }}
-          </div>
-          }
-        </div>
-        <div class="field-group">
-          <label class="field-label required">Time Control</label>
-          <div class="flex gap-2">
-            <input type="text" formControlName="timeControl" placeholder="e.g. 90 min + 30 sec increment"
-              [class]="inputClass('timeControl')" />
-            <span class="char-counter" [class.near-limit]="isNearLimit('timeControl')">{{ getCharCount('timeControl') }}/{{ getCharLimit('timeControl') }}</span>
-          </div>
-          @if (hasError('timeControl')) {
-          <div class="field-error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd"
-                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ getError('timeControl') }}
-          </div>
-          }
-        </div>
-      </div>
-      <div class="field-row three-col">
-        <div class="field-group">
-          <label class="field-label required">Rounds</label>
-          <input type="number" formControlName="rounds" [class]="inputClass('rounds')" />
-          @if (hasError('rounds')) {
-          <div class="field-error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd"
-                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ getError('rounds') }}
-          </div>
-          }
-        </div>
-        <div class="field-group">
-          <label class="field-label optional">Max Participants</label>
-          <input type="number" formControlName="maxParticipants" (input)="onNumberInput('maxParticipants', $event)"
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-        </div>
-        <div class="field-group">
-          <label class="field-label optional">Current Participants</label>
-          <input type="number" formControlName="currentParticipants" (input)="onNumberInput('currentParticipants', $event)"
-            class="w-full p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field-group">
-          <label class="field-label required">Entry Fee</label>
-          <div class="currency-input-wrapper" [class.error]="hasError('entryFee')">
-            <span class="currency-prefix">&#8369;</span>
-            <input type="text" formControlName="entryFee" placeholder="0.00"
-              class="currency-input"
-              (input)="onCurrencyInput('entryFee', $event)"
-              (focus)="onCurrencyFocus($event)"
-              (blur)="onCurrencyBlur('entryFee', $event)" />
-          </div>
-          @if (hasError('entryFee')) {
-          <div class="field-error">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd"
-                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ getError('entryFee') }}
-          </div>
-          }
-        </div>
-        <div class="field-group">
-          <label class="field-label optional">Total Prize Pool</label>
-          <div class="currency-input-wrapper">
-            <span class="currency-prefix">&#8369;</span>
-            <input type="text" formControlName="prizePool" placeholder="0.00"
-              class="currency-input"
-              (input)="onCurrencyInput('prizePool', $event)"
-              (focus)="onCurrencyFocus($event)"
-              (blur)="onCurrencyBlur('prizePool', $event)" />
-          </div>
-        </div>
-      </div>
-    </div>
+      <app-step-format-rules
+        [form]="tournamentForm"
+        [getError]="getError.bind(this)"
+      ></app-step-format-rules>
     }
 
     <!-- Step 4: Organizer -->
     @if (currentStep() === 3) {
-    <div class="step-content">
-      <h2 class="step-title">Organizer</h2>
-      <div class="field-group">
-        <label class="field-label required">Organizer Name</label>
-        <div class="flex gap-2">
-          <input type="text" formControlName="organizer" placeholder="e.g. National Chess Federation of the Philippines"
-            [class]="inputClass('organizer')" />
-          <span class="char-counter" [class.near-limit]="isNearLimit('organizer')">{{ getCharCount('organizer') }}/{{ getCharLimit('organizer') }}</span>
-        </div>
-        @if (hasError('organizer')) {
-        <div class="field-error">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-            <path fill-rule="evenodd"
-              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-              clip-rule="evenodd" />
-          </svg>
-          {{ getError('organizer') }}
-        </div>
-        }
-      </div>
-      <div class="field-group">
-        <label class="field-label required">Contact</label>
-        <div class="flex gap-2">
-          <input type="text" formControlName="contact" placeholder="e.g. tournaments@ncfph.org or 0917-123-4567"
-            [class]="inputClass('contact')" />
-          <span class="char-counter" [class.near-limit]="isNearLimit('contact')">{{ getCharCount('contact') }}/{{ getCharLimit('contact') }}</span>
-        </div>
-        @if (hasError('contact')) {
-        <div class="field-error">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-            <path fill-rule="evenodd"
-              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-              clip-rule="evenodd" />
-          </svg>
-          {{ getError('contact') }}
-        </div>
-        }
-      </div>
-      <div class="field-group">
-        <label class="field-label optional">Link</label>
-        <div class="flex gap-2">
-          <input type="url" formControlName="link" placeholder="e.g. https://facebook.com/posts/your-tournament-updates"
-            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-          <span class="char-counter" [class.near-limit]="isNearLimit('link')">{{ getCharCount('link') }}/{{ getCharLimit('link') }}</span>
-        </div>
-        <p class="text-xs text-slate-500 mt-1.5">Optional — link to a Facebook post or page for tournament updates</p>
-      </div>
-    </div>
+      <app-step-organizer
+        [form]="tournamentForm"
+        [getError]="getError.bind(this)"
+      ></app-step-organizer>
     }
 
     <!-- Step 5: Registration -->
     @if (currentStep() === 4) {
-    <div class="step-content">
-      <h2 class="step-title">Registration Instructions</h2>
-      <p class="text-xs text-slate-500 mb-4">Provide instructions how to join your tournament (e.g. you can put here your google form links).</p>
-      <div class="field-group">
-        <label class="field-label required">Registration Instructions</label>
-        <div class="relative">
-          <textarea formControlName="registrationInstructions" rows="8"
-            placeholder="e.g. to register, fill up this google form, or contact 0917-XXX-XXXX"
-            class="w-full p-3 border rounded focus:outline-none transition-colors pb-6" [class]="inputClass('registrationInstructions')"></textarea>
-          <span class="char-counter textarea-counter" [class.near-limit]="isNearLimit('registrationInstructions')">{{ getCharCount('registrationInstructions') }}/{{ getCharLimit('registrationInstructions') }}</span>
-        </div>
-        @if (hasError('registrationInstructions')) {
-        <div class="field-error">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-            <path fill-rule="evenodd"
-              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-              clip-rule="evenodd" />
-          </svg>
-          {{ getError('registrationInstructions') }}
-        </div>
-        }
-      </div>
-    </div>
+      <app-step-registration
+        [form]="tournamentForm"
+        [getError]="getError.bind(this)"
+      ></app-step-registration>
     }
 
     <!-- Step 6: Eligibility -->
     @if (currentStep() === 5) {
-    <div class="step-content">
-      <h2 class="step-title">Eligibility Requirements</h2>
-      <p class="text-xs text-slate-500 mb-4">Optional — you can add rating ranges, or other requirements.</p>
-      <div class="space-y-3">
-        @for (control of eligibilityArray.controls; track $index; let i = $index) {
-        <div class="flex gap-2 items-center">
-          <input type="text" [formControl]="eligibilityControl(i)" placeholder="e.g. 2200 & Below"
-            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-          <button type="button" (click)="removeEligibilityItem(i)"
-            class="p-2 rounded bg-red-500 hover:bg-red-600 text-white text-sm transition-colors">✕</button>
-        </div>
-        }
-        <button type="button" (click)="addEligibilityItem()"
-          class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add Requirement</button>
-      </div>
-    </div>
+      <app-step-eligibility
+        [eligibilityArray]="eligibilityArray"
+        (addItem)="addEligibilityItem()"
+        (removeItem)="removeEligibilityItem($event)"
+      ></app-step-eligibility>
     }
 
     <!-- Step 7: Prizes -->
     @if (currentStep() === 6) {
-    <div class="step-content">
-      <h2 class="step-title">Prize Categories</h2>
-      <p class="text-xs text-slate-500 mb-4">Optional — skip if you only have a total prize pool (set in Format step).
-      </p>
-      @if (categoriesArray.length === 0) {
-      <p class="text-slate-400 text-sm py-4 text-center">No prize categories added.</p>
-      }
-      <div class="space-y-6">
-        @for (cat of categoriesArray.controls; track $index; let ci = $index) {
-        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-lg p-5">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="font-bold text-lg m-0">Category {{ ci + 1 }}</h3>
-            <button type="button" (click)="removeCategory(ci)"
-              class="px-2 py-1 text-xs rounded font-medium bg-red-500 hover:bg-red-600 text-white transition-colors">Remove</button>
-          </div>
-          <div class="field-group mb-4">
-            <label class="block mb-1 text-sm font-medium">Category Name</label>
-            <input type="text" [formControl]="$any(categoryGroup(ci).get('name'))" placeholder="e.g. Open, Under 14"
-              class="w-full p-2.5 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-          </div>
-          <div class="field-group mb-4">
-            <div class="flex justify-between items-center mb-2">
-              <label class="text-sm font-medium">Category Eligibility</label>
-              <button type="button" (click)="addCategoryEligibility(ci)"
-                class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add</button>
-            </div>
-            @for (el of getCategoryEligibility(ci).controls; track $index; let ei = $index) {
-            <div class="flex gap-2 items-center mb-2">
-              <input type="text" [formControl]="categoryEligibilityControl(ci, ei)"
-                placeholder="e.g. Bonafide NCFP member"
-                class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              <button type="button" (click)="removeCategoryEligibility(ci, ei)"
-                class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs transition-colors">✕</button>
-            </div>
-            }
-          </div>
-          <div class="mb-4">
-            <label class="text-sm font-medium block mb-2">Main Prizes</label>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">Champion</label>
-                <input type="text" [formControl]="$any(categoryGroup(ci).get('champion'))"
-                  placeholder="P50,000 + trophy"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              </div>
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">2nd Place</label>
-                <input type="text" [formControl]="$any(categoryGroup(ci).get('2nd_place'))"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              </div>
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">3rd Place</label>
-                <input type="text" [formControl]="$any(categoryGroup(ci).get('3rd_place'))"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              </div>
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">4th Place</label>
-                <input type="text" [formControl]="$any(categoryGroup(ci).get('4th_place'))"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              </div>
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">5th Place</label>
-                <input type="text" [formControl]="$any(categoryGroup(ci).get('5th_place'))"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              </div>
-            </div>
-            @if (getCategoryExtraPrizes(ci).length > 0) {
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
-              @for (ep of getCategoryExtraPrizes(ci).controls; track $index; let ei = $index) {
-              <div class="flex gap-2 items-start">
-                <div class="flex-1">
-                  <div class="flex gap-2 items-center mb-1">
-                    <input type="text" [formControl]="$any(extraPrizeGroup(ci, ei).get('label'))" placeholder="e.g. 6th Place"
-                      class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-                    <button type="button" (click)="removeExtraPrize(ci, ei)"
-                      class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs transition-colors">✕</button>
-                  </div>
-                  <input type="text" [formControl]="$any(extraPrizeGroup(ci, ei).get('value'))" placeholder="Prize value"
-                    class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-                </div>
-              </div>
-              }
-            </div>
-            }
-            <button type="button" (click)="addExtraPrize(ci)"
-              class="mt-3 text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add Place</button>
-          </div>
-          <div>
-            <div class="flex justify-between items-center mb-2">
-              <label class="text-sm font-medium">Special Awards</label>
-              <button type="button" (click)="addSpecialAward(ci)"
-                class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add</button>
-            </div>
-            @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded p-3 mb-3">
-              <div class="flex gap-2 items-center mb-2">
-                <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('name'))" placeholder="Award name"
-                  class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-                <select [formControl]="$any(specialAwardGroup(ci, ai).get('type'))"
-                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 bg-white dark:bg-slate-900 transition-colors">
-                  <option value="simple">Simple</option>
-                  <option value="nested">1st/2nd/3rd</option>
-                </select>
-                <button type="button" (click)="removeSpecialAward(ci, ai)"
-                  class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs transition-colors">✕</button>
-              </div>
-              @if ($any(specialAwardGroup(ci, ai).get('type')).value === 'simple') {
-              <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('value'))" placeholder="Prize value"
-                class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              } @else {
-              <div class="grid grid-cols-3 gap-2">
-                <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('1st'))" placeholder="1st prize"
-                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-                <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('2nd'))" placeholder="2nd prize"
-                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-                <input type="text" [formControl]="$any(specialAwardGroup(ci, ai).get('3rd'))" placeholder="3rd prize"
-                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              </div>
-              }
-            </div>
-            }
-          </div>
-        </div>
-        }
-        <button type="button" (click)="addCategory()"
-          class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add Category</button>
-      </div>
-    </div>
+      <app-step-prizes
+        [categoriesArray]="categoriesArray"
+        (addCategory)="addCategory()"
+        (removeCategory)="removeCategory($event)"
+        (addExtraPrize)="addExtraPrize($event)"
+        (removeExtraPrize)="removeExtraPrize($event.ci, $event.ei)"
+        (addSpecialAward)="addSpecialAward($event)"
+        (removeSpecialAward)="removeSpecialAward($event.ci, $event.ai)"
+      ></app-step-prizes>
     }
 
     <!-- Step 8: Schedule -->
     @if (currentStep() === 7) {
-    <div class="step-content">
-      <h2 class="step-title">Schedule</h2>
-      <p class="text-xs text-slate-500 mb-4">Optional — you can add onsite registration time, and/or starting round
-        time.</p>
-      @if (scheduleDaysArray.length === 0) {
-      <p class="text-slate-400 text-sm py-4 text-center">No schedule days added yet.</p>
-      }
-      <div class="space-y-4">
-        @for (day of scheduleDaysArray.controls; track $index; let di = $index) {
-        <div class="bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-lg p-5">
-          <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center gap-3">
-              <span class="bg-slate-200 dark:bg-white/10 px-2 py-1 rounded text-xs font-bold">Day {{ di + 1 }}</span>
-              <input type="date" [formControl]="$any(scheduleDayGroup(di).get('date'))"
-                class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-            </div>
-            <div class="flex gap-2">
-              <button type="button" (click)="addScheduleEvent(di)"
-                class="px-2 py-1 text-xs rounded font-medium bg-cyan-400 hover:bg-cyan-500 text-slate-900 transition-colors">+
-                Event</button>
-              <button type="button" (click)="removeScheduleDay(di)"
-                class="px-2 py-1 text-xs rounded font-medium bg-red-500 hover:bg-red-600 text-white transition-colors">Remove
-                Day</button>
-            </div>
-          </div>
-          <div class="space-y-2">
-            @for (event of getScheduleEvents(di).controls; track $index; let ei = $index) {
-            <div class="flex gap-2 items-center">
-              <input type="text" [formControl]="$any(scheduleEventGroup(di, ei).get('name'))"
-                placeholder="e.g. Onsite Registration"
-                class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              <input type="text" [formControl]="$any(scheduleEventGroup(di, ei).get('time'))"
-                placeholder="Time (e.g. 9:00 AM - 11:00 AM)"
-                class="w-56 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" />
-              <button type="button" (click)="removeScheduleEvent(di, ei)"
-                class="p-1.5 rounded bg-red-500 hover:bg-red-600 text-white text-xs transition-colors">✕</button>
-            </div>
-            }
-            @if (getScheduleEvents(di).length === 0) {
-            <p class="text-slate-400 text-xs">No events for this day.</p>
-            }
-          </div>
-        </div>
-        }
-        <button type="button" (click)="addScheduleDay()"
-          class="text-xs text-cyan-500 hover:text-cyan-400 transition-colors">+ Add Day</button>
-      </div>
-    </div>
+      <app-step-schedule
+        [scheduleDaysArray]="scheduleDaysArray"
+        (addScheduleDay)="addScheduleDay()"
+        (removeScheduleDay)="removeScheduleDay($event)"
+        (addScheduleEvent)="addScheduleEvent($event)"
+        (removeScheduleEvent)="removeScheduleEvent($event.di, $event.ei)"
+      ></app-step-schedule>
     }
 
     <!-- Step 9: Review -->
     @if (currentStep() === 8) {
-    <div class="step-content">
-      <h2 class="step-title">Review & Submit</h2>
-      <p class="text-sm text-slate-500 mb-8">Review all information before submitting. Click any section header to go
-        back and edit.</p>
+      <app-review-section
+        [data]="buildTournamentData()"
+        [comparePrizeKeys]="comparePrizeKeys"
+        (editStep)="goToStep($event)"
+      ></app-review-section>
 
       @if (buildTournamentData(); as data) {
-      <!-- Basic Info -->
-      <div class="review-section">
-        <div class="review-header" (click)="goToStep(0)">
-          <h3>Basic Information</h3>
-          <span class="review-edit">Edit</span>
-        </div>
-        <div class="review-grid">
-          <div class="review-item">
-            <span class="review-label">Name</span>
-            <span class="review-value">{{ $any(data)['name'] || '—' }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Status</span>
-            <span class="review-value capitalize">{{ $any(data)['status'] }}</span>
-          </div>
-          @if ($any(data)['description']) {
-          <div class="review-item full-width">
-            <span class="review-label">Description</span>
-            <span class="review-value">{{ $any(data)['description'] }}</span>
-          </div>
-          }
-        </div>
-      </div>
-
-      <!-- Dates & Location -->
-      <div class="review-section">
-        <div class="review-header" (click)="goToStep(1)">
-          <h3>Dates & Location</h3>
-          <span class="review-edit">Edit</span>
-        </div>
-        <div class="review-grid">
-          <div class="review-item">
-            <span class="review-label">Dates</span>
-            <span class="review-value">{{ formatDate($any(data)['dates']['start']) }} - {{
-              formatDate($any(data)['dates']['end']) }}</span>
-          </div>
-          @if ($any(data)['registrationDeadline']) {
-          <div class="review-item">
-            <span class="review-label">Registration Deadline</span>
-            <span class="review-value">{{ formatDate($any(data)['registrationDeadline']) }}</span>
-          </div>
-          }
-          <div class="review-item">
-            <span class="review-label">Location</span>
-            <span class="review-value">{{ $any(data)['location'] || '—' }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Coordinates</span>
-            <span class="review-value">{{ $any(data)['coordinates']['lat'] }}, {{ $any(data)['coordinates']['lng']
-              }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Format -->
-      <div class="review-section">
-        <div class="review-header" (click)="goToStep(2)">
-          <h3>Format & Rules</h3>
-          <span class="review-edit">Edit</span>
-        </div>
-        <div class="review-grid">
-          <div class="review-item">
-            <span class="review-label">Format</span>
-            <span class="review-value">{{ $any(data)['format'] || '—' }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Time Control</span>
-            <span class="review-value">{{ $any(data)['timeControl'] || '—' }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Rounds</span>
-            <span class="review-value">{{ $any(data)['rounds'] }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Participants</span>
-            <span class="review-value">{{ $any(data)['participants']['current'] }} / {{
-              $any(data)['participants']['max'] }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Entry Fee</span>
-            <span class="review-value">{{ $any(data)['entryFee'] || '—' }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Prize Pool</span>
-            <span class="review-value">{{ $any(data)['prizePool'] || '—' }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Organizer -->
-      <div class="review-section">
-        <div class="review-header" (click)="goToStep(3)">
-          <h3>Organizer</h3>
-          <span class="review-edit">Edit</span>
-        </div>
-        <div class="review-grid">
-          <div class="review-item">
-            <span class="review-label">Organizer</span>
-            <span class="review-value">{{ $any(data)['organizer'] || '—' }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Contact</span>
-            <span class="review-value">{{ $any(data)['contact'] || '—' }}</span>
-          </div>
-          @if ($any(data)['link']) {
-          <div class="review-item">
-            <span class="review-label">Link</span>
-            <span class="review-value">{{ $any(data)['link'] }}</span>
-          </div>
-          }
-        </div>
-      </div>
-
-      <!-- Registration Instructions -->
-      <div class="review-section">
-        <div class="review-header" (click)="goToStep(4)">
-          <h3>Registration Instructions</h3>
-          <span class="review-edit">Edit</span>
-        </div>
-        @if ($any(data)['registrationInstructions']) {
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2 whitespace-pre-line">{{ $any(data)['registrationInstructions'] }}</p>
-        } @else {
-        <p class="text-sm text-slate-400 mt-2">No registration instructions specified.</p>
-        }
-      </div>
-
-      <!-- Eligibility -->
-      <div class="review-section">
-        <div class="review-header" (click)="goToStep(5)">
-          <h3>Eligibility</h3>
-          <span class="review-edit">Edit</span>
-        </div>
-        @if ($any(data)['eligibility']?.length) {
-        <ul class="space-y-1 mt-2">
-          @for (req of $any(data)['eligibility']; track req) {
-          <li class="text-sm flex items-start gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
-            {{ req }}
-          </li>
-          }
-        </ul>
-        } @else {
-        <p class="text-sm text-slate-400 mt-2">No eligibility requirements specified.</p>
-        }
-      </div>
-
-      <!-- Prizes -->
-      <div class="review-section">
-        <div class="review-header" (click)="goToStep(6)">
-          <h3>Prizes</h3>
-          <span class="review-edit">Edit</span>
-        </div>
-        @if ($any(data)['categories']) {
-        @for (cat of ($any(data)['categories'] | keyvalue); track cat.key) {
-        <div class="mt-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
-          <h4 class="font-bold mb-2 capitalize">{{ $any(cat.key).replace('_', ' ') }}</h4>
-          <table class="w-full text-sm">
-            <tbody>
-              @for (prize of ($any(cat.value)['prizes'] | keyvalue: comparePrizeKeys); track prize.key) {
-              <tr class="border-t border-border-theme first:border-0">
-                <td class="py-1.5 font-semibold capitalize">{{ $any(prize.key).replace('_', ' ') }}</td>
-                <td class="py-1.5 text-right text-slate-600 dark:text-slate-400">{{ prize.value }}</td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-        }
-        } @else {
-        <p class="text-sm text-slate-400 mt-2">No prize categories specified.</p>
-        }
-      </div>
-
-      <!-- Schedule -->
-      <div class="review-section">
-        <div class="review-header" (click)="goToStep(7)">
-          <h3>Schedule</h3>
-          <span class="review-edit">Edit</span>
-        </div>
-        @if ($any(data)['schedule']) {
-        @for (day of ($any(data)['schedule'] | keyvalue); track day.key) {
-        <div class="mt-3 border border-border-theme rounded-lg overflow-hidden">
-          <div class="bg-slate-50 dark:bg-slate-800/50 px-4 py-2 border-b border-border-theme">
-            <span class="text-xs font-bold text-cyan-500 uppercase">{{ $any(day.key).replace('_', ' ') }}</span>
-            <span class="text-sm text-slate-600 dark:text-slate-400 ml-2">{{ formatDate(day.value.date) }}</span>
-          </div>
-          <table class="w-full text-sm">
-            <tbody>
-              @for (event of day.value.events; track event.name) {
-              <tr class="border-t border-border-theme first:border-0">
-                <td class="px-4 py-1.5 font-semibold">{{ event.name }}</td>
-                <td class="px-4 py-1.5 text-right text-slate-600 dark:text-slate-400">{{ event.time }}</td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-        }
-        } @else {
-        <p class="text-sm text-slate-400 mt-2">No schedule specified.</p>
-        }
-      </div>
-
-      <!-- Poster Section -->
-      <div class="poster-section">
-        <div class="poster-section-header">
-          <h3 class="poster-section-title">Tournament Poster</h3>
-          <div class="poster-theme-toggle">
-            <button type="button" class="poster-theme-btn" [class.active]="posterTheme() === 'dark'" (click)="posterTheme.set('dark')">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                <path fill-rule="evenodd" d="M7.455 2.004a.75.75 0 0 1 .26.77 7 7 0 0 0 9.958 7.967.75.75 0 0 1 1.067.853A8.5 8.5 0 1 1 6.647.122a.75.75 0 0 1 .808.868Z" clip-rule="evenodd" />
-              </svg>
-              Dark
-            </button>
-            <button type="button" class="poster-theme-btn" [class.active]="posterTheme() === 'light'" (click)="posterTheme.set('light')">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                <path d="M10 2a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 10 2ZM10 15a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 10 15ZM10 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM15.657 5.404a.75.75 0 1 0-1.06-1.06l-1.061 1.06a.75.75 0 0 0 1.06 1.061l1.06-1.06ZM6.464 14.596a.75.75 0 1 0-1.06-1.06l-1.06 1.06a.75.75 0 0 0 1.06 1.06l1.06-1.06ZM18 10a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 18 10ZM5 10a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 5 10ZM14.596 15.657a.75.75 0 0 0 1.06-1.06l-1.06-1.061a.75.75 0 1 0-1.06 1.06l1.06 1.06ZM5.404 6.464a.75.75 0 0 0 1.06-1.06l-1.06-1.06a.75.75 0 1 0-1.061 1.06l1.06 1.06Z" />
-              </svg>
-              Light
-            </button>
-          </div>
-        </div>
-
-        <div class="poster-preview-wrapper">
-          @if (posterTheme() === 'dark') {
-          <div class="poster-preview-scale">
-            <div class="poster-canvas poster-dark">
-              <div class="poster-top-accent"></div>
-              <div class="poster-header">
-                <h1 class="poster-title">{{ $any(buildTournamentData())['name'] || 'Tournament Name' }}</h1>
-                @if (posterDate) { <p class="poster-subtitle">{{ posterDate }}</p> }
-                @if ($any(buildTournamentData())['location']) { <p class="poster-subtitle">{{ $any(buildTournamentData())['location'] }}</p> }
-                <div class="poster-meta-row">
-                  @if ($any(buildTournamentData())['timeControl'] && $any(buildTournamentData())['rounds']) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['timeControl'] }} &middot; {{ $any(buildTournamentData())['rounds'] }} Rounds</span>
-                  } @else if ($any(buildTournamentData())['timeControl']) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['timeControl'] }}</span>
-                  } @else if ($any(buildTournamentData())['rounds']) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['rounds'] }} Rounds</span>
-                  }
-                </div>
-                <div class="poster-meta-row">
-                  @if ($any(buildTournamentData())['entryFee'] && $any(buildTournamentData())['participants']?.max) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['entryFee'] }} &middot; {{ $any(buildTournamentData())['participants']['max'] }} Slots</span>
-                  } @else if ($any(buildTournamentData())['entryFee']) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['entryFee'] }}</span>
-                  } @else if ($any(buildTournamentData())['participants']?.max) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['participants']['max'] }} Slots</span>
-                  }
-                </div>
-              </div>
-              @if ($any(buildTournamentData())?.['categories'] && posterPrizeCategories.length) {
-              <div class="poster-divider"></div>
-              <div class="poster-prizes-section">
-                <div class="poster-prizes-header">PRIZES</div>
-                @for (cat of posterPrizeCategories; track cat.category) {
-                <div class="poster-prize-category">{{ cat.category }}</div>
-                @for (prize of cat.prizes; track prize.place) {
-                <div class="poster-prize-row">
-                  <span class="poster-prize-place">{{ prize.place }}</span>
-                  <span class="poster-prize-value">{{ prize.value }}</span>
-                </div>
-                }
-                <div class="poster-special-awards-header">SPECIAL AWARDS</div>
-                @for (award of cat.specialAwards; track $index) {
-                <div class="poster-prize-row">
-                  <span class="poster-prize-place">{{ award.name }}</span>
-                  <span class="poster-prize-value">{{ award.value }}</span>
-                </div>
-                }
-                }
-              </div>
-              }
-              <div class="poster-divider"></div>
-              <div class="poster-footer">
-                @if ($any(buildTournamentData())['organizer']) { <span class="poster-organizer">{{ $any(buildTournamentData())['organizer'] }}</span> }
-                @if ($any(buildTournamentData())['contact']) { <span class="poster-contact">{{ $any(buildTournamentData())['contact'] }}</span> }
-              </div>
-              <div class="poster-branding">VON.CHESS</div>
-            </div>
-          </div>
-          } @else {
-          <div class="poster-preview-scale">
-            <div class="poster-canvas poster-light">
-              <div class="poster-top-accent"></div>
-              <div class="poster-header">
-                <h1 class="poster-title">{{ $any(buildTournamentData())['name'] || 'Tournament Name' }}</h1>
-                @if (posterDate) { <p class="poster-subtitle">{{ posterDate }}</p> }
-                @if ($any(buildTournamentData())['location']) { <p class="poster-subtitle">{{ $any(buildTournamentData())['location'] }}</p> }
-                <div class="poster-meta-row">
-                  @if ($any(buildTournamentData())['timeControl'] && $any(buildTournamentData())['rounds']) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['timeControl'] }} &middot; {{ $any(buildTournamentData())['rounds'] }} Rounds</span>
-                  } @else if ($any(buildTournamentData())['timeControl']) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['timeControl'] }}</span>
-                  } @else if ($any(buildTournamentData())['rounds']) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['rounds'] }} Rounds</span>
-                  }
-                </div>
-                <div class="poster-meta-row">
-                  @if ($any(buildTournamentData())['entryFee'] && $any(buildTournamentData())['participants']?.max) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['entryFee'] }} &middot; {{ $any(buildTournamentData())['participants']['max'] }} Slots</span>
-                  } @else if ($any(buildTournamentData())['entryFee']) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['entryFee'] }}</span>
-                  } @else if ($any(buildTournamentData())['participants']?.max) {
-                  <span class="poster-meta-chunk">{{ $any(buildTournamentData())['participants']['max'] }} Slots</span>
-                  }
-                </div>
-              </div>
-              @if ($any(buildTournamentData())?.['categories'] && posterPrizeCategories.length) {
-              <div class="poster-divider"></div>
-              <div class="poster-prizes-section">
-                <div class="poster-prizes-header">PRIZES</div>
-                @for (cat of posterPrizeCategories; track cat.category) {
-                <div class="poster-prize-category">{{ cat.category }}</div>
-                @for (prize of cat.prizes; track prize.place) {
-                <div class="poster-prize-row">
-                  <span class="poster-prize-place">{{ prize.place }}</span>
-                  <span class="poster-prize-value">{{ prize.value }}</span>
-                </div>
-                }
-                <div class="poster-special-awards-header">SPECIAL AWARDS</div>
-                @for (award of cat.specialAwards; track $index) {
-                <div class="poster-prize-row">
-                  <span class="poster-prize-place">{{ award.name }}</span>
-                  <span class="poster-prize-value">{{ award.value }}</span>
-                </div>
-                }
-                }
-              </div>
-              }
-              <div class="poster-divider"></div>
-              <div class="poster-footer">
-                @if ($any(buildTournamentData())['organizer']) { <span class="poster-organizer">{{ $any(buildTournamentData())['organizer'] }}</span> }
-                @if ($any(buildTournamentData())['contact']) { <span class="poster-contact">{{ $any(buildTournamentData())['contact'] }}</span> }
-              </div>
-              <div class="poster-branding">VON.CHESS</div>
-            </div>
-          </div>
-          }
-        </div>
-
-        <div class="poster-actions">
-          <button type="button" (click)="downloadPoster()" [disabled]="downloadingPoster()" class="btn-primary">
-            @if (downloadingPoster()) {
-            <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Generating...
-            } @else {
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-              <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
-              <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
-            </svg>
-            Download {{ posterTheme() === 'dark' ? 'Dark' : 'Light' }} Poster
-            }
-          </button>
-          <button type="button" (click)="downloadPoster(posterTheme() === 'dark' ? 'light' : 'dark')" [disabled]="downloadingPoster()" class="btn-secondary">
-            Also Download {{ posterTheme() === 'dark' ? 'Light' : 'Dark' }}
-          </button>
-        </div>
-      </div>
+        <app-poster-preview
+          [theme]="posterTheme()"
+          [tournamentData]="data"
+          [posterDate]="posterDate"
+          [prizeCategories]="posterPrizeCategories"
+          [downloading]="downloadingPoster()"
+          (themeChange)="posterTheme.set($event)"
+          (download)="downloadPoster()"
+        ></app-poster-preview>
       }
-    </div>
     }
 
     <!-- Navigation Buttons -->
-    <div class="step-nav">
-      @if (currentStep() > 0) {
-      <app-button variant="outline" size="sm" (click)="prevStep()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-          <path fill-rule="evenodd"
-            d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
-            clip-rule="evenodd" />
-        </svg>
-        Back
+    <div class="flex justify-between mt-10 pt-6 border-t border-border-theme">
+      <app-button
+        variant="ghost"
+        (click)="prevStep()"
+        [disabled]="currentStep() === 0"
+      >
+        Previous
       </app-button>
-      } @else {
-      <div></div>
-      }
 
-      @if (isReviewStep) {
-      <app-button variant="primary" size="sm" (click)="confirmSave()" [disabled]="saving()">
-        @if (saving()) {
-        <svg class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-          </path>
-        </svg>
-        Saving...
+      <div class="flex gap-3">
+        @if (!isLastStep) {
+          <app-button (click)="nextStep()">
+            Next
+          </app-button>
         } @else {
-        {{ tournamentId() ? 'Save Changes' : 'Create Tournament' }}
+          <app-button (click)="confirmSave()" [loading]="saving()">
+            {{ tournamentId() ? 'Update Tournament' : 'Create Tournament' }}
+          </app-button>
         }
-      </app-button>
-      } @else {
-      <app-button variant="primary" size="sm" (click)="nextStep()">
-        Next
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-          <path fill-rule="evenodd"
-            d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z"
-            clip-rule="evenodd" />
-        </svg>
-      </app-button>
-      }
+      </div>
     </div>
   </form>
-
-  <!-- Hidden Capture Elements for html2canvas -->
-  <div #posterDark class="poster-capture-element">
-    <div class="poster-canvas poster-dark">
-      <div class="poster-top-accent"></div>
-      <div class="poster-header">
-        <h1 class="poster-title">{{ $any(buildTournamentData())['name'] || 'Tournament Name' }}</h1>
-        @if (posterDate) { <p class="poster-subtitle">{{ posterDate }}</p> }
-        @if ($any(buildTournamentData())['location']) { <p class="poster-subtitle">{{ $any(buildTournamentData())['location'] }}</p> }
-        <div class="poster-meta-row">
-          @if ($any(buildTournamentData())['timeControl'] && $any(buildTournamentData())['rounds']) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['timeControl'] }} &middot; {{ $any(buildTournamentData())['rounds'] }} Rounds</span>
-          } @else if ($any(buildTournamentData())['timeControl']) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['timeControl'] }}</span>
-          } @else if ($any(buildTournamentData())['rounds']) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['rounds'] }} Rounds</span>
-          }
-        </div>
-        <div class="poster-meta-row">
-          @if ($any(buildTournamentData())['entryFee'] && $any(buildTournamentData())['participants']?.max) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['entryFee'] }} &middot; {{ $any(buildTournamentData())['participants']['max'] }} Slots</span>
-          } @else if ($any(buildTournamentData())['entryFee']) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['entryFee'] }}</span>
-          } @else if ($any(buildTournamentData())['participants']?.max) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['participants']['max'] }} Slots</span>
-          }
-        </div>
-      </div>
-      @if ($any(buildTournamentData())?.['categories'] && posterPrizeCategories.length) {
-      <div class="poster-divider"></div>
-      <div class="poster-prizes-section">
-        <div class="poster-prizes-header">PRIZES</div>
-        @for (cat of posterPrizeCategories; track cat.category) {
-        <div class="poster-prize-category">{{ cat.category }}</div>
-        @for (prize of cat.prizes; track prize.place) {
-        <div class="poster-prize-row">
-          <span class="poster-prize-place">{{ prize.place }}</span>
-          <span class="poster-prize-value">{{ prize.value }}</span>
-        </div>
-        }
-        }
-      </div>
-      }
-      <div class="poster-divider"></div>
-      <div class="poster-footer">
-        @if ($any(buildTournamentData())['organizer']) { <span class="poster-organizer">{{ $any(buildTournamentData())['organizer'] }}</span> }
-        @if ($any(buildTournamentData())['contact']) { <span class="poster-contact">{{ $any(buildTournamentData())['contact'] }}</span> }
-      </div>
-      <div class="poster-branding">VON.CHESS</div>
-    </div>
-  </div>
-
-  <div #posterLight class="poster-capture-element">
-    <div class="poster-canvas poster-light">
-      <div class="poster-top-accent"></div>
-      <div class="poster-header">
-        <h1 class="poster-title">{{ $any(buildTournamentData())['name'] || 'Tournament Name' }}</h1>
-        @if (posterDate) { <p class="poster-subtitle">{{ posterDate }}</p> }
-        @if ($any(buildTournamentData())['location']) { <p class="poster-subtitle">{{ $any(buildTournamentData())['location'] }}</p> }
-        <div class="poster-meta-row">
-          @if ($any(buildTournamentData())['timeControl'] && $any(buildTournamentData())['rounds']) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['timeControl'] }} &middot; {{ $any(buildTournamentData())['rounds'] }} Rounds</span>
-          } @else if ($any(buildTournamentData())['timeControl']) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['timeControl'] }}</span>
-          } @else if ($any(buildTournamentData())['rounds']) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['rounds'] }} Rounds</span>
-          }
-        </div>
-        <div class="poster-meta-row">
-          @if ($any(buildTournamentData())['entryFee'] && $any(buildTournamentData())['participants']?.max) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['entryFee'] }} &middot; {{ $any(buildTournamentData())['participants']['max'] }} Slots</span>
-          } @else if ($any(buildTournamentData())['entryFee']) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['entryFee'] }}</span>
-          } @else if ($any(buildTournamentData())['participants']?.max) {
-          <span class="poster-meta-chunk">{{ $any(buildTournamentData())['participants']['max'] }} Slots</span>
-          }
-        </div>
-      </div>
-      @if ($any(buildTournamentData())?.['categories'] && posterPrizeCategories.length) {
-      <div class="poster-divider"></div>
-      <div class="poster-prizes-section">
-        <div class="poster-prizes-header">PRIZES</div>
-        @for (cat of posterPrizeCategories; track cat.category) {
-        <div class="poster-prize-category">{{ cat.category }}</div>
-        @for (prize of cat.prizes; track prize.place) {
-        <div class="poster-prize-row">
-          <span class="poster-prize-place">{{ prize.place }}</span>
-          <span class="poster-prize-value">{{ prize.value }}</span>
-        </div>
-        }
-        }
-      </div>
-      }
-      <div class="poster-divider"></div>
-      <div class="poster-footer">
-        @if ($any(buildTournamentData())['organizer']) { <span class="poster-organizer">{{ $any(buildTournamentData())['organizer'] }}</span> }
-        @if ($any(buildTournamentData())['contact']) { <span class="poster-contact">{{ $any(buildTournamentData())['contact'] }}</span> }
-      </div>
-      <div class="poster-branding">VON.CHESS</div>
-    </div>
-  </div>
 </div>

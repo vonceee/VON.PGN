@@ -11,6 +11,24 @@ import { ToastService } from '../../../core/services/toast.service';
 import { environment } from '../../../../environments/environment';
 import html2canvas from 'html2canvas-pro';
 
+import { StepIndicatorComponent } from './components/step-indicator.component';
+import {
+  StepBasicInfoComponent,
+  StepDatesLocationComponent,
+  StepFormatRulesComponent
+} from './components/steps.component';
+import {
+  StepOrganizerComponent,
+  StepRegistrationComponent,
+  StepEligibilityComponent
+} from './components/steps-extra.component';
+import {
+  StepPrizesComponent,
+  StepScheduleComponent
+} from './components/steps-prizes-schedule.component';
+import { ReviewSectionComponent } from './components/review-section.component';
+import { PosterPreviewComponent } from './components/poster-preview.component';
+
 interface Step {
   key: string;
   label: string;
@@ -20,7 +38,24 @@ interface Step {
 @Component({
   selector: 'app-tournament-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ButtonComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    ButtonComponent,
+
+    StepIndicatorComponent,
+    StepBasicInfoComponent,
+    StepDatesLocationComponent,
+    StepFormatRulesComponent,
+    StepOrganizerComponent,
+    StepRegistrationComponent,
+    StepEligibilityComponent,
+    StepPrizesComponent,
+    StepScheduleComponent,
+    ReviewSectionComponent,
+    PosterPreviewComponent
+  ],
   templateUrl: './tournament-editor.html',
   styleUrls: ['./tournament-editor.css']
 })
@@ -44,6 +79,7 @@ export class TournamentEditorComponent implements OnInit {
   mapsLink = signal('');
   mapsLinkError = signal('');
   mapsLinkLoading = signal(false);
+  verificationStatus = signal<'idle' | 'success' | 'error'>('idle');
 
   posterTheme = signal<'dark' | 'light'>('dark');
   downloadingPoster = signal(false);
@@ -86,15 +122,15 @@ export class TournamentEditorComponent implements OnInit {
     endDate: ['', Validators.required],
     registrationDeadline: [''],
     location: ['', Validators.required],
-    lat: [14.5995],
-    lng: [120.9842],
+    lat: [undefined as number | undefined],
+    lng: [undefined as number | undefined],
     format: ['Swiss System', Validators.required],
-    timeControl: ['90 min + 30 sec increment', Validators.required],
-    rounds: [9, Validators.required],
+    timeControl: ['15 min + sec increment', Validators.required],
+    rounds: [7, Validators.required],
     entryFee: ['', Validators.required],
     prizePool: [''],
-    maxParticipants: [128],
-    currentParticipants: [0],
+    maxParticipants: [],
+    currentParticipants: [],
     organizer: ['', Validators.required],
     contact: ['', Validators.required],
     link: [''],
@@ -310,6 +346,7 @@ export class TournamentEditorComponent implements OnInit {
 
     this.mapsLinkError.set('');
     this.mapsLinkLoading.set(true);
+    this.verificationStatus.set('idle');
 
     const coords = this.extractCoords(link);
 
@@ -319,6 +356,7 @@ export class TournamentEditorComponent implements OnInit {
         this.tournamentForm.patchValue({ location: coords.name });
       }
       this.mapsLinkLoading.set(false);
+      this.verificationStatus.set('success');
     } else if (this.isShortenedUrl(link)) {
       this.http.post<{ url: string }>(`${environment.apiUrl}/admin/resolve-maps-url`, { url: link }).subscribe({
         next: (res) => {
@@ -328,18 +366,22 @@ export class TournamentEditorComponent implements OnInit {
             if (resolved.name) {
               this.tournamentForm.patchValue({ location: resolved.name });
             }
+            this.verificationStatus.set('success');
           } else {
             this.mapsLinkError.set('Could not extract coordinates from the resolved link');
+            this.verificationStatus.set('error');
           }
           this.mapsLinkLoading.set(false);
         },
         error: () => {
           this.mapsLinkError.set('Could not resolve shortened link. Try using the full Google Maps URL instead.');
+          this.verificationStatus.set('error');
           this.mapsLinkLoading.set(false);
         }
       });
     } else {
-      this.mapsLinkError.set('Could not find coordinates in this link. Use the share button on Google Maps to get a valid link.');
+      this.mapsLinkError.set('Could not find coordinates in this link. Copy the exact URL from Google Maps.');
+      this.verificationStatus.set('error');
       this.mapsLinkLoading.set(false);
     }
   }
@@ -390,8 +432,12 @@ export class TournamentEditorComponent implements OnInit {
 
   addScheduleDay() {
     this.scheduleDaysArray.push(this.fb.group({
-      date: [''],
-      events: this.fb.array([])
+      events: this.fb.array([
+        this.fb.group({
+          name: [''],
+          time: ['']
+        })
+      ])
     }));
   }
   removeScheduleDay(index: number) { this.scheduleDaysArray.removeAt(index); }
@@ -413,29 +459,26 @@ export class TournamentEditorComponent implements OnInit {
   addCategory() {
     this.categoriesArray.push(this.fb.group({
       name: [''],
-      eligibility: this.fb.array([]),
       champion: [''],
       '2nd_place': [''],
       '3rd_place': [''],
-      '4th_place': [''],
-      '5th_place': [''],
-      extraPrizes: this.fb.array(
-        Array.from({ length: 5 }, (_, i) => this.fb.group({ label: [`${i + 6}th Place`], value: [''] }))
-      ),
-      specialAwards: this.fb.array([])
+      extraPrizes: this.fb.array([]),
+      specialAwards: this.fb.array([
+        this.fb.group({
+          name: [''],
+          type: ['simple'],
+          value: [''],
+          '1st': [''],
+          '2nd': [''],
+          '3rd': ['']
+        })
+      ])
     }));
   }
   removeCategory(index: number) { this.categoriesArray.removeAt(index); }
   categoryGroup(index: number): FormGroup { return this.categoriesArray.at(index) as FormGroup; }
 
-  getCategoryEligibility(catIndex: number): FormArray {
-    return this.categoriesArray.at(catIndex).get('eligibility') as FormArray;
-  }
-  categoryEligibilityControl(catIndex: number, elIndex: number): FormControl {
-    return this.getCategoryEligibility(catIndex).at(elIndex) as FormControl;
-  }
-  addCategoryEligibility(catIndex: number) { this.getCategoryEligibility(catIndex).push(this.fb.control('')); }
-  removeCategoryEligibility(catIndex: number, elIndex: number) { this.getCategoryEligibility(catIndex).removeAt(elIndex); }
+
 
   getCategorySpecialAwards(catIndex: number): FormArray {
     return this.categoriesArray.at(catIndex).get('specialAwards') as FormArray;
@@ -504,6 +547,7 @@ export class TournamentEditorComponent implements OnInit {
     this.categoriesArray.clear();
     this.mapsLink.set('');
     this.mapsLinkError.set('');
+    this.verificationStatus.set('idle');
 
     this.tournamentForm.patchValue({
       name: t.name,
@@ -537,13 +581,12 @@ export class TournamentEditorComponent implements OnInit {
         const eventsArray = this.fb.array(
           (day.events || []).map((e: any) => this.fb.group({ name: [e.name], time: [e.time] }))
         );
-        this.scheduleDaysArray.push(this.fb.group({ date: [day.date], events: eventsArray }));
+        this.scheduleDaysArray.push(this.fb.group({ events: eventsArray }));
       });
     }
 
     if (t.categories && typeof t.categories === 'object') {
       Object.entries(t.categories as Record<string, any>).forEach(([catName, cat]) => {
-        const elArray = this.fb.array((cat.eligibility || []).map((e: string) => this.fb.control(e)));
         const awardsArray = this.fb.array(
           Object.entries(cat.specialAwards || {}).map(([awardName, award]: [string, any]) => {
             if (typeof award === 'object' && award !== null && '1st' in award) {
@@ -562,17 +605,13 @@ export class TournamentEditorComponent implements OnInit {
         const extraEntries = Object.entries(cat.prizes || {})
           .filter(([key]) => !fixedPrizeKeys.has(key));
         const extraPrizesArray = this.fb.array(
-          extraEntries.length > 0
-            ? extraEntries.map(([key, val]) => this.fb.group({ label: [key.replace(/_/g, ' ')], value: [val as string] }))
-            : Array.from({ length: 5 }, (_, i) => this.fb.group({ label: [`${i + 6}th Place`], value: [''] }))
+          extraEntries.map(([key, val]) => this.fb.group({ label: [key.replace(/_/g, ' ')], value: [val as string] }))
         );
         this.categoriesArray.push(this.fb.group({
-          name: [catName], eligibility: elArray,
+          name: [catName],
           champion: [cat.prizes?.champion || ''],
           '2nd_place': [cat.prizes?.['2nd_place'] || ''],
           '3rd_place': [cat.prizes?.['3rd_place'] || ''],
-          '4th_place': [cat.prizes?.['4th_place'] || ''],
-          '5th_place': [cat.prizes?.['5th_place'] || ''],
           extraPrizes: extraPrizesArray,
           specialAwards: awardsArray
         }));
@@ -682,11 +721,10 @@ export class TournamentEditorComponent implements OnInit {
       .map((e: string) => this.sanitizeInput('', e))
       .filter((e: string) => e);
 
-    const schedule: Record<string, { date: string; events: { name: string; time: string }[] }> = {};
+    const schedule: Record<string, { events: { name: string; time: string }[] }> = {};
     this.scheduleDaysArray.controls.forEach((day, i) => {
       const dayVal = day.value;
       schedule[`day_${i + 1}`] = {
-        date: dayVal.date,
         events: dayVal.events.filter((e: { name: string }) => e.name?.trim())
       };
     });
@@ -701,8 +739,6 @@ export class TournamentEditorComponent implements OnInit {
       if (catVal.champion) prizes['champion'] = catVal.champion;
       if (catVal['2nd_place']) prizes['2nd_place'] = catVal['2nd_place'];
       if (catVal['3rd_place']) prizes['3rd_place'] = catVal['3rd_place'];
-      if (catVal['4th_place']) prizes['4th_place'] = catVal['4th_place'];
-      if (catVal['5th_place']) prizes['5th_place'] = catVal['5th_place'];
       catVal.extraPrizes?.forEach((ep: any) => {
         if (!ep.label?.trim()) return;
         const key = ep.label.toLowerCase().replace(/\s+/g, '_');
@@ -720,7 +756,6 @@ export class TournamentEditorComponent implements OnInit {
       });
 
       categories[catKey] = {
-        eligibility: catVal.eligibility?.filter((e: string) => e.trim()) || [],
         prizes,
         ...(Object.keys(specialAwards).length ? { specialAwards } : {})
       };

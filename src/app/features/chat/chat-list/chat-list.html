@@ -25,7 +25,7 @@
 
       <!-- Search Results Dropdown -->
       @if (isSearchOpen()) {
-        <div class="absolute left-0 top-full mt-1 w-full bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 py-1 z-50 shadow-lg max-h-60 overflow-y-auto">
+        <div class="absolute left-0 top-full mt-1 w-full bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 py-1 z-50 max-h-60 overflow-y-auto">
           @for (user of searchResults(); track user.uid) {
             <button
               (click)="startConversation(user)"
