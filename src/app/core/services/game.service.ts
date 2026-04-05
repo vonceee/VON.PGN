@@ -22,7 +22,7 @@ export class GameService implements OnDestroy {
 
   private apiUrl = environment.apiUrl;
   private socket: Socket | null = null;
-  private socketUrl = 'http://localhost:3006';
+  private socketUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
 
   private pendingGameId: string | null = null;
   private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
