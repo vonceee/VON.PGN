@@ -29,6 +29,7 @@ export class TournamentsComponent implements OnInit {
   searchQuery = signal('');
   formatFilter = signal('');
   sortBy = signal('');
+  viewMode = signal<'grid' | 'list'>('grid');
   currentPage = signal(1);
 
   upcomingCount = computed(() => this.tournaments().filter(t => t.status === 'upcoming').length);
@@ -132,6 +133,10 @@ export class TournamentsComponent implements OnInit {
   onSortChange(event: Event) {
     this.sortBy.set((event.target as HTMLSelectElement).value);
     this.currentPage.set(1);
+  }
+
+  setViewMode(mode: 'grid' | 'list') {
+    this.viewMode.set(mode);
   }
 
   clearSearch() {
