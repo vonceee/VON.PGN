@@ -246,22 +246,10 @@ export const routes: Routes = [
       },
       {
         path: 'coaches',
-        loadComponent: () =>
-          import('./features/coaches/coaches.component').then((m) => m.CoachesComponent),
+        loadChildren: () =>
+          import('./features/coaches/coaches.routes').then((m) => m.COACHES_ROUTES),
         title: 'Find a Coach - vonchess',
         data: { description: 'Browse and connect with verified chess coaches on vonchess.' },
-        resolve: { seo: seoResolver },
-      },
-      {
-        path: 'coaches/:id',
-        loadComponent: () =>
-          import('./features/coaches/coach-detail/coach-detail.component').then(
-            (m) => m.CoachDetailComponent,
-          ),
-        title: 'Coach Profile - vonchess',
-        data: {
-          description: "View a chess coach's profile, specialties, and contact information.",
-        },
         resolve: { seo: seoResolver },
       },
       {

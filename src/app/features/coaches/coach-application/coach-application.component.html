@@ -1,0 +1,305 @@
+  <div class="mx-auto px-4 py-8 max-w-4xl">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold mb-2">Submit Your Coach Profile</h1>
+      <p class="text-slate-600 dark:text-slate-400">
+        Fill out this form to get your coaching profile listed on our platform. We'll review your information and approve qualified coaches for listing.
+      </p>
+    </div>
+
+  <form [formGroup]="applicationForm" (ngSubmit)="onSubmit()" class="space-y-8">
+    <!-- Basic Information -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+      <h2 class="text-xl font-semibold mb-4">Basic Information</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Full Name *</label>
+          <input
+            type="text"
+            formControlName="name"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="Enter your full name"
+          />
+          <div *ngIf="(applicationForm.get('name')?.invalid && applicationForm.get('name')?.touched) || getFieldError('name')" class="text-red-500 text-sm mt-1">
+            {{ getFieldError('name') || 'Name is required' }}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Chess Title</label>
+          <select
+            formControlName="title"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+          >
+            <option value="">No Title</option>
+            <option value="GM">Grandmaster (GM)</option>
+            <option value="IM">International Master (IM)</option>
+            <option value="FM">FIDE Master (FM)</option>
+            <option value="CM">Candidate Master (CM)</option>
+            <option value="NM">National Master (NM)</option>
+            <option value="WGM">Woman Grandmaster (WGM)</option>
+            <option value="WIM">Woman International Master (WIM)</option>
+            <option value="WFM">Woman FIDE Master (WFM)</option>
+            <option value="WCM">Woman Candidate Master (WCM)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">FIDE Rating *</label>
+          <input
+            type="number"
+            formControlName="fideRating"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="Enter your FIDE rating"
+          />
+          <div *ngIf="applicationForm.get('fideRating')?.invalid && applicationForm.get('fideRating')?.touched" class="text-red-500 text-sm mt-1">
+            Valid FIDE rating is required
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">
+            Email Address *
+            @if (applicationForm.get('email')?.disabled) {
+              <span class="text-xs text-slate-500 dark:text-slate-400 ml-2">(from your account)</span>
+            }
+          </label>
+          <input
+            type="email"
+            formControlName="email"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 disabled:bg-slate-100 disabled:dark:bg-slate-700 disabled:text-slate-500 disabled:dark:text-slate-400"
+            placeholder="your.email@example.com"
+            [attr.disabled]="applicationForm.get('email')?.disabled ? '' : null"
+          />
+          <div *ngIf="(applicationForm.get('email')?.invalid && applicationForm.get('email')?.touched) || getFieldError('email')" class="text-red-500 text-sm mt-1">
+            {{ getFieldError('email') || 'Valid email address is required' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium mb-1">Short Info *</label>
+        <input
+          type="text"
+          formControlName="shortInfo"
+          class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+          placeholder="Brief description of your coaching approach"
+        />
+        <div *ngIf="applicationForm.get('shortInfo')?.invalid && applicationForm.get('shortInfo')?.touched" class="text-red-500 text-sm mt-1">
+          Short info is required
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Picture -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+      <h2 class="text-xl font-semibold mb-4">Profile Picture</h2>
+      <div>
+        <label class="block text-sm font-medium mb-1">Upload Profile Picture</label>
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onFileChange($event)"
+          class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+        />
+        <p class="text-sm text-slate-500 mt-1">Supported formats: JPG, PNG, GIF. Max size: 5MB</p>
+        <div *ngIf="fileError" class="text-red-500 text-sm mt-1">
+          {{ fileError }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+      <h2 class="text-xl font-semibold mb-4">Experience</h2>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Playing Experience</label>
+        <div formArrayName="playingExperience">
+          <div *ngFor="let control of playingExperience.controls; let i = index" class="flex gap-2 mb-2">
+            <input
+              type="text"
+              [formControlName]="i"
+              class="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+              placeholder="e.g., Peak FIDE rating 2400"
+            />
+            <button type="button" (click)="removePlayingExperience(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
+          </div>
+        </div>
+        <app-button type="button" variant="outline" size="sm" (click)="addPlayingExperience()">+ Add Experience</app-button>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Teaching Experience</label>
+        <div formArrayName="teachingExperience">
+          <div *ngFor="let control of teachingExperience.controls; let i = index" class="flex gap-2 mb-2">
+            <input
+              type="text"
+              [formControlName]="i"
+              class="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+              placeholder="e.g., FIDE Trainer certification"
+            />
+            <button type="button" (click)="removeTeachingExperience(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
+          </div>
+        </div>
+        <app-button type="button" variant="outline" size="sm" (click)="addTeachingExperience()">+ Add Experience</app-button>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium mb-2">Teaching Methods</label>
+        <div formArrayName="teachingMethods">
+          <div *ngFor="let control of teachingMethods.controls; let i = index" class="flex gap-2 mb-2">
+            <input
+              type="text"
+              [formControlName]="i"
+              class="flex-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+              placeholder="e.g., Interactive analysis"
+            />
+            <button type="button" (click)="removeTeachingMethod(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
+          </div>
+        </div>
+        <app-button type="button" variant="outline" size="sm" (click)="addTeachingMethod()">+ Add Method</app-button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Coaching Type</label>
+          <select
+            formControlName="coachingType"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+          >
+            <option value="Online">Online</option>
+            <option value="Onsite">On-site</option>
+            <option value="Online & Onsite">Both Online & On-site</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Location</label>
+          <input
+            type="text"
+            formControlName="location"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="City, Country"
+          />
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium mb-1">Availability</label>
+        <input
+          type="text"
+          formControlName="availability"
+          class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+          placeholder="e.g., Weekends and evenings"
+        />
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+      <h2 class="text-xl font-semibold mb-4">Biography</h2>
+      <div>
+        <label class="block text-sm font-medium mb-1">Detailed Bio *</label>
+        <textarea
+          formControlName="bio"
+          rows="6"
+          class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+          placeholder="Tell us about yourself, your chess journey, and what makes you a great coach..."
+        ></textarea>
+        <div *ngIf="applicationForm.get('bio')?.invalid && applicationForm.get('bio')?.touched" class="text-red-500 text-sm mt-1">
+          Bio is required
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Media -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+      <h2 class="text-xl font-semibold mb-4">Social Media (Optional)</h2>
+      <div formGroupName="socialMedia" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Twitter</label>
+          <input
+            type="url"
+            formControlName="twitter"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="https://twitter.com/username"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">YouTube</label>
+          <input
+            type="url"
+            formControlName="youtube"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="https://youtube.com/@channel"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Twitch</label>
+          <input
+            type="url"
+            formControlName="twitch"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="https://twitch.tv/username"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Instagram</label>
+          <input
+            type="url"
+            formControlName="instagram"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="https://instagram.com/username"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Facebook</label>
+          <input
+            type="url"
+            formControlName="facebook"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="https://facebook.com/username"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Chess.com</label>
+          <input
+            type="url"
+            formControlName="chesscom"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="https://chess.com/member/username"
+          />
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Lichess</label>
+          <input
+            type="url"
+            formControlName="lichess"
+            class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800"
+            placeholder="https://lichess.org/@/username"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="flex justify-end gap-4">
+      <app-button
+        variant="outline"
+        size="md"
+        link="/coaches"
+        label="Cancel"
+      >
+      </app-button>
+      <app-button
+        type="submit"
+        variant="primary"
+        size="md"
+        [disabled]="submitting || applicationForm.invalid"
+        [label]="submitting ? 'Submitting...' : 'Submit Profile'"
+      >
+      </app-button>
+    </div>
+  </form>
+</div>

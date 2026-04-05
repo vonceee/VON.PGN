@@ -67,4 +67,10 @@ export const ADMIN_ROUTES: Routes = [
       import('./feedback-list/feedback-list').then((m) => m.FeedbackListComponent),
     title: 'Feedback - CHESS.PGN',
   },
+  {
+    path: 'coach-applications',
+    loadComponent: () =>
+      import('./coach-applications/coach-applications.component').then((m) => m.CoachApplicationsComponent),
+    title: 'Coach Applications - CHESS.PGN',
+  },
 ];

@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, httpErrorInterceptor]), withFetch()),
+    provideHttpClient(withInterceptors([authInterceptor, httpErrorInterceptor])),
     provideAppInitializer(() => {
       const authService = inject(AuthService);
       // initAuth() returns an Observable; Angular subscribes and waits for it
