@@ -37,6 +37,30 @@ export class TacticsComponent implements OnInit {
   newStreak = signal<number>(0);
   userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
+  boardSize = signal(this.loadBoardSize());
+
+  private loadBoardSize(): number {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('boardSize');
+      if (saved) {
+        const size = parseInt(saved, 10);
+        if (size >= 280 && size <= 560) return size;
+      }
+    }
+    return 400;
+  }
+
+  private saveBoardSize(size: number): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('boardSize', size.toString());
+    }
+  }
+
+  onBoardSizeChange(event: Event) {
+    const value = parseInt((event.target as HTMLInputElement).value, 10);
+    this.boardSize.set(value);
+    this.saveBoardSize(value);
+  }
 
   ngOnInit() {
     if (this.currentUser()) {

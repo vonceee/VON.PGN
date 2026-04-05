@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
   NgZone,
+  OnChanges,
   afterNextRender,
   inject,
   PLATFORM_ID,
@@ -28,7 +29,7 @@ import { AudioService } from '../../../core/services/audio.service';
     </div>
   `,
 })
-export class TacticsBoardComponent {
+export class TacticsBoardComponent implements OnChanges {
   @ViewChild('boardRef', { static: false }) boardRef!: ElementRef;
 
   private _puzzle: Puzzle | null = null;
@@ -45,6 +46,8 @@ export class TacticsBoardComponent {
   @Output() puzzleFailed = new EventEmitter<void>();
   @Output() userColorChange = new EventEmitter<'white' | 'black'>();
 
+  @Input() size: number = 400;
+
   private board!: Api;
   private chess = new Chess();
 
@@ -57,6 +60,14 @@ export class TacticsBoardComponent {
   private audioService = inject(AudioService);
 
   constructor(private ngZone: NgZone) {}
+
+  ngOnChanges(changes: any) {
+    if (changes.size && !changes.size.isFirstChange() && this.board) {
+      setTimeout(() => {
+        this.board.redrawAll();
+      }, 0);
+    }
+  }
 
   initPuzzle() {
     if (!this.puzzle || !this.boardRef) return;

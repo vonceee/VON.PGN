@@ -173,6 +173,14 @@ export class Header implements OnInit, OnDestroy {
     }
   }
 
+  onBoardThemeChange(value: string) {
+    this.boardThemeService.boardTheme.set(value as any);
+  }
+
+  onPieceSetChange(value: string) {
+    this.boardThemeService.pieceSet.set(value as any);
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     if (
