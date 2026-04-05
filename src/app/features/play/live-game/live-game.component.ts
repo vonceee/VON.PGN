@@ -7,6 +7,7 @@ import {
   ElementRef,
   AfterViewInit,
   signal,
+  computed,
   ChangeDetectorRef,
   PLATFORM_ID,
 } from '@angular/core';
@@ -375,10 +376,13 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.saveBoardSize(value);
   }
   private moveSanCache: string[] = [];
-  private static readonly BUFFER_SECONDS = 5;
+
   private static readonly ABORT_SECONDS = 15;
-  bufferCountdown = signal<number | null>(null);
-  private bufferInterval: ReturnType<typeof setInterval> | null = null;
+  bufferCountdown = computed(() => {
+    const g = this.game();
+    return g?.bufferCountdown ?? null;
+  });
+
   abortCountdown = signal<number | null>(null);
   private abortInterval: ReturnType<typeof setInterval> | null = null;
   drawOfferState = signal<'none' | 'iOffered' | 'opponentOffered'>('none');
@@ -426,12 +430,8 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   isInBuffer = () => {
     const g = this.game();
-    if (!g || g.status !== 'active') return false;
-    // Buffer is active when we have a local countdown running
-    // Before first move: White has buffer, Black has buffer after White moves
-    if (g.moves.length === 0) return this.bufferCountdown() !== null;
-    if (g.moves.length === 1 && g.my_color === 'black') return this.bufferCountdown() !== null;
-    return false;
+    // Buffer is active when server indicates buffer countdown is running
+    return g?.bufferCountdown !== null && g?.bufferCountdown > 0;
   };
 
   isMyTurn = () => {
@@ -943,7 +943,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private startPreGameCountdown(): void {
     // Guard: don't start if countdown already running
-    if (this.bufferInterval || this.abortInterval) return;
+    if (this.abortInterval) return;
 
     const g = this.game();
     if (!g || g.status !== 'active') return;
@@ -970,28 +970,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.startPreGameCountdown();
   }
 
-  private startBufferCountdown(onComplete: () => void): void {
-    this.clearBufferCountdown();
-    this.bufferCountdown.set(LiveGameComponent.BUFFER_SECONDS);
 
-    this.bufferInterval = setInterval(() => {
-      const current = this.bufferCountdown();
-      if (current === null || current <= 0) {
-        this.clearBufferCountdown();
-        onComplete();
-        return;
-      }
-      this.bufferCountdown.set(current - 1);
-    }, 1000);
-  }
-
-  private clearBufferCountdown(): void {
-    if (this.bufferInterval) {
-      clearInterval(this.bufferInterval);
-      this.bufferInterval = null;
-    }
-    this.bufferCountdown.set(null);
-  }
 
   private startAbortCountdownIfNeeded(): void {
     const g = this.game();

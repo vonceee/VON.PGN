@@ -233,10 +233,31 @@ export class GameService implements OnDestroy {
               black_time_remaining_ms: res.black_time_remaining_ms ?? state.black_time_remaining_ms,
               server_timestamp: res.server_timestamp ?? state.server_timestamp,
             };
-          });
-        }
       });
+    }
   }
+
+  private updateGameBuffer(gameId: string, secondsRemaining: number): void {
+    const currentGame = this.gameState();
+    if (currentGame && currentGame.id === gameId) {
+      this.gameState.set({
+        ...currentGame,
+        bufferCountdown: secondsRemaining
+      });
+    }
+  }
+
+  private updateGameStarted(gameId: string, gameStartedAt: string): void {
+    const currentGame = this.gameState();
+    if (currentGame && currentGame.id === gameId) {
+      this.gameState.set({
+        ...currentGame,
+        bufferCountdown: null,
+        gameStartedAt
+      });
+    }
+  }
+}
 
   clearGame(): void {
     this.stopHeartbeat();
@@ -317,7 +338,19 @@ export class GameService implements OnDestroy {
     });
 
     this.socket.on('connect_error', (err) => {
-      console.error('[Game] Socket connection error:', err);
+      console.log('[Game] Socket connection error:', err);
+    });
+
+    // Listen for server-side buffer countdown
+    this.socket.on('buffer_countdown', (data: { gameId: string; secondsRemaining: number }) => {
+      console.log('[Game] Buffer countdown:', data.secondsRemaining);
+      this.updateGameBuffer(data.gameId, data.secondsRemaining);
+    });
+
+    // Listen for game started event
+    this.socket.on('game_started', (data: { gameId: string; gameStartedAt: string }) => {
+      console.log('[Game] Game started at:', data.gameStartedAt);
+      this.updateGameStarted(data.gameId, data.gameStartedAt);
     });
   }
 

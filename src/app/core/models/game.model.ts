@@ -27,6 +27,8 @@ export interface GameState {
   draw_offered_at: string | null;
   buffer_seconds_remaining?: number;
   opponent_away_countdown?: number | null;
+  bufferCountdown?: number | null;
+  gameStartedAt?: string | null;
 }
 
 export interface GameMatchedPayload {
