@@ -1,16 +1,12 @@
 <div [class]="'flex ' + (isOwnMessage ? 'justify-end' : 'justify-start') + ' mb-1.5'">
   @if (!isOwnMessage) {
-    <div class="flex items-end gap-2 max-w-[75%]">
-      <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-[10px] font-semibold text-slate-700 dark:text-white uppercase shrink-0 mb-0.5">
-        {{ message().sender.name.charAt(0) || '?' }}
+    <div class="flex flex-col items-start max-w-[75%]">
+      <span class="text-[10px] text-slate-400 dark:text-slate-500 mb-0.5">{{ message().sender.name }}</span>
+      <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-bl-md px-3.5 py-2">
+        <p class="text-sm text-slate-900 dark:text-white whitespace-pre-wrap wrap-break-word">{{ message().body }}</p>
       </div>
-      <div class="flex flex-col">
-        <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-bl-md px-3.5 py-2">
-          <p class="text-sm text-slate-900 dark:text-white whitespace-pre-wrap wrap-break-word">{{ message().body }}</p>
-        </div>
-        <div class="flex items-center gap-1.5 mt-0.5 px-1">
-          <span class="text-[10px] text-slate-400 dark:text-slate-500">{{ formattedTime }}</span>
-        </div>
+      <div class="flex items-center gap-1.5 mt-0.5 px-1">
+        <span class="text-[10px] text-slate-400 dark:text-slate-500">{{ formattedTime }}</span>
       </div>
     </div>
   } @else {

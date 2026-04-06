@@ -96,14 +96,12 @@ export class ChatWindowComponent {
     return this.chatService.activeConversation()?.other_user?.name ?? 'Chat';
   }
 
-  isUserOnline(): boolean {
-    return this.chatService.activeConversation()?.other_user?.is_online ?? false;
-  }
-
   getLastSeenText(): string {
     const user = this.chatService.activeConversation()?.other_user;
     if (!user) return '';
-    if (user.is_online) return 'online';
-    return this.chatService.formatLastSeen(user.last_seen_at);
+    if (user.last_seen_at) {
+      return `last seen ${this.chatService.formatTimestamp(user.last_seen_at)}`;
+    }
+    return '';
   }
 }

@@ -2,27 +2,15 @@
   <div class="chat-window h-full flex flex-col">
     <!-- Chat Header -->
     <div class="flex items-center gap-3 px-4 py-3 border-b border-border-theme">
-      <div class="relative shrink-0">
-        <div class="w-10 h-10 rounded-full flex items-center justify-center border border-border-theme text-sm font-semibold uppercase">
-          {{ getConversationName().charAt(0) || '?' }}
-        </div>
-        @if (isUserOnline()) {
-          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900"></span>
-        }
-      </div>
       <div class="flex flex-col">
         <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ getConversationName() }}</span>
-        <span [class]="'text-xs ' + (isUserOnline() ? 'text-emerald-500' : 'text-slate-400 dark:text-slate-500')">
+        <span class="text-xs text-slate-400 dark:text-slate-500">
           {{ getLastSeenText() }}
         </span>
       </div>
 
-      <div class="ml-auto flex items-center gap-1">
-        @if (chatService.isConnected()) {
-          <span class="w-2 h-2 rounded-full bg-emerald-500" title="Connected"></span>
-        } @else {
-          <span class="w-2 h-2 rounded-full bg-amber-500" title="Reconnecting..."></span>
-        }
+      <div class="ml-auto">
+        <span class="text-xs text-slate-400 dark:text-slate-500">polling</span>
       </div>
     </div>
 
@@ -32,8 +20,22 @@
       (scroll)="onScroll()"
       class="flex-1 overflow-y-auto px-4 py-3 scrollbar-thin">
       @if (chatService.isLoadingMessages() && chatService.messages().length === 0) {
-        <div class="flex items-center justify-center h-full">
-          <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+        <div class="flex flex-col p-4 space-y-4">
+          @for (i of [1,2,3,4,5]; track i) {
+            @if (i % 2 === 0) {
+              <div class="flex flex-col items-end">
+                <div class="bg-slate-200 dark:bg-slate-800/80 rounded-2xl rounded-br-md px-4 py-2 w-2/3">
+                  <div class="h-3 bg-slate-300 dark:bg-slate-700/80 rounded w-full"></div>
+                </div>
+              </div>
+            } @else {
+              <div class="flex flex-col items-start">
+                <div class="bg-slate-200 dark:bg-slate-800/80 rounded-2xl rounded-bl-md px-4 py-2 w-2/3">
+                  <div class="h-3 bg-slate-300 dark:bg-slate-700/80 rounded w-full"></div>
+                </div>
+              </div>
+            }
+          }
         </div>
       } @else if (chatService.messages().length === 0) {
         <div class="flex flex-col items-center justify-center h-full text-center">

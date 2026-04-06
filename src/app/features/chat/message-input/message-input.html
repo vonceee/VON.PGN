@@ -1,12 +1,5 @@
-<div class="message-input-container p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-  @if (chatService.conversationTypingUsers().length > 0) {
-    <div class="text-xs text-slate-500 dark:text-slate-400 mb-2 px-1 animate-pulse">
-      {{ chatService.conversationTypingUsers().join(', ') }}
-      {{ chatService.conversationTypingUsers().length === 1 ? 'is' : 'are' }} typing...
-    </div>
-  }
-
-  <div class="flex items-end gap-2">
+<div class="message-input-container p-3 border-t border-border-theme">
+  <div class="flex items-start gap-2">
     <div class="flex-1 relative">
       <textarea
         #messageInput
@@ -15,18 +8,18 @@
         (keydown)="onKeyDown($event)"
         placeholder="Type a message..."
         rows="1"
-        class="w-full resize-none rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-white/5 px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-cyan-500/60 transition-colors max-h-[120px] overflow-y-auto"
+        class="w-full resize-none rounded-xl border border-border-theme bg-slate-50 dark:bg-white/5 px-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:border-cyan-400 transition-colors"
       ></textarea>
     </div>
 
-    <button
-      (click)="sendMessage()"
+    <app-button
+      variant="outline"
+      size="sm"
       [disabled]="!messageText().trim()"
-      [class]="'shrink-0 w-10 h-10 flex justify-center pt-1 transition-colors ' + (messageText().trim() ? ' text-white' : '  cursor-not-allowed')">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-      </svg>
-    </button>
+      (click)="sendMessage()"
+      class="mt-1"
+    >
+      Send
+    </app-button>
   </div>
 </div>

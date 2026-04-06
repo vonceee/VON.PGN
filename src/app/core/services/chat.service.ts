@@ -1,23 +1,11 @@
-import { Injectable, inject, signal, computed, OnDestroy } from '@angular/core';
+import { Injectable, inject, signal, computed, OnDestroy, PLATFORM_ID, inject as injectCore } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
-import {
-  ChatMessage,
-  ChatConversation,
-  TypingEvent,
-  MessageReadEvent,
-  UserStatusEvent,
-} from '../models/chat.model';
-import { Subject, timer, Subscription, of, interval } from 'rxjs';
-import { catchError, tap, switchMap } from 'rxjs/operators';
-
-declare global {
-  interface Window {
-    Echo?: any;
-    Pusher?: any;
-  }
-}
+import { ChatMessage, ChatConversation } from '../models/chat.model';
+import { Subject, Subscription, of, interval } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -25,28 +13,18 @@ declare global {
 export class ChatService implements OnDestroy {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private platformId = injectCore(PLATFORM_ID);
 
   private apiUrl = environment.apiUrl;
-  private echo: any = null;
-  private activeChannels: Map<string, any> = new Map();
-  private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-  private reconnectScheduled = false;
-  private reconnectSub: Subscription | null = null;
-  private typingTimeout: ReturnType<typeof setTimeout> | null = null;
-  private pendingMessages: Map<string, { body: string; conversationId: number; retries: number }> = new Map();
   private pollingSub: Subscription | null = null;
-  private wsConnectionTimeout: ReturnType<typeof setTimeout> | null = null;
   private lastPolledMessageId = 0;
-  private echoLoadAttempted = false;
+  private pollingActive = false;
+  private messageReceived$ = new Subject<ChatMessage>();
 
   conversations = signal<ChatConversation[]>([]);
   activeConversationId = signal<number | null>(null);
   messages = signal<ChatMessage[]>([]);
-  typingUsers = signal<Map<number, string[]>>(new Map());
-  onlineUserIds = signal<Set<number>>(new Set());
   totalUnreadCount = signal(0);
-  isConnected = signal(false);
   isLoadingConversations = signal(false);
   isLoadingMessages = signal(false);
   hasMoreMessages = signal(true);
@@ -58,29 +36,45 @@ export class ChatService implements OnDestroy {
     return this.conversations().find((c) => c.id === id) ?? null;
   });
 
-  conversationTypingUsers = computed(() => {
-    const id = this.activeConversationId();
-    if (!id) return [];
-    return this.typingUsers().get(id) ?? [];
-  });
-
-  private messageReceived$ = new Subject<ChatMessage>();
-
   constructor() {
-    // no-op
+    this.setupVisibilityHandler();
   }
 
   ngOnDestroy(): void {
-    this.disconnect();
     this.stopPolling();
-    this.clearWsTimeout();
-    if (this.reconnectSub) {
-      this.reconnectSub.unsubscribe();
-    }
-    if (this.typingTimeout) {
-      clearTimeout(this.typingTimeout);
-    }
+    this.cleanupVisibilityHandler();
   }
+
+  private setupVisibilityHandler(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    window.addEventListener('focus', this.handleFocus);
+  }
+
+  private cleanupVisibilityHandler(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    window.removeEventListener('focus', this.handleFocus);
+  }
+
+  private handleVisibilityChange = (): void => {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    if (document.hidden) {
+      this.stopPolling();
+    } else if (this.activeConversationId()) {
+      this.fetchMessagesNow();
+      this.startPolling();
+    }
+  };
+
+  private handleFocus = (): void => {
+    if (this.activeConversationId()) {
+      this.fetchMessagesNow();
+    }
+  };
 
   // ── Conversations ───────────────────────────────────────────────
 
@@ -97,6 +91,7 @@ export class ChatService implements OnDestroy {
       .subscribe((res) => {
         this.conversations.set(res.data);
         this.isLoadingConversations.set(false);
+        this.recalculateUnreadCount();
       });
   }
 
@@ -120,8 +115,6 @@ export class ChatService implements OnDestroy {
         }),
       )
       .subscribe((res) => {
-        // Sort ascending by created_at on the frontend to guarantee correct
-        // order regardless of what the backend returns.
         const sorted = [...res.data].sort(
           (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
         );
@@ -129,7 +122,6 @@ export class ChatService implements OnDestroy {
         if (page === 1) {
           this.messages.set(sorted);
         } else {
-          // Prepend older messages when loading earlier history
           this.messages.update((prev) => [...sorted, ...prev]);
         }
         this.currentMessagesPage.set(page);
@@ -137,19 +129,16 @@ export class ChatService implements OnDestroy {
         this.isLoadingMessages.set(false);
         this.activeConversationId.set(conversationId);
 
-        // Track the latest message ID for polling dedup
         const allMsgs = this.messages();
         if (allMsgs.length > 0) {
           this.lastPolledMessageId = Math.max(...allMsgs.map((m) => m.id || 0));
         }
 
-        // Subscribe to real-time channel for this conversation
-        this.subscribeToConversation(conversationId);
-
-        // Mark messages as read now that they're loaded
         if (page === 1) {
           this.markAsRead(conversationId);
         }
+
+        this.startPolling();
       });
   }
 
@@ -186,14 +175,6 @@ export class ChatService implements OnDestroy {
     return this.http
       .post<{ data: ChatConversation }>(`${this.apiUrl}/chat/conversations`, { user_id: userId })
       .pipe(
-        tap((res) => {
-          this.conversations.update((prev) => {
-            const existing = prev.find((c) => c.id === res.data.id);
-            if (existing) return prev;
-            return [res.data, ...prev];
-          });
-          this.setActiveConversation(res.data.id);
-        }),
         catchError((err) => {
           console.error('[Chat] Failed to open conversation', err);
           return of(null);
@@ -234,34 +215,16 @@ export class ChatService implements OnDestroy {
 
     this.messages.update((prev) => [...prev, optimisticMessage]);
 
-    this.pendingMessages.set(tempId, { body: sanitized, conversationId, retries: 0 });
-    this.sendWithRetry(tempId);
-  }
-
-  private sendWithRetry(tempId: string): void {
-    const pending = this.pendingMessages.get(tempId);
-    if (!pending) return;
-
     this.http
       .post<{ data: ChatMessage; temp_id: string }>(
-        `${this.apiUrl}/chat/conversations/${pending.conversationId}/messages`,
-        { body: pending.body, temp_id: tempId },
+        `${this.apiUrl}/chat/conversations/${conversationId}/messages`,
+        { body: sanitized, temp_id: tempId },
       )
       .pipe(
-        catchError((error: HttpErrorResponse) => {
-          if (error.status === 429 && pending.retries < 3) {
-            pending.retries++;
-            const retryAfter = error.error?.retry_after ?? 5;
-            timer(retryAfter * 1000).subscribe(() => this.sendWithRetry(tempId));
-          } else if (pending.retries < 3) {
-            pending.retries++;
-            timer(2000).subscribe(() => this.sendWithRetry(tempId));
-          } else {
-            this.messages.update((msgs) =>
-              msgs.map((m) => (m.temp_id === tempId ? { ...m, status: 'sent' as const } : m)),
-            );
-            this.pendingMessages.delete(tempId);
-          }
+        catchError(() => {
+          this.messages.update((msgs) =>
+            msgs.map((m) => (m.temp_id === tempId ? { ...m, status: 'sent' as const } : m)),
+          );
           return of(null);
         }),
       )
@@ -270,14 +233,13 @@ export class ChatService implements OnDestroy {
           this.messages.update((msgs) =>
             msgs.map((m) => (m.temp_id === tempId ? { ...res.data, temp_id: undefined } : m)),
           );
-          this.pendingMessages.delete(tempId);
           this.lastPolledMessageId = Math.max(this.lastPolledMessageId, res.data.id);
-          this.updateConversationLatestMessage(pending.conversationId, res.data);
+          this.updateConversationLatestMessage(conversationId, res.data);
         }
       });
   }
 
-  // ── Read / Typing / Status ──────────────────────────────────────
+  // ── Read / Typing ───────────────────────────────────────────────
 
   markAsRead(conversationId: number): void {
     const msgs = this.messages();
@@ -309,23 +271,6 @@ export class ChatService implements OnDestroy {
 
   onTypingStart(): void {
     this.sendTypingIndicator(true);
-    if (this.typingTimeout) clearTimeout(this.typingTimeout);
-    this.typingTimeout = setTimeout(() => this.sendTypingIndicator(false), 3000);
-  }
-
-  onTypingStop(): void {
-    if (this.typingTimeout) {
-      clearTimeout(this.typingTimeout);
-      this.typingTimeout = null;
-    }
-    this.sendTypingIndicator(false);
-  }
-
-  setUserOnlineStatus(isOnline: boolean): void {
-    this.http
-      .post(`${this.apiUrl}/chat/status`, { is_online: isOnline })
-      .pipe(catchError(() => of(null)))
-      .subscribe();
   }
 
   loadUnreadCount(): void {
@@ -335,279 +280,95 @@ export class ChatService implements OnDestroy {
       .subscribe((res) => this.totalUnreadCount.set(res.unread_count));
   }
 
-  // ── WebSocket Connection ────────────────────────────────────────
+  // ── Lightweight Polling ─────────────────────────────────────────
 
-  /**
-   * Entry point: start polling RIGHT AWAY as a guaranteed delivery
-   * mechanism, then try to upgrade to WebSocket in the background.
-   */
-  connect(): void {
-    if (!this.authService.isAuthenticated()) return;
+  private startPolling(): void {
+    if (this.pollingSub || this.pollingActive) return;
+    if (!this.activeConversationId()) return;
+    if (!isPlatformBrowser(this.platformId) || document.hidden) return;
 
-    // Always start with polling so messages appear immediately
-    this.startPolling();
+    this.pollingActive = true;
+    console.log('[Chat] Polling started (interval: 15s)');
 
-    if (this.echoLoadAttempted) return;
-    this.echoLoadAttempted = true;
+    this.pollingSub = interval(15000)
+      .pipe(
+        switchMap(() => {
+          const convId = this.activeConversationId();
+          if (!convId) return of(null);
 
-    this.loadEchoAndConnect();
-  }
+          return this.http
+            .get<{ data: ChatMessage[] }>(
+              `${this.apiUrl}/chat/conversations/${convId}/messages`,
+              { params: { page: '1' } },
+            )
+            .pipe(catchError(() => of(null)));
+        }),
+      )
+      .subscribe((res) => {
+        if (!res?.data) return;
 
-  disconnect(): void {
-    this.stopPolling();
-    this.clearWsTimeout();
-    if (this.echo) {
-      try {
-        this.echo.disconnect();
-      } catch {
-        // ignore
-      }
-      this.echo = null;
-    }
-    this.activeChannels.clear();
-    this.isConnected.set(false);
-    // Don't reset reconnectAttempts here — it needs to persist for backoff
-    this.echoLoadAttempted = false;
-  }
+        const incoming = res.data.filter((m) => m.id > this.lastPolledMessageId);
+        if (incoming.length === 0) return;
 
-  private clearWsTimeout(): void {
-    if (this.wsConnectionTimeout) {
-      clearTimeout(this.wsConnectionTimeout);
-      this.wsConnectionTimeout = null;
-    }
-  }
-
-  private loadEchoAndConnect(): void {
-    // Load Pusher first if not present
-    if (!window.Pusher) {
-      const pusherScript = document.createElement('script');
-      pusherScript.src = 'https://cdn.jsdelivr.net/npm/pusher-js@8.4.0-rc2/dist/web/pusher.min.js';
-      pusherScript.onload = () => this.loadEchoLibrary();
-      pusherScript.onerror = () => console.warn('[Chat] Failed to load Pusher.js – using polling');
-      document.head.appendChild(pusherScript);
-    } else {
-      this.loadEchoLibrary();
-    }
-  }
-
-  private loadEchoLibrary(): void {
-    if (window.Echo) {
-      this.initEcho();
-      return;
-    }
-
-    const echoScript = document.createElement('script');
-    echoScript.src = 'https://cdn.jsdelivr.net/npm/laravel-echo@2.0.2/dist/echo.iife.js';
-    echoScript.onload = () => setTimeout(() => this.initEcho(), 50);
-    echoScript.onerror = () => console.warn('[Chat] Failed to load Laravel Echo – using polling');
-    document.head.appendChild(echoScript);
-  }
-
-  private initEcho(): void {
-    try {
-      const token = this.authService.getToken();
-      if (!token) {
-        console.warn('[Chat] No auth token for WebSocket');
-        return;
-      }
-
-      const EchoConstructor = window.Echo;
-      if (!EchoConstructor || typeof EchoConstructor !== 'function') {
-        console.warn('[Chat] Echo constructor not available');
-        return;
-      }
-
-      console.log('[Chat] Initializing WebSocket...');
-
-      const useTLS = environment.reverbScheme === 'wss';
-
-      this.echo = new EchoConstructor({
-        broadcaster: 'reverb',
-        key: environment.reverbKey,
-        wsHost: environment.reverbHost,
-        wsPort: environment.reverbPort,
-        wssPort: environment.reverbPort,
-        forceTLS: useTLS,
-        enabledTransports: useTLS ? ['wss'] : ['ws'],
-        authEndpoint: `${this.apiUrl.replace('/api', '')}/broadcasting/auth`,
-        auth: {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-        // Keepalive: must exceed server ping_interval (60s) to avoid premature disconnects
-        activityTimeout: 120000,
-        pongTimeout: 30000,
-        disableStats: true,
-      });
-
-      // Listen for connection state changes on the underlying Pusher instance
-      const pusher = this.echo?.connector?.pusher;
-      if (pusher) {
-        pusher.connection.bind('connected', () => {
-          console.log('[Chat] WebSocket transport connected');
-          this.clearWsTimeout();
-          this.isConnected.set(true);
-          this.reconnectAttempts = 0;
-          this.reconnectScheduled = false;
-
-          // Subscribe to channels — auth may fail if CORS isn't configured,
-          // but polling remains active as a guaranteed delivery fallback.
-          this.subscribeToPresenceChannel();
-          const activeId = this.activeConversationId();
-          if (activeId) {
-            this.subscribeToConversation(activeId);
-          }
-        });
-
-        pusher.connection.bind('unavailable', () => {
-          console.warn('[Chat] WebSocket unavailable');
-          this.isConnected.set(false);
-          this.scheduleReconnect();
-        });
-
-        pusher.connection.bind('failed', () => {
-          console.warn('[Chat] WebSocket failed');
-          this.isConnected.set(false);
-          this.scheduleReconnect();
-        });
-
-        pusher.connection.bind('error', (err: any) => {
-          console.error('[Chat] WebSocket error:', err);
-          this.isConnected.set(false);
-          this.scheduleReconnect();
-        });
-
-        pusher.connection.bind('disconnected', () => {
-          console.warn('[Chat] WebSocket disconnected');
-          this.isConnected.set(false);
-          this.scheduleReconnect();
-        });
-      }
-
-      // Safety timeout: if WS doesn't connect within 15s, ensure polling is active
-      this.wsConnectionTimeout = setTimeout(() => {
-        if (!this.isConnected()) {
-          console.warn('[Chat] WebSocket connection timeout – polling remains active');
-          this.startPolling();
-          this.scheduleReconnect();
-        }
-      }, 15000);
-
-    } catch (err) {
-      console.error('[Chat] Failed to initialize Echo:', err);
-      this.isConnected.set(false);
-      this.startPolling();
-    }
-  }
-
-  private subscribeToPresenceChannel(): void {
-    if (!this.echo) return;
-
-    try {
-      const ch = this.echo.join('updates');
-      ch.listen('.App\\Events\\UserStatusChanged', (data: UserStatusEvent) => {
-        this.onlineUserIds.update((ids) => {
-          const n = new Set(ids);
-          data.is_online ? n.add(data.user_id) : n.delete(data.user_id);
-          return n;
-        });
-        this.conversations.update((convs) =>
-          convs.map((c) =>
-            c.other_user?.id === data.user_id
-              ? {
-                  ...c,
-                  other_user: c.other_user
-                    ? { ...c.other_user, is_online: data.is_online, last_seen_at: data.last_seen_at }
-                    : null,
-                }
-              : c,
-          ),
-        );
-      });
-    } catch (err) {
-      console.error('[Chat] Failed to subscribe to presence channel', err);
-    }
-  }
-
-  subscribeToConversation(conversationId: number): void {
-    if (!this.echo || !this.isConnected()) return;
-    if (this.activeChannels.has(`conversation.${conversationId}`)) return;
-
-    try {
-      const channelName = `conversation.${conversationId}`;
-      const channel = this.echo.join(channelName);
-
-      // Only mark as active once subscription is confirmed
-      channel.on('pusher:subscription_succeeded', () => {
-        console.log(`[Chat] Subscribed to ${channelName}`);
-        this.activeChannels.set(channelName, channel);
-      });
-
-      channel.on('pusher:subscription_error', (err: any) => {
-        console.error(`[Chat] Auth failed for ${channelName}:`, err);
-        // Don't add to activeChannels so a future call can retry
-      });
-
-      channel.listen('.App\\Events\\MessageSent', (data: any) => {
-        const message: ChatMessage = {
-          id: data.id,
-          conversation_id: data.conversation_id,
-          sender_id: data.sender.id,
-          sender: data.sender,
-          body: data.body,
-          status: data.status,
-          created_at: data.created_at,
-          updated_at: data.created_at,
-        };
+        incoming.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
         const currentUserId = parseInt(this.authService.currentUser()?.uid ?? '0');
-        if (message.sender_id === currentUserId) return;
-
-        this.appendIncomingMessage(message, conversationId);
-      });
-
-      channel.listen('.App\\Events\\TypingIndicator', (data: TypingEvent) => {
-        const currentUserId = parseInt(this.authService.currentUser()?.uid ?? '0');
-        if (data.user_id === currentUserId) return;
-
-        this.typingUsers.update((map) => {
-          const newMap = new Map(map);
-          const users = newMap.get(conversationId) ?? [];
-          if (data.is_typing) {
-            if (!users.includes(data.user_name)) {
-              newMap.set(conversationId, [...users, data.user_name]);
-            }
+        for (const msg of incoming) {
+          if (msg.sender_id !== currentUserId) {
+            this.appendIncomingMessage({
+              id: msg.id,
+              conversation_id: msg.conversation_id,
+              sender_id: msg.sender.id,
+              sender: msg.sender,
+              body: msg.body,
+              status: msg.status,
+              created_at: msg.created_at,
+              updated_at: msg.created_at,
+            }, msg.conversation_id);
           } else {
-            newMap.set(conversationId, users.filter((u) => u !== data.user_name));
+            this.lastPolledMessageId = Math.max(this.lastPolledMessageId, msg.id);
           }
-          return newMap;
-        });
+        }
       });
-
-      channel.listen('.App\\Events\\MessageRead', (data: MessageReadEvent) => {
-        const currentUserId = parseInt(this.authService.currentUser()?.uid ?? '0');
-        if (data.user_id === currentUserId) return;
-
-        this.messages.update((msgs) =>
-          msgs.map((m) =>
-            m.sender_id === currentUserId && m.id <= data.last_read_message_id
-              ? { ...m, status: 'read' as const }
-              : m,
-          ),
-        );
-      });
-
-      // Channel added to activeChannels only on subscription_succeeded above
-    } catch (err) {
-      console.error(`[Chat] Failed to subscribe to conversation ${conversationId}`, err);
-    }
   }
 
-  // ── Shared message-append logic (used by WebSocket + polling) ───
+  private fetchMessagesNow(): void {
+    const convId = this.activeConversationId();
+    if (!convId) return;
+
+    this.http
+      .get<{ data: ChatMessage[] }>(
+        `${this.apiUrl}/chat/conversations/${convId}/messages`,
+        { params: { page: '1' } },
+      )
+      .pipe(catchError(() => of(null)))
+      .subscribe((res) => {
+        if (!res?.data) return;
+
+        const incoming = res.data.filter((m) => m.id > this.lastPolledMessageId);
+        if (incoming.length === 0) return;
+
+        const currentUserId = parseInt(this.authService.currentUser()?.uid ?? '0');
+        for (const msg of incoming) {
+          if (msg.sender_id !== currentUserId) {
+            this.appendIncomingMessage({
+              id: msg.id,
+              conversation_id: msg.conversation_id,
+              sender_id: msg.sender.id,
+              sender: msg.sender,
+              body: msg.body,
+              status: msg.status,
+              created_at: msg.created_at,
+              updated_at: msg.created_at,
+            }, msg.conversation_id);
+          } else {
+            this.lastPolledMessageId = Math.max(this.lastPolledMessageId, msg.id);
+          }
+        }
+      });
+  }
 
   private appendIncomingMessage(message: ChatMessage, conversationId: number): void {
-    // Deduplicate by message ID
     this.messages.update((prev) => {
       if (prev.some((m) => m.id === message.id)) return prev;
       return [...prev, message];
@@ -628,100 +389,6 @@ export class ChatService implements OnDestroy {
 
     this.updateConversationLatestMessage(conversationId, message);
     this.messageReceived$.next(message);
-  }
-
-  // ── Polling (runs alongside WebSocket as a safety net) ──────────
-
-  private startPolling(): void {
-    if (this.pollingSub) return; // already polling
-    console.log('[Chat] Polling started (interval: 3s)');
-
-    this.pollingSub = interval(3000)
-      .pipe(
-        switchMap(() => {
-          const convId = this.activeConversationId();
-          if (!convId) return of(null);
-
-          return this.http
-            .get<{ data: ChatMessage[] }>(
-              `${this.apiUrl}/chat/conversations/${convId}/messages`,
-              { params: { page: '1' } },
-            )
-            .pipe(catchError(() => of(null)));
-        }),
-      )
-      .subscribe((res) => {
-        if (!res?.data) return;
-
-        const incoming = res.data.filter((m) => m.id > this.lastPolledMessageId);
-        if (incoming.length === 0) return;
-
-        // Sort ascending so we append oldest of the batch first
-        incoming.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-
-        const currentUserId = parseInt(this.authService.currentUser()?.uid ?? '0');
-        for (const msg of incoming) {
-          if (msg.sender_id !== currentUserId) {
-            const chatMsg: ChatMessage = {
-              id: msg.id,
-              conversation_id: msg.conversation_id,
-              sender_id: msg.sender.id,
-              sender: msg.sender,
-              body: msg.body,
-              status: msg.status,
-              created_at: msg.created_at,
-              updated_at: msg.created_at,
-            };
-            this.appendIncomingMessage(chatMsg, msg.conversation_id);
-          } else {
-            // Own message from another tab – still track the ID
-            this.lastPolledMessageId = Math.max(this.lastPolledMessageId, msg.id);
-          }
-        }
-      });
-  }
-
-  private stopPolling(): void {
-    if (this.pollingSub) {
-      this.pollingSub.unsubscribe();
-      this.pollingSub = null;
-      console.log('[Chat] Polling stopped');
-    }
-  }
-
-  private scheduleReconnect(): void {
-    if (this.reconnectScheduled) return;
-    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.warn('[Chat] Max reconnect attempts reached – polling remains active');
-      return;
-    }
-
-    this.reconnectScheduled = true;
-    const delayMs = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
-    this.reconnectAttempts++;
-
-    console.log(`[Chat] Reconnecting in ${delayMs}ms (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
-
-    if (this.reconnectSub) this.reconnectSub.unsubscribe();
-
-    this.reconnectSub = timer(delayMs).subscribe(() => {
-      this.reconnectScheduled = false;
-      if (this.authService.isAuthenticated()) {
-        // Tear down old Echo instance without resetting reconnect state
-        this.clearWsTimeout();
-        if (this.echo) {
-          try { this.echo.disconnect(); } catch { /* ignore */ }
-          this.echo = null;
-        }
-        this.activeChannels.clear();
-        this.isConnected.set(false);
-        this.echoLoadAttempted = false;
-
-        // Re-initialize
-        this.startPolling();
-        this.loadEchoAndConnect();
-      }
-    });
   }
 
   // ── Helpers ─────────────────────────────────────────────────────
@@ -753,6 +420,8 @@ export class ChatService implements OnDestroy {
   }
 
   private sanitizeInput(input: string): string {
+    if (!isPlatformBrowser(this.platformId)) return input;
+    
     const div = document.createElement('div');
     div.textContent = input;
     return div.innerHTML;
@@ -779,8 +448,28 @@ export class ChatService implements OnDestroy {
     return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
   }
 
-  formatLastSeen(isoString: string | null): string {
-    if (!isoString) return 'online';
-    return `last seen ${this.formatTimestamp(isoString)}`;
+  // ── Lifecycle (connect/disconnect for compatibility) ───────────
+
+  connect(): void {
+    if (!this.authService.isAuthenticated()) return;
+    this.loadConversations();
+    this.loadUnreadCount();
+  }
+
+  disconnect(): void {
+    this.privateStopPolling();
+  }
+
+  stopPolling(): void {
+    this.privateStopPolling();
+  }
+
+  private privateStopPolling(): void {
+    if (this.pollingSub) {
+      this.pollingSub.unsubscribe();
+      this.pollingSub = null;
+      console.log('[Chat] Polling stopped');
+    }
+    this.pollingActive = false;
   }
 }

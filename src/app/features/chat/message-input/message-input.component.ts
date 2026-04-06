@@ -2,11 +2,12 @@ import { Component, inject, signal, ViewChild, ElementRef } from '@angular/core'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../core/services/chat.service';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-message-input',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   templateUrl: './message-input.html',
   styleUrl: './message-input.css',
 })
@@ -21,12 +22,6 @@ export class MessageInputComponent {
   onInputChange(event: Event): void {
     const target = event.target as HTMLTextAreaElement;
     this.messageText.set(target.value);
-
-    if (target.value.trim()) {
-      this.chatService.onTypingStart();
-    } else {
-      this.chatService.onTypingStop();
-    }
     this.autoResize();
   }
 
@@ -36,7 +31,6 @@ export class MessageInputComponent {
 
     this.chatService.sendMessage(text);
     this.messageText.set('');
-    this.chatService.onTypingStop();
 
     if (this.messageInput) {
       this.messageInput.nativeElement.style.height = 'auto';

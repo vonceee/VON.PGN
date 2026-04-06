@@ -1,12 +1,10 @@
-import { Component, inject, signal, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, ViewChild, ElementRef, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ChatService } from '../../../core/services/chat.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { UserService, UserSearchResult } from '../../../core/services/user.service';
 import { ChatConversation } from '../../../core/models/chat.model';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 
 @Component({
   selector: 'app-chat-list',
@@ -18,44 +16,22 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs
 export class ChatListComponent implements OnInit, OnDestroy {
   chatService = inject(ChatService);
   authService = inject(AuthService);
-  userService = inject(UserService);
   private router = inject(Router);
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   @ViewChild('searchContainer') searchContainer!: ElementRef;
 
   searchQuery = signal('');
-  searchResults = signal<UserSearchResult[]>([]);
   isSearchOpen = signal(false);
-  isSearching = signal(false);
 
-  private searchSubject = new Subject<string>();
-
-  constructor() {
-    this.searchSubject
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap((query) => {
-          if (query.length < 2) {
-            return of([]);
-          }
-          this.isSearching.set(true);
-          return this.userService.searchUsers(query);
-        }),
-      )
-      .subscribe({
-        next: (results) => {
-          this.searchResults.set(results);
-          this.isSearching.set(false);
-          this.isSearchOpen.set(results.length > 0);
-        },
-        error: () => {
-          this.isSearching.set(false);
-          this.searchResults.set([]);
-        },
-      });
-  }
+  filteredConversations = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const conversations = this.chatService.conversations();
+    if (!query) return conversations;
+    return conversations.filter((c) => 
+      c.other_user?.name.toLowerCase().includes(query)
+    );
+  });
 
   ngOnInit(): void {
     this.chatService.loadConversations();
@@ -70,14 +46,12 @@ export class ChatListComponent implements OnInit, OnDestroy {
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
-    this.searchSubject.next(value);
+    this.isSearchOpen.set(value.length > 0);
   }
 
-  startConversation(user: UserSearchResult): void {
-    this.isSearchOpen.set(false);
+  clearSearch(): void {
     this.searchQuery.set('');
-    this.searchResults.set([]);
-    this.chatService.startConversation(parseInt(user.uid));
+    this.isSearchOpen.set(false);
   }
 
   selectConversation(conversation: ChatConversation): void {
