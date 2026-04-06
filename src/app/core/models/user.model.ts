@@ -50,12 +50,10 @@ export interface UserPreferences {
 }
 
 export interface UserProgress {
-  completedLessonIds: string[]; // array of lesson IDs they have finished (e.g., ['rook-01', 'bishop-01'])
-  lastActiveLessonId: string | null; // last lesson they were looking at, so you can auto-resume
+  completedLessonIds: string[];
+  lastActiveLessonId: string | null;
 
   currentStreakDays: number;
-  experiencePoints: number;
-  currentLevel: number;
 
   puzzleRating: number;
   puzzleStreak: number;

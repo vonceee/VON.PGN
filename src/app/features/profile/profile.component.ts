@@ -36,20 +36,6 @@ export class ProfileComponent implements OnInit {
   isLoadingMore = signal(false);
   showVerifiedFeature = signal(false);
 
-  currentXp = computed(() => this.user()?.progress.experiencePoints || 0);
-  level = computed(() => this.user()?.progress.currentLevel || 1);
-
-  xpTotalForNextLevel = computed(() => (this.level() + 1) * 100);
-
-  xpToNextLevel = computed(() => Math.max(this.xpTotalForNextLevel() - this.currentXp(), 0));
-
-  xpProgressPercent = computed(() => {
-    const current = this.currentXp();
-    const target = this.xpTotalForNextLevel();
-    if (target === 0) return 0;
-    return Math.min(Math.floor((current / target) * 100), 100);
-  });
-
   memberSince = computed(() => {
     const dateString = this.user()?.createdAt;
     if (!dateString) return 'Loading...';

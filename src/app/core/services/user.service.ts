@@ -121,7 +121,6 @@ export class UserService {
     return this.http
       .post<{
         message: string;
-        leveled_up: boolean;
         new_badges: Badge[];
         user: { data: UserProfile };
       }>(`${environment.apiUrl}/progress/complete-lecture`, { lesson_id: lessonId })

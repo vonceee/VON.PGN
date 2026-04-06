@@ -21,8 +21,6 @@ describe('AuthService', () => {
       lastActiveLessonId: null,
       totalPuzzlesSolved: 0,
       currentStreakDays: 0,
-      experiencePoints: 0,
-      currentLevel: 1,
       puzzleRating: 1200,
       puzzleStreak: 0,
       earnedBadges: [],
