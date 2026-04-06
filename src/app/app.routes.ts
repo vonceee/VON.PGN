@@ -232,6 +232,16 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'tactics/leaderboard',
+        loadComponent: () =>
+          import('./features/tactics/tactics-leaderboard/tactics-leaderboard.component').then(
+            (m) => m.TacticsLeaderboardComponent,
+          ),
+        title: 'Tactics Leaderboard - vonchess',
+        data: { description: 'View the top tactical players and your ranking on vonchess.' },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'explorer',
         loadComponent: () =>
           import('./features/opening-explorer/opening-explorer.component').then(

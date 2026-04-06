@@ -21,6 +21,28 @@ export interface SolveResponse {
   new_streak: number;
 }
 
+export interface LeaderboardEntry {
+  rank: number;
+  user_id: number;
+  username: string;
+  score: number;
+}
+
+export interface UserLeaderboardStats {
+  rank: number;
+  score: number;
+  in_top: boolean;
+}
+
+export interface LeaderboardResponse {
+  rating: LeaderboardEntry[];
+  streak: LeaderboardEntry[];
+  my_stats: {
+    rating: UserLeaderboardStats | null;
+    streak: UserLeaderboardStats | null;
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class TacticsService {
   private http = inject(HttpClient);
@@ -42,5 +64,9 @@ export class TacticsService {
         }
       })
     );
+  }
+
+  getLeaderboard(): Observable<LeaderboardResponse> {
+    return this.http.get<LeaderboardResponse>(`${this.apiUrl}/tactics/leaderboard`);
   }
 }

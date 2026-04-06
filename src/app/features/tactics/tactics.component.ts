@@ -11,11 +11,12 @@ import { TacticsService, Puzzle } from '../../core/services/tactics.service';
 import { UserService } from '../../core/services/user.service';
 import { TacticsBoardComponent } from '../../shared/components/tactics-board/tactics-board.component';
 import { ServerMaintenanceComponent } from '../../shared/components/server-maintenance/server-maintenance.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-tactics',
   standalone: true,
-  imports: [CommonModule, TacticsBoardComponent, ServerMaintenanceComponent],
+  imports: [CommonModule, TacticsBoardComponent, ServerMaintenanceComponent, RouterLink],
   templateUrl: './tactics.component.html',
 })
 export class TacticsComponent implements OnInit {
