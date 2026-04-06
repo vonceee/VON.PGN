@@ -295,15 +295,6 @@ export const routes: Routes = [
         title: 'Live Broadcasts - vonchess',
       },
       {
-        path: 'my-tournaments',
-        canActivate: [authGuard],
-        loadChildren: () =>
-          import('./features/my-tournaments/my-tournaments.routes').then(
-            (m) => m.MY_TOURNAMENTS_ROUTES,
-          ),
-        title: 'My Tournaments - vonchess',
-      },
-      {
         path: 'chat',
         loadComponent: () => import('./features/chat/chat.component').then((m) => m.ChatComponent),
         canActivate: [authGuard],

@@ -1,183 +1,85 @@
-<div class="max-w-[1000px] mx-auto p-8 text-slate-800 dark:text-white">
-  <div class="flex justify-between items-center mb-8">
-    <div class="flex items-center gap-4">
-      <button
-        (click)="location.back()"
-        class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white text-slate-800"
-      >
-        Back
-      </button>
-      <h1 class="text-3xl font-bold m-0">{{ lessonId() ? 'Edit Lesson' : 'New Lesson' }}</h1>
+<div class="admin-page">
+  <div class="admin-page-header">
+    <div>
+      <h1 class="admin-page-title">{{ lessonId() ? 'Edit Lesson' : 'New Lesson' }}</h1>
     </div>
-    <button
-      [disabled]="saving() || lessonForm.invalid"
-      (click)="saveLesson()"
-      class="px-4 py-2 rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed text-sm bg-cyan-400 hover:bg-cyan-500 text-slate-900"
-    >
+    <button [disabled]="saving() || lessonForm.invalid" (click)="saveLesson()" class="admin-btn admin-btn-primary">
       {{ saving() ? 'Saving...' : 'Save Lesson' }}
     </button>
   </div>
 
-  <div *ngIf="loading()" class="text-center py-8 text-slate-500 dark:text-slate-400">
-    Loading lesson...
+  <div *ngIf="loading()" class="admin-card admin-text-center">
+    <p>Loading lesson...</p>
   </div>
 
   <div *ngIf="!loading()">
-    <form [formGroup]="lessonForm" (ngSubmit)="saveLesson()">
-      <div
-        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-8"
-      >
-        <h2
-          class="mt-0 mb-6 border-b border-slate-200 dark:border-slate-700 pb-2 text-2xl font-semibold"
-        >
-          Lesson Details
-        </h2>
-        <div class="mb-6">
-          <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400">Title</label>
-          <input
-            type="text"
-            formControlName="title"
-            placeholder="e.g. The Pawn"
-            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"
-          />
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h2 class="admin-card-title">Lesson Details</h2>
+      </div>
+      <form [formGroup]="lessonForm" (ngSubmit)="saveLesson()">
+        <div class="admin-form-group">
+          <label class="admin-label">Title</label>
+          <input type="text" formControlName="title" class="admin-input" placeholder="e.g. The Pawn" />
         </div>
 
-        <div class="mb-6">
-          <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400"
-            >Slug (optional)</label
-          >
-          <input
-            type="text"
-            formControlName="slug"
-            placeholder="e.g. the-pawn"
-            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"
-          />
+        <div class="admin-form-group">
+          <label class="admin-label">Slug (optional)</label>
+          <input type="text" formControlName="slug" class="admin-input" placeholder="e.g. the-pawn" />
         </div>
 
-        <div class="mb-6">
-          <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400">Order</label>
-          <input
-            type="number"
-            formControlName="order"
-            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"
-            min="1"
-          />
+        <div class="admin-form-group admin-mb-0">
+          <label class="admin-label">Order</label>
+          <input type="number" formControlName="order" class="admin-input" min="1" />
         </div>
+      </form>
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h2 class="admin-card-title">Content Blocks</h2>
+      </div>
+      <div class="admin-flex admin-flex-gap-2 admin-mb-2">
+        <button type="button" (click)="addTextBlock()" class="admin-btn admin-btn-secondary">+ Text Block</button>
+        <button type="button" (click)="addBoardBlock()" class="admin-btn admin-btn-secondary">+ Board Block</button>
       </div>
 
-      <div
-        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-8"
-      >
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="mt-0 mb-0 text-2xl font-semibold">Content Blocks</h2>
-          <div class="flex gap-2">
-            <button
-              type="button"
-              (click)="addTextBlock()"
-              class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white text-slate-800"
-            >
-              + Text Block
-            </button>
-            <button
-              type="button"
-              (click)="addBoardBlock()"
-              class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white text-slate-800"
-            >
-              + Board Block
-            </button>
-          </div>
-        </div>
-
-        <div formArrayName="content_blocks" class="flex flex-col gap-6">
-          <div
-            *ngFor="let block of contentBlocks.controls; let i = index"
-            [formGroupName]="i"
-            class="bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-slate-700 border-l-4 border-l-cyan-400 rounded overflow-hidden"
-          >
-            <div
-              class="flex justify-between items-center bg-slate-100 dark:bg-white/5 px-4 py-2 border-b border-slate-200 dark:border-slate-700"
-            >
-              <span
-                class="text-xs font-bold tracking-widest text-slate-500 dark:text-slate-400 uppercase"
-                >{{ block.get('type')?.value }}</span
-              >
-              <div class="flex gap-1">
-                <button
-                  type="button"
-                  (click)="moveBlock(i, -1)"
-                  [disabled]="i === 0"
-                  class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white text-slate-800"
-                >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  (click)="moveBlock(i, 1)"
-                  [disabled]="i === contentBlocks.length - 1"
-                  class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white text-slate-800"
-                >
-                  ↓
-                </button>
-                <button
-                  type="button"
-                  (click)="removeBlock(i)"
-                  class="px-2 py-1 text-xs rounded font-medium disabled:opacity-50 disabled:cursor-not-allowed bg-red-500 hover:bg-red-600 text-white"
-                >
-                  X
-                </button>
+      <div formArrayName="content_blocks">
+        <ng-container *ngFor="let block of contentBlocks.controls; let i = index">
+          <div [formGroupName]="i" class="admin-card" style="background: #fafafa;">
+            <div class="admin-flex admin-flex-between admin-flex-center admin-mb-2">
+              <span class="admin-badge">{{ block.get('type')?.value }}</span>
+              <div>
+                <button type="button" (click)="moveBlock(i, -1)" [disabled]="i === 0" class="admin-btn admin-btn-secondary admin-btn-small">↑</button>
+                <button type="button" (click)="moveBlock(i, 1)" [disabled]="i === contentBlocks.length - 1" class="admin-btn admin-btn-secondary admin-btn-small">↓</button>
+                <button type="button" (click)="removeBlock(i)" class="admin-btn admin-btn-danger admin-btn-small">X</button>
               </div>
             </div>
 
-            <!-- Text Block Content -->
-            <div *ngIf="block.get('type')?.value === 'text'" class="p-4">
-              <div class="mb-0">
-                <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400"
-                  >HTML Content</label
-                >
-                <textarea
-                  formControlName="content"
-                  rows="4"
-                  class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400 font-mono"
-                  placeholder="<p>Text goes here</p>"
-                ></textarea>
+            <div *ngIf="block.get('type')?.value === 'text'">
+              <div class="admin-form-group">
+                <label class="admin-label">HTML Content</label>
+                <textarea formControlName="content" class="admin-textarea" rows="4" placeholder="<p>Text goes here</p>"></textarea>
               </div>
             </div>
 
-            <!-- Board Block Content -->
-            <div *ngIf="block.get('type')?.value === 'board'" class="p-4" formGroupName="task">
-              <div class="mb-6">
-                <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400"
-                  >Lichess URL / Study Link</label
-                >
-                <input
-                  type="text"
-                  formControlName="lichessUrl"
-                  class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"
-                  placeholder="https://lichess.org/study/..."
-                />
+            <div *ngIf="block.get('type')?.value === 'board'" formGroupName="task">
+              <div class="admin-form-group">
+                <label class="admin-label">Lichess URL / Study Link</label>
+                <input type="text" formControlName="lichessUrl" class="admin-input" placeholder="https://lichess.org/study/..." />
               </div>
-              <div class="mb-0">
-                <label class="block mb-2 font-medium text-slate-500 dark:text-slate-400"
-                  >Instructions</label
-                >
-                <textarea
-                  formControlName="instructions"
-                  rows="2"
-                  class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white rounded focus:outline-none focus:border-cyan-400"
-                  placeholder="Move the pawn..."
-                ></textarea>
+              <div class="admin-form-group admin-mb-0">
+                <label class="admin-label">Instructions</label>
+                <textarea formControlName="instructions" class="admin-textarea" rows="2" placeholder="Move the pawn..."></textarea>
               </div>
             </div>
           </div>
+        </ng-container>
 
-          <div
-            *ngIf="contentBlocks.length === 0"
-            class="text-center p-12 bg-slate-50 dark:bg-white/5 rounded-lg text-slate-500 dark:text-slate-400 border border-dashed border-slate-300 dark:border-slate-700"
-          >
-            <p>No content blocks. Add a text or board block above.</p>
-          </div>
+        <div *ngIf="contentBlocks.length === 0" class="admin-empty">
+          <p class="admin-empty-text">No content blocks. Add a text or board block above.</p>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </div>

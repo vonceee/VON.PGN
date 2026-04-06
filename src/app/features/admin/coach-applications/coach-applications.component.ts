@@ -1,6 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CoachApplication } from '../../../core/models/coach-application.model';
@@ -52,12 +51,6 @@ export class CoachApplicationsComponent {
     pending: 'Pending Review',
     approved: 'Approved',
     rejected: 'Rejected',
-  };
-
-  statusColors: Record<CoachApplication['status'], string> = {
-    pending: 'bg-amber-500/10 text-amber-500',
-    approved: 'bg-green-500/10 text-green-500',
-    rejected: 'bg-red-500/10 text-red-500',
   };
 
   setFilter(filter: CoachApplication['status'] | 'all') {

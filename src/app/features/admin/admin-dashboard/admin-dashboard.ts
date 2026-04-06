@@ -2,62 +2,37 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
-import { ToastService } from '../../../core/services/toast.service';
+import { FeedbackService } from '../../../core/services/feedback.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './admin-dashboard.html',
-  styleUrls: ['./admin-dashboard.css']
+  templateUrl: './admin-dashboard.html'
 })
 export class AdminDashboardComponent implements OnInit {
   private adminService = inject(AdminService);
-  private toastService = inject(ToastService);
+  private feedbackService = inject(FeedbackService);
 
-  courses = signal<any[]>([]);
-  loading = signal(true);
-  deleteCourseTarget = signal<number | null>(null);
+  coursesCount = signal(0);
+  feedbackCount = signal(0);
+  coachesCount = signal(0);
 
   ngOnInit() {
-    this.loadCourses();
-  }
-
-  loadCourses() {
-    this.loading.set(true);
     this.adminService.getCourses().subscribe({
-      next: (data) => {
-        this.courses.set(data);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load courses', err);
-        this.loading.set(false);
-      }
+      next: (data) => this.coursesCount.set(data.length),
+      error: () => {}
     });
+
+    this.feedbackCount.set(this.feedbackService.feedbackItems().length);
+
+    this.loadCoachApplications();
   }
 
-  requestDeleteCourse(id: number) {
-    this.deleteCourseTarget.set(id);
-  }
-
-  cancelDeleteCourse() {
-    this.deleteCourseTarget.set(null);
-  }
-
-  confirmDeleteCourse() {
-    const id = this.deleteCourseTarget();
-    if (!id) return;
-    this.adminService.deleteCourse(id).subscribe({
-      next: () => {
-        this.toastService.show('Course deleted successfully', 'success');
-        this.deleteCourseTarget.set(null);
-        this.loadCourses();
-      },
-      error: (err) => {
-        this.toastService.show('Failed to delete: ' + (err.error?.message || err.message), 'error');
-        this.deleteCourseTarget.set(null);
-      }
+  loadCoachApplications() {
+    this.adminService.getCoachApplications().subscribe({
+      next: (data) => this.coachesCount.set(data.length),
+      error: () => {}
     });
   }
 }

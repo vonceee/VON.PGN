@@ -1,276 +1,89 @@
-<div class="mx-auto p-8">
-  <div class="flex justify-between items-center mb-8">
+<div class="admin-page">
+  <div class="admin-page-header">
     <div>
-      <h1 class="text-3xl font-bold m-0">Coach Applications</h1>
-      @if (pendingCount() > 0) {
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ pendingCount() }} pending review</p>
-      }
+      <h1 class="admin-page-title">Coach Applications</h1>
+      <p class="admin-page-subtitle" *ngIf="pendingCount() > 0">{{ pendingCount() }} pending review</p>
     </div>
-    <a
-      routerLink="/admin"
-      class="px-4 py-2 rounded font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600"
-    >
-      Back to Dashboard
-    </a>
   </div>
 
-  <div *ngIf="loading()" class="text-center py-8 text-slate-500 dark:text-slate-400">
-    Loading applications...
+  <div *ngIf="loading()" class="admin-card admin-text-center">
+    <p>Loading applications...</p>
   </div>
 
   <div *ngIf="!loading()">
-    <!-- Filter Tabs -->
-    <div class="flex gap-2 mb-6 flex-wrap">
-    <button
-      (click)="setFilter('all')"
-      class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-      [class]="selectedFilter() === 'all' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600'"
-    >
-      All
-    </button>
-    <button
-      (click)="setFilter('pending')"
-      class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-      [class]="selectedFilter() === 'pending' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600'"
-    >
-      Pending
-    </button>
-    <button
-      (click)="setFilter('approved')"
-      class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-      [class]="selectedFilter() === 'approved' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600'"
-    >
-      Approved
-    </button>
-    <button
-      (click)="setFilter('rejected')"
-      class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-      [class]="selectedFilter() === 'rejected' ? 'bg-cyan-500 text-slate-900' : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600'"
-    >
-      Rejected
-    </button>
-  </div>
+    <div class="admin-filter">
+      <button class="admin-filter-btn" [class.active]="selectedFilter() === 'all'" (click)="setFilter('all')">All</button>
+      <button class="admin-filter-btn" [class.active]="selectedFilter() === 'pending'" (click)="setFilter('pending')">Pending</button>
+      <button class="admin-filter-btn" [class.active]="selectedFilter() === 'approved'" (click)="setFilter('approved')">Approved</button>
+      <button class="admin-filter-btn" [class.active]="selectedFilter() === 'rejected'" (click)="setFilter('rejected')">Rejected</button>
+    </div>
 
-  <!-- Applications List -->
-  <div class="flex flex-col gap-3">
-    @for (app of filteredApplications(); track app.id) {
-      <div
-        (click)="openApplication(app)"
-        class="border border-border-theme rounded-lg p-4 cursor-pointer hover:border-cyan-500/50 transition-colors flex items-start gap-4"
-      >
-        <!-- Profile Picture -->
-        <div class="flex-shrink-0">
-          @if (app.profilePictureUrl) {
-            <img [src]="app.profilePictureUrl" [alt]="app.name" class="w-12 h-12 rounded-full object-cover">
-          } @else {
-            <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-sm font-bold">
-              {{ app.name.charAt(0).toUpperCase() }}
-            </div>
-          }
-        </div>
-
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1">
-            <span class="text-xs font-medium px-2 py-0.5 rounded-full" [class]="statusColors[app.status]">
-              {{ statusLabels[app.status] }}
-            </span>
-            <span class="px-1.5 py-0.5 bg-red-600 text-white text-xs font-bold rounded shrink-0">{{ app.title }}</span>
-            <span class="text-xs text-slate-400">{{ formatDate(app.submittedAt) }}</span>
+    <ul class="admin-list" *ngIf="filteredApplications().length > 0">
+      <li class="admin-list-item" *ngFor="let app of filteredApplications()" (click)="openApplication(app)" style="cursor: pointer;">
+        <div class="admin-list-item-content">
+          <div class="admin-flex admin-flex-center admin-flex-gap-1 admin-mb-1">
+            <span class="admin-badge" [class]="'admin-badge-' + app.status">{{ statusLabels[app.status] }}</span>
+            <span class="admin-text-small admin-text-muted">{{ app.title }}</span>
+            <span class="admin-text-small admin-text-muted">{{ formatDate(app.submittedAt) }}</span>
           </div>
-          <p class="text-sm font-semibold truncate">{{ app.name }}</p>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            {{ app.email }} &middot; FIDE {{ app.fideRating }}
-          </p>
-          <p class="text-sm text-slate-600 dark:text-slate-300 mt-2 line-clamp-2">
-            {{ app.shortInfo }}
-          </p>
+          <div class="admin-list-item-title">{{ app.name }}</div>
+          <div class="admin-list-item-meta">{{ app.email }} - FIDE {{ app.fideRating }}</div>
+          <div class="admin-text-small admin-text-muted">{{ app.shortInfo }}</div>
         </div>
+      </li>
+    </ul>
 
-        <button
-          (click)="$event.stopPropagation(); requestDelete(app.id)"
-          class="flex-shrink-0 w-8 h-8 rounded flex items-center justify-center hover:bg-red-500/10 text-slate-400 hover:text-red-500 transition-colors"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
-          </svg>
-        </button>
-      </div>
-    }
-
-    @if (filteredApplications().length === 0) {
-      <div class="text-center p-12 rounded-lg border border-dashed border-border-theme">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3">
-          <path fill-rule="evenodd" d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.29 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.68-3.348 3.97a48.901 48.901 0 0 1-3.476.383.39.39 0 0 0-.297.17l-2.755 4.133a.75.75 0 1 1-1.248 0l-2.755-4.133a.39.39 0 0 0-.297-.17 48.9 48.9 0 0 1-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97Z" clip-rule="evenodd" />
-        </svg>
-        <p class="text-slate-500 dark:text-slate-400">No applications found.</p>
-      </div>
-    }
+    <div *ngIf="filteredApplications().length === 0" class="admin-card admin-empty">
+      <p class="admin-empty-text">No applications found.</p>
+    </div>
   </div>
 </div>
 
 <!-- Application Detail Modal -->
 @if (selectedApplication(); as app) {
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="closeApplication()">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-4xl mx-4 shadow-2xl border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto custom-scrollbar" (click)="$event.stopPropagation()">
-      <div class="flex items-center justify-between p-6 pb-4">
-        <div class="flex items-center gap-3">
-          <span class="text-xs font-medium px-2.5 py-1 rounded-full" [class]="statusColors[app.status]">
-            {{ statusLabels[app.status] }}
-          </span>
-          <span class="px-1.5 py-0.5 bg-red-600 text-white text-xs font-bold rounded">{{ app.title }}</span>
+  <div class="admin-modal-overlay" (click)="closeApplication()">
+    <div class="admin-modal" style="max-width: 600px;" (click)="$event.stopPropagation()">
+      <div class="admin-modal-header">
+        <div class="admin-flex admin-flex-center admin-flex-gap-1">
+          <span class="admin-badge" [class]="'admin-badge-' + app.status">{{ statusLabels[app.status] }}</span>
+          <span class="admin-text-muted">{{ app.title }}</span>
         </div>
-        <button
-          (click)="closeApplication()"
-          class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-slate-400">
-            <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-          </svg>
-        </button>
+        <button class="admin-modal-close" (click)="closeApplication()">&times;</button>
       </div>
-
-      <div class="px-6 pb-6">
-        <!-- Header -->
-        <div class="flex items-start gap-4 mb-6">
-          @if (app.profilePictureUrl) {
-            <img [src]="app.profilePictureUrl" [alt]="app.name" class="w-16 h-16 rounded-full object-cover flex-shrink-0">
-          } @else {
-            <div class="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-lg font-bold flex-shrink-0">
-              {{ app.name.charAt(0).toUpperCase() }}
-            </div>
-          }
-          <div class="flex-1">
-            <h3 class="text-xl font-bold mb-1">{{ app.name }}</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-400 mb-2">{{ app.email }}</p>
-            <p class="text-sm text-slate-500 dark:text-slate-400">FIDE Rating: {{ app.fideRating }} • Submitted {{ formatDate(app.submittedAt) }}</p>
-          </div>
+      <div class="admin-modal-body">
+        <div class="admin-flex admin-flex-center admin-flex-gap-2 admin-mb-2">
+          <b>{{ app.name }}</b>
+          <span class="admin-text-muted admin-text-small">{{ app.email }}</span>
+        </div>
+        <p class="admin-text-small admin-text-muted admin-mb-2">FIDE Rating: {{ app.fideRating }} - Submitted {{ formatDate(app.submittedAt) }}</p>
+        
+        <div class="admin-form-group">
+          <label class="admin-label">Bio</label>
+          <p>{{ app.bio }}</p>
+        </div>
+        
+        <div class="admin-form-group">
+          <label class="admin-label">Short Info</label>
+          <p>{{ app.shortInfo }}</p>
         </div>
 
-        <!-- Bio -->
-        <div class="mb-6">
-          <h4 class="text-sm font-semibold mb-2">Bio</h4>
-          <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{{ app.bio }}</p>
+        <div class="admin-form-group">
+          <label class="admin-label">Coaching Type</label>
+          <p>{{ app.coachingType }}</p>
         </div>
 
-        <!-- Short Info -->
-        <div class="mb-6">
-          <h4 class="text-sm font-semibold mb-2">Short Info</h4>
-          <p class="text-sm text-slate-700 dark:text-slate-300">{{ app.shortInfo }}</p>
+        <div class="admin-form-group" *ngIf="app.location">
+          <label class="admin-label">Location</label>
+          <p>{{ app.location }}</p>
         </div>
-
-        <!-- Experience -->
-        @if (app.playingExperience.length > 0) {
-          <div class="mb-6">
-            <h4 class="text-sm font-semibold mb-2">Playing Experience</h4>
-            <ul class="list-disc list-inside text-sm text-slate-700 dark:text-slate-300 space-y-1">
-              @for (exp of app.playingExperience; track $index) {
-                <li>{{ exp }}</li>
-              }
-            </ul>
-          </div>
-        }
-
-        @if (app.teachingExperience.length > 0) {
-          <div class="mb-6">
-            <h4 class="text-sm font-semibold mb-2">Teaching Experience</h4>
-            <ul class="list-disc list-inside text-sm text-slate-700 dark:text-slate-300 space-y-1">
-              @for (exp of app.teachingExperience; track $index) {
-                <li>{{ exp }}</li>
-              }
-            </ul>
-          </div>
-        }
-
-        @if (app.teachingMethods.length > 0) {
-          <div class="mb-6">
-            <h4 class="text-sm font-semibold mb-2">Teaching Methods</h4>
-            <ul class="list-disc list-inside text-sm text-slate-700 dark:text-slate-300 space-y-1">
-              @for (method of app.teachingMethods; track $index) {
-                <li>{{ method }}</li>
-              }
-            </ul>
-          </div>
-        }
-
-        <!-- Details -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div>
-            <h4 class="text-sm font-semibold mb-2">Coaching Type</h4>
-            <p class="text-sm text-slate-700 dark:text-slate-300">{{ app.coachingType }}</p>
-          </div>
-          @if (app.location) {
-            <div>
-              <h4 class="text-sm font-semibold mb-2">Location</h4>
-              <p class="text-sm text-slate-700 dark:text-slate-300">{{ app.location }}</p>
-            </div>
-          }
-          @if (app.availability) {
-            <div>
-              <h4 class="text-sm font-semibold mb-2">Availability</h4>
-              <p class="text-sm text-slate-700 dark:text-slate-300">{{ app.availability }}</p>
-            </div>
-          }
-        </div>
-
-        <!-- Social Media -->
-        @if (hasSocialMedia(app)) {
-          <div class="mb-6">
-            <h4 class="text-sm font-semibold mb-2">Social Media</h4>
-            <div class="flex flex-wrap gap-2">
-              @if (app.socialMedia.twitter) {
-                <a [href]="app.socialMedia.twitter" target="_blank" class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded">Twitter</a>
-              }
-              @if (app.socialMedia.youtube) {
-                <a [href]="app.socialMedia.youtube" target="_blank" class="text-xs px-2 py-1 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded">YouTube</a>
-              }
-              @if (app.socialMedia.twitch) {
-                <a [href]="app.socialMedia.twitch" target="_blank" class="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 rounded">Twitch</a>
-              }
-              @if (app.socialMedia.instagram) {
-                <a [href]="app.socialMedia.instagram" target="_blank" class="text-xs px-2 py-1 bg-pink-100 dark:bg-pink-900 text-pink-700 dark:text-pink-300 rounded">Instagram</a>
-              }
-              @if (app.socialMedia.facebook) {
-                <a [href]="app.socialMedia.facebook" target="_blank" class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded">Facebook</a>
-              }
-              @if (app.socialMedia.chesscom) {
-                <a [href]="app.socialMedia.chesscom" target="_blank" class="text-xs px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded">Chess.com</a>
-              }
-              @if (app.socialMedia.lichess) {
-                <a [href]="app.socialMedia.lichess" target="_blank" class="text-xs px-2 py-1 bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded">Lichess</a>
-              }
-            </div>
-          </div>
-        }
-
-        <!-- Actions -->
-        <div class="flex gap-3">
-          <button
-            (click)="closeApplication()"
-            class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
-          >
-            Close
-          </button>
-          @if (app.status === 'pending') {
-            <button
-              (click)="approveApplication(app.id)"
-              class="px-4 py-2.5 rounded-lg font-medium text-sm bg-green-500 hover:bg-green-600 text-white transition-colors"
-            >
-              Approve
-            </button>
-            <button
-              (click)="rejectApplication(app.id)"
-              class="px-4 py-2.5 rounded-lg font-medium text-sm bg-red-500 hover:bg-red-600 text-white transition-colors"
-            >
-              Reject
-            </button>
-          }
-          <button
-            (click)="requestDelete(app.id)"
-            class="px-4 py-2.5 rounded-lg font-medium text-sm bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors"
-          >
-            Delete
-          </button>
-        </div>
+      </div>
+      <div class="admin-modal-footer">
+        <button (click)="closeApplication()" class="admin-btn admin-btn-secondary">Close</button>
+        <ng-container *ngIf="app.status === 'pending'">
+          <button (click)="approveApplication(app.id)" class="admin-btn admin-btn-primary">Approve</button>
+          <button (click)="rejectApplication(app.id)" class="admin-btn admin-btn-danger">Reject</button>
+        </ng-container>
+        <button (click)="requestDelete(app.id)" class="admin-btn admin-btn-danger">Delete</button>
       </div>
     </div>
   </div>
@@ -278,32 +91,18 @@
 
 <!-- Delete Confirmation Modal -->
 @if (deleteTarget()) {
-  <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60" (click)="cancelDelete()">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm mx-4 shadow-2xl border border-slate-200 dark:border-slate-700" (click)="$event.stopPropagation()">
-      <div class="p-6">
-        <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-red-500">
-            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
-          </svg>
-        </div>
-        <h2 class="text-lg font-bold text-center mb-2">Delete Application</h2>
-        <p class="text-sm text-slate-500 dark:text-slate-400 text-center mb-6">
-          Are you sure you want to delete this coach application? This action cannot be undone.
-        </p>
+  <div class="admin-modal-overlay" (click)="cancelDelete()">
+    <div class="admin-modal" (click)="$event.stopPropagation()">
+      <div class="admin-modal-header">
+        <h2 class="admin-modal-title">Delete Application</h2>
+        <button class="admin-modal-close" (click)="cancelDelete()">&times;</button>
       </div>
-      <div class="flex gap-3 px-6 pb-6">
-        <button
-          (click)="cancelDelete()"
-          class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          (click)="confirmDelete()"
-          class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-red-500 hover:bg-red-600 text-white transition-colors"
-        >
-          Delete
-        </button>
+      <div class="admin-modal-body">
+        <p>Are you sure you want to delete this coach application?</p>
+      </div>
+      <div class="admin-modal-footer">
+        <button (click)="cancelDelete()" class="admin-btn admin-btn-secondary">Cancel</button>
+        <button (click)="confirmDelete()" class="admin-btn admin-btn-danger">Delete</button>
       </div>
     </div>
   </div>

@@ -93,4 +93,9 @@ export class AdminService {
   deleteTournament(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/tournaments/${id}`, { headers: this.headers });
   }
+
+  // Coach Applications
+  getCoachApplications(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/coach-applications`, { headers: this.headers });
+  }
 }

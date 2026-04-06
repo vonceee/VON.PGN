@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -9,15 +9,13 @@ import { ToastService } from '../../../core/services/toast.service';
   selector: 'app-course-editor',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './course-editor.html',
-  styleUrls: ['./course-editor.css']
+  templateUrl: './course-editor.html'
 })
 export class CourseEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
   private adminService = inject(AdminService);
   private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
   public location = inject(Location);
 
   courseId = signal<number | null>(null);
@@ -80,7 +78,6 @@ export class CourseEditorComponent implements OnInit {
       this.adminService.createCourse(data).subscribe({
         next: (res) => {
           this.saving.set(false);
-          this.router.navigate(['/admin/course', res.id]);
         },
         error: () => this.saving.set(false)
       });

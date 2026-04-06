@@ -1,12 +1,11 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FeedbackService, FeedbackItem, FeedbackType } from '../../../core/services/feedback.service';
 
 @Component({
   selector: 'app-feedback-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './feedback-list.html',
 })
 export class FeedbackListComponent {
@@ -30,12 +29,6 @@ export class FeedbackListComponent {
     bug: 'Bug Report',
     suggestion: 'Suggestion',
     general: 'General Feedback',
-  };
-
-  typeColors: Record<FeedbackType, string> = {
-    bug: 'bg-red-500/10 text-red-500',
-    suggestion: 'bg-amber-500/10 text-amber-500',
-    general: 'bg-cyan-500/10 text-cyan-500',
   };
 
   setFilter(filter: FeedbackType | 'all') {

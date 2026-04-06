@@ -9,8 +9,7 @@ import { ToastService } from '../../../core/services/toast.service';
   selector: 'app-lesson-editor',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './lesson-editor.html',
-  styleUrls: ['./lesson-editor.css']
+  templateUrl: './lesson-editor.html'
 })
 export class LessonEditorComponent implements OnInit {
   private fb = inject(FormBuilder);

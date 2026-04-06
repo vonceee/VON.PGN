@@ -9,8 +9,7 @@ import { ToastService } from '../../../core/services/toast.service';
   selector: 'app-chapter-editor',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './chapter-editor.html',
-  styleUrls: ['../course-editor/course-editor.css'] // reuse course-editor styles
+  templateUrl: './chapter-editor.html'
 })
 export class ChapterEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
