@@ -13,7 +13,7 @@ export const SOUND_THEMES: { value: SoundTheme; label: string }[] = [
   { value: 'woodland', label: 'Woodland' },
 ];
 
-type SoundName = 'Move' | 'Capture' | 'Check' | 'Checkmate' | 'Victory' | 'Defeat' | 'Draw' | 'MatchFound';
+type SoundName = 'Move' | 'Capture' | 'Check' | 'Checkmate';
 
 @Injectable({
   providedIn: 'root',
@@ -21,9 +21,12 @@ type SoundName = 'Move' | 'Capture' | 'Check' | 'Checkmate' | 'Victory' | 'Defea
 export class AudioService {
   private platformId = inject(PLATFORM_ID);
   private cache: Map<string, HTMLAudioElement> = new Map();
+  private voices: SpeechSynthesisVoice[] = [];
+  private lastMatchFoundTime = 0;
 
   soundEnabled = signal<boolean>(true);
   soundTheme = signal<SoundTheme>('standard');
+  ttsVolume = signal<number>(0.5);
 
   constructor() {
     if (!this.isBrowser) return;
@@ -38,6 +41,14 @@ export class AudioService {
       this.soundTheme.set(savedTheme);
     }
 
+    const savedTtsVolume = localStorage.getItem('tts_volume');
+    if (savedTtsVolume !== null) {
+      const parsed = parseFloat(savedTtsVolume);
+      if (!isNaN(parsed)) {
+        this.ttsVolume.set(Math.max(0, Math.min(1, parsed)));
+      }
+    }
+
     effect(() => {
       if (!this.isBrowser) return;
       localStorage.setItem('sound_enabled', String(this.soundEnabled()));
@@ -48,10 +59,31 @@ export class AudioService {
       localStorage.setItem('sound_theme', this.soundTheme());
       this.cache.clear();
     });
+
+    effect(() => {
+      if (!this.isBrowser) return;
+      localStorage.setItem('tts_volume', String(this.ttsVolume()));
+    });
+
+    this.loadVoices();
   }
 
   private get isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
+  }
+
+  private loadVoices(): void {
+    if (!this.isBrowser) return;
+
+    const load = () => {
+      this.voices = window.speechSynthesis.getVoices();
+    };
+
+    load();
+
+    if (this.voices.length === 0) {
+      window.speechSynthesis.addEventListener('voiceschanged', load, { once: true });
+    }
   }
 
   private getAudio(name: SoundName): HTMLAudioElement | null {
@@ -85,12 +117,38 @@ export class AudioService {
     }
   }
 
+  private speakWithTTS(text: string): void {
+    if (!this.isBrowser || !this.soundEnabled()) return;
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ja-JP';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = this.ttsVolume();
+
+    const googleJapaneseVoice = this.voices.find(v => v.name === 'Google 日本語');
+    const japaneseFemaleVoice = this.voices.find(
+      v => v.lang.startsWith('ja') && v.name.toLowerCase().includes('female')
+    );
+    const japaneseVoice = this.voices.find(v => v.lang.startsWith('ja'));
+
+    utterance.voice = googleJapaneseVoice || japaneseFemaleVoice || japaneseVoice || null;
+    
+    window.speechSynthesis.speak(utterance);
+  }
+
   toggle(): void {
     this.soundEnabled.update((v) => !v);
   }
 
   setTheme(theme: SoundTheme): void {
     this.soundTheme.set(theme);
+  }
+
+  setTtsVolume(volume: number): void {
+    this.ttsVolume.set(Math.max(0, Math.min(1, volume)));
   }
 
   playMove(): void {
@@ -118,18 +176,23 @@ export class AudioService {
   }
 
   playVictory(): void {
-    this.play('Victory');
+    this.speakWithTTS('Victory');
   }
 
   playDefeat(): void {
-    this.play('Defeat');
+    this.speakWithTTS('Defeat');
   }
 
   playDraw(): void {
-    this.play('Draw');
+    this.speakWithTTS('Draw');
   }
 
   playMatchFound(): void {
-    this.play('MatchFound');
+    const now = Date.now();
+    if (now - this.lastMatchFoundTime < 3000) {
+      return;
+    }
+    this.lastMatchFoundTime = now;
+    this.speakWithTTS('Match Found');
   }
 }
