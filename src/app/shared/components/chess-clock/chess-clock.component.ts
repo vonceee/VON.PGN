@@ -16,12 +16,15 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="clock-container border border-border-theme"
+      class="clock-container"
       [class.clock-active]="isActive"
       [class.clock-low]="displayTime < 10000"
       [class.clock-critical]="displayTime < 3000"
     >
-      <div class="clock-label">{{ label }}</div>
+      <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
       <div class="clock-time">{{ formatTime(displayTime) }}</div>
     </div>
   `,
@@ -30,14 +33,20 @@ import {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      min-width: 160px;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      min-width: 70px;
+      border: 1px solid transparent;
       transition: border-color 0.2s, background-color 0.2s;
+    }
+    .clock-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
     }
     .clock-active {
       border-color: rgb(34 211 238);
-      background: rgba(34, 211, 238, 0.15);
+      background: rgba(34, 211, 238, 0.1);
     }
     .clock-low .clock-time {
       color: rgb(251 191 36);
@@ -46,14 +55,9 @@ import {
       color: rgb(239 68 68);
       animation: pulse-critical 0.5s ease-in-out infinite;
     }
-    .clock-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
     .clock-time {
       font-size: 1.5rem;
-      font-weight: 700;
+      font-weight: 600;
       font-variant-numeric: tabular-nums;
       font-family: 'SF Mono', 'Fira Code', monospace;
     }
@@ -74,7 +78,6 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
   @Input() serverTimeMs: number = 0;      // Time remaining from server (after last move)
   @Input() serverTimestamp: string = '';   // Server timestamp of last move
   @Input() isActive: boolean = false;      // Is this clock the active player's turn?
-  @Input() label: string = '';
   @Output() expired = new EventEmitter<void>();
 
   displayTime: number = 0;
