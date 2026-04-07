@@ -7,6 +7,7 @@ import {
   EventEmitter,
   NgZone,
   OnChanges,
+  OnDestroy,
   afterNextRender,
   inject,
   PLATFORM_ID,
@@ -24,12 +25,17 @@ import { AudioService } from '../../../core/services/audio.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="w-full h-full">
-      <div #boardRef class="w-full h-full"></div>
-    </div>
+    <div #boardRef class="w-full h-full"></div>
   `,
+  styles: [`
+    :host {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  `],
 })
-export class TacticsBoardComponent implements OnChanges {
+export class TacticsBoardComponent implements OnChanges, OnDestroy {
   @ViewChild('boardRef', { static: false }) boardRef!: ElementRef;
 
   private _puzzle: Puzzle | null = null;
@@ -45,6 +51,8 @@ export class TacticsBoardComponent implements OnChanges {
   @Output() puzzleSolved = new EventEmitter<void>();
   @Output() puzzleFailed = new EventEmitter<void>();
   @Output() userColorChange = new EventEmitter<'white' | 'black'>();
+
+  @Output() sizeChange = new EventEmitter<number>();
 
   @Input() size: number = 400;
 
@@ -69,6 +77,10 @@ export class TacticsBoardComponent implements OnChanges {
     }
   }
 
+  ngOnDestroy(): void {
+    this.board?.destroy();
+  }
+
   initPuzzle() {
     if (!this.puzzle || !this.boardRef) return;
     if (!isPlatformBrowser(this.platformId)) return;
@@ -89,7 +101,7 @@ export class TacticsBoardComponent implements OnChanges {
       fen: this.chess.fen(),
       orientation: this.userColor,
       turnColor: this.userColor,
-      coordinates: false,
+      coordinates: true,
       movable: {
         color: this.userColor,
         free: false,

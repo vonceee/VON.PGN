@@ -51,18 +51,19 @@
 /* Chess Coordinates */
 .cg-wrap coords {
   text-transform: lowercase !important;
-  font-size: max(7px, 1.8cqw) !important;
+  font-size: max(8px, 10px) !important;
   font-weight: 500 !important;
 }
 
 .cg-wrap coords.files {
   left: 4px !important;
-  bottom: 1px !important;
+  bottom: 0 !important;
   text-align: left !important;
 }
 
 .cg-wrap coords.ranks {
-  right: 4px !important;
+  right: 2px !important;
+  top: 2px !important;
   left: auto !important;
   text-align: right !important;
 }

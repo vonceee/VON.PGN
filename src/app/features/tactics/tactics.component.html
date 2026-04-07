@@ -21,10 +21,10 @@
       </div>
     } @else {
       <div class="w-full max-w-5xl flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-        <!-- Board Column -->
+<!-- Board Column -->
         <div class="w-full md:w-1/2 flex flex-col items-center">
             <div 
-              class="relative bg-slate-200 dark:bg-slate-800/80 rounded-xl overflow-hidden shadow-2xl"
+              class="relative bg-slate-200 dark:bg-slate-800/80 overflow-hidden rounded-md"
               [style.width.px]="boardSize()"
               [style.height.px]="boardSize()"
             >
@@ -34,29 +34,18 @@
                 (puzzleSolved)="onPuzzleSolved()"
                 (puzzleFailed)="onPuzzleFailed()"
                 (userColorChange)="onUserColorChange($event)"
+                (sizeChange)="onBoardSizeChange($event)"
                 class="absolute inset-0 block"
+              ></app-tactics-board>
+              <div 
+                class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end"
+                style="touch-action: none"
+                (mousedown)="startTacticsResize($event)"
+                (touchstart)="startTacticsResize($event)"
               >
-              </app-tactics-board>
-            </div>
-            
-            <!-- Resize Slider (matches Live Chess) -->
-            <div class="w-full mt-6" [style.max-width.px]="boardSize()">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Board Size</span>
-                <span class="text-xs font-mono text-cyan-400">{{ boardSize() }}px</span>
-              </div>
-              <input
-                type="range"
-                min="280"
-                max="560"
-                step="40"
-                [value]="boardSize()"
-                (input)="onBoardSizeChange($event)"
-                class="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500 hover:accent-cyan-400 transition-all"
-              />
-              <div class="flex justify-between mt-1 px-0.5">
-                <span class="text-[10px] text-slate-500 font-bold uppercase">Small</span>
-                <span class="text-[10px] text-slate-500 font-bold uppercase">Large</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" class="text-slate-500">
+                  <path d="M11 11H9.5V9.5H11V11ZM11 7.5H9.5V6H11V7.5ZM7.5 11H6V9.5H7.5V11Z" fill="currentColor"/>
+                </svg>
               </div>
             </div>
         </div>
