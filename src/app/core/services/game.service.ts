@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { AudioService } from './audio.service';
 import { environment } from '../../../environments/environment';
 import { GameState, MovePlayedPayload, GameEndedPayload, GameSeek } from '../models/game.model';
-import { Subject, of } from 'rxjs';
+import { Subject, of, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { io, Socket } from 'socket.io-client';
 
@@ -619,5 +619,25 @@ export class GameService implements OnDestroy {
           }
         });
     }, 3000);
+  }
+
+  // ── PGN Fetching ─────────────────────────────────────────────────
+
+  fetchPgnFromLichess(gameUrl: string): Observable<string> {
+    const match = gameUrl.match(/lichess\.org\/([a-zA-Z0-9]+)/);
+    if (!match) {
+      console.log('[GameService] Invalid game URL:', gameUrl);
+      return of('');
+    }
+    const gameId = match[1];
+    console.log('[GameService] Fetching game:', gameId);
+    return this.http.get(`https://lichess.org/game/export/${gameId}?pgnInJson=true`, {
+      responseType: 'text',
+    }).pipe(
+      catchError((err) => {
+        console.log('[GameService] Fetch error:', err);
+        return of('');
+      })
+    );
   }
 }

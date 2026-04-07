@@ -5,9 +5,11 @@
     @if (hasError() || (!isLoading() && !currentPuzzle() && status() === 'playing')) {
       <app-server-maintenance></app-server-maintenance>
     } @else if (isLoading()) {
-      <div class="w-full max-w-5xl flex flex-col md:flex-row gap-6 md:gap-8 items-start animate-pulse">
+      <div
+        class="w-full max-w-5xl flex flex-col md:flex-row gap-6 md:gap-8 items-start animate-pulse"
+      >
         <div class="w-full md:w-1/2 flex flex-col items-center">
-          <div 
+          <div
             class="relative bg-slate-100 dark:bg-slate-800/50 rounded-xl animate-pulse"
             [style.width.px]="boardSize()"
             [style.height.px]="boardSize()"
@@ -20,203 +22,161 @@
         </div>
       </div>
     } @else {
-      <div class="w-full max-w-5xl flex flex-col md:flex-row gap-6 md:gap-8 items-start">
-<!-- Board Column -->
+      <div class="w-full max-w-5xl flex flex-col md:flex-row gap-12 md:gap-20 items-start">
+        <!-- Board Column -->
         <div class="w-full md:w-1/2 flex flex-col items-center">
-            <div 
-              class="relative bg-slate-200 dark:bg-slate-800/80 overflow-hidden rounded-md"
-              [style.width.px]="boardSize()"
-              [style.height.px]="boardSize()"
-            >
-              <app-tactics-board
-                [puzzle]="currentPuzzle()"
-                [size]="boardSize()"
-                (puzzleSolved)="onPuzzleSolved()"
-                (puzzleFailed)="onPuzzleFailed()"
-                (userColorChange)="onUserColorChange($event)"
-                (sizeChange)="onBoardSizeChange($event)"
-                class="absolute inset-0 block"
-              ></app-tactics-board>
-              <div 
-                class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end"
-                style="touch-action: none"
-                (mousedown)="startTacticsResize($event)"
-                (touchstart)="startTacticsResize($event)"
-              >
-                <svg width="12" height="12" viewBox="0 0 12 12" class="text-slate-500">
-                  <path d="M11 11H9.5V9.5H11V11ZM11 7.5H9.5V6H11V7.5ZM7.5 11H6V9.5H7.5V11Z" fill="currentColor"/>
-                </svg>
-              </div>
-            </div>
-        </div>
-
-        <!-- Side Panel -->
-        <div class="w-full md:w-1/2 flex flex-col gap-5">
-          @if (currentUser()) {
-            <!-- Player Stats Card -->
+          <div
+            class="relative bg-slate-200 dark:bg-slate-800/80 overflow-hidden rounded-md"
+            [style.width.px]="boardSize()"
+            [style.height.px]="boardSize()"
+          >
+            <app-tactics-board
+              [puzzle]="currentPuzzle()"
+              [size]="boardSize()"
+              [exploreMode]="exploreMode()"
+              [retryMode]="retryMode()"
+              (puzzleSolved)="onPuzzleSolved()"
+              (puzzleFailed)="onPuzzleFailed()"
+              (wrongMove)="onWrongMove()"
+              (userColorChange)="onUserColorChange($event)"
+              (sizeChange)="onBoardSizeChange($event)"
+              class="absolute inset-0 block"
+            ></app-tactics-board>
             <div
-              class="border border-border-theme rounded-2xl p-4 md:p-6 flex items-center justify-between"
+              class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end"
+              style="touch-action: none"
+              (mousedown)="startTacticsResize($event)"
+              (touchstart)="startTacticsResize($event)"
             >
-              <div class="flex flex-col">
-                <span class="text-xs uppercase tracking-wider text-slate-400 font-medium mb-1">Rating</span>
-                <div class="flex items-center gap-2">
-                  <span class="text-2xl md:text-3xl font-black">{{ userRating() }}</span>
-                  @if (status() === 'success' && ratingChange() !== null) {
-                    <span
-                      class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full text-xs md:text-sm font-bold border border-green-500/30"
-                    >
-                      {{ (ratingChange() || 0) > 0 ? '+' : '' }}{{ ratingChange() }}
-                    </span>
-                  }
-                  @if (status() === 'failed' && ratingChange() !== null) {
-                    <span
-                      class="bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full text-xs md:text-sm font-bold border border-red-500/30"
-                    >
-                      {{ ratingChange() }}
-                    </span>
-                  }
-                </div>
-              </div>
-              <div class="flex flex-col items-end">
-                <span class="text-xs uppercase tracking-wider text-slate-400 font-medium mb-1">Streak</span>
-                <div class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fill-rule="evenodd"
-                      d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <span class="text-2xl font-black text-orange-400">{{ userStreak() }}</span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Leaderboard Link -->
-            <a 
-              routerLink="/tactics/leaderboard" 
-              class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-border-theme hover:bg-slate-50 dark:hover:bg-white/5 transition-all group"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99-2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0" />
-              </svg>
-              <span class="text-sm font-bold text-slate-600 dark:text-slate-300">View Rankings</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-              </svg>
-            </a>
-          } @else {
-            <!-- Guest: Login Prompt -->
-            <div
-              class="border border-border-theme rounded-2xl p-5 md:p-6 flex items-center gap-4"
-            >
-              <svg
-                class="w-8 h-8 text-slate-400 shrink-0"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg width="12" height="12" viewBox="0 0 12 12" class="text-slate-500">
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  d="M11 11H9.5V9.5H11V11ZM11 7.5H9.5V6H11V7.5ZM7.5 11H6V9.5H7.5V11Z"
+                  fill="currentColor"
                 />
               </svg>
-              <div>
-                <p class="font-semibold text-sm md:text-base">Create an account to save progress</p>
-                <p class="text-xs text-slate-400 mt-0.5">Track your rating and streak</p>
-              </div>
             </div>
-          }
-
-          <!-- Turn Indicator -->
-          <div class="border border-border-theme rounded-2xl p-4 md:p-5 flex items-center gap-3">
-            <div
-              class="w-4 h-4 rounded-full shrink-0"
-              [class.bg-white]="userColor() === 'white'"
-              [class.border-2]="userColor() === 'black'"
-              [class.border-slate-300]="userColor() === 'black'"
-              [class.bg-slate-800]="userColor() === 'black'"
-            ></div>
-            <p class="text-sm md:text-base">
-              <span class="font-semibold capitalize">{{ userColor() }}</span>
-              <span class="text-slate-400"> to play</span>
-            </p>
           </div>
+        </div>
 
-          <!-- Result Card: Success -->
-          @if (status() === 'success') {
-            <div
-              class="bg-green-500/10 border border-green-500/30 rounded-2xl p-5 md:p-6 flex flex-col items-center text-center"
-            >
-              <div
-                class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-4"
-              >
-                <svg
-                  class="w-5 h-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="3"
-                    d="M5 13l4 4L19 7"
-                  ></path>
-                </svg>
+        <div class="w-full md:w-1/2 flex flex-col gap-5">
+          <div class="border border-border-theme rounded-2xl flex flex-col overflow-hidden w-full" [style.height.px]="boardSize()">
+            <!-- Top Section: Stats or Guest Prompt -->
+            <div class="p-4 md:p-6 flex flex-col gap-5 shrink-0">
+              @if (currentUser()) {
+                <div class="flex items-center justify-between">
+                  <div class="flex flex-col">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Rating</span>
+                    <div class="flex items-center gap-2">
+                      <span class="text-2xl font-black">{{ userRating() }}</span>
+                      @if (status() === 'success' && ratingChange() !== null) {
+                        <span class="text-green-500 text-sm font-bold">
+                          {{ (ratingChange() || 0) > 0 ? '+' : '' }}{{ ratingChange() }}
+                        </span>
+                      }
+                      @if (status() === 'failed' && ratingChange() !== null) {
+                        <span class="text-red-500 text-sm font-bold">
+                          {{ ratingChange() }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+                  <div class="flex flex-col items-end">
+                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Streak</span>
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-2xl font-black text-orange-400">{{ userStreak() }}</span>
+                    </div>
+                  </div>
+                </div>
+              } @else {
+                <div class="flex items-center gap-4">
+                  <svg class="w-8 h-8 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <div>
+                    <p class="font-bold text-sm">Guest Mode</p>
+                    <p class="text-[10px] uppercase tracking-wider opacity-50">Sign in to save progress</p>
+                  </div>
+                </div>
+              }
+
+              <!-- Header Bar: Turn + Actions -->
+              <div class="flex items-center justify-between pt-4 border-t border-border-theme">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
+                    [class.bg-white]="userColor() === 'white'"
+                    [class.bg-slate-950]="userColor() === 'black'"
+                  ></div>
+                  <p class="text-xs uppercase tracking-widest font-bold opacity-60">
+                    {{ userColor() }} to play
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-1.5 ml-auto">
+                  @if (status() === 'failed' && !hasRevealedSolution()) {
+                    <app-button variant="outline" size="sm" (click)="revealSolution()" title="Reveal Answer">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.399 8.044 7.456 5 12 5c4.544 0 8.598 3.044 9.964 6.678.102.272.102.578 0 .85C20.598 15.956 16.544 19 12 19c-4.544 0-8.598-3.044-9.964-6.678Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                      </svg>
+                    </app-button>
+                  }
+                  @if (status() !== 'playing') {
+                    <app-button variant="outline" size="sm" label="Next" (click)="loadNextPuzzle()"></app-button>
+                  }
+                </div>
               </div>
-              <p class="text-green-400 font-bold text-lg mb-4">Correct!</p>
-              <button
-                (click)="loadNextPuzzle()"
-                class="w-full py-3.5 min-h-12 bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold rounded-xl transition-colors cursor-pointer"
-              >
-                Next Puzzle
-              </button>
             </div>
-          }
 
-          <!-- Result Card: Failed -->
-          @if (status() === 'failed') {
-            <div
-              class="bg-red-500/10 border border-red-500/30 rounded-2xl p-5 md:p-6 flex flex-col items-center text-center"
-            >
-              <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mb-4">
-                <svg
-                  class="w-5 h-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="3"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
-                </svg>
-              </div>
-              <p class="text-red-400 font-bold text-lg mb-4">Not quite</p>
-              <div class="flex flex-col w-full gap-2">
-                @if (!hasRevealedSolution()) {
-                  <button
-                    (click)="revealSolution()"
-                    class="w-full py-3.5 min-h-12 bg-red-500/20 hover:bg-red-500/30 active:bg-red-500/40 text-red-400 font-bold rounded-xl transition-colors cursor-pointer"
-                  >
-                    Reveal Answer
-                  </button>
+            <!-- Middle Section: PGN -->
+            @if (currentPuzzle()?.game_url) {
+              <div class="border-t border-border-theme flex-1 flex flex-col overflow-hidden">
+                @if (isLoadingPgn()) {
+                  <div class="p-6 flex flex-col items-center justify-center gap-2 text-slate-500">
+                    <div class="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-[10px] uppercase tracking-widest font-bold opacity-40">Loading History</span>
+                  </div>
+                } @else if (pgnMoves().length > 0) {
+                  <div class="p-3 flex items-center justify-center gap-2 shrink-0 border-b border-border-theme">
+                    <app-button variant="outline" size="sm" (click)="resetToGameStart()" [disabled]="currentPgnMoveIndex() === -1">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15M12 19.5l-7-7 7-7" /></svg>
+                    </app-button>
+                    <app-button variant="outline" size="sm" (click)="previousPgnMove()" [disabled]="currentPgnMoveIndex() === -1">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+                    </app-button>
+                    <app-button variant="outline" size="sm" (click)="nextPgnMove()" [disabled]="currentPgnMoveIndex() >= pgnMoves().length - 1">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+                    </app-button>
+                    <app-button variant="outline" size="sm" (click)="goToPgnEnd()" [disabled]="currentPgnMoveIndex() >= pgnMoves().length - 1">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5M12 19.5V4.5" /></svg>
+                    </app-button>
+                  </div>
+                  <div class="flex-1 overflow-y-auto custom-scrollbar">
+                    <div class="grid grid-cols-[2.5rem_1fr_1fr] text-[13px]">
+                      @for (round of moveRounds(); track round.num) {
+                        <div class="py-1.5 flex items-center justify-center font-bold opacity-20 border-r border-white/5 bg-white/5 h-full">{{ round.num }}</div>
+                        <div (click)="goToMove(round.whiteIndex)" class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center" [class.bg-blue-600/20]="round.whiteIndex === currentPgnMoveIndex()">
+                          <span [class.text-blue-400]="round.whiteIndex === currentPgnMoveIndex()">{{ formatMove(round.white) }}</span>
+                        </div>
+                        <div (click)="goToMove(round.blackIndex)" class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center" [class.bg-blue-600/20]="round.blackIndex === currentPgnMoveIndex()">
+                          @if (round.black) {
+                            <span [class.text-blue-400]="round.blackIndex === currentPgnMoveIndex()">{{ formatMove(round.black) }}</span>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
                 } @else {
-                  <button
-                    (click)="loadNextPuzzle()"
-                    class="w-full py-3.5 min-h-12 bg-red-500/20 hover:bg-red-500/30 active:bg-red-500/40 text-red-400 font-bold rounded-xl transition-colors cursor-pointer"
-                  >
-                    Next Puzzle
-                  </button>
+                  <div class="p-6 flex flex-col items-center justify-center gap-2 text-slate-500">
+                    <span class="text-[10px] uppercase tracking-widest font-bold opacity-40">No Game History</span>
+                  </div>
                 }
               </div>
-            </div>
-          }
+            }
+          </div>
         </div>
       </div>
     }

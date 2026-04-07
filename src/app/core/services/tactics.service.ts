@@ -9,9 +9,14 @@ export interface Puzzle {
   id: number;
   lichess_puzzle_id: string;
   fen: string;
-  moves: string; // e.g., "e2e4 e7e5 g1f3"
+  moves: string;
   rating: number;
   themes: string;
+  game_url?: string;
+  opening_tags?: string;
+  popularity?: number;
+  nb_plays?: number;
+  rating_deviation?: number;
 }
 
 export interface SolveResponse {
