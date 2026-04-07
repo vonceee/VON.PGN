@@ -22,6 +22,7 @@ import { Glicko2Service, Glicko2Player } from '../../../core/services/rating.ser
 import { UserService } from '../../../core/services/user.service';
 import { ChessClockComponent } from '../../../shared/components/chess-clock/chess-clock.component';
 import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 import {
   MovePlayedPayload,
   GameEndedPayload,
@@ -38,10 +39,10 @@ import { Key } from 'chessground/types';
 @Component({
   selector: 'app-live-game',
   standalone: true,
-  imports: [ChessClockComponent, ServerMaintenanceComponent],
+  imports: [ChessClockComponent, ServerMaintenanceComponent, ButtonComponent],
   template: `
     <div class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-6">
-      <div class="max-w-7xl w-full">
+      <div class="w-full max-w-none">
         @if (gameService.isServiceMaintenance()) {
           <app-server-maintenance
             title="Chess Service Maintenance"
@@ -50,123 +51,289 @@ import { Key } from 'chessground/types';
         } @else if (game(); as g) {
           <div class="flex flex-col lg:flex-row gap-4 items-start justify-center">
             <!-- Left: Details + PGN viewer + Actions -->
-            <div class="w-full lg:w-64 flex flex-col order-3 lg:order-1" [style.height.px]="boardSize()">
+            <div
+              class="w-full lg:w-80 flex flex-col order-3 lg:order-1 border border-border-theme rounded-xl overflow-hidden"
+              [style.height.px]="boardSize()"
+            >
               <!-- Game Details -->
-              <div class="border border-border-theme rounded p-3 mb-2">
-                <div class="text-base flex items-center gap-2 mb-3">
-                  @switch (getTimeControlCategory(g.time_control)) {
-                    @case ('bullet') {
-                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                      </svg>
-                    }
-                    @case ('blitz') {
-                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z" />
-                      </svg>
-                    }
-                    @case ('rapid') {
-                      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
-                    }
-                  }
+              <div class="p-3 border-b border-border-theme">
+                <div class="text-2xl font-black flex items-center gap-2 mb-3 opacity-80">
                   <span>{{ formatTimeControl(g.time_control) }}</span>
                   <span>•</span>
                   <span>{{ getTimeControlCategoryLabel(g.time_control) }}</span>
                 </div>
                 <!-- Opponent details -->
-                <div class="flex items-center gap-2 text-sm mb-2">
-                  <span class="text-xs font-medium">{{ g.my_color === 'white' ? 'Black' : 'White' }}</span>
-                  <span>•</span>
-                  <span class="truncate">{{ opponentName() }}</span>
-                  <span class="text-xs">({{ getOpponentRating() }})</span>
+                <div class="flex items-center gap-3 text-sm mb-3 opacity-70">
+                  <div
+                    class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
+                    [class.bg-white]="g.my_color === 'black'"
+                    [class.bg-slate-950]="g.my_color === 'white'"
+                  ></div>
+                  <span class="truncate font-bold">{{ opponentName() }}</span>
+                  <span>({{ getOpponentRating() }})</span>
                 </div>
                 <!-- My details -->
-                <div class="flex items-center gap-2 text-sm">
-                  <span class="text-xs font-medium">{{ g.my_color === 'white' ? 'White' : 'Black' }}</span>
-                  <span>•</span>
-                  <span>You</span>
-                  <span class="text-xs">({{ getMyRating() }})</span>
+                <div class="flex items-center gap-3 text-sm opacity-70">
+                  <div
+                    class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
+                    [class.bg-white]="g.my_color === 'white'"
+                    [class.bg-slate-950]="g.my_color === 'black'"
+                  ></div>
+                  <span class="font-bold">You</span>
+                  <span>({{ getMyRating() }})</span>
                 </div>
               </div>
 
               <!-- PGN Viewer -->
-              <div class="flex-1 border border-border-theme rounded-lg p-3 overflow-y-auto">
-                <!-- Navigation arrows - full width -->
-                <div class="flex items-center justify-between mb-2">
-                  <button (click)="goToStart()" class="p-1 hover:opacity-70" title="Start">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <div class="flex-1 flex flex-col overflow-hidden">
+                <!-- Navigation arrows -->
+                <div
+                  class="flex items-center justify-center gap-1 p-2 border-b border-border-theme"
+                >
+                  <app-button
+                    variant="outline"
+                    size="sm"
+                    (click)="goToStart()"
+                    title="Start"
+                    [disabled]="currentMoveIndex() === -1"
+                  >
+                    <svg
+                      class="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                    >
                       <polyline points="11 17 6 12 11 7" />
                       <polyline points="18 17 13 12 18 7" />
                     </svg>
-                  </button>
-                  <button (click)="previousMove()" class="p-1 hover:opacity-70" title="Previous">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  </app-button>
+                  <app-button
+                    variant="outline"
+                    size="sm"
+                    (click)="previousMove()"
+                    title="Previous"
+                    [disabled]="currentMoveIndex() === -1"
+                  >
+                    <svg
+                      class="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                    >
                       <polyline points="15 18 9 12 15 6" />
                     </svg>
-                  </button>
-                  <button (click)="nextMove()" class="p-1 hover:opacity-70" title="Next">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  </app-button>
+                  <app-button
+                    variant="outline"
+                    size="sm"
+                    (click)="nextMove()"
+                    title="Next"
+                    [disabled]="g.moves.length === 0 || currentMoveIndex() === g.moves.length - 1"
+                  >
+                    <svg
+                      class="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                    >
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
-                  </button>
-                  <button (click)="goToEnd()" class="p-1 hover:opacity-70" title="End">
-                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  </app-button>
+                  <app-button
+                    variant="outline"
+                    size="sm"
+                    (click)="goToEnd()"
+                    title="End"
+                    [disabled]="g.moves.length === 0 || currentMoveIndex() === g.moves.length - 1"
+                  >
+                    <svg
+                      class="w-3.5 h-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                    >
                       <polyline points="13 17 18 12 13 7" />
                       <polyline points="6 17 11 12 6 7" />
                     </svg>
-                  </button>
+                  </app-button>
                 </div>
-                <!-- Moves list - one pair per line, full width -->
-                <div class="text-base font-mono space-y-1">
-                  @for (move of g.moves; track $index; let i = $index) {
-                    @if (i % 2 === 0) {
-                      <div class="flex justify-between items-center">
-                        <span class="text-slate-500 w-8 shrink-0">{{ i / 2 + 1 }}.</span>
-                        <button 
-                          (click)="goToMove(i)"
-                          class="hover:opacity-70 px-2 text-left flex-1"
-                          [class.font-bold]="currentMoveIndex() === i"
-                          [class.underline]="currentMoveIndex() === i"
-                        >{{ getMoveSan(i) }}</button>
-                        @if (i + 1 < g.moves.length) {
-                          <button 
-                            (click)="goToMove(i + 1)"
-                            class="hover:opacity-70 px-2 text-left flex-1"
-                            [class.font-bold]="currentMoveIndex() === i + 1"
-                            [class.underline]="currentMoveIndex() === i + 1"
-                          >{{ getMoveSan(i + 1) }}</button>
-                        } @else {
-                          <span class="flex-1"></span>
+
+                <!-- Moves grid -->
+                <div class="flex-1 overflow-y-auto custom-scrollbar">
+                  <div class="grid grid-cols-[2.5rem_1fr_1fr] text-[13px]">
+                    @for (round of moveRounds(); track round.num) {
+                      <div
+                        class="py-1.5 flex items-center justify-center font-bold opacity-20 border-r border-white/5 h-full"
+                      >
+                        {{ round.num }}
+                      </div>
+                      <div
+                        (click)="goToMove(round.whiteIndex)"
+                        class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center"
+                        [class.bg-blue-600/20]="round.whiteIndex === currentMoveIndex()"
+                      >
+                        <span [class.text-blue-400]="round.whiteIndex === currentMoveIndex()">{{
+                          formatMove(round.white)
+                        }}</span>
+                      </div>
+                      <div
+                        (click)="goToMove(round.blackIndex)"
+                        class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center"
+                        [class.bg-blue-600/20]="round.blackIndex === currentMoveIndex()"
+                      >
+                        @if (round.black) {
+                          <span [class.text-blue-400]="round.blackIndex === currentMoveIndex()">{{
+                            formatMove(round.black)
+                          }}</span>
                         }
                       </div>
                     }
-                  }
+                    @if (g.moves.length === 0) {
+                      <div
+                        class="col-span-3 py-8 text-center text-slate-500 opacity-40 text-xs uppercase tracking-widest font-bold"
+                      >
+                        Game Start
+                      </div>
+                    }
+                  </div>
                 </div>
               </div>
 
               <!-- Action buttons -->
-              <div class="mt-2 flex flex-col gap-1.5">
+              <div
+                class="p-3 border-t border-border-theme flex flex-col items-center"
+              >
                 @if (g.status === 'active') {
-                  @if (g.moves.length < 2) {
-                    <button (click)="abort()" class="px-3 py-1.5 text-sm border border-border-theme hover:bg-slate-800 rounded">Abort</button>
-                  } @else {
-                    @if (canOfferDraw()) {
-                      <button (click)="offerDraw()" class="px-3 py-1.5 text-sm border border-border-theme hover:bg-slate-800 rounded">Draw</button>
+                  <div class="flex items-center justify-center gap-1 w-full">
+                    @if (g.moves.length < 2) {
+                      <app-button
+                        variant="ghost"
+                        size="sm"
+                        (click)="abort()"
+                        title="Abort"
+                        class="w-full"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </app-button>
+                    } @else {
+                      @if (canOfferDraw()) {
+                        <app-button
+                          variant="ghost"
+                          size="sm"
+                          (click)="offerDraw()"
+                          title="Offer Draw"
+                          class="w-full"
+                          label="1/2"
+                        ></app-button>
+                      }
+
+                      @if (!showResignConfirm()) {
+                        <app-button
+                          variant="ghost"
+                          size="sm"
+                          (click)="showResignConfirm.set(true)"
+                          title="Resign"
+                          class="w-full"
+                        >
+                          <svg
+                            class="w-4 h-4 text-red-500/70"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path
+                              d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"
+                            ></path>
+                            <line x1="4" y1="22" x2="4" y2="15"></line>
+                          </svg>
+                        </app-button>
+                      } @else {
+                        <div
+                          class="w-full flex gap-1 animate-in fade-in slide-in-from-right-2 duration-200"
+                        >
+                          <app-button
+                            variant="danger"
+                            size="sm"
+                            (click)="confirmResign()"
+                            title="Confirm Resign"
+                            class="flex-1"
+                          >
+                            <svg
+                              class="w-4 h-4"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="3"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                          </app-button>
+                          <app-button
+                            variant="outline"
+                            size="sm"
+                            (click)="showResignConfirm.set(false)"
+                            title="Cancel"
+                            class="flex-1"
+                          >
+                            <svg
+                              class="w-4 h-4"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="3"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </app-button>
+                        </div>
+                      }
                     }
-                    <button (click)="showResignConfirm.set(true)" class="px-3 py-1.5 text-sm border border-red-500/50 hover:bg-red-900/20 rounded">Resign</button>
-                  }
-                  @if (showResignConfirm()) {
-                    <div class="flex gap-1 mt-1">
-                      <button (click)="confirmResign()" class="flex-1 px-2 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-xs">Yes</button>
-                      <button (click)="showResignConfirm.set(false)" class="flex-1 px-2 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded text-xs">No</button>
-                    </div>
-                  }
+                  </div>
                 }
                 @if (g.status === 'completed' || g.status === 'aborted') {
-                  <button (click)="findNewOpponent()" class="px-3 py-1.5 text-sm bg-cyan-600 hover:bg-cyan-500 text-white rounded">New Game</button>
+                  <app-button
+                    variant="primary"
+                    size="md"
+                    (click)="findNewOpponent()"
+                    class="w-full"
+                    label="New Game"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M5 12h14"></path>
+                      <path d="M12 5l7 7-7 7"></path>
+                    </svg>
+                  </app-button>
                 }
               </div>
             </div>
@@ -177,32 +344,57 @@ import { Key } from 'chessground/types';
                 <div class="board-wrapper" [style.width.px]="boardSize()">
                   <div #boardEl class="board-container" ngSkipHydration></div>
                 </div>
-                <div class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end" (mousedown)="startResize($event)">
+                <div
+                  class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end"
+                  (mousedown)="startResize($event)"
+                >
                   <svg width="12" height="12" viewBox="0 0 12 12" class="text-slate-500">
-                    <path d="M11 11H9.5V9.5H11V11ZM11 7.5H9.5V6H11V7.5ZM7.5 11H6V9.5H7.5V11Z" fill="currentColor"/>
+                    <path
+                      d="M11 11H9.5V9.5H11V11ZM11 7.5H9.5V6H11V7.5ZM7.5 11H6V9.5H7.5V11Z"
+                      fill="currentColor"
+                    />
                   </svg>
                 </div>
               </div>
             </div>
 
             <!-- Right: Clocks -->
-            <div class="w-full lg:w-48 flex flex-col justify-between order-2 lg:order-3" [style.height.px]="boardSize()">
+            <div
+              class="w-full lg:w-48 flex flex-col justify-between order-2 lg:order-3"
+              [style.height.px]="boardSize()"
+            >
               <!-- Opponent clock - top -->
               <div class="border border-border-theme rounded p-2">
-                <app-chess-clock [serverTimeMs]="opponentTimeMs()" [serverTimestamp]="g.server_timestamp" [isActive]="isOpponentTurn()" (expired)="onClockExpired()" />
+                <app-chess-clock
+                  [serverTimeMs]="opponentTimeMs()"
+                  [serverTimestamp]="g.server_timestamp"
+                  [isActive]="isOpponentTurn()"
+                  (expired)="onClockExpired()"
+                />
               </div>
 
               <!-- Result message / Alerts in middle -->
               <div>
                 @if (g.status === 'completed' || g.status === 'aborted') {
                   <div class="border border-border-theme rounded-lg p-3 text-center mb-2">
-                    <div class="text-lg font-bold" [class]="g.status === 'aborted' ? 'text-slate-400' : getResultClass(g.result)">
-                      @if (g.status === 'aborted') { Game Aborted } @else { {{ formatResult(g.result) }} }
+                    <div
+                      class="text-lg font-bold"
+                      [class]="g.status === 'aborted' ? 'text-slate-400' : getResultClass(g.result)"
+                    >
+                      @if (g.status === 'aborted') {
+                        Game Aborted
+                      } @else {
+                        {{ formatResult(g.result) }}
+                      }
                     </div>
                     @if (g.status === 'completed') {
-                      <div class="text-xs text-slate-400 mt-1">{{ formatTermination(g.result, g.termination) }}</div>
+                      <div class="text-xs text-slate-400 mt-1">
+                        {{ formatTermination(g.result, g.termination) }}
+                      </div>
                       @if (ratingChange() !== null) {
-                        <div class="text-sm font-medium mt-1" [class]="getRatingChangeClass()">{{ getMyRating() }} ({{ getRatingChangeText() }})</div>
+                        <div class="text-sm font-medium mt-1" [class]="getRatingChangeClass()">
+                          {{ getMyRating() }} ({{ getRatingChangeText() }})
+                        </div>
                       }
                     }
                   </div>
@@ -210,42 +402,71 @@ import { Key } from 'chessground/types';
                 @if (g.status === 'active' && opponentAwayCountdown() !== null) {
                   <div class="border border-red-500/30 rounded-lg p-2 text-center mb-2">
                     <div class="text-xs text-red-400">Opponent disconnected</div>
-                    <div class="text-xl font-bold font-mono text-red-400">{{ opponentAwayCountdown() }}</div>
+                    <div class="text-xl font-bold font-mono text-red-400">
+                      {{ opponentAwayCountdown() }}
+                    </div>
                   </div>
                 }
-                @if (g.status === 'active' && (bufferCountdown() !== null || abortCountdown() !== null)) {
+                @if (
+                  g.status === 'active' && (bufferCountdown() !== null || abortCountdown() !== null)
+                ) {
                   <div class="border border-cyan-500/30 rounded-lg p-2 text-center mb-2">
-                    <div class="text-xs text-cyan-400">{{ bufferCountdown() !== null ? 'Game starting' : 'First move' }}</div>
-                    <div class="text-xl font-bold font-mono text-cyan-400">{{ bufferCountdown() !== null ? bufferCountdown() : abortCountdown() }}</div>
+                    <div class="text-xs text-cyan-400">
+                      {{ bufferCountdown() !== null ? 'Game starting' : 'First move' }}
+                    </div>
+                    <div class="text-xl font-bold font-mono text-cyan-400">
+                      {{ bufferCountdown() !== null ? bufferCountdown() : abortCountdown() }}
+                    </div>
                   </div>
                 }
                 @if (g.status === 'active' && drawOfferState() === 'opponentOffered') {
-                  <div class="border border-border-theme rounded-lg p-2 mb-2">
-                    <div class="text-center text-sm mb-2">Draw offered</div>
-                    <div class="flex gap-2">
-                      <button (click)="acceptDraw()" class="flex-1 px-2 py-1 bg-green-600 hover:bg-green-500 text-white rounded text-xs">Accept</button>
-                      <button (click)="declineDraw()" class="flex-1 px-2 py-1 bg-slate-600 hover:bg-slate-500 text-white rounded text-xs">Decline</button>
+                  <div class="border border-cyan-500/30 rounded-lg p-2 mb-2 bg-cyan-500/5 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div class="flex items-center justify-between gap-3">
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-cyan-400">1/2 ?</span>
+                      </div>
+                      <div class="flex gap-1 flex-1">
+                        <app-button variant="primary" size="sm" (click)="acceptDraw()" title="Accept Draw" class="flex-1">
+                          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </app-button>
+                        <app-button variant="outline" size="sm" (click)="declineDraw()" title="Decline Draw" class="flex-1">
+                          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </app-button>
+                      </div>
                     </div>
                   </div>
                 }
                 @if (g.status === 'active' && drawOfferState() === 'iOffered') {
-                  <div class="border border-border-theme rounded-lg p-2 text-center text-sm text-slate-400 mb-2">Draw sent</div>
+                  <div
+                    class="border border-border-theme rounded-lg p-2 text-center text-xs text-slate-400 mb-2 opacity-60"
+                  >
+                    1/2 Sent
+                  </div>
                 }
                 @if (drawCooldownRemaining() > 0) {
-                  <div class="text-xs text-slate-500 text-center mb-2">Draw: {{ drawCooldownRemaining() }}s</div>
+                  <div class="text-xs text-slate-500 text-center mb-2">
+                    Draw: {{ drawCooldownRemaining() }}s
+                  </div>
                 }
               </div>
 
               <!-- My clock - bottom -->
               <div class="border border-border-theme rounded p-2">
-                <app-chess-clock [serverTimeMs]="myTimeMs()" [serverTimestamp]="g.server_timestamp" [isActive]="isMyTurn()" (expired)="onClockExpired()" />
+                <app-chess-clock
+                  [serverTimeMs]="myTimeMs()"
+                  [serverTimestamp]="g.server_timestamp"
+                  [isActive]="isMyTurn()"
+                  (expired)="onClockExpired()"
+                />
               </div>
             </div>
           </div>
         } @else {
           <div class="flex items-center justify-center min-h-100">
             <div class="text-center">
-              <div class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <div
+                class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+              ></div>
               <p class="text-slate-400">Loading game...</p>
             </div>
           </div>
@@ -340,7 +561,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       const saved = localStorage.getItem('boardSize');
       if (saved) {
         const size = parseInt(saved, 10);
-        if (size >= 280 && size <= 560) return size;
+        if (size >= 280 && size <= 1200) return size;
       }
     }
     return 400;
@@ -353,8 +574,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   resizeBoard(delta: number) {
+    const dynamicMax = Math.min(1200, window.innerWidth * 0.95, window.innerHeight * 0.85);
     const newSize = this.boardSize() + delta;
-    if (newSize >= 280 && newSize <= 560) {
+    if (newSize >= 280 && newSize <= dynamicMax) {
       this.boardSize.set(newSize);
       this.saveBoardSize(newSize);
     }
@@ -385,14 +607,16 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private onResize = (event: MouseEvent): void => {
     if (!this.isResizing) return;
     const delta = event.clientX - this.resizeStartX;
-    const newSize = Math.min(560, Math.max(280, this.resizeStartSize + delta));
+    const dynamicMax = Math.min(1200, window.innerWidth * 0.95, window.innerHeight * 0.85);
+    const newSize = Math.min(dynamicMax, Math.max(280, this.resizeStartSize + delta));
     this.boardSize.set(newSize);
   };
 
   private onTouchResize = (event: TouchEvent): void => {
     if (!this.isResizing || !event.touches.length) return;
     const delta = event.touches[0].clientX - this.resizeStartX;
-    const newSize = Math.min(560, Math.max(280, this.resizeStartSize + delta));
+    const dynamicMax = Math.min(1200, window.innerWidth * 0.95, window.innerHeight * 0.85);
+    const newSize = Math.min(dynamicMax, Math.max(280, this.resizeStartSize + delta));
     this.boardSize.set(newSize);
   };
 
@@ -476,6 +700,22 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     const g = this.game();
     if (!g) return false;
     return g.status === 'active' && g.turn !== g.my_color;
+  });
+
+  moveRounds = computed(() => {
+    const g = this.game();
+    if (!g) return [];
+    const rounds = [];
+    for (let i = 0; i < g.moves.length; i += 2) {
+      rounds.push({
+        num: Math.floor(i / 2) + 1,
+        white: this.getMoveSan(i),
+        black: i + 1 < g.moves.length ? this.getMoveSan(i + 1) : null,
+        whiteIndex: i,
+        blackIndex: i + 1,
+      });
+    }
+    return rounds;
   });
 
   isWinner = () => {
@@ -581,6 +821,17 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return result || '';
   }
 
+  formatMove(move: string): string {
+    if (!move) return '';
+    return move
+      .replace(/K/g, '♔')
+      .replace(/Q/g, '♕')
+      .replace(/R/g, '♖')
+      .replace(/B/g, '♗')
+      .replace(/N/g, '♘')
+      .replace(/P/g, '');
+  }
+
   formatTermination(result: string | null, termination: string | null): string {
     if (!result || !termination) return '';
 
@@ -638,8 +889,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   getResultClass(result: string | null): string {
     if (!result) return '';
     if (result === '1/2-1/2') return 'text-slate-400';
-    const isWinner = (result === '1-0' && this.game()?.my_color === 'white') ||
-                     (result === '0-1' && this.game()?.my_color === 'black');
+    const isWinner =
+      (result === '1-0' && this.game()?.my_color === 'white') ||
+      (result === '0-1' && this.game()?.my_color === 'black');
     return isWinner ? 'text-green-400' : 'text-red-400';
   }
 
@@ -721,7 +973,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
         fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event) => {
           // Ignore if user is typing in an input
           if ((event.target as HTMLElement).tagName === 'INPUT') return;
-          
+
           switch (event.key) {
             case 'ArrowLeft':
               this.previousMove();
@@ -736,7 +988,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
               this.goToEnd();
               break;
           }
-        })
+        }),
       );
     }
   }
@@ -1008,7 +1260,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.moveSanCache = [];
     this.chessHistory = [];
-    
+
     // Start from standard initial position
     const tempChess = new Chess();
 
@@ -1024,11 +1276,11 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
         this.chessHistory.push(new Chess(tempChess.fen()));
         continue;
       }
-      
+
       const from = uci.substring(0, 2);
       const to = uci.substring(2, 4);
       const promotion = uci.length > 4 ? uci[4] : undefined;
-      
+
       try {
         const result = tempChess.move({ from, to, promotion: promotion as any });
         if (result) {
@@ -1050,9 +1302,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   goToMove(index: number): void {
     const g = this.game();
     if (!g || index < -1 || index >= g.moves.length) return;
-    
+
     this.currentMoveIndex.set(index);
-    
+
     if (index === -1) {
       // Start position
       this.chess.load(
@@ -1067,20 +1319,23 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
         this.chess.load(pos.fen());
       }
     }
-    
+
     this.updateBoardPosition();
   }
 
   private updateBoardPosition(): void {
     if (!this.cgApi) return;
-    
+
     const g = this.game();
     if (!g) return;
-    
-    const isMyTurn = g.status === 'active' && this.currentMoveIndex() === g.moves.length - 1 && g.turn === g.my_color;
+
+    const isMyTurn =
+      g.status === 'active' &&
+      this.currentMoveIndex() === g.moves.length - 1 &&
+      g.turn === g.my_color;
     const turnColor = this.chess.turn() === 'w' ? 'white' : 'black';
     const inCheck = this.chess.inCheck();
-    
+
     this.cgApi.set({
       fen: this.chess.fen(),
       turnColor: turnColor,

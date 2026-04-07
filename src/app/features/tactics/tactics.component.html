@@ -33,9 +33,9 @@
         </div>
       </div>
     } @else {
-      <div class="w-full max-w-5xl flex flex-col md:flex-row gap-12 md:gap-20 items-start">
+      <div class="w-full flex flex-col md:flex-row gap-12 md:gap-20 items-start justify-center">
         <!-- Board Column -->
-        <div class="w-full md:w-1/2 flex flex-col items-center">
+        <div class="flex-none flex flex-col items-center">
           <div
             class="relative bg-slate-200 dark:bg-slate-800/80 overflow-hidden rounded-md"
             [style.width.px]="boardSize()"
@@ -70,7 +70,7 @@
           </div>
         </div>
 
-        <div class="w-full md:w-1/2 flex flex-col gap-5">
+        <div class="flex-1 min-w-[320px] max-w-xl flex flex-col gap-5">
           <div class="border border-border-theme rounded-2xl flex flex-col overflow-hidden w-full" [style.height.px]="boardSize()">
             <!-- Top Section: Stats or Guest Prompt -->
             <div class="p-4 md:p-6 flex flex-col gap-5 shrink-0">
@@ -165,14 +165,24 @@
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5M12 19.5V4.5" /></svg>
                     </app-button>
                   </div>
-                  <div class="flex-1 overflow-y-auto custom-scrollbar">
+                  <div class="flex-1 overflow-y-auto custom-scrollbar relative" #pgnScrollContainer>
                     <div class="grid grid-cols-[2.5rem_1fr_1fr] text-[13px]">
                       @for (round of moveRounds(); track round.num) {
                         <div class="py-1.5 flex items-center justify-center font-bold opacity-20 border-r border-white/5 bg-white/5 h-full">{{ round.num }}</div>
-                        <div (click)="goToMove(round.whiteIndex)" class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center" [class.bg-blue-600/20]="round.whiteIndex === currentPgnMoveIndex()">
+                        <div 
+                          (click)="goToMove(round.whiteIndex)" 
+                          class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center" 
+                          [class.bg-blue-600/20]="round.whiteIndex === currentPgnMoveIndex()"
+                          [class.active-pgn-move]="round.whiteIndex === currentPgnMoveIndex()"
+                        >
                           <span [class.text-blue-400]="round.whiteIndex === currentPgnMoveIndex()">{{ formatMove(round.white) }}</span>
                         </div>
-                        <div (click)="goToMove(round.blackIndex)" class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center" [class.bg-blue-600/20]="round.blackIndex === currentPgnMoveIndex()">
+                        <div 
+                          (click)="goToMove(round.blackIndex)" 
+                          class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center" 
+                          [class.bg-blue-600/20]="round.blackIndex === currentPgnMoveIndex()"
+                          [class.active-pgn-move]="round.blackIndex === currentPgnMoveIndex()"
+                        >
                           @if (round.black) {
                             <span [class.text-blue-400]="round.blackIndex === currentPgnMoveIndex()">{{ formatMove(round.black) }}</span>
                           }

@@ -256,14 +256,15 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
 
   setGameModeAtMove(moves: string[], moveIndex: number) {
     if (!this.board) return;
-    this.gameMoves = moves;
-    this.gameMoveIndex = moveIndex;
+    this.gameMoves = [...moves];
+    this.gameMoveIndex = Math.max(-1, Math.min(moveIndex, moves.length - 1));
     this.gameMode = true;
     
-    // Rebuild the history up to moveIndex
+    // Rebuild the history up to gameMoveIndex
     this.chess.load(this.gameStartFen);
-    for (let i = 0; i <= moveIndex; i++) {
-      this.chess.move(moves[i]);
+    for (let i = 0; i <= this.gameMoveIndex; i++) {
+       const m = moves[i];
+       if (m) this.chess.move(m);
     }
     
     this.updateBoardForGame();
