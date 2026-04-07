@@ -41,18 +41,19 @@
             [style.width.px]="boardSize()"
             [style.height.px]="boardSize()"
           >
-            <app-tactics-board
-              [puzzle]="currentPuzzle()"
-              [size]="boardSize()"
-              [exploreMode]="exploreMode()"
-              [retryMode]="retryMode()"
-              (puzzleSolved)="onPuzzleSolved()"
-              (puzzleFailed)="onPuzzleFailed()"
-              (wrongMove)="onWrongMove()"
-              (userColorChange)="onUserColorChange($event)"
-              (sizeChange)="onBoardSizeChange($event)"
-              class="absolute inset-0 block"
-            ></app-tactics-board>
+              <app-tactics-board
+                [puzzle]="currentPuzzle()"
+                [size]="boardSize()"
+                [exploreMode]="exploreMode()"
+                [retryMode]="retryMode()"
+                (puzzleSolved)="onPuzzleSolved()"
+                (puzzleFailed)="onPuzzleFailed()"
+                (wrongMove)="onWrongMove()"
+                (moveMade)="onPuzzleMoveMade($event)"
+                (userColorChange)="onUserColorChange($event)"
+                (sizeChange)="onBoardSizeChange($event)"
+                class="absolute inset-0 block"
+              ></app-tactics-board>
             <div
               class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end"
               style="touch-action: none"
@@ -79,14 +80,13 @@
                     <span class="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Rating</span>
                     <div class="flex items-center gap-2">
                       <span class="text-2xl font-black">{{ userRating() }}</span>
-                      @if (status() === 'success' && ratingChange() !== null) {
-                        <span class="text-green-500 text-sm font-bold">
+                      @if (status() !== 'playing' && ratingChange() !== null) {
+                        <span 
+                          class="text-sm font-bold"
+                          [class.text-green-500]="(ratingChange() || 0) > 0"
+                          [class.text-red-500]="(ratingChange() || 0) < 0"
+                        >
                           {{ (ratingChange() || 0) > 0 ? '+' : '' }}{{ ratingChange() }}
-                        </span>
-                      }
-                      @if (status() === 'failed' && ratingChange() !== null) {
-                        <span class="text-red-500 text-sm font-bold">
-                          {{ ratingChange() }}
                         </span>
                       }
                     </div>

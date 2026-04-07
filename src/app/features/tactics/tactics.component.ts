@@ -53,6 +53,7 @@ export class TacticsComponent implements OnInit {
   exploreMode = signal(false);
   isLoadingPgn = signal(false);
   pgnMoves = signal<string[]>([]);
+  basePgnMoves = signal<string[]>([]);
   currentPgnMoveIndex = signal(-1);
   puzzleStartPly = signal(-1);
   fullPgnMoves: string[] = [];
@@ -190,7 +191,12 @@ export class TacticsComponent implements OnInit {
           this.fullPgnMoves = [...this.pgnMoves()];
 
           if (parsed.ply > 0 && this.fullPgnMoves.length > parsed.ply) {
-            this.pgnMoves.set(this.fullPgnMoves.slice(0, parsed.ply));
+            const base = this.fullPgnMoves.slice(0, parsed.ply);
+            this.basePgnMoves.set(base);
+            this.pgnMoves.set([...base]);
+          } else {
+            this.basePgnMoves.set([...this.fullPgnMoves]);
+            this.pgnMoves.set([...this.fullPgnMoves]);
           }
 
           if (this.boardComponent) {
@@ -299,14 +305,26 @@ export class TacticsComponent implements OnInit {
         this.newStreak.set(res.new_streak);
         this.userService.loadMyProfile().subscribe();
         this.retryMode.set(true);
+        // Reset moves since TacticsBoard resets to beginning of puzzle
+        this.pgnMoves.set([...this.basePgnMoves()]);
+        this.currentPgnMoveIndex.set(this.pgnMoves().length - 1);
       });
     } else {
       this.retryMode.set(true);
+      this.pgnMoves.set([...this.basePgnMoves()]);
+      this.currentPgnMoveIndex.set(this.pgnMoves().length - 1);
     }
   }
 
   onUserColorChange(color: 'white' | 'black') {
     this.userColor.set(color);
+  }
+
+  onPuzzleMoveMade(san: string) {
+    this.pgnMoves.update(moves => [...moves, san]);
+    
+    // Automatically keep the sidebar highlighting the latest move during the puzzle
+    this.currentPgnMoveIndex.set(this.pgnMoves().length - 1);
   }
 
   revealSolution() {
@@ -372,12 +390,8 @@ export class TacticsComponent implements OnInit {
   }
 
   nextPgnMove() {
-    if (!this.boardComponent) return;
-    
-    if (this.currentPgnMoveIndex() < this.pgnMoves().length - 1) {
-      this.currentPgnMoveIndex.update(i => i + 1);
-      this.boardComponent.nextGameMove();
-    }
+     const nextIdx = this.currentPgnMoveIndex() + 1;
+     this.goToMove(nextIdx);
   }
 
   goToPgnEnd() {
@@ -396,6 +410,13 @@ export class TacticsComponent implements OnInit {
     if (!this.boardComponent) return;
     
     const currentIdx = this.currentPgnMoveIndex();
+    if (index < -1 || index >= this.pgnMoves().length) return;
+
+    if (index === this.pgnMoves().length - 1 && this.status() === 'playing') {
+      this.boardComponent.exitGameMode();
+      this.currentPgnMoveIndex.set(index);
+      return;
+    }
     
     if (index > currentIdx) {
       const steps = index - currentIdx;

@@ -52,7 +52,7 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
   @Output() puzzleFailed = new EventEmitter<void>();
   @Output() userColorChange = new EventEmitter<'white' | 'black'>();
   @Output() wrongMove = new EventEmitter<void>();
-
+  @Output() moveMade = new EventEmitter<string>();
   @Output() sizeChange = new EventEmitter<number>();
 
   @Input() size: number = 400;
@@ -112,8 +112,9 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
     this.chess.load(this.puzzle.fen);
 
     const opponentInitialMove = this.solutionMoves[this.currentMoveIndex];
-    this.chess.move(this.parseUciMove(opponentInitialMove));
+    const moveResult = this.chess.move(this.parseUciMove(opponentInitialMove));
     this.currentMoveIndex++;
+    if (moveResult) this.moveMade.emit(moveResult.san);
     
     this.userColor = this.chess.turn() === 'w' ? 'white' : 'black';
     this.initialFen = this.chess.fen();
@@ -148,6 +149,7 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
     if (expectedMove.startsWith(userMoveStr)) {
       const moveResult = this.chess.move(this.parseUciMove(expectedMove));
       this.currentMoveIndex++;
+      if (moveResult) this.moveMade.emit(moveResult.san);
       this.audioService.playMoveSound(moveResult?.san || '');
 
       this.board.set({
@@ -212,6 +214,35 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
     this.gameMoves = moves;
     this.gameMoveIndex = -1;
     // Don't set gameMode = true yet, we want to stay in puzzle mode
+  }
+
+  exitGameMode() {
+    this.gameMode = false;
+    this.chess.load(this.initialFen);
+    
+    // We need to re-replay the current progress of the puzzle
+    // However, the internal chess instance should already be at the current position 
+    // unless we messed it up in game mode.
+    // Actually, initPuzzle sets initialFen to the state after the FIRST opponent move.
+    
+    this.chess.load(this.puzzle?.fen || '');
+    for (let i = 0; i < this.currentMoveIndex; i++) {
+      this.chess.move(this.parseUciMove(this.solutionMoves[i]));
+    }
+
+    this.board.set({
+      fen: this.chess.fen(),
+      turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
+      check: this.chess.inCheck() ? (this.chess.turn() === 'w' ? 'white' : 'black') : undefined,
+      movable: {
+        color: this.status === 'playing' ? this.userColor : undefined,
+        dests: this.calculateDests()
+      }
+    });
+
+    if (this.exploreMode && this.status === 'success') {
+      this.enableFreePlay();
+    }
   }
 
   loadGame(moves: string[]) {
@@ -303,6 +334,7 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
     const oppMove = this.solutionMoves[this.currentMoveIndex];
     const moveResult = this.chess.move(this.parseUciMove(oppMove));
     this.currentMoveIndex++;
+    if (moveResult) this.moveMade.emit(moveResult.san);
     this.audioService.playMoveSound(moveResult?.san || '');
 
     this.board.set({
