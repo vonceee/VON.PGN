@@ -195,4 +195,8 @@ export class AudioService {
     this.lastMatchFoundTime = now;
     this.speakWithTTS('Match Found');
   }
+
+  playNotification(): void {
+    this.speakWithTTS('Notice');
+  }
 }

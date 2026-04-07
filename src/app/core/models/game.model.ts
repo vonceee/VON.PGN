@@ -21,6 +21,8 @@ export interface GameState {
   server_timestamp: string;
   result: string | null;
   termination: string | null;
+  white_rating_change: number | null;
+  black_rating_change: number | null;
   my_color: 'white' | 'black';
   legal_moves: string[];
   draw_offered_by: number | null;
@@ -74,6 +76,8 @@ export interface GameEndedPayload {
     white: number;
     black: number;
   };
+  white_rating_change?: number | null;
+  black_rating_change?: number | null;
 }
 
 export interface ClockSyncPayload {
@@ -177,6 +181,16 @@ export interface ClockSyncMicroservicePayload {
   whiteTimeRemainingMs: number;
   blackTimeRemainingMs: number;
   serverTimestamp: string;
+}
+
+export interface RematchOfferedPayload {
+  gameId: string;
+  offeredBy: string;
+}
+
+export interface RematchAcceptedPayload {
+  oldGameId: string;
+  newGameId: string;
 }
 
 export const TIME_CONTROLS: TimeControlOption[] = [

@@ -137,19 +137,4 @@ export class UserService {
       .put<{ data: UserProfile }>(`${environment.apiUrl}/profile/bio`, { bio })
       .pipe(map((res) => res.data));
   }
-
-  updateLiveChessRating(category: 'bullet' | 'blitz' | 'rapid', rating: number, rd: number) {
-    return this.http
-      .put<{ data: UserProfile }>(`${environment.apiUrl}/profile/rating`, {
-        category,
-        rating,
-        rd,
-      })
-      .pipe(
-        tap((response) => {
-          this.currentUser.set(response.data);
-          this.cacheProfile(response.data);
-        }),
-      );
-  }
 }

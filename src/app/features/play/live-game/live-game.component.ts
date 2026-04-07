@@ -18,7 +18,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, fromEvent } from 'rxjs';
 import { GameService } from '../../../core/services/game.service';
 import { AudioService } from '../../../core/services/audio.service';
-import { Glicko2Service, Glicko2Player } from '../../../core/services/rating.service';
 import { UserService } from '../../../core/services/user.service';
 import { ChessClockComponent } from '../../../shared/components/chess-clock/chess-clock.component';
 import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
@@ -27,6 +26,8 @@ import {
   MovePlayedPayload,
   GameEndedPayload,
   DrawOfferedPayload,
+  RematchOfferedPayload,
+  RematchAcceptedPayload,
   GamePlayer,
   TIME_CONTROLS,
   TimeControlOption,
@@ -58,30 +59,56 @@ import { Key } from 'chessground/types';
               <!-- Game Details -->
               <div class="p-3 border-b border-border-theme">
                 <div class="text-2xl font-black flex items-center gap-2 mb-3 opacity-80">
-                  <span>{{ formatTimeControl(g.time_control) }}</span>
                   <span>•</span>
                   <span>{{ getTimeControlCategoryLabel(g.time_control) }}</span>
                 </div>
+
                 <!-- Opponent details -->
-                <div class="flex items-center gap-3 text-sm mb-3 opacity-70">
-                  <div
-                    class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
-                    [class.bg-white]="g.my_color === 'black'"
-                    [class.bg-slate-950]="g.my_color === 'white'"
-                  ></div>
-                  <span class="truncate font-bold">{{ opponentName() }}</span>
-                  <span>({{ getOpponentRating() }})</span>
+                <div class="flex items-center justify-between text-sm mb-3">
+                  <div class="flex items-center gap-3 opacity-80 overflow-hidden">
+                    <div
+                      class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
+                      [class.bg-white]="g.my_color === 'black'"
+                      [class.bg-slate-950]="g.my_color === 'white'"
+                    ></div>
+                    <span class="truncate font-bold">{{ opponentName() }}</span>
+                  </div>
+                  <div class="flex items-center gap-2 font-mono text-[13px] shrink-0 ml-4">
+                    <span class="opacity-50">({{ getOpponentRating() }})</span>
+                    @if (getOpponentRatingChange() !== null && getOpponentRatingChange() !== undefined) {
+                      <span 
+                        class="font-bold whitespace-nowrap"
+                        [class]="getOpponentRatingChange()! >= 0 ? 'text-green-400' : 'text-red-400'"
+                      >
+                        {{ getOpponentRatingChange()! > 0 ? '+' : '' }}{{ getOpponentRatingChange() }}
+                      </span>
+                    }
+                  </div>
                 </div>
+
                 <!-- My details -->
-                <div class="flex items-center gap-3 text-sm opacity-70">
-                  <div
-                    class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
-                    [class.bg-white]="g.my_color === 'white'"
-                    [class.bg-slate-950]="g.my_color === 'black'"
-                  ></div>
-                  <span class="font-bold">You</span>
-                  <span>({{ getMyRating() }})</span>
+                <div class="flex items-center justify-between text-sm">
+                  <div class="flex items-center gap-3 opacity-80 overflow-hidden">
+                    <div
+                      class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
+                      [class.bg-white]="g.my_color === 'white'"
+                      [class.bg-slate-950]="g.my_color === 'black'"
+                    ></div>
+                    <span class="font-bold">You</span>
+                  </div>
+                  <div class="flex items-center gap-2 font-mono text-[13px] shrink-0 ml-4">
+                    <span class="opacity-50">({{ getMyRating() }})</span>
+                    @if (getMyRatingChange() !== null && getMyRatingChange() !== undefined) {
+                      <span 
+                        class="font-bold whitespace-nowrap"
+                        [class]="getMyRatingChange()! >= 0 ? 'text-green-400' : 'text-red-400'"
+                      >
+                        {{ getMyRatingChange()! > 0 ? '+' : '' }}{{ getMyRatingChange() }}
+                      </span>
+                    }
+                  </div>
                 </div>
+
               </div>
 
               <!-- PGN Viewer -->
@@ -381,7 +408,7 @@ import { Key } from 'chessground/types';
                       class="text-lg font-bold"
                       [class]="g.status === 'aborted' ? 'text-slate-400' : getResultClass(g.result)"
                     >
-                      @if (g.status === 'aborted') {
+                        @if (g.status === 'aborted') {
                         Game Aborted
                       } @else {
                         {{ formatResult(g.result) }}
@@ -391,14 +418,35 @@ import { Key } from 'chessground/types';
                       <div class="text-xs text-slate-400 mt-1">
                         {{ formatTermination(g.result, g.termination) }}
                       </div>
-                      @if (ratingChange() !== null) {
-                        <div class="text-sm font-medium mt-1" [class]="getRatingChangeClass()">
-                          {{ getMyRating() }} ({{ getRatingChangeText() }})
-                        </div>
-                      }
                     }
                   </div>
                 }
+                @if (g.status === 'completed' || g.status === 'aborted') {
+                  <div class="flex flex-col gap-2 mb-2">
+                    @if (!myRematchOffered() && !rematchOfferFrom()) {
+                      <app-button variant="primary" size="sm" (click)="offerRematch()" class="w-full">
+                        Rematch
+                      </app-button>
+                    } @else if (myRematchOffered()) {
+                      <div class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme">
+                        Waiting for opponent...
+                      </div>
+                    } @else if (rematchOfferFrom()) {
+                      <div class="flex flex-col gap-1.5 p-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg animate-in zoom-in duration-300">
+                        <div class="text-[10px] uppercase font-black text-cyan-400 text-center">Rematch Offered</div>
+                        <div class="flex gap-1.5">
+                          <app-button variant="primary" size="sm" (click)="acceptRematch()" class="flex-1">
+                            Accept
+                          </app-button>
+                          <app-button variant="outline" size="sm" (click)="declineRematch()" class="flex-1">
+                            Decline
+                          </app-button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+
                 @if (g.status === 'active' && opponentAwayCountdown() !== null) {
                   <div class="border border-red-500/30 rounded-lg p-2 text-center mb-2">
                     <div class="text-xs text-red-400">Opponent disconnected</div>
@@ -407,15 +455,11 @@ import { Key } from 'chessground/types';
                     </div>
                   </div>
                 }
-                @if (
-                  g.status === 'active' && (bufferCountdown() !== null || abortCountdown() !== null)
-                ) {
+                @if (g.status === 'active' && abortCountdown() !== null) {
                   <div class="border border-cyan-500/30 rounded-lg p-2 text-center mb-2">
-                    <div class="text-xs text-cyan-400">
-                      {{ bufferCountdown() !== null ? 'Game starting' : 'First move' }}
-                    </div>
+                    <div class="text-xs text-cyan-400">First move</div>
                     <div class="text-xl font-bold font-mono text-cyan-400">
-                      {{ bufferCountdown() !== null ? bufferCountdown() : abortCountdown() }}
+                      {{ abortCountdown() }}
                     </div>
                   </div>
                 }
@@ -539,7 +583,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
-  private ratingService = inject(Glicko2Service);
   private userService = inject(UserService);
 
   showExitConfirm = signal(false);
@@ -547,6 +590,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   myRating = signal<number>(1500);
   opponentRating = signal<number>(1500);
   ratingChange = signal<number | null>(null);
+  
+  rematchOfferFrom = signal<string | null>(null);
+  myRematchOffered = signal<boolean>(false);
 
   private cgApi!: Api;
   private chess = new Chess();
@@ -879,11 +925,28 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return 'text-slate-400';
   }
 
+  getOpponentRatingChange(): number | null {
+    const g = this.game();
+    if (!g || g.status !== 'completed') return null;
+    return g.my_color === 'white' ? g.black_rating_change : g.white_rating_change;
+  }
+
+  getMyRatingChange(): number | null {
+    const g = this.game();
+    if (!g || g.status !== 'completed') return null;
+    return g.my_color === 'white' ? g.white_rating_change : g.black_rating_change;
+  }
+
   getRatingChangeText(): string {
     const change = this.ratingChange();
     if (change === null || change === undefined) return '';
     if (change > 0) return `+${change}`;
     return change.toString();
+  }
+
+  getFinalRating(initialRating: number | undefined, change: number | null | undefined): number {
+    const base = initialRating ?? 1500;
+    return base + (change ?? 0);
   }
 
   getResultClass(result: string | null): string {
@@ -895,50 +958,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return isWinner ? 'text-green-400' : 'text-red-400';
   }
 
-  private calculateNewRatings(result: string | null, myColor: 'white' | 'black'): void {
-    if (!result) return;
-
-    const g = this.game();
-    if (!g) return;
-
-    const timeControl = g.time_control;
-    const category = this.getTimeControlCategory(timeControl);
-    const user = this.userService.currentUser();
-    const currentRating = user?.ratings?.[category]?.rating ?? 1500;
-    const currentRd = user?.ratings?.[category]?.rd ?? 200;
-
-    const myPlayer: Glicko2Player = {
-      rating: this.getMyRating(),
-      rd: currentRd,
-      vol: 0.06,
-    };
-
-    const oppPlayer: Glicko2Player = {
-      rating: this.getOpponentRating(),
-      rd: 150,
-      vol: 0.06,
-    };
-
-    let score: number;
-    if (result === '1/2-1/2') {
-      score = 0.5;
-    } else if (
-      (result === '1-0' && myColor === 'white') ||
-      (result === '0-1' && myColor === 'black')
-    ) {
-      score = 1;
-    } else {
-      score = 0;
-    }
-
-    const resultObj = this.ratingService.updateRating(myPlayer, oppPlayer, score);
-    this.ratingChange.set(resultObj.change);
-    this.myRating.set(resultObj.player.rating);
-
-    this.userService
-      .updateLiveChessRating(category, resultObj.player.rating, resultObj.player.rd)
-      .subscribe();
-  }
 
   getTimeControlCategory(timeControl: string): 'bullet' | 'blitz' | 'rapid' {
     const tc = TIME_CONTROLS.find((t) => t.value === timeControl);
@@ -957,6 +976,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.gameService.onMovePlayed.subscribe((data) => this.onMovePlayed(data)),
       this.gameService.onGameEnded.subscribe((data) => this.onGameEnded(data)),
       this.gameService.onDrawOffered.subscribe((data) => this.onDrawOffered(data)),
+      this.gameService.onRematchOffered.subscribe((data) => this.handleRematchOffer(data)),
+      this.gameService.onRematchAccepted.subscribe((data) => this.handleRematchAccepted(data)),
+      this.gameService.onRematchDeclined.subscribe(() => this.handleRematchDeclined()),
       this.gameService.onPlayerAbsent.subscribe(() => {}),
       this.gameService.onPlayerReturned.subscribe(() => {}),
     );
@@ -1118,6 +1140,14 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private onMovePlayed(data: MovePlayedPayload): void {
+    if (!data.fen) {
+      if (data.status === 'aborted') {
+        this.clearAbortCountdown();
+        this.cdr.markForCheck();
+      }
+      return;
+    }
+
     this.chess.load(data.fen);
     this.syncBoard();
     this.rebuildSanCache();
@@ -1185,8 +1215,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
         const currentRating = this.getMyRating();
         this.myRating.set(currentRating + change);
-      } else if (g.result) {
-        this.calculateNewRatings(g.result, g.my_color);
       }
     }
 
@@ -1505,6 +1533,42 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   backToLobby(): void {
     this.gameService.clearGame();
     this.router.navigate(['/play']);
+  }
+
+  offerRematch(): void {
+    const g = this.game();
+    if (!g) return;
+    this.myRematchOffered.set(true);
+    this.gameService.offerRematch();
+  }
+
+  acceptRematch(): void {
+    this.gameService.acceptRematch();
+  }
+
+  declineRematch(): void {
+    this.rematchOfferFrom.set(null);
+    this.gameService.declineRematch();
+  }
+
+  private handleRematchOffer(data: RematchOfferedPayload): void {
+    const g = this.game();
+    if (!g || data.gameId !== g.id) return;
+    this.rematchOfferFrom.set(data.offeredBy);
+    this.audioService.playNotification();
+  }
+
+  private handleRematchAccepted(data: RematchAcceptedPayload): void {
+    const g = this.game();
+    if (!g || data.oldGameId !== g.id) return;
+    
+    // Smooth transition to new game
+    this.gameService.clearGame();
+    this.router.navigate(['/play', data.newGameId]);
+  }
+
+  private handleRematchDeclined(): void {
+    this.myRematchOffered.set(false);
   }
 
   findNewOpponent(): void {

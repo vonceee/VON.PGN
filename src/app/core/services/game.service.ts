@@ -5,7 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from './auth.service';
 import { AudioService } from './audio.service';
 import { environment } from '../../../environments/environment';
-import { GameState, MovePlayedPayload, GameEndedPayload, GameSeek } from '../models/game.model';
+import { GameState, MovePlayedPayload, GameEndedPayload, GameSeek, RematchOfferedPayload, RematchAcceptedPayload } from '../models/game.model';
 import { Subject, of, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { io, Socket } from 'socket.io-client';
@@ -48,6 +48,14 @@ export class GameService implements OnDestroy {
   get onDrawOffered() { return this.drawOffered$.asObservable(); }
   get onPlayerAbsent() { return this.playerAbsent$.asObservable(); }
   get onPlayerReturned() { return this.playerReturned$.asObservable(); }
+  
+  private rematchOffered$ = new Subject<RematchOfferedPayload>();
+  private rematchAccepted$ = new Subject<RematchAcceptedPayload>();
+  private rematchDeclined$ = new Subject<any>();
+
+  get onRematchOffered() { return this.rematchOffered$.asObservable(); }
+  get onRematchAccepted() { return this.rematchAccepted$.asObservable(); }
+  get onRematchDeclined() { return this.rematchDeclined$.asObservable(); }
   
   opponentAwayCountdown = signal<number | null>(null);
 
@@ -204,6 +212,27 @@ export class GameService implements OnDestroy {
       .post(`${this.apiUrl}/game/${game.id}/abort`, {})
       .pipe(catchError(() => of(null)))
       .subscribe();
+  }
+
+  offerRematch(): void {
+    const game = this.gameState();
+    if (this.socket && game) {
+      this.socket.emit('offer_rematch', game.id);
+    }
+  }
+
+  acceptRematch(): void {
+    const game = this.gameState();
+    if (this.socket && game) {
+      this.socket.emit('accept_rematch', game.id);
+    }
+  }
+
+  declineRematch(): void {
+    const game = this.gameState();
+    if (this.socket && game) {
+      this.socket.emit('decline_rematch', game.id);
+    }
   }
 
   syncClock(gameId: string): void {
@@ -480,27 +509,44 @@ export class GameService implements OnDestroy {
           result: data.result,
           termination: data.termination,
           legal_moves: [],
+          white_rating_change: data.white_rating_change ?? (data.rating_change ? data.rating_change.white : null),
+          black_rating_change: data.black_rating_change ?? (data.rating_change ? data.rating_change.black : null),
           draw_offered_by: null,
           draw_offered_at: null,
         };
       });
 
       this.stopHeartbeat();
-      this.gameEnded$.next({
-        game_id: gameId,
-        result: data.result,
-        termination: data.termination,
-        status: 'completed',
-        white_time_remaining_ms: currentState?.white_time_remaining_ms ?? 0,
-        black_time_remaining_ms: currentState?.black_time_remaining_ms ?? 0,
-        fen: currentState?.fen ?? '',
-      });
+        this.gameEnded$.next({
+          game_id: gameId,
+          result: data.result,
+          termination: data.termination,
+          status: 'completed',
+          white_time_remaining_ms: currentState?.white_time_remaining_ms ?? 0,
+          black_time_remaining_ms: currentState?.black_time_remaining_ms ?? 0,
+          fen: currentState?.fen ?? '',
+          white_rating_change: data.white_rating_change ?? (data.rating_change ? data.rating_change.white : null),
+          black_rating_change: data.black_rating_change ?? (data.rating_change ? data.rating_change.black : null),
+          rating_change: data.rating_change || (data.white_rating_change !== undefined ? { white: data.white_rating_change, black: data.black_rating_change } : undefined)
+        });
 
       if (data.result === '1/2-1/2') {
         this.audioService.playDraw();
       } else {
         this.audioService.playVictory();
       }
+    });
+
+    this.socket.on('rematch_offered', (data: any) => {
+      this.rematchOffered$.next(data);
+    });
+
+    this.socket.on('rematch_accepted', (data: any) => {
+      this.rematchAccepted$.next(data);
+    });
+
+    this.socket.on('rematch_declined', (data: any) => {
+      this.rematchDeclined$.next(data);
     });
 
     this.socket.on('clock_sync', (data: any) => {
