@@ -5,20 +5,31 @@
     @if (hasError() || (!isLoading() && !currentPuzzle() && status() === 'playing')) {
       <app-server-maintenance></app-server-maintenance>
     } @else if (isLoading()) {
-      <div
-        class="w-full max-w-5xl flex flex-col md:flex-row gap-6 md:gap-8 items-start animate-pulse"
-      >
+      <div class="w-full max-w-5xl flex flex-col md:flex-row gap-12 md:gap-20 items-start animate-pulse">
         <div class="w-full md:w-1/2 flex flex-col items-center">
           <div
-            class="relative bg-slate-100 dark:bg-slate-800/50 rounded-xl animate-pulse"
+            class="bg-slate-200 dark:bg-slate-800/80 rounded-md"
             [style.width.px]="boardSize()"
             [style.height.px]="boardSize()"
           ></div>
         </div>
         <div class="w-full md:w-1/2 flex flex-col gap-5">
-          <div class="h-24 bg-slate-200 dark:bg-slate-800/80 rounded-2xl w-full"></div>
-          <div class="h-14 bg-slate-200 dark:bg-slate-800/80 rounded-2xl w-full"></div>
-          <div class="h-28 bg-slate-200 dark:bg-slate-800/80 rounded-2xl w-full"></div>
+          <div class="border border-border-theme rounded-2xl flex flex-col overflow-hidden w-full px-6 py-6" [style.height.px]="boardSize()">
+             <div class="flex items-center justify-between mb-6">
+                <div class="h-10 w-24 bg-slate-200 dark:bg-slate-800/80 rounded-lg"></div>
+                <div class="h-10 w-24 bg-slate-200 dark:bg-slate-800/80 rounded-lg"></div>
+             </div>
+             <div class="pt-4 border-t border-border-theme mb-6">
+                <div class="h-4 w-32 bg-slate-200 dark:bg-slate-800/80 rounded-full"></div>
+             </div>
+             <div class="border-t border-border-theme flex-1 pt-6">
+                <div class="space-y-3">
+                   <div class="h-8 bg-slate-200/50 dark:bg-slate-800/50 rounded-md w-full"></div>
+                   <div class="h-8 bg-slate-200/50 dark:bg-slate-800/50 rounded-md w-full"></div>
+                   <div class="h-8 bg-slate-200/50 dark:bg-slate-800/50 rounded-md w-full"></div>
+                </div>
+             </div>
+          </div>
         </div>
       </div>
     } @else {
