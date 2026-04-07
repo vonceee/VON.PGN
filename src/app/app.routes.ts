@@ -323,6 +323,18 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'games/history',
+        loadComponent: () => import('./features/games/game-history/game-history.component').then(m => m.GameHistoryComponent),
+        canActivate: [authGuard],
+        title: 'Game History - vonchess',
+      },
+      {
+        path: 'games/:gameId/review',
+        loadComponent: () => import('./features/games/game-review/game-review.component').then(m => m.GameReviewComponent),
+        canActivate: [authGuard],
+        title: 'Game Review - vonchess',
+      },
+      {
         path: 'play/:gameId',
         loadComponent: () =>
           import('./features/play/live-game/live-game.component').then((m) => m.LiveGameComponent),

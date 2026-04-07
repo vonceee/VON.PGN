@@ -163,6 +163,14 @@ export class GameService implements OnDestroy {
       });
   }
 
+  getGameHistory(page: number = 1): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/games/history?page=${page}`);
+  }
+
+  getArchivedGame(gameId: string): Observable<{ game: GameState }> {
+    return this.http.get<{ game: GameState }>(`${this.apiUrl}/games/archived/${gameId}`);
+  }
+
   sendMove(move: string): void {
     const game = this.gameState();
     if (!game || !this.socket?.connected) return;
