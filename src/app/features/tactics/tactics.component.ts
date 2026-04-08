@@ -13,10 +13,10 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
+import { PgnViewerComponent } from '../../shared/components/pgn-viewer';
 import { TacticsBoardComponent } from '../../shared/components/tactics-board/tactics-board.component';
 import { ServerMaintenanceComponent } from '../../shared/components/server-maintenance/server-maintenance.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-tactics',
@@ -25,6 +25,7 @@ import { RouterLink } from '@angular/router';
     TacticsBoardComponent,
     ServerMaintenanceComponent,
     ButtonComponent,
+    PgnViewerComponent,
   ],
   templateUrl: './tactics.component.html',
 })
@@ -71,21 +72,6 @@ export class TacticsComponent implements OnInit {
   currentPgnMoveIndex = signal(-1);
   puzzleStartPly = signal(-1);
   fullPgnMoves: string[] = [];
-
-  moveRounds = computed(() => {
-    const moves = this.pgnMoves();
-    const rounds = [];
-    for (let i = 0; i < moves.length; i += 2) {
-      rounds.push({
-        num: Math.floor(i / 2) + 1,
-        white: moves[i] || '',
-        black: moves[i + 1] || null,
-        whiteIndex: i,
-        blackIndex: i + 1
-      });
-    }
-    return rounds;
-  });
 
   private resizeStartX = 0;
   private resizeStartSize = 0;
@@ -443,17 +429,6 @@ export class TacticsComponent implements OnInit {
     
     this.boardComponent.setGameModeAtMove(this.pgnMoves(), index);
     this.currentPgnMoveIndex.set(index);
-  }
-
-  formatMove(move: string): string {
-    if (!move) return '';
-    return move
-      .replace(/K/g, '♔')
-      .replace(/Q/g, '♕')
-      .replace(/R/g, '♖')
-      .replace(/B/g, '♗')
-      .replace(/N/g, '♘')
-      .replace(/P/g, ''); // Pawns usually don't have a symbol in SAN
   }
 
   private scrollToActiveMove() {

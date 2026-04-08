@@ -1,9 +1,11 @@
-import { Component, ElementRef, Input, ViewChild, inject, signal, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, inject, signal, PLATFORM_ID, Output, EventEmitter, computed } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { InteractiveTask } from '../../../../core/models/course.model';
 import { environment } from '../../../../../environments/environment';
 import { AudioService } from '../../../../core/services/audio.service';
+import { PgnViewerComponent } from '../../../../shared/components/pgn-viewer';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
@@ -25,6 +27,7 @@ interface DrawShape {
 @Component({
   selector: 'app-interactive-board',
   standalone: true,
+  imports: [PgnViewerComponent, ButtonComponent],
   templateUrl: './interactive-board.component.html',
 })
 export class InteractiveBoardComponent {
@@ -33,6 +36,8 @@ export class InteractiveBoardComponent {
   private audioService = inject(AudioService);
 
   @ViewChild('boardContainer') boardContainer!: ElementRef;
+
+  @Output() moveClicked = new EventEmitter<number>();
 
   private cgApi!: Api;
   private chess = new Chess();
@@ -44,6 +49,9 @@ export class InteractiveBoardComponent {
   studyInstructions: string[] = [];
   currentMoveIndex = 0;
   notationRows: NotationRow[] = [];
+
+  // Computed property for PGN viewer moves
+  pgnMoves = computed(() => this.moveHistory);
 
   @Input({ required: true }) set task(value: InteractiveTask) {
     this.isLoading.set(true);
@@ -278,6 +286,7 @@ export class InteractiveBoardComponent {
   goToMove(index: number) {
     this.currentMoveIndex = index;
     this.syncBoardToCurrentIndex();
+    this.moveClicked.emit(index);
   }
 
   nextMove() {
@@ -293,6 +302,21 @@ export class InteractiveBoardComponent {
   prevMove() {
     if (this.currentMoveIndex > 0) {
       this.currentMoveIndex--;
+      this.syncBoardToCurrentIndex();
+    }
+  }
+
+  goToStart() {
+    if (this.currentMoveIndex !== 0) {
+      this.currentMoveIndex = 0;
+      this.syncBoardToCurrentIndex();
+    }
+  }
+
+  goToEnd() {
+    const finalIndex = this.moveHistory.length;
+    if (this.currentMoveIndex !== finalIndex) {
+      this.currentMoveIndex = finalIndex;
       this.syncBoardToCurrentIndex();
     }
   }

@@ -216,14 +216,6 @@
 
       @if (!isLoggedIn) {
       <div class="text-sm font-medium tracking-wide text-center">login to track progress.</div>
-      } @else if (isCompleted && !isAlreadyCompleted) {
-      <div class="text-cyan-400 font-bold flex items-center gap-2 text-sm">
-        <span class="whitespace-nowrap">+10 XP</span>
-      </div>
-      } @else if (isAlreadyCompleted) {
-      <div class="text-cyan-400 font-bold flex items-center gap-2 text-sm sm:text-base">
-        <span class="whitespace-nowrap">+10 EXP</span>
-      </div>
       } @else {
       <div class="w-4 sm:w-5"></div>
       }
