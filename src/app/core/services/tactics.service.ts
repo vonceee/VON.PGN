@@ -40,11 +40,17 @@ export interface UserLeaderboardStats {
 }
 
 export interface LeaderboardResponse {
-  rating: LeaderboardEntry[];
+  tactics_rating: LeaderboardEntry[];
   streak: LeaderboardEntry[];
+  bullet_rating: LeaderboardEntry[];
+  blitz_rating: LeaderboardEntry[];
+  rapid_rating: LeaderboardEntry[];
   my_stats: {
-    rating: UserLeaderboardStats | null;
+    tactics_rating: UserLeaderboardStats | null;
     streak: UserLeaderboardStats | null;
+    bullet_rating: UserLeaderboardStats | null;
+    blitz_rating: UserLeaderboardStats | null;
+    rapid_rating: UserLeaderboardStats | null;
   };
 }
 

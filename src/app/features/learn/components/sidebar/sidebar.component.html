@@ -1,7 +1,7 @@
 @if (course) {
-  <aside class="flex flex-col h-full">
+  <aside class="flex flex-col h-full min-h-0">
     <!-- Back to Roadmap -->
-    <div class="shrink-0 px-4 py-3 border-b border-border-theme">
+    <div class="shrink-0">
       <a
         routerLink="/roadmap"
         class="group flex items-center gap-2 px-4 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer text-sm font-medium"
@@ -29,9 +29,9 @@
       </h2>
     </div>
 
-    <nav class="flex flex-col flex-1 overflow-y-auto custom-scrollbar">
+    <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 custom-scrollbar">
       @for (chapter of course.chapters; track chapter.id) {
-        <details class="group marker:content-['']">
+        <details open class="group marker:content-['']">
           <summary
             class="px-5 py-2 font-medium cursor-pointer select-none flex items-center justify-between"
           >
@@ -80,7 +80,7 @@
     </nav>
   </aside>
 } @else {
-  <aside class="flex flex-col h-full animate-pulse mt-2">
+  <aside class="flex flex-col h-full min-h-0 animate-pulse mt-2">
     <div class="shrink-0 px-4 py-3 border-b border-border-theme">
       <a
         routerLink="/roadmap"

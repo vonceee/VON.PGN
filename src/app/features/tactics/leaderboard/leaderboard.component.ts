@@ -4,20 +4,20 @@ import { RouterLink } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { TacticsService, LeaderboardResponse } from '../../../core/services/tactics.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { TypewriterTextComponent } from '../../../shared/components/typewriter-text/typewriter-text';
 
 @Component({
-  selector: 'app-tactics-leaderboard',
+  selector: 'app-leaderboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './tactics-leaderboard.component.html',
+  imports: [CommonModule],
+  templateUrl: './leaderboard.component.html',
 })
-export class TacticsLeaderboardComponent implements OnInit, OnDestroy {
+export class LeaderboardComponent implements OnInit, OnDestroy {
   private tacticsService = inject(TacticsService);
   authService = inject(AuthService);
 
   leaderboard = signal<LeaderboardResponse | null>(null);
   isLoading = signal(true);
-  activeTab = signal<'rating' | 'streak'>('rating');
 
   private refreshInterval$?: Subscription;
 
@@ -43,7 +43,5 @@ export class TacticsLeaderboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  setTab(tab: 'rating' | 'streak') {
-    this.activeTab.set(tab);
-  }
+
 }

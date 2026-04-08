@@ -1,17 +1,19 @@
-import { Component, inject, OnInit, signal, computed, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, computed, CUSTOM_ELEMENTS_SCHEMA, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LessonService } from '../../core/services/lesson.service';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { TypewriteDirective } from '../../shared/directives/typewrite.directive';
+import { TypewriterTextComponent } from '../../shared/components/typewriter-text/typewriter-text';
 import { FeedbackButtonComponent } from '../../shared/components/feedback-button/feedback-button.component';
+import { AuthService } from '../../core/services/auth.service';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FooterComponent, TypewriteDirective, FeedbackButtonComponent],
+  imports: [CommonModule, RouterModule, FormsModule, FooterComponent, TypewriterTextComponent, FeedbackButtonComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -19,8 +21,10 @@ import { FeedbackButtonComponent } from '../../shared/components/feedback-button
 export class HomeComponent implements OnInit {
   private lessonService = inject(LessonService);
   private router = inject(Router);
+  authService = inject(AuthService);
+  private platformId = inject(PLATFORM_ID);
 
-
+  isBrowser = isPlatformBrowser(this.platformId);
 
   popularOpenings = [
     {
@@ -63,7 +67,10 @@ export class HomeComponent implements OnInit {
       },
     });
 
-    this.loadSplineScript();
+    // Only load Spline script on the client side
+    if (typeof document !== 'undefined') {
+      this.loadSplineScript();
+    }
   }
 
   private loadSplineScript(): void {
@@ -75,10 +82,6 @@ export class HomeComponent implements OnInit {
     script.src = 'https://unpkg.com/@splinetool/viewer@1.12.78/build/spline-viewer.js';
     document.head.appendChild(script);
   }
-
-
-
-
 
   navigateToCourse(slug: string) {
     this.router.navigate(['/learn', slug]);
