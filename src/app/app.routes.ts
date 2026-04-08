@@ -74,10 +74,10 @@ export const routes: Routes = [
       {
         path: '',
         component: TournamentsComponent,
-        title: 'Tournaments - vonchess',
+        title: 'Events - vonchess',
         data: {
           description:
-            'Browse upcoming, ongoing, and past chess tournaments across the Philippines.',
+            'Browse upcoming, ongoing, and past chess events across the Philippines.',
         },
         resolve: { seo: seoResolver },
       },
@@ -130,7 +130,7 @@ export const routes: Routes = [
           import('./features/bookmarks/bookmarks.component').then((m) => m.BookmarksComponent),
         canActivate: [authGuard],
         title: 'Bookmarks - vonchess',
-        data: { description: 'View your bookmarked tournaments for quick access.' },
+        data: { description: 'View your bookmarked events for quick access.' },
         resolve: { seo: seoResolver },
       },
       {
@@ -263,28 +263,48 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
-        path: 'tournaments',
-        loadComponent: () =>
-          import('./features/tournaments/tournaments.component').then(
-            (m) => m.TournamentsComponent,
-          ),
-        title: 'Tournaments - vonchess',
+        path: 'events',
+        component: TournamentsComponent,
+        title: 'Events - vonchess',
         data: {
           description:
-            'Browse upcoming, ongoing, and past chess tournaments across the Philippines.',
+            'Browse upcoming, ongoing, and past chess events across the Philippines.',
         },
         resolve: { seo: seoResolver },
       },
       {
-        path: 'tournaments/:id',
+        path: 'arena',
+        loadComponent: () =>
+          import('./features/tournaments/arena-list/arena-list.component').then(
+            (m) => m.ArenaListComponent,
+          ),
+        title: 'Arena - vonchess',
+        data: {
+          description: 'Join live online Arena tournaments and compete for the top spot.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'events/:id',
         loadComponent: () =>
           import('./features/tournaments/tournament-detail/tournament-detail.component').then(
             (m) => m.TournamentDetailComponent,
           ),
-        title: 'Tournament Details - vonchess',
+        title: 'Event Details - vonchess',
         data: {
           description:
-            'View tournament details, schedule, prizes, standings, and registration info.',
+            'View event details, schedule, prizes, standings, and registration info.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'events/:id/arena',
+        loadComponent: () =>
+          import('./features/tournaments/arena/arena.component').then((m) => m.ArenaComponent),
+        canActivate: [authGuard],
+        title: 'Arena - vonchess',
+        data: {
+          description: 'Join the live Arena tournament and compete for the top spot.',
         },
         resolve: { seo: seoResolver },
       },
@@ -303,13 +323,22 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
-        path: 'my-tournaments',
+        path: 'my-events',
         canActivate: [authGuard],
         loadChildren: () =>
           import('./features/my-tournaments/my-tournaments.routes').then(
             (m) => m.MY_TOURNAMENTS_ROUTES,
           ),
-        title: 'My Tournaments - vonchess',
+        title: 'My Events - vonchess',
+      },
+      {
+        path: 'my-arena',
+        canActivate: [authGuard],
+        loadChildren: () =>
+          import('./features/my-arena/my-arena.routes').then(
+            (m) => m.MY_ARENA_ROUTES,
+          ),
+        title: 'My Arenas - vonchess',
       },
       {
         path: 'play',

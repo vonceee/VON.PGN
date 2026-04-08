@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Tournament, TournamentStatus } from '../../core/models/tournament.model';
@@ -16,6 +16,7 @@ const ITEMS_PER_PAGE = 6;
 })
 export class TournamentsComponent implements OnInit {
   private tournamentService = inject(TournamentService);
+  private route = inject(ActivatedRoute);
   authService = inject(AuthService);
 
   @ViewChild('tabDropdownContainer') tabDropdownContainer!: ElementRef;
@@ -51,6 +52,7 @@ export class TournamentsComponent implements OnInit {
     const sort = this.sortBy();
 
     let result = this.tournaments().filter(t => {
+      if (t.format === 'Arena') return false;
       if (t.status !== tab) return false;
       if (format && t.format !== format) return false;
       if (query) {
@@ -118,6 +120,16 @@ export class TournamentsComponent implements OnInit {
 
   ngOnInit() {
     this.tournamentService.fetchTournaments();
+
+    // Handle query parameters for pre-filtering
+    this.route.queryParams.subscribe(params => {
+      if (params['format']) {
+        this.formatFilter.set(params['format']);
+      }
+      if (params['tab']) {
+        this.activeTab.set(params['tab'] as TournamentStatus);
+      }
+    });
   }
 
   onSearchInput(event: Event) {

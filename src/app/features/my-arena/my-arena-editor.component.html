@@ -1,0 +1,113 @@
+<div class="max-w-3xl mx-auto px-4 py-10">
+  <div class="mb-8 flex items-center gap-4">
+    <button (click)="location.back()" class="p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-slate-700 dark:text-slate-300">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+    </button>
+    <div>
+      <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">New Arena</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Configure your online tournament lobby</p>
+    </div>
+  </div>
+
+  <form [formGroup]="arenaForm" (ngSubmit)="confirmSave()" class="bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-3xl p-6 md:p-10 shadow-lg">
+    
+    <!-- Time Controls Section -->
+    <div class="mb-10">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="p-2 rounded-xl bg-cyan-500/10 text-cyan-500">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </div>
+        <h2 class="text-xl font-semibold text-slate-800 dark:text-white">Clock Settings</h2>
+      </div>
+
+      <div class="space-y-6">
+        @for (category of categories; track category.key) {
+          <div class="flex flex-col gap-2">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400">{{ category.label }}</h3>
+            <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              @for (tc of category.controls; track tc.value) {
+                <button type="button"
+                  (click)="selectTimeControl(tc.value)"
+                  class="py-3 px-2 rounded-xl border transition-all duration-200 text-center flex flex-col items-center gap-1"
+                  [ngClass]="{
+                    'border-cyan-500 bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 shadow-sm shadow-cyan-500/20 scale-105': arenaForm.get('timeControl')?.value === tc.value,
+                    'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-cyan-400/50 hover:bg-slate-100 dark:hover:bg-slate-800': arenaForm.get('timeControl')?.value !== tc.value
+                  }">
+                  <span class="font-bold text-lg">{{ tc.label.split('+')[0] }}</span>
+                  <span class="text-xs opacity-80">+{{ tc.label.split('+')[1] }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <hr class="border-slate-200 dark:border-slate-800 mb-8" />
+
+    <!-- Details Section -->
+    <div class="mb-10">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="p-2 rounded-xl bg-purple-500/10 text-purple-500">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+          </svg>
+        </div>
+        <h2 class="text-xl font-semibold text-slate-800 dark:text-white">Arena Settings</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Name <span class="text-slate-400 font-normal">(Optional)</span></label>
+          <input type="text" formControlName="name" placeholder="e.g., Weekend Rapid Arena"
+            class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all placeholder:text-slate-400" />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Start Time <span class="text-slate-400 font-normal">(minutes from now)</span></label>
+          <select formControlName="startDateOffset"
+            class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all">
+            <option [value]="5">5 minutes</option>
+            <option [value]="10">10 minutes</option>
+            <option [value]="30">30 minutes</option>
+            <option [value]="60">1 hour</option>
+            <option [value]="120">2 hours</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Duration <span class="text-slate-400 font-normal">(in minutes)</span></label>
+          <div class="flex items-center gap-4">
+            <input type="range" formControlName="durationMinutes" min="20" max="360" step="10"
+              class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-cyan-500">
+            <span class="font-mono bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg text-sm border border-slate-200 dark:border-slate-700 min-w-16 text-center">
+              {{ arenaForm.get('durationMinutes')?.value }}m
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2 justify-center pt-2">
+           <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl">
+             <div>
+               <p class="font-semibold text-slate-800 dark:text-slate-200">Rated Game</p>
+               <p class="text-xs text-slate-500">Effects player ratings</p>
+             </div>
+             <div class="w-12 h-6 bg-cyan-500 rounded-full flex items-center p-1 justify-end cursor-not-allowed opacity-80">
+               <div class="w-4 h-4 bg-white rounded-full"></div>
+             </div>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-200 dark:border-slate-800 mt-8">
+      <app-button variant="outline" size="md" (click)="location.back()" label="Cancel"></app-button>
+      <app-button variant="primary" size="lg" [loading]="saving()" type="submit" label="Create Arena Lobby" class="px-8"></app-button>
+    </div>
+  </form>
+</div>

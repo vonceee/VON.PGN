@@ -19,6 +19,7 @@ import { Subscription, fromEvent } from 'rxjs';
 import { GameService } from '../../../core/services/game.service';
 import { AudioService } from '../../../core/services/audio.service';
 import { UserService } from '../../../core/services/user.service';
+import { ArenaService } from '../../../core/services/arena.service';
 import { ChessClockComponent } from '../../../shared/components/chess-clock/chess-clock.component';
 import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
@@ -340,27 +341,44 @@ import { Key } from 'chessground/types';
                     }
                   </div>
                 }
+                
                 @if (g.status === 'completed' || g.status === 'aborted') {
-                  <app-button
-                    variant="primary"
-                    size="md"
-                    (click)="findNewOpponent()"
-                    class="w-full"
-                    label="New Game"
-                  >
-                    <svg
-                      class="w-4 h-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M5 12h14"></path>
-                      <path d="M12 5l7 7-7 7"></path>
-                    </svg>
-                  </app-button>
+                  <div class="flex flex-col gap-2 w-full">
+                    @if (g.arena_id) {
+                      <app-button
+                        variant="primary"
+                        size="md"
+                        (click)="backToArena()"
+                        class="w-full"
+                        label="Back to Arena"
+                      >
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                      </app-button>
+                    } @else {
+                      <app-button
+                        variant="primary"
+                        size="md"
+                        (click)="findNewOpponent()"
+                        class="w-full"
+                        label="New Game"
+                      >
+                        <svg
+                          class="w-4 h-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M5 12h14"></path>
+                          <path d="M12 5l7 7-7 7"></path>
+                        </svg>
+                      </app-button>
+                    }
+                  </div>
                 }
               </div>
             </div>
@@ -560,11 +578,18 @@ import { Key } from 'chessground/types';
 })
 export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   boardEl = viewChild<ElementRef<HTMLDivElement>>('boardEl');
+  public arenaService = inject(ArenaService);
 
   constructor() {
     effect(() => {
       const el = this.boardEl();
       const g = this.game();
+      
+      // Auto-return to Arena logic
+      if (g?.status === 'completed' && g?.arena_id && !this.autoReturnTriggered) {
+        this.autoReturnTriggered = true;
+        setTimeout(() => this.backToArena(), 5000);
+      }
 
       if (el && g) {
         const nativeEl = el.nativeElement;
@@ -586,6 +611,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private userService = inject(UserService);
 
   showExitConfirm = signal(false);
+  private autoReturnTriggered = false;
 
   myRating = signal<number>(1500);
   opponentRating = signal<number>(1500);
@@ -1576,6 +1602,18 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     if (g) {
       this.gameService.clearGame();
       this.gameService.seekGame(g.time_control);
+    }
+  }
+
+  backToArena(): void {
+    const g = this.game();
+    if (g?.arena_id) {
+      this.gameService.clearGame();
+      this.router.navigate(['/events', g.arena_id, 'arena']);
+      // Re-join pairing immediately for the next match
+      setTimeout(() => {
+        this.arenaService.startPairing();
+      }, 500);
     }
   }
 

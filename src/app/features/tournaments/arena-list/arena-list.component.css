@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: transparent;
+}
+
+@keyframes slow-glow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.animate-slow-glow {
+  animation: slow-glow 8s ease-in-out infinite;
+}

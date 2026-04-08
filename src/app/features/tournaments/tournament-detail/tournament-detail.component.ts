@@ -59,7 +59,7 @@ export class TournamentDetailComponent implements OnInit {
     this.seo.update({
       title: t.name,
       description: desc,
-      url: `https://vonchess.com/tournaments/${t.id}`,
+      url: `https://vonchess.com/events/${t.id}`,
       type: 'article',
     });
   }

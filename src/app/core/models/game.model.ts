@@ -31,6 +31,7 @@ export interface GameState {
   opponent_away_countdown?: number | null;
   bufferCountdown?: number | null;
   gameStartedAt?: string | null;
+  arena_id?: string | null;
 }
 
 export interface GameMatchedPayload {
