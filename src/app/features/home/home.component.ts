@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, AfterViewInit, ElementRef, ViewChild, signal, computed, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,7 @@ import { LessonService } from '../../core/services/lesson.service';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { TypewriteDirective } from '../../shared/directives/typewrite.directive';
 import { FeedbackButtonComponent } from '../../shared/components/feedback-button/feedback-button.component';
+
 
 @Component({
   selector: 'app-home',
@@ -15,13 +16,11 @@ import { FeedbackButtonComponent } from '../../shared/components/feedback-button
   styleUrl: './home.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class HomeComponent implements OnInit, AfterViewInit {
+export class HomeComponent implements OnInit {
   private lessonService = inject(LessonService);
   private router = inject(Router);
 
-  @ViewChild('splineContainer') splineContainer!: ElementRef<HTMLDivElement>;
 
-  splineLoaded = signal(false);
 
   popularOpenings = [
     {
@@ -63,41 +62,23 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.isLoading.set(false);
       },
     });
+
+    this.loadSplineScript();
   }
 
-  private loadSplineScript(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (document.querySelector('script[src*="spline-viewer"]')) {
-        resolve();
-        return;
-      }
-      const script = document.createElement('script');
-      script.type = 'module';
-      script.src = 'https://unpkg.com/@splinetool/viewer@1.12.73/build/spline-viewer.js';
-      script.onload = () => resolve();
-      script.onerror = () => reject();
-      document.head.appendChild(script);
-    });
+  private loadSplineScript(): void {
+    if (document.querySelector('script[src*="spline-viewer"]')) {
+      return;
+    }
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'https://unpkg.com/@splinetool/viewer@1.12.78/build/spline-viewer.js';
+    document.head.appendChild(script);
   }
 
-  ngAfterViewInit() {
-    this.loadSplineScript()
-      .then(() => {
-        this.splineLoaded.set(true);
-      })
-      .catch(() => {
-        this.splineLoaded.set(true);
-      });
 
-    this.splineContainer.nativeElement.addEventListener(
-      'wheel',
-      (event: WheelEvent) => {
-        event.preventDefault();
-        window.scrollBy({ top: event.deltaY, left: event.deltaX, behavior: 'auto' });
-      },
-      { passive: false },
-    );
-  }
+
+
 
   navigateToCourse(slug: string) {
     this.router.navigate(['/learn', slug]);

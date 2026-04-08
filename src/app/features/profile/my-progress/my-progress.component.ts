@@ -1,8 +1,8 @@
 import { Component, inject, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { UserService } from '../../core/services/user.service';
-import { LessonService } from '../../core/services/lesson.service';
+import { UserService } from '../../../core/services/user.service';
+import { LessonService } from '../../../core/services/lesson.service';
 
 @Component({
   selector: 'app-my-progress',

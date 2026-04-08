@@ -1,23 +1,28 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { GameService } from '../../../core/services/game.service';
 import { TIME_CONTROLS, TimeControlOption, GameSeek } from '../../../core/models/game.model';
 import { SeekBoardComponent } from '../../../shared/components/seek-board/seek-board.component';
 import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
+import { BadgeComponent } from '../../../shared/components/badge/badge.component';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-matchmaking',
   standalone: true,
-  imports: [SeekBoardComponent, ServerMaintenanceComponent],
+  imports: [CommonModule, SeekBoardComponent, ServerMaintenanceComponent, FormsModule, BadgeComponent, ButtonComponent],
   templateUrl: './matchmaking.component.html',
 })
 export class MatchmakingComponent implements OnInit, OnDestroy {
+  showCustomForm = signal(false);
+  customMinutes = signal(10);
+  customIncrement = signal(0);
   gameService = inject(GameService);
   private router = inject(Router);
 
-  selectedTimeControl = this.gameService.searchTimeControl
-    ? () => TIME_CONTROLS.find((tc) => tc.value === this.gameService.searchTimeControl())
-    : () => undefined;
+
 
   activeGameId = () => {
     const g = this.gameService.gameState();
@@ -52,6 +57,19 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
     this.gameService.seekGame(tc.value);
   }
 
+  seekCustomGame(): void {
+    const g = this.gameService.gameState();
+    if (g && g.status === 'active') {
+      this.rejoinGame();
+      return;
+    }
+    if (this.gameService.isSearching()) {
+      return;
+    }
+    const value = `${this.customMinutes() * 60}+${this.customIncrement()}`;
+    this.gameService.seekGame(value);
+  }
+
   cancelSearch(): void {
     this.gameService.cancelSeek();
   }
@@ -67,12 +85,5 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
     }
   }
 
-  formatTime(seconds: number): string {
-    if (seconds >= 60) {
-      const m = Math.floor(seconds / 60);
-      const s = seconds % 60;
-      return s > 0 ? `${m}m ${s}s` : `${m} min`;
-    }
-    return `${seconds} sec`;
-  }
+
 }

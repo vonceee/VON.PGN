@@ -109,7 +109,7 @@
     <!-- Tournament Dropdown -->
     <div class="relative group">
       <a routerLink="/events" class="hover:text-cyan-400 flex items-center gap-1 cursor-pointer">
-        Events
+        Tournaments
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
@@ -133,7 +133,7 @@
           >
             <span
               class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
-              >Events</span
+              >Tournaments</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
               >Browse and join chess tournaments</span
@@ -145,7 +145,7 @@
           >
             <span
               class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
-              >My Events</span
+              >My Tournaments</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
               >View and manage your tournament entries</span
@@ -179,6 +179,7 @@
       </div>
     </div>
 
+    <a routerLink="/tv" class="hover:text-cyan-400">Watch</a>
     <a routerLink="/arena" class="hover:text-cyan-400">Arena</a>
     <a routerLink="/coaches" class="hover:text-cyan-400">Coaches</a>
     <a
@@ -345,68 +346,14 @@
                   (click)="toggleProfileDropdown()"
                   class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-4 h-4 text-slate-500 dark:text-slate-400"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"
-                    />
-                  </svg>
                   Admin Panel
                 </a>
               }
-              <a
-                routerLink="/my-progress"
-                (click)="toggleProfileDropdown()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4 text-slate-500 dark:text-slate-400"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"
-                  />
-                </svg>
-                My Progress
-              </a>
               <a
                 routerLink="/games/history"
                 (click)="toggleProfileDropdown()"
                 class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4 text-slate-500 dark:text-slate-400"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                  />
-                </svg>
                 Game History
               </a>
               <a
@@ -414,20 +361,6 @@
                 (click)="toggleProfileDropdown()"
                 class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4 text-slate-500 dark:text-slate-400"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"
-                  />
-                </svg>
                 Messages
                 @if (chatService.totalUnreadCount() > 0) {
                   <span
@@ -440,34 +373,10 @@
                 }
               </a>
               <a
-                routerLink="/my-events"
-                (click)="toggleProfileDropdown()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4 text-slate-500 dark:text-slate-400"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99-2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 0 0 2.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492a46.32 46.32 0 0 1 2.916.52 6.003 6.003 0 0 1-5.395 4.972m0 0a6.726 6.726 0 0 1-2.749 1.35m0 0a6.772 6.772 0 0 1-3.044 0"
-                  />
-                </svg>
-                My Events
-              </a>
-              <a
                 routerLink="/my-arena"
                 (click)="toggleProfileDropdown()"
                 class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-slate-500 dark:text-slate-400">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.412 15.655 9.75 21.75l3.745-4.012M9.257 13.5H3.75l2.659-2.849m2.048-2.194L14.25 2.25 12 10.5h8.25l-4.707 5.043M8.457 8.457 3 3m5.457 5.457 7.086 7.086m0 0L21 21" />
-                </svg>
                 My Arenas
               </a>
               <a
@@ -475,20 +384,6 @@
                 (click)="toggleProfileDropdown()"
                 class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4 text-slate-500 dark:text-slate-400"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
-                  />
-                </svg>
                 Following
               </a>
               <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
@@ -551,36 +446,8 @@
                 class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm w-full text-left"
               >
                 @if (themeService.isDarkMode()) {
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-4 h-4 text-amber-500"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-                    />
-                  </svg>
                   <span>Light Mode</span>
                 } @else {
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-4 h-4 text-slate-500 dark:text-slate-400"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-                    />
-                  </svg>
                   <span>Dark Mode</span>
                 }
               </button>
@@ -588,20 +455,6 @@
               <!-- Network Status -->
               <div class="flex items-center justify-between px-4 py-2">
                 <div class="flex items-center gap-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-4 h-4 text-slate-500 dark:text-slate-400"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856a3 3 0 1 0 4.97 0M12 19.5c.667 0 1.277-.247 1.753-.635l-.957-1.488a2.25 2.25 0 0 0-2.537 0l-.946 1.443a2.25 2.25 0 0 1-2.52 0l-.946-1.443a2.25 2.25 0 0 0-2.537 0l-.957 1.488A2.247 2.247 0 0 1 3 17.75c0 .667.247 1.277.635 1.753m7.424 0a2.25 2.25 0 0 0 0-3.5m0 0a2.25 2.25 0 0 1 0-3.5"
-                    />
-                  </svg>
                   <span class="font-semibold text-sm text-slate-900 dark:text-white">Network</span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -642,20 +495,6 @@
                 (click)="logout()"
                 class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold text-sm"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
-                  />
-                </svg>
                 Logout
               </button>
             </div>
@@ -757,7 +596,7 @@
     <div
       class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800"
     >
-      <span class="font-bold text-lg text-slate-900 dark:text-white">Events</span>
+      <span class="font-bold text-lg text-slate-900 dark:text-white">Tournaments</span>
       <button
         (click)="toggleMobileMenu()"
         class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10"
@@ -845,7 +684,7 @@
         routerLink="/events"
         (click)="toggleMobileMenu()"
         class="px-4 py-3 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Events</a
+        >Tournaments</a
       >
       <a
         routerLink="/arena"
@@ -921,7 +760,7 @@
           (click)="toggleMobileMenu()"
           class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
         >
-          My Events
+          My Tournaments
         </a>
         <a
           routerLink="/bookmarks"
@@ -1034,36 +873,8 @@
           class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
         >
           @if (themeService.isDarkMode()) {
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-5 h-5 text-amber-500"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-              />
-            </svg>
             <span>Light Mode</span>
           } @else {
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-5 h-5 text-slate-500 dark:text-slate-400"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-              />
-            </svg>
             <span>Dark Mode</span>
           }
         </button>

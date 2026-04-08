@@ -1,0 +1,152 @@
+<div class="w-full flex flex-col relative overflow-hidden min-h-screen">
+  <section class="w-full py-16 md:py-24 px-6 flex flex-col items-center flex-grow">
+    <div class="w-full text-center max-w-7xl">
+      <h1 class="text-4xl md:text-6xl font-bold mb-4 md:mb-8 leading-tight">
+        Live <span class="text-cyan-400">TV.</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-12">
+        Watch the highest-rated ongoing games right now.
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full place-items-center">
+        <!-- Bullet -->
+        <div 
+          class="flex flex-col items-center w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 cursor-pointer hover:border-cyan-400 transition-colors"
+          (click)="goToGame(tvService.tvState().bullet?.gameId)"
+        >
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-6 h-6 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+            <h2 class="text-2xl font-bold">Bullet</h2>
+          </div>
+          
+          <div class="w-full aspect-square pointer-events-none mb-6">
+            @if (tvService.tvState().bullet?.fen) {
+              <app-chess-board 
+                [fen]="tvService.tvState().bullet?.fen || 'start'" 
+                [interactive]="false" 
+                [size]="300">
+              </app-chess-board>
+            } @else {
+              <div class="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded">
+                <span class="text-slate-400">Waiting for game...</span>
+              </div>
+            }
+          </div>
+
+          <div class="w-full text-center space-y-2">
+            @if (tvService.tvState().bullet; as match) {
+              <div class="font-semibold text-lg flex items-center justify-center gap-2">
+                <div class="w-3 h-3 bg-white border border-slate-400"></div>
+                <span class="truncate max-w-[120px]">{{ match.whitePlayer?.name || 'White' }}</span>
+                <span class="text-cyan-400 text-sm">({{ match.whitePlayer?.rating || '?' }})</span>
+              </div>
+              <div class="text-slate-400 text-sm">vs</div>
+              <div class="font-semibold text-lg flex items-center justify-center gap-2">
+                <div class="w-3 h-3 bg-black border border-slate-400"></div>
+                <span class="truncate max-w-[120px]">{{ match.blackPlayer?.name || 'Black' }}</span>
+                <span class="text-cyan-400 text-sm">({{ match.blackPlayer?.rating || '?' }})</span>
+              </div>
+            } @else {
+              <p class="text-slate-500 py-4">No active Bullet game</p>
+            }
+          </div>
+        </div>
+
+        <!-- Blitz -->
+        <div 
+          class="flex flex-col items-center w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 cursor-pointer hover:border-cyan-400 transition-colors"
+          (click)="goToGame(tvService.tvState().blitz?.gameId)"
+        >
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-6 h-6 text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+            </svg>
+            <h2 class="text-2xl font-bold">Blitz</h2>
+          </div>
+          
+          <div class="w-full aspect-square pointer-events-none mb-6">
+            @if (tvService.tvState().blitz?.fen) {
+              <app-chess-board 
+                [fen]="tvService.tvState().blitz?.fen || 'start'" 
+                [interactive]="false" 
+                [size]="300">
+              </app-chess-board>
+            } @else {
+              <div class="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded">
+                <span class="text-slate-400">Waiting for game...</span>
+              </div>
+            }
+          </div>
+
+          <div class="w-full text-center space-y-2">
+            @if (tvService.tvState().blitz; as match) {
+              <div class="font-semibold text-lg flex items-center justify-center gap-2">
+                <div class="w-3 h-3 bg-white border border-slate-400"></div>
+                <span class="truncate max-w-[120px]">{{ match.whitePlayer?.name || 'White' }}</span>
+                <span class="text-cyan-400 text-sm">({{ match.whitePlayer?.rating || '?' }})</span>
+              </div>
+              <div class="text-slate-400 text-sm">vs</div>
+              <div class="font-semibold text-lg flex items-center justify-center gap-2">
+                <div class="w-3 h-3 bg-black border border-slate-400"></div>
+                <span class="truncate max-w-[120px]">{{ match.blackPlayer?.name || 'Black' }}</span>
+                <span class="text-cyan-400 text-sm">({{ match.blackPlayer?.rating || '?' }})</span>
+              </div>
+            } @else {
+              <p class="text-slate-500 py-4">No active Blitz game</p>
+            }
+          </div>
+        </div>
+
+        <!-- Rapid -->
+        <div 
+          class="flex flex-col items-center w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 cursor-pointer hover:border-cyan-400 transition-colors"
+          (click)="goToGame(tvService.tvState().rapid?.gameId)"
+        >
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-6 h-6 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-2xl font-bold">Rapid</h2>
+          </div>
+          
+          <div class="w-full aspect-square pointer-events-none mb-6">
+            @if (tvService.tvState().rapid?.fen) {
+              <app-chess-board 
+                [fen]="tvService.tvState().rapid?.fen || 'start'" 
+                [interactive]="false" 
+                [size]="300">
+              </app-chess-board>
+            } @else {
+              <div class="w-full h-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded">
+                <span class="text-slate-400">Waiting for game...</span>
+              </div>
+            }
+          </div>
+
+          <div class="w-full text-center space-y-2">
+            @if (tvService.tvState().rapid; as match) {
+              <div class="font-semibold text-lg flex items-center justify-center gap-2">
+                <div class="w-3 h-3 bg-white border border-slate-400"></div>
+                <span class="truncate max-w-[120px]">{{ match.whitePlayer?.name || 'White' }}</span>
+                <span class="text-cyan-400 text-sm">({{ match.whitePlayer?.rating || '?' }})</span>
+              </div>
+              <div class="text-slate-400 text-sm">vs</div>
+              <div class="font-semibold text-lg flex items-center justify-center gap-2">
+                <div class="w-3 h-3 bg-black border border-slate-400"></div>
+                <span class="truncate max-w-[120px]">{{ match.blackPlayer?.name || 'Black' }}</span>
+                <span class="text-cyan-400 text-sm">({{ match.blackPlayer?.rating || '?' }})</span>
+              </div>
+            } @else {
+              <p class="text-slate-500 py-4">No active Rapid game</p>
+            }
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <app-footer></app-footer>
+</div>

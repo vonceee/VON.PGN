@@ -2,10 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TournamentService } from '../../core/services/tournament.service';
-import { ToastService } from '../../core/services/toast.service';
-import { TIME_CONTROLS, TimeControlOption } from '../../core/models/game.model';
-import { ButtonComponent } from '../../shared/components/button/button.component';
+import { TournamentService } from '../../../core/services/tournament.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-my-arena-editor',
@@ -23,9 +23,21 @@ export class MyArenaEditorComponent {
   saving = signal(false);
 
   categories = [
-    { key: 'bullet', label: 'Bullet', controls: TIME_CONTROLS.filter((tc) => tc.category === 'bullet') },
-    { key: 'blitz', label: 'Blitz', controls: TIME_CONTROLS.filter((tc) => tc.category === 'blitz') },
-    { key: 'rapid', label: 'Rapid', controls: TIME_CONTROLS.filter((tc) => tc.category === 'rapid') },
+    {
+      key: 'bullet',
+      label: 'Bullet',
+      controls: TIME_CONTROLS.filter((tc) => tc.category === 'bullet'),
+    },
+    {
+      key: 'blitz',
+      label: 'Blitz',
+      controls: TIME_CONTROLS.filter((tc) => tc.category === 'blitz'),
+    },
+    {
+      key: 'rapid',
+      label: 'Rapid',
+      controls: TIME_CONTROLS.filter((tc) => tc.category === 'rapid'),
+    },
   ];
 
   arenaForm = this.fb.group({
@@ -51,7 +63,7 @@ export class MyArenaEditorComponent {
     const startDate = new Date(Date.now() + (v.startDateOffset || 0) * 60000);
     const endDate = new Date(startDate.getTime() + (v.durationMinutes || 60) * 60000);
 
-    const tcOption = TIME_CONTROLS.find(t => t.value === v.timeControl);
+    const tcOption = TIME_CONTROLS.find((t) => t.value === v.timeControl);
     const generatedName = v.name || `${tcOption?.label || 'Custom'} Arena`;
 
     const apiPayload = {
@@ -73,8 +85,11 @@ export class MyArenaEditorComponent {
       },
       error: (err: any) => {
         this.saving.set(false);
-        this.toastService.show('Failed to create arena: ' + (err.error?.message || err.message), 'error');
-      }
+        this.toastService.show(
+          'Failed to create arena: ' + (err.error?.message || err.message),
+          'error',
+        );
+      },
     });
   }
 }

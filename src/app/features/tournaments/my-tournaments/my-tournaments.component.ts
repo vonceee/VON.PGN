@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { TournamentService } from '../../core/services/tournament.service';
-import { ToastService } from '../../core/services/toast.service';
-import { Tournament } from '../../core/models/tournament.model';
-import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
-import { ButtonComponent } from '../../shared/components/button/button.component';
+import { TournamentService } from '../../../core/services/tournament.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { Tournament } from '../../../core/models/tournament.model';
+import { ConfirmDeleteModalComponent } from '../../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-my-tournaments',

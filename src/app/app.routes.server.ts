@@ -22,6 +22,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'my-events/:tournamentId',
     renderMode: RenderMode.Server,
   },
+  {
+    path: 'events/:id/arena',
+    renderMode: RenderMode.Server,
+  },
   // Auth-required routes — server-rendered (no session during prerender)
   {
     path: 'profile',
@@ -41,6 +45,10 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'my-events',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'my-arena',
     renderMode: RenderMode.Server,
   },
   // Admin routes — always server-rendered (require auth)

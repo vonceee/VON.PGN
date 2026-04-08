@@ -10,14 +10,14 @@ export const MY_TOURNAMENTS_ROUTES: Routes = [
   {
     path: 'new',
     loadComponent: () =>
-      import('../tournaments/tournament-editor/tournament-editor').then((m) => m.TournamentEditorComponent),
+      import('../tournament-editor/tournament-editor').then((m) => m.TournamentEditorComponent),
     data: { mode: 'user' },
     title: 'New Tournament - CHESS.PGN',
   },
   {
     path: ':tournamentId',
     loadComponent: () =>
-      import('../tournaments/tournament-editor/tournament-editor').then((m) => m.TournamentEditorComponent),
+      import('../tournament-editor/tournament-editor').then((m) => m.TournamentEditorComponent),
     data: { mode: 'user' },
     title: 'Edit Tournament - CHESS.PGN',
   },

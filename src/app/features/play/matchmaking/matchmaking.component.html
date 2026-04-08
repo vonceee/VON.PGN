@@ -1,68 +1,132 @@
 @if (isServiceMaintenance()) {
-  <div class="flex items-center justify-center min-h-[60vh]">
-    <app-server-maintenance
-      title="Chess Service Maintenance"
-      message="The chess service is currently undergoing maintenance. Please check back in a few minutes."
-    ></app-server-maintenance>
-  </div>
+<div class="flex items-center justify-center min-h-[60vh]">
+  <app-server-maintenance title="Chess Service Maintenance"
+    message="The chess service is currently undergoing maintenance. Please check back in a few minutes."></app-server-maintenance>
+</div>
 } @else {
-  <div class="grid grid-cols-2 gap-8 p-8 max-w-[1400px] mx-auto max-lg:grid-cols-1">
-    <!-- Left panel: time controls or searching state -->
-    <div class="max-w-[600px]">
-      @if (!gameService.isSearching()) {
-      <div>
-        @for (category of categories; track category.key) {
-          <div class="mb-6">
-            <div class="grid grid-cols-3 gap-2">
-              @for (tc of category.controls; track tc.value) {
-                <button
-                  (click)="seekGame(tc)"
-                  class="flex flex-col items-center px-4 py-10 border border-border-theme rounded-lg cursor-pointer transition-all duration-200 hover:bg-cyan-400 hover:border-cyan-400 group"
-                >
-                  <span class="text-4xl font-bold">{{ tc.label }}</span>
-                  <span class="text-md capitalize">{{ tc.category }}</span>
-                </button>
-              }
-            </div>
+<div class="grid grid-cols-2 gap-8 p-4 mx-auto max-lg:grid-cols-1">
+  <!-- Left panel: time controls or searching state -->
+  <div class="flex flex-col justify-center h-full w-full">
+    <div class="mb-4 p-4 border border-border-theme rounded-lg min-h-18">
+      @if (gameService.isSearching()) {
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="font-medium">Searching for opponent...</span>
           </div>
-        }
-      </div>
-
-      @if (activeGameId()) {
-        <div
-          class="mt-6 flex items-center justify-between rounded-lg border border-cyan-500 px-4 py-3 text-cyan-500"
-        >
-          <span class="text-sm">You have an active game</span>
-          <button
-            (click)="rejoinGame()"
-            class="rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-900 cursor-pointer border-none"
-          >
-            Rejoin Game
-          </button>
+          <app-button variant="outline" (click)="cancelSearch()"
+            class="text-xs font-bold uppercase tracking-wider">
+            Cancel
+          </app-button>
+        </div>
+      } @else {
+        <div class="flex items-center justify-center h-full">
+          <span class="font-medium text-center">Select a time format to start playing</span>
         </div>
       }
-    } @else {
-      <div class="flex flex-col items-center gap-4 p-8 text-center">
-        <div
-          class="h-12 w-12 rounded-full border-[3px] border-slate-700 border-t-cyan-500 animate-spin"
-        ></div>
-        <h3 class="m-0 text-slate-100">Searching...</h3>
-        <p class="m-0 text-slate-400">
-          Looking for an opponent at {{ selectedTimeControl()?.label }}
-        </p>
-        <button
-          (click)="cancelSearch()"
-          class="rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white cursor-pointer border-none"
-        >
-          Cancel
-        </button>
+    </div>
+
+    <div [class.opacity-50]="
+          gameService.isSearching() && !showCustomForm()
+        ">
+      @for (category of categories; track category.key) {
+      <div class="mb-4">
+        <div class="grid grid-cols-3 gap-2">
+          @for (tc of category.controls; track tc.value) {
+          @if (gameService.isSearching() && gameService.searchTimeControl() === tc.value) {
+          <div
+            class="flex flex-col items-center justify-center px-4 h-[120px] border border-cyan-500/50 bg-cyan-500/10 rounded-lg">
+            <div class="h-6 w-6 rounded-full border-[2px] border-cyan-500/30 border-t-cyan-500 animate-spin mb-3"></div>
+            <button (click)="cancelSearch()"
+              class="px-4 py-1.5 text-xs font-bold uppercase tracking-wider border border-red-500 text-red-500 rounded hover:bg-red-500/10 bg-transparent transition-colors cursor-pointer">
+              Cancel
+            </button>
+          </div>
+          } @else {
+          <button (click)="seekGame(tc)" [disabled]="gameService.isSearching()"
+            class="flex flex-col items-center justify-center px-4 h-[120px] border border-border-theme rounded-lg transition-all duration-200 group disabled:cursor-not-allowed hover:bg-cyan-400 hover:border-cyan-400 cursor-pointer disabled:opacity-50">
+            <span class="text-4xl font-bold">{{ tc.label }}</span>
+            <span class="text-md capitalize">{{ tc.category }}</span>
+          </button>
+          }
+          }
+        </div>
       </div>
+      }
+
+      <div class="mt-4">
+        @if (!showCustomForm()) {
+        <button (click)="showCustomForm.set(true)" [disabled]="gameService.isSearching()"
+          class="relative w-full flex items-center justify-center px-4 py-4 border border-border-theme rounded-lg transition-all duration-200 group text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+          [ngClass]="{
+                'hover:bg-cyan-400 hover:border-cyan-400 cursor-pointer':
+                  !gameService.isSearching(),
+              }">
+          Custom
+          <app-badge [customClass]="'absolute right-4'">NEW</app-badge>
+        </button>
+        } @else {
+        <div class="border border-border-theme rounded-lg p-6 relative" [class.opacity-50]="gameService.isSearching()">
+          @if (gameService.isSearching()) {
+          <div
+            class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 rounded-lg backdrop-blur-[2px]">
+            <div class="h-8 w-8 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin mb-4"></div>
+            <button (click)="cancelSearch()"
+              class="px-6 py-2 text-sm font-bold uppercase tracking-wider border border-red-500 text-red-500 rounded hover:bg-red-500/10 bg-transparent transition-colors cursor-pointer">
+              Cancel
+            </button>
+          </div>
+          }
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold m-0">Custom Time Control</h3>
+            <button (click)="showCustomForm.set(false)" [disabled]="gameService.isSearching()"
+              class="text-slate-400 hover:text-white bg-transparent border-none cursor-pointer p-1 disabled:opacity-50 disabled:cursor-not-allowed">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6 mb-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-400 mb-2">Minutes per side: <span
+                  class="text-white">{{ customMinutes() }}</span></label>
+              <input type="range" min="1" max="180" [ngModel]="customMinutes()"
+                (ngModelChange)="customMinutes.set($event)" [disabled]="gameService.isSearching()"
+                class="w-full accent-cyan-500 cursor-pointer disabled:cursor-not-allowed" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-400 mb-2">Increment (sec): <span
+                  class="text-white">{{ customIncrement() }}</span></label>
+              <input type="range" min="0" max="60" [ngModel]="customIncrement()"
+                (ngModelChange)="customIncrement.set($event)" [disabled]="gameService.isSearching()"
+                class="w-full accent-cyan-500 cursor-pointer disabled:cursor-not-allowed" />
+            </div>
+          </div>
+
+          <button (click)="seekCustomGame()" [disabled]="gameService.isSearching()"
+            class="w-full bg-cyan-500 text-slate-900 font-bold py-3 rounded-lg hover:bg-cyan-400 cursor-pointer border-none transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+            Create Game
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+
+    @if (activeGameId()) {
+    <div class="mt-6 flex items-center justify-between rounded-lg border border-cyan-500 px-4 py-3 text-cyan-500">
+      <span class="text-sm">You have an active game</span>
+      <button (click)="rejoinGame()"
+        class="rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-900 cursor-pointer border-none">
+        Rejoin Game
+      </button>
+    </div>
     }
   </div>
 
-    <!-- Right panel: seek board -->
-    <div>
-      <app-seek-board (seekClicked)="onSeekClicked($event)" />
-    </div>
+  <!-- Right panel: seek board -->
+  <div class="h-full">
+    <app-seek-board (seekClicked)="onSeekClicked($event)" class="block h-full" />
   </div>
+</div>
 }

@@ -1,11 +1,11 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { TournamentService } from '../../core/services/tournament.service';
-import { ToastService } from '../../core/services/toast.service';
-import { Tournament } from '../../core/models/tournament.model';
-import { ConfirmDeleteModalComponent } from '../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
-import { ButtonComponent } from '../../shared/components/button/button.component';
+import { TournamentService } from '../../../core/services/tournament.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { Tournament } from '../../../core/models/tournament.model';
+import { ConfirmDeleteModalComponent } from '../../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
+import { ButtonComponent } from '../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-my-arena',
@@ -18,7 +18,7 @@ export class MyArenaComponent implements OnInit {
   private toastService = inject(ToastService);
 
   allTournaments = signal<Tournament[]>([]);
-  arenas = computed(() => this.allTournaments().filter(t => t.format === 'Arena'));
+  arenas = computed(() => this.allTournaments().filter((t) => t.format === 'Arena'));
   loading = signal(true);
 
   deleteTarget = signal<Tournament | null>(null);
@@ -38,7 +38,7 @@ export class MyArenaComponent implements OnInit {
       error: (err) => {
         this.toastService.show('Failed to load arenas', 'error');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -65,7 +65,7 @@ export class MyArenaComponent implements OnInit {
       error: () => {
         this.toastService.show('Failed to delete arena', 'error');
         this.deleting.set(false);
-      }
+      },
     });
   }
 
@@ -75,7 +75,7 @@ export class MyArenaComponent implements OnInit {
       day: 'numeric',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 }
