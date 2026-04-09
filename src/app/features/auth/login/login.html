@@ -1,59 +1,34 @@
 <div class="h-screen flex flex-col lg:flex-row selection:bg-cyan-400/30 overflow-hidden">
   <!-- Left Column: Form Section -->
   <div
-    class="flex-1 flex flex-col justify-center px-6 py-8 lg:px-20 xl:px-32 overflow-y-auto lg:overflow-y-hidden"
+    class="lg:basis-2/5 flex flex-col justify-center px-4 py-8 lg:py-16 overflow-y-auto lg:overflow-y-hidden"
   >
-    <div class="mx-auto w-full max-w-sm">
-      <div class="mb-8">
-        <a
-          routerLink="/"
-          class="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-4 h-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
-          </svg>
-          Back to Home
-        </a>
-      </div>
+    <div class="mx-auto w-full xl:max-w-md">
+      <app-back-link></app-back-link>
 
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold tracking-tight">
-          Sign in to <span class="text-cyan-400">vonchess</span>
-        </h1>
-      </div>
+      <app-section-heading text="Log in to" highlight="vonchess"></app-section-heading>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <!-- Email Field -->
-        <div class="space-y-1">
-          <label for="email" class="text-sm font-medium"> Email </label>
+        <div class="space-y-2">
+          <label for="email" class="text-sm lg:text-base font-semibold"> Email </label>
           <input
             id="email"
             type="email"
             formControlName="email"
             placeholder="hello@email.com"
             (input)="clearError()"
-            class="w-full px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white"
+            class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white transition-all"
           />
         </div>
 
         <!-- Password Field -->
-        <div class="space-y-1">
+        <div class="space-y-2">
           <div class="flex items-center justify-between">
-            <label for="password" class="text-sm font-medium"> Password </label>
+            <label for="password" class="text-sm lg:text-base font-semibold"> Password </label>
             <a
               routerLink="/forgot-password"
-              class="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+              class="text-xs lg:text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
               >forgot password?</a
             >
           </div>
@@ -64,18 +39,18 @@
               formControlName="password"
               placeholder="••••••••"
               (input)="clearError()"
-              class="w-full px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-10"
+              class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-12 transition-all"
             />
             <button
               type="button"
               (click)="showPassword = !showPassword"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus:outline-none"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus:outline-none"
             >
               @if (showPassword) {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -91,8 +66,8 @@
               } @else {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -123,38 +98,20 @@
         }
 
         <!-- Submit Button -->
-        <button
+        <app-button
           type="submit"
-          [disabled]="loginForm.invalid || isLoading || isLockedOut"
-          class="w-full py-2.5 px-4 bg-black hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-black rounded-lg text-sm font-semibold disabled:cursor-not-allowed flex justify-center items-center"
+          variant="outline"
+          [customRounded]="'rounded-lg'"
+          [fullWidth]="true"
+          [loading]="isLoading()"
+          [disabled]="loginForm.invalid || isLockedOut"
+          [label]="isLockedOut ? 'Locked Out' : 'Continue'"
+          class="w-full block"
         >
-          @if (isLoading) {
-            <svg
-              class="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            Logging in...
-          } @else if (isLockedOut) {
+          @if (isLockedOut) {
             Try again in {{ lockoutSecondsRemaining }}s
-          } @else {
-            Continue
           }
-        </button>
+        </app-button>
       </form>
 
       <p class="mt-6 text-center text-sm">
@@ -167,7 +124,7 @@
         </a>
       </p>
 
-      <p class="mt-8 text-center text-[11px] leading-relaxed">
+      <p class="mt-8 text-center text-xs leading-relaxed">
         By signing in, you agree to our <br />
         <a href="#" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
           >Terms of Service</a
@@ -182,70 +139,13 @@
 
   <!-- Right Column: Branding Section -->
   <div
-    class="hidden lg:flex flex-1 bg-zinc-900 dark:bg-zinc-925 text-white p-10 flex-col justify-between relative overflow-hidden"
+    class="hidden lg:flex lg:basis-3/5 bg-zinc-900 dark:bg-zinc-925 text-white p-10 flex-col justify-between relative overflow-hidden"
   >
-    <!-- Abstract Chess Grid Pattern Background -->
-    <div class="absolute inset-0 opacity-20 pointer-events-none">
-      <div class="chess-grid h-full w-full"></div>
-    </div>
-
-    <div class="relative z-10">
-      <!-- 
-      <div class="flex items-center gap-2 mb-12">
-        <span class="text-xl font-bold tracking-tighter">vonchess</span>
-      </div> 
-      -->
-
-      <div class="max-w-xl">
-        <h2 class="text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.1]">
-          MASTER THE GAME OF <span class="text-cyan-400">CHESS.</span>
-        </h2>
-        <p class="mt-4 text-zinc-400 font-medium leading-relaxed">
-          PLAY AND LEARN ON vonchess — THE ULTIMATE <br class="hidden xl:block" />
-          PLATFORM FOR PLAYERS WHO AIM FOR THE <span class="text-cyan-400">TOP.</span>
-        </p>
-
-        <!-- 
-        <div class="mt-10 grid grid-cols-2 gap-3">
-          <div class="p-3 border border-border-theme rounded-xl">
-            <div
-              class="flex items-center gap-2 text-[10px] font-bold text-cyan-400 uppercase tracking-widest"
-            >
-              Live Now
-            </div>
-            <p class="mt-1 text-xs font-semibold uppercase tracking-tight">Global Matchmaking</p>
-          </div>
-          <div class="p-3 border border-border-theme rounded-xl">
-            <div
-              class="flex items-center gap-2 text-[10px] font-bold text-cyan-400 uppercase tracking-widest"
-            >
-              Advanced
-            </div>
-            <p class="mt-1 text-xs font-semibold uppercase tracking-tight">AI Analysis</p>
-          </div>
-        </div> 
-        -->
-      </div>
-    </div>
-
-    <div class="relative z-10 border-t border-zinc-800 pt-6">
-      <div class="flex items-center gap-2 text-cyan-400 mb-2 font-bold text-sm">
-        Support our mission
-      </div>
-      <p class="text-zinc-400 text-xs leading-relaxed max-w-md">
-        If you like the website, consider supporting us. Your donations help us keep the servers
-        running and the puzzles fresh!
-      </p>
-
-      <div class="mt-8 flex justify-between items-center text-[10px] text-zinc-500 font-medium">
-        <span
-          >Need help? <a href="#" class="text-zinc-300 hover:text-cyan-400">visit our FAQ</a></span
-        >
-        <div class="flex gap-4">
-          <a href="#" class="hover:text-zinc-300">Twitter</a>
-          <a href="#" class="hover:text-zinc-300">Discord</a>
-        </div>
-      </div>
+    <div>
+      <app-section-heading text="Master the game of" highlight="Chess."></app-section-heading>
+      <app-typewriter-text
+        text="play and learn on vonchess — the ultimate platform for players who aim for the top."
+      ></app-typewriter-text>
     </div>
   </div>
 </div>

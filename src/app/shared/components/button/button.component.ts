@@ -20,6 +20,8 @@ export class ButtonComponent {
   type = input<'button' | 'submit' | 'reset'>('button');
   link = input<string | null>(null);
   label = input<string>('');
+  customRounded = input<string>('rounded-full');
+  fullWidth = input(false);
 
   get sizeClasses(): string {
     switch (this.size()) {
@@ -33,7 +35,7 @@ export class ButtonComponent {
   }
 
   get variantClasses(): string {
-    const base = 'group flex items-center gap-2 border rounded-full font-semibold transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:pointer-events-none';
+    const base = `group flex items-center justify-center gap-2 border ${this.customRounded()} font-bold transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] ${this.fullWidth() ? 'w-full' : ''}`;
 
     switch (this.variant()) {
       case 'primary':

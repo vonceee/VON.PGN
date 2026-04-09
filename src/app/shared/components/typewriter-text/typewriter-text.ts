@@ -6,10 +6,8 @@ import { TypewriteDirective } from '../../directives/typewrite.directive';
   standalone: true,
   imports: [TypewriteDirective],
   templateUrl: './typewriter-text.html',
-  styleUrl: './typewriter-text.css'
+  styleUrl: './typewriter-text.css',
 })
 export class TypewriterTextComponent {
   text = input.required<string>();
-  size = input.required<string>();
-  additionalClasses = input<string>('');
 }

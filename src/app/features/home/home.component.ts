@@ -10,10 +10,12 @@ import { FeedbackButtonComponent } from '../../shared/components/feedback-button
 import { AuthService } from '../../core/services/auth.service';
 
 
+import { SectionHeadingComponent } from '../../shared/components/section-heading/section-heading.component';
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FooterComponent, TypewriterTextComponent, FeedbackButtonComponent],
+  imports: [CommonModule, RouterModule, FormsModule, FooterComponent, TypewriterTextComponent, FeedbackButtonComponent, SectionHeadingComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

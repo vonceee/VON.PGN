@@ -9,7 +9,7 @@
           [style.height.px]="boardSize()"></div>
       </div>
       <div class="w-full md:w-1/2 flex flex-col gap-5">
-        <div class="border border-border-theme rounded-2xl flex flex-col overflow-hidden w-full px-6 py-6"
+      <div class="premium-card rounded-2xl flex flex-col overflow-hidden w-full px-6 py-6"
           [style.height.px]="boardSize()">
           <div class="flex items-center justify-between mb-6">
             <div class="h-10 w-24 bg-slate-200 dark:bg-slate-800/80 rounded-lg"></div>
@@ -32,7 +32,7 @@
     <div class="w-full flex flex-col md:flex-row gap-12 items-start justify-center">
       <!-- Board Column -->
       <div class="flex-none flex flex-col items-center">
-        <div class="relative bg-slate-200 dark:bg-slate-800/80 overflow-hidden rounded-md"
+        <div class="relative premium-card overflow-hidden rounded-md"
           [style.width.px]="boardSize()" [style.height.px]="boardSize()">
           <app-tactics-board [puzzle]="currentPuzzle()" [size]="boardSize()" [exploreMode]="exploreMode()"
             [retryMode]="retryMode()" (puzzleSolved)="onPuzzleSolved()" (puzzleFailed)="onPuzzleFailed()"
@@ -50,7 +50,7 @@
       </div>
 
       <div class="flex-1 min-w-[320px] max-w-xl flex flex-col gap-5">
-        <div class="border border-border-theme rounded-2xl flex flex-col overflow-hidden w-full"
+        <div class="premium-card rounded-2xl flex flex-col overflow-hidden w-full"
           [style.height.px]="boardSize()">
           <!-- Top Section: Stats or Guest Prompt -->
           <div class="p-4 md:p-6 flex flex-col gap-5 shrink-0">
@@ -154,9 +154,15 @@
               </app-button>
               <app-button variant="outline" size="sm" (click)="goToPgnEnd()"
                 [disabled]="currentPgnMoveIndex() >= pgnMoves().length - 1">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                  stroke="currentColor" class="w-3.5 h-3.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5M12 19.5V4.5" />
+                <svg
+                  class="w-3.5 h-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <polyline points="13 17 18 12 13 7" />
+                  <polyline points="6 17 11 12 6 7" />
                 </svg>
               </app-button>
             </div>

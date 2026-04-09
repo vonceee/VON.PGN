@@ -15,10 +15,10 @@
 :host ::ng-deep .group > a::after {
   content: '';
   position: absolute;
-  bottom: -30px;
+  bottom: -50px;
   left: 0;
   right: 0;
-  height: 30px;
+  height: 50px;
   z-index: 1;
 }
 
@@ -27,7 +27,10 @@
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
+  transition:
+    opacity 0.2s ease-out,
+    visibility 0.2s ease-out;
+  transition-delay: 150ms;
   margin-top: 0;
 }
 
@@ -36,7 +39,7 @@
   pointer-events: auto;
   opacity: 1;
   visibility: visible;
-  transition-delay: 150ms;
+  transition-delay: 0ms; /* Instant open */
 }
 
 :host ::ng-deep .profile-dropdown {

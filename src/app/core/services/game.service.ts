@@ -155,10 +155,8 @@ export class GameService implements OnDestroy {
         if (res.game) {
           this.gameState.set(res.game);
           this.connectSocket();
-          setTimeout(() => {
-            this.subscribeToGame(gameId);
-            this.startHeartbeat();
-          }, 500);
+          this.subscribeToGame(gameId);
+          this.startHeartbeat();
         }
       });
   }
@@ -310,7 +308,7 @@ export class GameService implements OnDestroy {
     }
   }
 
-  clearGame(): void {
+  clearGame(navigateToPlay: boolean = true): void {
     this.stopHeartbeat();
     this.gameState.set(null);
     if (this.socket) {
@@ -318,7 +316,9 @@ export class GameService implements OnDestroy {
       this.socket.off('game_ended');
       this.socket.off('clock_sync');
     }
-    this.router.navigate(['/play']);
+    if (navigateToPlay) {
+      this.router.navigate(['/play']);
+    }
   }
 
   hasSocketConnection(): boolean {

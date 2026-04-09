@@ -28,24 +28,26 @@ import { AudioService } from '../../../core/services/audio.service';
   template: `
     <div class="board-resize-wrapper" [style.width.px]="boardSize">
       <div #boardEl class="board-container"></div>
-      <div class="board-controls">
-        <input
-          type="range"
-          [min]="minSize"
-          [max]="maxSize"
-          [(ngModel)]="boardSize"
-          (ngModelChange)="onResize($event)"
-          class="resize-slider"
-          title="Board size"
-        />
-        <span class="size-label">{{ boardSize }}px</span>
-        <button (click)="resetBoard()" class="p-2 border border-border-theme rounded hover:bg-cyan-400" title="Reset to starting position">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-            <path d="M3 3v5h5"/>
-          </svg>
-        </button>
-      </div>
+      @if (showControls) {
+        <div class="board-controls">
+          <input
+            type="range"
+            [min]="minSize"
+            [max]="maxSize"
+            [(ngModel)]="boardSize"
+            (ngModelChange)="onResize($event)"
+            class="resize-slider"
+            title="Board size"
+          />
+          <span class="size-label">{{ boardSize }}px</span>
+          <button (click)="resetBoard()" class="p-2 border border-border-theme rounded hover:bg-cyan-400" title="Reset to starting position">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+          </button>
+        </div>
+      }
     </div>
   `,
   styles: [`
@@ -90,6 +92,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() size: number = 400;
   @Input() minSize: number = 240;
   @Input() maxSize: number = 640;
+  @Input() showControls: boolean = true;
 
   @Output() fenChange = new EventEmitter<string>();
   @Output() moveMade = new EventEmitter<{ from: string; to: string; san: string; fen: string }>();
@@ -120,6 +123,10 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       if (changes['orientation'] && !changes['orientation'].isFirstChange()) {
         this.cgApi.set({ orientation: this.orientation });
       }
+      if (changes['size'] && !changes['size'].isFirstChange()) {
+        this.boardSize = this.size;
+        setTimeout(() => this.cgApi?.redrawAll());
+      }
     }
   }
 
@@ -130,32 +137,35 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private initBoard() {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    this.chess.load(this.fen);
+    // Small delay to ensure container dimensions are ready
+    setTimeout(() => {
+      this.chess.load(this.fen);
 
-    this.cgApi = Chessground(this.boardEl.nativeElement, {
-      fen: this.fen,
-      orientation: this.orientation,
-      coordinates: true,
-      movable: {
-        free: false,
-        color: this.interactive ? this.turnColor() : undefined,
-        dests: this.interactive ? this.getLegalMoves() : new Map(),
-        events: {
-          after: (orig, dest) => this.onMove(orig, dest),
+      this.cgApi = Chessground(this.boardEl.nativeElement, {
+        fen: this.fen,
+        orientation: this.orientation,
+        coordinates: true,
+        movable: {
+          free: false,
+          color: this.interactive ? this.turnColor() : undefined,
+          dests: this.interactive ? this.getLegalMoves() : new Map(),
+          events: {
+            after: (orig, dest) => this.onMove(orig, dest),
+          },
         },
-      },
-      draggable: {
-        enabled: this.interactive,
-      },
-      selectable: {
-        enabled: false,
-      },
-      drawable: {
-        enabled: true,
-      },
-    });
+        draggable: {
+          enabled: this.interactive,
+        },
+        selectable: {
+          enabled: false,
+        },
+        drawable: {
+          enabled: true,
+        },
+      });
 
-    this.initialized = true;
+      this.initialized = true;
+    }, 50);
   }
 
   private syncBoard() {

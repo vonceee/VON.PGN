@@ -16,56 +16,25 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="clock-container"
-      [class.clock-active]="isActive"
-      [class.clock-low]="displayTime < 10000"
-      [class.clock-critical]="displayTime < 3000"
+      class="flex items-center justify-between p-2 rounded-2xl min-w-[70px] border transition-colors duration-200"
+      [class.border-cyan-400]="isActive"
+      [class.bg-cyan-400/10]="isActive"
+      [class.border-border-theme]="!isActive && displayTime >= 10000"
+      [class.border-red-500]="displayTime < 3000"
+      [class.border-amber-500]="displayTime >= 3000 && displayTime < 10000 && !isActive"
     >
-      <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="10" />
         <polyline points="12 6 12 12 16 14" />
       </svg>
-      <div class="clock-time">{{ formatTime(displayTime) }}</div>
+      <div 
+        class="text-2xl font-semibold tabular-nums font-mono"
+        [class.text-amber-400]="displayTime < 10000 && displayTime >= 3000"
+        [class.text-red-500]="displayTime < 3000"
+        [class.animate-pulse]="displayTime < 3000"
+      >{{ formatTime(displayTime) }}</div>
     </div>
   `,
-  styles: [`
-    .clock-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.25rem;
-      min-width: 70px;
-      border: 1px solid transparent;
-      transition: border-color 0.2s, background-color 0.2s;
-    }
-    .clock-icon {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-    }
-    .clock-active {
-      border-color: rgb(34 211 238);
-      background: rgba(34, 211, 238, 0.1);
-    }
-    .clock-low .clock-time {
-      color: rgb(251 191 36);
-    }
-    .clock-critical .clock-time {
-      color: rgb(239 68 68);
-      animation: pulse-critical 0.5s ease-in-out infinite;
-    }
-    .clock-time {
-      font-size: 1.5rem;
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-    }
-    @keyframes pulse-critical {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-  `],
 })
 export class ChessClockComponent implements OnChanges, OnDestroy {
   /**

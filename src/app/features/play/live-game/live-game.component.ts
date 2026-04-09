@@ -43,26 +43,22 @@ import { Key } from 'chessground/types';
   standalone: true,
   imports: [ChessClockComponent, ServerMaintenanceComponent, ButtonComponent],
   template: `
-    <div class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-6">
-      <div class="w-full max-w-none">
+    <div class="h-[calc(100vh-64px)] overflow-hidden flex items-center justify-center px-2 py-2 md:px-4 md:py-4">
+      <div class="w-full max-w-[1500px]">
         @if (gameService.isServiceMaintenance()) {
           <app-server-maintenance
             title="Chess Service Maintenance"
             message="The chess service is currently undergoing maintenance. Your game will resume automatically when the service is back online."
           ></app-server-maintenance>
         } @else if (game(); as g) {
-          <div class="flex flex-col lg:flex-row gap-4 items-start justify-center">
-            <!-- Left: Details + PGN viewer + Actions -->
+          <div class="flex flex-col md:flex-row gap-4 md:gap-8 xl:gap-10 items-start justify-center">
+            <!-- Left: Details + PGN viewer + Actions (hidden on mobile, visible on md+) -->
             <div
-              class="w-full lg:w-80 flex flex-col order-3 lg:order-1 border border-border-theme rounded-xl overflow-hidden"
+              class="hidden md:flex w-full md:w-[400px] flex-col order-3 md:order-1 premium-card rounded-xl overflow-hidden"
               [style.height.px]="boardSize()"
             >
-              <!-- Game Details -->
-              <div class="p-3 border-b border-border-theme">
-                <div class="text-2xl font-black flex items-center gap-2 mb-3 opacity-80">
-                  <span>•</span>
-                  <span>{{ getTimeControlCategoryLabel(g.time_control) }}</span>
-                </div>
+              <div class="p-4 border-b border-border-theme">
+
 
                 <!-- Opponent details -->
                 <div class="flex items-center justify-between text-sm mb-3">
@@ -95,7 +91,7 @@ import { Key } from 'chessground/types';
                       [class.bg-white]="g.my_color === 'white'"
                       [class.bg-slate-950]="g.my_color === 'black'"
                     ></div>
-                    <span class="font-bold">You</span>
+                    <span class="font-bold">{{ myUsername() }}</span>
                   </div>
                   <div class="flex items-center gap-2 font-mono text-[13px] shrink-0 ml-4">
                     <span class="opacity-50">({{ getMyRating() }})</span>
@@ -107,10 +103,9 @@ import { Key } from 'chessground/types';
                         {{ getMyRatingChange()! > 0 ? '+' : '' }}{{ getMyRatingChange() }}
                       </span>
                     }
-                  </div>
                 </div>
-
               </div>
+            </div>
 
               <!-- PGN Viewer -->
               <div class="flex-1 flex flex-col overflow-hidden">
@@ -233,7 +228,7 @@ import { Key } from 'chessground/types';
 
               <!-- Action buttons -->
               <div
-                class="p-3 border-t border-border-theme flex flex-col items-center"
+                class="p-2 border-t border-border-theme flex flex-col items-center"
               >
                 @if (g.status === 'active') {
                   <div class="flex items-center justify-center gap-1 w-full">
@@ -341,52 +336,23 @@ import { Key } from 'chessground/types';
                     }
                   </div>
                 }
-                
-                @if (g.status === 'completed' || g.status === 'aborted') {
-                  <div class="flex flex-col gap-2 w-full">
-                    @if (g.arena_id) {
-                      <app-button
-                        variant="primary"
-                        size="md"
-                        (click)="backToArena()"
-                        class="w-full"
-                        label="Back to Arena"
-                      >
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                          <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                      </app-button>
-                    } @else {
-                      <app-button
-                        variant="primary"
-                        size="md"
-                        (click)="findNewOpponent()"
-                        class="w-full"
-                        label="New Game"
-                      >
-                        <svg
-                          class="w-4 h-4"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        >
-                          <path d="M5 12h14"></path>
-                          <path d="M12 5l7 7-7 7"></path>
-                        </svg>
-                      </app-button>
-                    }
-                  </div>
-                }
               </div>
             </div>
 
             <!-- Center: Chess Board -->
-            <div class="flex flex-col items-center order-1 lg:order-2">
+            <div class="flex flex-col items-center order-1 md:order-2 w-auto">
+              <!-- Mobile: Opponent clock above board -->
+              <div class="w-full md:hidden mb-2">
+                <app-chess-clock
+                  [serverTimeMs]="opponentTimeMs()"
+                  [serverTimestamp]="g.server_timestamp"
+                  [isActive]="isOpponentTurn()"
+                  (expired)="onClockExpired()"
+                />
+              </div>
+              
               <div class="relative">
-                <div class="board-wrapper" [style.width.px]="boardSize()">
+                <div class="board-wrapper premium-card" [class.premium-card-pulse]="isMyTurn() && g.status === 'active'" [style.width.px]="boardSize()">
                   <div #boardEl class="board-container" ngSkipHydration></div>
                 </div>
                 <div
@@ -401,15 +367,117 @@ import { Key } from 'chessground/types';
                   </svg>
                 </div>
               </div>
+
+              <!-- Mobile: My clock below board -->
+              <div class="w-full md:hidden mt-2">
+                <app-chess-clock
+                  [serverTimeMs]="myTimeMs()"
+                  [serverTimestamp]="g.server_timestamp"
+                  [isActive]="isMyTurn()"
+                  (expired)="onClockExpired()"
+                />
+              </div>
+
+              <!-- Mobile: Game info bar -->
+              <div class="md:hidden w-full mt-2 flex items-center justify-between text-xs px-1">
+                <div class="flex items-center gap-2">
+                  <div
+                    class="w-2 h-2 rounded-full border border-slate-500"
+                    [class.bg-white]="g.my_color === 'black'"
+                    [class.bg-slate-950]="g.my_color === 'white'"
+                  ></div>
+                  <span class="font-bold">{{ opponentName() }}</span>
+                  <span class="opacity-50">({{ getOpponentRating() }})</span>
+                </div>
+                <span class="opacity-60">{{ getTimeControlCategoryLabel(g.time_control) }}</span>
+                <div class="flex items-center gap-2">
+                  <span class="opacity-50">({{ getMyRating() }})</span>
+                  <span class="font-bold">You</span>
+                  <div
+                    class="w-2 h-2 rounded-full border border-slate-500"
+                    [class.bg-white]="g.my_color === 'white'"
+                    [class.bg-slate-950]="g.my_color === 'black'"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Mobile: Action buttons -->
+              <div class="md:hidden w-full mt-2 flex gap-2 justify-center">
+                @if (g.status === 'active') {
+                  @if (g.moves.length < 2) {
+                    <app-button variant="ghost" size="sm" (click)="abort()" title="Abort" class="flex-1">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </app-button>
+                  } @else {
+                    @if (canOfferDraw()) {
+                      <app-button variant="ghost" size="sm" (click)="offerDraw()" title="Offer Draw" class="flex-1">
+                        1/2
+                      </app-button>
+                    }
+                    <app-button variant="ghost" size="sm" (click)="showResignConfirm.set(true)" title="Resign" class="flex-1">
+                      <svg class="w-4 h-4 text-red-500/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                        <line x1="4" y1="22" x2="4" y2="15"></line>
+                      </svg>
+                    </app-button>
+                  }
+                }
+              </div>
+
+              <!-- Mobile: Result & Rematch -->
+              @if (g.status === 'completed' || g.status === 'aborted') {
+                <div class="md:hidden w-full mt-2 px-2">
+                  <div class="border border-border-theme rounded-lg p-2 text-center mb-2">
+                    <div class="text-sm font-bold" [class]="g.status === 'aborted' ? 'text-slate-400' : getResultClass(g.result)">
+                      @if (g.status === 'aborted') {
+                        Game Aborted
+                      } @else {
+                        {{ formatResult(g.result) }}
+                      }
+                    </div>
+                  </div>
+                  <div class="flex gap-2">
+                    @if (!myRematchOffered() && !rematchOfferFrom()) {
+                      <app-button variant="outline" size="sm" (click)="offerRematch()" class="flex-1">
+                        Rematch
+                      </app-button>
+                    } @else if (myRematchOffered()) {
+                      <div class="flex-1 text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme">
+                        Waiting...
+                      </div>
+                    } @else if (rematchOfferFrom()) {
+                      <app-button variant="primary" size="sm" (click)="acceptRematch()" class="flex-1" title="Accept">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </app-button>
+                      <app-button variant="outline" size="sm" (click)="declineRematch()" class="flex-1" title="Decline">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </app-button>
+                    }
+                  </div>
+                  @if (!g.arena_id) {
+                    <app-button variant="outline" size="sm" (click)="findNewOpponent()" class="w-full mt-2">
+                      New opponent
+                    </app-button>
+                  }
+                </div>
+              }
             </div>
 
-            <!-- Right: Clocks -->
+            <!-- Right: Clocks (hidden on mobile, visible on md+) -->
             <div
-              class="w-full lg:w-48 flex flex-col justify-between order-2 lg:order-3"
+              class="hidden md:flex w-full md:w-44 flex-col justify-between order-2 md:order-3"
               [style.height.px]="boardSize()"
             >
               <!-- Opponent clock - top -->
-              <div class="border border-border-theme rounded p-2">
+              <div class="premium-card rounded p-2">
                 <app-chess-clock
                   [serverTimeMs]="opponentTimeMs()"
                   [serverTimestamp]="g.server_timestamp"
@@ -421,7 +489,7 @@ import { Key } from 'chessground/types';
               <!-- Result message / Alerts in middle -->
               <div>
                 @if (g.status === 'completed' || g.status === 'aborted') {
-                  <div class="border border-border-theme rounded-lg p-3 text-center mb-2">
+                  <div class="premium-card rounded-lg p-3 text-center mb-2">
                     <div
                       class="text-lg font-bold"
                       [class]="g.status === 'aborted' ? 'text-slate-400' : getResultClass(g.result)"
@@ -433,36 +501,47 @@ import { Key } from 'chessground/types';
                       }
                     </div>
                     @if (g.status === 'completed') {
-                      <div class="text-xs text-slate-400 mt-1">
+                      <div class="text-xs text-slate-400 mt-0.5">
                         {{ formatTermination(g.result, g.termination) }}
                       </div>
                     }
                   </div>
-                }
-                @if (g.status === 'completed' || g.status === 'aborted') {
-                  <div class="flex flex-col gap-2 mb-2">
+
+                  <!-- Rematch controls -->
+                  <div class="flex gap-1.5 mb-2">
                     @if (!myRematchOffered() && !rematchOfferFrom()) {
-                      <app-button variant="primary" size="sm" (click)="offerRematch()" class="w-full">
+                      <app-button variant="outline" size="md" (click)="offerRematch()" class="flex-1">
                         Rematch
                       </app-button>
                     } @else if (myRematchOffered()) {
-                      <div class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme">
-                        Waiting for opponent...
+                      <div class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme w-full">
+                        Waiting...
                       </div>
                     } @else if (rematchOfferFrom()) {
-                      <div class="flex flex-col gap-1.5 p-2 bg-cyan-500/10 border border-cyan-500/30 rounded-lg animate-in zoom-in duration-300">
-                        <div class="text-[10px] uppercase font-black text-cyan-400 text-center">Rematch Offered</div>
-                        <div class="flex gap-1.5">
-                          <app-button variant="primary" size="sm" (click)="acceptRematch()" class="flex-1">
-                            Accept
-                          </app-button>
-                          <app-button variant="outline" size="sm" (click)="declineRematch()" class="flex-1">
-                            Decline
-                          </app-button>
-                        </div>
-                      </div>
+                      <app-button variant="primary" size="md" (click)="acceptRematch()" class="flex-1" title="Accept">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </app-button>
+                      <app-button variant="outline" size="md" (click)="declineRematch()" class="flex-1" title="Decline">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="18" y1="6" x2="6" y2="18"></line>
+                          <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                      </app-button>
+                    }
+                    @if (myRematchOffered() || rematchOfferFrom()) {
+                      <app-button variant="outline" size="md" (click)="findNewOpponent()" class="flex-1" title="New opponent">
+                        New opponent
+                      </app-button>
                     }
                   </div>
+
+                  @if (!myRematchOffered() && !rematchOfferFrom() && !g.arena_id) {
+                    <app-button variant="outline" size="md" (click)="findNewOpponent()" class="w-full" title="New opponent">
+                      New opponent
+                    </app-button>
+                  }
                 }
 
                 @if (g.status === 'active' && opponentAwayCountdown() !== null) {
@@ -513,7 +592,7 @@ import { Key } from 'chessground/types';
               </div>
 
               <!-- My clock - bottom -->
-              <div class="border border-border-theme rounded p-2">
+              <div class="premium-card rounded p-2">
                 <app-chess-clock
                   [serverTimeMs]="myTimeMs()"
                   [serverTimestamp]="g.server_timestamp"
@@ -546,13 +625,13 @@ import { Key } from 'chessground/types';
           <div class="flex gap-2">
             <button
               (click)="confirmExit()"
-              class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-semibold transition-colors"
+              class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500  rounded-lg text-sm font-semibold transition-colors"
             >
               Yes, Leave
             </button>
             <button
               (click)="showExitConfirm.set(false)"
-              class="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg text-sm font-semibold transition-colors"
+              class="flex-1 px-4 py-2 bg-slate-600 hover:bg-slate-500  rounded-lg text-sm font-semibold transition-colors"
             >
               Cancel
             </button>
@@ -613,6 +692,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   showExitConfirm = signal(false);
   private autoReturnTriggered = false;
 
+  myUsername = computed(() => this.userService.currentUser()?.username || 'You');
   myRating = signal<number>(1500);
   opponentRating = signal<number>(1500);
   ratingChange = signal<number | null>(null);
@@ -978,10 +1058,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   getResultClass(result: string | null): string {
     if (!result) return '';
     if (result === '1/2-1/2') return 'text-slate-400';
-    const isWinner =
-      (result === '1-0' && this.game()?.my_color === 'white') ||
-      (result === '0-1' && this.game()?.my_color === 'black');
-    return isWinner ? 'text-green-400' : 'text-red-400';
+    return '';
   }
 
 
@@ -991,12 +1068,17 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const gameId = this.route.snapshot.paramMap.get('gameId');
-    if (gameId) {
-      if (!this.gameService.gameState()) {
-        this.gameService.loadGame(gameId);
-      }
-    }
+    // Subscribe to route params to handle rematch navigation properly
+    this.subs.push(
+      this.route.paramMap.subscribe((params) => {
+        const gameId = params.get('gameId');
+        if (gameId) {
+          if (!this.gameService.gameState()) {
+            this.gameService.loadGame(gameId);
+          }
+        }
+      })
+    );
 
     this.subs.push(
       this.gameService.onMovePlayed.subscribe((data) => this.onMovePlayed(data)),
@@ -1588,8 +1670,8 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     const g = this.game();
     if (!g || data.oldGameId !== g.id) return;
     
-    // Smooth transition to new game
-    this.gameService.clearGame();
+    // Smooth transition to new game (don't let clearGame navigate since we're doing it manually)
+    this.gameService.clearGame(false);
     this.router.navigate(['/play', data.newGameId]);
   }
 

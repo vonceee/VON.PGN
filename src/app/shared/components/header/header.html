@@ -1,19 +1,27 @@
-<header class="relative z-50 w-full flex justify-between items-center px-4 md:px-16 py-3">
-  <a routerLink="/home" class="text-xl font-bold flex items-center gap-2 shrink-0">
-    <span class="text-xl font-bold">vonchess</span>
+<header
+  class="relative z-50 w-full flex justify-between items-center px-4 md:px-16 py-3 lg:py-4 backdrop-blur-md bg-white/70 dark:bg-black/70 sticky top-0 border-b border-transparent hover:border-slate-200 dark:hover:border-slate-800 transition-all duration-500"
+>
+  <a
+    routerLink="/home"
+    class="text-xl lg:text-2xl xl:text-3xl font-bold flex items-center gap-3 shrink-0 group transition-transform hover:scale-105 active:scale-95"
+  >
+    <span
+      class="font-black tracking-tighter decoration-cyan-400 group-hover:underline underline-offset-8"
+      >vonchess</span
+    >
   </a>
 
   <!-- Desktop Navigation -->
-  <div class="hidden md:flex ml-10 gap-6 mt-1">
+  <div class="hidden md:flex ml-10 gap-6 lg:gap-10 xl:gap-14 mt-1">
     <!-- Play Dropdown -->
-    <div class="relative group">
-      <a routerLink="/play" class="hover:text-cyan-400 flex items-center gap-1 cursor-pointer">
+    <div class="group">
+      <a routerLink="/play" class="hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg font-semibold transition-colors">
         Play
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
-          class="w-4 h-4 transition-transform group-hover:rotate-180"
+          class="w-4 h-4 lg:w-5 lg:h-5 transition-transform group-hover:rotate-180"
         >
           <path
             fill-rule="evenodd"
@@ -23,12 +31,12 @@
         </svg>
       </a>
       <div
-        class="fixed left-0 right-0 top-[52px] z-[60] bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 shadow-lg nav-dropdown pt-4"
+        class="absolute left-0 right-0 top-full z-40 bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 shadow-xl nav-dropdown pt-4 min-h-[140px]"
       >
-        <div class="max-w-7xl mx-auto px-16 py-6 flex gap-10">
+        <div class="max-w-[1600px] mx-auto px-16 py-8 lg:py-10 flex gap-10 lg:gap-16">
           <a routerLink="/play" class="group/item flex flex-col gap-0.5">
             <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400 transition-colors"
               >Play</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
@@ -37,7 +45,7 @@
           </a>
           <a routerLink="/tactics" class="group/item flex flex-col gap-0.5">
             <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400 transition-colors"
               >Tactics</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
@@ -46,11 +54,20 @@
           </a>
           <a routerLink="/tactics/leaderboard" class="group/item flex flex-col gap-0.5">
             <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400 transition-colors"
               >Rankings</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
               >See how you compare with other players</span
+            >
+          </a>
+          <a routerLink="/tv" class="group/item flex flex-col gap-0.5">
+            <span
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400 transition-colors"
+              >Watch</span
+            >
+            <span class="text-sm text-slate-500 dark:text-slate-400"
+              >Watch live games and top players</span
             >
           </a>
         </div>
@@ -58,7 +75,7 @@
     </div>
 
     <!-- <a routerLink="/explorer" class="hover:text-cyan-400">Opening Explorer</a> -->
-    <div class="relative group">
+    <div class="group">
       <a routerLink="/roadmap" class="hover:text-cyan-400 flex items-center gap-1 cursor-pointer">
         Roadmap
         <svg
@@ -75,31 +92,19 @@
         </svg>
       </a>
       <div
-        class="fixed left-0 right-0 top-[52px] z-[60] bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 shadow-lg nav-dropdown pt-4"
+        class="absolute left-0 right-0 top-full z-40 bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 shadow-xl nav-dropdown pt-4 min-h-[140px]"
       >
-        <div class="max-w-7xl mx-auto px-16 py-6 flex gap-10">
+        <div class="max-w-7xl mx-auto px-16 py-8 flex gap-10">
           <a
             routerLink="/roadmap"
-            class="group/item flex flex-col gap-0.5 hover:text-cyan-500 dark:hover:text-cyan-400"
+            class="group/item flex flex-col gap-0.5"
           >
             <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400 transition-colors"
               >Roadmap</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
               >Structured learning path for all levels</span
-            >
-          </a>
-          <a
-            routerLink="/my-progress"
-            class="group/item flex flex-col gap-0.5 hover:text-cyan-500 dark:hover:text-cyan-400"
-          >
-            <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
-              >My Progress</span
-            >
-            <span class="text-sm text-slate-500 dark:text-slate-400"
-              >Track your completed lessons and milestones</span
             >
           </a>
         </div>
@@ -107,8 +112,11 @@
     </div>
 
     <!-- Tournament Dropdown -->
-    <div class="relative group">
-      <a routerLink="/events" class="hover:text-cyan-400 flex items-center gap-1 cursor-pointer">
+    <div class="group">
+      <a
+        routerLink="/events"
+        class="hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg font-semibold transition-colors"
+      >
         Tournaments
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -124,15 +132,15 @@
         </svg>
       </a>
       <div
-        class="fixed left-0 right-0 top-[52px] z-[60] bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 shadow-lg nav-dropdown pt-4"
+        class="absolute left-0 right-0 top-full z-40 bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 shadow-xl nav-dropdown pt-4 min-h-[140px]"
       >
-        <div class="max-w-7xl mx-auto px-16 py-6 flex gap-10">
+        <div class="max-w-7xl mx-auto px-16 py-8 flex gap-10 lg:gap-16">
           <a
             routerLink="/events"
-            class="group/item flex flex-col gap-0.5 hover:text-cyan-500 dark:hover:text-cyan-400"
+            class="group/item flex flex-col gap-0.5"
           >
             <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400 transition-colors"
               >Tournaments</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
@@ -140,39 +148,27 @@
             >
           </a>
           <a
-            routerLink="/my-events"
-            class="group/item flex flex-col gap-0.5 hover:text-cyan-500 dark:hover:text-cyan-400"
+            routerLink="/arena"
+            class="group/item flex flex-col gap-0.5"
           >
             <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
-              >My Tournaments</span
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400 transition-colors"
+              >Arena</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
-              >View and manage your tournament entries</span
-            >
-          </a>
-          <a
-            routerLink="/bookmarks"
-            class="group/item flex flex-col gap-0.5 hover:text-cyan-500 dark:hover:text-cyan-400"
-          >
-            <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
-              >Following</span
-            >
-            <span class="text-sm text-slate-500 dark:text-slate-400"
-              >Saved tournaments you want to follow</span
+              >Join high-intensity ranked arenas</span
             >
           </a>
           <a
             routerLink="/broadcasts"
-            class="group/item flex flex-col gap-0.5 hover:text-cyan-500 dark:hover:text-cyan-400"
+            class="group/item flex flex-col gap-0.5"
           >
             <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
+              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400 transition-colors"
               >Broadcasts</span
             >
             <span class="text-sm text-slate-500 dark:text-slate-400"
-              >Watch live chess tournaments</span
+              >Watch live master commentary</span
             >
           </a>
         </div>
@@ -180,53 +176,10 @@
     </div>
 
     <!-- Arena Dropdown -->
-    <div class="relative group">
-      <a routerLink="/arena" class="hover:text-cyan-400 flex items-center gap-1 cursor-pointer">
-        Arena
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="w-4 h-4 transition-transform group-hover:rotate-180"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M5.22 8.574a.75.75 0 0 1 1.06 0L10 11.819l3.72-3.245a.75.75 0 1 1 1.04 1.084l-4.25 3.5a.75.75 0 0 1-1.04 0l-4.25-3.5a.75.75 0 0 1 0-1.06Z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </a>
-      <div
-        class="fixed left-0 right-0 top-[52px] z-[60] bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 shadow-lg nav-dropdown pt-4"
-      >
-        <div class="max-w-7xl mx-auto px-16 py-6 flex gap-10">
-          <a routerLink="/arena" class="group/item flex flex-col gap-0.5">
-            <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
-              >Arena</span
-            >
-            <span class="text-sm text-slate-500 dark:text-slate-400"
-              >Join ranked matches</span
-            >
-          </a>
-          <a routerLink="/my-arena" class="group/item flex flex-col gap-0.5">
-            <span
-              class="text-base font-semibold text-slate-900 dark:text-white group-hover/item:text-cyan-500 dark:group-hover/item:text-cyan-400"
-              >My Arena</span
-            >
-            <span class="text-sm text-slate-500 dark:text-slate-400"
-              >View your arena statistics</span
-            >
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <a routerLink="/tv" class="hover:text-cyan-400">Watch</a>
-    <a routerLink="/coaches" class="hover:text-cyan-400">Coaches</a>
+    <a routerLink="/coaches" class="hover:text-cyan-400 font-semibold text-sm lg:text-base xl:text-lg transition-colors mt-0.5">Coaches</a>
     <a
       routerLink="/whats-new"
-      class="relative flex items-center gap-1.5 font-semibold text-cyan-400"
+      class="relative flex items-center gap-1.5 font-semibold text-cyan-400 text-sm lg:text-base xl:text-lg transition-colors mt-0.5"
     >
       What's New
     </a>
@@ -334,7 +287,9 @@
           (click)="toggleProfileDropdown()"
           class="flex items-center gap-2 group cursor-pointer focus:outline-none"
         >
-          <span class="text-sm font-semibold group-hover:text-cyan-500 transition-colors">
+          <span
+            class="text-sm lg:text-base xl:text-lg font-bold group-hover:text-cyan-500 transition-colors"
+          >
             {{ userService.currentUser()?.displayName || 'User' }}
           </span>
         </button>
@@ -342,164 +297,203 @@
         <!-- Desktop Profile Dropdown -->
         <div
           [class.show]="isProfileDropdownOpen()"
-          class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-[60] overflow-hidden profile-dropdown"
+          class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-40 overflow-hidden profile-dropdown"
         >
-            <!-- Navigation Links -->
-            <div class="flex flex-col py-1">
-              <a
-                [routerLink]="['/profile']"
-                (click)="toggleProfileDropdown()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm"
-              >
-                Profile
-              </a>
+          <!-- Navigation Links -->
+          <div class="flex flex-col py-1">
+            <a
+              [routerLink]="['/profile']"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm transition-colors"
+            >
+              Profile
+            </a>
 
-              <div class="h-px w-full bg-slate-200 dark:bg-slate-800"></div>
-              @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
-                <a
-                  routerLink="/admin"
-                  (click)="toggleProfileDropdown()"
-                  class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm"
+            <div class="h-px w-full bg-slate-200 dark:bg-slate-800"></div>
+
+            <!-- Personal Chess Hub -->
+            <a
+              routerLink="/my-progress"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm transition-colors"
+            >
+              My Progress
+            </a>
+            <a
+              routerLink="/my-events"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm transition-colors"
+            >
+              My Tournaments
+            </a>
+            <a
+              routerLink="/my-arena"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm transition-colors"
+            >
+              My Arena
+            </a>
+            <a
+              routerLink="/bookmarks"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm transition-colors"
+            >
+              Bookmarks
+            </a>
+            <a
+              routerLink="/games/history"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm transition-colors"
+            >
+              Game History
+            </a>
+            <a
+              routerLink="/chat"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm transition-colors"
+            >
+              Messages
+              @if (chatService.totalUnreadCount() > 0) {
+                <span
+                  class="ml-auto min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold"
                 >
-                  Admin Panel
-                </a>
+                  {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
+                </span>
               }
+            </a>
+
+            @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
+              <div class="h-px w-full bg-slate-200 dark:bg-slate-800"></div>
               <a
-                routerLink="/games/history"
+                routerLink="/admin"
                 (click)="toggleProfileDropdown()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm"
+                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm text-cyan-600 dark:text-cyan-400 transition-colors"
               >
-                Game History
+                Admin Panel
               </a>
-              <a
-                routerLink="/chat"
-                (click)="toggleProfileDropdown()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-sm"
-              >
-                Messages
-                @if (chatService.totalUnreadCount() > 0) {
-                  <span
-                    class="ml-auto min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold"
-                  >
-                    {{
-                      chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount()
-                    }}
-                  </span>
-                }
-              </a>
-              <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+            }
+            <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
 
-              <!-- Chess Settings -->
-              <div class="px-4 py-2 flex flex-col gap-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Chess Settings</span>
-                </div>
-                
-                <!-- Board Theme -->
-                <div class="flex flex-col gap-1">
-                  <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Board Theme</label>
-                  <select 
-                    [ngModel]="boardThemeService.boardTheme()"
-                    (ngModelChange)="onBoardThemeChange($event)"
-                    class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
-                  >
-                    @for (theme of boardThemes; track theme.value) {
-                      <option [value]="theme.value">{{ theme.label }}</option>
-                    }
-                  </select>
-                </div>
-
-                <!-- Piece Set -->
-                <div class="flex flex-col gap-1">
-                  <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Piece Style</label>
-                  <select 
-                    [ngModel]="boardThemeService.pieceSet()"
-                    (ngModelChange)="onPieceSetChange($event)"
-                    class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
-                  >
-                    @for (set of pieceSets; track set.value) {
-                      <option [value]="set.value">{{ set.label }}</option>
-                    }
-                  </select>
-                </div>
-
-                <!-- Sound Theme -->
-                <div class="flex flex-col gap-1">
-                  <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Move Sound</label>
-                  <select 
-                    [ngModel]="audioService.soundEnabled() ? audioService.soundTheme() : 'off'"
-                    (ngModelChange)="onSoundThemeChange($event)"
-                    class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
-                  >
-                    <option value="off">Off</option>
-                    @for (theme of soundThemes; track theme.value) {
-                      <option [value]="theme.value">{{ theme.label }}</option>
-                    }
-                  </select>
-                </div>
+            <!-- Chess Settings -->
+            <div class="px-4 py-2 flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <span
+                  class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                  >Chess Settings</span
+                >
               </div>
 
-              <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
-
-              <!-- Theme Toggle -->
-              <button
-                (click)="themeService.toggleTheme()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm w-full text-left"
-              >
-                @if (themeService.isDarkMode()) {
-                  <span>Light Mode</span>
-                } @else {
-                  <span>Dark Mode</span>
-                }
-              </button>
-
-              <!-- Network Status -->
-              <div class="flex items-center justify-between px-4 py-2">
-                <div class="flex items-center gap-3">
-                  <span class="font-semibold text-sm text-slate-900 dark:text-white">Network</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  @if (pingSignal() > 0) {
-                    <span class="text-xs text-slate-500 dark:text-slate-400"
-                      >{{ pingSignal() }}ms</span
-                    >
+              <!-- Board Theme -->
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+                  >Board Theme</label
+                >
+                <select
+                  [ngModel]="boardThemeService.boardTheme()"
+                  (ngModelChange)="onBoardThemeChange($event)"
+                  class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
+                >
+                  @for (theme of boardThemes; track theme.value) {
+                    <option [value]="theme.value">{{ theme.label }}</option>
                   }
-                  <div class="flex items-end gap-0.5 h-3.5">
-                    <div
-                      class="w-1 rounded-sm transition-all duration-300"
-                      [style.height]="getPingBarHeight(0)"
-                      [style.backgroundColor]="getPingColor()"
-                    ></div>
-                    <div
-                      class="w-1 rounded-sm transition-all duration-300"
-                      [style.height]="getPingBarHeight(1)"
-                      [style.backgroundColor]="getPingColor()"
-                    ></div>
-                    <div
-                      class="w-1 rounded-sm transition-all duration-300"
-                      [style.height]="getPingBarHeight(2)"
-                      [style.backgroundColor]="getPingColor()"
-                    ></div>
-                    <div
-                      class="w-1 rounded-sm transition-all duration-300"
-                      [style.height]="getPingBarHeight(3)"
-                      [style.backgroundColor]="getPingColor()"
-                    ></div>
-                  </div>
-                </div>
+                </select>
               </div>
 
-              <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+              <!-- Piece Set -->
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+                  >Piece Style</label
+                >
+                <select
+                  [ngModel]="boardThemeService.pieceSet()"
+                  (ngModelChange)="onPieceSetChange($event)"
+                  class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
+                >
+                  @for (set of pieceSets; track set.value) {
+                    <option [value]="set.value">{{ set.label }}</option>
+                  }
+                </select>
+              </div>
 
-              <!-- Logout -->
-              <button
-                (click)="logout()"
-                class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold text-sm"
-              >
-                Logout
-              </button>
+              <!-- Sound Theme -->
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+                  >Move Sound</label
+                >
+                <select
+                  [ngModel]="audioService.soundEnabled() ? audioService.soundTheme() : 'off'"
+                  (ngModelChange)="onSoundThemeChange($event)"
+                  class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
+                >
+                  <option value="off">Off</option>
+                  @for (theme of soundThemes; track theme.value) {
+                    <option [value]="theme.value">{{ theme.label }}</option>
+                  }
+                </select>
+              </div>
             </div>
+
+            <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+
+            <!-- Theme Toggle -->
+            <button
+              (click)="themeService.toggleTheme()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold text-sm w-full text-left"
+            >
+              @if (themeService.isDarkMode()) {
+                <span>Light Mode</span>
+              } @else {
+                <span>Dark Mode</span>
+              }
+            </button>
+
+            <!-- Network Status -->
+            <div class="flex items-center justify-between px-4 py-2">
+              <div class="flex items-center gap-3">
+                <span class="font-semibold text-sm text-slate-900 dark:text-white">Network</span>
+              </div>
+              <div class="flex items-center gap-2">
+                @if (pingSignal() > 0) {
+                  <span class="text-xs text-slate-500 dark:text-slate-400"
+                    >{{ pingSignal() }}ms</span
+                  >
+                }
+                <div class="flex items-end gap-0.5 h-3.5">
+                  <div
+                    class="w-1 rounded-sm transition-all duration-300"
+                    [style.height]="getPingBarHeight(0)"
+                    [style.backgroundColor]="getPingColor()"
+                  ></div>
+                  <div
+                    class="w-1 rounded-sm transition-all duration-300"
+                    [style.height]="getPingBarHeight(1)"
+                    [style.backgroundColor]="getPingColor()"
+                  ></div>
+                  <div
+                    class="w-1 rounded-sm transition-all duration-300"
+                    [style.height]="getPingBarHeight(2)"
+                    [style.backgroundColor]="getPingColor()"
+                  ></div>
+                  <div
+                    class="w-1 rounded-sm transition-all duration-300"
+                    [style.height]="getPingBarHeight(3)"
+                    [style.backgroundColor]="getPingColor()"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+
+            <!-- Logout -->
+            <button
+              (click)="logout()"
+              class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold text-sm"
+            >
+              Logout
+            </button>
           </div>
+        </div>
       </div>
     } @else {
       <!-- Theme Toggle (Desktop) -->
@@ -771,11 +765,16 @@
           Following
         </a>
         <div class="px-4 py-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-4">
-          <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Chess Settings</span>
-          
+          <span
+            class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+            >Chess Settings</span
+          >
+
           <div class="flex flex-col gap-1">
-            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Board Theme</label>
-            <select 
+            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+              >Board Theme</label
+            >
+            <select
               [ngModel]="boardThemeService.boardTheme()"
               (ngModelChange)="onBoardThemeChange($event)"
               class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
@@ -787,8 +786,10 @@
           </div>
 
           <div class="flex flex-col gap-1">
-            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Piece Style</label>
-            <select 
+            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+              >Piece Style</label
+            >
+            <select
               [ngModel]="boardThemeService.pieceSet()"
               (ngModelChange)="onPieceSetChange($event)"
               class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
@@ -800,8 +801,10 @@
           </div>
 
           <div class="flex flex-col gap-1">
-            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Move Sound</label>
-            <select 
+            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+              >Move Sound</label
+            >
+            <select
               [ngModel]="audioService.soundEnabled() ? audioService.soundTheme() : 'off'"
               (ngModelChange)="onSoundThemeChange($event)"
               class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"

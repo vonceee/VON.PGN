@@ -1,14 +1,12 @@
 <div class="h-screen flex flex-col lg:flex-row selection:bg-cyan-400/30 overflow-hidden">
   <!-- Left Column: Form Section -->
   <div
-    class="flex-1 flex flex-col justify-center px-6 py-8 lg:px-20 xl:px-32 overflow-y-auto lg:overflow-y-hidden"
+    class="lg:basis-2/5 flex flex-col justify-center px-4 py-8 lg:py-16 overflow-y-auto lg:overflow-y-hidden"
   >
-    <div class="mx-auto w-full max-w-sm">
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold tracking-tight">
-          Sign up for <span class="text-cyan-400">vonchess</span>
-        </h1>
-      </div>
+    <div class="mx-auto w-full xl:max-w-md">
+      <app-back-link text="Back to Home"></app-back-link>
+
+      <app-section-heading text="Sign up for" highlight="vonchess"></app-section-heading>
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <!-- Username Field -->
@@ -19,7 +17,7 @@
             type="text"
             formControlName="username"
             placeholder="Yunah"
-            class="w-full px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white"
+            class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white transition-all"
           />
           @if (usernameError) {
             <p class="text-xs text-red-500 mt-1 px-1">{{ usernameError }}</p>
@@ -40,7 +38,7 @@
             type="email"
             formControlName="email"
             placeholder="hello@email.com"
-            class="w-full px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white"
+            class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white transition-all"
           />
           @if (emailError) {
             <p class="text-xs text-red-500 mt-1 px-1">{{ emailError }}</p>
@@ -56,7 +54,7 @@
               [type]="showPassword ? 'text' : 'password'"
               formControlName="password"
               placeholder="••••••••"
-              class="w-full px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-10"
+              class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-10 transition-all"
             />
             <button
               type="button"
@@ -125,7 +123,7 @@
               [type]="showConfirmPassword ? 'text' : 'password'"
               formControlName="password_confirmation"
               placeholder="••••••••"
-              class="w-full px-4 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-10"
+              class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-10 transition-all"
             />
             <button
               type="button"
@@ -183,36 +181,17 @@
         }
 
         <!-- Submit Button -->
-        <button
+        <app-button
           type="submit"
-          [disabled]="registerForm.invalid || isLoading"
-          class="w-full py-2.5 px-4 bg-black hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-black rounded-lg text-sm font-semibold disabled:cursor-not-allowed flex justify-center items-center"
+          variant="outline"
+          [customRounded]="'rounded-lg'"
+          [loading]="isLoading()"
+          [disabled]="registerForm.invalid"
+          label="Continue"
+          [fullWidth]="true"
+          class="w-full block"
         >
-          @if (isLoading) {
-            <svg
-              class="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            Creating Account...
-          } @else {
-            Continue
-          }
-        </button>
+        </app-button>
       </form>
 
 
@@ -241,70 +220,13 @@
 
   <!-- Right Column: Branding Section -->
   <div
-    class="hidden lg:flex flex-1 bg-zinc-900 dark:bg-zinc-925 text-white p-10 flex-col justify-between relative overflow-hidden"
+    class="hidden lg:flex lg:basis-3/5 bg-zinc-900 dark:bg-zinc-925 text-white p-10 flex-col justify-between relative overflow-hidden"
   >
-    <!-- Abstract Chess Grid Pattern Background -->
-    <div class="absolute inset-0 opacity-20 pointer-events-none">
-      <div class="chess-grid h-full w-full"></div>
-    </div>
-
-    <div class="relative z-10">
-      <!-- 
-      <div class="flex items-center gap-2 mb-12">
-        <span class="text-xl font-bold tracking-tighter">vonchess</span>
-      </div> 
-      -->
-
-      <div class="max-w-xl">
-        <h2 class="text-4xl xl:text-5xl font-extrabold tracking-tight leading-[1.1]">
-          MASTER THE GAME OF <span class="text-cyan-400">CHESS.</span>
-        </h2>
-        <p class="mt-4 text-zinc-400 font-medium leading-relaxed">
-          PLAY AND LEARN ON vonchess — THE ULTIMATE <br class="hidden xl:block" />
-          PLATFORM FOR PLAYERS WHO AIM FOR THE <span class="text-cyan-400">TOP.</span>
-        </p>
-
-        <!-- 
-        <div class="mt-10 grid grid-cols-2 gap-3">
-          <div class="p-3 border border-border-theme rounded-xl">
-            <div
-              class="flex items-center gap-2 text-[10px] font-bold text-cyan-400 uppercase tracking-widest"
-            >
-              Live Now
-            </div>
-            <p class="mt-1 text-xs font-semibold uppercase tracking-tight">Global Matchmaking</p>
-          </div>
-          <div class="p-3 border border-border-theme rounded-xl">
-            <div
-              class="flex items-center gap-2 text-[10px] font-bold text-cyan-400 uppercase tracking-widest"
-            >
-              Advanced
-            </div>
-            <p class="mt-1 text-xs font-semibold uppercase tracking-tight">AI Analysis</p>
-          </div>
-        </div> 
-        -->
-      </div>
-    </div>
-
-    <div class="relative z-10 border-t border-zinc-800 pt-6">
-      <div class="flex items-center gap-2 text-cyan-400 mb-2 font-bold text-sm">
-        Support our mission
-      </div>
-      <p class="text-zinc-400 text-xs leading-relaxed max-w-md">
-        If you like the website, consider supporting us. Your donations help us keep the servers
-        running and the puzzles fresh!
-      </p>
-
-      <div class="mt-8 flex justify-between items-center text-[10px] text-zinc-500 font-medium">
-        <span
-          >Need help? <a href="#" class="text-zinc-300 hover:text-cyan-400">visit our FAQ</a></span
-        >
-        <div class="flex gap-4">
-          <a href="#" class="hover:text-zinc-300">Twitter</a>
-          <a href="#" class="hover:text-zinc-300">Discord</a>
-        </div>
-      </div>
+    <div>
+      <app-section-heading text="Master the game of" highlight="Chess."></app-section-heading>
+      <app-typewriter-text
+        text="play and learn on vonchess — the ultimate platform for players who aim for the top."
+      ></app-typewriter-text>
     </div>
   </div>
 </div>

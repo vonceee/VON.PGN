@@ -13,10 +13,10 @@
       <!-- Skeleton Loading -->
       <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
         @for (category of ['Tactics', 'Streak', 'Bullet', 'Blitz', 'Rapid']; track category) {
-          <div class="rounded-2xl p-6 border border-border-theme">
+          <div class="premium-card rounded-2xl p-6">
             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">{{ category }}</h3>
             <div class="flex flex-col gap-3 animate-pulse">
-              @for (i of [1,2,3]; track i) {
+              @for (i of [1,2,3,4,5,6,7,8,9,10]; track i) {
                 <div class="h-12 bg-slate-100 dark:bg-slate-800/40 rounded-xl w-full"></div>
               }
             </div>
@@ -28,12 +28,12 @@
         <!-- All Leaderboards Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
           <!-- Bullet Rating -->
-          <div class="rounded-2xl p-6 border border-border-theme">
+          <div class="premium-card rounded-2xl p-6">
             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
               Bullet
             </h3>
             <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.bullet_rating?.slice(0, 5); track entry.user_id) {
+              @for (entry of leaderboard()?.bullet_rating?.slice(0, 10); track entry.user_id) {
                 <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
@@ -50,12 +50,12 @@
           </div>
 
           <!-- Blitz Rating -->
-          <div class="rounded-2xl p-6 border border-border-theme">
+          <div class="premium-card rounded-2xl p-6">
             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
               Blitz
             </h3>
             <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.blitz_rating?.slice(0, 5); track entry.user_id) {
+              @for (entry of leaderboard()?.blitz_rating?.slice(0, 10); track entry.user_id) {
                 <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
@@ -72,12 +72,12 @@
           </div>
 
           <!-- Rapid Rating -->
-          <div class="rounded-2xl p-6 border border-border-theme">
+          <div class="premium-card rounded-2xl p-6">
             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
               Rapid
             </h3>
             <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.rapid_rating?.slice(0, 5); track entry.user_id) {
+              @for (entry of leaderboard()?.rapid_rating?.slice(0, 10); track entry.user_id) {
                 <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
@@ -94,12 +94,12 @@
           </div>
 
           <!-- Tactics Rating -->
-          <div class="rounded-2xl p-6 border border-border-theme">
+          <div class="premium-card rounded-2xl p-6">
             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
               Tactics
             </h3>
             <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.tactics_rating?.slice(0, 5); track entry.user_id) {
+              @for (entry of leaderboard()?.tactics_rating?.slice(0, 10); track entry.user_id) {
                 <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
@@ -116,12 +116,12 @@
           </div>
 
           <!-- Best Streak -->
-          <div class="rounded-2xl p-6 border border-border-theme">
+          <div class="premium-card rounded-2xl p-6">
             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">
               Streak
             </h3>
             <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.streak?.slice(0, 5); track entry.user_id) {
+              @for (entry of leaderboard()?.streak?.slice(0, 10); track entry.user_id) {
                 <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}

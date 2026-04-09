@@ -1,8 +1,12 @@
-import { Component, inject, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, NgZone, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { SectionHeadingComponent } from 'src/app/shared/components/section-heading/section-heading.component';
+import { TypewriterTextComponent } from 'src/app/shared/components/typewriter-text/typewriter-text';
+import { BackLinkComponent } from 'src/app/shared/components/back-link/back-link.component';
+import { ButtonComponent } from 'src/app/shared/components/button/button.component';
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -17,7 +21,7 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, SectionHeadingComponent, TypewriterTextComponent, BackLinkComponent, ButtonComponent],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -27,7 +31,7 @@ export class RegisterComponent {
   private cdr = inject(ChangeDetectorRef);
   private zone = inject(NgZone);
 
-  isLoading = false;
+  isLoading = signal(false);
   errorMessage = '';
   emailError = '';
   usernameError = '';
@@ -70,7 +74,7 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.invalid) return;
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.errorMessage = '';
     this.emailError = '';
     this.usernameError = '';
@@ -85,20 +89,20 @@ export class RegisterComponent {
     })
     .pipe(
       finalize(() => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.cdr.detectChanges();
       })
     )
     .subscribe({
       next: () => {
         this.zone.run(() => {
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.cdr.detectChanges();
         });
       },
       error: (err) => {
         this.zone.run(() => {
-          this.isLoading = false;
+          this.isLoading.set(false);
 
           if (err.status === 429) {
             this.errorMessage = err.error?.message || 'Too many attempts. Please try again later.';
