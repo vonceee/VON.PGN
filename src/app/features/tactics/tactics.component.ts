@@ -72,6 +72,7 @@ export class TacticsComponent implements OnInit {
   currentPgnMoveIndex = signal(-1);
   puzzleStartPly = signal(-1);
   fullPgnMoves: string[] = [];
+  isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
   private resizeStartX = 0;
   private resizeStartSize = 0;
@@ -82,7 +83,16 @@ export class TacticsComponent implements OnInit {
       const saved = localStorage.getItem('boardSize');
       if (saved) {
         const size = parseInt(saved, 10);
-        if (size >= 280 && size <= 1200) return size;
+        // Ensure saved size still fits the screen if it's very small
+        const maxAllowed = Math.min(1200, window.innerWidth - 24);
+        if (size >= 280 && size <= 1200) {
+          return Math.min(size, maxAllowed);
+        }
+      }
+      
+      // Default responsive size for mobile/tablet
+      if (window.innerWidth < 768) {
+        return Math.min(560, window.innerWidth - 32); 
       }
     }
     return 560;
@@ -143,6 +153,11 @@ export class TacticsComponent implements OnInit {
       });
     }
     this.loadNextPuzzle();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', () => {
+        this.isMobile.set(window.innerWidth < 768);
+      });
+    }
   }
 
   loadNextPuzzle() {
