@@ -1,87 +1,127 @@
-<div class="mx-auto px-8 py-10">
+<div class="mx-auto px-4 md:px-8 py-4">
+  <!-- Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold">Lichess Broadcasts</h1>
+    <h1 class="text-3xl font-bold">Live Chess Broadcasts</h1>
     <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
-      Watch live chess tournaments from Lichess
+      Watch live tournaments from Lichess
     </p>
   </div>
 
-  @if (loading()) {
-    <div class="flex items-center justify-center py-20">
-      <div class="flex flex-col items-center gap-4">
-        <div
-          class="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"
-        ></div>
-        <p class="text-xs font-semibold tracking-widest uppercase text-slate-400">
-          Loading broadcasts
-        </p>
-      </div>
+  @if (error()) {
+    <div class="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+      <p class="text-sm text-red-600 dark:text-red-400">
+        {{ error() }}
+      </p>
     </div>
-  } @else if (lichessBroadcasts().length === 0) {
+  }
+
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 animate-pulse px-8">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="border border-border-theme rounded-2xl overflow-hidden flex flex-col h-[285px]">
+          <div class="p-4 md:p-5 pt-3 flex flex-col flex-1">
+            <div class="h-6 bg-slate-200 dark:bg-slate-800/80 rounded w-3/4 mb-4 mt-1"></div>
+            <div class="space-y-3.5 mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-4 h-4 bg-slate-200 dark:bg-slate-800/80 rounded shrink-0"></div>
+                <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-1/2"></div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-4 h-4 bg-slate-200 dark:bg-slate-800/80 rounded shrink-0"></div>
+                <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-2/5"></div>
+              </div>
+            </div>
+            <div class="mt-auto flex items-center justify-between gap-2">
+              <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-1/3"></div>
+              <div class="h-4 bg-slate-200 dark:bg-slate-800/80 rounded w-1/4"></div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (broadcasts().length === 0) {
     <div class="text-center py-20">
       <div class="flex flex-col items-center gap-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1"
-          stroke="currentColor"
-          class="w-16 h-16 text-slate-300 dark:text-slate-600"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.358 8.287 8.287 0 0 1 9.916 5.862m-.004-.01a8.016 8.016 0 0 1 .013-.01 8.26 8.26 0 0 1 4.013 0M12 18c-3.60 0-6.467-1.756-8.15-4.788m8.15-4.788a80.14 80.14 0 0 1-8.15 4.788m8.15-4.788a79.187 79.187 0 0 1 4.013 0M9 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
-          />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-16 h-16 text-slate-300 dark:text-slate-600">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.358 8.287 8.287 0 0 1 9.916 5.862m-.004-.01a8.016 8.016 0 0 1 .013-.01 8.26 8.26 0 0 1 4.013 0M12 18c-3.60 0-6.467-1.756-8.15-4.788m8.15-4.788a80.14 80.14 0 0 1-8.15 4.788m8.15-4.788a79.187 79.187 0 0 1 4.013 0M9 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z" />
         </svg>
         <div>
-          <p class="text-lg font-semibold text-slate-700 dark:text-slate-300">
-            No broadcasts available
-          </p>
+          <p class="text-lg font-semibold text-slate-700 dark:text-slate-300">No broadcasts available</p>
           <p class="text-sm text-slate-400 mt-1">Check back later for live tournaments</p>
         </div>
       </div>
     </div>
   } @else {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      @for (lichess of lichessBroadcasts(); track lichess.id) {
-        <a
-          [href]="lichess.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="block border border-border-theme rounded-2xl p-6 hover:border-orange-500/30 transition-colors"
-        >
-          <div class="flex items-center gap-2 mb-3">
-            <span
-              class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-orange-500/10 text-orange-500"
-            >
-              Lichess
-            </span>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      @for (broadcast of broadcasts(); track broadcast.id) {
+        <div (click)="selectBroadcast(broadcast)" class="border border-border-theme rounded-2xl overflow-hidden flex flex-col h-full relative group cursor-pointer">
+          <!-- Card Content -->
+          <div class="p-4 md:p-5 pt-3 flex flex-col flex-1">
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h2 class="text-base md:text-2xl">{{ broadcast.displayName || broadcast.name }}</h2>
+            </div>
+
+            <div class="space-y-2 text-sm mb-4">
+              @if (broadcast.info?.format) {
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 shrink-0">
+                    <path fill-rule="evenodd" d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Z" clip-rule="evenodd" />
+                  </svg>
+                  {{ broadcast.info?.format }}
+                </div>
+              }
+              @if (broadcast.info?.location) {
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 shrink-0">
+                    <path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003Z" clip-rule="evenodd" />
+                  </svg>
+                  {{ broadcast.info?.location }}
+                </div>
+              }
+              @if (broadcast.info?.tc) {
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 shrink-0">
+                    <path fill-rule="evenodd" d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" clip-rule="evenodd" />
+                  </svg>
+                  {{ broadcast.info?.tc }}
+                </div>
+              }
+              @if (broadcast.dates?.[0]) {
+                <div class="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 shrink-0">
+                    <path fill-rule="evenodd" d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Z" clip-rule="evenodd" />
+                  </svg>
+                  {{ broadcast.dates?.[0] | date:'mediumDate' }} – {{ broadcast.dates?.[1] | date:'mediumDate' }}
+                </div>
+              }
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="mt-auto flex items-center justify-between gap-2">
+              @if (broadcast.status === 'ongoing') {
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+                  <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span>
+                  Live
+                </span>
+              } @else if (broadcast.status === 'finished') {
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-500/20 text-slate-400">
+                  Finished
+                </span>
+              } @else {
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400">
+                  Upcoming
+                </span>
+              }
+
+              @if (broadcast.tier) {
+                <span class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-yellow-500/10 text-yellow-600 dark:text-yellow-400">
+                  Official
+                </span>
+              }
+            </div>
           </div>
-          <h3 class="text-xl font-semibold mb-2">{{ lichess.name }}</h3>
-          @if (lichess.description) {
-            <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
-              {{ lichess.description }}
-            </p>
-          }
-          <p class="text-sm text-cyan-500 mt-3 flex items-center gap-1">
-            Watch on Lichess
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-              />
-            </svg>
-          </p>
-        </a>
+        </div>
       }
     </div>
   }

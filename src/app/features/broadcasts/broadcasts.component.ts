@@ -1,5 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { BroadcastService, LichessBroadcast } from '../../core/services/broadcast.service';
 
 @Component({
@@ -10,11 +11,19 @@ import { BroadcastService, LichessBroadcast } from '../../core/services/broadcas
 })
 export class BroadcastsComponent implements OnInit {
   private broadcastService = inject(BroadcastService);
+  private router = inject(Router);
 
-  lichessBroadcasts = this.broadcastService.lichessBroadcasts;
+  broadcasts = this.broadcastService.broadcasts;
   loading = this.broadcastService.loading;
+  error = this.broadcastService.error;
 
   ngOnInit() {
     this.broadcastService.fetchBroadcasts();
   }
+
+  selectBroadcast(broadcast: LichessBroadcast): void {
+    this.router.navigate(['/broadcasts', broadcast.id]);
+  }
 }
+
+
