@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { BackLinkComponent } from '../../../shared/components/back-link/back-link.component';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +11,7 @@ import { Tournament } from '../../../core/models/tournament.model';
 @Component({
   selector: 'app-tournament-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BackLinkComponent],
   templateUrl: './tournament-detail.component.html'
 })
 export class TournamentDetailComponent implements OnInit {
@@ -22,7 +23,6 @@ export class TournamentDetailComponent implements OnInit {
 
   tournament: Tournament | undefined;
   mapUrl = signal<SafeResourceUrl | null>(null);
-  showRegisterModal = signal(false);
   isBookmarked = signal(false);
   bookmarkLoading = signal(false);
   shareMenuOpen = signal(false);
@@ -67,8 +67,11 @@ export class TournamentDetailComponent implements OnInit {
   private setupMap() {
     if (this.tournament && !this.mapUrl()) {
       const { lat, lng } = this.tournament.coordinates;
-      const url = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
-      this.mapUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      // Only set mapUrl if coordinates are valid (not both 0)
+      if (lat !== 0 || lng !== 0) {
+        const url = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+        this.mapUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      }
     }
   }
 
@@ -113,9 +116,7 @@ export class TournamentDetailComponent implements OnInit {
     return null;
   }
 
-  toggleRegisterModal() {
-    this.showRegisterModal.set(!this.showRegisterModal());
-  }
+
 
   toggleBookmark() {
     if (!this.authService.isAuthenticated() || this.bookmarkLoading() || !this.tournament) return;

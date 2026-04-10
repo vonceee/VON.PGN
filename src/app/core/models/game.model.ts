@@ -27,23 +27,11 @@ export interface GameState {
   legal_moves: string[];
   draw_offered_by: number | null;
   draw_offered_at: string | null;
-  buffer_seconds_remaining?: number;
   opponent_away_countdown?: number | null;
-  bufferCountdown?: number | null;
   gameStartedAt?: string | null;
   arena_id?: string | null;
 }
 
-export interface GameMatchedPayload {
-  game_id: string;
-  white_player: GamePlayer;
-  black_player: GamePlayer;
-  time_control: string;
-  initial_time_ms: number;
-  increment_ms: number;
-  status: string;
-  initial_fen: string;
-}
 
 export interface MovePlayedPayload {
   game_id: string;
@@ -62,7 +50,6 @@ export interface MovePlayedPayload {
   is_stalemate: boolean;
   is_draw: boolean;
   legal_moves: string[];
-  buffer_seconds_remaining?: number;
 }
 
 export interface GameEndedPayload {
@@ -81,29 +68,17 @@ export interface GameEndedPayload {
   black_rating_change?: number | null;
 }
 
-export interface ClockSyncPayload {
-  game_id: string;
-  white_time_remaining_ms: number;
-  black_time_remaining_ms: number;
-  server_timestamp: string;
-  buffer_seconds_remaining?: number;
-}
 
 export interface DrawOfferedPayload {
-  game_id: string;
-  offered_by: 'white' | 'black';
-  offered_by_user_id: number;
-  cooldown_expires_at: string | null;
+  gameId: string;
+  offeredBy: 'white' | 'black';
+  offeredByUserId: number;
 }
 
-export interface PlayerAbsentPayload {
-  absent_color: 'white' | 'black';
-  countdown_seconds: number;
+export interface DrawDeclinedPayload {
+  gameId: string;
 }
 
-export interface PlayerReturnedPayload {
-  returned_color: 'white' | 'black';
-}
 
 export interface TimeControlOption {
   label: string;
@@ -122,67 +97,7 @@ export interface GameSeek {
   created_at: string;
 }
 
-export interface SeekCreatedPayload {
-  id: number;
-  user_id: number;
-  username: string;
-  elo: number;
-  time_control: string;
-  created_at: string;
-}
 
-export interface SeekRemovedPayload {
-  seek_id: number;
-  reason: 'matched' | 'cancelled';
-}
-
-// Microservice event types
-export interface GameMatchedMicroservicePayload {
-  gameId: string;
-  opponent: {
-    userId: number;
-    name: string;
-  };
-  color: 'white' | 'black';
-  game: GameState;
-}
-
-export interface MoveMadePayload {
-  gameId: string;
-  move: string;
-  san: string;
-  fen: string;
-  turn: 'white' | 'black';
-  whiteTimeRemainingMs: number;
-  blackTimeRemainingMs: number;
-  serverTimestamp: string;
-  status: string;
-  result: string | null;
-  termination: string | null;
-  legalMoves: string[];
-  isCheck: boolean;
-  isCheckmate: boolean;
-  isStalemate: boolean;
-  isDraw: boolean;
-}
-
-export interface GameEndedMicroservicePayload {
-  gameId: string;
-  result: string | null;
-  termination: string | null;
-  status: 'completed';
-}
-
-export interface DrawOfferedMicroservicePayload {
-  gameId: string;
-  offeredBy: 'white' | 'black';
-}
-
-export interface ClockSyncMicroservicePayload {
-  whiteTimeRemainingMs: number;
-  blackTimeRemainingMs: number;
-  serverTimestamp: string;
-}
 
 export interface RematchOfferedPayload {
   gameId: string;

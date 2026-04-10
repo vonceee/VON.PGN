@@ -45,7 +45,7 @@ export class ButtonComponent {
       case 'ghost':
         return `${base} bg-transparent hover:text-cyan-400 border-transparent`;
       default:
-        return `${base} border-border-theme hover:text-cyan-400 hover:border-cyan-400`;
+        return `${base} border-border-theme text-slate-900 dark:text-white hover:text-cyan-400 hover:border-cyan-400`;
     }
   }
 }

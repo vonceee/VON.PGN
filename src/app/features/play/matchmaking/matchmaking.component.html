@@ -43,14 +43,9 @@
                   >
                     <div class="absolute inset-0 bg-cyan-500/5 animate-pulse"></div>
                     <div
-                      class="h-6 w-6 rounded-full border-[2px] border-cyan-500/30 border-t-cyan-500 animate-spin mb-3"
+                      class="h-8 w-8 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin"
                     ></div>
-                    <button
-                      (click)="cancelSearch()"
-                      class="px-4 py-1.5 text-xs font-bold uppercase tracking-wider border border-red-500 text-red-500 rounded hover:bg-red-500/10 bg-transparent transition-colors cursor-pointer"
-                    >
-                      Cancel
-                    </button>
+                    <span class="text-[10px] font-bold uppercase tracking-tighter mt-2 opacity-60">Searching</span>
                   </div>
                 } @else {
                   <button

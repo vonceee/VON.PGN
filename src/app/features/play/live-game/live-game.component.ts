@@ -5,7 +5,6 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
-  AfterViewInit,
   signal,
   computed,
   ChangeDetectorRef,
@@ -23,6 +22,9 @@ import { ArenaService } from '../../../core/services/arena.service';
 import { ChessClockComponent } from '../../../shared/components/chess-clock/chess-clock.component';
 import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { GameInfoComponent } from './components/game-info.component';
+import { MoveHistoryComponent } from './components/move-history.component';
+import { GameControlsComponent } from './components/game-controls.component';
 import {
   MovePlayedPayload,
   GameEndedPayload,
@@ -41,9 +43,15 @@ import { Key } from 'chessground/types';
 @Component({
   selector: 'app-live-game',
   standalone: true,
-  imports: [ChessClockComponent, ServerMaintenanceComponent, ButtonComponent],
+  imports: [
+    ChessClockComponent,
+    ServerMaintenanceComponent,
+    GameInfoComponent,
+    MoveHistoryComponent,
+    GameControlsComponent,
+  ],
   template: `
-    <div class="h-[calc(100vh-64px)] overflow-hidden flex items-center justify-center px-2 py-2 md:px-4 md:py-4">
+    <div class="min-h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] md:overflow-hidden flex items-center justify-center p-2 md:p-4">
       <div class="w-full max-w-[1500px]">
         @if (gameService.isServiceMaintenance()) {
           <app-server-maintenance
@@ -58,292 +66,63 @@ import { Key } from 'chessground/types';
               [style.height.px]="boardSize()"
             >
               <div class="p-4 border-b border-border-theme">
-
-
                 <!-- Opponent details -->
-                <div class="flex items-center justify-between text-sm mb-3">
-                  <div class="flex items-center gap-3 opacity-80 overflow-hidden">
-                    <div
-                      class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
-                      [class.bg-white]="g.my_color === 'black'"
-                      [class.bg-slate-950]="g.my_color === 'white'"
-                    ></div>
-                    <span class="truncate font-bold">{{ opponentName() }}</span>
-                  </div>
-                  <div class="flex items-center gap-2 font-mono text-[13px] shrink-0 ml-4">
-                    <span class="opacity-50">({{ getOpponentRating() }})</span>
-                    @if (getOpponentRatingChange() !== null && getOpponentRatingChange() !== undefined) {
-                      <span 
-                        class="font-bold whitespace-nowrap"
-                        [class]="getOpponentRatingChange()! >= 0 ? 'text-green-400' : 'text-red-400'"
-                      >
-                        {{ getOpponentRatingChange()! > 0 ? '+' : '' }}{{ getOpponentRatingChange() }}
-                      </span>
-                    }
-                  </div>
-                </div>
+                <app-game-info 
+                  [player]="g.my_color === 'white' ? g.black_player : g.white_player"
+                  [color]="g.my_color === 'white' ? 'black' : 'white'"
+                  [ratingChange]="getOpponentRatingChange()"
+                  class="block mb-3"
+                />
 
                 <!-- My details -->
-                <div class="flex items-center justify-between text-sm">
-                  <div class="flex items-center gap-3 opacity-80 overflow-hidden">
-                    <div
-                      class="w-3 h-3 rounded-full shrink-0 border border-slate-500"
-                      [class.bg-white]="g.my_color === 'white'"
-                      [class.bg-slate-950]="g.my_color === 'black'"
-                    ></div>
-                    <span class="font-bold">{{ myUsername() }}</span>
-                  </div>
-                  <div class="flex items-center gap-2 font-mono text-[13px] shrink-0 ml-4">
-                    <span class="opacity-50">({{ getMyRating() }})</span>
-                    @if (getMyRatingChange() !== null && getMyRatingChange() !== undefined) {
-                      <span 
-                        class="font-bold whitespace-nowrap"
-                        [class]="getMyRatingChange()! >= 0 ? 'text-green-400' : 'text-red-400'"
-                      >
-                        {{ getMyRatingChange()! > 0 ? '+' : '' }}{{ getMyRatingChange() }}
-                      </span>
-                    }
-                </div>
+                <app-game-info 
+                  [player]="g.my_color === 'white' ? g.white_player : g.black_player"
+                  [color]="g.my_color"
+                  [ratingChange]="getMyRatingChange()"
+                />
               </div>
-            </div>
 
               <!-- PGN Viewer -->
-              <div class="flex-1 flex flex-col overflow-hidden">
-                <!-- Navigation arrows -->
-                <div
-                  class="flex items-center justify-center gap-1 p-2 border-b border-border-theme"
-                >
-                  <app-button
-                    variant="outline"
-                    size="sm"
-                    (click)="goToStart()"
-                    title="Start"
-                    [disabled]="currentMoveIndex() === -1"
-                  >
-                    <svg
-                      class="w-3.5 h-3.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                    >
-                      <polyline points="11 17 6 12 11 7" />
-                      <polyline points="18 17 13 12 18 7" />
-                    </svg>
-                  </app-button>
-                  <app-button
-                    variant="outline"
-                    size="sm"
-                    (click)="previousMove()"
-                    title="Previous"
-                    [disabled]="currentMoveIndex() === -1"
-                  >
-                    <svg
-                      class="w-3.5 h-3.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                    >
-                      <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                  </app-button>
-                  <app-button
-                    variant="outline"
-                    size="sm"
-                    (click)="nextMove()"
-                    title="Next"
-                    [disabled]="g.moves.length === 0 || currentMoveIndex() === g.moves.length - 1"
-                  >
-                    <svg
-                      class="w-3.5 h-3.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                    >
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </app-button>
-                  <app-button
-                    variant="outline"
-                    size="sm"
-                    (click)="goToEnd()"
-                    title="End"
-                    [disabled]="g.moves.length === 0 || currentMoveIndex() === g.moves.length - 1"
-                  >
-                    <svg
-                      class="w-3.5 h-3.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                    >
-                      <polyline points="13 17 18 12 13 7" />
-                      <polyline points="6 17 11 12 6 7" />
-                    </svg>
-                  </app-button>
-                </div>
-
-                <!-- Moves grid -->
-                <div class="flex-1 overflow-y-auto custom-scrollbar">
-                  <div class="grid grid-cols-[2.5rem_1fr_1fr] text-[13px]">
-                    @for (round of moveRounds(); track round.num) {
-                      <div
-                        class="py-1.5 flex items-center justify-center font-bold opacity-20 border-r border-white/5 h-full"
-                      >
-                        {{ round.num }}
-                      </div>
-                      <div
-                        (click)="goToMove(round.whiteIndex)"
-                        class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center"
-                        [class.bg-blue-600/20]="round.whiteIndex === currentMoveIndex()"
-                      >
-                        <span [class.text-blue-400]="round.whiteIndex === currentMoveIndex()">{{
-                          formatMove(round.white)
-                        }}</span>
-                      </div>
-                      <div
-                        (click)="goToMove(round.blackIndex)"
-                        class="py-1.5 px-3 cursor-pointer hover:bg-white/5 transition-all text-center h-full flex items-center justify-center"
-                        [class.bg-blue-600/20]="round.blackIndex === currentMoveIndex()"
-                      >
-                        @if (round.black) {
-                          <span [class.text-blue-400]="round.blackIndex === currentMoveIndex()">{{
-                            formatMove(round.black)
-                          }}</span>
-                        }
-                      </div>
-                    }
-                    @if (g.moves.length === 0) {
-                      <div
-                        class="col-span-3 py-8 text-center text-slate-500 opacity-40 text-xs uppercase tracking-widest font-bold"
-                      >
-                        Game Start
-                      </div>
-                    }
-                  </div>
-                </div>
-              </div>
+              <app-move-history 
+                class="flex-1"
+                [rounds]="moveRounds()"
+                [currentMoveIndex]="currentMoveIndex()"
+                [totalMoves]="g.moves.length"
+                (navigate)="goToMove($event)"
+              />
 
               <!-- Action buttons -->
-              <div
-                class="p-2 border-t border-border-theme flex flex-col items-center"
-              >
-                @if (g.status === 'active') {
-                  <div class="flex items-center justify-center gap-1 w-full">
-                    @if (g.moves.length < 2) {
-                      <app-button
-                        variant="ghost"
-                        size="sm"
-                        (click)="abort()"
-                        title="Abort"
-                        class="w-full"
-                      >
-                        <svg
-                          class="w-5 h-5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                      </app-button>
-                    } @else {
-                      @if (canOfferDraw()) {
-                        <app-button
-                          variant="ghost"
-                          size="sm"
-                          (click)="offerDraw()"
-                          title="Offer Draw"
-                          class="w-full"
-                          label="1/2"
-                        ></app-button>
-                      }
-
-                      @if (!showResignConfirm()) {
-                        <app-button
-                          variant="ghost"
-                          size="sm"
-                          (click)="showResignConfirm.set(true)"
-                          title="Resign"
-                          class="w-full"
-                        >
-                          <svg
-                            class="w-4 h-4 text-red-500/70"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <path
-                              d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"
-                            ></path>
-                            <line x1="4" y1="22" x2="4" y2="15"></line>
-                          </svg>
-                        </app-button>
-                      } @else {
-                        <div
-                          class="w-full flex gap-1 animate-in fade-in slide-in-from-right-2 duration-200"
-                        >
-                          <app-button
-                            variant="danger"
-                            size="sm"
-                            (click)="confirmResign()"
-                            title="Confirm Resign"
-                            class="flex-1"
-                          >
-                            <svg
-                              class="w-4 h-4"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="3"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            >
-                              <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                          </app-button>
-                          <app-button
-                            variant="outline"
-                            size="sm"
-                            (click)="showResignConfirm.set(false)"
-                            title="Cancel"
-                            class="flex-1"
-                          >
-                            <svg
-                              class="w-4 h-4"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="3"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            >
-                              <line x1="18" y1="6" x2="6" y2="18"></line>
-                              <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                          </app-button>
-                        </div>
-                      }
-                    }
-                  </div>
-                }
-              </div>
+              <app-game-controls
+                [game]="g"
+                [canOfferDraw]="canOfferDraw()"
+                [drawOfferFromOpponent]="drawOfferState() === 'opponentOffered'"
+                [iOfferedDraw]="drawOfferState() === 'iOffered'"
+                [myRematchOffered]="myRematchOffered()"
+                [rematchOfferFrom]="rematchOfferFrom()"
+                (abort)="abort()"
+                (offerDraw)="offerDraw()"
+                (acceptDraw)="acceptDraw()"
+                (declineDraw)="declineDraw()"
+                (resign)="confirmResign()"
+                (offerRematch)="offerRematch()"
+                (acceptRematch)="acceptRematch()"
+                (declineRematch)="declineRematch()"
+                (newOpponent)="findNewOpponent()"
+              />
             </div>
 
-            <!-- Center: Chess Board -->
-            <div class="flex flex-col items-center order-1 md:order-2 w-auto">
-              <!-- Mobile: Opponent clock above board -->
-              <div class="w-full md:hidden mb-2">
+            <!-- Center: Chess Board Area -->
+            <div class="flex flex-col items-center order-1 md:order-2 w-full md:w-auto">
+              <!-- Mobile: Opponent info + clock above board -->
+              <div class="w-full md:hidden mb-2 flex items-center justify-between gap-2 px-1">
+                <app-game-info 
+                  [player]="g.my_color === 'white' ? g.black_player : g.white_player"
+                  [color]="g.my_color === 'white' ? 'black' : 'white'"
+                  [ratingChange]="getOpponentRatingChange()"
+                  class="flex-1 min-w-0"
+                />
                 <app-chess-clock
+                  class="shrink-0"
                   [serverTimeMs]="opponentTimeMs()"
                   [serverTimestamp]="g.server_timestamp"
                   [isActive]="isOpponentTurn()"
@@ -367,10 +146,17 @@ import { Key } from 'chessground/types';
                   </svg>
                 </div>
               </div>
-
-              <!-- Mobile: My clock below board -->
-              <div class="w-full md:hidden mt-2">
+              
+              <!-- Mobile: My info + clock below board -->
+              <div class="w-full md:hidden mt-2 flex items-center justify-between gap-2 px-1">
+                <app-game-info 
+                  [player]="g.my_color === 'white' ? g.white_player : g.black_player"
+                  [color]="g.my_color"
+                  [ratingChange]="getMyRatingChange()"
+                  class="flex-1 min-w-0"
+                />
                 <app-chess-clock
+                  class="shrink-0"
                   [serverTimeMs]="myTimeMs()"
                   [serverTimestamp]="g.server_timestamp"
                   [isActive]="isMyTurn()"
@@ -378,97 +164,66 @@ import { Key } from 'chessground/types';
                 />
               </div>
 
-              <!-- Mobile: Game info bar -->
-              <div class="md:hidden w-full mt-2 flex items-center justify-between text-xs px-1">
-                <div class="flex items-center gap-2">
-                  <div
-                    class="w-2 h-2 rounded-full border border-slate-500"
-                    [class.bg-white]="g.my_color === 'black'"
-                    [class.bg-slate-950]="g.my_color === 'white'"
-                  ></div>
-                  <span class="font-bold">{{ opponentName() }}</span>
-                  <span class="opacity-50">({{ getOpponentRating() }})</span>
-                </div>
-                <span class="opacity-60">{{ getTimeControlCategoryLabel(g.time_control) }}</span>
-                <div class="flex items-center gap-2">
-                  <span class="opacity-50">({{ getMyRating() }})</span>
-                  <span class="font-bold">You</span>
-                  <div
-                    class="w-2 h-2 rounded-full border border-slate-500"
-                    [class.bg-white]="g.my_color === 'white'"
-                    [class.bg-slate-950]="g.my_color === 'black'"
-                  ></div>
-                </div>
-              </div>
 
-              <!-- Mobile: Action buttons -->
-              <div class="md:hidden w-full mt-2 flex gap-2 justify-center">
-                @if (g.status === 'active') {
-                  @if (g.moves.length < 2) {
-                    <app-button variant="ghost" size="sm" (click)="abort()" title="Abort" class="flex-1">
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                    </app-button>
-                  } @else {
-                    @if (canOfferDraw()) {
-                      <app-button variant="ghost" size="sm" (click)="offerDraw()" title="Offer Draw" class="flex-1">
-                        1/2
-                      </app-button>
+              <!-- Mobile: Status Messages / Results -->
+              <div class="md:hidden w-full mt-4 empty:hidden">
+                @if (g.status === 'completed' || g.status === 'aborted') {
+                  <div class="premium-card rounded-lg p-3 text-center mb-3">
+                    <div class="text-lg font-bold" [class]="g.status === 'aborted' ? 'text-slate-400' : getResultClass(g.result)">
+                      {{ g.status === 'aborted' ? (formatTermination(null, g.termination) || 'Game Aborted') : formatResult(g.result) }}
+                    </div>
+                    @if (g.status === 'completed') {
+                      <div class="text-xs text-slate-400 mt-0.5">{{ formatTermination(g.result, g.termination) }}</div>
                     }
-                    <app-button variant="ghost" size="sm" (click)="showResignConfirm.set(true)" title="Resign" class="flex-1">
-                      <svg class="w-4 h-4 text-red-500/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                        <line x1="4" y1="22" x2="4" y2="15"></line>
-                      </svg>
-                    </app-button>
-                  }
+                  </div>
+                }
+                @if (g.status === 'active' && (opponentAwayCountdown() !== null || abortCountdown() !== null)) {
+                  <div class="flex gap-3 justify-center mb-3">
+                    @if (opponentAwayCountdown() !== null) {
+                      <div class="border border-red-500/30 rounded-lg py-1.5 px-4 text-center">
+                        <div class="text-[10px] uppercase tracking-wider text-red-400 opacity-70">Opponent away</div>
+                        <div class="text-lg font-bold font-mono text-red-400">{{ opponentAwayCountdown() }}</div>
+                      </div>
+                    }
+                    @if (abortCountdown() !== null) {
+                      <div class="border border-cyan-500/30 rounded-lg py-1.5 px-4 text-center">
+                        <div class="text-[10px] uppercase tracking-wider text-cyan-400 opacity-70">Abort timer</div>
+                        <div class="text-lg font-bold font-mono text-cyan-400">{{ abortCountdown() }}</div>
+                      </div>
+                    }
+                  </div>
                 }
               </div>
 
-              <!-- Mobile: Result & Rematch -->
-              @if (g.status === 'completed' || g.status === 'aborted') {
-                <div class="md:hidden w-full mt-2 px-2">
-                  <div class="border border-border-theme rounded-lg p-2 text-center mb-2">
-                    <div class="text-sm font-bold" [class]="g.status === 'aborted' ? 'text-slate-400' : getResultClass(g.result)">
-                      @if (g.status === 'aborted') {
-                        Game Aborted
-                      } @else {
-                        {{ formatResult(g.result) }}
-                      }
-                    </div>
-                  </div>
-                  <div class="flex gap-2">
-                    @if (!myRematchOffered() && !rematchOfferFrom()) {
-                      <app-button variant="outline" size="sm" (click)="offerRematch()" class="flex-1">
-                        Rematch
-                      </app-button>
-                    } @else if (myRematchOffered()) {
-                      <div class="flex-1 text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme">
-                        Waiting...
-                      </div>
-                    } @else if (rematchOfferFrom()) {
-                      <app-button variant="primary" size="sm" (click)="acceptRematch()" class="flex-1" title="Accept">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                      </app-button>
-                      <app-button variant="outline" size="sm" (click)="declineRematch()" class="flex-1" title="Decline">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                      </app-button>
-                    }
-                  </div>
-                  @if (!g.arena_id) {
-                    <app-button variant="outline" size="sm" (click)="findNewOpponent()" class="w-full mt-2">
-                      New opponent
-                    </app-button>
-                  }
-                </div>
-              }
+              <!-- Mobile: Move History + Controls Area -->
+              <div class="md:hidden w-full mt-2 flex flex-col gap-3 premium-card rounded-xl overflow-hidden max-h-[300px]">
+                <app-move-history 
+                  class="h-[180px] border-b border-border-theme"
+                  [rounds]="moveRounds()"
+                  [currentMoveIndex]="currentMoveIndex()"
+                  [totalMoves]="g.moves.length"
+                  (navigate)="goToMove($event)"
+                />
+                
+                <app-game-controls
+                  class="pb-2"
+                  [game]="g"
+                  [canOfferDraw]="canOfferDraw()"
+                  [drawOfferFromOpponent]="drawOfferState() === 'opponentOffered'"
+                  [iOfferedDraw]="drawOfferState() === 'iOffered'"
+                  [myRematchOffered]="myRematchOffered()"
+                  [rematchOfferFrom]="rematchOfferFrom()"
+                  (abort)="abort()"
+                  (offerDraw)="offerDraw()"
+                  (acceptDraw)="acceptDraw()"
+                  (declineDraw)="declineDraw()"
+                  (resign)="confirmResign()"
+                  (offerRematch)="offerRematch()"
+                  (acceptRematch)="acceptRematch()"
+                  (declineRematch)="declineRematch()"
+                  (newOpponent)="findNewOpponent()"
+                />
+              </div>
             </div>
 
             <!-- Right: Clocks (hidden on mobile, visible on md+) -->
@@ -487,7 +242,7 @@ import { Key } from 'chessground/types';
               </div>
 
               <!-- Result message / Alerts in middle -->
-              <div>
+              <div class="flex-1 flex flex-col justify-center py-4">
                 @if (g.status === 'completed' || g.status === 'aborted') {
                   <div class="premium-card rounded-lg p-3 text-center mb-2">
                     <div
@@ -495,7 +250,7 @@ import { Key } from 'chessground/types';
                       [class]="g.status === 'aborted' ? 'text-slate-400' : getResultClass(g.result)"
                     >
                         @if (g.status === 'aborted') {
-                        Game Aborted
+                        {{ formatTermination(null, g.termination) || 'Game Aborted' }}
                       } @else {
                         {{ formatResult(g.result) }}
                       }
@@ -506,42 +261,6 @@ import { Key } from 'chessground/types';
                       </div>
                     }
                   </div>
-
-                  <!-- Rematch controls -->
-                  <div class="flex gap-1.5 mb-2">
-                    @if (!myRematchOffered() && !rematchOfferFrom()) {
-                      <app-button variant="outline" size="md" (click)="offerRematch()" class="flex-1">
-                        Rematch
-                      </app-button>
-                    } @else if (myRematchOffered()) {
-                      <div class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme w-full">
-                        Waiting...
-                      </div>
-                    } @else if (rematchOfferFrom()) {
-                      <app-button variant="primary" size="md" (click)="acceptRematch()" class="flex-1" title="Accept">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                      </app-button>
-                      <app-button variant="outline" size="md" (click)="declineRematch()" class="flex-1" title="Decline">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                      </app-button>
-                    }
-                    @if (myRematchOffered() || rematchOfferFrom()) {
-                      <app-button variant="outline" size="md" (click)="findNewOpponent()" class="flex-1" title="New opponent">
-                        New opponent
-                      </app-button>
-                    }
-                  </div>
-
-                  @if (!myRematchOffered() && !rematchOfferFrom() && !g.arena_id) {
-                    <app-button variant="outline" size="md" (click)="findNewOpponent()" class="w-full" title="New opponent">
-                      New opponent
-                    </app-button>
-                  }
                 }
 
                 @if (g.status === 'active' && opponentAwayCountdown() !== null) {
@@ -560,35 +279,6 @@ import { Key } from 'chessground/types';
                     </div>
                   </div>
                 }
-                @if (g.status === 'active' && drawOfferState() === 'opponentOffered') {
-                  <div class="border border-cyan-500/30 rounded-lg p-2 mb-2 bg-cyan-500/5 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div class="flex items-center justify-between gap-3">
-                      <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-cyan-400">1/2 ?</span>
-                      </div>
-                      <div class="flex gap-1 flex-1">
-                        <app-button variant="primary" size="sm" (click)="acceptDraw()" title="Accept Draw" class="flex-1">
-                          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        </app-button>
-                        <app-button variant="outline" size="sm" (click)="declineDraw()" title="Decline Draw" class="flex-1">
-                          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        </app-button>
-                      </div>
-                    </div>
-                  </div>
-                }
-                @if (g.status === 'active' && drawOfferState() === 'iOffered') {
-                  <div
-                    class="border border-border-theme rounded-lg p-2 text-center text-xs text-slate-400 mb-2 opacity-60"
-                  >
-                    1/2 Sent
-                  </div>
-                }
-                @if (drawCooldownRemaining() > 0) {
-                  <div class="text-xs text-slate-500 text-center mb-2">
-                    Draw: {{ drawCooldownRemaining() }}s
-                  </div>
-                }
               </div>
 
               <!-- My clock - bottom -->
@@ -603,12 +293,12 @@ import { Key } from 'chessground/types';
             </div>
           </div>
         } @else {
-          <div class="flex items-center justify-center min-h-100">
+          <div class="flex items-center justify-center min-h-[400px]">
             <div class="text-center">
               <div
-                class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+                class="w-10 h-10 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"
               ></div>
-              <p class="text-slate-400">Loading game...</p>
+              <p class="text-slate-500 text-sm">Loading game...</p>
             </div>
           </div>
         }
@@ -655,7 +345,7 @@ import { Key } from 'chessground/types';
     `,
   ],
 })
-export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LiveGameComponent implements OnInit, OnDestroy {
   boardEl = viewChild<ElementRef<HTMLDivElement>>('boardEl');
   public arenaService = inject(ArenaService);
 
@@ -692,7 +382,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   showExitConfirm = signal(false);
   private autoReturnTriggered = false;
 
-  myUsername = computed(() => this.userService.currentUser()?.username || 'You');
   myRating = signal<number>(1500);
   opponentRating = signal<number>(1500);
   ratingChange = signal<number | null>(null);
@@ -784,36 +473,16 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   private moveSanCache: string[] = [];
 
   private static readonly ABORT_SECONDS = 15;
-  bufferCountdown = computed(() => {
-    const g = this.game();
-    return g?.bufferCountdown ?? null;
-  });
 
   abortCountdown = signal<number | null>(null);
   private abortInterval: ReturnType<typeof setInterval> | null = null;
   drawOfferState = signal<'none' | 'iOffered' | 'opponentOffered'>('none');
   showResignConfirm = signal(false);
-  drawCooldownRemaining = signal<number>(0);
-  private drawCooldownInterval: ReturnType<typeof setInterval> | null = null;
   opponentAwayCountdown = this.gameService.opponentAwayCountdown;
 
   private subs: Subscription[] = [];
 
   game = this.gameService.gameState;
-
-  isServiceMaintenance = () => this.gameService.isServiceMaintenance();
-
-  myName = () => {
-    const g = this.game();
-    if (!g) return '';
-    return g.my_color === 'white' ? g.white_player.name : g.black_player.name;
-  };
-
-  opponentName = () => {
-    const g = this.game();
-    if (!g) return '';
-    return g.my_color === 'white' ? g.black_player.name : g.white_player.name;
-  };
 
   myTimeMs = () => {
     const g = this.game();
@@ -827,20 +496,12 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return g.my_color === 'white' ? g.black_time_remaining_ms : g.white_time_remaining_ms;
   };
 
-  bufferSecondsRemaining = () => {
+  getMyRating(): number {
     const g = this.game();
-    if (!g) return 0;
-    // Lichess-style: Buffer is handled entirely client-side
-    // We use local buffer countdown which tracks 5-second pre-game buffer
-    const bc = this.bufferCountdown();
-    return bc !== null ? bc : 0;
-  };
-
-  isInBuffer = () => {
-    const g = this.game();
-    // Buffer is active when server indicates buffer countdown is running
-    return g?.bufferCountdown != null && (g?.bufferCountdown ?? 0) > 0;
-  };
+    if (!g) return 1500;
+    const player = g.my_color === 'white' ? g.white_player : g.black_player;
+    return player.rating ?? 1500;
+  }
 
   isMyTurn = computed(() => {
     const g = this.game();
@@ -861,8 +522,8 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     for (let i = 0; i < g.moves.length; i += 2) {
       rounds.push({
         num: Math.floor(i / 2) + 1,
-        white: this.getMoveSan(i),
-        black: i + 1 < g.moves.length ? this.getMoveSan(i + 1) : null,
+        white: this.moveSanCache[i] ?? g.moves[i],
+        black: i + 1 < g.moves.length ? (this.moveSanCache[i+1] ?? g.moves[i+1]) : null,
         whiteIndex: i,
         blackIndex: i + 1,
       });
@@ -870,94 +531,14 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return rounds;
   });
 
-  isWinner = () => {
-    const g = this.game();
-    if (!g || g.status !== 'completed' || !g.result) return false;
-    if (g.result === '1/2-1/2') return false;
-    return (
-      (g.result === '1-0' && g.my_color === 'white') ||
-      (g.result === '0-1' && g.my_color === 'black')
-    );
-  };
-
-  isLoser = () => {
-    const g = this.game();
-    if (!g || g.status !== 'completed' || !g.result) return false;
-    if (g.result === '1/2-1/2') return false;
-    return (
-      (g.result === '0-1' && g.my_color === 'white') ||
-      (g.result === '1-0' && g.my_color === 'black')
-    );
-  };
-
-  isDraw = () => {
-    const g = this.game();
-    return g?.result === '1/2-1/2';
-  };
-
-  isAborted = () => {
-    const g = this.game();
-    return g?.status === 'aborted';
-  };
-
-  hasPendingDrawOffer = () => {
-    const g = this.game();
-    return (
-      g?.status === 'active' && g?.draw_offered_by !== null && g?.draw_offered_by !== undefined
-    );
-  };
-
-  isDrawOfferedByMe = () => {
-    const g = this.game();
-    if (!g || !g.draw_offered_by) return false;
-    const myUserId = g.my_color === 'white' ? g.white_player.id : g.black_player.id;
-    return g.draw_offered_by === myUserId;
-  };
-
-  isDrawOfferedByOpponent = () => {
-    const g = this.game();
-    if (!g || !g.draw_offered_by) return false;
-    const myUserId = g.my_color === 'white' ? g.white_player.id : g.black_player.id;
-    return g.draw_offered_by !== myUserId;
-  };
-
-  needsBuffer = () => {
-    const g = this.game();
-    if (!g || g.status !== 'active') return false;
-    // White needs buffer: no moves yet (buffer before first move)
-    if (g.moves.length === 0 && g.my_color === 'white') return true;
-    // Black needs buffer: exactly 1 move (White moved, Black's buffer)
-    if (g.moves.length === 1 && g.my_color === 'black') return true;
-    return false;
-  };
-
   canOfferDraw = () => {
     const g = this.game();
     return (
       g?.status === 'active' &&
-      g.moves.length >= 2 && // Standard: both players must move at least once
-      !this.hasPendingDrawOffer() &&
-      this.drawCooldownRemaining() === 0
+      g.moves.length >= 2 &&
+      this.drawOfferState() === 'none'
     );
   };
-
-  resultLabel = () => {
-    if (this.isWinner()) return 'Victory';
-    if (this.isLoser()) return 'Defeat';
-    if (this.isDraw()) return 'Draw';
-    return '';
-  };
-
-  formatTimeControl(timeControl: string): string {
-    if (!timeControl) return '';
-    const match = timeControl.match(/^(\d+)\+(\d+)$/);
-    if (match) {
-      const minutes = Math.floor(parseInt(match[1], 10) / 60);
-      const increment = parseInt(match[2], 10);
-      return `${minutes}+${increment}`;
-    }
-    return timeControl;
-  }
 
   getTimeControlCategoryLabel(timeControl: string): string {
     const tc = TIME_CONTROLS.find((t) => t.value === timeControl);
@@ -973,19 +554,8 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return result || '';
   }
 
-  formatMove(move: string): string {
-    if (!move) return '';
-    return move
-      .replace(/K/g, '♔')
-      .replace(/Q/g, '♕')
-      .replace(/R/g, '♖')
-      .replace(/B/g, '♗')
-      .replace(/N/g, '♘')
-      .replace(/P/g, '');
-  }
-
   formatTermination(result: string | null, termination: string | null): string {
-    if (!result || !termination) return '';
+    if (!termination) return '';
 
     const isDraw = result === '1/2-1/2';
     if (isDraw) {
@@ -995,6 +565,15 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       if (termination === 'insufficient') return 'draw by insufficient material';
       return 'draw';
     }
+
+    if (termination && termination.startsWith('aborted')) {
+      if (termination === 'aborted_white') return 'aborted by white';
+      if (termination === 'aborted_black') return 'aborted by black';
+      if (termination === 'aborted_server') return 'aborted by server';
+      return 'game aborted';
+    }
+
+    if (!result) return '';
 
     const isWhiteWin = result === '1-0';
     const winner = isWhiteWin ? 'white' : 'black';
@@ -1009,28 +588,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return `${winner} won`;
   }
 
-  getMyRating(): number {
-    const g = this.game();
-    if (!g) return 1500;
-    const player = g.my_color === 'white' ? g.white_player : g.black_player;
-    return player.rating ?? 1500;
-  }
-
-  getOpponentRating(): number {
-    const g = this.game();
-    if (!g) return 1500;
-    const player = g.my_color === 'white' ? g.black_player : g.white_player;
-    return player.rating ?? 1500;
-  }
-
-  getRatingChangeClass(): string {
-    const change = this.ratingChange();
-    if (change === null || change === undefined) return '';
-    if (change > 0) return 'text-green-400';
-    if (change < 0) return 'text-red-400';
-    return 'text-slate-400';
-  }
-
   getOpponentRatingChange(): number | null {
     const g = this.game();
     if (!g || g.status !== 'completed') return null;
@@ -1043,28 +600,10 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return g.my_color === 'white' ? g.white_rating_change : g.black_rating_change;
   }
 
-  getRatingChangeText(): string {
-    const change = this.ratingChange();
-    if (change === null || change === undefined) return '';
-    if (change > 0) return `+${change}`;
-    return change.toString();
-  }
-
-  getFinalRating(initialRating: number | undefined, change: number | null | undefined): number {
-    const base = initialRating ?? 1500;
-    return base + (change ?? 0);
-  }
-
   getResultClass(result: string | null): string {
     if (!result) return '';
     if (result === '1/2-1/2') return 'text-slate-400';
     return '';
-  }
-
-
-  getTimeControlCategory(timeControl: string): 'bullet' | 'blitz' | 'rapid' {
-    const tc = TIME_CONTROLS.find((t) => t.value === timeControl);
-    return tc?.category ?? 'rapid';
   }
 
   ngOnInit(): void {
@@ -1073,6 +612,10 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.route.paramMap.subscribe((params) => {
         const gameId = params.get('gameId');
         if (gameId) {
+          // Reset rematch state for new game session
+          this.rematchOfferFrom.set(null);
+          this.myRematchOffered.set(false);
+          
           if (!this.gameService.gameState()) {
             this.gameService.loadGame(gameId);
           }
@@ -1087,6 +630,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       this.gameService.onRematchOffered.subscribe((data) => this.handleRematchOffer(data)),
       this.gameService.onRematchAccepted.subscribe((data) => this.handleRematchAccepted(data)),
       this.gameService.onRematchDeclined.subscribe(() => this.handleRematchDeclined()),
+      this.gameService.onDrawDeclined.subscribe(() => this.onDrawDeclined()),
       this.gameService.onPlayerAbsent.subscribe(() => {}),
       this.gameService.onPlayerReturned.subscribe(() => {}),
     );
@@ -1095,6 +639,26 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupBeforeUnload();
     this.initOpponentAwayCountdown();
     this.setupKeyboardNavigation();
+    this.setupWindowResizeListener();
+  }
+
+  private setupWindowResizeListener(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.subs.push(
+        fromEvent(window, 'resize').subscribe(() => {
+          this.capBoardSize();
+        })
+      );
+      // Initial cap
+      this.capBoardSize();
+    }
+  }
+
+  private capBoardSize(): void {
+    const dynamicMax = Math.min(1200, window.innerWidth * 0.95, window.innerHeight * 0.85);
+    if (this.boardSize() > dynamicMax) {
+      this.boardSize.set(dynamicMax);
+    }
   }
 
   private setupKeyboardNavigation(): void {
@@ -1145,10 +709,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     return undefined;
   };
 
-  ngAfterViewInit(): void {
-    // tryInitBoard is now handled by the signal effect
-    this.tryStartPreGameCountdown();
-  }
 
   ngOnDestroy(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -1160,7 +720,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     document.removeEventListener('touchend', this.stopResize);
     this.subs.forEach((s) => s.unsubscribe());
     this.clearAbortCountdown();
-    this.clearDrawCooldown();
     this.cgApi?.destroy();
   }
 
@@ -1279,15 +838,14 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       // First move made — clear any active abort countdowns
       this.clearAbortCountdown();
 
-      // If White just made their first move, start Black's pre-game buffer
+      // If White just made their first move, we can do extra logic here if needed
       if (gameState.moves.length === 1 && gameState.my_color === 'black') {
-        this.startPreGameCountdown();
+        // ...
       }
     }
 
-    // Clear draw offer state on any move
     this.drawOfferState.set('none');
-    this.clearDrawCooldown();
+
 
     if (data.is_checkmate || data.is_stalemate || data.is_draw) {
       this.cdr.markForCheck();
@@ -1301,7 +859,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
     this.drawOfferState.set('none');
-    this.clearDrawCooldown();
+
 
     const g = this.game();
     if (g) {
@@ -1333,11 +891,16 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     const g = this.game();
     if (!g) return;
     const myUserId = g.my_color === 'white' ? g.white_player.id : g.black_player.id;
-    if (data.offered_by_user_id === myUserId) {
+    if (data.offeredByUserId === myUserId) {
       this.drawOfferState.set('iOffered');
     } else {
       this.drawOfferState.set('opponentOffered');
     }
+    this.cdr.markForCheck();
+  }
+
+  private onDrawDeclined(): void {
+    this.drawOfferState.set('none');
     this.cdr.markForCheck();
   }
 
@@ -1526,35 +1089,6 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gameService.resign();
   }
 
-  private startPreGameCountdown(): void {
-    // Guard: don't start if countdown already running
-    if (this.abortInterval) return;
-
-    const g = this.game();
-    if (!g || g.status !== 'active') return;
-
-    // Only start countdown if this player needs buffer:
-    // White: no moves yet; Black: exactly 1 move (White just moved)
-    const needsBuffer =
-      (g.moves.length === 0 && g.my_color === 'white') ||
-      (g.moves.length === 1 && g.my_color === 'black');
-    if (!needsBuffer) return;
-
-    // Buffer countdown is now handled by the server
-  }
-
-  /**
-   * Poll until the game state is loaded, then start the pre-game countdown.
-   * This handles the async case where loadGame completes after ngAfterViewInit.
-   */
-  private tryStartPreGameCountdown(): void {
-    const g = this.game();
-    if (!g) {
-      requestAnimationFrame(() => this.tryStartPreGameCountdown());
-      return;
-    }
-    this.startPreGameCountdown();
-  }
 
   private startAbortCountdownIfNeeded(): void {
     const g = this.game();
@@ -1604,6 +1138,7 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   offerDraw(): void {
+    this.drawOfferState.set('iOffered');
     this.gameService.offerDraw();
   }
 
@@ -1614,29 +1149,9 @@ export class LiveGameComponent implements OnInit, AfterViewInit, OnDestroy {
   declineDraw(): void {
     this.gameService.declineDraw();
     this.drawOfferState.set('none');
-    this.startDrawCooldown(30);
   }
 
-  private startDrawCooldown(seconds: number): void {
-    this.clearDrawCooldown();
-    this.drawCooldownRemaining.set(seconds);
-    this.drawCooldownInterval = setInterval(() => {
-      const current = this.drawCooldownRemaining();
-      if (current <= 1) {
-        this.clearDrawCooldown();
-      } else {
-        this.drawCooldownRemaining.set(current - 1);
-      }
-    }, 1000);
-  }
 
-  private clearDrawCooldown(): void {
-    if (this.drawCooldownInterval) {
-      clearInterval(this.drawCooldownInterval);
-      this.drawCooldownInterval = null;
-    }
-    this.drawCooldownRemaining.set(0);
-  }
 
   backToLobby(): void {
     this.gameService.clearGame();

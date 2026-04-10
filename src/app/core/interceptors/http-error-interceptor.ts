@@ -12,8 +12,12 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         authService.clearAuthWithoutRedirect();
-        // Only navigate in browser context to avoid SSR issues
-        if (typeof window !== 'undefined') {
+        
+        // Only navigate if we're in the browser AND the app has finished 
+        // its initial auth check. This prevents aggressive redirects to 
+        // /login during the bootstrap phase when a 401 might be temporary
+        // or handled gracefully by initAuth().
+        if (typeof window !== 'undefined' && authService.isInitialized()) {
           const returnUrl = router.url;
           router.navigate(['/login'], {
             queryParams: { returnUrl },

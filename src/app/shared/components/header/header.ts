@@ -10,10 +10,12 @@ import { AudioService, SOUND_THEMES } from '../../../core/services/audio.service
 import { BoardThemeService, BOARD_THEMES, PIECE_SETS } from '../../../core/services/board-theme.service';
 import { environment } from 'environments/environment';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import { IconComponent } from '../icon/icon.component';
+import { MobileMenuComponent } from './mobile-menu.component';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, IconComponent, MobileMenuComponent],
   templateUrl: './header.html',
   styleUrl: './header.css',
   host: {

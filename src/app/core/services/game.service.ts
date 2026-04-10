@@ -5,7 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from './auth.service';
 import { AudioService } from './audio.service';
 import { environment } from '../../../environments/environment';
-import { GameState, MovePlayedPayload, GameEndedPayload, GameSeek, RematchOfferedPayload, RematchAcceptedPayload } from '../models/game.model';
+import { GameState, MovePlayedPayload, GameEndedPayload, GameSeek, RematchOfferedPayload, RematchAcceptedPayload, DrawOfferedPayload, DrawDeclinedPayload } from '../models/game.model';
 import { Subject, of, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { io, Socket } from 'socket.io-client';
@@ -56,6 +56,9 @@ export class GameService implements OnDestroy {
   get onRematchOffered() { return this.rematchOffered$.asObservable(); }
   get onRematchAccepted() { return this.rematchAccepted$.asObservable(); }
   get onRematchDeclined() { return this.rematchDeclined$.asObservable(); }
+
+  private drawDeclined$ = new Subject<DrawDeclinedPayload>();
+  get onDrawDeclined() { return this.drawDeclined$.asObservable(); }
   
   opponentAwayCountdown = signal<number | null>(null);
 
@@ -100,6 +103,7 @@ export class GameService implements OnDestroy {
 
   seekGame(timeControl: string): void {
     this.isSearching.set(true);
+    this.searchTimeControl.set(timeControl);
 
     this.http
       .post<{ matched: boolean; game_id?: string; message: string; existing_game?: GameState }>(
@@ -133,6 +137,8 @@ export class GameService implements OnDestroy {
         } else {
           // Start polling for match
           this.pollForMatch(timeControl);
+          // Refresh lobby list immediately so my seek appears
+          this.fetchSeeks();
         }
       });
   }
@@ -144,7 +150,10 @@ export class GameService implements OnDestroy {
     this.http
       .post(`${this.apiUrl}/game/seek/cancel`, { time_control: timeControl })
       .pipe(catchError(() => of(null)))
-      .subscribe();
+      .subscribe(() => {
+        // Refresh lobby list immediately so my seek disappears
+        this.fetchSeeks();
+      });
   }
 
   loadGame(gameId: string): void {
@@ -186,38 +195,30 @@ export class GameService implements OnDestroy {
 
   offerDraw(): void {
     const game = this.gameState();
-    if (!game) return;
-    this.http
-      .post(`${this.apiUrl}/game/${game.id}/draw`, { action: 'offer' })
-      .pipe(catchError(() => of(null)))
-      .subscribe();
+    if (this.socket && game) {
+      this.socket.emit('offer_draw', game.id);
+    }
   }
 
   acceptDraw(): void {
     const game = this.gameState();
-    if (!game) return;
-    this.http
-      .post(`${this.apiUrl}/game/${game.id}/draw`, { action: 'accept' })
-      .pipe(catchError(() => of(null)))
-      .subscribe();
+    if (this.socket && game) {
+      this.socket.emit('respond_draw', { gameId: game.id, accept: true });
+    }
   }
 
   declineDraw(): void {
     const game = this.gameState();
-    if (!game) return;
-    this.http
-      .post(`${this.apiUrl}/game/${game.id}/draw`, { action: 'decline' })
-      .pipe(catchError(() => of(null)))
-      .subscribe();
+    if (this.socket && game) {
+      this.socket.emit('respond_draw', { gameId: game.id, accept: false });
+    }
   }
 
   abortGame(): void {
     const game = this.gameState();
-    if (!game) return;
-    this.http
-      .post(`${this.apiUrl}/game/${game.id}/abort`, {})
-      .pipe(catchError(() => of(null)))
-      .subscribe();
+    if (this.socket && game) {
+      this.socket.emit('abort_game', game.id);
+    }
   }
 
   offerRematch(): void {
@@ -287,26 +288,6 @@ export class GameService implements OnDestroy {
       });
   }
 
-  private updateGameBuffer(gameId: string, secondsRemaining: number): void {
-    const currentGame = this.gameState();
-    if (currentGame && currentGame.id === gameId) {
-      this.gameState.set({
-        ...currentGame,
-        bufferCountdown: secondsRemaining
-      });
-    }
-  }
-
-  private updateGameStarted(gameId: string, gameStartedAt: string): void {
-    const currentGame = this.gameState();
-    if (currentGame && currentGame.id === gameId) {
-      this.gameState.set({
-        ...currentGame,
-        bufferCountdown: null,
-        gameStartedAt
-      });
-    }
-  }
 
   clearGame(navigateToPlay: boolean = true): void {
     this.stopHeartbeat();
@@ -426,17 +407,6 @@ export class GameService implements OnDestroy {
       console.log('[Game] Socket connection error:', err);
     });
 
-    // Listen for server-side buffer countdown
-    this.socket.on('buffer_countdown', (data: { gameId: string; secondsRemaining: number }) => {
-      console.log('[Game] Buffer countdown:', data.secondsRemaining);
-      this.updateGameBuffer(data.gameId, data.secondsRemaining);
-    });
-
-    // Listen for game started event
-    this.socket.on('game_started', (data: { gameId: string; gameStartedAt: string }) => {
-      console.log('[Game] Game started at:', data.gameStartedAt);
-      this.updateGameStarted(data.gameId, data.gameStartedAt);
-    });
   }
 
   subscribeToGame(gameId: string): void {
@@ -570,15 +540,16 @@ export class GameService implements OnDestroy {
       });
     });
     
-    this.socket.on('draw_offered', (data: any) => {
+    this.socket.on('draw_offered', (data: DrawOfferedPayload) => {
       if (data.gameId !== gameId) return;
-      this.gameState.update(g => g ? ({ ...g, draw_offered_by: data.offered_by_user_id }) : null);
+      this.gameState.update(g => g ? ({ ...g, draw_offered_by: data.offeredByUserId }) : null);
       this.drawOffered$.next(data);
     });
 
-    this.socket.on('draw_declined', (data: any) => {
+    this.socket.on('draw_declined', (data: DrawDeclinedPayload) => {
       if (data.gameId !== gameId) return;
       this.gameState.update(g => g ? ({ ...g, draw_offered_by: null }) : null);
+      this.drawDeclined$.next(data);
     });
 
     this.socket.on('opponent_away_countdown', (data: any) => {

@@ -17,18 +17,7 @@
     <div class="group">
       <a routerLink="/play" class="hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg font-semibold transition-colors">
         Play
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="w-4 h-4 lg:w-5 lg:h-5 transition-transform group-hover:rotate-180"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M5.22 8.574a.75.75 0 0 1 1.06 0L10 11.819l3.72-3.245a.75.75 0 1 1 1.04 1.084l-4.25 3.5a.75.75 0 0 1-1.04 0l-4.25-3.5a.75.75 0 0 1 0-1.06Z"
-            clip-rule="evenodd"
-          />
-        </svg>
+        <app-icon name="chevron-down" class="w-4 h-4 lg:w-5 lg:h-5 transition-transform group-hover:rotate-180" fill="currentColor"></app-icon>
       </a>
       <div
         class="absolute left-0 right-0 top-full z-40 bg-white dark:bg-black border-b border-slate-200 dark:border-slate-800 shadow-xl nav-dropdown pt-4 min-h-[140px]"
@@ -191,21 +180,7 @@
       <div
         class="flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full px-3 py-1.5 focus-within:border-cyan-500/60 transition-colors"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0 cursor-pointer"
-          (click)="isSearchOpen.set(false)"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-          />
-        </svg>
+        <app-icon name="search" class="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0 cursor-pointer" (click)="isSearchOpen.set(false)"></app-icon>
         <input
           type="text"
           placeholder="Search..."
@@ -261,20 +236,7 @@
         (click)="isSearchOpen.set(true)"
         class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-5 h-5 text-slate-500 dark:text-slate-400"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-          />
-        </svg>
+      <app-icon name="search" class="w-5 h-5 text-slate-500 dark:text-slate-400"></app-icon>
       </button>
     }
   </div>
@@ -503,35 +465,9 @@
         aria-label="Toggle theme"
       >
         @if (themeService.isDarkMode()) {
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-5 h-5 text-amber-500"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-            />
-          </svg>
+          <app-icon name="sun" class="w-5 h-5 text-amber-500" stroke-width="1.5"></app-icon>
         } @else {
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-5 h-5 text-slate-500 dark:text-slate-400"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-            />
-          </svg>
+          <app-icon name="moon" class="w-5 h-5 text-slate-500 dark:text-slate-400" stroke-width="1.5"></app-icon>
         }
       </button>
       <a
@@ -550,32 +486,10 @@
     >
       @if (isMobileMenuOpen()) {
         <!-- Close Icon -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-        </svg>
+        <app-icon name="close" class="w-6 h-6"></app-icon>
       } @else {
         <!-- Hamburger Icon -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          />
-        </svg>
+        <app-icon name="hamburger" class="w-6 h-6"></app-icon>
       }
     </button>
   </div>
@@ -583,313 +497,5 @@
 
 <!-- Mobile Menu Overlay -->
 @if (isMobileMenuOpen()) {
-  <div class="md:hidden fixed inset-0 z-40 bg-black/50" (click)="toggleMobileMenu()"></div>
-  <div
-    class="md:hidden fixed top-0 right-0 z-50 w-72 h-full bg-white dark:bg-black shadow-2xl flex flex-col overflow-y-auto"
-  >
-    <!-- Mobile Menu Header -->
-    <div
-      class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800"
-    >
-      <span class="font-bold text-lg">Tournaments</span>
-      <button
-        (click)="toggleMobileMenu()"
-        class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-5 h-5"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Mobile Search -->
-    <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800" #searchContainer>
-      <div
-        class="flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full px-3 py-2 focus-within:border-cyan-500/60 transition-colors"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          class="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-          />
-        </svg>
-        <input
-          type="text"
-          placeholder="Search..."
-          [value]="searchQuery()"
-          (input)="onSearchInput($event)"
-          class="ml-2 bg-transparent outline-none text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 flex-1"
-        />
-        @if (isSearching()) {
-          <div
-            class="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin shrink-0"
-          ></div>
-        }
-      </div>
-    </div>
-
-    <!-- Mobile Navigation Links -->
-    <nav class="flex flex-col py-2">
-      <a
-        routerLink="/play"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Play</a
-      >
-      <a
-        routerLink="/roadmap"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Roadmap</a
-      >
-      <a
-        routerLink="/tactics"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Tactics</a
-      >
-      <a
-        routerLink="/tactics/leaderboard"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Rankings</a
-      >
-      <a
-        routerLink="/explorer"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Opening Explorer</a
-      >
-      <a
-        routerLink="/events"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Tournaments</a
-      >
-      <a
-        routerLink="/arena"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Arena</a
-      >
-      <a
-        routerLink="/broadcasts"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Broadcasts</a
-      >
-      <a
-        routerLink="/coaches"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >Coaches</a
-      >
-      <a
-        routerLink="/whats-new"
-        (click)="toggleMobileMenu()"
-        class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >What's New</a
-      >
-    </nav>
-
-    <!-- Mobile Auth Section -->
-    <div class="border-t border-slate-200 dark:border-slate-800 py-2">
-      @if (authService.isAuthenticated()) {
-        <a
-          routerLink="/profile"
-          (click)="toggleMobileMenu()"
-          class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5"
-        >
-          <div
-            class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white uppercase"
-          >
-            {{ userService.currentUser()?.displayName?.charAt(0) || 'V' }}
-          </div>
-          <span class="font-semibold">Profile</span>
-        </a>
-        <a
-          routerLink="/my-progress"
-          (click)="toggleMobileMenu()"
-          class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >
-          My Progress
-        </a>
-        <a
-          routerLink="/games/history"
-          (click)="toggleMobileMenu()"
-          class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >
-          Game History
-        </a>
-        <a
-          routerLink="/chat"
-          (click)="toggleMobileMenu()"
-          class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >
-          Messages
-          @if (chatService.totalUnreadCount() > 0) {
-            <span
-              class="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold"
-            >
-              {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
-            </span>
-          }
-        </a>
-        <a
-          routerLink="/my-events"
-          (click)="toggleMobileMenu()"
-          class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >
-          My Tournaments
-        </a>
-        <a
-          routerLink="/bookmarks"
-          (click)="toggleMobileMenu()"
-          class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-        >
-          Following
-        </a>
-        <div class="px-4 py-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-4">
-          <span
-            class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-            >Chess Settings</span
-          >
-
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
-              >Board Theme</label
-            >
-            <select
-              [ngModel]="boardThemeService.boardTheme()"
-              (ngModelChange)="onBoardThemeChange($event)"
-              class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
-            >
-              @for (theme of boardThemes; track theme.value) {
-                <option [value]="theme.value">{{ theme.label }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
-              >Piece Style</label
-            >
-            <select
-              [ngModel]="boardThemeService.pieceSet()"
-              (ngModelChange)="onPieceSetChange($event)"
-              class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
-            >
-              @for (set of pieceSets; track set.value) {
-                <option [value]="set.value">{{ set.label }}</option>
-              }
-            </select>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
-              >Move Sound</label
-            >
-            <select
-              [ngModel]="audioService.soundEnabled() ? audioService.soundTheme() : 'off'"
-              (ngModelChange)="onSoundThemeChange($event)"
-              class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
-            >
-              <option value="off">Off</option>
-              @for (theme of soundThemes; track theme.value) {
-                <option [value]="theme.value">{{ theme.label }}</option>
-              }
-            </select>
-          </div>
-        </div>
-        @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
-          <a
-            routerLink="/admin"
-            (click)="toggleMobileMenu()"
-            class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-          >
-            Admin Panel
-          </a>
-        }
-        <!-- Theme Toggle -->
-        <button
-          (click)="themeService.toggleTheme(); toggleMobileMenu()"
-          class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
-        >
-          @if (themeService.isDarkMode()) {
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-              />
-            </svg>
-            <span>Light Mode</span>
-          } @else {
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-              stroke="currentColor"
-              class="w-5 h-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-              />
-            </svg>
-            <span>Dark Mode</span>
-          }
-        </button>
-        <button
-          (click)="logout(); toggleMobileMenu()"
-          class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold"
-        >
-          Logout
-        </button>
-      } @else {
-        <!-- Theme Toggle (Mobile) -->
-        <button
-          (click)="themeService.toggleTheme(); toggleMobileMenu()"
-          class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
-        >
-          @if (themeService.isDarkMode()) {
-            <span>Light Mode</span>
-          } @else {
-            <span>Dark Mode</span>
-          }
-        </button>
-        <a
-          routerLink="/login"
-          (click)="toggleMobileMenu()"
-          class="flex items-center justify-center gap-2 mx-4 mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/15 hover:border-cyan-500/60 hover:text-cyan-600 dark:hover:text-cyan-400"
-        >
-          Log in
-        </a>
-      }
-    </div>
-  </div>
+  <app-mobile-menu (close)="isMobileMenuOpen.set(false)"></app-mobile-menu>
 }
