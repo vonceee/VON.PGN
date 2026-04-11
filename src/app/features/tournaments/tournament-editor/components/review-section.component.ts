@@ -88,15 +88,11 @@ import { CommonModule } from '@angular/common';
             <span class="review-value">{{ data['rounds'] }}</span>
           </div>
           <div class="review-item">
-            <span class="review-label">Participants</span>
-            <span class="review-value">{{ data['participants']['current'] }} / {{ data['participants']['max'] }}</span>
-          </div>
-          <div class="review-item">
-            <span class="review-label">Entry Fee</span>
+            <span class="review-label">Registration Fee</span>
             <span class="review-value">{{ data['entryFee'] || '—' }}</span>
           </div>
           <div class="review-item">
-            <span class="review-label">Prize Pool</span>
+            <span class="review-label">Total Prize Pool</span>
             <span class="review-value">{{ data['prizePool'] || '—' }}</span>
           </div>
         </div>

@@ -1,7 +1,15 @@
 import { Component, inject, OnInit, signal, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormArray, FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  FormsModule,
+  Validators,
+} from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AdminService } from '../../../core/services/admin.service';
@@ -15,16 +23,16 @@ import { StepIndicatorComponent } from './components/step-indicator.component';
 import {
   StepBasicInfoComponent,
   StepDatesLocationComponent,
-  StepFormatRulesComponent
+  StepFormatRulesComponent,
 } from './components/steps.component';
 import {
   StepOrganizerComponent,
   StepRegistrationComponent,
-  StepEligibilityComponent
+  StepEligibilityComponent,
 } from './components/steps-extra.component';
 import {
   StepPrizesComponent,
-  StepScheduleComponent
+  StepScheduleComponent,
 } from './components/steps-prizes-schedule.component';
 import { ReviewSectionComponent } from './components/review-section.component';
 import { PosterPreviewComponent } from './components/poster-preview.component';
@@ -54,10 +62,10 @@ interface Step {
     StepPrizesComponent,
     StepScheduleComponent,
     ReviewSectionComponent,
-    PosterPreviewComponent
+    PosterPreviewComponent,
   ],
   templateUrl: './tournament-editor.html',
-  styleUrls: ['./tournament-editor.css']
+  styleUrls: ['./tournament-editor.css'],
 })
 export class TournamentEditorComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -110,9 +118,15 @@ export class TournamentEditorComponent implements OnInit {
     { key: 'review', label: 'Review', fields: [] },
   ];
 
-  get totalSteps(): number { return this.steps.length; }
-  get isLastStep(): boolean { return this.currentStep() === this.totalSteps - 1; }
-  get isReviewStep(): boolean { return this.steps[this.currentStep()].key === 'review'; }
+  get totalSteps(): number {
+    return this.steps.length;
+  }
+  get isLastStep(): boolean {
+    return this.currentStep() === this.totalSteps - 1;
+  }
+  get isReviewStep(): boolean {
+    return this.steps[this.currentStep()].key === 'review';
+  }
 
   tournamentForm = this.fb.group({
     name: ['', Validators.required],
@@ -125,19 +139,20 @@ export class TournamentEditorComponent implements OnInit {
     lat: [undefined as number | undefined],
     lng: [undefined as number | undefined],
     format: ['Swiss System', Validators.required],
-    timeControl: ['15 min + sec increment', Validators.required],
+    timeControl: ['15 min + 3 sec increment', Validators.required],
     rounds: [7, Validators.required],
-    entryFee: ['', Validators.required],
+    entryFee: [''],
     prizePool: [''],
-    maxParticipants: [],
-    currentParticipants: [],
     organizer: ['', Validators.required],
     contact: ['', Validators.required],
     link: [''],
-    registrationInstructions: ['', Validators.required],
+    registrationInstructions: [
+      'For inquiries or registration, please reach out directly to the event organizer listed.',
+      Validators.required,
+    ],
     eligibility: this.fb.array([]),
     scheduleDays: this.fb.array([]),
-    categories: this.fb.array([])
+    categories: this.fb.array([]),
   });
 
   ngOnInit() {
@@ -146,7 +161,7 @@ export class TournamentEditorComponent implements OnInit {
       this.mode = routeData['mode'];
     }
 
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('tournamentId');
       if (id) {
         this.loadTournament(id);
@@ -162,7 +177,12 @@ export class TournamentEditorComponent implements OnInit {
 
     // Mark current step fields as attempted
     const a = new Set(this.attempted());
-    stepFields.forEach(f => a.add(f));
+    stepFields.forEach((f) => {
+      // Skip fields that were removed but might still be in step metadata
+      if (this.tournamentForm.get(f)) {
+        a.add(f);
+      }
+    });
     this.attempted.set(a);
 
     // Validate
@@ -358,29 +378,35 @@ export class TournamentEditorComponent implements OnInit {
       this.mapsLinkLoading.set(false);
       this.verificationStatus.set('success');
     } else if (this.isShortenedUrl(link)) {
-      this.http.post<{ url: string }>(`${environment.apiUrl}/admin/resolve-maps-url`, { url: link }).subscribe({
-        next: (res) => {
-          const resolved = this.extractCoords(res.url);
-          if (resolved) {
-            this.tournamentForm.patchValue({ lat: resolved.lat, lng: resolved.lng });
-            if (resolved.name) {
-              this.tournamentForm.patchValue({ location: resolved.name });
+      this.http
+        .post<{ url: string }>(`${environment.apiUrl}/admin/resolve-maps-url`, { url: link })
+        .subscribe({
+          next: (res) => {
+            const resolved = this.extractCoords(res.url);
+            if (resolved) {
+              this.tournamentForm.patchValue({ lat: resolved.lat, lng: resolved.lng });
+              if (resolved.name) {
+                this.tournamentForm.patchValue({ location: resolved.name });
+              }
+              this.verificationStatus.set('success');
+            } else {
+              this.mapsLinkError.set('Could not extract coordinates from the resolved link');
+              this.verificationStatus.set('error');
             }
-            this.verificationStatus.set('success');
-          } else {
-            this.mapsLinkError.set('Could not extract coordinates from the resolved link');
+            this.mapsLinkLoading.set(false);
+          },
+          error: () => {
+            this.mapsLinkError.set(
+              'Could not resolve shortened link. Try using the full Google Maps URL instead.',
+            );
             this.verificationStatus.set('error');
-          }
-          this.mapsLinkLoading.set(false);
-        },
-        error: () => {
-          this.mapsLinkError.set('Could not resolve shortened link. Try using the full Google Maps URL instead.');
-          this.verificationStatus.set('error');
-          this.mapsLinkLoading.set(false);
-        }
-      });
+            this.mapsLinkLoading.set(false);
+          },
+        });
     } else {
-      this.mapsLinkError.set('Could not find coordinates in this link. Copy the exact URL from Google Maps.');
+      this.mapsLinkError.set(
+        'Could not find coordinates in this link. Copy the exact URL from Google Maps.',
+      );
       this.verificationStatus.set('error');
       this.mapsLinkLoading.set(false);
     }
@@ -421,31 +447,49 @@ export class TournamentEditorComponent implements OnInit {
 
   // ---- Form arrays ----
 
-  get eligibilityArray(): FormArray { return this.tournamentForm.get('eligibility') as FormArray; }
-  get scheduleDaysArray(): FormArray { return this.tournamentForm.get('scheduleDays') as FormArray; }
-  get categoriesArray(): FormArray { return this.tournamentForm.get('categories') as FormArray; }
+  get eligibilityArray(): FormArray {
+    return this.tournamentForm.get('eligibility') as FormArray;
+  }
+  get scheduleDaysArray(): FormArray {
+    return this.tournamentForm.get('scheduleDays') as FormArray;
+  }
+  get categoriesArray(): FormArray {
+    return this.tournamentForm.get('categories') as FormArray;
+  }
 
-  eligibilityControl(index: number): FormControl { return this.eligibilityArray.at(index) as FormControl; }
+  eligibilityControl(index: number): FormControl {
+    return this.eligibilityArray.at(index) as FormControl;
+  }
 
-  addEligibilityItem() { this.eligibilityArray.push(this.fb.control('')); }
-  removeEligibilityItem(index: number) { this.eligibilityArray.removeAt(index); }
+  addEligibilityItem() {
+    this.eligibilityArray.push(this.fb.control(''));
+  }
+  removeEligibilityItem(index: number) {
+    this.eligibilityArray.removeAt(index);
+  }
 
   addScheduleDay() {
-    this.scheduleDaysArray.push(this.fb.group({
-      events: this.fb.array([
-        this.fb.group({
-          name: [''],
-          time: ['']
-        })
-      ])
-    }));
+    this.scheduleDaysArray.push(
+      this.fb.group({
+        events: this.fb.array([
+          this.fb.group({
+            name: [''],
+            time: [''],
+          }),
+        ]),
+      }),
+    );
   }
-  removeScheduleDay(index: number) { this.scheduleDaysArray.removeAt(index); }
+  removeScheduleDay(index: number) {
+    this.scheduleDaysArray.removeAt(index);
+  }
 
   getScheduleEvents(dayIndex: number): FormArray {
     return this.scheduleDaysArray.at(dayIndex).get('events') as FormArray;
   }
-  scheduleDayGroup(index: number): FormGroup { return this.scheduleDaysArray.at(index) as FormGroup; }
+  scheduleDayGroup(index: number): FormGroup {
+    return this.scheduleDaysArray.at(index) as FormGroup;
+  }
   scheduleEventGroup(dayIndex: number, eventIndex: number): FormGroup {
     return this.getScheduleEvents(dayIndex).at(eventIndex) as FormGroup;
   }
@@ -457,28 +501,32 @@ export class TournamentEditorComponent implements OnInit {
   }
 
   addCategory() {
-    this.categoriesArray.push(this.fb.group({
-      name: [''],
-      champion: [''],
-      '2nd_place': [''],
-      '3rd_place': [''],
-      extraPrizes: this.fb.array([]),
-      specialAwards: this.fb.array([
-        this.fb.group({
-          name: [''],
-          type: ['simple'],
-          value: [''],
-          '1st': [''],
-          '2nd': [''],
-          '3rd': ['']
-        })
-      ])
-    }));
+    this.categoriesArray.push(
+      this.fb.group({
+        name: [''],
+        champion: [''],
+        '2nd_place': [''],
+        '3rd_place': [''],
+        extraPrizes: this.fb.array([]),
+        specialAwards: this.fb.array([
+          this.fb.group({
+            name: [''],
+            type: ['simple'],
+            value: [''],
+            '1st': [''],
+            '2nd': [''],
+            '3rd': [''],
+          }),
+        ]),
+      }),
+    );
   }
-  removeCategory(index: number) { this.categoriesArray.removeAt(index); }
-  categoryGroup(index: number): FormGroup { return this.categoriesArray.at(index) as FormGroup; }
-
-
+  removeCategory(index: number) {
+    this.categoriesArray.removeAt(index);
+  }
+  categoryGroup(index: number): FormGroup {
+    return this.categoriesArray.at(index) as FormGroup;
+  }
 
   getCategorySpecialAwards(catIndex: number): FormArray {
     return this.categoriesArray.at(catIndex).get('specialAwards') as FormArray;
@@ -487,10 +535,16 @@ export class TournamentEditorComponent implements OnInit {
     return this.getCategorySpecialAwards(catIndex).at(awardIndex) as FormGroup;
   }
   addSpecialAward(catIndex: number) {
-    this.getCategorySpecialAwards(catIndex).push(this.fb.group({
-      name: [''], type: ['simple'], value: [''],
-      '1st': [''], '2nd': [''], '3rd': ['']
-    }));
+    this.getCategorySpecialAwards(catIndex).push(
+      this.fb.group({
+        name: [''],
+        type: ['simple'],
+        value: [''],
+        '1st': [''],
+        '2nd': [''],
+        '3rd': [''],
+      }),
+    );
   }
   removeSpecialAward(catIndex: number, awardIndex: number) {
     this.getCategorySpecialAwards(catIndex).removeAt(awardIndex);
@@ -503,10 +557,12 @@ export class TournamentEditorComponent implements OnInit {
     return this.getCategoryExtraPrizes(catIndex).at(prizeIndex) as FormGroup;
   }
   addExtraPrize(catIndex: number) {
-    this.getCategoryExtraPrizes(catIndex).push(this.fb.group({
-      label: [''],
-      value: ['']
-    }));
+    this.getCategoryExtraPrizes(catIndex).push(
+      this.fb.group({
+        label: [''],
+        value: [''],
+      }),
+    );
   }
   removeExtraPrize(catIndex: number, prizeIndex: number) {
     this.getCategoryExtraPrizes(catIndex).removeAt(prizeIndex);
@@ -515,14 +571,20 @@ export class TournamentEditorComponent implements OnInit {
   // ---- Load / populate ----
 
   loadTournament(slug: string) {
-    const loadObs = this.mode === 'user'
-      ? this.tournamentService.getMyTournament(slug)
-      : new Observable(subscriber => {
-          this.adminService.getTournament(slug).subscribe({
-            next: (res) => { subscriber.next(res.data || res); subscriber.complete(); },
-            error: (err) => { subscriber.error(err); }
+    const loadObs =
+      this.mode === 'user'
+        ? this.tournamentService.getMyTournament(slug)
+        : new Observable((subscriber) => {
+            this.adminService.getTournament(slug).subscribe({
+              next: (res) => {
+                subscriber.next(res.data || res);
+                subscriber.complete();
+              },
+              error: (err) => {
+                subscriber.error(err);
+              },
+            });
           });
-        });
 
     loadObs.subscribe({
       next: (apiTournament: any) => {
@@ -537,7 +599,7 @@ export class TournamentEditorComponent implements OnInit {
           this.toastService.show('Tournament not found.', 'error');
         }
         this.router.navigate([backRoute]);
-      }
+      },
     });
   }
 
@@ -564,12 +626,10 @@ export class TournamentEditorComponent implements OnInit {
       rounds: t.rounds,
       entryFee: this.parseCurrency(t.entryFee || t.entry_fee),
       prizePool: this.parseCurrency(t.prizePool || t.prize_pool),
-      maxParticipants: t.participants?.max || t.max_participants,
-      currentParticipants: t.participants?.current || t.current_participants,
       organizer: t.organizer,
       contact: t.contact || t.contactEmail || t.contact_email || '',
       link: t.link || '',
-      registrationInstructions: t.registrationInstructions || t.registration_instructions || ''
+      registrationInstructions: t.registrationInstructions || t.registration_instructions || '',
     });
 
     if (t.eligibility && Array.isArray(t.eligibility)) {
@@ -579,7 +639,7 @@ export class TournamentEditorComponent implements OnInit {
     if (t.schedule && typeof t.schedule === 'object') {
       Object.values(t.schedule as Record<string, any>).forEach((day: any) => {
         const eventsArray = this.fb.array(
-          (day.events || []).map((e: any) => this.fb.group({ name: [e.name], time: [e.time] }))
+          (day.events || []).map((e: any) => this.fb.group({ name: [e.name], time: [e.time] })),
         );
         this.scheduleDaysArray.push(this.fb.group({ events: eventsArray }));
       });
@@ -591,30 +651,49 @@ export class TournamentEditorComponent implements OnInit {
           Object.entries(cat.specialAwards || {}).map(([awardName, award]: [string, any]) => {
             if (typeof award === 'object' && award !== null && '1st' in award) {
               return this.fb.group({
-                name: [awardName], type: ['nested'], value: [''],
-                '1st': [(award as any)['1st'] || ''], '2nd': [(award as any)['2nd'] || ''], '3rd': [(award as any)['3rd'] || '']
+                name: [awardName],
+                type: ['nested'],
+                value: [''],
+                '1st': [(award as any)['1st'] || ''],
+                '2nd': [(award as any)['2nd'] || ''],
+                '3rd': [(award as any)['3rd'] || ''],
               });
             }
             return this.fb.group({
-              name: [awardName], type: ['simple'], value: [award as string],
-              '1st': [''], '2nd': [''], '3rd': ['']
+              name: [awardName],
+              type: ['simple'],
+              value: [award as string],
+              '1st': [''],
+              '2nd': [''],
+              '3rd': [''],
             });
-          })
+          }),
         );
-        const fixedPrizeKeys = new Set(['champion', '2nd_place', '3rd_place', '4th_place', '5th_place']);
-        const extraEntries = Object.entries(cat.prizes || {})
-          .filter(([key]) => !fixedPrizeKeys.has(key));
+        const fixedPrizeKeys = new Set([
+          'champion',
+          '2nd_place',
+          '3rd_place',
+          '4th_place',
+          '5th_place',
+        ]);
+        const extraEntries = Object.entries(cat.prizes || {}).filter(
+          ([key]) => !fixedPrizeKeys.has(key),
+        );
         const extraPrizesArray = this.fb.array(
-          extraEntries.map(([key, val]) => this.fb.group({ label: [key.replace(/_/g, ' ')], value: [val as string] }))
+          extraEntries.map(([key, val]) =>
+            this.fb.group({ label: [key.replace(/_/g, ' ')], value: [val as string] }),
+          ),
         );
-        this.categoriesArray.push(this.fb.group({
-          name: [catName],
-          champion: [cat.prizes?.champion || ''],
-          '2nd_place': [cat.prizes?.['2nd_place'] || ''],
-          '3rd_place': [cat.prizes?.['3rd_place'] || ''],
-          extraPrizes: extraPrizesArray,
-          specialAwards: awardsArray
-        }));
+        this.categoriesArray.push(
+          this.fb.group({
+            name: [catName],
+            champion: [cat.prizes?.champion || ''],
+            '2nd_place': [cat.prizes?.['2nd_place'] || ''],
+            '3rd_place': [cat.prizes?.['3rd_place'] || ''],
+            extraPrizes: extraPrizesArray,
+            specialAwards: awardsArray,
+          }),
+        );
       });
     }
   }
@@ -644,8 +723,6 @@ export class TournamentEditorComponent implements OnInit {
       description: tournamentData['description'] || null,
       registration_instructions: tournamentData['registrationInstructions'] || null,
       rounds: tournamentData['rounds'] || 0,
-      current_participants: tournamentData['participants']['current'] || 0,
-      max_participants: tournamentData['participants']['max'] || 0,
       eligibility: tournamentData['eligibility'] || null,
       categories: tournamentData['categories'] || null,
       schedule: tournamentData['schedule'] || null,
@@ -656,35 +733,47 @@ export class TournamentEditorComponent implements OnInit {
       apiPayload['slug'] = tournamentData['id'];
     }
 
-    const op = this.mode === 'user'
-      ? (tid
+    const op =
+      this.mode === 'user'
+        ? tid
           ? this.tournamentService.updateMyTournament(tid, apiPayload)
-          : this.tournamentService.createMyTournament(apiPayload))
-      : (tid
+          : this.tournamentService.createMyTournament(apiPayload)
+        : tid
           ? this.adminService.updateTournament(tid, apiPayload)
-          : this.adminService.createTournament(apiPayload));
+          : this.adminService.createTournament(apiPayload);
 
     const backRoute = this.mode === 'user' ? '/my-tournaments' : '/admin/tournaments';
 
     op.subscribe({
       next: () => {
         this.saving.set(false);
-        this.toastService.show(tid ? 'Tournament updated successfully' : 'Tournament created successfully', 'success');
+        this.toastService.show(
+          tid ? 'Tournament updated successfully' : 'Tournament created successfully',
+          'success',
+        );
         this.router.navigate([backRoute]);
       },
       error: (err: any) => {
         this.saving.set(false);
         this.toastService.show('Failed to save: ' + (err.error?.message || err.message), 'error');
-      }
+      },
     });
   }
 
   // ---- Formatting helpers ----
 
   private prizeOrder: Record<string, number> = {
-    'champion': 0, '1st_place': 1, '2nd_place': 2, '3rd_place': 3,
-    '4th_place': 4, '5th_place': 5, '6th_place': 6, '7th_place': 7,
-    '8th_place': 8, '9th_place': 9, '10th_place': 10
+    champion: 0,
+    '1st_place': 1,
+    '2nd_place': 2,
+    '3rd_place': 3,
+    '4th_place': 4,
+    '5th_place': 5,
+    '6th_place': 6,
+    '7th_place': 7,
+    '8th_place': 8,
+    '9th_place': 9,
+    '10th_place': 10,
   };
 
   comparePrizeKeys = (a: { key: string }, b: { key: string }): number => {
@@ -698,7 +787,11 @@ export class TournamentEditorComponent implements OnInit {
 
   formatDate(dateStr: string): string {
     if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
   }
 
   buildTournamentData(): Record<string, any> {
@@ -716,7 +809,10 @@ export class TournamentEditorComponent implements OnInit {
     const sanitizedLink = sanitize(v.link || '', 'link');
     const sanitizedFormat = sanitize(v.format || '', 'format');
     const sanitizedTimeControl = sanitize(v.timeControl || '', 'timeControl');
-    const sanitizedRegInstructions = sanitize(v.registrationInstructions || '', 'registrationInstructions');
+    const sanitizedRegInstructions = sanitize(
+      v.registrationInstructions || '',
+      'registrationInstructions',
+    );
     const eligibility = this.eligibilityArray.value
       .map((e: string) => this.sanitizeInput('', e))
       .filter((e: string) => e);
@@ -725,12 +821,12 @@ export class TournamentEditorComponent implements OnInit {
     this.scheduleDaysArray.controls.forEach((day, i) => {
       const dayVal = day.value;
       schedule[`day_${i + 1}`] = {
-        events: dayVal.events.filter((e: { name: string }) => e.name?.trim())
+        events: dayVal.events.filter((e: { name: string }) => e.name?.trim()),
       };
     });
 
     const categories: Record<string, any> = {};
-    this.categoriesArray.controls.forEach(cat => {
+    this.categoriesArray.controls.forEach((cat) => {
       const catVal = cat.value;
       const catKey = (catVal.name || '').toLowerCase().replace(/\s+/g, '_');
       if (!catKey) return;
@@ -749,7 +845,11 @@ export class TournamentEditorComponent implements OnInit {
       catVal.specialAwards?.forEach((award: any) => {
         if (!award.name?.trim()) return;
         if (award.type === 'nested') {
-          specialAwards[award.name] = { '1st': award['1st'], '2nd': award['2nd'], '3rd': award['3rd'] };
+          specialAwards[award.name] = {
+            '1st': award['1st'],
+            '2nd': award['2nd'],
+            '3rd': award['3rd'],
+          };
         } else {
           specialAwards[award.name] = award.value;
         }
@@ -757,12 +857,15 @@ export class TournamentEditorComponent implements OnInit {
 
       categories[catKey] = {
         prizes,
-        ...(Object.keys(specialAwards).length ? { specialAwards } : {})
+        ...(Object.keys(specialAwards).length ? { specialAwards } : {}),
       };
     });
 
     return {
-      id: sanitizedName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+      id: sanitizedName
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, ''),
       name: sanitizedName,
       description: sanitizedDescription,
       status: v.status,
@@ -779,10 +882,9 @@ export class TournamentEditorComponent implements OnInit {
       link: sanitizedLink || '',
       rounds: v.rounds || 0,
       registrationInstructions: sanitizedRegInstructions || '',
-      participants: { current: v.currentParticipants || 0, max: v.maxParticipants || 0 },
       ...(eligibility.length ? { eligibility } : {}),
       ...(Object.keys(schedule).length ? { schedule } : {}),
-      ...(Object.keys(categories).length ? { categories } : {})
+      ...(Object.keys(categories).length ? { categories } : {}),
     };
   }
 
@@ -794,7 +896,8 @@ export class TournamentEditorComponent implements OnInit {
 
   async downloadPoster(theme?: 'dark' | 'light') {
     const t = theme || this.posterTheme();
-    const el = t === 'dark' ? this.posterDarkRef?.nativeElement : this.posterLightRef?.nativeElement;
+    const el =
+      t === 'dark' ? this.posterDarkRef?.nativeElement : this.posterLightRef?.nativeElement;
     if (!el) return;
     this.downloadingPoster.set(true);
     try {
@@ -805,11 +908,14 @@ export class TournamentEditorComponent implements OnInit {
         width: 540,
         height: 675,
         windowWidth: 540,
-        windowHeight: 675
+        windowHeight: 675,
       });
       const dataUrl = canvas.toDataURL('image/png');
       const data = this.buildTournamentData();
-      const slug = (data['name'] || 'tournament').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const slug = (data['name'] || 'tournament')
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
       const link = document.createElement('a');
       link.download = `${slug}-poster-${t}.png`;
       link.href = dataUrl;
@@ -829,12 +935,20 @@ export class TournamentEditorComponent implements OnInit {
     return end && end !== start ? `${start} — ${end}` : start;
   }
 
-  get posterPrizeCategories(): { category: string; prizes: { place: string; value: string }[]; specialAwards?: { name: string; value: string }[] }[] {
+  get posterPrizeCategories(): {
+    category: string;
+    prizes: { place: string; value: string }[];
+    specialAwards?: { name: string; value: string }[];
+  }[] {
     try {
       const data = this.buildTournamentData();
       const cats = data?.['categories'];
       if (!cats) return [];
-      const categories: { category: string; prizes: { place: string; value: string }[]; specialAwards?: { name: string; value: string }[] }[] = [];
+      const categories: {
+        category: string;
+        prizes: { place: string; value: string }[];
+        specialAwards?: { name: string; value: string }[];
+      }[] = [];
       for (const [catName, cat] of Object.entries(cats as Record<string, any>)) {
         const prizes = (cat as any)?.prizes || {};
         const label = catName.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
@@ -852,14 +966,19 @@ export class TournamentEditorComponent implements OnInit {
             if (typeof awardVal === 'string') {
               const value = awardVal?.trim();
               if (value) {
-                specialAwards.push({ name: awardName.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), value });
+                specialAwards.push({
+                  name: awardName
+                    .replace(/_/g, ' ')
+                    .replace(/\b\w/g, (c: string) => c.toUpperCase()),
+                  value,
+                });
               }
             } else if (typeof awardVal === 'object' && awardVal !== null) {
               for (const [place, val] of Object.entries(awardVal as Record<string, string>)) {
                 if (val !== undefined && val !== null && val.trim() !== '') {
-                  specialAwards.push({ 
+                  specialAwards.push({
                     name: `${awardName.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())} ${place.toUpperCase()}`,
-                    value: val.trim()
+                    value: val.trim(),
                   });
                 }
               }
@@ -868,7 +987,11 @@ export class TournamentEditorComponent implements OnInit {
         }
 
         if (prizeRows.length > 0 || specialAwards.length > 0) {
-          categories.push({ category: label, prizes: prizeRows, ...(specialAwards.length > 0 ? { specialAwards } : {}) });
+          categories.push({
+            category: label,
+            prizes: prizeRows,
+            ...(specialAwards.length > 0 ? { specialAwards } : {}),
+          });
         }
       }
       return categories;

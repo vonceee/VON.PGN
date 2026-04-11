@@ -1,22 +1,24 @@
-import { Component, ElementRef, Input, ViewChild, inject, signal, PLATFORM_ID, Output, EventEmitter, computed } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  Input,
+  inject,
+  signal,
+  PLATFORM_ID,
+  Output,
+  EventEmitter,
+  computed,
+  ViewChild,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { InteractiveTask } from '../../../../core/models/course.model';
 import { environment } from '../../../../../environments/environment';
 import { AudioService } from '../../../../core/services/audio.service';
-import { PgnViewerComponent } from '../../../../shared/components/pgn-viewer';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { MoveNotationComponent } from '../../../../shared/components/move-notation/move-notation.component';
+import { ChessBoardComponent } from '../../../../shared/components/chess-board/chess-board.component';
 
 import { Chess } from 'chess.js';
-import { Chessground } from 'chessground';
-import { Api } from 'chessground/api';
+import { Config } from 'chessground/config';
 import { Key } from 'chessground/types';
-
-interface NotationRow {
-  moveNumber: number;
-  white: { san: string; index: number } | null;
-  black: { san: string; index: number } | null;
-}
 
 interface DrawShape {
   orig: Key;
@@ -27,30 +29,28 @@ interface DrawShape {
 @Component({
   selector: 'app-interactive-board',
   standalone: true,
-  imports: [PgnViewerComponent, ButtonComponent],
+  imports: [MoveNotationComponent, ChessBoardComponent],
   templateUrl: './interactive-board.component.html',
 })
 export class InteractiveBoardComponent {
   private http = inject(HttpClient);
-  private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
 
-  @ViewChild('boardContainer') boardContainer!: ElementRef;
+  @ViewChild('board') boardComponent!: ChessBoardComponent;
 
   @Output() moveClicked = new EventEmitter<number>();
 
-  private cgApi!: Api;
-  private chess = new Chess();
+  chess = new Chess();
   private initialFen: string = '';
   private moveHistory: string[] = [];
 
-  isLoading = signal<boolean>(true);  studyPositions: string[] = [];
+  isLoading = signal<boolean>(true);
+  studyPositions: string[] = [];
   studyShapes: DrawShape[][] = [];
   studyInstructions: string[] = [];
-  currentMoveIndex = 0;
-  notationRows: NotationRow[] = [];
+  displayFen = signal<string>('');
+  currentPly = signal<number>(0);
 
-  // Computed property for PGN viewer moves
   pgnMoves = computed(() => this.moveHistory);
 
   @Input({ required: true }) set task(value: InteractiveTask) {
@@ -61,19 +61,26 @@ export class InteractiveBoardComponent {
       next: (pgnString) => {
         this.initializeStudy(pgnString);
         this.isLoading.set(false);
-        setTimeout(() => this.initLichessBoard(), 0);
       },
-      error: (err) => console.error('Failed to load PGN', err)
+      error: (err) => console.error('Failed to load PGN', err),
     });
   }
 
-  /*
-  * Initialize the study from a PGN string
-  */
+  cgConfig = computed(() => {
+    const shapes = this.studyShapes[this.currentPly()] || [];
+    return {
+      drawable: {
+        autoShapes: shapes,
+      },
+    } as Config;
+  });
+
   private initializeStudy(pgn: string) {
     const safePgn = pgn.replace(/}\s*\{/g, ' ');
     const fenMatch = safePgn.match(/\[FEN\s+"([^"]+)"\]/);
-    this.initialFen = fenMatch ? fenMatch[1] : 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    this.initialFen = fenMatch
+      ? fenMatch[1]
+      : 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
     let sanitizedPgn = safePgn;
     let initialComment = '';
@@ -102,59 +109,22 @@ export class InteractiveBoardComponent {
       this.studyPositions.unshift(this.chess.fen());
       this.studyShapes.unshift(this.parseShapes(this.chess.getComment()));
       this.studyInstructions.unshift(this.parseInstruction(this.chess.getComment()));
-
       const move = this.chess.undo();
       if (!move) break;
     }
 
     const startShapes = this.parseShapes(initialComment);
     const startInstruction = this.parseInstruction(initialComment);
-    if (startShapes.length > 0) {
-      this.studyShapes[0] = [...this.studyShapes[0], ...startShapes];
-    }
-    if (startInstruction) {
-      this.studyInstructions[0] = startInstruction;
-    }
+    if (startShapes.length > 0) this.studyShapes[0] = [...this.studyShapes[0], ...startShapes];
+    if (startInstruction) this.studyInstructions[0] = startInstruction;
 
-    this.currentMoveIndex = 0;
-    this.rebuildStateFromHistory();
-    this.syncBoardToCurrentIndex();
+    this.currentPly.set(0);
+    this.syncChessToCurrentIndex();
   }
 
-  // 2. Update this signature to accept our newly extracted comment
-  private rebuildStateFromHistory() {
-    const tempChess = new Chess(this.initialFen);
-    this.notationRows = [];
-
-    let currentMoveNum = tempChess.moveNumber();
-    let isWhiteTurn = tempChess.turn() === 'w';
-    let currentRow: NotationRow = { moveNumber: currentMoveNum, white: null, black: null };
-
-    for (let i = 0; i < this.moveHistory.length; i++) {
-      tempChess.move(this.moveHistory[i]);
-      const positionIndex = i + 1;
-
-      if (isWhiteTurn) {
-        currentRow.white = { san: this.moveHistory[i], index: positionIndex };
-        if (i === this.moveHistory.length - 1) this.notationRows.push({ ...currentRow });
-      } else {
-        currentRow.black = { san: this.moveHistory[i], index: positionIndex };
-        this.notationRows.push({ ...currentRow });
-        currentMoveNum++;
-        currentRow = { moveNumber: currentMoveNum, white: null, black: null };
-      }
-      isWhiteTurn = !isWhiteTurn;
-    }
-  }
-
-  /*
-  * Parse shapes from a comment
-  */
   private parseShapes(comment?: string): DrawShape[] {
     if (!comment) return [];
     const shapes: DrawShape[] = [];
-
-    // Circles: [%csl Gf4, Ye5]
     const cslMatch = comment.match(/\[%csl\s+([^\]]+)\]/);
     if (cslMatch) {
       const items = cslMatch[1].split(',');
@@ -167,13 +137,11 @@ export class InteractiveBoardComponent {
         }
       }
     }
-
-    // Arrows: [%cal Gf4f5, Re2e4]
     const calMatch = comment.match(/\[%cal\s+([^\]]+)\]/);
     if (calMatch) {
       const items = calMatch[1].split(',');
       for (let item of items) {
-        item = item.trim(); // <-- THE FIX: Strip sneaky spaces
+        item = item.trim();
         if (item.length >= 5) {
           const colorCode = item.charAt(0);
           const orig = item.substring(1, 3) as Key;
@@ -182,142 +150,90 @@ export class InteractiveBoardComponent {
         }
       }
     }
-
     return shapes;
   }
 
   private getBrushColor(code: string): string {
     switch (code.toUpperCase()) {
-      case 'G': return 'green';
-      case 'R': return 'red';
-      case 'Y': return 'yellow';
-      case 'B': return 'blue';
-      default: return 'green';
+      case 'G':
+        return 'green';
+      case 'R':
+        return 'red';
+      case 'Y':
+        return 'yellow';
+      case 'B':
+        return 'blue';
+      default:
+        return 'green';
     }
   }
-  // --------------------------------
 
   private parseInstruction(comment?: string): string {
     if (!comment) return '';
     return comment
-      .replace(/\[%(csl|cal)[^\]]*\]/g, '') // remove shape tags
-      .replace(/[{}]/g, '')                 // remove literal { and } brackets
+      .replace(/\[%(csl|cal)[^\]]*\]/g, '')
+      .replace(/[{}]/g, '')
       .trim();
   }
 
-  private syncBoardToCurrentIndex() {
+  private syncChessToCurrentIndex() {
     this.chess.load(this.initialFen);
-
-    for (let i = 0; i < this.currentMoveIndex; i++) {
-      this.chess.move(this.moveHistory[i]);
-    }
-
-    if (this.cgApi) {
-      this.cgApi.set({
-        fen: this.chess.fen(),
-        turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
-        movable: {
-          color: this.chess.turn() === 'w' ? 'white' : 'black',
-          dests: this.getLegalMoves(),
-        },
-        drawable: {
-          // Instruct chessground to paint our parsed shapes onto the board!
-          autoShapes: this.studyShapes[this.currentMoveIndex] || []
-        }
-      });
-    }
-  }
-
-  private getLegalMoves(): Map<Key, Key[]> {
-    const dests = new Map<Key, Key[]>();
-    this.chess.moves({ verbose: true }).forEach(m => {
-      const from = m.from as Key;
-      const to = m.to as Key;
-      let destList = dests.get(from) || [];
-      destList.push(to);
-      dests.set(from, destList);
-    });
-    return dests;
-  }
-
-  private initLichessBoard() {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    this.cgApi = Chessground(this.boardContainer.nativeElement, {
-      fen: this.studyPositions[this.currentMoveIndex],
-      movable: {
-        free: false,
-        events: {
-          after: (orig: Key, dest: Key) => this.onUserMove(orig, dest)
-        }
-      },
-      drawable: {
-        enabled: true, // Also allows the user to right-click and draw their own arrows!
-        autoShapes: this.studyShapes[this.currentMoveIndex] || []
+    // Apply moves up to currentPly (1-indexed move list)
+    // If currentPly is 0, no moves are applied.
+    for (let i = 0; i < this.currentPly(); i++) {
+      if (this.moveHistory[i]) {
+        this.chess.move(this.moveHistory[i]);
       }
-    });
-    this.syncBoardToCurrentIndex();
+    }
+    this.displayFen.set(this.chess.fen());
   }
 
-  private onUserMove(orig: Key, dest: Key) {
+  onUserMove(event: { from: string; to: string; san: string; fen: string }) {
     try {
-      const move = this.chess.move({ from: orig, to: dest, promotion: 'q' });
-      this.audioService.playMoveSound(move.san);
+      // Truncate history if moving from a previous position
+      this.moveHistory = this.moveHistory.slice(0, this.currentPly());
+      this.studyPositions = this.studyPositions.slice(0, this.currentPly() + 1);
+      this.studyShapes = this.studyShapes.slice(0, this.currentPly() + 1);
+      this.studyInstructions = this.studyInstructions.slice(0, this.currentPly() + 1);
 
-      this.moveHistory = this.moveHistory.slice(0, this.currentMoveIndex);
-      this.studyPositions = this.studyPositions.slice(0, this.currentMoveIndex + 1);
-      this.studyShapes = this.studyShapes.slice(0, this.currentMoveIndex + 1);
-      this.studyInstructions = this.studyInstructions.slice(0, this.currentMoveIndex + 1); // Slice the instructions
-
-      this.moveHistory.push(move.san);
-      this.currentMoveIndex++;
-
-      this.studyPositions.push(this.chess.fen());
+      this.moveHistory.push(event.san);
+      this.currentPly.update(p => p + 1);
+      this.studyPositions.push(event.fen);
       this.studyShapes.push([]);
       this.studyInstructions.push('');
 
-      this.rebuildStateFromHistory();
-      this.syncBoardToCurrentIndex();
+      this.syncChessToCurrentIndex();
     } catch (e) {
-      this.cgApi.set({ fen: this.chess.fen() });
+      this.syncChessToCurrentIndex();
     }
   }
 
-  goToMove(index: number) {
-    this.currentMoveIndex = index;
-    this.syncBoardToCurrentIndex();
-    this.moveClicked.emit(index);
+  goToMove(ply: number) {
+    this.currentPly.set(ply);
+    this.syncChessToCurrentIndex();
+    this.moveClicked.emit(ply);
   }
 
   nextMove() {
-    if (this.currentMoveIndex < this.studyPositions.length - 1) {
-      this.currentMoveIndex++;
-      this.syncBoardToCurrentIndex();
-      if (this.currentMoveIndex > 0 && this.currentMoveIndex <= this.moveHistory.length) {
-        this.audioService.playMoveSound(this.moveHistory[this.currentMoveIndex - 1]);
-      }
+    if (this.currentPly() < this.moveHistory.length) {
+      this.currentPly.update(p => p + 1);
+      this.syncChessToCurrentIndex();
+      this.audioService.playMoveSound(this.moveHistory[this.currentPly() - 1]);
     }
   }
 
   prevMove() {
-    if (this.currentMoveIndex > 0) {
-      this.currentMoveIndex--;
-      this.syncBoardToCurrentIndex();
+    if (this.currentPly() > 0) {
+      this.currentPly.update(p => p - 1);
+      this.syncChessToCurrentIndex();
     }
   }
 
   goToStart() {
-    if (this.currentMoveIndex !== 0) {
-      this.currentMoveIndex = 0;
-      this.syncBoardToCurrentIndex();
-    }
+    this.goToMove(0);
   }
 
   goToEnd() {
-    const finalIndex = this.moveHistory.length;
-    if (this.currentMoveIndex !== finalIndex) {
-      this.currentMoveIndex = finalIndex;
-      this.syncBoardToCurrentIndex();
-    }
+    this.goToMove(this.moveHistory.length);
   }
 }

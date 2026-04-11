@@ -6,11 +6,12 @@ import { ToastService } from '../../core/services/toast.service';
 import { PaymentService } from '../../core/services/payment.service';
 import { FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
+import { GameHistoryComponent } from './game-history/game-history.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, GameHistoryComponent],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {

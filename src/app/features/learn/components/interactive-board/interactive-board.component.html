@@ -1,7 +1,7 @@
 <div
-  class="w-full h-[520px] rounded-xl overflow-hidden border border-border-theme flex flex-col p-4 gap-4"
+  class="w-full h-[560px] rounded-xl overflow-hidden border border-border-theme flex flex-col p-4 gap-4"
 >
-  <div class="w-full h-28 overflow-hidden rounded-lg border border-border-theme bg-slate-50/80 dark:bg-slate-900/80">
+  <div class="w-full h-28 overflow-hidden rounded-lg border border-border-theme">
     @if (isLoading()) {
       <div class="h-full p-3 animate-pulse space-y-3">
         <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
@@ -10,9 +10,11 @@
         <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-2/3"></div>
       </div>
     } @else {
-      <div class="h-full overflow-y-auto p-3 text-sm leading-relaxed text-slate-800 dark:text-slate-100">
+      <div
+        class="h-full overflow-y-auto p-3 text-sm leading-relaxed text-slate-800 dark:text-slate-100"
+      >
         <p>
-          {{ studyInstructions[currentMoveIndex] }}
+          {{ studyInstructions[currentPly()] }}
         </p>
       </div>
     }
@@ -21,17 +23,27 @@
   <div class="flex flex-1 gap-6 overflow-hidden">
     <div class="flex-1 flex flex-col items-center justify-center">
       @if (isLoading()) {
-        <div class="board-resize-wrapper resize-x overflow-hidden aspect-square w-full max-w-[22rem] min-w-[18rem] rounded-sm bg-slate-200/70 dark:bg-slate-800/70">
+        <div
+          class="board-resize-wrapper resize-x overflow-hidden aspect-square w-full max-w-[22rem] min-w-[18rem] rounded-sm bg-slate-200/70 dark:bg-slate-800/70"
+        >
           <div class="h-full w-full animate-pulse"></div>
         </div>
       } @else {
-        <div class="board-resize-wrapper resize-x overflow-hidden aspect-square w-full max-w-[22rem] min-w-[18rem] rounded-sm">
-          <div #boardContainer class="w-full h-full"></div>
+        <div class="w-full flex justify-center">
+          <app-chess-board
+            #board
+            [fen]="displayFen()"
+            [interactive]="true"
+            [size]="400"
+            [configOverride]="cgConfig()"
+            [storageKey]="'interactiveBoardSize'"
+            (moveMade)="onUserMove($event)"
+          ></app-chess-board>
         </div>
       }
     </div>
 
-    <div class="flex-1 h-full flex flex-col rounded-lg overflow-hidden">
+    <div class="w-80 h-full flex flex-col rounded-lg overflow-hidden">
       @if (isLoading()) {
         <div class="flex flex-col h-full">
           <div class="flex items-center justify-center gap-2 p-2">
@@ -48,88 +60,15 @@
             <div class="h-10 rounded-lg bg-slate-200 dark:bg-slate-700 animate-pulse"></div>
           </div>
         </div>
-      } @else if (notationRows.length > 0) {
-        <div class="flex flex-col h-full overflow-hidden">
-          <div class="flex items-center justify-center gap-1 p-2 border-b border-border-theme">
-            <app-button
-              variant="outline"
-              size="sm"
-              (click)="goToStart()"
-              title="Start"
-              [disabled]="currentMoveIndex === 0"
-            >
-              <svg
-                class="w-3.5 h-3.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <polyline points="11 17 6 12 11 7" />
-                <polyline points="18 17 13 12 18 7" />
-              </svg>
-            </app-button>
-            <app-button
-              variant="outline"
-              size="sm"
-              (click)="prevMove()"
-              title="Previous"
-              [disabled]="currentMoveIndex === 0"
-            >
-              <svg
-                class="w-3.5 h-3.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </app-button>
-            <app-button
-              variant="outline"
-              size="sm"
-              (click)="nextMove()"
-              title="Next"
-              [disabled]="currentMoveIndex === pgnMoves().length"
-            >
-              <svg
-                class="w-3.5 h-3.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </app-button>
-            <app-button
-              variant="outline"
-              size="sm"
-              (click)="goToEnd()"
-              title="End"
-              [disabled]="currentMoveIndex === pgnMoves().length"
-            >
-              <svg
-                class="w-3.5 h-3.5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-              >
-                <polyline points="13 17 18 12 13 7" />
-                <polyline points="6 17 11 12 6 7" />
-              </svg>
-            </app-button>
-          </div>
-
-          <div class="flex-1 overflow-y-auto p-2">
-            <app-pgn-viewer
-              [moves]="pgnMoves()"
-              [currentMoveIndex]="currentMoveIndex"
-              (moveClicked)="goToMove($event)">
-            </app-pgn-viewer>
-          </div>
+      } @else if (studyPositions.length > 0) {
+        <div class="flex flex-col h-full min-h-0 overflow-hidden">
+          <app-move-notation
+            class="flex-1"
+            [moves]="pgnMoves()"
+            [currentPly]="currentPly()"
+            [showNavigation]="true"
+            (navigate)="goToMove($event)"
+          ></app-move-notation>
         </div>
       }
     </div>

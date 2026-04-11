@@ -10,177 +10,105 @@
     class="grid grid-cols-2 gap-4 lg:gap-8 p-4 lg:p-8 lg:py-6 mx-auto max-w-[1600px] max-lg:grid-cols-1 lg:h-[calc(100vh-96px)] lg:max-h-[900px]"
   >
     <!-- Left panel: time controls or searching state -->
-    <div class="flex flex-col justify-center h-full w-full">
-      <div class="mb-3 p-3 premium-card rounded-lg min-h-14">
-        @if (gameService.isSearching()) {
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="font-medium">Searching for opponent...</span>
-            </div>
-            <app-button
-              variant="outline"
-              (click)="cancelSearch()"
-              class="text-xs font-bold uppercase tracking-wider"
-            >
-              Cancel
-            </app-button>
-          </div>
-        } @else {
-          <div class="flex items-center justify-center h-full">
-            <span class="font-medium text-center">Select a time format to start playing</span>
-          </div>
-        }
-      </div>
+    <div class="h-full w-full">
+      <div class="premium-card h-full flex flex-col overflow-hidden rounded-xl">
+        <div class="flex items-center justify-between border-b border-white/5 px-4 py-3 bg-white/[0.02]">
+          <h3 class="m-0 text-xs font-bold uppercase tracking-widest text-slate-400">Quick Play</h3>
+        </div>
 
-      <div [class.opacity-50]="gameService.isSearching() && !showCustomForm()">
-        @for (category of categories; track category.key) {
-          <div class="mb-3">
-            <div class="grid grid-cols-3 gap-2">
-              @for (tc of category.controls; track tc.value) {
-                @if (gameService.isSearching() && gameService.searchTimeControl() === tc.value) {
-                  <div
-                    class="flex flex-col items-center justify-center px-4 h-[120px] premium-card rounded-lg relative overflow-hidden"
-                  >
-                    <div class="absolute inset-0 bg-cyan-500/5 animate-pulse"></div>
-                    <div
-                      class="h-8 w-8 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin"
-                    ></div>
-                    <span class="text-[10px] font-bold uppercase tracking-tighter mt-2 opacity-60">Searching</span>
-                  </div>
-                } @else {
-                  <button
-                    (click)="seekGame(tc)"
-                    [disabled]="gameService.isSearching()"
-                    class="flex flex-col items-center justify-center px-4 h-24 lg:h-28 xl:h-32 premium-card rounded-xl group disabled:cursor-not-allowed cursor-pointer disabled:opacity-50 shadow-sm"
-                  >
-                    <span class="text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight">{{
-                      tc.label
-                    }}</span>
-                    <span
-                      class="text-xs lg:text-sm capitalize opacity-80 group-hover:opacity-100"
-                      >{{ tc.category }}</span
-                    >
-                  </button>
-                }
-              }
-            </div>
-          </div>
-        }
-
-        <div class="mt-3">
-          @if (!showCustomForm()) {
-            <button
-              (click)="showCustomForm.set(true)"
-              [disabled]="gameService.isSearching()"
-              class="relative w-full flex items-center justify-center px-4 py-3 lg:py-4 premium-card rounded-xl group text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
-              [ngClass]="{
-                'hover:bg-cyan-400 hover:border-cyan-400 cursor-pointer hover:shadow-cyan-400/20':
-                  !gameService.isSearching(),
-              }"
-            >
-              Custom
-              <app-badge [customClass]="'absolute right-4 lg:right-8'">NEW</app-badge>
-            </button>
-          } @else {
-            <div
-              class="premium-card rounded-lg p-4 relative"
-              [class.opacity-50]="gameService.isSearching()"
-            >
-              @if (gameService.isSearching()) {
-                <div
-                  class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 rounded-lg backdrop-blur-[2px]"
-                >
-                  <div
-                    class="h-8 w-8 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin mb-4"
-                  ></div>
-                  <button
-                    (click)="cancelSearch()"
-                    class="px-6 py-2 text-sm font-bold uppercase tracking-wider border border-red-500 text-red-500 rounded hover:bg-red-500/10 bg-transparent transition-colors cursor-pointer"
-                  >
-                    Cancel
-                  </button>
+        <div class="flex-1 p-3 lg:p-4 flex flex-col min-h-0">
+          <div class="mb-3 p-3 border border-white/5 bg-white/[0.03] rounded-xl flex items-center justify-center shrink-0">
+            @if (gameService.isSearching()) {
+              <div class="flex items-center justify-between w-full">
+                <div class="flex items-center gap-3">
+                  <div class="h-3 w-3 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+                  <span class="font-medium text-xs">Searching for opponent...</span>
                 </div>
-              }
-              <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold m-0">Custom Time Control</h3>
-                <button
-                  (click)="showCustomForm.set(false)"
-                  [disabled]="gameService.isSearching()"
-                  class="text-slate-400 hover:text-white bg-transparent border-none cursor-pointer p-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                <app-button variant="outline" size="sm" (click)="cancelSearch()" class="font-bold uppercase tracking-wider scale-75 origin-right">Cancel</app-button>
+              </div>
+            } @else {
+              <span class="font-medium text-center text-[11px] uppercase tracking-wider opacity-40">Select Format</span>
+            }
+          </div>
+
+          <div class="flex-1 flex flex-col gap-3 min-h-0" [class.opacity-50]="gameService.isSearching() && !showCustomForm()">
+             @if (!showCustomForm()) {
+              <div class="flex-1 grid grid-rows-3 gap-3 min-h-0">
+                @for (category of categories; track category.key) {
+                  <div class="grid grid-cols-3 gap-3">
+                    @for (tc of category.controls; track tc.value) {
+                      @if (gameService.isSearching() && gameService.searchTimeControl() === tc.value) {
+                        <div class="flex flex-col items-center justify-center border-2 border-cyan-500 bg-cyan-500/10 rounded-xl relative overflow-hidden h-full">
+                          <div class="absolute inset-0 bg-cyan-500/10 animate-pulse"></div>
+                          <div class="h-6 w-6 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin"></div>
+                          <span class="text-[9px] font-bold uppercase tracking-tighter mt-1 text-cyan-500">Searching</span>
+                        </div>
+                      } @else {
+                        <button (click)="seekGame(tc)" [disabled]="gameService.isSearching()" class="flex flex-col items-center justify-center bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/10 rounded-xl group transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer h-full">
+                          <span class="text-2xl lg:text-3xl xl:text-4xl font-black tracking-tighter">{{ tc.label }}</span>
+                          <span class="text-[9px] font-extrabold uppercase tracking-widest opacity-30 group-hover:opacity-100 group-hover:text-cyan-400 transition-colors">{{ tc.category }}</span>
+                        </button>
+                      }
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="shrink-0 mt-auto pt-2">
+                <button (click)="showCustomForm.set(true)" [disabled]="gameService.isSearching()" class="relative w-full flex items-center justify-center py-3 bg-white/[0.03] hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 rounded-xl group text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm">
+                  Custom Time Control
+                  <app-badge [customClass]="'absolute right-4'">NEW</app-badge>
                 </button>
               </div>
+            } @else {
+              <div class="flex-1 bg-white/[0.03] border border-white/5 rounded-xl p-4 lg:p-6 relative flex flex-col" [class.opacity-50]="gameService.isSearching()">
+                @if (gameService.isSearching()) {
+                  <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 rounded-xl backdrop-blur-[2px]">
+                    <div class="h-8 w-8 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin mb-4"></div>
+                    <button (click)="cancelSearch()" class="px-6 py-2 text-sm font-bold uppercase tracking-wider border border-red-500 text-red-500 rounded-lg hover:bg-red-500/10 bg-transparent transition-colors cursor-pointer">Cancel</button>
+                  </div>
+                }
+                <div class="flex justify-between items-center mb-4 lg:mb-6">
+                  <h3 class="text-base font-bold m-0 italic">Custom Setup</h3>
+                  <button (click)="showCustomForm.set(false)" [disabled]="gameService.isSearching()" class="text-slate-500 hover:text-white bg-transparent border-none cursor-pointer p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
 
-              <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label class="block text-sm font-semibold text-slate-400 mb-2"
-                    >Minutes per side: <span class="text-white">{{ customMinutes() }}</span></label
-                  >
-                  <input
-                    type="range"
-                    min="1"
-                    max="180"
-                    [ngModel]="customMinutes()"
-                    (ngModelChange)="customMinutes.set($event)"
-                    [disabled]="gameService.isSearching()"
-                    class="w-full accent-cyan-500 cursor-pointer disabled:cursor-not-allowed"
-                  />
+                <div class="flex-1 space-y-6">
+                  <div class="space-y-4">
+                    <div class="flex justify-between items-end">
+                      <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Minutes</label>
+                      <span class="text-xl font-black text-cyan-500">{{ customMinutes() }}</span>
+                    </div>
+                    <input type="range" min="1" max="180" [ngModel]="customMinutes()" (ngModelChange)="customMinutes.set($event)" [disabled]="gameService.isSearching()" class="w-full accent-cyan-500 cursor-pointer" />
+                  </div>
+                  <div class="space-y-4">
+                    <div class="flex justify-between items-end">
+                      <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Increment</label>
+                      <span class="text-xl font-black text-cyan-500">{{ customIncrement() }}</span>
+                    </div>
+                    <input type="range" min="0" max="60" [ngModel]="customIncrement()" (ngModelChange)="customIncrement.set($event)" [disabled]="gameService.isSearching()" class="w-full accent-cyan-500 cursor-pointer" />
+                  </div>
                 </div>
-                <div>
-                  <label class="block text-sm font-semibold text-slate-400 mb-2"
-                    >Increment (sec): <span class="text-white">{{ customIncrement() }}</span></label
-                  >
-                  <input
-                    type="range"
-                    min="0"
-                    max="60"
-                    [ngModel]="customIncrement()"
-                    (ngModelChange)="customIncrement.set($event)"
-                    [disabled]="gameService.isSearching()"
-                    class="w-full accent-cyan-500 cursor-pointer disabled:cursor-not-allowed"
-                  />
-                </div>
+
+                <button (click)="seekCustomGame()" [disabled]="gameService.isSearching()" class="w-full mt-6 bg-cyan-500 text-slate-900 font-bold py-3 lg:py-4 rounded-xl hover:bg-cyan-400 cursor-pointer border-none transition-all text-base shadow-lg shadow-cyan-500/20">
+                  Find Opponent
+                </button>
               </div>
+            }
+          </div>
 
-              <button
-                (click)="seekCustomGame()"
-                [disabled]="gameService.isSearching()"
-                class="w-full bg-cyan-500 text-slate-900 font-bold py-3 rounded-lg hover:bg-cyan-400 cursor-pointer border-none transition-colors text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Create Game
-              </button>
+          @if (activeGameId()) {
+            <div class="mt-3 shrink-0 flex items-center justify-between rounded-xl bg-cyan-500/5 border border-cyan-500/20 px-4 py-3 text-cyan-500">
+              <span class="text-[11px] font-bold uppercase tracking-wider">Active Game Found</span>
+              <button (click)="rejoinGame()" class="rounded-lg bg-cyan-500 px-4 py-2 text-[11px] font-black text-slate-900 cursor-pointer border-none hover:bg-cyan-400">REJOIN</button>
             </div>
           }
         </div>
       </div>
-
-      @if (activeGameId()) {
-        <div
-          class="mt-4 flex items-center justify-between rounded-lg premium-card border-cyan-500/30 px-4 py-3 text-cyan-500"
-        >
-          <span class="text-sm">You have an active game</span>
-          <button
-            (click)="rejoinGame()"
-            class="rounded-md bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-900 cursor-pointer border-none"
-          >
-            Rejoin Game
-          </button>
-        </div>
-      }
     </div>
 
     <!-- Right panel: seek board -->

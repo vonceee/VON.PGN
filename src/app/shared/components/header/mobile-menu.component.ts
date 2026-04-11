@@ -114,6 +114,7 @@ export class MobileMenuComponent {
 
   navLinks = [
     { path: '/play', label: 'Play' },
+    { path: '/study', label: 'Study' },
     { path: '/roadmap', label: 'Roadmap' },
     { path: '/tactics', label: 'Tactics' },
     { path: '/tactics/leaderboard', label: 'Rankings' },
@@ -122,7 +123,7 @@ export class MobileMenuComponent {
     { path: '/arena', label: 'Arena' },
     { path: '/broadcasts', label: 'Broadcasts' },
     { path: '/coaches', label: 'Coaches' },
-    { path: "/whats-new", label: "What's New" },
+    { path: "/academy", label: "Academy" },
   ];
 
   authLinks = [

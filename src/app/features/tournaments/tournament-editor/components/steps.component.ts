@@ -236,7 +236,7 @@ export class StepDatesLocationComponent implements OnInit {
         ></app-form-field>
       </div>
 
-      <div class="field-row three-col">
+      <div class="field-row">
         <app-form-field
           formControlName="rounds"
           label="Rounds"
@@ -246,27 +246,10 @@ export class StepDatesLocationComponent implements OnInit {
         ></app-form-field>
 
         <app-form-field
-          formControlName="maxParticipants"
-          label="Max Participants"
-          type="number"
-          [optional]="true"
-        ></app-form-field>
-
-        <app-form-field
-          formControlName="currentParticipants"
-          label="Current Participants"
-          type="number"
-          [optional]="true"
-        ></app-form-field>
-      </div>
-
-      <div class="field-row">
-        <app-form-field
           formControlName="entryFee"
-          label="Entry Fee"
+          label="Registration Fee"
           type="currency"
-          [required]="true"
-          [errorMessage]="getError('entryFee')"
+          [optional]="true"
         ></app-form-field>
 
         <app-form-field

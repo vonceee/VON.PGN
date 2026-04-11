@@ -96,12 +96,8 @@ interface PosterCategory {
           }
         </div>
         <div class="poster-meta-row">
-          @if (tournamentData['entryFee'] && tournamentData['participants']?.max) {
-          <span class="poster-meta-chunk">{{ tournamentData['entryFee'] }} &middot; {{ tournamentData['participants']['max'] }} Slots</span>
-          } @else if (tournamentData['entryFee']) {
+          @if (tournamentData['entryFee']) {
           <span class="poster-meta-chunk">{{ tournamentData['entryFee'] }}</span>
-          } @else if (tournamentData['participants']?.max) {
-          <span class="poster-meta-chunk">{{ tournamentData['participants']['max'] }} Slots</span>
           }
         </div>
       </div>

@@ -1,31 +1,37 @@
 import {
   Component,
-  ElementRef,
-  ViewChild,
   Input,
   Output,
   EventEmitter,
-  NgZone,
   OnChanges,
-  OnDestroy,
-  afterNextRender,
+  SimpleChanges,
   inject,
-  PLATFORM_ID,
+  ViewChild,
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Puzzle } from '../../../core/services/tactics.service';
 import { Chess } from 'chess.js';
-import { Chessground } from 'chessground';
-import { Api } from 'chessground/api';
+import { Config } from 'chessground/config';
 import { AudioService } from '../../../core/services/audio.service';
+import { ChessBoardComponent } from '../chess-board/chess-board.component';
 
 @Component({
   selector: 'app-tactics-board',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ChessBoardComponent],
   template: `
-    <div #boardRef class="w-full h-full"></div>
+    <app-chess-board
+      #board
+      [fen]="currentFen"
+      [orientation]="userColor"
+      [interactive]="status === 'playing' || exploreMode"
+      [size]="size"
+      [configOverride]="cgConfig"
+      [storageKey]="'boardSize'"
+      (moveMade)="onBoardMove($event)"
+      (sizeChange)="sizeChange.emit($event)"
+      class="w-full h-full"
+    ></app-chess-board>
   `,
   styles: [`
     :host {
@@ -35,15 +41,15 @@ import { AudioService } from '../../../core/services/audio.service';
     }
   `],
 })
-export class TacticsBoardComponent implements OnChanges, OnDestroy {
-  @ViewChild('boardRef', { static: false }) boardRef!: ElementRef;
+export class TacticsBoardComponent implements OnChanges {
+  @ViewChild('board') boardComponent!: ChessBoardComponent;
 
   private _puzzle: Puzzle | null = null;
   @Input() 
   set puzzle(val: Puzzle | null) {
     this._puzzle = val;
     if (val) {
-      setTimeout(() => this.initPuzzle(), 0);
+      this.initPuzzle();
     }
   }
   get puzzle() { return this._puzzle; }
@@ -65,105 +71,78 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
   }
   get retryMode() { return this._retryMode; }
 
-  private board!: Api;
   private chess = new Chess();
-
+  currentFen: string = '';
   solutionMoves: string[] = [];
-  currentMoveIndex = 0;
+  solutionPly = 0;
   userColor: 'white' | 'black' = 'white';
   status: 'playing' | 'success' | 'failed' = 'playing';
 
   initialFen: string = '';
   gameMoves: string[] = [];
-  gameMoveIndex = -1;
+  gamePly = 0;
   gameMode = false;
   private gameStartFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
-  private platformId = inject(PLATFORM_ID);
+  cgConfig: Config = {};
+
   private audioService = inject(AudioService);
 
-  constructor(private ngZone: NgZone) {}
-
-  ngOnChanges(changes: any) {
-    if (changes.size && !changes.size.isFirstChange() && this.board) {
-      setTimeout(() => {
-        this.board.redrawAll();
-      }, 0);
-    }
-    if (changes.exploreMode && !changes.exploreMode.isFirstChange()) {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['exploreMode'] && !changes['exploreMode'].isFirstChange()) {
       if (this.exploreMode && this.status === 'success') {
         this.enableFreePlay();
       }
     }
   }
 
-  ngOnDestroy(): void {
-    this.board?.destroy();
-  }
-
   initPuzzle() {
-    if (!this.puzzle || !this.boardRef) return;
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.puzzle) return;
 
     this.status = 'playing';
     this._retryMode = false;
     this.solutionMoves = this.puzzle.moves.split(' ');
-    this.currentMoveIndex = 0;
+    this.solutionPly = 0;
     this.chess.load(this.puzzle.fen);
 
-    const opponentInitialMove = this.solutionMoves[this.currentMoveIndex];
+    const opponentInitialMove = this.solutionMoves[this.solutionPly];
     const moveResult = this.chess.move(this.parseUciMove(opponentInitialMove));
-    this.currentMoveIndex++;
+    this.solutionPly++;
     if (moveResult) this.moveMade.emit(moveResult.san);
     
     this.userColor = this.chess.turn() === 'w' ? 'white' : 'black';
     this.initialFen = this.chess.fen();
+    this.currentFen = this.initialFen;
     this.userColorChange.emit(this.userColor);
 
-    this.board = Chessground(this.boardRef.nativeElement, {
-      fen: this.chess.fen(),
-      orientation: this.userColor,
-      turnColor: this.userColor,
-      coordinates: true,
+    this.cgConfig = {
       movable: {
         color: this.userColor,
-        free: false,
-        dests: this.calculateDests(),
-        events: {
-          after: (orig, dest) => {
-            this.ngZone.run(() => {
-              this.onUserMove(orig, dest);
-            });
-          },
-        },
-      },
-    });
+        free: false
+      }
+    };
   }
 
-  onUserMove(orig: any, dest: any) {
+  onBoardMove(event: { from: string; to: string; san: string; fen: string }) {
+    if (this.gameMode) return;
     if (this.status !== 'playing') return;
 
-    const expectedMove = this.solutionMoves[this.currentMoveIndex];
-    const userMoveStr = `${orig}${dest}`;
+    const expectedMove = this.solutionMoves[this.solutionPly];
+    const userMoveStr = `${event.from}${event.to}`;
 
     if (expectedMove.startsWith(userMoveStr)) {
-      const moveResult = this.chess.move(this.parseUciMove(expectedMove));
-      this.currentMoveIndex++;
-      if (moveResult) this.moveMade.emit(moveResult.san);
-      this.audioService.playMoveSound(moveResult?.san || '');
+      this.chess.move(this.parseUciMove(expectedMove));
+      this.solutionPly++;
+      this.moveMade.emit(event.san);
+      this.currentFen = this.chess.fen();
 
-      this.board.set({
-        fen: this.chess.fen(),
-        turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
-      });
-
-      if (this.currentMoveIndex >= this.solutionMoves.length) {
+      if (this.solutionPly >= this.solutionMoves.length) {
         this.status = 'success';
         this.puzzleSolved.emit();
         if (this.exploreMode) {
           this.enableFreePlay();
         } else {
-          this.board.set({ movable: { color: undefined } });
+          this.cgConfig = { movable: { color: undefined } };
         }
       } else {
         setTimeout(() => {
@@ -171,13 +150,12 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
         }, 500);
       }
     } else {
+      // Revert the legal but incorrect move on the board
+      this.boardComponent.undoMove();
+      
       if (!this._retryMode) {
         this._retryMode = true;
         this.wrongMove.emit();
-        this.board.set({
-          fen: this.chess.fen(),
-          turnColor: this.userColor,
-        });
         setTimeout(() => this.retryPuzzle(), 500);
       } else {
         this.retryPuzzle();
@@ -187,58 +165,42 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
 
   retryPuzzle() {
     this.chess.load(this.initialFen);
-    this.currentMoveIndex = 1;
-    
-    this.board.set({
-      fen: this.chess.fen(),
-      orientation: this.userColor,
-      turnColor: this.userColor,
+    this.currentFen = this.initialFen;
+    this.solutionPly = 0;
+    this.cgConfig = {
       movable: {
         color: this.userColor,
-        free: false,
-        dests: this.calculateDests(),
-      },
-    });
+        free: false
+      }
+    };
   }
 
   enableFreePlay() {
-    this.board.set({
+    this.cgConfig = {
       movable: {
         color: 'both',
         free: true,
       },
-    });
+    };
   }
 
   setGameMoves(moves: string[]) {
     this.gameMoves = moves;
-    this.gameMoveIndex = -1;
-    // Don't set gameMode = true yet, we want to stay in puzzle mode
+    this.gamePly = 0;
   }
 
   exitGameMode() {
     this.gameMode = false;
-    this.chess.load(this.initialFen);
-    
-    // We need to re-replay the current progress of the puzzle
-    // However, the internal chess instance should already be at the current position 
-    // unless we messed it up in game mode.
-    // Actually, initPuzzle sets initialFen to the state after the FIRST opponent move.
-    
     this.chess.load(this.puzzle?.fen || '');
-    for (let i = 0; i < this.currentMoveIndex; i++) {
+    for (let i = 0; i < this.solutionPly; i++) {
       this.chess.move(this.parseUciMove(this.solutionMoves[i]));
     }
-
-    this.board.set({
-      fen: this.chess.fen(),
-      turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
-      check: this.chess.inCheck() ? (this.chess.turn() === 'w' ? 'white' : 'black') : undefined,
+    this.currentFen = this.chess.fen();
+    this.cgConfig = {
       movable: {
-        color: this.status === 'playing' ? this.userColor : undefined,
-        dests: this.calculateDests()
+        color: this.status === 'playing' ? this.userColor : undefined
       }
-    });
+    };
 
     if (this.exploreMode && this.status === 'success') {
       this.enableFreePlay();
@@ -246,133 +208,82 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
   }
 
   loadGame(moves: string[]) {
-    if (!this.board) return;
     this.gameMoves = moves;
-    this.gameMoveIndex = -1;
+    this.gamePly = 0;
     this.gameMode = true;
     this.chess.load(this.gameStartFen);
-    this.updateBoardForGame();
+    this.currentFen = this.chess.fen();
   }
 
-  setGameModeAtMove(moves: string[], moveIndex: number) {
-    if (!this.board) return;
+  setGameModeAtMove(moves: string[], ply: number) {
     this.gameMoves = [...moves];
-    this.gameMoveIndex = Math.max(-1, Math.min(moveIndex, moves.length - 1));
+    this.gamePly = Math.max(0, Math.min(ply, moves.length));
     this.gameMode = true;
     
-    // Rebuild the history up to gameMoveIndex
     this.chess.load(this.gameStartFen);
-    for (let i = 0; i <= this.gameMoveIndex; i++) {
+    for (let i = 0; i < this.gamePly; i++) {
        const m = moves[i];
        if (m) this.chess.move(m);
     }
-    
-    this.updateBoardForGame();
-  }
-
-  private ensureGameMode() {
-    if (!this.gameMode) {
-      this.gameMode = true;
-      this.chess.load(this.gameStartFen);
-      this.gameMoveIndex = -1;
-      this.updateBoardForGame();
-    }
+    this.currentFen = this.chess.fen();
   }
 
   resetToGameStart() {
-    if (!this.board) return;
-    this.ensureGameMode();
+    this.gameMode = true;
     this.chess.load(this.gameStartFen);
-    this.gameMoveIndex = -1;
-    this.updateBoardForGame();
+    this.gamePly = 0;
+    this.currentFen = this.chess.fen();
   }
 
   previousGameMove() {
-    if (!this.board) return;
-    this.ensureGameMode();
-    
-    if (this.gameMoveIndex < 0) return;
-    
+    this.gameMode = true;
+    if (this.gamePly <= 0) return;
     this.chess.undo();
-    this.gameMoveIndex--;
-    this.updateBoardForGame();
+    this.gamePly--;
+    this.currentFen = this.chess.fen();
   }
 
   nextGameMove() {
-    if (!this.board) return;
-    this.ensureGameMode();
-    
-    if (this.gameMoveIndex >= this.gameMoves.length - 1) return;
-    
-    this.gameMoveIndex++;
-    const move = this.gameMoves[this.gameMoveIndex];
+    this.gameMode = true;
+    if (this.gamePly >= this.gameMoves.length) return;
+    const move = this.gameMoves[this.gamePly];
+    this.gamePly++;
     const moveResult = this.chess.move(move);
     if (moveResult) {
       this.audioService.playMoveSound(moveResult.san || '');
-      this.updateBoardForGame();
+      this.currentFen = this.chess.fen();
     }
   }
 
   isFirstGameMove(): boolean {
-    return this.gameMode && this.gameMoveIndex < 0;
+    return this.gameMode && this.gamePly === 0;
   }
 
   isLastGameMove(): boolean {
-    return this.gameMode && this.gameMoveIndex >= this.gameMoves.length - 1;
-  }
-
-  private updateBoardForGame() {
-    if (!this.board) return;
-    const turnColor = this.chess.turn() === 'w' ? 'white' : 'black';
-    this.board.set({
-      fen: this.chess.fen(),
-      turnColor: turnColor,
-      check: this.chess.inCheck() ? turnColor : undefined,
-    });
+    return this.gameMode && this.gamePly >= this.gameMoves.length;
   }
 
   playOpponentMove() {
-    const oppMove = this.solutionMoves[this.currentMoveIndex];
+    const oppMove = this.solutionMoves[this.solutionPly];
     const moveResult = this.chess.move(this.parseUciMove(oppMove));
-    this.currentMoveIndex++;
+    this.solutionPly++;
     if (moveResult) this.moveMade.emit(moveResult.san);
     this.audioService.playMoveSound(moveResult?.san || '');
-
-    this.board.set({
-      fen: this.chess.fen(),
-      turnColor: this.userColor,
-      movable: { dests: this.calculateDests() },
-    });
+    this.currentFen = this.chess.fen();
   }
 
   revealSolution() {
     if (!this.puzzle || this.status === 'success') return;
     
     const playNextMove = () => {
-      if (this.currentMoveIndex >= this.solutionMoves.length) return;
-
-      const move = this.solutionMoves[this.currentMoveIndex];
+      if (this.solutionPly >= this.solutionMoves.length) return;
+      const move = this.solutionMoves[this.solutionPly];
       this.chess.move(this.parseUciMove(move));
-      this.currentMoveIndex++;
-
-      this.board.set({
-        fen: this.chess.fen(),
-        turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
-      });
-
+      this.solutionPly++;
+      this.currentFen = this.chess.fen();
       setTimeout(playNextMove, 750);
     };
-
     playNextMove();
-  }
-
-  private calculateDests() {
-    const dests = new Map();
-    this.chess.moves({ verbose: true }).forEach((m) => {
-      if (!dests.has(m.from)) dests.set(m.from, []);
-      dests.get(m.from).push(m.to);
-    });
-    return dests;
   }
 
   private parseUciMove(uci: string): { from: string; to: string; promotion?: string } {

@@ -13,7 +13,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
-import { PgnViewerComponent } from '../../shared/components/pgn-viewer';
+import { MoveNotationComponent } from '../../shared/components/move-notation/move-notation.component';
 import { TacticsBoardComponent } from '../../shared/components/tactics-board/tactics-board.component';
 import { ServerMaintenanceComponent } from '../../shared/components/server-maintenance/server-maintenance.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -25,7 +25,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
     TacticsBoardComponent,
     ServerMaintenanceComponent,
     ButtonComponent,
-    PgnViewerComponent,
+    MoveNotationComponent,
   ],
   templateUrl: './tactics.component.html',
 })
@@ -35,21 +35,11 @@ export class TacticsComponent implements OnInit {
   private userService = inject(UserService);
   private platformId = inject(PLATFORM_ID);
 
-  constructor() {
-    effect(() => {
-      // Re-run this effect when these signals change
-      this.currentPgnMoveIndex();
-      this.pgnMoves();
-      
-      // Use setTimeout to wait for Angular to finish rendering the new move
-      setTimeout(() => this.scrollToActiveMove(), 100);
-    });
-  }
+  constructor() {}
 
   currentUser = this.userService.currentUser;
 
   @ViewChild(TacticsBoardComponent) boardComponent!: TacticsBoardComponent;
-  @ViewChild('pgnScrollContainer') pgnScrollContainer!: ElementRef;
 
   currentPuzzle = signal<Puzzle | null>(null);
   isLoading = signal<boolean>(true);
@@ -62,89 +52,21 @@ export class TacticsComponent implements OnInit {
   newStreak = signal<number>(0);
   userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
-  boardSize = signal(this.loadBoardSize());
+  boardSize = signal(400); 
 
   retryMode = signal(false);
   exploreMode = signal(false);
   isLoadingPgn = signal(false);
   pgnMoves = signal<string[]>([]);
   basePgnMoves = signal<string[]>([]);
-  currentPgnMoveIndex = signal(-1);
-  puzzleStartPly = signal(-1);
+  currentPly = signal(0);
+  puzzleStartPly = signal(0);
   fullPgnMoves: string[] = [];
   isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
-  private resizeStartX = 0;
-  private resizeStartSize = 0;
-  private isResizing = false;
-
-  private loadBoardSize(): number {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('boardSize');
-      if (saved) {
-        const size = parseInt(saved, 10);
-        // Ensure saved size still fits the screen if it's very small
-        const maxAllowed = Math.min(1200, window.innerWidth - 24);
-        if (size >= 280 && size <= 1200) {
-          return Math.min(size, maxAllowed);
-        }
-      }
-      
-      // Default responsive size for mobile/tablet
-      if (window.innerWidth < 768) {
-        return Math.min(560, window.innerWidth - 32); 
-      }
-    }
-    return 560;
-  }
-
-  private saveBoardSize(size: number): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('boardSize', size.toString());
-    }
-  }
-
   onBoardSizeChange(event: number) {
     this.boardSize.set(event);
-    this.saveBoardSize(event);
   }
-
-  startTacticsResize(event: MouseEvent | TouchEvent): void {
-    event.preventDefault();
-    this.isResizing = true;
-    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
-    this.resizeStartX = clientX;
-    this.resizeStartSize = this.boardSize();
-    document.addEventListener('mousemove', this.onTacticsResize);
-    document.addEventListener('mouseup', this.stopTacticsResize);
-    document.addEventListener('touchmove', this.onTacticsTouchResize);
-    document.addEventListener('touchend', this.stopTacticsResize);
-  }
-
-  private onTacticsResize = (event: MouseEvent): void => {
-    if (!this.isResizing) return;
-    const delta = event.clientX - this.resizeStartX;
-    const dynamicMax = Math.min(1200, window.innerWidth * 0.95, window.innerHeight * 0.85);
-    const newSize = Math.min(dynamicMax, Math.max(280, this.resizeStartSize + delta));
-    this.boardSize.set(newSize);
-  };
-
-  private onTacticsTouchResize = (event: TouchEvent): void => {
-    if (!this.isResizing || !event.touches.length) return;
-    const delta = event.touches[0].clientX - this.resizeStartX;
-    const dynamicMax = Math.min(1200, window.innerWidth * 0.95, window.innerHeight * 0.85);
-    const newSize = Math.min(dynamicMax, Math.max(280, this.resizeStartSize + delta));
-    this.boardSize.set(newSize);
-  };
-
-  private stopTacticsResize = (): void => {
-    this.isResizing = false;
-    this.saveBoardSize(this.boardSize());
-    document.removeEventListener('mousemove', this.onTacticsResize);
-    document.removeEventListener('mouseup', this.stopTacticsResize);
-    document.removeEventListener('touchmove', this.onTacticsTouchResize);
-    document.removeEventListener('touchend', this.stopTacticsResize);
-  };
 
   ngOnInit() {
     if (this.currentUser()) {
@@ -170,7 +92,7 @@ export class TacticsComponent implements OnInit {
     this.exploreMode.set(false);
     this.isLoadingPgn.set(true);
     this.pgnMoves.set([]);
-    this.currentPgnMoveIndex.set(-1);
+    this.currentPly.set(0);
 
     this.tacticsService.getDailyPuzzle().subscribe({
       next: (res: { data: Puzzle }) => {
@@ -217,14 +139,10 @@ export class TacticsComponent implements OnInit {
 
           this.basePgnMoves.set(base);
           
-          // Merge history with current session moves (to avoid race condition 
-          // where the first move of the puzzle is already made)
-          // Deduplicate single move overlap if it exists
           let mergedMoves = [...base];
           if (base.length > 0 && currentSessionMoves.length > 0) {
             const lastBase = base[base.length - 1];
             const firstSession = currentSessionMoves[0];
-            // Simple comparison or cleaned comparison to be safe
             if (lastBase === firstSession || lastBase.replace(/[#+]+$/, '') === firstSession.replace(/[#+]+$/, '')) {
               mergedMoves = [...base.slice(0, -1), ...currentSessionMoves];
             } else {
@@ -240,8 +158,7 @@ export class TacticsComponent implements OnInit {
             this.boardComponent.setGameMoves(mergedMoves);
           }
           
-          // Ensure highlight is correct
-          this.currentPgnMoveIndex.set(mergedMoves.length - 1);
+          this.currentPly.set(mergedMoves.length);
         } else {
           console.warn('[Tactics] PGN fetched but empty');
         }
@@ -262,7 +179,6 @@ export class TacticsComponent implements OnInit {
   }
 
   private parseGameUrl(url: string): { gameId: string; perspective: 'white' | 'black'; ply: number } {
-    // Handle both formats: lichess.org/gameId/perspective#ply AND lichess.org/gameId#ply
     const match = url.match(/lichess\.org\/([a-zA-Z0-9]+)(?:\/(\w+))?#(\d+)/);
     if (!match) {
       return { gameId: '', perspective: 'white', ply: 0 };
@@ -272,12 +188,6 @@ export class TacticsComponent implements OnInit {
       perspective: (match[2] as 'white' | 'black') || 'white',
       ply: parseInt(match[3], 10) || 0,
     };
-  }
-
-  private goToPly(ply: number) {
-    if (!this.boardComponent || ply <= 0) return;
-    const target = ply - 1;
-    this.goToMove(target);
   }
 
   onPuzzleSolved() {
@@ -337,14 +247,13 @@ export class TacticsComponent implements OnInit {
         this.newStreak.set(res.new_streak);
         this.userService.loadMyProfile().subscribe();
         this.retryMode.set(true);
-        // Reset moves since TacticsBoard resets to beginning of puzzle
         this.pgnMoves.set([...this.basePgnMoves()]);
-        this.currentPgnMoveIndex.set(this.pgnMoves().length - 1);
+        this.currentPly.set(this.pgnMoves().length);
       });
     } else {
       this.retryMode.set(true);
       this.pgnMoves.set([...this.basePgnMoves()]);
-      this.currentPgnMoveIndex.set(this.pgnMoves().length - 1);
+      this.currentPly.set(this.pgnMoves().length);
     }
   }
 
@@ -358,13 +267,10 @@ export class TacticsComponent implements OnInit {
       return [...moves, san];
     });
     
-    // Ensure navigation array is updated in board component
     if (this.boardComponent) {
       this.boardComponent.setGameMoves(this.pgnMoves());
     }
-
-    // Automatically keep the sidebar highlighting the latest move during the puzzle
-    this.currentPgnMoveIndex.set(this.pgnMoves().length - 1);
+    this.currentPly.set(this.pgnMoves().length);
   }
 
   revealSolution() {
@@ -378,10 +284,10 @@ export class TacticsComponent implements OnInit {
     if (this.fullPgnMoves.length > 0 && this.boardComponent) {
       this.pgnMoves.set(this.fullPgnMoves);
       
-      const solvedIndex = this.puzzleStartPly() + this.boardComponent.currentMoveIndex - 1;
-      this.currentPgnMoveIndex.set(solvedIndex);
+      const solvedPly = this.puzzleStartPly() + this.boardComponent.solutionPly;
+      this.currentPly.set(solvedPly);
       
-      this.boardComponent.setGameModeAtMove(this.fullPgnMoves, solvedIndex);
+      this.boardComponent.setGameModeAtMove(this.fullPgnMoves, solvedPly);
     }
   }
 
@@ -394,7 +300,6 @@ export class TacticsComponent implements OnInit {
       const moveParts = movesStr.split(' ');
       for (const part of moveParts) {
         if (part && part.trim() && !part.match(/^\d+\.*$/)) {
-          // Keep the move as is (with suffixes like + or #)
           if (part.length >= 2 && part.length <= 10) {
             moves.push(part);
           }
@@ -415,57 +320,19 @@ export class TacticsComponent implements OnInit {
     this.pgnMoves.set(moves);
   }
 
-  previousPgnMove() {
-     this.goToMove(this.currentPgnMoveIndex() - 1);
-  }
-
-  nextPgnMove() {
-     this.goToMove(this.currentPgnMoveIndex() + 1);
-  }
-
-  goToPgnEnd() {
-    this.goToMove(this.pgnMoves().length - 1);
-  }
-
-  resetToGameStart() {
-    this.goToMove(-1);
-  }
-
-  goToMove(index: number) {
+  goToMove(ply: number) {
     if (!this.boardComponent) return;
     
-    if (index < -1 || index >= this.pgnMoves().length) return;
+    if (ply < 0 || ply > this.pgnMoves().length) return;
 
-    if (index === this.pgnMoves().length - 1 && this.status() === 'playing') {
+    if (ply === this.pgnMoves().length && this.status() === 'playing') {
       this.boardComponent.exitGameMode();
-      this.currentPgnMoveIndex.set(index);
+      this.currentPly.set(ply);
       return;
     }
     
-    this.boardComponent.setGameModeAtMove(this.pgnMoves(), index);
-    this.currentPgnMoveIndex.set(index);
-  }
-
-  private scrollToActiveMove() {
-    if (!isPlatformBrowser(this.platformId) || !this.pgnScrollContainer) return;
-    
-    const container = this.pgnScrollContainer.nativeElement;
-    const activeElement = container.querySelector('.active-pgn-move') as HTMLElement;
-    
-    if (activeElement) {
-      // Calculate top position relative to container
-      const elementTop = activeElement.offsetTop;
-      const elementHeight = activeElement.offsetHeight;
-      const containerHeight = container.clientHeight;
-      
-      // Target position: center the element in the container
-      const targetTop = elementTop - (containerHeight / 2) + (elementHeight / 2);
-      
-      container.scrollTo({
-        top: targetTop,
-        behavior: 'smooth'
-      });
-    }
+    this.boardComponent.setGameModeAtMove(this.pgnMoves(), ply);
+    this.currentPly.set(ply);
   }
 }
 

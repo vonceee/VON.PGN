@@ -154,6 +154,23 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'study',
+        loadComponent: () =>
+          import('./features/study/study-list/study-list.component').then((m) => m.StudyListComponent),
+        title: 'Vonchess.net • Studies',
+        data: { description: 'Create and join collaborative chess studies on vonchess.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'study/:id',
+        loadComponent: () =>
+          import('./features/study/study.component').then((m) => m.StudyComponent),
+        canActivate: [authGuard],
+        title: 'Vonchess.net • Study',
+        data: { description: 'Collaborate on chess analysis in real-time.' },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'documentation',
         loadComponent: () =>
           import('./features/documentation/documentation.component').then(
@@ -229,6 +246,16 @@ export const routes: Routes = [
         title: 'Vonchess.net • Contact',
         data: {
           description: 'Get in touch with the vonchess team — questions, feedback, and support.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'academy',
+        loadComponent: () => import('./features/academy/academy').then((m) => m.AcademyComponent),
+        title: 'Vonchess.net • Academy',
+        data: {
+          description:
+            'Join Vonchess Academy — a structured 5-week chess program for beginners to intermediates.',
         },
         resolve: { seo: seoResolver },
       },
@@ -355,15 +382,6 @@ export const routes: Routes = [
         title: 'Vonchess.net • Play',
         data: { description: 'Find a match and play live chess on vonchess.' },
         resolve: { seo: seoResolver },
-      },
-      {
-        path: 'games/history',
-        loadComponent: () =>
-          import('./features/games/game-history/game-history.component').then(
-            (m) => m.GameHistoryComponent,
-          ),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • History',
       },
       {
         path: 'games/:gameId/review',

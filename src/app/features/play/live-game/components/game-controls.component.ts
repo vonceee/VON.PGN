@@ -170,9 +170,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
         <!-- Rematch Section -->
         <div class="w-full flex gap-1.5">
           @if (!myRematchOffered() && !rematchOfferFrom()) {
-            <app-button variant="outline" size="md" (click)="offerRematch.emit()"
-              >Rematch</app-button
-            >
+            <app-button variant="ghost" size="md" (click)="offerRematch.emit()">Rematch</app-button>
           } @else if (myRematchOffered()) {
             <div
               class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme"
@@ -222,12 +220,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
             </div>
           }
           @if (!game()?.arena_id) {
-            <app-button
-              variant="outline"
-              size="md"
-              (click)="newOpponent.emit()"
-              title="New opponent"
-            >
+            <app-button variant="ghost" size="md" (click)="newOpponent.emit()" title="New opponent">
               New Game
             </app-button>
           }
