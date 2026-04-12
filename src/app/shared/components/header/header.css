@@ -15,10 +15,10 @@
 :host ::ng-deep .group > a::after {
   content: '';
   position: absolute;
-  bottom: -50px;
+  bottom: -20px; /* Increased from -8px to ensure a solid bridge for slow mouse movements */
   left: 0;
   right: 0;
-  height: 50px;
+  height: 20px; /* Increased from 8px */
   z-index: 1;
 }
 
@@ -30,7 +30,7 @@
   transition:
     opacity 0.2s ease-out,
     visibility 0.2s ease-out;
-  transition-delay: 150ms;
+  transition-delay: 500ms; /* Increased close delay to prevent accidental closing during transition */
   margin-top: 0;
 }
 
@@ -39,7 +39,7 @@
   pointer-events: auto;
   opacity: 1;
   visibility: visible;
-  transition-delay: 0ms; /* Instant open */
+  transition-delay: 300ms; /* Added intent delay to prevent accidental triggers */
 }
 
 :host ::ng-deep .profile-dropdown {

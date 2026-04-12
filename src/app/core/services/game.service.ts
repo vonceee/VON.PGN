@@ -7,7 +7,7 @@ import { AudioService } from './audio.service';
 import { environment } from '../../../environments/environment';
 import { GameState, MovePlayedPayload, GameEndedPayload, GameSeek, RematchOfferedPayload, RematchAcceptedPayload, DrawOfferedPayload, DrawDeclinedPayload } from '../models/game.model';
 import { Subject, of, Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { io, Socket } from 'socket.io-client';
 
 @Injectable({
@@ -159,7 +159,18 @@ export class GameService implements OnDestroy {
   loadGame(gameId: string): void {
     this.http
       .get<{ game: GameState }>(`${this.apiUrl}/game/${gameId}`)
-      .pipe(catchError(() => of({ game: null })))
+      .pipe(
+        catchError((error) => {
+          if (error.status === 404) {
+            // Fallback to microservice for live/arena games
+            return this.http.get<any>(`${this.socketUrl}/api/games/${gameId}`).pipe(
+              map(raw => ({ game: this.mapMicroserviceGameToGameState(raw) })),
+              catchError(() => of({ game: null }))
+            );
+          }
+          return of({ game: null });
+        })
+      )
       .subscribe((res) => {
         if (res.game) {
           this.gameState.set(res.game);
@@ -431,11 +442,48 @@ export class GameService implements OnDestroy {
     console.log(`[Game] Joining game room ${gameId}`);
     this.socket.emit('join_game', gameId);
 
+    this.socket.off('game_state');
+    this.socket.on('game_state', (data: any) => {
+      const remoteGame = data.game;
+      if (!remoteGame || remoteGame.id !== gameId) return;
+
+      console.log(`[Game] Received authoritative state for ${gameId}`);
+      this.gameState.update((state) => {
+        // If we don't have a local state yet, use the one from the microservice
+        if (!state) {
+          return this.mapMicroserviceGameToGameState(remoteGame);
+        }
+
+        // Merge microservice state into local state
+        return {
+          ...state,
+          fen: remoteGame.fen,
+          turn: remoteGame.turn,
+          moves: remoteGame.moves || [],
+          white_time_remaining_ms: remoteGame.whiteTimeRemainingMs,
+          black_time_remaining_ms: remoteGame.blackTimeRemainingMs,
+          server_timestamp: remoteGame.serverTimestamp,
+          status: remoteGame.status,
+          result: remoteGame.result,
+          termination: remoteGame.termination,
+          legal_moves: data.legalMoves || remoteGame.legalMoves || [],
+          opponent_away_countdown: remoteGame.opponentAwayCountdown,
+          // Preserve critical local info if it exists
+          my_color: data.playerColor || state.my_color
+        };
+      });
+    });
+
+    this.socket.off('move_made');
     this.socket.on('move_made', (data: any) => {
       if (data.gameId !== gameId) return;
 
       this.gameState.update((state) => {
+        // Fallback: If move arrives before state is loaded, we'll temporarily store it
+        // Or better, since we have game_state coming anyway, we just wait for it.
+        // But for smoothness, we'll try to apply it if we have a state.
         if (!state) return state;
+
         return {
           ...state,
           fen: data.fen,
@@ -450,7 +498,6 @@ export class GameService implements OnDestroy {
           legal_moves: data.legalMoves,
           draw_offered_by: null,
           draw_offered_at: null,
-          // Preserve my_color
           my_color: state.my_color,
         };
       });
@@ -580,6 +627,13 @@ export class GameService implements OnDestroy {
           if (error.status === 503) {
             this.isServiceMaintenance.set(true);
           }
+          if (error.status === 404) {
+            // Fallback to microservice for live/arena games
+            return this.http.get<any>(`${this.socketUrl}/api/games/${gameId}`).pipe(
+              map(raw => ({ game: this.mapMicroserviceGameToGameState(raw) })),
+              catchError(() => of({ game: null }))
+            );
+          }
           return of({ game: null });
         })
       )
@@ -593,6 +647,45 @@ export class GameService implements OnDestroy {
           this.router.navigate(['/play', gameId]);
         }
       });
+  }
+
+  private mapMicroserviceGameToGameState(raw: any): GameState {
+    const myId = String(this.authService.currentUser()?.uid);
+    const whiteId = String(raw.whitePlayer?.userId);
+    const myColor: 'white' | 'black' = whiteId === myId ? 'white' : 'black';
+
+    return {
+      id: raw.id,
+      white_player: {
+        id: raw.whitePlayer?.userId,
+        name: raw.whitePlayer?.name,
+        rating: raw.whitePlayer?.rating
+      },
+      black_player: {
+        id: raw.blackPlayer?.userId,
+        name: raw.blackPlayer?.name,
+        rating: raw.blackPlayer?.rating
+      },
+      status: raw.status,
+      time_control: raw.timeControl,
+      initial_time_ms: raw.initialTimeMs,
+      increment_ms: raw.incrementMs,
+      fen: raw.fen,
+      turn: raw.turn,
+      moves: raw.moves || [],
+      white_time_remaining_ms: raw.whiteTimeRemainingMs,
+      black_time_remaining_ms: raw.blackTimeRemainingMs,
+      server_timestamp: raw.lastMoveTimestamp || new Date().toISOString(),
+      result: raw.result,
+      termination: raw.termination,
+      white_rating_change: null,
+      black_rating_change: null,
+      my_color: myColor,
+      legal_moves: raw.legalMoves || [],
+      draw_offered_by: null,
+      draw_offered_at: null,
+      arena_id: raw.arenaId
+    };
   }
 
   // ── Heartbeat ───────────────────────────────────────────────────

@@ -1,8 +1,8 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { FeedbackService, FeedbackType } from '../../../core/services/feedback.service';
-import { filter } from 'rxjs';
+import { ButtonComponent } from '../button/button.component';
 
 interface FeedbackForm {
   name: string;
@@ -14,7 +14,7 @@ interface FeedbackForm {
 @Component({
   selector: 'app-feedback-button',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, ButtonComponent],
   templateUrl: './feedback-button.component.html',
 })
 export class FeedbackButtonComponent {

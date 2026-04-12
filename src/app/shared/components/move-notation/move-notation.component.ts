@@ -28,7 +28,7 @@ export interface MoveRound {
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   template: `
-    <div class="move-notation-container shadow-2xl overflow-hidden">
+    <div class="move-notation-container  overflow-hidden">
       <!-- Navigation controls (Optional) - Strictly Fixed at Top -->
       @if (showNavigation()) {
         <div

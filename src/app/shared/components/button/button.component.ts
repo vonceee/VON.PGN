@@ -39,9 +39,9 @@ export class ButtonComponent {
 
     switch (this.variant()) {
       case 'primary':
-        return `${base} bg-cyan-500 hover:bg-cyan-600 text-slate-900 border-cyan-500`;
+        return `${base} bg-white text-black hover:bg-cyan-400`;
       case 'danger':
-        return `${base} bg-red-500 hover:bg-red-600 text-white border-red-500`;
+        return `${base} bg-red-500 hover:bg-red-600 border-red-500`;
       case 'ghost':
         return `${base} bg-transparent hover:text-cyan-400 hover:underline border-transparent`;
       default:

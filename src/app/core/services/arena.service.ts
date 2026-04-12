@@ -1,7 +1,10 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { Socket } from 'socket.io-client';
-import { GameService } from './game.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Arena } from '../models/arena.model';
+import { environment } from '../../../environments/environment';
+import { Observable, map, tap, catchError, of } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { GameService } from './game.service';
 
 export interface ArenaParticipant {
   userId: string;
@@ -15,26 +18,69 @@ export interface ArenaParticipant {
 export interface ArenaState {
   arenaId: string;
   leaderboard: ArenaParticipant[];
+  startTime: number;
   endTime: number;
   isWaiting: boolean;
+  isStarted: boolean;
+  status: 'upcoming' | 'ongoing' | 'past';
+  winner?: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ArenaService {
   private gameService = inject(GameService);
   private router = inject(Router);
+  private http = inject(HttpClient);
+  private apiUrl = environment.apiUrl;
+  private chessUrl = environment.chessMicroserviceUrl;
 
+  gameId = signal<string | null>(null);
+  arenas = signal<Arena[]>([]);
   activeArena = signal<ArenaState | null>(null);
   leaderboard = signal<ArenaParticipant[]>([]);
   isWaiting = signal(false);
   countdown = signal<string>('00:00:00');
+  countdownLabel = signal<string>('Starting in');
 
   private timerInterval: any;
+  private serverTimeOffset = 0;
 
-  constructor() {}
+  constructor() {
+    this.syncServerTime();
+  }
 
+  private syncServerTime() {
+    this.http.get<{ timestamp: string }>(`${this.chessUrl}/api/ping`).pipe(
+      catchError(err => {
+        console.warn('[ArenaService] Failed to sync server time:', err);
+        return of({ timestamp: new Date().toISOString() });
+      })
+    ).subscribe(res => {
+      const serverTime = new Date(res.timestamp).getTime();
+      const localTime = Date.now();
+      this.serverTimeOffset = serverTime - localTime;
+      console.log('[ArenaService] Microservice time sync offset:', this.serverTimeOffset);
+    });
+  }
+
+  // HTTP Methods
+  fetchArenas() {
+    return this.http.get<{ data: Arena[] }>(`${this.apiUrl}/arenas`).pipe(
+      tap((res) => {
+        this.arenas.set(res.data);
+      })
+    );
+  }
+
+  createMyArena(data: any): Observable<Arena> {
+    return this.http
+      .post<{ data: Arena }>(`${this.apiUrl}/my/arenas`, data)
+      .pipe(map((res) => res.data));
+  }
+
+  // Socket Logic
   joinArena(arenaId: string, name: string, rating: number, timeControl: string = '3+0') {
     const socket = this.gameService['socket']; // Accessing private socket for now
     if (!socket) {
@@ -44,14 +90,38 @@ export class ArenaService {
 
     socket.emit('join_arena', { arenaId, name, rating, timeControl });
 
+    socket.off('arena_joined');
+    socket.off('arena_started');
+    socket.off('arena_leaderboard_update');
+    socket.off('pairing_started');
+    socket.off('pairing_stopped');
+    socket.off('arena_game_matched');
+    socket.off('arena_ended');
+
     socket.on('arena_joined', (data: any) => {
+      console.log('[ArenaService] arena_joined received:', data);
       this.activeArena.set({
         arenaId: data.arenaId,
         leaderboard: [],
+        startTime: data.startTime,
         endTime: data.endTime,
-        isWaiting: data.isWaiting
+        isWaiting: data.isWaiting,
+        isStarted: Date.now() + this.serverTimeOffset >= data.startTime,
+        status: data.status || 'ongoing',
+        winner: data.winner
       });
-      this.startCountdown(data.endTime);
+      this.isWaiting.set(data.isWaiting);
+      if (data.isWaiting) {
+        this.gameService.isSearching.set(true);
+      }
+      this.startCountdown(data.startTime, data.endTime);
+    });
+
+    socket.on('arena_started', () => {
+      const current = this.activeArena();
+      if (current) {
+        this.activeArena.set({ ...current, isStarted: true });
+      }
     });
 
     socket.on('arena_leaderboard_update', (data: any) => {
@@ -72,24 +142,43 @@ export class ArenaService {
     });
 
     socket.on('arena_game_matched', (data: any) => {
-      console.log('[Arena] Game matched:', data.gameId);
+      console.log('[Arena] Match found:', data.gameId);
+      const myId = this.getUserId();
+      const isMe = data.whiteId == myId || data.blackId == myId || data.white == myId || data.black == myId;
+      if (!isMe) return;
+
+      this.gameId.set(data.gameId);
+      this.gameService.clearGame(false);
       this.router.navigate(['/play', data.gameId]);
+      this.gameService.isSearching.set(false);
+    });
+
+    socket.on('arena_ended', (data: any) => {
+      console.log('[Arena] Tournament finished');
+      this.isWaiting.set(false);
+      this.gameService.isSearching.set(false);
+      this.stopCountdown();
+      // Optional: Refresh arena data from Laravel to get official past status
+      if (this.activeArena()) {
+        this.joinArena(this.activeArena()!.arenaId, '', 0); 
+      }
     });
   }
 
   startPairing() {
-    const arena = this.activeArena();
     const socket = this.gameService['socket'];
-    if (arena && socket) {
-      socket.emit('start_pairing', arena.arenaId);
+    if (socket && this.activeArena()) {
+      socket.emit('start_pairing', this.activeArena()?.arenaId);
+      this.gameService.isSearching.set(true);
+      console.log('[Arena] Pairing started, polling activated');
     }
   }
 
   stopPairing() {
-    const arena = this.activeArena();
     const socket = this.gameService['socket'];
-    if (arena && socket) {
-      socket.emit('stop_pairing', arena.arenaId);
+    if (socket && this.activeArena()) {
+      socket.emit('stop_pairing', this.activeArena()?.arenaId);
+      this.gameService.isSearching.set(false);
     }
   }
 
@@ -103,23 +192,36 @@ export class ArenaService {
     }
   }
 
-  private startCountdown(endTime: number) {
+  private startCountdown(startTime: number, endTime: number) {
     this.stopCountdown();
     this.timerInterval = setInterval(() => {
-      const now = Date.now();
-      const diff = endTime - now;
+      const now = Date.now() + this.serverTimeOffset;
 
-      if (diff <= 0) {
+      let target = startTime;
+      let label = 'Starting in';
+
+      if (now >= startTime) {
+        target = endTime;
+        label = 'Time left';
+      }
+
+      this.countdownLabel.set(label);
+      const diff = target - now;
+
+      if (diff <= 0 && label === 'Time left') {
         this.countdown.set('00:00:00');
         this.stopCountdown();
         return;
       }
 
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
+      const safeDiff = Math.max(0, diff);
+      const h = Math.floor(safeDiff / 3600000);
+      const m = Math.floor((safeDiff % 3600000) / 60000);
+      const s = Math.floor((safeDiff % 60000) / 1000);
 
-      this.countdown.set(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`);
+      this.countdown.set(
+        `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`,
+      );
     }, 1000);
   }
 

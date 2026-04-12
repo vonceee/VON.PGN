@@ -43,7 +43,7 @@ import { AudioService } from '../../../core/services/audio.service';
             class="absolute inset-0 z-50 flex items-center justify-center transition-all animate-in fade-in zoom-in duration-150"
           >
             <div
-              class="promotion-menu p-4 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl flex gap-4"
+              class="promotion-menu p-4 bg-slate-900 border border-slate-700 rounded-2xl  flex gap-4"
               (click)="$event.stopPropagation()"
             >
               @for (piece of promotionPieces; track piece.type) {
@@ -250,8 +250,11 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   ngOnChanges(changes: SimpleChanges) {
     if (this.initialized) {
       if (changes['fen'] && !changes['fen'].isFirstChange()) {
-        this.chess.load(this.fen);
-        this.syncBoard();
+        const currentFen = this.chess.fen();
+        if (this.fen && this.fen !== currentFen) {
+          this.chess.load(this.fen);
+          this.syncBoard();
+        }
       }
       if (changes['orientation'] && !changes['orientation'].isFirstChange()) {
         this.cgApi.set({ orientation: this.orientation });
@@ -264,10 +267,14 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         this.cgApi.set({ drawable: { shapes: this.syncedShapes } });
       }
       if (changes['interactive']) {
+        const color = this.interactive ? this.turnColor() : undefined;
+        const dests = this.interactive ? this.getLegalMoves() : new Map();
+        
+        // Only update if actually changed to prevent flickering
         this.cgApi.set({
           movable: {
-            color: this.interactive ? this.turnColor() : undefined,
-            dests: this.interactive ? this.getLegalMoves() : new Map(),
+            color: color,
+            dests: dests,
           },
           draggable: { enabled: this.interactive },
         });
@@ -292,7 +299,10 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private initBoard() {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    // Wait 50ms to ensure the DOM layout is stable for Chessground
     setTimeout(() => {
+      if (!this.boardEl) return;
+      
       this.chess.load(this.fen);
 
       const config: Config = {
@@ -321,12 +331,15 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       };
 
       this.cgApi = Chessground(this.boardEl.nativeElement, config);
+      this.initialized = true;
 
+      // Apply any overrides that were set before initialization finished
       if (this.configOverride) {
         this.applyConfigOverride(this.configOverride);
       }
-
-      this.initialized = true;
+      
+      // Ensure the board is in sync with the current (potentially updated) FEN
+      this.syncBoard();
     }, 50);
   }
 
@@ -352,8 +365,12 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   private syncBoard() {
     if (!this.cgApi) return;
+    
+    // Safety check: only update Chessground if the FEN is different or we are forced to
+    const targetFen = this.chess.fen();
+    
     this.cgApi.set({
-      fen: this.chess.fen(),
+      fen: targetFen,
       turnColor: this.turnColor(),
       movable: {
         color: this.interactive ? this.turnColor() : undefined,

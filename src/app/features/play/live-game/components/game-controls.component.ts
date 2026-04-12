@@ -169,57 +169,58 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
       } @else if (game()?.status === 'completed' || game()?.status === 'aborted') {
         <!-- Rematch Section -->
         <div class="w-full flex gap-1.5">
-          @if (!myRematchOffered() && !rematchOfferFrom()) {
-            <app-button variant="ghost" size="md" (click)="offerRematch.emit()">Rematch</app-button>
-          } @else if (myRematchOffered()) {
-            <div
-              class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme"
-            >
-              Waiting...
-            </div>
-          } @else if (rematchOfferFrom()) {
-            <div class="flex-1 flex gap-1">
-              <app-button
-                variant="primary"
-                size="md"
-                (click)="acceptRematch.emit()"
-                class="flex-1"
-                title="Accept"
-              >
-                <svg
-                  class="w-4 h-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </app-button>
-              <app-button
-                variant="outline"
-                size="md"
-                (click)="declineRematch.emit()"
-                title="Decline"
-              >
-                <svg
-                  class="w-4 h-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </app-button>
-            </div>
-          }
           @if (!game()?.arena_id) {
+            @if (!myRematchOffered() && !rematchOfferFrom()) {
+              <app-button variant="ghost" size="md" (click)="offerRematch.emit()">Rematch</app-button>
+            } @else if (myRematchOffered()) {
+              <div
+                class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme"
+              >
+                Waiting...
+              </div>
+            } @else if (rematchOfferFrom()) {
+              <div class="flex-1 flex gap-1">
+                <app-button
+                  variant="primary"
+                  size="md"
+                  (click)="acceptRematch.emit()"
+                  class="flex-1"
+                  title="Accept"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </app-button>
+                <app-button
+                  variant="outline"
+                  size="md"
+                  (click)="declineRematch.emit()"
+                  title="Decline"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </app-button>
+              </div>
+            }
+
             <app-button variant="ghost" size="md" (click)="newOpponent.emit()" title="New opponent">
               New Game
             </app-button>

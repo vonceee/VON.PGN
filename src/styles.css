@@ -67,8 +67,17 @@
 /* Chess Coordinates */
 .cg-wrap coords {
   text-transform: lowercase !important;
-  font-size: max(8px, 10px) !important;
-  font-weight: 500 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  transition: none !important; /* Disable global transition */
+}
+
+/* Disable global transitions for Chessground internal elements to prevent "shading" lag */
+.cg-wrap,
+.cg-wrap *,
+.cg-wrap::before,
+.cg-wrap::after {
+  transition: none !important;
 }
 
 .cg-wrap coords.files {

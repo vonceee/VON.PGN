@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TournamentService } from '../../../core/services/tournament.service';
+import { ArenaService } from '../../../core/services/arena.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
@@ -15,7 +15,7 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 })
 export class MyArenaEditorComponent {
   private fb = inject(FormBuilder);
-  private tournamentService = inject(TournamentService);
+  private arenaService = inject(ArenaService);
   private toastService = inject(ToastService);
   private router = inject(Router);
   public location = inject(Location);
@@ -43,7 +43,7 @@ export class MyArenaEditorComponent {
   arenaForm = this.fb.group({
     name: ['', Validators.maxLength(255)],
     timeControl: ['180+2', Validators.required],
-    durationMinutes: [60, [Validators.required, Validators.min(10), Validators.max(360)]],
+    durationMinutes: [60, [Validators.required, Validators.min(3), Validators.max(360)]],
     startDateOffset: [10, Validators.required], // minutes from now
   });
 
@@ -71,17 +71,15 @@ export class MyArenaEditorComponent {
       status: 'upcoming',
       start_date: startDate.toISOString(),
       end_date: endDate.toISOString(),
-      location: 'Online',
-      format: 'Arena',
       time_control: v.timeControl,
-      rounds: 0,
+      duration_minutes: v.durationMinutes
     };
 
-    this.tournamentService.createMyTournament(apiPayload).subscribe({
+    this.arenaService.createMyArena(apiPayload).subscribe({
       next: (res) => {
         this.saving.set(false);
         this.toastService.show('Arena Lobby created successfully!', 'success');
-        this.router.navigate(['/events', res.id, 'arena']); // Or wherever join arena goes
+        this.router.navigate(['/events', res.id, 'arena']);
       },
       error: (err: any) => {
         this.saving.set(false);

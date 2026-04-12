@@ -5,7 +5,11 @@ import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { ChatService } from '../../../core/services/chat.service';
 import { ThemeService } from '../../../core/services/theme.service';
-import { BoardThemeService, BOARD_THEMES, PIECE_SETS } from '../../../core/services/board-theme.service';
+import {
+  BoardThemeService,
+  BOARD_THEMES,
+  PIECE_SETS,
+} from '../../../core/services/board-theme.service';
 import { AudioService, SOUND_THEMES } from '../../../core/services/audio.service';
 import { IconComponent } from '../icon/icon.component';
 
@@ -15,11 +19,18 @@ import { IconComponent } from '../icon/icon.component';
   imports: [RouterLink, FormsModule, IconComponent],
   template: `
     <div class="md:hidden fixed inset-0 z-40 bg-black/50" (click)="close.emit()"></div>
-    <div class="md:hidden fixed top-0 right-0 z-50 w-72 h-full bg-white dark:bg-black shadow-2xl flex flex-col overflow-y-auto">
+    <div
+      class="md:hidden fixed top-0 right-0 z-50 w-72 h-full bg-white dark:bg-black  flex flex-col overflow-y-auto"
+    >
       <!-- Mobile Menu Header -->
-      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+      <div
+        class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800"
+      >
         <span class="font-bold text-lg">Menu</span>
-        <button (click)="close.emit()" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10">
+        <button
+          (click)="close.emit()"
+          class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10"
+        >
           <app-icon name="close" class="w-5 h-5"></app-icon>
         </button>
       </div>
@@ -27,7 +38,11 @@ import { IconComponent } from '../icon/icon.component';
       <!-- Mobile Navigation Links -->
       <nav class="flex flex-col py-2">
         @for (link of navLinks; track link.path) {
-          <a [routerLink]="link.path" (click)="close.emit()" class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold">
+          <a
+            [routerLink]="link.path"
+            (click)="close.emit()"
+            class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
+          >
             {{ link.label }}
           </a>
         }
@@ -36,19 +51,31 @@ import { IconComponent } from '../icon/icon.component';
       <!-- Mobile Auth Section -->
       <div class="border-t border-slate-200 dark:border-slate-800 py-2">
         @if (authService.isAuthenticated()) {
-          <a routerLink="/profile" (click)="close.emit()" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5">
-            <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white uppercase">
+          <a
+            routerLink="/profile"
+            (click)="close.emit()"
+            class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5"
+          >
+            <div
+              class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white uppercase"
+            >
               {{ userService.currentUser()?.displayName?.charAt(0) || 'V' }}
             </div>
             <span class="font-semibold">Profile</span>
           </a>
-          
+
           <!-- Shared Links -->
           @for (link of authLinks; track link.path) {
-            <a [routerLink]="link.path" (click)="close.emit()" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold">
+            <a
+              [routerLink]="link.path"
+              (click)="close.emit()"
+              class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
+            >
               {{ link.label }}
               @if (link.label === 'Messages' && chatService.totalUnreadCount() > 0) {
-                <span class="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold">
+                <span
+                  class="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold"
+                >
                   {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
                 </span>
               }
@@ -56,12 +83,23 @@ import { IconComponent } from '../icon/icon.component';
           }
 
           <!-- Chess Settings -->
-          <div class="px-4 py-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-4">
-            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Chess Settings</span>
-            
+          <div
+            class="px-4 py-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-4"
+          >
+            <span
+              class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+              >Chess Settings</span
+            >
+
             <div class="flex flex-col gap-1">
-              <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Board Theme</label>
-              <select [ngModel]="boardThemeService.boardTheme()" (ngModelChange)="boardThemeService.boardTheme.set($event)" class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none">
+              <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+                >Board Theme</label
+              >
+              <select
+                [ngModel]="boardThemeService.boardTheme()"
+                (ngModelChange)="boardThemeService.boardTheme.set($event)"
+                class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
+              >
                 @for (theme of boardThemes; track theme.value) {
                   <option [value]="theme.value">{{ theme.label }}</option>
                 }
@@ -69,8 +107,14 @@ import { IconComponent } from '../icon/icon.component';
             </div>
 
             <div class="flex flex-col gap-1">
-              <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Piece Style</label>
-              <select [ngModel]="boardThemeService.pieceSet()" (ngModelChange)="boardThemeService.pieceSet.set($event)" class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none">
+              <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+                >Piece Style</label
+              >
+              <select
+                [ngModel]="boardThemeService.pieceSet()"
+                (ngModelChange)="boardThemeService.pieceSet.set($event)"
+                class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
+              >
                 @for (set of pieceSets; track set.value) {
                   <option [value]="set.value">{{ set.label }}</option>
                 }
@@ -78,19 +122,35 @@ import { IconComponent } from '../icon/icon.component';
             </div>
           </div>
 
-          <button (click)="themeService.toggleTheme(); close.emit()" class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold">
-            <app-icon [name]="themeService.isDarkMode() ? 'sun' : 'moon'" class="w-5 h-5"></app-icon>
+          <button
+            (click)="themeService.toggleTheme(); close.emit()"
+            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
+          >
+            <app-icon
+              [name]="themeService.isDarkMode() ? 'sun' : 'moon'"
+              class="w-5 h-5"
+            ></app-icon>
             <span>{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
           </button>
 
-          <button (click)="authService.logout(); close.emit()" class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold">
+          <button
+            (click)="authService.logout(); close.emit()"
+            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold"
+          >
             Logout
           </button>
         } @else {
-          <button (click)="themeService.toggleTheme(); close.emit()" class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold">
-             <span>{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
+          <button
+            (click)="themeService.toggleTheme(); close.emit()"
+            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
+          >
+            <span>{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
           </button>
-          <a routerLink="/login" (click)="close.emit()" class="flex items-center justify-center gap-2 mx-4 mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/15 hover:border-cyan-500/60 hover:text-cyan-600 dark:hover:text-cyan-400">
+          <a
+            routerLink="/login"
+            (click)="close.emit()"
+            class="flex items-center justify-center gap-2 mx-4 mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/15 hover:border-cyan-500/60 hover:text-cyan-600 dark:hover:text-cyan-400"
+          >
             Log in
           </a>
         }
@@ -123,7 +183,7 @@ export class MobileMenuComponent {
     { path: '/arena', label: 'Arena' },
     { path: '/broadcasts', label: 'Broadcasts' },
     { path: '/coaches', label: 'Coaches' },
-    { path: "/academy", label: "Academy" },
+    { path: '/academy', label: 'Academy' },
   ];
 
   authLinks = [

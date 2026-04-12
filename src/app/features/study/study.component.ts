@@ -27,13 +27,18 @@ import { Chess } from 'chess.js';
       <div class="w-full max-w-[1700px] h-full flex items-center justify-center">
         @if (study(); as s) {
           <div class="study-layout">
-            
             <!-- Left Column: Move Notation (User Requested Left) -->
             <div class="sidebar-wrapper left-sidebar">
-              <div class="flex flex-col premium-card rounded-xl overflow-hidden shadow-2xl h-full">
-                <div class="p-3 border-b border-border-theme bg-slate-800/20 flex items-center justify-between">
-                  <span class="font-bold text-[10px] uppercase tracking-widest text-slate-400">Analysis & Moves</span>
-                  <span class="text-[10px] font-bold text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded border border-border-theme">
+              <div class="flex flex-col premium-card rounded-xl overflow-hidden  h-full">
+                <div
+                  class="p-3 border-b border-border-theme bg-slate-800/20 flex items-center justify-between"
+                >
+                  <span class="font-bold text-[10px] uppercase tracking-widest text-slate-400"
+                    >Analysis & Moves</span
+                  >
+                  <span
+                    class="text-[10px] font-bold text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded border border-border-theme"
+                  >
                     {{ moves().length }} PLY
                   </span>
                 </div>
@@ -51,17 +56,21 @@ import { Chess } from 'chess.js';
             <div class="board-container-area">
               <div class="board-header mb-4 w-full flex items-center justify-between px-2">
                 <div class="flex flex-col">
-                  <h1 class="font-black text-2xl tracking-tighter capitalize hover:text-cyan-400 transition-colors cursor-default">
+                  <h1
+                    class="font-black text-2xl tracking-tighter capitalize hover:text-cyan-400 transition-colors cursor-default"
+                  >
                     {{ s.name }}
                   </h1>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-[10px] uppercase font-black tracking-widest text-slate-500">Study by</span>
+                    <span class="text-[10px] uppercase font-black tracking-widest text-slate-500"
+                      >Study by</span
+                    >
                     <span class="text-[11px] font-bold text-slate-300">{{ s.owner.name }}</span>
                   </div>
                 </div>
-                
+
                 <div class="flex gap-2">
-                  <span 
+                  <span
                     class="px-2.5 py-1 rounded-lg text-[10px] uppercase font-black tracking-widest border"
                     [class.border-cyan-500/30]="isOwner()"
                     [class.text-cyan-400]="isOwner()"
@@ -71,14 +80,15 @@ import { Chess } from 'chess.js';
                   >
                     {{ isOwner() ? 'Owner' : 'Viewer' }}
                   </span>
-                  <span class="px-2.5 py-1 rounded-lg text-[10px] uppercase font-black tracking-widest border border-slate-700 text-slate-500 bg-slate-800/20">
+                  <span
+                    class="px-2.5 py-1 rounded-lg text-[10px] uppercase font-black tracking-widest border border-slate-700 text-slate-500 bg-slate-800/20"
+                  >
                     {{ s.visibility }}
                   </span>
                 </div>
               </div>
 
-              <div class="board-wrapper-outer" 
-                   [class.premium-card-pulse]="isOwner()">
+              <div class="board-wrapper-outer" [class.premium-card-pulse]="isOwner()">
                 <div class="board-aspect-hider">
                   <app-chess-board
                     [fen]="currentFen()"
@@ -96,30 +106,55 @@ import { Chess } from 'chess.js';
 
             <!-- Right Column: Chapters (Moved to Right) -->
             <div class="sidebar-wrapper right-sidebar">
-              <div class="flex flex-col premium-card rounded-xl overflow-hidden shadow-2xl h-full">
-                <div class="p-4 border-b border-border-theme bg-slate-800/20 flex items-center justify-between">
-                  <h2 class="font-bold text-xs uppercase tracking-widest text-slate-400">Chapters</h2>
+              <div class="flex flex-col premium-card rounded-xl overflow-hidden  h-full">
+                <div
+                  class="p-4 border-b border-border-theme bg-slate-800/20 flex items-center justify-between"
+                >
+                  <h2 class="font-bold text-xs uppercase tracking-widest text-slate-400">
+                    Chapters
+                  </h2>
                   @if (isOwner()) {
-                    <button (click)="createChapter()" class="p-1.5 hover:bg-cyan-400/20 text-slate-400 hover:text-cyan-400 rounded-lg transition-colors" title="Add Chapter">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    <button
+                      (click)="createChapter()"
+                      class="p-1.5 hover:bg-cyan-400/20 text-slate-400 hover:text-cyan-400 rounded-lg transition-colors"
+                      title="Add Chapter"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M5 12h14" />
+                        <path d="M12 5v14" />
+                      </svg>
                     </button>
                   }
                 </div>
                 <div class="flex-1 flex flex-col gap-1 overflow-y-auto custom-scrollbar p-2">
                   @for (chap of s.chapters; track chap.id) {
-                    <button 
+                    <button
                       (click)="selectChapter(chap)"
                       [class.active-chapter]="currentChapter()?.id === chap.id"
                       class="chapter-item group"
                     >
                       <div class="flex items-center gap-3 min-w-0">
-                        <span class="text-[10px] font-bold opacity-30 group-hover:opacity-60 transition-opacity">
+                        <span
+                          class="text-[10px] font-bold opacity-30 group-hover:opacity-60 transition-opacity"
+                        >
                           {{ $index + 1 }}
                         </span>
                         <span class="truncate">{{ chap.name }}</span>
                       </div>
                       @if (currentChapter()?.id === chap.id) {
-                        <div class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]"></div>
+                        <div
+                          class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.5)]"
+                        ></div>
                       }
                     </button>
                   }
@@ -129,9 +164,13 @@ import { Chess } from 'chess.js';
           </div>
         } @else if (isLoading()) {
           <div class="flex items-center justify-center min-h-[400px]">
-             <div class="text-center">
-              <div class="w-10 h-10 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p class="text-slate-500 text-sm font-bold tracking-widest uppercase">Initializing Study</p>
+            <div class="text-center">
+              <div
+                class="w-10 h-10 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"
+              ></div>
+              <p class="text-slate-500 text-sm font-bold tracking-widest uppercase">
+                Initializing Study
+              </p>
             </div>
           </div>
         }
@@ -227,10 +266,19 @@ import { Chess } from 'chess.js';
         }
       }
 
-      .custom-scrollbar::-webkit-scrollbar { width: 3px; }
-      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-      .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(34,211,238,0.2); border-radius: 10px; }
-      .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(34,211,238,0.4); }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 3px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(34, 211, 238, 0.2);
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(34, 211, 238, 0.4);
+      }
 
       @media (max-width: 767px) {
         .study-layout {
@@ -265,7 +313,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   isOwner = computed(() => {
     const user = this.authService.currentUser();
     const s = this.study();
-    return (user && s && s.user_id === user.uid) ? true : false;
+    return user && s && s.user_id === user.uid ? true : false;
   });
 
   private subs = new Subscription();
@@ -279,7 +327,7 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.rebuildChessHistory();
         this.currentPly.set(this.moves().length);
       }
-      
+
       if (isPlatformBrowser(this.platformId)) {
         document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
       }
@@ -290,9 +338,11 @@ export class StudyComponent implements OnInit, OnDestroy {
     const chapter = this.currentChapter();
     if (!chapter) return;
 
-    this.chessHistory = [chapter.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'];
+    this.chessHistory = [
+      chapter.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+    ];
     const tempChess = new Chess(this.chessHistory[0]);
-    
+
     for (const move of this.moves()) {
       try {
         const result = tempChess.move(move);
@@ -316,16 +366,16 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   onMoveMade(event: any) {
     if (!this.isOwner()) return;
-    
+
     // In a study, if we are not at the end, we should probably handle variations.
-    // However, for this simplified implementation, we'll just append to the moves 
+    // However, for this simplified implementation, we'll just append to the moves
     // and rebuild history.
     this.currentFen.set(event.fen);
     const newMoves = [...this.moves(), event.san];
     this.moves.set(newMoves);
     this.rebuildChessHistory();
     this.currentPly.set(newMoves.length);
-    
+
     this.studyService.emitMove(event.san, event.fen);
   }
 
@@ -354,26 +404,26 @@ export class StudyComponent implements OnInit, OnDestroy {
         if (id) {
           setTimeout(() => this.studyService.getStudy(id));
         }
-      })
+      }),
     );
 
     this.subs.add(
       this.studyService.onMoveMade$.subscribe((payload) => {
         this.currentFen.set(payload.fen);
         this.moves.set([...this.moves(), payload.move]);
-      })
+      }),
     );
 
     this.subs.add(
       this.studyService.onShapesDrawn$.subscribe((payload) => {
         this.remoteShapes.set(payload.shapes);
-      })
+      }),
     );
 
     this.subs.add(
       this.studyService.onChapterChanged$.subscribe((payload) => {
         // Handle chapter switch
-      })
+      }),
     );
   }
 
@@ -387,10 +437,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   createChapter() {
-    const name = prompt(
-      'Chapter name:',
-      `Chapter ${this.study()?.chapters_count! + 1}`
-    );
+    const name = prompt('Chapter name:', `Chapter ${this.study()?.chapters_count! + 1}`);
     if (name) {
       this.studyService.addChapter(this.study()?.id!, name).subscribe(() => {
         this.studyService.getStudy(this.study()?.id!);

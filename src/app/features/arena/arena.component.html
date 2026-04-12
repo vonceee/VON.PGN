@@ -1,176 +1,71 @@
-<div class="mx-auto px-4 md:px-8 py-6 max-w-7xl animate-in fade-in duration-700">
-  <!-- Arena Header -->
-  <div
-    class="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950 dark:bg-black p-8 md:p-12 mb-8 shadow-2xl"
-  >
-    <div
-      class="flex flex-col items-center gap-6 bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-inner min-w-[280px]"
-    >
-      <div class="text-center">
-        <div class="text-5xl font-black text-white tabular-nums tracking-tighter drop-shadow-lg">
-          {{ countdown() }}
-        </div>
+<div class="max-w-4xl mx-auto p-4 md:p-8">
+  <!-- Arena Status -->
+  <header class="text-center py-12 border-b border-white/10 mb-8">
+    @if (!isPast()) {
+      <div class="text-xs font-medium opacity-50 uppercase tracking-widest mb-1">
+        {{ countdownLabel() }}
       </div>
+      <div class="text-6xl font-mono tracking-tighter tabular-nums">
+        {{ countdown() }}
+      </div>
+    } @else {
+      <div class="text-xs font-medium text-cyan-400 uppercase tracking-widest mb-1">
+        Tournament Finished
+      </div>
+      <div class="text-3xl font-bold">
+        Winner: {{ winner() || 'Calculating...' }}
+      </div>
+    }
 
-      @if (!isWaiting()) {
+    <div class="mt-8">
+      @if (!isPast()) {
         <app-button
           (click)="toggleJoin()"
-          class="w-full"
-          variant="primary"
-          size="lg"
-          label="Join the Arena"
+          [variant]="isWaiting() ? 'outline' : 'primary'"
+          [label]="isWaiting() ? 'Searching...' : 'Join the Arena'"
+          class="inline-block"
         >
-        </app-button>
-      } @else {
-        <app-button
-          (click)="toggleJoin()"
-          class="w-full"
-          variant="outline"
-          size="lg"
-          label="Searching... (Cancel)"
-        >
-          <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping mr-2"></span>
+          @if (isWaiting()) {
+            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-2 inline-block"></span>
+          }
         </app-button>
       }
     </div>
-  </div>
-</div>
+  </header>
 
-<!-- Arena Content Grid -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-  <!-- Leaderboard Column -->
-  <div class="lg:col-span-8 flex flex-col gap-6">
-    <div
-      class="bg-slate-900/50 backdrop-blur-sm border border-white/5 rounded-3xl overflow-hidden shadow-xl"
-    >
-      <div class="overflow-x-auto">
-        <table class="w-full text-left">
-          <thead>
-            <tr
-              class="text-[10px] uppercase tracking-[0.2em] text-slate-500 border-b border-white/5"
-            >
-              <th class="px-8 py-4 font-black">Rank</th>
-              <th class="px-4 py-4 font-black">Player</th>
-              <th class="px-4 py-4 font-black text-center">Status</th>
-              <th class="px-4 py-4 font-black text-center">Rating</th>
-              <th class="px-8 py-4 font-black text-right">Points</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (player of leaderboard(); track player.userId; let i = $index) {
-              <tr
-                class="group hover:bg-white/5 transition-colors border-b border-white/[0.02] last:border-0"
-                [class.bg-white/[0.03]]="i < 3"
-                [class.bg-cyan-500/10]="player.userId === authService.currentUser()?.uid"
-              >
-                <td class="px-8 py-5">
-                  <div class="flex items-center gap-2">
-                    @if (i === 0) {
-                      <span class="text-xl font-black text-yellow-400 italic">1st</span>
-                    } @else if (i === 1) {
-                      <span class="text-xl font-black text-slate-300 italic">2nd</span>
-                    } @else if (i === 2) {
-                      <span class="text-xl font-black text-orange-400 italic">3rd</span>
-                    } @else {
-                      <span class="text-lg font-bold text-slate-600 italic">#{{ i + 1 }}</span>
-                    }
-                  </div>
-                </td>
-                <td class="px-4 py-5">
-                  <div class="flex items-center gap-4">
-                    <div
-                      class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-white font-black shadow-lg"
-                    >
-                      {{ player.name.charAt(0).toUpperCase() }}
-                    </div>
-                    <div class="flex flex-col">
-                      <div class="flex items-center gap-2">
-                        <span
-                          class="font-bold text-white group-hover:text-cyan-400 transition-colors"
-                          >{{ player.name }}</span
-                        >
-
-                        <!-- THE FLAME: Animated Streak Icon -->
-                        @if (player.streak >= 2) {
-                          <div class="relative group/flame ml-1" title="On Fire! Score doubled!">
-                            <svg
-                              class="w-5 h-5 text-orange-500 animate-pulse drop-shadow-[0_0_5px_rgba(249,115,22,0.8)]"
-                              viewBox="0 0 24 24"
-                              fill="currentColor"
-                            >
-                              <path
-                                d="M12 17.62c-2.43 0-3.14-1.21-3.14-2.81 0-1.25.75-2.29 1.43-3.11.23-.28.47-.56.65-.89.28-.51.46-1.12.46-1.81 0-1-.31-1.63-.78-2.22-.09-.12-.11-.2-.18-.32C9.4 8.76 9 10.39 9 12c0 1.66 1.34 3 3 3s3-1.34 3-3c0-1.61-.41-3.24-1.44-5.54-.07.12-.09.2-.18.32-.47.59-.78 1.22-.78 2.22 0 .69.18 1.3.46 1.81.18.33.42.61.65.89.68.81 1.43 1.85 1.43 3.11 0 1.6-1.71 2.81-4.14 2.81zm0-15.62C7.07 2 3 6.07 3 11s4.07 9 9 9 9-4.07 9-9-4.07-9-9-9z"
-                              />
-                            </svg>
-                            @if (player.streak >= 4) {
-                              <div
-                                class="absolute inset-0 bg-yellow-400 blur-md opacity-30 animate-pulse"
-                              ></div>
-                            }
-                          </div>
-                        }
-                      </div>
-                      <span
-                        class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5"
-                        >Streak: {{ player.streak }}</span
-                      >
-                    </div>
-                  </div>
-                </td>
-                <td class="px-4 py-5 text-center">
-                  @if (player.isWaiting) {
-                    <span
-                      class="px-2 py-0.5 bg-cyan-500/10 text-cyan-400 text-[10px] font-black uppercase rounded border border-cyan-500/20"
-                      >Waiting</span
-                    >
-                  } @else {
-                    <span
-                      class="px-2 py-0.5 bg-white/5 text-slate-500 text-[10px] font-black uppercase rounded border border-white/5"
-                      >Playing</span
-                    >
-                  }
-                </td>
-                <td class="px-4 py-5 text-center">
-                  <span class="text-sm font-bold text-slate-400 tabular-nums">{{
-                    player.rating
-                  }}</span>
-                </td>
-                <td class="px-8 py-5 text-right">
-                  <span
-                    class="text-2xl font-black text-white tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]"
-                  >
-                    {{ player.score }}
-                  </span>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-
-        @if (leaderboard().length === 0) {
-          <div class="px-8 py-20 text-center flex flex-col items-center">
-            <div class="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <svg
-                class="w-8 h-8 text-slate-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
-            </div>
-            <h3 class="text-lg font-bold text-slate-400 uppercase tracking-widest mb-1 italic">
-              Arena Empty
-            </h3>
-            <p class="text-slate-600 text-sm font-medium">Be the first to join the battlefield!</p>
-          </div>
+  <!-- Leaderboard -->
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="text-[10px] uppercase tracking-widest opacity-50 border-b border-white/10">
+          <th class="py-4 font-bold">#</th>
+          <th class="py-4 font-bold">Player</th>
+          <th class="py-4 font-bold text-right">Points</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white/5">
+        @for (player of leaderboard(); track player.userId; let i = $index) {
+          <tr [class.opacity-100]="true" [class.bg-white/5]="player.userId === authService.currentUser()?.uid">
+            <td class="py-4 font-mono text-sm opacity-50">
+              {{ i + 1 }}
+            </td>
+            <td class="py-4">
+              <span class="font-bold">{{ player.name }}</span>
+              <span class="ml-3 text-[10px] opacity-40 uppercase tracking-tighter">x{{ player.streak }}</span>
+            </td>
+            <td class="py-4 text-right font-mono text-xl">
+              {{ player.score }}
+            </td>
+          </tr>
         }
+      </tbody>
+    </table>
+
+    @if (leaderboard().length === 0) {
+      <div class="py-20 text-center opacity-30 text-sm italic">
+        Arena Empty
       </div>
-    </div>
+    }
   </div>
 </div>
+

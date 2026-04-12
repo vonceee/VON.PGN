@@ -71,6 +71,7 @@
           <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Start Time <span class="text-slate-400 font-normal">(minutes from now)</span></label>
           <select formControlName="startDateOffset"
             class="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all">
+            <option [value]="0.5">30 seconds (Testing)</option>
             <option [value]="5">5 minutes</option>
             <option [value]="10">10 minutes</option>
             <option [value]="30">30 minutes</option>
@@ -82,7 +83,7 @@
         <div class="flex flex-col gap-2">
           <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Duration <span class="text-slate-400 font-normal">(in minutes)</span></label>
           <div class="flex items-center gap-4">
-            <input type="range" formControlName="durationMinutes" min="20" max="360" step="10"
+            <input type="range" formControlName="durationMinutes" min="3" max="360" step="1"
               class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700 accent-cyan-500">
             <span class="font-mono bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg text-sm border border-slate-200 dark:border-slate-700 min-w-16 text-center">
               {{ arenaForm.get('durationMinutes')?.value }}m

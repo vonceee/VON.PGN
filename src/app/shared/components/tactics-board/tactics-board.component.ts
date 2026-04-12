@@ -85,6 +85,7 @@ export class TacticsBoardComponent implements OnChanges {
   private gameStartFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
   cgConfig: Config = {};
+  isRevealing = false;
 
   private audioService = inject(AudioService);
 
@@ -101,6 +102,9 @@ export class TacticsBoardComponent implements OnChanges {
 
     this.status = 'playing';
     this._retryMode = false;
+    this.gameMode = false;
+    this.gameMoves = [];
+    this.gamePly = 0;
     this.solutionMoves = this.puzzle.moves.split(' ');
     this.solutionPly = 0;
     this.chess.load(this.puzzle.fen);
@@ -133,8 +137,9 @@ export class TacticsBoardComponent implements OnChanges {
     if (expectedMove.startsWith(userMoveStr)) {
       this.chess.move(this.parseUciMove(expectedMove));
       this.solutionPly++;
+      
       this.moveMade.emit(event.san);
-      this.currentFen = this.chess.fen();
+      this.currentFen = this.chess.fen(); // Safe because of new guards in ChessBoardComponent
 
       if (this.solutionPly >= this.solutionMoves.length) {
         this.status = 'success';
@@ -142,7 +147,13 @@ export class TacticsBoardComponent implements OnChanges {
         if (this.exploreMode) {
           this.enableFreePlay();
         } else {
-          this.cgConfig = { movable: { color: undefined } };
+          // Disable interactive moves after solving
+          this.cgConfig = { 
+            movable: { 
+              color: undefined,
+              dests: new Map()
+            } 
+          };
         }
       } else {
         setTimeout(() => {
@@ -166,7 +177,7 @@ export class TacticsBoardComponent implements OnChanges {
   retryPuzzle() {
     this.chess.load(this.initialFen);
     this.currentFen = this.initialFen;
-    this.solutionPly = 0;
+    this.solutionPly = 1; // Correctly start after the initial opponent move
     this.cgConfig = {
       movable: {
         color: this.userColor,
@@ -273,15 +284,35 @@ export class TacticsBoardComponent implements OnChanges {
   }
 
   revealSolution() {
-    if (!this.puzzle || this.status === 'success') return;
+    if (!this.puzzle || this.status === 'success' || this.isRevealing) return;
     
+    this.isRevealing = true;
     const playNextMove = () => {
-      if (this.solutionPly >= this.solutionMoves.length) return;
-      const move = this.solutionMoves[this.solutionPly];
-      this.chess.move(this.parseUciMove(move));
+      if (this.solutionPly >= this.solutionMoves.length) {
+        this.isRevealing = false;
+        return;
+      }
+      
+      const moveUci = this.solutionMoves[this.solutionPly];
+      let moveResult = null;
+      
+      try {
+        moveResult = this.chess.move(this.parseUciMove(moveUci));
+      } catch (err) {
+        console.error('[Tactics] Reveal failed: Illegal move', moveUci, 'at ply', this.solutionPly, err);
+      }
+      
       this.solutionPly++;
-      this.currentFen = this.chess.fen();
-      setTimeout(playNextMove, 750);
+      
+      if (moveResult) {
+        this.moveMade.emit(moveResult.san);
+        this.audioService.playMoveSound(moveResult.san);
+        this.currentFen = this.chess.fen();
+        setTimeout(playNextMove, 750);
+      } else {
+        console.warn('[Tactics] Reveal halted: Could not execute move', moveUci);
+        this.isRevealing = false;
+      }
     };
     playNextMove();
   }

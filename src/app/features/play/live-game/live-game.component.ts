@@ -47,6 +47,7 @@ import { Config } from 'chessground/config';
     MoveNotationComponent,
     GameControlsComponent,
     ChessBoardComponent,
+    ButtonComponent,
   ],
   templateUrl: './live-game.component.html',
   styleUrls: ['./live-game.component.css'],
@@ -57,11 +58,6 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   constructor() {
     effect(() => {
       const g = this.game();
-
-      if (g?.status === 'completed' && g?.arena_id && !this.autoReturnTriggered) {
-        this.autoReturnTriggered = true;
-        setTimeout(() => this.backToArena(), 5000);
-      }
 
       if (g && !this.boardInitialized) {
         this.boardInitialized = true;

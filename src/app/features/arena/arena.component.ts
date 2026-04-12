@@ -21,15 +21,31 @@ export class ArenaComponent implements OnInit, OnDestroy {
   private gameService = inject(GameService);
 
   arenaId = signal<string | null>(null);
+  
+  // Official arena data from Laravel
+  arenaData = this.arenaService.activeArena;
 
   // Computed properties for UI
   leaderboard = this.arenaService.leaderboard;
   isWaiting = this.arenaService.isWaiting;
   countdown = this.arenaService.countdown;
+  countdownLabel = this.arenaService.countdownLabel;
 
   myRank = computed(() => {
     const userId = this.authService.currentUser()?.uid;
+    if (!userId) return 0;
     return this.leaderboard().findIndex((p) => p.userId === userId) + 1;
+  });
+
+  isPast = computed(() => {
+    return this.arenaData()?.status === 'past';
+  });
+
+  winner = computed(() => {
+    if (this.isPast()) {
+      return this.arenaData()?.winner;
+    }
+    return null;
   });
 
   ngOnInit(): void {

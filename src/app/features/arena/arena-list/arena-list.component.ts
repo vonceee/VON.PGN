@@ -1,10 +1,11 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TournamentService } from '../../../core/services/tournament.service';
+import { ArenaService } from '../../../core/services/arena.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Tournament } from '../../../core/models/tournament.model';
+import { Arena } from '../../../core/models/arena.model';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-arena-list',
@@ -14,25 +15,27 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
   styleUrls: ['./arena-list.component.css']
 })
 export class ArenaListComponent implements OnInit {
-  private tournamentService = inject(TournamentService);
+  public arenaService = inject(ArenaService);
   authService = inject(AuthService);
 
-  loading = this.tournamentService.loading;
-  
+  loading = signal(true);
+
   ongoingArenas = computed(() => 
-    this.tournamentService.tournaments().filter(t => t.format === 'Arena' && t.status === 'ongoing')
+    this.arenaService.arenas().filter(t => t.status === 'ongoing')
   );
 
   upcomingArenas = computed(() => 
-    this.tournamentService.tournaments().filter(t => t.format === 'Arena' && t.status === 'upcoming')
+    this.arenaService.arenas().filter(t => t.status === 'upcoming')
   );
 
   pastArenas = computed(() => 
-    this.tournamentService.tournaments().filter(t => t.format === 'Arena' && t.status === 'past')
+    this.arenaService.arenas().filter(t => t.status === 'past')
   );
 
   ngOnInit() {
-    this.tournamentService.fetchTournaments();
+    this.arenaService.fetchArenas().subscribe(() => {
+      this.loading.set(false);
+    });
   }
 
   formatDate(dateStr: string): string {
