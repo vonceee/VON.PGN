@@ -1,0 +1,222 @@
+<div class="poster-engine" [formGroup]="form" [class.editable]="isEditable">
+  <!-- Interactive Toolbar -->
+  @if (isEditable) {
+    <div class="poster-toolbar">
+      <div class="toolbar-left">
+        <h3 class="toolbar-title">Poster Designer</h3>
+        <div class="toolbar-divider"></div>
+        <!-- Zoom Controls (Relocated) -->
+        <div class="zoom-controls-compact">
+          <button
+            class="zoom-btn-mini"
+            (click)="zoomOut()"
+            [disabled]="zoomLevel() <= 0.1"
+            title="Zoom Out"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2.5"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+            </svg>
+          </button>
+          <div class="zoom-percentage" (click)="resetZoom()" title="Fit to Screen">
+            {{ (zoomLevel() * 100).toFixed(0) }}%
+          </div>
+          <button
+            class="zoom-btn-mini"
+            (click)="zoomIn()"
+            [disabled]="zoomLevel() >= 2.0"
+            title="Zoom In"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2.5"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <app-button
+          variant="ghost"
+          size="sm"
+          [label]="downloading ? 'Preparing...' : 'JPEG'"
+          (click)="handleDownload()"
+          [disabled]="downloading"
+        ></app-button>
+        <app-button
+          variant="primary"
+          size="sm"
+          [label]="downloading ? 'Preparing...' : 'PDF'"
+          (click)="exportAsPDF()"
+          [disabled]="downloading"
+        ></app-button>
+      </div>
+    </div>
+  }
+
+  <div class="poster-layout-main">
+    <!-- Smart Settings Panel (Left) -->
+    @if (isEditable) {
+      <div class="poster-sidebar" [formGroupName]="'posterSettings'">
+        @if (!useCustomPoster) {
+          <div class="sidebar-section">
+            <h4 class="sidebar-label">Template</h4>
+            <div class="template-grid">
+              <div
+                class="template-card"
+                [class.active]="posterSettings.get('layoutId')?.value === 'portrait-classic'"
+                (click)="posterSettings.patchValue({ layoutId: 'portrait-classic' })"
+              >
+                <div class="template-icon">T1</div>
+                <span>Classic</span>
+              </div>
+              <div
+                class="template-card"
+                [class.active]="posterSettings.get('layoutId')?.value === 'portrait-split'"
+                (click)="posterSettings.patchValue({ layoutId: 'portrait-split' })"
+              >
+                <div class="template-icon">T2</div>
+                <span>Split</span>
+              </div>
+              <div
+                class="template-card"
+                [class.active]="posterSettings.get('layoutId')?.value === 'portrait-minimal'"
+                (click)="posterSettings.patchValue({ layoutId: 'portrait-minimal' })"
+              >
+                <div class="template-icon">T3</div>
+                <span>Brutalist</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section mt-6">
+            <h4 class="sidebar-label">Theme</h4>
+            <div class="theme-toggle-group">
+              <button
+                class="theme-btn"
+                [class.active]="posterSettings.get('theme')?.value === 'light'"
+                (click)="posterSettings.patchValue({ theme: 'light' })"
+              >
+                Light
+              </button>
+              <button
+                class="theme-btn"
+                [class.active]="posterSettings.get('theme')?.value === 'dark'"
+                (click)="posterSettings.patchValue({ theme: 'dark' })"
+              >
+                Dark
+              </button>
+            </div>
+          </div>
+
+          <div class="sidebar-section mt-6">
+            <h4 class="sidebar-label">Visibility</h4>
+            <div class="visibility-list" [formGroupName]="'visibility'">
+              <label class="toggle-row">
+                <span>Prize Pool</span>
+                <input type="checkbox" formControlName="showPrizePool" (change)="renderPoster()" />
+              </label>
+              <label class="toggle-row">
+                <span>Schedule</span>
+                <input type="checkbox" formControlName="showSchedule" (change)="renderPoster()" />
+              </label>
+              <label class="toggle-row">
+                <span>Entry Fee</span>
+                <input type="checkbox" formControlName="showEntryFee" (change)="renderPoster()" />
+              </label>
+              <label class="toggle-row">
+                <span>Organizer</span>
+                <input
+                  type="checkbox"
+                  formControlName="showOrganizerInfo"
+                  (change)="renderPoster()"
+                />
+              </label>
+            </div>
+          </div>
+        }
+
+        <div class="sidebar-section mt-6">
+          <h4 class="sidebar-label">Custom Background</h4>
+          <div class="upload-trigger" (click)="bgInput.click()">
+            <input
+              #bgInput
+              type="file"
+              hidden
+              (change)="onFileSelected($event, 'background')"
+              accept="image/*"
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 mb-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            <span>Change Image</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section mt-6">
+          <h4 class="sidebar-label">Branding Logos</h4>
+          <div class="logo-grid">
+            @for (logo of logosArray.controls; track $index; let i = $index) {
+              <div class="logo-box">
+                <img [src]="logo.value" alt="Logo" />
+                <button class="logo-del" (click)="removeLogo(i)">✕</button>
+              </div>
+            }
+            <div class="logo-add" (click)="logoInput.click()" *ngIf="logosArray.length < 5">
+              <input
+                #logoInput
+                type="file"
+                hidden
+                (change)="onFileSelected($event, 'logo')"
+                accept="image/*"
+              />
+              +
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Professional Design Workspace (Right) -->
+    <div class="poster-workspace" [class.full-width]="!isEditable">
+      <div class="workspace-inner">
+        <div #canvasHolder class="canvas-paper">
+          @if (!useCustomPoster) {
+            <div #konvaHolder></div>
+          } @else {
+            <div class="custom-poster-viewer">
+              @if (customPosterUrl) {
+                <img [src]="customPosterUrl" class="max-w-full h-auto" />
+              } @else {
+                <div class="empty-poster-state">
+                  <p>No poster uploaded yet.</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

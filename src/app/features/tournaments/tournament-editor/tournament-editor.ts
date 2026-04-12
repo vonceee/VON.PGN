@@ -1,5 +1,6 @@
-import { Component, inject, OnInit, signal, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject, OnInit, signal, Input, ViewChild, ElementRef, ChangeDetectorRef, computed } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
   FormBuilder,
@@ -76,6 +77,7 @@ export class TournamentEditorComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   public location = inject(Location);
+  private cdr = inject(ChangeDetectorRef);
 
   @Input() mode: 'admin' | 'user' = 'admin';
 
@@ -90,7 +92,9 @@ export class TournamentEditorComponent implements OnInit {
   verificationStatus = signal<'idle' | 'success' | 'error'>('idle');
 
   posterTheme = signal<'dark' | 'light'>('dark');
+  useCustomPosterSignal = signal(false);
   downloadingPoster = signal(false);
+  showPosterModal = signal(false);
 
   fieldLimits: Record<string, number> = {
     name: 255,
@@ -153,6 +157,28 @@ export class TournamentEditorComponent implements OnInit {
     eligibility: this.fb.array([]),
     scheduleDays: this.fb.array([]),
     categories: this.fb.array([]),
+    posterSettings: this.fb.group({
+      layoutId: ['portrait-classic', Validators.required],
+      theme: ['light'], // 'light' or 'dark'
+      backgroundImage: [null as string | null],
+      logos: this.fb.array([]),
+      visibility: this.fb.group({
+        showPrizePool: [true],
+        showSchedule: [true],
+        showEntryFee: [true],
+        showOrganizerInfo: [true],
+      }),
+      useCustomPoster: [false],
+      customPosterUrl: [null as string | null],
+    }),
+  });
+
+  // Reactive state for the poster preview and review step
+  private formValueSignal = toSignal(this.tournamentForm.valueChanges, { initialValue: this.tournamentForm.value });
+  
+  tournamentDataSignal = computed(() => {
+    this.formValueSignal(); // Track changes
+    return this.buildTournamentData();
   });
 
   ngOnInit() {
@@ -592,7 +618,7 @@ export class TournamentEditorComponent implements OnInit {
         this.populateForm(apiTournament);
       },
       error: (err: any) => {
-        const backRoute = this.mode === 'user' ? '/my-tournaments' : '/admin/tournaments';
+        const backRoute = this.mode === 'user' ? '/my-events' : '/admin';
         if (err.status === 403) {
           this.toastService.show('You do not have permission to edit this tournament.', 'error');
         } else {
@@ -603,6 +629,29 @@ export class TournamentEditorComponent implements OnInit {
     });
   }
 
+  
+    private parsePosterSettings(ps: any): any {
+    if (!ps) return null;
+    let decoded = ps;
+    if (typeof ps === 'string') {
+      try {
+        decoded = JSON.parse(ps);
+        if (typeof decoded === 'string') decoded = JSON.parse(decoded);
+      } catch (e) { return null; }
+    }
+    
+    if (decoded && typeof decoded === 'object') {
+      // Normalize snake_case to camelCase for the form
+      if (decoded.background_image && !decoded.backgroundImage) {
+        decoded.backgroundImage = decoded.background_image;
+      }
+      if (decoded.layout_id && !decoded.layoutId) {
+        decoded.layoutId = decoded.layout_id;
+      }
+    }
+    return decoded;
+  }
+
   private populateForm(t: any) {
     this.eligibilityArray.clear();
     this.scheduleDaysArray.clear();
@@ -611,6 +660,7 @@ export class TournamentEditorComponent implements OnInit {
     this.mapsLinkError.set('');
     this.verificationStatus.set('idle');
 
+    const ps = this.parsePosterSettings(t.poster_settings);
     this.tournamentForm.patchValue({
       name: t.name,
       description: t.description,
@@ -630,7 +680,32 @@ export class TournamentEditorComponent implements OnInit {
       contact: t.contact || t.contactEmail || t.contact_email || '',
       link: t.link || '',
       registrationInstructions: t.registrationInstructions || t.registration_instructions || '',
+      posterSettings: ps || {
+        layoutId: 'portrait-classic',
+        theme: 'light',
+        backgroundImage: null,
+        logos: [],
+        visibility: {
+          showPrizePool: true,
+          showSchedule: true,
+          showEntryFee: true,
+          showOrganizerInfo: true,
+        },
+        useCustomPoster: false,
+        customPosterUrl: null,
+      },
     });
+
+    if (ps?.useCustomPoster) {
+      this.useCustomPosterSignal.set(true);
+    }
+
+    const psForLogos = this.parsePosterSettings(t.poster_settings);
+    if (psForLogos?.logos && Array.isArray(psForLogos.logos)) {
+      const logosArray = this.tournamentForm.get('posterSettings.logos') as FormArray;
+      logosArray.clear();
+      psForLogos.logos.forEach((logo: string) => logosArray.push(this.fb.control(logo)));
+    }
 
     if (t.eligibility && Array.isArray(t.eligibility)) {
       t.eligibility.forEach((item: string) => this.eligibilityArray.push(this.fb.control(item)));
@@ -700,7 +775,7 @@ export class TournamentEditorComponent implements OnInit {
 
   // ---- Submit ----
 
-  confirmSave() {
+    confirmSave() {
     this.saving.set(true);
     const tournamentData = this.buildTournamentData();
 
@@ -726,6 +801,7 @@ export class TournamentEditorComponent implements OnInit {
       eligibility: tournamentData['eligibility'] || null,
       categories: tournamentData['categories'] || null,
       schedule: tournamentData['schedule'] || null,
+      poster_settings: tournamentData['poster_settings'] || null,
     };
 
     const tid = this.tournamentId();
@@ -742,7 +818,7 @@ export class TournamentEditorComponent implements OnInit {
           ? this.adminService.updateTournament(tid, apiPayload)
           : this.adminService.createTournament(apiPayload);
 
-    const backRoute = this.mode === 'user' ? '/my-tournaments' : '/admin/tournaments';
+    const backRoute = this.mode === 'user' ? '/my-events' : '/admin';
 
     op.subscribe({
       next: () => {
@@ -885,7 +961,32 @@ export class TournamentEditorComponent implements OnInit {
       ...(eligibility.length ? { eligibility } : {}),
       ...(Object.keys(schedule).length ? { schedule } : {}),
       ...(Object.keys(categories).length ? { categories } : {}),
+      poster_settings: v.posterSettings,
     };
+  }
+
+  get useCustomPoster(): boolean {
+    return this.tournamentForm.get('posterSettings.useCustomPoster')?.value ?? false;
+  }
+
+  onPosterFileSelected(event: any) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      this.toastService.show('File is too large. Max 10MB.', 'error');
+      return;
+    }
+
+    this.handleMediaUpload({ file, type: 'poster' });
+  }
+
+  removeCustomPoster() {
+    this.tournamentForm.get('posterSettings.useCustomPoster')?.setValue(false);
+    this.tournamentForm.get('posterSettings.customPosterUrl')?.setValue(null);
+    this.useCustomPosterSignal.set(false);
+    this.toastService.show('Custom poster removed. Switched to designer.', 'success');
+    this.cdr.detectChanges();
   }
 
   // ---- Poster Generation ----
@@ -999,5 +1100,49 @@ export class TournamentEditorComponent implements OnInit {
       console.error('Error in posterPrizeCategories:', e);
       return [];
     }
+  }
+
+  handleMediaUpload(event: { file: File; type: 'background' | 'logo' | 'poster' }) {
+    const formData = new FormData();
+    formData.append('file', event.file);
+    formData.append('type', event.type);
+
+    this.http.post<{ url: string }>(`${environment.apiUrl}/my/tournaments/media`, formData).subscribe({
+      next: (res) => {
+        // Use setTimeout to avoid NG0100 ExpressionChangedAfterItHasBeenCheckedError
+        setTimeout(() => {
+          if (event.type === 'background') {
+            this.tournamentForm.get('posterSettings.backgroundImage')?.setValue(res.url);
+          } else if (event.type === 'poster') {
+            this.tournamentForm.get('posterSettings.customPosterUrl')?.setValue(res.url);
+            this.tournamentForm.get('posterSettings.useCustomPoster')?.setValue(true);
+            this.useCustomPosterSignal.set(true);
+          } else {
+            const logos = this.tournamentForm.get('posterSettings.logos') as FormArray;
+            logos.push(this.fb.control(res.url));
+          }
+          this.cdr.detectChanges();
+          this.toastService.show('Image uploaded successfully', 'success');
+        });
+      },
+      error: (err) => {
+        this.toastService.show('Failed to upload image: ' + (err.error?.message || err.message), 'error');
+      },
+    });
+  }
+
+  // ---- Modal Helpers ----
+  openPosterModal() {
+    this.showPosterModal.set(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closePosterModal() {
+    this.showPosterModal.set(false);
+    document.body.style.overflow = 'auto';
+  }
+
+  ngOnDestroy() {
+    document.body.style.overflow = 'auto';
   }
 }

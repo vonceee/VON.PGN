@@ -176,8 +176,32 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 px-8">
     @for (tournament of paginatedTournaments(); track tournament.id) {
     <div class="premium-card rounded-2xl overflow-hidden flex flex-col h-full relative group">
+      <!-- Poster Image / Thumbnail -->
+      <div class="h-40 relative group/poster overflow-hidden bg-slate-100 dark:bg-slate-800">
+        @if (getTournamentThumbnail(tournament); as thumb) {
+          <img [src]="thumb" class="w-full h-full object-cover transition-transform duration-500 group-hover/poster:scale-105" [alt]="tournament.name">
+        } @else {
+          <!-- Placeholder with name initial or pattern -->
+          <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-800 dark:to-slate-900 overflow-hidden">
+            <span class="text-4xl font-bold text-slate-400 opacity-20 select-none">{{ tournament.name.charAt(0) }}</span>
+            <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 20px 20px;"></div>
+          </div>
+        }
+        <!-- Decorative Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        
+        <!-- Status Badge overlay -->
+        <div class="absolute top-3 left-3">
+          @if (tournament.status === 'ongoing') {
+            <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-green-500 text-white rounded-lg shadow-lg">Live</span>
+          } @else if (tournament.status === 'upcoming') {
+            <span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-cyan-500 text-white rounded-lg shadow-lg">Soon</span>
+          }
+        </div>
+      </div>
+
       <!-- Card Content -->
-      <div class="p-4 md:p-5 pt-3 flex flex-col flex-1">
+      <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
         <div class="flex items-start justify-between gap-2 mb-2">
           <h2 class="text-base md:text-2xl">{{ tournament.name }}</h2>
           @if (tournament.createdAt) {
@@ -269,7 +293,19 @@
   <div class="flex flex-col gap-3 px-8">
     @for (tournament of paginatedTournaments(); track tournament.id) {
     <div
-      class="premium-card rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 transition-colors">
+      class="premium-card rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-4 transition-colors">
+      
+      <!-- List Thumbnail -->
+      <div class="hidden sm:block w-16 h-16 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-border-theme">
+        @if (getTournamentThumbnail(tournament); as thumb) {
+          <img [src]="thumb" class="w-full h-full object-cover" [alt]="tournament.name">
+        } @else {
+          <div class="w-full h-full flex items-center justify-center bg-slate-200 dark:bg-slate-800">
+            <span class="text-xl font-bold text-slate-400 opacity-30">{{ tournament.name.charAt(0) }}</span>
+          </div>
+        }
+      </div>
+
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 mb-1">
           <h3 class="text-base font-semibold truncate">{{ tournament.name }}</h3>

@@ -1,4 +1,4 @@
-@if (tournament) {
+@if (tournament(); as tournament) {
 <div class="mx-auto">
   <!-- Header -->
   <div class="px-8 pt-8 pb-4">
@@ -71,6 +71,17 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- Left Column -->
       <div class="md:col-span-2 space-y-8">
+
+        @if (tournament && posterForm()) {
+          <section class="mb-10">
+            <app-poster-preview
+              [form]="posterForm()!"
+              [tournamentData]="tournament"
+              [prizeCategories]="posterPrizeCategories()"
+              [isEditable]="false"
+            ></app-poster-preview>
+          </section>
+        }
 
         <section>
           <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">

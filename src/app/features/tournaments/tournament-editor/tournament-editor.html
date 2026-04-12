@@ -3,8 +3,19 @@
   <div class="flex justify-between items-center mb-8">
     <div class="flex items-center gap-4">
       <app-button variant="ghost" size="sm" (click)="location.back()">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
         </svg>
         Back
       </app-button>
@@ -23,7 +34,6 @@
 
   <!-- Form -->
   <form [formGroup]="tournamentForm">
-
     <!-- Step 1: Basic Info -->
     @if (currentStep() === 0) {
       <app-step-basic-info
@@ -110,34 +120,128 @@
         (editStep)="goToStep($event)"
       ></app-review-section>
 
-      @if (buildTournamentData(); as data) {
-        <app-poster-preview
-          [theme]="posterTheme()"
-          [tournamentData]="data"
-          [posterDate]="posterDate"
-          [prizeCategories]="posterPrizeCategories"
-          [downloading]="downloadingPoster()"
-          (themeChange)="posterTheme.set($event)"
-          (download)="downloadPoster()"
-        ></app-poster-preview>
+      @if (tournamentDataSignal(); as data) {
+        <div class="poster-section">
+          <div class="poster-section-header">
+            <h3 class="poster-section-title">Tournament Poster</h3>
+            <div class="flex gap-2">
+              @if (!useCustomPosterSignal()) {
+                <app-button
+                  variant="outline"
+                  size="sm"
+                  (click)="posterUploadInput.click()"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-4 h-4 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                    />
+                  </svg>
+                  Upload Your Own
+                </app-button>
+              } @else {
+                <app-button
+                  variant="outline"
+                  size="sm"
+                  (click)="removeCustomPoster()"
+                >
+                  Use Designer
+                </app-button>
+                <app-button
+                  variant="ghost"
+                  size="sm"
+                  (click)="posterUploadInput.click()"
+                >
+                  Replace Image
+                </app-button>
+              }
+
+              <app-button
+                variant="primary"
+                size="sm"
+                (click)="openPosterModal()"
+                aria-label="Customize layout, theme, and branding"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                  />
+                </svg>
+                Customize Poster
+              </app-button>
+            </div>
+
+            <input
+              #posterUploadInput
+              type="file"
+              hidden
+              (change)="onPosterFileSelected($event)"
+              accept="image/png, image/jpeg, image/webp"
+            />
+          </div>
+
+          <app-poster-preview
+            [form]="tournamentForm"
+            [tournamentData]="data"
+            [prizeCategories]="posterPrizeCategories"
+            [downloading]="downloadingPoster()"
+            [isEditable]="false"
+            (mediaUpload)="handleMediaUpload($event)"
+          ></app-poster-preview>
+        </div>
       }
+    }
+
+    <!-- Poster Customization Modal -->
+    @if (showPosterModal()) {
+      <div class="poster-modal-overlay">
+        <div class="poster-modal-content" (click)="$event.stopPropagation()">
+          <div class="poster-modal-body">
+            @if (tournamentDataSignal(); as data) {
+              <app-poster-preview
+                [form]="tournamentForm"
+                [tournamentData]="data"
+                [prizeCategories]="posterPrizeCategories"
+                [downloading]="downloadingPoster()"
+                [isEditable]="true"
+                (mediaUpload)="handleMediaUpload($event)"
+              ></app-poster-preview>
+            }
+          </div>
+
+          <div class="poster-modal-footer">
+            <app-button variant="primary" (click)="closePosterModal()"> Done Editing </app-button>
+          </div>
+        </div>
+      </div>
     }
 
     <!-- Navigation Buttons -->
     <div class="flex justify-between mt-10 pt-6 border-t border-border-theme">
-      <app-button
-        variant="ghost"
-        (click)="prevStep()"
-        [disabled]="currentStep() === 0"
-      >
+      <app-button variant="ghost" (click)="prevStep()" [disabled]="currentStep() === 0">
         Previous
       </app-button>
 
       <div class="flex gap-3">
         @if (!isLastStep) {
-          <app-button (click)="nextStep()">
-            Next
-          </app-button>
+          <app-button (click)="nextStep()"> Next </app-button>
         } @else {
           <app-button (click)="confirmSave()" [loading]="saving()">
             {{ tournamentId() ? 'Update Tournament' : 'Create Tournament' }}

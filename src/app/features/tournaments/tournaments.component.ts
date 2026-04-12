@@ -206,6 +206,23 @@ export class TournamentsComponent implements OnInit {
     return this.formatDate(dateStr);
   }
 
+  getTournamentThumbnail(tournament: Tournament): string | null {
+    const ps = tournament.poster_settings;
+    if (!ps) return null;
+
+    // 1. Prioritize Custom Manual Poster
+    if (ps.useCustomPoster && ps.customPosterUrl) {
+      return ps.customPosterUrl;
+    }
+
+    // 2. Fallback to Background Image from Designer
+    if (ps.backgroundImage) {
+      return ps.backgroundImage;
+    }
+
+    return null;
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     if (

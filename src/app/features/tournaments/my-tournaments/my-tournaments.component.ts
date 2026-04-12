@@ -1,16 +1,16 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Tournament } from '../../../core/models/tournament.model';
 import { ConfirmDeleteModalComponent } from '../../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { SectionHeadingComponent } from 'src/app/shared/components/section-heading/section-heading.component';
 
 @Component({
   selector: 'app-my-tournaments',
   standalone: true,
-  imports: [CommonModule, ConfirmDeleteModalComponent, ButtonComponent],
+  imports: [CommonModule, ConfirmDeleteModalComponent, SectionHeadingComponent, ButtonComponent],
   templateUrl: './my-tournaments.component.html',
 })
 export class MyTournamentsComponent implements OnInit {
@@ -37,7 +37,7 @@ export class MyTournamentsComponent implements OnInit {
       error: (err) => {
         this.toastService.show('Failed to load tournaments', 'error');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -64,7 +64,7 @@ export class MyTournamentsComponent implements OnInit {
       error: () => {
         this.toastService.show('Failed to delete tournament', 'error');
         this.deleting.set(false);
-      }
+      },
     });
   }
 
@@ -72,7 +72,7 @@ export class MyTournamentsComponent implements OnInit {
     return new Date(dateStr).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   }
 }

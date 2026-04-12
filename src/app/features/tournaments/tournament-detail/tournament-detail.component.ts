@@ -2,7 +2,9 @@ import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { BackLinkComponent } from '../../../shared/components/back-link/back-link.component';
+import { PosterPreviewComponent } from '../tournament-editor/components/poster-preview.component';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -11,7 +13,7 @@ import { Tournament } from '../../../core/models/tournament.model';
 @Component({
   selector: 'app-tournament-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, BackLinkComponent],
+  imports: [CommonModule, RouterModule, BackLinkComponent, PosterPreviewComponent, ReactiveFormsModule],
   templateUrl: './tournament-detail.component.html'
 })
 export class TournamentDetailComponent implements OnInit {
@@ -19,9 +21,12 @@ export class TournamentDetailComponent implements OnInit {
   private tournamentService = inject(TournamentService);
   private sanitizer = inject(DomSanitizer);
   private seo = inject(SeoService);
+  private fb = inject(FormBuilder);
   authService = inject(AuthService);
 
-  tournament: Tournament | undefined;
+  tournament = signal<Tournament | undefined>(undefined);
+  posterForm = signal<FormGroup | undefined>(undefined);
+  posterPrizeCategories = signal<any[]>([]);
   mapUrl = signal<SafeResourceUrl | null>(null);
   isBookmarked = signal(false);
   bookmarkLoading = signal(false);
@@ -33,10 +38,11 @@ export class TournamentDetailComponent implements OnInit {
       if (id) {
         const t = this.tournamentService.getTournamentById(id);
         if (t) {
-          this.tournament = t;
+          this.tournament.set(t);
           this.isBookmarked.set(t.isBookmarked ?? false);
           this.setupMap();
           this.updateSeo(t);
+          this.initPoster(t);
         }
       }
     });
@@ -65,8 +71,9 @@ export class TournamentDetailComponent implements OnInit {
   }
 
   private setupMap() {
-    if (this.tournament && !this.mapUrl()) {
-      const { lat, lng } = this.tournament.coordinates;
+    const t = this.tournament();
+    if (t && !this.mapUrl()) {
+      const { lat, lng } = t.coordinates;
       // Only set mapUrl if coordinates are valid (not both 0)
       if (lat !== 0 || lng !== 0) {
         const url = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
@@ -116,13 +123,12 @@ export class TournamentDetailComponent implements OnInit {
     return null;
   }
 
-
-
   toggleBookmark() {
-    if (!this.authService.isAuthenticated() || this.bookmarkLoading() || !this.tournament) return;
+    const t = this.tournament();
+    if (!this.authService.isAuthenticated() || this.bookmarkLoading() || !t) return;
 
     this.bookmarkLoading.set(true);
-    this.tournamentService.toggleBookmark(this.tournament.id).subscribe({
+    this.tournamentService.toggleBookmark(t.id).subscribe({
       next: (res) => {
         this.isBookmarked.set(res.is_bookmarked);
         this.bookmarkLoading.set(false);
@@ -152,7 +158,7 @@ export class TournamentDetailComponent implements OnInit {
 
   shareToTwitter() {
     const url = encodeURIComponent(window.location.href);
-    const text = encodeURIComponent(this.tournament?.name ?? 'Check out this tournament!');
+    const text = encodeURIComponent(this.tournament()?.name ?? 'Check out this tournament!');
     window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank', 'width=600,height=400');
     this.shareMenuOpen.set(false);
   }
@@ -162,5 +168,95 @@ export class TournamentDetailComponent implements OnInit {
     if (count >= 1000000) return (count / 1000000).toFixed(1) + 'M';
     if (count >= 1000) return (count / 1000).toFixed(1) + 'K';
     return count.toString();
+  }
+
+  private parsePosterSettings(ps: any): any {
+    if (!ps) return null;
+    let decoded = ps;
+    if (typeof ps === 'string') {
+      try {
+        decoded = JSON.parse(ps);
+        if (typeof decoded === 'string') decoded = JSON.parse(decoded);
+      } catch (e) { return null; }
+    }
+    
+    if (decoded && typeof decoded === 'object') {
+      // Normalize snake_case to camelCase for the form
+      if (decoded.background_image && !decoded.backgroundImage) {
+        decoded.backgroundImage = decoded.background_image;
+      }
+      if (decoded.layout_id && !decoded.layoutId) {
+        decoded.layoutId = decoded.layout_id;
+      }
+    }
+    return decoded;
+  }
+
+  private initPoster(t: Tournament) {
+    // 1. Initialize hidden form for the engine
+    let ps = this.parsePosterSettings(t.poster_settings);
+    const settings = ps || {
+        layoutId: 'portrait-classic',
+        theme: 'light',
+        backgroundImage: null,
+        logos: [],
+        visibility: {
+            showPrizePool: true,
+            showSchedule: true,
+            showEntryFee: true,
+            showOrganizerInfo: true
+        }
+    };
+
+    const form = this.fb.group({
+        posterSettings: this.fb.group({
+            layoutId: [settings.layoutId],
+            theme: [settings.theme],
+            backgroundImage: [settings.backgroundImage],
+            logos: this.fb.array(settings.logos || []),
+            visibility: this.fb.group({
+                showPrizePool: [settings.visibility?.showPrizePool ?? true],
+                showSchedule: [settings.visibility?.showSchedule ?? true],
+                showEntryFee: [settings.visibility?.showEntryFee ?? true],
+                showOrganizerInfo: [settings.visibility?.showOrganizerInfo ?? true]
+            }),
+            useCustomPoster: [settings.useCustomPoster ?? false],
+            customPosterUrl: [settings.customPosterUrl ?? null]
+        })
+    });
+    this.posterForm.set(form);
+
+    // 2. Map prizes
+    const categories: any[] = [];
+    if (t.categories) {
+        Object.entries(t.categories).forEach(([name, data]) => {
+            const prizes: any[] = [];
+            if (data.prizes) {
+                Object.entries(data.prizes).forEach(([place, value]) => {
+                    if (value) prizes.push({ place: place.replace('_', ' '), value });
+                });
+            }
+
+            const specialAwards: any[] = [];
+            if (data.specialAwards) {
+                Object.entries(data.specialAwards).forEach(([awardName, value]) => {
+                    if (typeof value === 'string') {
+                        specialAwards.push({ name: awardName, value });
+                    } else if (value && typeof value === 'object') {
+                        Object.entries(value).forEach(([subPlace, subVal]) => {
+                            if (subVal) specialAwards.push({ name: `${awardName} (${subPlace})`, value: subVal });
+                        });
+                    }
+                });
+            }
+
+            categories.push({
+                category: name.replace('_', ' '),
+                prizes,
+                specialAwards
+            });
+        });
+    }
+    this.posterPrizeCategories.set(categories);
   }
 }

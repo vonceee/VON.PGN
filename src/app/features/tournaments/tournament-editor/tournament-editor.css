@@ -322,7 +322,9 @@
 
 /* ===== Spinner ===== */
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin {
@@ -480,7 +482,12 @@
   height: 675px;
   position: relative;
   overflow: hidden;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -733,4 +740,78 @@
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.15em;
+}
+/* ===== Poster Modal ===== */
+.poster-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.poster-modal-content {
+  background: white;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.dark .poster-modal-content {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+}
+
+.poster-modal-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.poster-modal-footer {
+  padding: 1.25rem 2rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dark .poster-modal-footer {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+.close-modal-btn {
+  background: #f1f5f9;
+  border: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-modal-btn:hover {
+  background: #e2e8f0;
+  color: #ef4444;
+}
+
+.dark .close-modal-btn {
+  background: #1e293b;
+  color: #94a3b8;
 }
