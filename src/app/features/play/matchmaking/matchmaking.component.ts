@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../../../core/services/game.service';
 import { TIME_CONTROLS, TimeControlOption, GameSeek } from '../../../core/models/game.model';
@@ -12,7 +12,7 @@ import { ButtonComponent } from '../../../shared/components/button/button.compon
 @Component({
   selector: 'app-matchmaking',
   standalone: true,
-  imports: [CommonModule, SeekBoardComponent, ServerMaintenanceComponent, FormsModule, BadgeComponent, ButtonComponent],
+  imports: [CommonModule, RouterModule, SeekBoardComponent, ServerMaintenanceComponent, FormsModule, BadgeComponent, ButtonComponent],
   templateUrl: './matchmaking.component.html',
 })
 export class MatchmakingComponent implements OnInit, OnDestroy {

@@ -54,10 +54,15 @@
                 }
               </div>
 
-              <div class="shrink-0 mt-auto pt-2">
+              <div class="shrink-0 mt-auto pt-2 space-y-3">
                 <button (click)="showCustomForm.set(true)" [disabled]="gameService.isSearching()" class="relative w-full flex items-center justify-center py-3 bg-white/[0.03] hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 rounded-xl group text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm">
                   Custom Time Control
                   <app-badge [customClass]="'absolute right-4'">NEW</app-badge>
+                </button>
+
+                <button routerLink="/play-computer" class="w-full flex items-center justify-center py-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/30 rounded-xl group text-base font-black uppercase tracking-widest cursor-pointer transition-all shadow-lg shadow-cyan-500/10 active:scale-[0.98]">
+                  <span class="mr-3">🤖</span>
+                  Play with Computer
                 </button>
               </div>
             } @else {

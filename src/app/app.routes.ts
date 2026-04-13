@@ -401,6 +401,15 @@ export const routes: Routes = [
         data: { description: 'Watch or continue a live chess game on vonchess.' },
         resolve: { seo: seoResolver },
       },
+      {
+        path: 'play-computer',
+        loadComponent: () =>
+          import('./features/play/computer/computer-play.component').then((m) => m.ComputerPlayComponent),
+        canActivate: [authGuard],
+        title: 'Vonchess.net • Play Computer',
+        data: { description: 'Challenge Stockfish 16.1 in a local game.' },
+        resolve: { seo: seoResolver },
+      },
     ],
   },
   {
