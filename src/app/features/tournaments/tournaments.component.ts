@@ -34,13 +34,32 @@ export class TournamentsComponent implements OnInit {
   viewMode = signal<'grid' | 'list'>('list');
   currentPage = signal(1);
 
-  upcomingCount = computed(() => this.tournaments().filter(t => t.status === 'upcoming').length);
-  ongoingCount = computed(() => this.tournaments().filter(t => t.status === 'ongoing').length);
-  pastCount = computed(() => this.tournaments().filter(t => t.status === 'past').length);
+  tournamentsWithStatus = computed(() => {
+    const now = new Date();
+    return this.tournaments().map(t => {
+      const start = new Date(t.dates.start);
+      const end = new Date(t.dates.end);
+      let status: TournamentStatus = t.status;
+
+      if (now > end) {
+        status = 'past';
+      } else if (now >= start) {
+        status = 'ongoing';
+      } else {
+        status = 'upcoming';
+      }
+
+      return { ...t, status };
+    });
+  });
+
+  upcomingCount = computed(() => this.tournamentsWithStatus().filter(t => t.status === 'upcoming').length);
+  ongoingCount = computed(() => this.tournamentsWithStatus().filter(t => t.status === 'ongoing').length);
+  pastCount = computed(() => this.tournamentsWithStatus().filter(t => t.status === 'past').length);
 
   availableFormats = computed(() => {
     const formats = new Set<string>();
-    this.tournaments().forEach(t => {
+    this.tournamentsWithStatus().forEach(t => {
       if (t.format) formats.add(t.format);
     });
     return Array.from(formats).sort();
@@ -52,7 +71,7 @@ export class TournamentsComponent implements OnInit {
     const tab = this.activeTab();
     const sort = this.sortBy();
 
-    let result = this.tournaments().filter(t => {
+    let result = this.tournamentsWithStatus().filter(t => {
       if (t.format === 'Arena') return false;
       if (t.status !== tab) return false;
       if (format && t.format !== format) return false;
