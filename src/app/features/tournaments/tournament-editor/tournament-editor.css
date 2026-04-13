@@ -6,12 +6,26 @@
 
 .editor-layout {
   display: grid;
-  grid-template-columns: 180px 1fr 600px;
-  gap: 2rem;
+  grid-template-columns: 180px 1fr 420px;
+  gap: 0.5rem;
   align-items: start;
 }
 
-/* ===== Left Sidebar: Nav ===== */
+@media (min-width: 1600px) {
+  .editor-layout {
+    grid-template-columns: 200px 1fr 500px;
+  }
+}
+
+/* ===== Center Console: Form ===== */
+.form-console {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: 100px; /* Space for sticky footer */
+}
+
+/* ===== Sidebar Navigation ===== */
 .sidebar-nav {
   position: sticky;
   top: 1.5rem;
@@ -68,18 +82,6 @@
 
 .dark .form-section {
   background: #0f172a;
-}
-
-.section-header {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border-theme);
-}
-
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin: 0;
 }
 
 /* ===== Right Sidebar: Preview ===== */

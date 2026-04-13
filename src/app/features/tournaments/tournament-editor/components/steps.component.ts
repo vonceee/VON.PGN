@@ -12,7 +12,6 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
   styleUrls: ['./step-styles.component.css'],
   template: `
     <div [formGroup]="form">
-
       <div class="field-row" style="grid-template-columns: 7fr 3fr;">
         <app-form-field
           formControlName="name"
@@ -44,7 +43,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
         [charLimit]="65535"
       ></app-form-field>
     </div>
-  `
+  `,
 })
 export class StepBasicInfoComponent {
   @Input() form!: FormGroup;
@@ -53,7 +52,7 @@ export class StepBasicInfoComponent {
   statusOptions = [
     { value: 'upcoming', label: 'Upcoming' },
     { value: 'ongoing', label: 'Ongoing' },
-    { value: 'past', label: 'Past' }
+    { value: 'past', label: 'Past' },
   ];
 }
 
@@ -65,15 +64,23 @@ export class StepBasicInfoComponent {
   styleUrls: ['./step-styles.component.css'],
   template: `
     <div [formGroup]="form">
-
       <div class="field-row three-col">
+        <app-form-field
+          formControlName="startDate"
+          label="Start Date"
+          type="date"
+          [required]="true"
+          [errorMessage]="getError('startDate')"
+        ></app-form-field>
+
         <div class="relative">
           <app-form-field
-            formControlName="startDate"
-            label="Start Date"
+            formControlName="endDate"
+            label="End Date"
             type="date"
             [required]="true"
-            [errorMessage]="getError('startDate')"
+            [disabled]="isOneDayTournament()"
+            [errorMessage]="getError('endDate')"
           ></app-form-field>
           <div class="absolute top-0 right-0 flex items-center gap-2">
             <label class="flex items-center gap-2 cursor-pointer">
@@ -81,22 +88,13 @@ export class StepBasicInfoComponent {
                 type="checkbox"
                 [ngModel]="isOneDayTournament()"
                 (ngModelChange)="toggleOneDayTournament()"
-                [ngModelOptions]="{standalone: true}"
+                [ngModelOptions]="{ standalone: true }"
                 class="w-4 h-4 text-cyan-400 bg-slate-800 border-slate-600 rounded focus:ring-cyan-400 focus:ring-2"
               />
               <span class="text-sm font-medium">1-day tournament</span>
             </label>
           </div>
         </div>
-
-        <app-form-field
-          formControlName="endDate"
-          label="End Date"
-          type="date"
-          [required]="true"
-          [disabled]="isOneDayTournament()"
-          [errorMessage]="getError('endDate')"
-        ></app-form-field>
 
         <app-form-field
           formControlName="registrationDeadline"
@@ -123,28 +121,30 @@ export class StepBasicInfoComponent {
             type="text"
             [ngModel]="mapsLink()"
             (ngModelChange)="mapsLink.set($event)"
-            [ngModelOptions]="{standalone: true}"
+            [ngModelOptions]="{ standalone: true }"
             placeholder="Paste Google Maps URL to verify location"
             class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
           />
           <app-button
             variant="primary"
-            size="sm"
+            size="lg"
             [label]="mapsLinkLoading() ? 'Verifying...' : 'Verify'"
             (click)="parseMapsLink.emit()"
             [disabled]="mapsLinkLoading()"
           ></app-button>
         </div>
         @if (verificationStatus() === 'success') {
-        <p class="text-xs text-green-600 mt-1.5">✓ Location verified successfully</p>
+          <p class="text-xs text-green-600 mt-1.5">✓ Location verified successfully</p>
         }
         @if (verificationStatus() === 'error') {
-        <p class="text-xs text-red-500 mt-1.5">{{ mapsLinkError() }}</p>
+          <p class="text-xs text-red-500 mt-1.5">{{ mapsLinkError() }}</p>
         }
-        <p class="text-xs text-slate-500 mt-1.5">Paste a Google Maps URL to verify the tournament location</p>
+        <p class="text-xs text-slate-500 mt-1.5">
+          Paste a Google Maps URL to verify the tournament location
+        </p>
       </div>
     </div>
-  `
+  `,
 })
 export class StepDatesLocationComponent implements OnInit {
   @Input() form!: FormGroup;
@@ -166,7 +166,7 @@ export class StepDatesLocationComponent implements OnInit {
     }
 
     // Watch for start date changes to update end date if one-day tournament is checked
-    this.form.get('startDate')?.valueChanges.subscribe(value => {
+    this.form.get('startDate')?.valueChanges.subscribe((value) => {
       if (this.isOneDayTournament() && value) {
         this.form.get('endDate')?.setValue(value);
       }
@@ -195,7 +195,6 @@ export class StepDatesLocationComponent implements OnInit {
   styleUrls: ['./step-styles.component.css'],
   template: `
     <div [formGroup]="form">
-
       <div class="field-row">
         <app-form-field
           formControlName="format"
@@ -242,7 +241,7 @@ export class StepDatesLocationComponent implements OnInit {
         ></app-form-field>
       </div>
     </div>
-  `
+  `,
 })
 export class StepFormatRulesComponent {
   @Input() form!: FormGroup;

@@ -245,8 +245,8 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
       x: margin,
       y: currentY,
       text: (data.name || 'Tournament Name').toUpperCase(),
-      fontSize: 180, // Reduced from 240
-      fontFamily: 'Georgia, serif',
+      fontSize: 140, // Reduced from 180 for better balance
+      fontFamily: 'Google Sans',
       fontStyle: 'bold',
       fill: colors.text,
       width: this.CANVAS_WIDTH - margin * 2,
@@ -264,7 +264,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
       y: currentY,
       text: infoText,
       fontSize: 80, // Reduced from 120 (approx)
-      fontFamily: 'Arial',
+      fontFamily: 'Google Sans',
       fontStyle: 'bold',
       fill: colors.text,
       width: this.CANVAS_WIDTH - margin * 2,
@@ -289,32 +289,33 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     layer.add(sep);
     currentY += 100;
 
-    // Main Details Grid
+    // Main Details (Format · Time Control · Rounds)
     const details = [
       { label: 'FORMAT', value: data.format },
       { label: 'TIME CONTROL', value: data.timeControl },
-      { label: 'ROUNDS', value: data.rounds },
+      { label: 'ROUNDS', value: data.rounds ? `${data.rounds} ROUNDS` : '' },
     ];
     if (v.showEntryFee && data.entryFee)
       details.push({ label: 'ENTRY FEE', value: this.formatMoney(data.entryFee) });
 
-    const colWidth = (this.CANVAS_WIDTH - margin * 2) / details.length;
-    details.forEach((d, i) => {
-      if (!d.value) return;
-      // No labels as requested
-      const dValue = new Konva.Text({
-        x: margin + i * colWidth,
-        y: currentY,
-        text: String(d.value).toUpperCase(),
-        fontSize: 80, // Reduced for a more "Traditional" elegant balance
-        fontFamily: 'Arial',
-        fill: colors.text,
-        width: colWidth,
-        align: 'center',
-        fontStyle: 'bold',
-      });
-      layer.add(dValue);
+    const detailsText = details
+      .filter((d) => d.value)
+      .map((d) => String(d.value).toUpperCase())
+      .join('  ·  ');
+
+    const detailsView = new Konva.Text({
+      x: margin,
+      y: currentY,
+      text: detailsText,
+      fontSize: 70, // Slightly smaller for the horizontal list
+      fontFamily: 'Google Sans',
+      fontStyle: 'bold',
+      fill: colors.text,
+      width: this.CANVAS_WIDTH - margin * 2,
+      align: 'center',
+      letterSpacing: 2,
     });
+    layer.add(detailsView);
     currentY += 150;
 
     // Prizes Section (Leaderboard Style)
@@ -324,7 +325,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
         y: currentY,
         text: 'PRIZES & CATEGORIES',
         fontSize: 100, // Upscaled from 50
-        fontFamily: 'Georgia, serif',
+        fontFamily: 'Google Sans',
         fontStyle: 'bold',
         fill: colors.text,
         width: this.CANVAS_WIDTH - margin * 2,
@@ -341,7 +342,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
         const catTitle = new Konva.Text({
           text: cat.category.toUpperCase(),
           fontSize: 45,
-          fontFamily: 'Arial',
+          fontFamily: 'Google Sans',
           fontStyle: 'bold',
           fill: colors.text,
           width: this.CANVAS_WIDTH - margin * 2,
@@ -357,7 +358,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
             y: rowY,
             text: p.place.toUpperCase(),
             fontSize: 45,
-            fontFamily: 'Arial',
+            fontFamily: 'Google Sans',
             fill: colors.text,
           });
           const pValue = new Konva.Text({
@@ -365,7 +366,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
             y: rowY,
             text: this.formatMoney(p.value),
             fontSize: 45,
-            fontFamily: 'Arial',
+            fontFamily: 'Google Sans',
             fontStyle: 'bold',
             fill: colors.text,
             width: this.CANVAS_WIDTH - margin * 2 - 400,
@@ -375,51 +376,6 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
         });
 
         currentY += catBox.getClientRect().height + 150;
-      });
-    }
-
-    // Schedule (Compact Row)
-    if (v.showSchedule && data.schedule?.day_1?.events) {
-      const sHeader = new Konva.Text({
-        x: margin,
-        y: currentY,
-        text: 'SCHEDULE',
-        fontSize: 100, // Upscaled from 50
-        fontFamily: 'Georgia, serif',
-        fontStyle: 'bold',
-        fill: colors.text,
-        width: this.CANVAS_WIDTH - margin * 2,
-        align: 'center',
-        letterSpacing: 5,
-      });
-      layer.add(sHeader);
-      currentY += 120;
-
-      const events = data.schedule.day_1.events.slice(0, 5);
-      const eColWidth = (this.CANVAS_WIDTH - margin * 2) / Math.max(events.length, 1);
-      events.forEach((e: any, i: number) => {
-        const eTime = new Konva.Text({
-          x: margin + i * eColWidth,
-          y: currentY,
-          text: e.time,
-          fontSize: 60,
-          fontFamily: 'Arial',
-          fill: colors.sub,
-          width: eColWidth,
-          align: 'center',
-        });
-        const eName = new Konva.Text({
-          x: margin + i * eColWidth,
-          y: currentY + 70,
-          text: e.name.toUpperCase(),
-          fontSize: 60,
-          fontFamily: 'Arial',
-          fontStyle: 'bold',
-          fill: colors.text,
-          width: eColWidth,
-          align: 'center',
-        });
-        layer.add(eTime, eName);
       });
     }
 
@@ -435,7 +391,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
         y: footerY + 200,
         text: `ORGANIZER: ${data.organizer || ''}  |  CONTACT: ${data.contact || ''}`.toUpperCase(),
         fontSize: 80, // Upscaled from 40
-        fontFamily: 'Arial',
+        fontFamily: 'Google Sans',
         fill: colors.sub,
         width: this.CANVAS_WIDTH - margin * 2,
         align: 'center',

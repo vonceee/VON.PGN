@@ -19,7 +19,7 @@ export class TournamentFormHandler {
     lat: [undefined as number | undefined],
     lng: [undefined as number | undefined],
     format: ['Swiss System', Validators.required],
-    timeControl: ['15 min + 3 sec increment', Validators.required],
+    timeControl: ['15 min + 3 sec', Validators.required],
     rounds: [7, Validators.required],
     entryFee: [''],
     prizePool: [''],
@@ -108,6 +108,32 @@ export class TournamentFormHandler {
     (this.categoriesArray.at(catIndex).get('extraPrizes') as FormArray).removeAt(prizeIndex);
   }
 
+  public resetForm() {
+    this.tournamentForm.reset({
+      status: 'upcoming',
+      format: 'Swiss System',
+      timeControl: '15 min + 3 sec',
+      rounds: 7,
+      registrationInstructions: 'For inquiries or registration, please reach out directly to the event organizer listed.',
+      posterSettings: {
+        theme: 'light',
+        backgroundImage: null,
+        visibility: {
+          showPrizePool: true,
+          showSchedule: true,
+          showEntryFee: true,
+          showOrganizerInfo: true,
+        },
+        useCustomPoster: false,
+        customPosterUrl: null,
+      },
+    });
+    this.eligibilityArray.clear();
+    this.scheduleDaysArray.clear();
+    this.categoriesArray.clear();
+    (this.tournamentForm.get('posterSettings.logos') as FormArray).clear();
+  }
+
   // ---- Data Hydration ----
 
   public populateForm(t: any) {
@@ -127,7 +153,7 @@ export class TournamentFormHandler {
       lat: t.coordinates?.lat || t.latitude,
       lng: t.coordinates?.lng || t.longitude,
       format: t.format,
-      timeControl: t.timeControl || t.time_control,
+      timeControl: t.timeControl || t.time_control || '15 min + 3 sec',
       rounds: t.rounds,
       entryFee: this.parseCurrency(t.entryFee || t.entry_fee),
       prizePool: this.parseCurrency(t.prizePool || t.prize_pool),

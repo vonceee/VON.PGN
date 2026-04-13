@@ -1,4 +1,14 @@
-import { Component, inject, OnInit, signal, Input, ChangeDetectorRef, computed, OnDestroy, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  Input,
+  ChangeDetectorRef,
+  computed,
+  OnDestroy,
+  PLATFORM_ID,
+} from '@angular/core';
 import { CommonModule, Location, isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,26 +21,55 @@ import { TournamentService } from '../../../core/services/tournament.service';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { ToastService } from '../../../core/services/toast.service';
 
-import { StepBasicInfoComponent, StepDatesLocationComponent, StepFormatRulesComponent } from './components/steps.component';
-import { StepOrganizerComponent, StepRegistrationComponent, StepEligibilityComponent } from './components/steps-extra.component';
-import { StepPrizesComponent, StepScheduleComponent } from './components/steps-prizes-schedule.component';
+import {
+  StepBasicInfoComponent,
+  StepDatesLocationComponent,
+  StepFormatRulesComponent,
+} from './components/steps.component';
+import {
+  StepOrganizerComponent,
+  StepRegistrationComponent,
+  StepEligibilityComponent,
+} from './components/steps-extra.component';
+import {
+  StepPrizesComponent,
+  StepScheduleComponent,
+} from './components/steps-prizes-schedule.component';
 import { ReviewSectionComponent } from './components/review-section.component';
 import { PosterPreviewComponent } from './components/poster-preview.component';
 
-import { TournamentMode, PosterTheme, VerificationStatus, comparePrizeKeys } from './models/tournament-editor.models';
+import {
+  TournamentMode,
+  PosterTheme,
+  VerificationStatus,
+  comparePrizeKeys,
+} from './models/tournament-editor.models';
 import { TournamentFormHandler } from './handlers/tournament-form.handler';
 import { TournamentMapsService } from './services/tournament-maps.service';
 import { TournamentPosterHandler } from './handlers/tournament-poster.handler';
+import { BackLinkComponent } from 'src/app/shared/components/back-link/back-link.component';
+import { SectionHeadingComponent } from 'src/app/shared/components/section-heading/section-heading.component';
 
 @Component({
   selector: 'app-tournament-editor',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, FormsModule, ButtonComponent,
-    StepBasicInfoComponent, StepDatesLocationComponent,
-    StepFormatRulesComponent, StepOrganizerComponent, StepRegistrationComponent,
-    StepEligibilityComponent, StepPrizesComponent, StepScheduleComponent,
-    ReviewSectionComponent, PosterPreviewComponent,
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    ButtonComponent,
+    StepBasicInfoComponent,
+    StepDatesLocationComponent,
+    StepFormatRulesComponent,
+    StepOrganizerComponent,
+    StepRegistrationComponent,
+    StepEligibilityComponent,
+    StepPrizesComponent,
+    StepScheduleComponent,
+    ReviewSectionComponent,
+    PosterPreviewComponent,
+    BackLinkComponent,
+    SectionHeadingComponent,
   ],
   templateUrl: './tournament-editor.html',
   styleUrls: ['./tournament-editor.css'],
@@ -56,7 +95,7 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   // State Signals
   tournamentId = signal<string | null>(null);
   saving = signal(false);
-  
+
   // Maps State
   mapsLink = signal('');
   mapsLinkError = signal('');
@@ -68,30 +107,45 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   downloadingPoster = signal(false);
 
   // Form Shortcut
-  get tournamentForm() { return this.formHandler.tournamentForm; }
+  get tournamentForm() {
+    return this.formHandler.tournamentForm;
+  }
 
   // Computed Values
-  private formValueSignal = toSignal(this.tournamentForm.valueChanges, { initialValue: this.tournamentForm.value });
+  private formValueSignal = toSignal(this.tournamentForm.valueChanges, {
+    initialValue: this.tournamentForm.value,
+  });
   tournamentDataSignal = computed(() => {
     this.formValueSignal();
     return this.formHandler.buildTournamentData();
   });
 
-  get useCustomPoster() { return this.tournamentForm.get('posterSettings.useCustomPoster')?.value ?? false; }
+  get useCustomPoster() {
+    return this.tournamentForm.get('posterSettings.useCustomPoster')?.value ?? false;
+  }
 
   // Form Array Getters for Template
-  get eligibilityArray() { return this.formHandler.eligibilityArray; }
-  get scheduleDaysArray() { return this.formHandler.scheduleDaysArray; }
-  get categoriesArray() { return this.formHandler.categoriesArray; }
+  get eligibilityArray() {
+    return this.formHandler.eligibilityArray;
+  }
+  get scheduleDaysArray() {
+    return this.formHandler.scheduleDaysArray;
+  }
+  get categoriesArray() {
+    return this.formHandler.categoriesArray;
+  }
 
   ngOnInit() {
     const mode = this.route.snapshot.data['mode'];
     if (mode) this.mode = mode;
 
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('tournamentId');
       if (id && isPlatformBrowser(this.platformId)) {
         this.loadTournament(id);
+      } else {
+        this.tournamentId.set(null);
+        this.formHandler.resetForm();
       }
     });
   }
@@ -106,22 +160,50 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   }
 
   // ---- Delegate Methods for Template ----
-  getError(fieldName: string) { return this.formHandler.getError(fieldName); }
-  buildTournamentData() { return this.formHandler.buildTournamentData(); }
+  getError(fieldName: string) {
+    return this.formHandler.getError(fieldName);
+  }
+  buildTournamentData() {
+    return this.formHandler.buildTournamentData();
+  }
   comparePrizeKeys = comparePrizeKeys;
 
-  addEligibilityItem() { this.formHandler.addEligibilityItem(); }
-  removeEligibilityItem(i: number) { this.formHandler.removeEligibilityItem(i); }
-  addScheduleDay() { this.formHandler.addScheduleDay(); }
-  removeScheduleDay(i: number) { this.formHandler.removeScheduleDay(i); }
-  addScheduleEvent(i: number) { this.formHandler.addScheduleEvent(i); }
-  removeScheduleEvent(di: number, ei: number) { this.formHandler.removeScheduleEvent(di, ei); }
-  addCategory() { this.formHandler.addCategory(); }
-  removeCategory(i: number) { this.formHandler.removeCategory(i); }
-  addSpecialAward(i: number) { this.formHandler.addSpecialAward(i); }
-  removeSpecialAward(ci: number, ai: number) { this.formHandler.removeSpecialAward(ci, ai); }
-  addExtraPrize(i: number) { this.formHandler.addExtraPrize(i); }
-  removeExtraPrize(ci: number, pi: number) { this.formHandler.removeExtraPrize(ci, pi); }
+  addEligibilityItem() {
+    this.formHandler.addEligibilityItem();
+  }
+  removeEligibilityItem(i: number) {
+    this.formHandler.removeEligibilityItem(i);
+  }
+  addScheduleDay() {
+    this.formHandler.addScheduleDay();
+  }
+  removeScheduleDay(i: number) {
+    this.formHandler.removeScheduleDay(i);
+  }
+  addScheduleEvent(i: number) {
+    this.formHandler.addScheduleEvent(i);
+  }
+  removeScheduleEvent(di: number, ei: number) {
+    this.formHandler.removeScheduleEvent(di, ei);
+  }
+  addCategory() {
+    this.formHandler.addCategory();
+  }
+  removeCategory(i: number) {
+    this.formHandler.removeCategory(i);
+  }
+  addSpecialAward(i: number) {
+    this.formHandler.addSpecialAward(i);
+  }
+  removeSpecialAward(ci: number, ai: number) {
+    this.formHandler.removeSpecialAward(ci, ai);
+  }
+  addExtraPrize(i: number) {
+    this.formHandler.addExtraPrize(i);
+  }
+  removeExtraPrize(ci: number, pi: number) {
+    this.formHandler.removeExtraPrize(ci, pi);
+  }
 
   // ---- Form Actions ----
 
@@ -147,14 +229,19 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     };
 
     if (this.mapsService.isShortenedUrl(link)) {
-      this.mapsService.resolveShortenedUrl(link).subscribe({ next: handleCoords, error: () => handleCoords(null) });
+      this.mapsService
+        .resolveShortenedUrl(link)
+        .subscribe({ next: handleCoords, error: () => handleCoords(null) });
     } else {
       handleCoords(this.mapsService.extractCoords(link));
     }
   }
 
   loadTournament(slug: string) {
-    const obs = this.mode === 'user' ? this.tournamentService.getMyTournament(slug) : this.adminService.getTournament(slug);
+    const obs =
+      this.mode === 'user'
+        ? this.tournamentService.getMyTournament(slug)
+        : this.adminService.getTournament(slug);
     obs.subscribe({
       next: (res: any) => {
         const data = res.data || res;
@@ -163,9 +250,12 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
         if (data.poster_settings?.useCustomPoster) this.useCustomPosterSignal.set(true);
       },
       error: (err: any) => {
-        this.toastService.show(err.status === 403 ? 'Permission denied.' : 'Tournament not found.', 'error');
+        this.toastService.show(
+          err.status === 403 ? 'Permission denied.' : 'Tournament not found.',
+          'error',
+        );
         this.router.navigate([this.mode === 'user' ? '/my-events' : '/admin']);
-      }
+      },
     });
   }
 
@@ -187,15 +277,20 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
       longitude: data['coordinates'].lng,
       contact_email: data['contact'],
       registration_instructions: data['registrationInstructions'],
-      poster_settings: data['poster_settings']
+      poster_settings: data['poster_settings'],
     };
 
     const tid = this.tournamentId();
     if (tid) payload['slug'] = tid;
 
-    const op = this.mode === 'user'
-      ? (tid ? this.tournamentService.updateMyTournament(tid, payload) : this.tournamentService.createMyTournament(payload))
-      : (tid ? this.adminService.updateTournament(tid, payload) : this.adminService.createTournament(payload));
+    const op =
+      this.mode === 'user'
+        ? tid
+          ? this.tournamentService.updateMyTournament(tid, payload)
+          : this.tournamentService.createMyTournament(payload)
+        : tid
+          ? this.adminService.updateTournament(tid, payload)
+          : this.adminService.createTournament(payload);
 
     op.subscribe({
       next: () => {
@@ -206,13 +301,15 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
       error: (err: any) => {
         this.saving.set(false);
         this.toastService.show('Failed to save: ' + (err.error?.message || err.message), 'error');
-      }
+      },
     });
   }
 
   // ---- Poster Actions ----
 
-  get posterPrizeCategories() { return this.posterHandler.getPosterPrizeCategories(this.tournamentDataSignal()); }
+  get posterPrizeCategories() {
+    return this.posterHandler.getPosterPrizeCategories(this.tournamentDataSignal());
+  }
 
   onPosterFileSelected(event: any) {
     const file = event.target.files?.[0];
@@ -228,27 +325,35 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     formData.append('file', event.file);
     formData.append('type', event.type);
 
-    this.http.post<{ url: string }>(`${environment.apiUrl}/my/tournaments/media`, formData).subscribe({
-      next: (res) => {
-        setTimeout(() => {
-          if (event.type === 'background') this.tournamentForm.get('posterSettings.backgroundImage')?.setValue(res.url);
-          else if (event.type === 'poster') {
-            this.tournamentForm.get('posterSettings.customPosterUrl')?.setValue(res.url);
-            this.tournamentForm.get('posterSettings.useCustomPoster')?.setValue(true);
-            this.useCustomPosterSignal.set(true);
-          } else {
-            (this.tournamentForm.get('posterSettings.logos') as FormArray).push(new FormControl(res.url));
-          }
-          this.cdr.detectChanges();
-          this.toastService.show('Image uploaded successfully', 'success');
-        });
-      },
-      error: (err) => this.toastService.show('Upload failed: ' + (err.error?.message || err.message), 'error')
-    });
+    this.http
+      .post<{ url: string }>(`${environment.apiUrl}/my/tournaments/media`, formData)
+      .subscribe({
+        next: (res) => {
+          setTimeout(() => {
+            if (event.type === 'background')
+              this.tournamentForm.get('posterSettings.backgroundImage')?.setValue(res.url);
+            else if (event.type === 'poster') {
+              this.tournamentForm.get('posterSettings.customPosterUrl')?.setValue(res.url);
+              this.tournamentForm.get('posterSettings.useCustomPoster')?.setValue(true);
+              this.useCustomPosterSignal.set(true);
+            } else {
+              (this.tournamentForm.get('posterSettings.logos') as FormArray).push(
+                new FormControl(res.url),
+              );
+            }
+            this.cdr.detectChanges();
+            this.toastService.show('Image uploaded successfully', 'success');
+          });
+        },
+        error: (err) =>
+          this.toastService.show('Upload failed: ' + (err.error?.message || err.message), 'error'),
+      });
   }
 
   removeCustomPoster() {
-    this.tournamentForm.patchValue({ posterSettings: { useCustomPoster: false, customPosterUrl: null } });
+    this.tournamentForm.patchValue({
+      posterSettings: { useCustomPoster: false, customPosterUrl: null },
+    });
     this.useCustomPosterSignal.set(false);
     this.toastService.show('Custom poster removed.', 'success');
     this.cdr.detectChanges();

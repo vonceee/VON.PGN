@@ -1,30 +1,4 @@
 <div class="editor-container">
-  <!-- Header -->
-  <div class="flex justify-between items-center mb-8">
-    <div class="flex items-center gap-4">
-      <app-button variant="ghost" size="sm" (click)="location.back()">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-4 h-4 mr-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-        </svg>
-        Back to Dashboard
-      </app-button>
-      <h1 class="text-3xl font-extrabold m-0 tracking-tight">
-        {{ tournamentId() ? 'Update Tournament' : 'Create New Tournament' }}
-      </h1>
-    </div>
-  </div>
-
   <form [formGroup]="tournamentForm" class="editor-layout">
     <!-- Left Sidebar: Section Navigation -->
     <aside class="sidebar-nav">
@@ -52,18 +26,31 @@
         Schedule
       </button>
       <div class="my-2 border-t border-slate-100 dark:border-slate-800"></div>
-      <button type="button" class="nav-item font-bold text-cyan-600 dark:text-cyan-400" (click)="scrollToSection('sec-review')">
+      <button
+        type="button"
+        class="nav-item font-bold text-cyan-600 dark:text-cyan-400"
+        (click)="scrollToSection('sec-review')"
+      >
         Final Review
       </button>
     </aside>
 
     <!-- Center Console: Main Form Sections -->
     <main class="form-console">
+      <div class="flex flex-col items-start gap-2">
+        <app-back-link size="sm" text="Back to Dashboard" (click)="location.back()"></app-back-link>
+
+        <app-section-heading
+          [noMargin]="true"
+          [text]="tournamentId() ? 'Update' : 'Create New'"
+          highlight="Tournament"
+          size="lg"
+        ></app-section-heading>
+      </div>
+
       <!-- Basic Info -->
       <section id="sec-basic" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Basic Information</h2>
-        </header>
+        <app-section-heading text="Basic Information" highlight="." size="md"></app-section-heading>
         <app-step-basic-info
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -72,9 +59,7 @@
 
       <!-- Dates & Location -->
       <section id="sec-dates" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Dates & Location</h2>
-        </header>
+        <app-section-heading text="Dates & Location" highlight="." size="md"></app-section-heading>
         <app-step-dates-location
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -88,9 +73,7 @@
 
       <!-- Format & Rules -->
       <section id="sec-format" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Format & Rules</h2>
-        </header>
+        <app-section-heading text="Format & Rules" highlight="." size="md"></app-section-heading>
         <app-step-format-rules
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -99,9 +82,11 @@
 
       <!-- Organizer -->
       <section id="sec-organizer" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Organizer Information</h2>
-        </header>
+        <app-section-heading
+          text="Organizer Information"
+          highlight="."
+          size="md"
+        ></app-section-heading>
         <app-step-organizer
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -110,9 +95,11 @@
 
       <!-- Registration -->
       <section id="sec-registration" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Registration Details</h2>
-        </header>
+        <app-section-heading
+          text="Registration Details"
+          highlight="."
+          size="md"
+        ></app-section-heading>
         <app-step-registration
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -121,9 +108,11 @@
 
       <!-- Eligibility -->
       <section id="sec-eligibility" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Player Eligibility</h2>
-        </header>
+        <app-section-heading
+          text="Player Eligibility"
+          highlight="."
+          size="md"
+        ></app-section-heading>
         <app-step-eligibility
           [eligibilityArray]="eligibilityArray"
           (addItem)="addEligibilityItem()"
@@ -133,9 +122,11 @@
 
       <!-- Prizes -->
       <section id="sec-prizes" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Prizes & Categories</h2>
-        </header>
+        <app-section-heading
+          text="Prizes & Categories"
+          highlight="."
+          size="md"
+        ></app-section-heading>
         <app-step-prizes
           [categoriesArray]="categoriesArray"
           (addCategory)="addCategory()"
@@ -149,9 +140,7 @@
 
       <!-- Schedule -->
       <section id="sec-schedule" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Event Schedule</h2>
-        </header>
+        <app-section-heading text="Event Schedule" highlight="." size="md"></app-section-heading>
         <app-step-schedule
           [scheduleDaysArray]="scheduleDaysArray"
           (addScheduleDay)="addScheduleDay()"
@@ -163,9 +152,7 @@
 
       <!-- Final Review -->
       <section id="sec-review" class="form-section">
-        <header class="section-header">
-          <h2 class="section-title">Final Review</h2>
-        </header>
+        <app-section-heading text="Final Review" highlight="." size="md"></app-section-heading>
         <app-review-section
           [data]="tournamentDataSignal()"
           [comparePrizeKeys]="comparePrizeKeys"

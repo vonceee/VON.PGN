@@ -41,7 +41,7 @@ export class ButtonComponent {
       case 'primary':
         return `${base} bg-white text-black hover:bg-cyan-400`;
       case 'danger':
-        return `${base} bg-red-500 hover:bg-red-600 border-red-500`;
+        return `${base} bg-transparent border-transparent text-red-600 hover:text-red-700 underline underline-offset-4 decoration-red-600/30 hover:decoration-red-700`;
       case 'ghost':
         return `${base} bg-transparent hover:text-cyan-400 hover:underline border-transparent`;
       default:
