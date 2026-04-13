@@ -11,13 +11,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
   imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   styleUrls: ['./step-styles.component.css'],
   template: `
-    <div class="step-content" [formGroup]="form">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Basic Information</h2>
-          <p class="step-subtitle">Set up the fundamental details of your tournament</p>
-        </div>
-      </div>
+    <div [formGroup]="form">
 
       <div class="field-row" style="grid-template-columns: 7fr 3fr;">
         <app-form-field
@@ -70,13 +64,7 @@ export class StepBasicInfoComponent {
   imports: [CommonModule, ReactiveFormsModule, FormsModule, FormFieldComponent, ButtonComponent],
   styleUrls: ['./step-styles.component.css'],
   template: `
-    <div class="step-content" [formGroup]="form">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Dates & Location</h2>
-          <p class="step-subtitle">Set the tournament schedule and venue details</p>
-        </div>
-      </div>
+    <div [formGroup]="form">
 
       <div class="field-row three-col">
         <div class="relative">
@@ -206,13 +194,7 @@ export class StepDatesLocationComponent implements OnInit {
   imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   styleUrls: ['./step-styles.component.css'],
   template: `
-    <div class="step-content" [formGroup]="form">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Format & Rules</h2>
-          <p class="step-subtitle">Define the tournament structure and entry details</p>
-        </div>
-      </div>
+    <div [formGroup]="form">
 
       <div class="field-row">
         <app-form-field

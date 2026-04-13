@@ -11,13 +11,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
   imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   styleUrls: ['./step-styles.component.css'],
   template: `
-    <div class="step-content" [formGroup]="form">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Organizer</h2>
-          <p class="step-subtitle">Provide organizer contact information and links</p>
-        </div>
-      </div>
+    <div [formGroup]="form">
 
       <app-form-field
         formControlName="organizer"
@@ -64,13 +58,7 @@ export class StepOrganizerComponent {
   imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
   styleUrls: ['./step-styles.component.css'],
   template: `
-    <div class="step-content" [formGroup]="form">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Registration Instructions</h2>
-          <p class="step-subtitle">Provide clear instructions for tournament registration</p>
-        </div>
-      </div>
+    <div [formGroup]="form">
       <app-form-field
         formControlName="registrationInstructions"
         label="Registration Instructions"
@@ -97,13 +85,7 @@ export class StepRegistrationComponent {
   imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
   styleUrls: ['./step-styles.component.css'],
   template: `
-    <div class="step-content">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Eligibility Requirements (Optional)</h2>
-          <p class="step-subtitle">Set rating ranges and other participation requirements</p>
-        </div>
-      </div>
+    <div>
       <div class="space-y-4">
         @for (control of eligibilityArray.controls; track $index; let i = $index) {
         <div class="flex gap-3 items-center p-4">

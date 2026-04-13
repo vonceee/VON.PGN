@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
 
       <!-- Basic Info -->
       <div class="review-section">
-        <div class="review-header" (click)="editStep.emit(0)">
+        <div class="review-header" (click)="onEdit('sec-basic')">
           <h3>Basic Information</h3>
           <span class="review-edit">Edit</span>
         </div>
@@ -42,14 +42,16 @@ import { CommonModule } from '@angular/common';
 
       <!-- Dates & Location -->
       <div class="review-section">
-        <div class="review-header" (click)="editStep.emit(1)">
+        <div class="review-header" (click)="onEdit('sec-dates')">
           <h3>Dates & Location</h3>
           <span class="review-edit">Edit</span>
         </div>
         <div class="review-grid">
           <div class="review-item">
             <span class="review-label">Dates</span>
-            <span class="review-value">{{ formatDate(data['dates']['start']) }} - {{ formatDate(data['dates']['end']) }}</span>
+            <span class="review-value">
+              {{ formatDate(data['dates']?.start) }} - {{ formatDate(data['dates']?.end) }}
+            </span>
           </div>
           @if (data['registrationDeadline']) {
           <div class="review-item">
@@ -63,14 +65,14 @@ import { CommonModule } from '@angular/common';
           </div>
           <div class="review-item">
             <span class="review-label">Coordinates</span>
-            <span class="review-value">{{ data['coordinates']['lat'] }}, {{ data['coordinates']['lng'] }}</span>
+            <span class="review-value">{{ data['coordinates']?.lat }}, {{ data['coordinates']?.lng }}</span>
           </div>
         </div>
       </div>
 
       <!-- Format -->
       <div class="review-section">
-        <div class="review-header" (click)="editStep.emit(2)">
+        <div class="review-header" (click)="onEdit('sec-format')">
           <h3>Format & Rules</h3>
           <span class="review-edit">Edit</span>
         </div>
@@ -100,7 +102,7 @@ import { CommonModule } from '@angular/common';
 
       <!-- Organizer -->
       <div class="review-section">
-        <div class="review-header" (click)="editStep.emit(3)">
+        <div class="review-header" (click)="onEdit('sec-organizer')">
           <h3>Organizer</h3>
           <span class="review-edit">Edit</span>
         </div>
@@ -124,7 +126,7 @@ import { CommonModule } from '@angular/common';
 
       <!-- Registration Instructions -->
       <div class="review-section">
-        <div class="review-header" (click)="editStep.emit(4)">
+        <div class="review-header" (click)="onEdit('sec-registration')">
           <h3>Registration Instructions</h3>
           <span class="review-edit">Edit</span>
         </div>
@@ -137,7 +139,7 @@ import { CommonModule } from '@angular/common';
 
       <!-- Eligibility -->
       <div class="review-section">
-        <div class="review-header" (click)="editStep.emit(5)">
+        <div class="review-header" (click)="onEdit('sec-eligibility')">
           <h3>Eligibility</h3>
           <span class="review-edit">Edit</span>
         </div>
@@ -157,7 +159,7 @@ import { CommonModule } from '@angular/common';
 
       <!-- Prizes -->
       <div class="review-section">
-        <div class="review-header" (click)="editStep.emit(6)">
+        <div class="review-header" (click)="onEdit('sec-prizes')">
           <h3>Prizes</h3>
           <span class="review-edit">Edit</span>
         </div>
@@ -184,7 +186,7 @@ import { CommonModule } from '@angular/common';
 
       <!-- Schedule -->
       <div class="review-section">
-        <div class="review-header" (click)="editStep.emit(7)">
+        <div class="review-header" (click)="onEdit('sec-schedule')">
           <h3>Schedule</h3>
           <span class="review-edit">Edit</span>
         </div>
@@ -217,10 +219,18 @@ import { CommonModule } from '@angular/common';
 export class ReviewSectionComponent {
   @Input() data!: Record<string, any>;
   @Input() comparePrizeKeys!: (a: { key: string }, b: { key: string }) => number;
-  @Output() editStep = new EventEmitter<number>();
+  @Output() editSection = new EventEmitter<string>();
 
   formatDate(dateStr: string): string {
-    if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    if (!dateStr) return '—';
+    try {
+      return new Date(dateStr).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    } catch {
+      return dateStr;
+    }
+  }
+
+  onEdit(sectionId: string) {
+    this.editSection.emit(sectionId);
   }
 }

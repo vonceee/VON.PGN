@@ -69,35 +69,7 @@
     @if (isEditable) {
       <div class="poster-sidebar" [formGroupName]="'posterSettings'">
         @if (!useCustomPoster) {
-          <div class="sidebar-section">
-            <h4 class="sidebar-label">Template</h4>
-            <div class="template-grid">
-              <div
-                class="template-card"
-                [class.active]="posterSettings.get('layoutId')?.value === 'portrait-classic'"
-                (click)="posterSettings.patchValue({ layoutId: 'portrait-classic' })"
-              >
-                <div class="template-icon">T1</div>
-                <span>Classic</span>
-              </div>
-              <div
-                class="template-card"
-                [class.active]="posterSettings.get('layoutId')?.value === 'portrait-split'"
-                (click)="posterSettings.patchValue({ layoutId: 'portrait-split' })"
-              >
-                <div class="template-icon">T2</div>
-                <span>Split</span>
-              </div>
-              <div
-                class="template-card"
-                [class.active]="posterSettings.get('layoutId')?.value === 'portrait-minimal'"
-                (click)="posterSettings.patchValue({ layoutId: 'portrait-minimal' })"
-              >
-                <div class="template-icon">T3</div>
-                <span>Brutalist</span>
-              </div>
-            </div>
-          </div>
+          <!-- Theme Selection -->
 
           <div class="sidebar-section mt-6">
             <h4 class="sidebar-label">Theme</h4>
@@ -201,7 +173,7 @@
     <!-- Professional Design Workspace (Right) -->
     <div class="poster-workspace" [class.full-width]="!isEditable">
       <div class="workspace-inner">
-        <div #canvasHolder class="canvas-paper">
+        <div #canvasHolder>
           @if (!useCustomPoster) {
             <div #konvaHolder></div>
           } @else {

@@ -10,13 +10,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
   imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
   styleUrls: ['./step-styles.component.css'],
   template: `
-    <div class="step-content">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Prize Categories</h2>
-          <p class="step-subtitle">Set up prize structures for different tournament categories</p>
-        </div>
-      </div>
+    <div>
       
       @if (categoriesArray.length === 0) {
       <p class="text-slate-400 text-sm py-4 text-center">No prize categories added.</p>
@@ -232,13 +226,7 @@ export class StepPrizesComponent implements OnInit {
   imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
   styleUrls: ['./step-styles.component.css'],
   template: `
-    <div class="step-content">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Schedule (Optional)</h2>
-          <p class="step-subtitle">Plan the tournament timeline and key events</p>
-        </div>
-      </div>      
+    <div>
       @if (scheduleDaysArray.length === 0) {
       <p class="text-slate-400 text-sm py-4 text-center">No schedule days added yet.</p>
       }

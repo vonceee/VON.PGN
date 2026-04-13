@@ -50,6 +50,12 @@ export class AuthService {
   private lastCredentials: LoginCredentials | null = null;
 
   initAuth() {
+    // Skip initialization on server - only run in browser
+    if (!this.isBrowser) {
+      this.isInitialized.set(true);
+      return of(null);
+    }
+
     const token = this.getToken();
 
     if (!token) {

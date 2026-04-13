@@ -1,11 +1,11 @@
-<div class="wizard-container">
+<div class="editor-container">
   <!-- Header -->
   <div class="flex justify-between items-center mb-8">
     <div class="flex items-center gap-4">
       <app-button variant="ghost" size="sm" (click)="location.back()">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="w-4 h-4"
+          class="w-4 h-4 mr-1"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -17,237 +17,210 @@
             d="M10 19l-7-7m0 0l7-7m-7 7h18"
           />
         </svg>
-        Back
+        Back to Dashboard
       </app-button>
-      <h1 class="text-3xl m-0">{{ tournamentId() ? 'Edit Tournament' : 'New Tournament' }}</h1>
+      <h1 class="text-3xl font-extrabold m-0 tracking-tight">
+        {{ tournamentId() ? 'Update Tournament' : 'Create New Tournament' }}
+      </h1>
     </div>
   </div>
 
-  <!-- Progress Indicator -->
-  <app-step-indicator
-    [steps]="steps"
-    [currentStep]="currentStep()"
-    [stepsCompleted]="stepsCompleted()"
-    [isEditMode]="!!tournamentId()"
-    (goToStep)="goToStep($event)"
-  ></app-step-indicator>
+  <form [formGroup]="tournamentForm" class="editor-layout">
+    <!-- Left Sidebar: Section Navigation -->
+    <aside class="sidebar-nav">
+      <h3 class="px-4 text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Sections</h3>
+      <button type="button" class="nav-item" (click)="scrollToSection('sec-basic')">
+        Basic Info
+      </button>
+      <button type="button" class="nav-item" (click)="scrollToSection('sec-dates')">
+        Dates & Location
+      </button>
+      <button type="button" class="nav-item" (click)="scrollToSection('sec-format')">
+        Format & Rules
+      </button>
+      <button type="button" class="nav-item" (click)="scrollToSection('sec-organizer')">
+        Organizer
+      </button>
+      <button type="button" class="nav-item" (click)="scrollToSection('sec-registration')">
+        Registration
+      </button>
+      <button type="button" class="nav-item" (click)="scrollToSection('sec-eligibility')">
+        Eligibility
+      </button>
+      <button type="button" class="nav-item" (click)="scrollToSection('sec-prizes')">Prizes</button>
+      <button type="button" class="nav-item" (click)="scrollToSection('sec-schedule')">
+        Schedule
+      </button>
+      <div class="my-2 border-t border-slate-100 dark:border-slate-800"></div>
+      <button type="button" class="nav-item font-bold text-cyan-600 dark:text-cyan-400" (click)="scrollToSection('sec-review')">
+        Final Review
+      </button>
+    </aside>
 
-  <!-- Form -->
-  <form [formGroup]="tournamentForm">
-    <!-- Step 1: Basic Info -->
-    @if (currentStep() === 0) {
-      <app-step-basic-info
-        [form]="tournamentForm"
-        [getError]="getError.bind(this)"
-      ></app-step-basic-info>
-    }
+    <!-- Center Console: Main Form Sections -->
+    <main class="form-console">
+      <!-- Basic Info -->
+      <section id="sec-basic" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Basic Information</h2>
+        </header>
+        <app-step-basic-info
+          [form]="tournamentForm"
+          [getError]="getError.bind(this)"
+        ></app-step-basic-info>
+      </section>
 
-    <!-- Step 2: Dates & Location -->
-    @if (currentStep() === 1) {
-      <app-step-dates-location
-        [form]="tournamentForm"
-        [getError]="getError.bind(this)"
-        [mapsLink]="mapsLink"
-        [mapsLinkLoading]="mapsLinkLoading"
-        [mapsLinkError]="mapsLinkError"
-        [verificationStatus]="verificationStatus"
-        (parseMapsLink)="parseMapsLink()"
-      ></app-step-dates-location>
-    }
+      <!-- Dates & Location -->
+      <section id="sec-dates" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Dates & Location</h2>
+        </header>
+        <app-step-dates-location
+          [form]="tournamentForm"
+          [getError]="getError.bind(this)"
+          [mapsLink]="mapsLink"
+          [mapsLinkLoading]="mapsLinkLoading"
+          [mapsLinkError]="mapsLinkError"
+          [verificationStatus]="verificationStatus"
+          (parseMapsLink)="parseMapsLink()"
+        ></app-step-dates-location>
+      </section>
 
-    <!-- Step 3: Format -->
-    @if (currentStep() === 2) {
-      <app-step-format-rules
-        [form]="tournamentForm"
-        [getError]="getError.bind(this)"
-      ></app-step-format-rules>
-    }
+      <!-- Format & Rules -->
+      <section id="sec-format" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Format & Rules</h2>
+        </header>
+        <app-step-format-rules
+          [form]="tournamentForm"
+          [getError]="getError.bind(this)"
+        ></app-step-format-rules>
+      </section>
 
-    <!-- Step 4: Organizer -->
-    @if (currentStep() === 3) {
-      <app-step-organizer
-        [form]="tournamentForm"
-        [getError]="getError.bind(this)"
-      ></app-step-organizer>
-    }
+      <!-- Organizer -->
+      <section id="sec-organizer" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Organizer Information</h2>
+        </header>
+        <app-step-organizer
+          [form]="tournamentForm"
+          [getError]="getError.bind(this)"
+        ></app-step-organizer>
+      </section>
 
-    <!-- Step 5: Registration -->
-    @if (currentStep() === 4) {
-      <app-step-registration
-        [form]="tournamentForm"
-        [getError]="getError.bind(this)"
-      ></app-step-registration>
-    }
+      <!-- Registration -->
+      <section id="sec-registration" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Registration Details</h2>
+        </header>
+        <app-step-registration
+          [form]="tournamentForm"
+          [getError]="getError.bind(this)"
+        ></app-step-registration>
+      </section>
 
-    <!-- Step 6: Eligibility -->
-    @if (currentStep() === 5) {
-      <app-step-eligibility
-        [eligibilityArray]="eligibilityArray"
-        (addItem)="addEligibilityItem()"
-        (removeItem)="removeEligibilityItem($event)"
-      ></app-step-eligibility>
-    }
+      <!-- Eligibility -->
+      <section id="sec-eligibility" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Player Eligibility</h2>
+        </header>
+        <app-step-eligibility
+          [eligibilityArray]="eligibilityArray"
+          (addItem)="addEligibilityItem()"
+          (removeItem)="removeEligibilityItem($event)"
+        ></app-step-eligibility>
+      </section>
 
-    <!-- Step 7: Prizes -->
-    @if (currentStep() === 6) {
-      <app-step-prizes
-        [categoriesArray]="categoriesArray"
-        (addCategory)="addCategory()"
-        (removeCategory)="removeCategory($event)"
-        (addExtraPrize)="addExtraPrize($event)"
-        (removeExtraPrize)="removeExtraPrize($event.ci, $event.ei)"
-        (addSpecialAward)="addSpecialAward($event)"
-        (removeSpecialAward)="removeSpecialAward($event.ci, $event.ai)"
-      ></app-step-prizes>
-    }
+      <!-- Prizes -->
+      <section id="sec-prizes" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Prizes & Categories</h2>
+        </header>
+        <app-step-prizes
+          [categoriesArray]="categoriesArray"
+          (addCategory)="addCategory()"
+          (removeCategory)="removeCategory($event)"
+          (addExtraPrize)="addExtraPrize($event)"
+          (removeExtraPrize)="removeExtraPrize($event.ci, $event.ei)"
+          (addSpecialAward)="addSpecialAward($event)"
+          (removeSpecialAward)="removeSpecialAward($event.ci, $event.ai)"
+        ></app-step-prizes>
+      </section>
 
-    <!-- Step 8: Schedule -->
-    @if (currentStep() === 7) {
-      <app-step-schedule
-        [scheduleDaysArray]="scheduleDaysArray"
-        (addScheduleDay)="addScheduleDay()"
-        (removeScheduleDay)="removeScheduleDay($event)"
-        (addScheduleEvent)="addScheduleEvent($event)"
-        (removeScheduleEvent)="removeScheduleEvent($event.di, $event.ei)"
-      ></app-step-schedule>
-    }
+      <!-- Schedule -->
+      <section id="sec-schedule" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Event Schedule</h2>
+        </header>
+        <app-step-schedule
+          [scheduleDaysArray]="scheduleDaysArray"
+          (addScheduleDay)="addScheduleDay()"
+          (removeScheduleDay)="removeScheduleDay($event)"
+          (addScheduleEvent)="addScheduleEvent($event)"
+          (removeScheduleEvent)="removeScheduleEvent($event.di, $event.ei)"
+        ></app-step-schedule>
+      </section>
 
-    <!-- Step 9: Review -->
-    @if (currentStep() === 8) {
-      <app-review-section
-        [data]="buildTournamentData()"
-        [comparePrizeKeys]="comparePrizeKeys"
-        (editStep)="goToStep($event)"
-      ></app-review-section>
+      <!-- Final Review -->
+      <section id="sec-review" class="form-section">
+        <header class="section-header">
+          <h2 class="section-title">Final Review</h2>
+        </header>
+        <app-review-section
+          [data]="tournamentDataSignal()"
+          [comparePrizeKeys]="comparePrizeKeys"
+          (editSection)="scrollToSection($event)"
+        ></app-review-section>
+      </section>
+    </main>
 
+    <!-- Right Sidebar: Live Poster Preview -->
+    <aside class="preview-sidebar">
       @if (tournamentDataSignal(); as data) {
-        <div class="poster-section">
-          <div class="poster-section-header">
-            <h3 class="poster-section-title">Tournament Poster</h3>
-            <div class="flex gap-2">
-              @if (!useCustomPosterSignal()) {
-                <app-button
-                  variant="outline"
-                  size="sm"
-                  (click)="posterUploadInput.click()"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="w-4 h-4 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                    />
-                  </svg>
-                  Upload Your Own
-                </app-button>
-              } @else {
-                <app-button
-                  variant="outline"
-                  size="sm"
-                  (click)="removeCustomPoster()"
-                >
-                  Use Designer
-                </app-button>
-                <app-button
-                  variant="ghost"
-                  size="sm"
-                  (click)="posterUploadInput.click()"
-                >
-                  Replace Image
-                </app-button>
-              }
+        <input
+          #posterUploadInput
+          type="file"
+          hidden
+          (change)="onPosterFileSelected($event)"
+          accept="image/png, image/jpeg, image/webp"
+        />
 
-              <app-button
-                variant="primary"
-                size="sm"
-                (click)="openPosterModal()"
-                aria-label="Customize layout, theme, and branding"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-4 h-4 mr-2"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                  />
-                </svg>
-                Customize Poster
-              </app-button>
-            </div>
-
-            <input
-              #posterUploadInput
-              type="file"
-              hidden
-              (change)="onPosterFileSelected($event)"
-              accept="image/png, image/jpeg, image/webp"
-            />
-          </div>
-
-          <app-poster-preview
-            [form]="tournamentForm"
-            [tournamentData]="data"
-            [prizeCategories]="posterPrizeCategories"
-            [downloading]="downloadingPoster()"
-            [isEditable]="false"
-            (mediaUpload)="handleMediaUpload($event)"
-          ></app-poster-preview>
-        </div>
+        <app-poster-preview
+          [form]="tournamentForm"
+          [tournamentData]="data"
+          [prizeCategories]="posterPrizeCategories"
+          [downloading]="downloadingPoster()"
+          [isEditable]="false"
+          (mediaUpload)="handleMediaUpload($event)"
+        ></app-poster-preview>
       }
-    }
+    </aside>
 
-    <!-- Poster Customization Modal -->
-    @if (showPosterModal()) {
-      <div class="poster-modal-overlay">
-        <div class="poster-modal-content" (click)="$event.stopPropagation()">
-          <div class="poster-modal-body">
-            @if (tournamentDataSignal(); as data) {
-              <app-poster-preview
-                [form]="tournamentForm"
-                [tournamentData]="data"
-                [prizeCategories]="posterPrizeCategories"
-                [downloading]="downloadingPoster()"
-                [isEditable]="true"
-                (mediaUpload)="handleMediaUpload($event)"
-              ></app-poster-preview>
-            }
-          </div>
-
-          <div class="poster-modal-footer">
-            <app-button variant="primary" (click)="closePosterModal()"> Done Editing </app-button>
-          </div>
+    <!-- Sticky Footer Actions -->
+    <footer class="sticky-footer">
+      <div class="footer-content">
+        <span class="text-sm font-medium text-slate-500 hidden md:inline">
+          {{
+            tournamentId()
+              ? 'Editing: ' + tournamentForm.get('name')?.value
+              : 'Creating new tournament'
+          }}
+        </span>
+        <div class="flex gap-4 w-full md:w-auto">
+          <app-button variant="ghost" class="flex-1 md:flex-none" (click)="location.back()"
+            >Discard Changes</app-button
+          >
+          <app-button
+            variant="primary"
+            size="lg"
+            class="flex-1 md:flex-none px-12"
+            (click)="confirmSave()"
+            [loading]="saving()"
+          >
+            {{ tournamentId() ? 'Update Tournament' : 'Publish Tournament' }}
+          </app-button>
         </div>
       </div>
-    }
-
-    <!-- Navigation Buttons -->
-    <div class="flex justify-between mt-10 pt-6 border-t border-border-theme">
-      <app-button variant="ghost" (click)="prevStep()" [disabled]="currentStep() === 0">
-        Previous
-      </app-button>
-
-      <div class="flex gap-3">
-        @if (!isLastStep) {
-          <app-button (click)="nextStep()"> Next </app-button>
-        } @else {
-          <app-button (click)="confirmSave()" [loading]="saving()">
-            {{ tournamentId() ? 'Update Tournament' : 'Create Tournament' }}
-          </app-button>
-        }
-      </div>
-    </div>
+    </footer>
   </form>
 </div>
