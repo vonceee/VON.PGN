@@ -4,11 +4,13 @@ import { RouterModule, Router } from '@angular/router';
 import { LessonService } from '../../core/services/lesson.service';
 import { Course } from '../../core/models/course.model';
 import { ServerMaintenanceComponent } from '../../shared/components/server-maintenance/server-maintenance.component';
+import { SectionHeadingComponent } from '../../shared/components/section-heading/section-heading.component';
+import { LoadingComponent } from '../../shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, RouterModule, ServerMaintenanceComponent],
+  imports: [CommonModule, RouterModule, ServerMaintenanceComponent, SectionHeadingComponent, LoadingComponent],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css',
 })

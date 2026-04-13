@@ -8,11 +8,12 @@ import { TournamentService } from '../../core/services/tournament.service';
 import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { Tournament } from '../../core/models/tournament.model';
 import { FormsModule } from '@angular/forms';
+import { LoadingComponent } from '../../shared/components/loading/loading.component';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent],
   templateUrl: './user-profile.component.html',
 })
 export class UserProfileComponent implements OnInit {

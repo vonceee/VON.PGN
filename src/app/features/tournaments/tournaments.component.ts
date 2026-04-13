@@ -5,13 +5,14 @@ import { TournamentService } from '../../core/services/tournament.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Tournament, TournamentStatus } from '../../core/models/tournament.model';
 import { ButtonComponent } from '../../shared/components/button/button.component';
+import { LoadingComponent } from '../../shared/components/loading/loading.component';
 
 const ITEMS_PER_PAGE = 6;
 
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent],
   templateUrl: './tournaments.component.html'
 })
 export class TournamentsComponent implements OnInit {
@@ -30,7 +31,7 @@ export class TournamentsComponent implements OnInit {
   searchQuery = signal('');
   formatFilter = signal('');
   sortBy = signal('');
-  viewMode = signal<'grid' | 'list'>('grid');
+  viewMode = signal<'grid' | 'list'>('list');
   currentPage = signal(1);
 
   upcomingCount = computed(() => this.tournaments().filter(t => t.status === 'upcoming').length);
