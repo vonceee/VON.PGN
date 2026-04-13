@@ -8,6 +8,8 @@ import { TypewriteDirective } from '../../shared/directives/typewrite.directive'
 import { TypewriterTextComponent } from '../../shared/components/typewriter-text/typewriter-text';
 import { FeedbackButtonComponent } from '../../shared/components/feedback-button/feedback-button.component';
 import { AuthService } from '../../core/services/auth.service';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 
 
 import { SectionHeadingComponent } from '../../shared/components/section-heading/section-heading.component';
@@ -15,7 +17,7 @@ import { SectionHeadingComponent } from '../../shared/components/section-heading
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FooterComponent, TypewriterTextComponent, FeedbackButtonComponent, SectionHeadingComponent],
+  imports: [CommonModule, RouterModule, FormsModule, FooterComponent, TypewriterTextComponent, FeedbackButtonComponent, SectionHeadingComponent, ButtonComponent, IconComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

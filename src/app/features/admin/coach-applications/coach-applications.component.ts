@@ -2,7 +2,7 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { CoachApplication } from '../../../core/models/coach-application.model';
+import { CoachApplication } from '../../coaches/models/coach-application.model';
 
 @Component({
   selector: 'app-coach-applications',

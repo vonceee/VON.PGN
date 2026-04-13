@@ -3,15 +3,17 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { CoachService } from '../../core/services/coach.service';
+import { CoachService } from './services/coach.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { environment } from '../../../environments/environment';
 
+import { SectionHeadingComponent } from '../../shared/components/section-heading/section-heading.component';
+
 @Component({
   selector: 'app-coaches',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent, SectionHeadingComponent],
   templateUrl: './coaches.component.html'
 })
 export class CoachesComponent {

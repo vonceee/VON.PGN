@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } fr
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { CoachApplicationService } from '../../../core/services/coach-application.service';
+import { CoachApplicationService } from '../services/coach-application.service';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { ToastService } from '../../../core/services/toast.service';
 import { AuthService } from '../../../core/services/auth.service';

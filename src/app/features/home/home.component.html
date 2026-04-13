@@ -1,4 +1,128 @@
 <div class="w-full flex flex-col relative overflow-hidden">
+  <!-- Academy Spotlight Section -->
+  <section
+    class="w-full py-12 md:py-24 px-6 md:px-16 bg-slate-50 dark:bg-slate-900 relative overflow-hidden"
+  >
+    <div class="absolute inset-0 z-0">
+      <div
+        class="absolute top-0 right-0 w-[50%] h-[100%] bg-cyan-500/10 blur-[120px] rounded-full"
+      ></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+      <div class="flex-1 text-left">
+        <app-section-heading
+          text="Vonchess"
+          highlight="Academy."
+          size="text-4xl md:text-6xl mb-6"
+        ></app-section-heading>
+        <p class="text-lg md:text-xl mb-8 max-w-2xl">
+          Learn the fundamentals in our structured 5-session course. From absolute zero to
+          competitive intermediate, guided by master-level instructors.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          <div class="flex items-start gap-3">
+            <app-icon name="video" class="w-6 h-6 text-cyan-500 shrink-0"></app-icon>
+            <div>
+              <p class="font-bold">5 Live Meetings</p>
+              <p class="text-sm">Google Meet + Lichess Interaction</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <app-icon name="graduation-cap" class="w-6 h-6 text-cyan-500 shrink-0"></app-icon>
+            <div>
+              <p class="font-bold">Graduation Tournament</p>
+              <p class="text-sm">Test your skills & win certificates</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-4">
+          <app-button routerLink="/academy" variant="primary" size="lg" [showArrow]="true">
+            Enroll in Academy
+          </app-button>
+        </div>
+      </div>
+
+      <div class="w-full lg:w-[400px] shrink-0">
+        <div
+          class="premium-card p-8 md:p-10 rounded-[2.5rem] bg-slate-800/50 border-white/5 backdrop-blur-xl relative overflow-hidden group hover:border-cyan-500/30 transition-all duration-500"
+        >
+          <div class="absolute top-0 right-0 p-6">
+            <div
+              class="text-[10px] font-black uppercase tracking-widest text-cyan-500 bg-cyan-500/10 px-2.5 py-1 rounded-full"
+            >
+              Limited Slots
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1 mb-8">
+            <span class="text-5xl font-black">₱300</span>
+            <span class="text-slate-400 font-bold text-sm">/ SESSION</span>
+          </div>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center gap-3 text-sm">
+              <svg
+                class="w-5 h-5 text-green-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              Standard 75-min Lessons
+            </li>
+            <li class="flex items-center gap-3 text-sm">
+              <svg
+                class="w-5 h-5 text-green-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              Interactive Board Training
+            </li>
+            <li class="flex items-center gap-3 text-sm">
+              <svg
+                class="w-5 h-5 text-green-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              Digital Course Materials
+            </li>
+          </ul>
+
+          <a
+            routerLink="/academy"
+            class="block w-full py-4 text-center bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-black rounded-2xl hover:bg-cyan-500 hover:text-white transition-all"
+          >
+            Learn More
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div class="absolute inset-0 pointer-events-none z-[-1]">
     <div class="h-full w-full"></div>
   </div>
@@ -13,7 +137,7 @@
           size="text-3xl md:text-5xl mb-4 md:mb-6"
         ></app-section-heading>
         <app-typewriter-text
-          size="text-lg md:text-xl mb-6 md:mb-10"
+          size="text-lg md:text-4xl mb-6 md:mb-10"
           text="discover chess events across the Philippines, browse competitions posted by the community, with detailed information, and find the right event to test your skills."
         ></app-typewriter-text>
         <a
@@ -47,9 +171,7 @@
 
     <!-- Hero Content Overlay -->
     <div class="relative z-10 flex flex-col items-center px-4">
-      <span class="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4"
-        >vonchess</span
-      >
+      <span class="text-3xl md:text-5xl font-bold mb-4">vonchess</span>
       <h1 class="text-4xl md:text-7xl mb-8 md:mb-16">Learn to play Chess</h1>
 
       <div class="flex items-center justify-center relative w-full">
@@ -77,7 +199,7 @@
               [(ngModel)]="searchQuery"
               (keydown.enter)="onSearch()"
               placeholder="Search our tutorials, e.g. Sicilian Defense"
-              class="flex-1 mx-2 md:mx-4 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-base md:text-lg"
+              class="flex-1 mx-2 md:mx-4 bg-transparent outline-none placeholder-gray-400 text-base md:text-lg"
             />
           </div>
 
@@ -90,7 +212,7 @@
               (click)="navigateToCourse(course.id)"
               class="px-8 py-4 hover:bg-slate-50 cursor-pointer border-b border-gray-100 last:border-0"
             >
-              <div class="text-gray-800 text-lg">{{ course.title }}</div>
+              <div class="text-lg">{{ course.title }}</div>
             </div>
           </div>
         </div>
@@ -114,7 +236,7 @@
           size="text-3xl md:text-5xl mb-4 md:mb-6"
         ></app-section-heading>
         <app-typewriter-text
-          size="text-lg md:text-xl mb-6 md:mb-10"
+          size="text-lg md:text-4xl mb-6 md:mb-10"
           text="learn the theory behind the most popular chess openings and start your games with a clear advantage."
         ></app-typewriter-text>
 
@@ -175,7 +297,7 @@
           size="text-3xl md:text-5xl mb-4 md:mb-6"
         ></app-section-heading>
         <app-typewriter-text
-          size="text-lg md:text-xl mb-6 md:mb-10"
+          size="text-lg md:text-4xl mb-6 md:mb-10"
           text="train your pattern recognition with thousands of puzzles curated for your level."
         ></app-typewriter-text>
         <a
@@ -206,7 +328,7 @@
           size="text-3xl md:text-5xl mb-4 md:mb-6"
         ></app-section-heading>
         <app-typewriter-text
-          size="text-lg md:text-xl mb-6 md:mb-10"
+          size="text-lg md:text-4xl mb-6 md:mb-10"
           text="learn from handcrafted courses for players of all levels."
         ></app-typewriter-text>
 
@@ -236,7 +358,7 @@
                   >Tutorial</span
                 >
                 <span
-                  class="text-[10px] font-bold uppercase px-1.5 py-0.5 border border-slate-600 rounded text-cyan-400 hover:bg-cyan-400 hover:text-white cursor-pointer"
+                  class="text-[10px] font-bold uppercase px-1.5 py-0.5 border border-slate-600 rounded text-cyan-400 hover:bg-cyan-400 hover: cursor-pointer"
                   >Beginner</span
                 >
               </div>
@@ -272,7 +394,7 @@
           size="text-3xl md:text-5xl mb-4 md:mb-6"
         ></app-section-heading>
         <app-typewriter-text
-          size="text-lg md:text-xl mb-6 md:mb-10"
+          size="text-lg md:text-4xl mb-6 md:mb-10"
           text="accelerate your progress with personalized 1-on-1 lessons from titled players and experienced trainers."
         ></app-typewriter-text>
         <a

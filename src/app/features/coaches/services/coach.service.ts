@@ -12,7 +12,8 @@ export class CoachService {
       title: 'IM',
       shortInfo: 'The best way to learn fast is to observe, listen, practice, and play!',
       fideRating: 2368,
-      profilePicture: 'assets/images/f7399af5-b7da-4d24-ada0-9e458fca0bab.jpg',
+      profilePicture: 'assets/coaches/yves.webp',
+      isAcademyInstructor: true,
       playingExperience: [
         'Peak FIDE rating (2467)',
         'Multiple Times Philippine Representative in Asia & Europe Tournaments',
@@ -46,7 +47,8 @@ export class CoachService {
       title: 'NM',
       shortInfo: 'Dedicated chess coach focused on building strong tactical foundations and tournament readiness.',
       fideRating: 2040,
-      profilePicture: 'assets/images/4afc6b0b-6d57-41b8-8fac-5d1a8fd0b929.jpg',
+      profilePicture: 'assets/coaches/luffe.webp',
+      isAcademyInstructor: true,
       playingExperience: [
         'Former Varsity Player for the Far East University (FEU) Chess Team',
         'Multiple-time medalist in the Philippine National Age Group Chess Championships',
@@ -70,6 +72,37 @@ export class CoachService {
       socialMedia: {
         instagram: 'https://instagram.com/luffe_chess',
         youtube: 'https://youtube.com/@LuffeMagdalagaChess'
+      }
+    },
+    {
+      id: 'von-cedric-rañola',
+      name: 'Von Cedric Rañola',
+      title: '',
+      shortInfo: 'Local Caloocan champion, Former National University Manila Varsity, National University Fairview Champion.',
+      fideRating: 2150,
+      profilePicture: 'assets/coaches/von.webp',
+      isAcademyInstructor: true,
+      playingExperience: [
+        'Local Caloocan Champion',
+        'Former National University Manila Varsity Player',
+        'National University Fairview Champion',
+        'Multiple-time local open tournament finalist'
+      ],
+      teachingExperience: [
+        'Private coaching for aspiring competitive players',
+        'Specialized trainer for tactical development'
+      ],
+      bio: 'Von Cedric is a proven competitor with a strong track record in university-level chess. His coaching style focuses on the practical application of tactics and building a resilient mental game for tournament play.',
+      location: 'Caloocan City, Philippines',
+      availability: 'Available for evening and weekend training.',
+      teachingMethods: [
+        'Tactical vision training',
+        'Tournament preparation',
+        'Opening strategy for competitive play'
+      ],
+      coachingType: 'Online & Onsite',
+      socialMedia: {
+        facebook: 'https://facebook.com/voncedric.ranola'
       }
     }
   ];

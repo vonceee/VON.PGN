@@ -2,14 +2,16 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CoachService } from '../../../core/services/coach.service';
+import { CoachService } from '../services/coach.service';
 import { SeoService } from '../../../core/services/seo.service';
-import { Coach } from '../../../core/models/coach.model';
+import { Coach } from '../models/coach.model';
+
+import { BackLinkComponent } from '../../../shared/components/back-link/back-link.component';
 
 @Component({
   selector: 'app-coach-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BackLinkComponent],
   templateUrl: './coach-detail.component.html'
 })
 export class CoachDetailComponent implements OnInit {

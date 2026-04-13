@@ -5,6 +5,7 @@ export interface Coach {
   shortInfo: string;
   fideRating: number;
   profilePicture: string;
+  isAcademyInstructor?: boolean;
   
   // In-depth info
   playingExperience: string[];
