@@ -12,24 +12,15 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
   styleUrls: ['./step-styles.component.css'],
   template: `
     <div [formGroup]="form">
-      <div class="field-row" style="grid-template-columns: 7fr 3fr;">
+      <div class="field-group">
         <app-form-field
           formControlName="name"
           label="Tournament Name"
           placeholder="e.g. Mobile Chess Bus Tournament 2026"
           [required]="true"
           [showCharCount]="true"
-          [charLimit]="255"
+          [charLimit]="64"
           [errorMessage]="getError('name')"
-        ></app-form-field>
-
-        <app-form-field
-          formControlName="status"
-          label="Status"
-          type="select"
-          [required]="true"
-          [options]="statusOptions"
-          [errorMessage]="getError('status')"
         ></app-form-field>
       </div>
 
@@ -48,12 +39,6 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 export class StepBasicInfoComponent {
   @Input() form!: FormGroup;
   @Input() getError!: (field: string) => string;
-
-  statusOptions = [
-    { value: 'upcoming', label: 'Upcoming' },
-    { value: 'ongoing', label: 'Ongoing' },
-    { value: 'past', label: 'Past' },
-  ];
 }
 
 // Step 2: Dates & Location
@@ -79,7 +64,6 @@ export class StepBasicInfoComponent {
             label="End Date"
             type="date"
             [required]="true"
-            [disabled]="isOneDayTournament()"
             [errorMessage]="getError('endDate')"
           ></app-form-field>
           <div class="absolute top-0 right-0 flex items-center gap-2">
@@ -163,6 +147,7 @@ export class StepDatesLocationComponent implements OnInit {
     const endDate = this.form.get('endDate')?.value;
     if (startDate && endDate && startDate === endDate) {
       this.isOneDayTournament.set(true);
+      this.form.get('endDate')?.disable();
     }
 
     // Watch for start date changes to update end date if one-day tournament is checked
@@ -177,12 +162,16 @@ export class StepDatesLocationComponent implements OnInit {
     const isChecked = !this.isOneDayTournament();
     this.isOneDayTournament.set(isChecked);
 
+    const endDateControl = this.form.get('endDate');
     if (isChecked) {
-      // Set end date to match start date
+      // Set end date to match start date and disable field
       const startDate = this.form.get('startDate')?.value;
       if (startDate) {
-        this.form.get('endDate')?.setValue(startDate);
+        endDateControl?.setValue(startDate);
       }
+      endDateControl?.disable();
+    } else {
+      endDateControl?.enable();
     }
   }
 }
@@ -205,7 +194,9 @@ export class StepDatesLocationComponent implements OnInit {
           [charLimit]="255"
           [errorMessage]="getError('format')"
         ></app-form-field>
+      </div>
 
+      <div class="field-group">
         <app-form-field
           formControlName="timeControl"
           label="Time Control"

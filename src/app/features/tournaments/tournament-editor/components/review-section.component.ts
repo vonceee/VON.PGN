@@ -1,18 +1,15 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SectionHeadingComponent } from 'src/app/shared/components/section-heading/section-heading.component';
+
 @Component({
   selector: 'app-review-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SectionHeadingComponent],
   styleUrls: ['./review-section.component.css'],
   template: `
     <div class="step-content">
-      <div class="step-header">
-        <div class="step-title-section">
-          <h2>Review & Submit</h2>
-          <p class="step-subtitle">Review all information before submitting</p>
-        </div>
-      </div>
+      <app-section-heading text="Review &" highlight="Submit" size="text-3xl mb-1"></app-section-heading>
 
       <p class="text-sm text-slate-600 dark:text-slate-400 mb-8">Review all information before submitting. Click any section header to go back and edit.</p>
 

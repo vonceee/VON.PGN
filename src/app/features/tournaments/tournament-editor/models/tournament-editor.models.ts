@@ -1,5 +1,5 @@
 export const FIELD_LIMITS: Record<string, number> = {
-  name: 255,
+  name: 64,
   description: 65535,
   location: 255,
   organizer: 255,

@@ -123,6 +123,17 @@ export class TournamentDetailComponent implements OnInit {
     return null;
   }
 
+  formatCurrency(val: string | undefined): string {
+    if (!val) return '0.00';
+    const cleanStr = String(val).replace(/[₱$,\s]/g, '');
+    const num = parseFloat(cleanStr);
+    if (isNaN(num)) return val;
+    return '₱' + new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(num);
+  }
+
   toggleBookmark() {
     const t = this.tournament();
     if (!this.authService.isAuthenticated() || this.bookmarkLoading() || !t) return;

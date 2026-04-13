@@ -95,6 +95,7 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   // State Signals
   tournamentId = signal<string | null>(null);
   saving = signal(false);
+  showReviewModal = signal(false);
 
   // Maps State
   mapsLink = signal('');
@@ -267,6 +268,27 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.showReviewModal.set(true);
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  closeReviewModal() {
+    this.showReviewModal.set(false);
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  onReviewEdit(sectionId: string) {
+    this.closeReviewModal();
+    setTimeout(() => {
+      this.scrollToSection(sectionId);
+    }, 100);
+  }
+
+  executeSave() {
     this.saving.set(true);
     const data = this.formHandler.buildTournamentData();
     const payload: any = {
@@ -278,6 +300,10 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
       contact_email: data['contact'],
       registration_instructions: data['registrationInstructions'],
       poster_settings: data['poster_settings'],
+      time_control: data['timeControl'],
+      entry_fee: data['entryFee'],
+      prize_pool: data['prizePool'],
+      registration_deadline: data['registrationDeadline'],
     };
 
     const tid = this.tournamentId();
@@ -325,8 +351,9 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     formData.append('file', event.file);
     formData.append('type', event.type);
 
+    const endpoint = this.mode === 'user' ? 'my' : 'admin';
     this.http
-      .post<{ url: string }>(`${environment.apiUrl}/my/tournaments/media`, formData)
+      .post<{ url: string }>(`${environment.apiUrl}/${endpoint}/tournaments/media`, formData)
       .subscribe({
         next: (res) => {
           setTimeout(() => {

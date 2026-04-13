@@ -9,7 +9,7 @@ export class TournamentFormHandler {
   private fb = inject(FormBuilder);
 
   public tournamentForm = this.fb.group({
-    name: ['', Validators.required],
+    name: ['', [Validators.required, Validators.maxLength(64)]],
     description: [''],
     status: ['upcoming', Validators.required],
     startDate: ['', Validators.required],
@@ -61,6 +61,7 @@ export class TournamentFormHandler {
     if (!ctrl?.errors) return '';
     if (ctrl.errors['required']) return 'This field is required';
     if (ctrl.errors['min']) return 'Value must be a positive number';
+    if (ctrl.errors['maxlength']) return `Maximum ${ctrl.errors['maxlength'].requiredLength} characters allowed`;
     return 'Invalid value';
   }
 
@@ -243,7 +244,7 @@ export class TournamentFormHandler {
   // ---- Data Dehydration ----
 
   public buildTournamentData(): Record<string, any> {
-    const v = this.tournamentForm.value;
+    const v = this.tournamentForm.getRawValue();
     const sanitize = (val: string, field: string) => {
       const limit = FIELD_LIMITS[field] || 255;
       const sanitized = this.sanitizeInput(val || '');
@@ -255,11 +256,16 @@ export class TournamentFormHandler {
       .filter((e: string) => e);
 
     const schedule: Record<string, { events: { name: string; time: string }[] }> = {};
-    this.scheduleDaysArray.controls.forEach((day, i) => {
+    let dayIdx = 1;
+    this.scheduleDaysArray.controls.forEach((day) => {
       const dayVal = day.value;
-      schedule[`day_${i + 1}`] = {
-        events: dayVal.events.filter((e: { name: string }) => e.name?.trim()),
-      };
+      const filteredEvents = (dayVal.events || []).filter((e: { name: string }) => e.name?.trim());
+      if (filteredEvents.length > 0) {
+        schedule[`day_${dayIdx}`] = {
+          events: filteredEvents,
+        };
+        dayIdx++;
+      }
     });
 
     const categories: Record<string, any> = {};

@@ -146,8 +146,8 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
   private fitStageToContainer() {
     if (!this.stage || !this.canvasHolder) return;
     const workspaceWidth = this.canvasHolder.nativeElement.parentElement?.offsetWidth || 800;
-    const padding = 40;
-    const availableWidth = Math.max(workspaceWidth - padding, 400);
+    const padding = workspaceWidth < 768 ? 16 : 40;
+    const availableWidth = Math.max(workspaceWidth - padding, 280);
     const baseScale = availableWidth / this.CANVAS_WIDTH;
     const finalScale = baseScale * this.zoomLevel();
     this.stage.width(this.CANVAS_WIDTH * finalScale);
@@ -380,7 +380,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     }
 
     // Branding & Footer
-    const footerY = this.CANVAS_HEIGHT - 350;
+    const footerY = this.CANVAS_HEIGHT - 600;
     if (settings.logos?.length > 0) {
       await this.drawLogos(layer, settings.logos);
     }
@@ -388,9 +388,9 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     if (v.showOrganizerInfo) {
       const org = new Konva.Text({
         x: margin,
-        y: footerY + 200,
+        y: this.CANVAS_HEIGHT - 280,
         text: `ORGANIZER: ${data.organizer || ''}  |  CONTACT: ${data.contact || ''}`.toUpperCase(),
-        fontSize: 80, // Upscaled from 40
+        fontSize: 70, // Slightly reduced to ensure it fits width-wise
         fontFamily: 'Google Sans',
         fill: colors.sub,
         width: this.CANVAS_WIDTH - margin * 2,
@@ -402,7 +402,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
   }
 
   private async drawLogos(layer: Konva.Layer, logos: string[]) {
-    const logoSize = 250;
+    const logoSize = 220; // Reduced from 250
     const spacing = 100;
     const totalWidth = logos.length * logoSize + (logos.length - 1) * spacing;
     let startX = (this.CANVAS_WIDTH - totalWidth) / 2;

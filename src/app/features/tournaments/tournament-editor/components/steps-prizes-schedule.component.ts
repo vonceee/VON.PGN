@@ -200,12 +200,7 @@ export class StepPrizesComponent implements OnInit {
   @Output() addSpecialAward = new EventEmitter<number>();
   @Output() removeSpecialAward = new EventEmitter<{ ci: number, ai: number }>();
 
-  ngOnInit() {
-    // Ensure there's at least one empty category for users to type into
-    if (this.categoriesArray.length === 0) {
-      this.addCategory.emit();
-    }
-  }
+  ngOnInit() {}
 
   categoryGroup(index: number): FormGroup { return this.categoriesArray.at(index) as FormGroup; }
   getCategorySpecialAwards(catIndex: number): FormArray { return this.categoriesArray.at(catIndex).get('specialAwards') as FormArray; }
@@ -295,12 +290,7 @@ export class StepScheduleComponent implements OnInit {
   @Output() addScheduleEvent = new EventEmitter<number>();
   @Output() removeScheduleEvent = new EventEmitter<{ di: number, ei: number }>();
 
-  ngOnInit() {
-    // Ensure there's at least one empty schedule day for users to type into
-    if (this.scheduleDaysArray.length === 0) {
-      this.addScheduleDay.emit();
-    }
-  }
+  ngOnInit() {}
 
   scheduleDayGroup(index: number): FormGroup { return this.scheduleDaysArray.at(index) as FormGroup; }
   getScheduleEvents(dayIndex: number): FormArray { return this.scheduleDaysArray.at(dayIndex).get('events') as FormArray; }
