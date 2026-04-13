@@ -4,7 +4,11 @@
     <div class="mx-auto my-auto w-full xl:max-w-md py-8">
       <app-back-link text="Back to Home"></app-back-link>
 
-      <app-section-heading text="Sign up for" highlight="vonchess"></app-section-heading>
+      <app-section-heading
+        text="Sign up for"
+        highlight="vonchess"
+        size="text-3xl md:text-5xl mb-4 md:mb-6"
+      ></app-section-heading>
 
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <!-- Username Field -->
@@ -209,11 +213,11 @@
 
       <p class="mt-8 text-center text-[11px] leading-relaxed">
         By creating an account, you agree to the <br />
-        <a href="#" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
+        <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
           >Terms of Service</a
         >
         and
-        <a href="#" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
+        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
           >Privacy Policy</a
         >
       </p>
@@ -225,8 +229,13 @@
     class="hidden lg:flex lg:basis-3/5 bg-zinc-900 dark:bg-zinc-925 text-white p-10 flex-col justify-between relative overflow-hidden"
   >
     <div>
-      <app-section-heading text="Master the game of" highlight="Chess."></app-section-heading>
+      <app-section-heading
+        text="Master the game of"
+        highlight="Chess."
+        size="text-3xl md:text-5xl mb-4 md:mb-6"
+      ></app-section-heading>
       <app-typewriter-text
+        size="text-3xl md:text-5xl"
         text="play and learn on vonchess — the ultimate platform for players who aim for the top."
       ></app-typewriter-text>
     </div>

@@ -98,4 +98,17 @@ export class AdminService {
   getCoachApplications(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/coach-applications`, { headers: this.headers });
   }
+
+  // Academy Enrollments
+  getAcademyEnrollments(params: any = {}): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/academy/enrollments`, { headers: this.headers, params });
+  }
+
+  updateAcademyEnrollmentStatus(id: number, status: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/academy/enrollments/${id}`, { status }, { headers: this.headers });
+  }
+
+  deleteAcademyEnrollment(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/academy/enrollments/${id}`, { headers: this.headers });
+  }
 }

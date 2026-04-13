@@ -66,6 +66,12 @@ export const ADMIN_ROUTES: Routes = [
           import('./coach-applications/coach-applications.component').then((m) => m.CoachApplicationsComponent),
         title: 'Coach Applications - CHESS.PGN',
       },
+      {
+        path: 'academy-enrollments',
+        loadComponent: () =>
+          import('./academy-enrollments/academy-enrollments.component').then((m) => m.AcademyEnrollmentsComponent),
+        title: 'Academy Enrollments - CHESS.PGN',
+      },
     ],
   },
 ];

@@ -11,45 +11,37 @@
     </div>
 
     <div class="relative z-10 max-w-7xl mx-auto text-center">
-      <div
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-sm font-bold mb-8 animate-fade-in"
-      >
-        <app-icon name="trophy" class="w-4 h-4"></app-icon>
-        Join the Academy
+      <app-section-heading
+        text="Vonchess"
+        highlight="Academy"
+        size="text-5xl md:text-8xl mb-6 md:mb-10"
+      ></app-section-heading>
+      <div class="mb-10 max-w-3xl mx-auto">
+        <span class="text-lg md:text-xl font-medium">
+          <app-typewriter-text
+            size="text-xl md:text-2xl"
+            text="vonchess Online: From Beginner to Intermediate."
+          ></app-typewriter-text>
+        </span>
       </div>
-      <h1
-        class="text-5xl md:text-8xl font-black tracking-tight text-slate-900 dark:text-white mb-6 leading-[1.1]"
-      >
-        Vonchess
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600"
-          >Academy</span
-        >
-      </h1>
-      <p class="text-xl md:text-3xl font-bold mb-10 max-w-3xl mx-auto">
-        ♟️ VonChess Online: Beginner to Intermediate<br />
-        <span class="text-lg md:text-xl font-medium">From First Move to Winning Strategy.</span>
-      </p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a
-          href="https://www.facebook.com/vonchessacademy"
-          target="_blank"
-          class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-2xl font-bold text-lg hover:scale-105 transition-all shadow-lg shadow-cyan-500/25 flex items-center gap-2"
-        >
-          Enroll Now on Facebook
-          <app-icon name="arrow-right" class="w-5 h-5"></app-icon>
-        </a>
+        <app-button (click)="openEnrollment()" variant="primary" size="lg" [showArrow]="true">
+          Enroll Now
+        </app-button>
+        <app-button (click)="scrollToOverview()" variant="ghost" size="lg"> Learn More </app-button>
       </div>
     </div>
   </section>
 
   <!-- Program Details -->
-  <section class="py-20 px-6 bg-slate-50 dark:bg-white/[0.02]">
+  <section id="academy-overview" class="py-20 px-6 bg-slate-50 dark:bg-white/[0.02]">
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-4">
-          The Program Overview
-        </h2>
-        <div class="h-1.5 w-24 bg-cyan-500 mx-auto rounded-full"></div>
+        <app-section-heading
+          text="The"
+          highlight="Program Overview"
+          size="text-3xl md:text-5xl mb-4"
+        ></app-section-heading>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -62,7 +54,7 @@
           >
             <app-icon name="calendar" class="w-7 h-7"></app-icon>
           </div>
-          <h3 class="text-xl font-bold mb-2 dark:text-white">Structured Program</h3>
+          <h3 class="text-xl font-bold mb-2">Structured Program</h3>
           <p class="text-slate-500 dark:text-slate-400">
             Structured journey from absolute zero to a functional, competitive intermediate level.
           </p>
@@ -77,7 +69,7 @@
           >
             <app-icon name="video" class="w-7 h-7"></app-icon>
           </div>
-          <h3 class="text-xl font-bold mb-2 dark:text-white">Live Interaction</h3>
+          <h3 class="text-xl font-bold mb-2">Live Interaction</h3>
           <p class="text-slate-500 dark:text-slate-400">
             Interactive instruction via Google Meet and Lichess.org for hands-on learning.
           </p>
@@ -92,7 +84,7 @@
           >
             <app-icon name="target" class="w-7 h-7"></app-icon>
           </div>
-          <h3 class="text-xl font-bold mb-2 dark:text-white">Core Focus</h3>
+          <h3 class="text-xl font-bold mb-2">Core Focus</h3>
           <p class="text-slate-500 dark:text-slate-400">
             Logical calculation and board awareness through personalized live coaching.
           </p>
@@ -105,124 +97,137 @@
   <section class="py-24 px-6">
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-20">
-        <h2 class="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6">
-          The Curriculum
-        </h2>
-        <p class="text-lg text-slate-500 dark:text-slate-400">
-          Master the game, one phase at a time.
-        </p>
+        <app-section-heading
+          text="The"
+          highlight="Curriculum"
+          size="text-3xl md:text-5xl mb-4 md:mb-6"
+        ></app-section-heading>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- Phase 1 -->
-        <div class="relative p-1 rounded-[2rem] bg-gradient-to-br from-cyan-500/20 to-transparent">
-          <div class="bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-[1.95rem] h-full">
-            <div class="flex items-center gap-4 mb-8">
-              <span class="text-4xl font-black text-cyan-500/20">01</span>
-              <h3
-                class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter"
-              >
-                The Mechanics
-              </h3>
-            </div>
-            <ul class="space-y-8">
-              <li class="flex gap-5">
-                <div
-                  class="mt-1.5 w-6 h-6 rounded-full bg-cyan-500/10 flex items-center justify-center shrink-0"
-                >
-                  <div class="w-2 h-2 rounded-full bg-cyan-500"></div>
-                </div>
-                <div>
-                  <h4 class="font-bold text-lg dark:text-white mb-1">Move Accuracy</h4>
-                  <p class="text-slate-500 dark:text-slate-400 text-[15px]">
-                    Mastering piece movement, captures, and special rules (Castling, En Passant).
-                  </p>
-                </div>
-              </li>
-              <li class="flex gap-5">
-                <div
-                  class="mt-1.5 w-6 h-6 rounded-full bg-cyan-500/10 flex items-center justify-center shrink-0"
-                >
-                  <div class="w-2 h-2 rounded-full bg-cyan-500"></div>
-                </div>
-                <div>
-                  <h4 class="font-bold text-lg dark:text-white mb-1">The Goal</h4>
-                  <p class="text-slate-500 dark:text-slate-400 text-[15px]">
-                    Identifying Checkmate vs. Stalemate to avoid "winning" games ending in a draw.
-                  </p>
-                </div>
-              </li>
-              <li class="flex gap-5">
-                <div
-                  class="mt-1.5 w-6 h-6 rounded-full bg-cyan-500/10 flex items-center justify-center shrink-0"
-                >
-                  <div class="w-2 h-2 rounded-full bg-cyan-500"></div>
-                </div>
-                <div>
-                  <h4 class="font-bold text-lg dark:text-white mb-1">Board Sight</h4>
-                  <p class="text-slate-500 dark:text-slate-400 text-[15px]">
-                    Learning to see the whole board and recognize when a piece is "hanging"
-                    (undefended).
-                  </p>
-                </div>
-              </li>
-            </ul>
+        <div class="premium-card p-8 md:p-12 rounded-[2rem] h-full">
+          <div class="flex items-center gap-4 mb-8">
+            <span class="text-4xl font-black">01</span>
+            <h3 class="text-3xl font-black text-slate-900 uppercase tracking-tighter">
+              The Mechanics
+            </h3>
           </div>
+          <ul class="space-y-8">
+            <li class="flex gap-5">
+              <div>
+                <h4 class="font-bold text-lg mb-1">Improve Move Accuracy</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-[15px]">
+                  Mastering piece placement, captures, and special rules (Castling, En Passant).
+                </p>
+              </div>
+            </li>
+            <li class="flex gap-5">
+              <div>
+                <h4 class="font-bold text-lg mb-1">The Goal</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-[15px]">
+                  Being able to evaluate the position to avoid "winning" games ending in a draw or
+                  miss winning ideas.
+                </p>
+              </div>
+            </li>
+            <li class="flex gap-5">
+              <div>
+                <h4 class="font-bold text-lg mb-1">Improve Board Sight</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-[15px]">
+                  Learning to see the whole board and recognize thematic ideas.
+                </p>
+              </div>
+            </li>
+          </ul>
         </div>
 
         <!-- Phase 2 -->
-        <div class="relative p-1 rounded-[2rem] bg-gradient-to-br from-blue-500/20 to-transparent">
-          <div class="bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-[1.95rem] h-full">
-            <div class="flex items-center gap-4 mb-8">
-              <span class="text-4xl font-black text-blue-500/20">02</span>
-              <h3
-                class="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter"
-              >
-                The Fundamentals
-              </h3>
-            </div>
-            <ul class="space-y-8">
-              <li class="flex gap-5">
-                <div
-                  class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0"
-                >
-                  <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-                </div>
-                <div>
-                  <h4 class="font-bold text-lg dark:text-white mb-1">Opening Principles</h4>
-                  <p class="text-slate-500 dark:text-slate-400 text-[15px]">
-                    Controlling the center, developing pieces, and King safety.
-                  </p>
-                </div>
-              </li>
-              <li class="flex gap-5">
-                <div
-                  class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0"
-                >
-                  <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-                </div>
-                <div>
-                  <h4 class="font-bold text-lg dark:text-white mb-1">The Big 3 Tactics</h4>
-                  <p class="text-slate-500 dark:text-slate-400 text-[15px]">
-                    Identifying and executing Forks, Pins, and Skewers.
-                  </p>
-                </div>
-              </li>
-              <li class="flex gap-5">
-                <div
-                  class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0"
-                >
-                  <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-                </div>
-                <div>
-                  <h4 class="font-bold text-lg dark:text-white mb-1">Calculation</h4>
-                  <p class="text-slate-500 dark:text-slate-400 text-[15px]">
-                    Learning to think 2 moves ahead before touching a piece.
-                  </p>
-                </div>
-              </li>
-            </ul>
+        <div class="premium-card p-8 md:p-12 rounded-[2rem] h-full">
+          <div class="flex items-center gap-4 mb-8">
+            <span class="text-4xl font-black">02</span>
+            <h3 class="text-3xl font-black text-slate-900 uppercase tracking-tighter">
+              The Fundamentals
+            </h3>
           </div>
+          <ul class="space-y-8">
+            <li class="flex gap-5">
+              <div
+                class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0"
+              >
+                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg mb-1">Opening Principles</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-[15px]">
+                  Controlling the center, developing pieces, and King safety.
+                </p>
+              </div>
+            </li>
+            <li class="flex gap-5">
+              <div
+                class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0"
+              >
+                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg mb-1">The Big 3 Tactics</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-[15px]">
+                  Identifying and executing Forks, Pins, and Skewers.
+                </p>
+              </div>
+            </li>
+            <li class="flex gap-5">
+              <div
+                class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0"
+              >
+                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg mb-1">Calculation</h4>
+                <p class="text-slate-500 dark:text-slate-400 text-[15px]">
+                  Learning to think 2 moves ahead before touching a piece.
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Academy Gallery -->
+  <section class="py-24 px-6 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <app-section-heading
+          text="Gallery"
+          highlight=""
+          size="text-3xl md:text-5xl mb-4 md:mb-6"
+        ></app-section-heading>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="premium-card overflow-hidden rounded-3xl aspect-[4/3] group">
+          <img
+            src="/assets/academy-gallery/PG-Design-1776074854486.webp"
+            alt="Academy Training 1"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        </div>
+        <div class="premium-card overflow-hidden rounded-3xl aspect-[4/3] group">
+          <img
+            src="/assets/academy-gallery/PG-Design-1776075050131.webp"
+            alt="Academy Training 2"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        </div>
+        <div class="premium-card overflow-hidden rounded-3xl aspect-[4/3] group">
+          <img
+            src="/assets/academy-gallery/PG-Design-1776075059723.webp"
+            alt="Academy Training 3"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
         </div>
       </div>
     </div>
@@ -232,14 +237,16 @@
   <section class="py-24 px-6 bg-slate-50 dark:bg-white/[0.02] relative overflow-hidden">
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
       <div class="w-full lg:w-1/2">
-        <h2 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-10">
-          Class Structure & Logistics
-        </h2>
+        <app-section-heading
+          text="Class Structure &"
+          highlight="Logistics"
+          size="text-3xl md:text-5xl mb-4 md:mb-6"
+        ></app-section-heading>
         <div class="space-y-6">
           <div class="flex items-start gap-4">
             <app-icon name="check" class="w-6 h-6 text-cyan-500 mt-1"></app-icon>
             <div>
-              <p class="font-bold text-lg dark:text-white">Platform</p>
+              <p class="font-bold text-lg">Platform</p>
               <p class="text-slate-500 dark:text-slate-400">
                 Google Meet + Lichess.org (Live interactive boards).
               </p>
@@ -248,7 +255,7 @@
           <div class="flex items-start gap-4">
             <app-icon name="users" class="w-6 h-6 text-cyan-500 mt-1"></app-icon>
             <div>
-              <p class="font-bold text-lg dark:text-white">Class Size</p>
+              <p class="font-bold text-lg">Class Size</p>
               <p class="text-slate-500 dark:text-slate-400">
                 Strictly 7–10 students for personalized coaching.
               </p>
@@ -257,14 +264,14 @@
           <div class="flex items-start gap-4">
             <app-icon name="timer" class="w-6 h-6 text-cyan-500 mt-1"></app-icon>
             <div>
-              <p class="font-bold text-lg dark:text-white">Duration</p>
+              <p class="font-bold text-lg">Duration</p>
               <p class="text-slate-500 dark:text-slate-400">75 minutes per session.</p>
             </div>
           </div>
           <div class="flex items-start gap-4">
             <app-icon name="graduation-cap" class="w-6 h-6 text-cyan-500 mt-1"></app-icon>
             <div>
-              <p class="font-bold text-lg dark:text-white">Schedule</p>
+              <p class="font-bold text-lg">Schedule</p>
               <p class="text-slate-500 dark:text-slate-400">
                 5 Meetings + Graduation Mini-Tournament.
               </p>
@@ -274,7 +281,7 @@
       </div>
 
       <div class="w-full lg:w-1/2">
-        <div class="relative p-10 md:p-16 rounded-[3rem] bg-slate-900 text-white overflow-hidden">
+        <div class="premium-card relative p-10 md:p-16 rounded-[3rem] bg-slate-900 overflow-hidden">
           <div class="absolute top-0 right-0 p-8">
             <div
               class="px-4 py-1.5 rounded-full bg-cyan-500 text-xs font-black uppercase tracking-widest animate-pulse"
@@ -306,13 +313,15 @@
               </li>
             </ul>
           </div>
-          <a
-            href="https://www.facebook.com/vonchessacademy"
-            target="_blank"
-            class="block w-full text-center py-5 bg-white text-slate-900 rounded-2xl font-black text-xl hover:bg-cyan-400 hover:text-white transition-all"
+          <app-button
+            (click)="openEnrollment()"
+            variant="primary"
+            size="lg"
+            [fullWidth]="true"
+            customRounded="rounded-2xl"
           >
             Secure Your Slot
-          </a>
+          </app-button>
         </div>
       </div>
     </div>
@@ -321,25 +330,26 @@
   <!-- CTA Section -->
   <section class="py-24 px-6 text-center">
     <div class="max-w-4xl mx-auto">
-      <h2
-        class="text-4xl md:text-7xl font-black text-slate-900 dark:text-white mb-8 tracking-tighter"
-      >
-        Start Your Winning <br class="hidden md:block" />
-        Journey Today.
-      </h2>
+      <app-section-heading
+        text="Start Your Winning"
+        highlight="Journey Today."
+        size="text-3xl md:text-5xl mb-4 md:mb-6"
+      ></app-section-heading>
       <p class="text-xl text-slate-500 dark:text-slate-400 mb-12">
         Limited to 10 students per batch to ensure quality coaching.
       </p>
-      <a
-        href="https://www.facebook.com/vonchessacademy"
-        target="_blank"
-        class="inline-flex items-center gap-3 px-10 py-5 bg-slate-900 dark:bg-white text-white dark:text-black rounded-3xl font-black text-2xl hover:scale-105 transition-all"
-      >
-        Message us on Facebook
-        <app-icon name="external-link" class="w-6 h-6"></app-icon>
-      </a>
+      <div class="flex justify-center">
+        <app-button (click)="openEnrollment()" variant="primary" size="lg" [showArrow]="true">
+          Inquire & Enroll
+        </app-button>
+      </div>
     </div>
   </section>
+
+  <app-academy-enrollment-modal
+    *ngIf="showEnrollmentModal"
+    (close)="closeEnrollment()"
+  ></app-academy-enrollment-modal>
 
   <app-footer></app-footer>
 </div>

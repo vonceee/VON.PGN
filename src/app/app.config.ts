@@ -12,6 +12,7 @@ import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { httpErrorInterceptor } from './core/interceptors/http-error-interceptor';
 import { AuthService } from './core/services/auth.service';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,5 +26,6 @@ export const appConfig: ApplicationConfig = {
       return authService.initAuth();
     }),
     provideClientHydration(withEventReplay()),
+    provideAnimations(),
   ],
 };

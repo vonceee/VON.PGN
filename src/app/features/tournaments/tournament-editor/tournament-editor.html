@@ -41,16 +41,15 @@
         <app-back-link size="sm" text="Back to Dashboard" (click)="location.back()"></app-back-link>
 
         <app-section-heading
-          [noMargin]="true"
           [text]="tournamentId() ? 'Update' : 'Create New'"
           highlight="Tournament"
-          size="lg"
+          size="text-3xl"
         ></app-section-heading>
       </div>
 
       <!-- Basic Info -->
       <section id="sec-basic" class="form-section">
-        <app-section-heading text="Basic Information" highlight="." size="md"></app-section-heading>
+        <app-section-heading text="Basic Information" highlight="." size="text-2xl mb-3"></app-section-heading>
         <app-step-basic-info
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -59,7 +58,7 @@
 
       <!-- Dates & Location -->
       <section id="sec-dates" class="form-section">
-        <app-section-heading text="Dates & Location" highlight="." size="md"></app-section-heading>
+        <app-section-heading text="Dates & Location" highlight="." size="text-2xl mb-3"></app-section-heading>
         <app-step-dates-location
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -73,7 +72,7 @@
 
       <!-- Format & Rules -->
       <section id="sec-format" class="form-section">
-        <app-section-heading text="Format & Rules" highlight="." size="md"></app-section-heading>
+        <app-section-heading text="Format & Rules" highlight="." size="text-2xl mb-3"></app-section-heading>
         <app-step-format-rules
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -85,7 +84,7 @@
         <app-section-heading
           text="Organizer Information"
           highlight="."
-          size="md"
+          size="text-2xl mb-3"
         ></app-section-heading>
         <app-step-organizer
           [form]="tournamentForm"
@@ -98,7 +97,7 @@
         <app-section-heading
           text="Registration Details"
           highlight="."
-          size="md"
+          size="text-2xl mb-3"
         ></app-section-heading>
         <app-step-registration
           [form]="tournamentForm"
@@ -111,7 +110,7 @@
         <app-section-heading
           text="Player Eligibility"
           highlight="."
-          size="md"
+          size="text-2xl mb-3"
         ></app-section-heading>
         <app-step-eligibility
           [eligibilityArray]="eligibilityArray"
@@ -125,7 +124,7 @@
         <app-section-heading
           text="Prizes & Categories"
           highlight="."
-          size="md"
+          size="text-2xl mb-3"
         ></app-section-heading>
         <app-step-prizes
           [categoriesArray]="categoriesArray"
@@ -140,7 +139,7 @@
 
       <!-- Schedule -->
       <section id="sec-schedule" class="form-section">
-        <app-section-heading text="Event Schedule" highlight="." size="md"></app-section-heading>
+        <app-section-heading text="Event Schedule" highlight="." size="text-2xl mb-3"></app-section-heading>
         <app-step-schedule
           [scheduleDaysArray]="scheduleDaysArray"
           (addScheduleDay)="addScheduleDay()"
@@ -152,7 +151,7 @@
 
       <!-- Final Review -->
       <section id="sec-review" class="form-section">
-        <app-section-heading text="Final Review" highlight="." size="md"></app-section-heading>
+        <app-section-heading text="Final Review" highlight="." size="text-2xl mb-3"></app-section-heading>
         <app-review-section
           [data]="tournamentDataSignal()"
           [comparePrizeKeys]="comparePrizeKeys"

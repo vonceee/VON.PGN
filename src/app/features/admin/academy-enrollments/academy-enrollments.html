@@ -1,0 +1,144 @@
+<div class="admin-container">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div>
+      <app-section-heading
+        text="Academy"
+        highlight="Enrollments"
+        size="text-3xl"
+      ></app-section-heading>
+      <div class="text-slate-500 dark:text-slate-400">
+        <app-typewriter-text
+          size="text-lg"
+          text="Manage students and their enrollment status."
+        ></app-typewriter-text>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      <div class="relative min-w-[240px]">
+        <app-icon
+          name="search"
+          class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
+        ></app-icon>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="loadEnrollments()"
+          placeholder="Search name, email..."
+          class="w-full pl-11 pr-4 py-3 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-cyan-500 outline-none"
+        />
+      </div>
+
+      <select
+        [(ngModel)]="statusFilter"
+        (ngModelChange)="loadEnrollments()"
+        class="px-4 py-3 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-white/5 rounded-2xl focus:ring-2 focus:ring-cyan-500 outline-none"
+      >
+        <option value="">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="contacted">Contacted</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="paid">Paid</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Table Core -->
+  <div
+    class="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-white/5 rounded-[2rem] overflow-hidden"
+  >
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="border-b border-slate-100 dark:border-white/5">
+            <th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-400">
+              Student Info
+            </th>
+            <th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-400">
+              Chess Level
+            </th>
+            <th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-400">
+              Experience
+            </th>
+            <th class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-400">
+              Status
+            </th>
+            <th
+              class="px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-400 text-right"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-white/5">
+          <tr
+            *ngFor="let item of enrollments()"
+            class="group hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors"
+          >
+            <td class="px-6 py-6">
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-500 font-black text-xl"
+                >
+                  {{ item.full_name[0] }}
+                </div>
+                <div>
+                  <div class="font-bold text-slate-900 dark:text-white">{{ item.full_name }}</div>
+                  <div class="text-xs text-slate-500">{{ item.email }}</div>
+                  <div class="text-xs text-slate-500">{{ item.contact_number }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-6">
+              <span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-xs font-bold">
+                {{ item.chess_level }}
+              </span>
+            </td>
+            <td class="px-6 py-6 max-w-xs">
+              <p class="text-sm text-slate-500 line-clamp-2" [title]="item.experience">
+                {{ item.experience || 'No experience provided' }}
+              </p>
+            </td>
+            <td class="px-6 py-6">
+              <select
+                [ngModel]="item.status"
+                (ngModelChange)="updateStatus(item.id, $event)"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold border-none outline-none cursor-pointer"
+                [ngClass]="getStatusClass(item.status)"
+              >
+                <option value="pending">Pending</option>
+                <option value="contacted">Contacted</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="paid">Paid</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </td>
+            <td class="px-6 py-6 text-right">
+              <app-button
+                variant="ghost"
+                (click)="deleteEnrollment(item.id)"
+                customRounded="rounded-xl"
+                class="text-rose-500"
+              >
+                <app-icon name="trash" class="w-5 h-5"></app-icon>
+              </app-button>
+            </td>
+          </tr>
+
+          <tr *ngIf="enrollments().length === 0 && !isLoading()">
+            <td colspan="5" class="px-6 py-20 text-center text-slate-500">
+              No enrollments found matching your criteria.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading()" class="p-20 flex flex-col items-center justify-center gap-4">
+      <app-icon name="loader" class="w-8 h-8 text-cyan-500 animate-spin"></app-icon>
+      <p class="text-slate-500 font-medium">Crunching enrollment data...</p>
+    </div>
+  </div>
+</div>
