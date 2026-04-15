@@ -248,13 +248,17 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    // 1. Always sync internal chess instance first if FEN changed
+    if (changes['fen']) {
+      const currentFen = this.chess.fen();
+      if (this.fen && this.fen !== currentFen) {
+        this.chess.load(this.fen);
+      }
+    }
+
     if (this.initialized) {
       if (changes['fen'] && !changes['fen'].isFirstChange()) {
-        const currentFen = this.chess.fen();
-        if (this.fen && this.fen !== currentFen) {
-          this.chess.load(this.fen);
-          this.syncBoard();
-        }
+        this.syncBoard();
       }
       if (changes['orientation'] && !changes['orientation'].isFirstChange()) {
         this.cgApi.set({ orientation: this.orientation });
@@ -267,17 +271,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         this.cgApi.set({ drawable: { shapes: this.syncedShapes } });
       }
       if (changes['interactive']) {
-        const color = this.interactive ? this.turnColor() : undefined;
-        const dests = this.interactive ? this.getLegalMoves() : new Map();
-        
-        // Only update if actually changed to prevent flickering
-        this.cgApi.set({
-          movable: {
-            color: color,
-            dests: dests,
-          },
-          draggable: { enabled: this.interactive },
-        });
+        this.syncBoard();
       }
       if (changes['configOverride']) {
         this.applyConfigOverride(this.configOverride || {});
@@ -375,6 +369,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       movable: {
         color: this.interactive ? this.turnColor() : undefined,
         dests: this.interactive ? this.getLegalMoves() : new Map(),
+      },
+      draggable: {
+        enabled: this.interactive,
       },
       check: this.chess.inCheck() ? this.turnColor() : undefined,
     });

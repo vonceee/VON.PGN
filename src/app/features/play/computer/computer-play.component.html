@@ -14,8 +14,10 @@
           </div>
           <div class="grid grid-cols-4 lg:grid-cols-8 gap-2">
             @for (lvl of levels; track lvl) {
-              <button
+               <button
                 (click)="selectedLevel.set(lvl)"
+                [attr.aria-label]="'Difficulty Level ' + lvl"
+                [attr.aria-pressed]="selectedLevel() === lvl"
                 [class.bg-cyan-500]="selectedLevel() === lvl"
                 [class.text-slate-900]="selectedLevel() === lvl"
                 [class.border-cyan-500]="selectedLevel() === lvl"
@@ -35,8 +37,10 @@
           @if (!showCustomForm()) {
             <div class="grid grid-cols-3 lg:grid-cols-5 gap-2">
               @for (tc of timeControls; track tc.value) {
-                <button
+                 <button
                   (click)="selectedTimeControl.set(tc)"
+                  [attr.aria-label]="'Time Control ' + tc.label"
+                  [attr.aria-pressed]="selectedTimeControl()?.value === tc.value"
                   [ngClass]="{
                     'bg-cyan-500 text-slate-900': selectedTimeControl()?.value === tc.value,
                   }"
@@ -121,8 +125,10 @@
         <section>
           <h3 class="text-sm font-black uppercase mb-3">Play As</h3>
           <div class="grid grid-cols-3 gap-2">
-            <button
+             <button
               (click)="selectedColor.set('white')"
+              aria-label="Play as White"
+              [attr.aria-pressed]="selectedColor() === 'white'"
               [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'white' }"
               [class.bg-white/0.03]="selectedColor() !== 'white'"
               class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
@@ -131,6 +137,8 @@
             </button>
             <button
               (click)="selectedColor.set('random')"
+              aria-label="Play as Random"
+              [attr.aria-pressed]="selectedColor() === 'random'"
               [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'random' }"
               [class.bg-white/0.03]="selectedColor() !== 'random'"
               class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
@@ -139,6 +147,8 @@
             </button>
             <button
               (click)="selectedColor.set('black')"
+              aria-label="Play as Black"
+              [attr.aria-pressed]="selectedColor() === 'black'"
               [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'black' }"
               [class.bg-white/0.03]="selectedColor() !== 'black'"
               class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
@@ -148,12 +158,21 @@
           </div>
         </section>
 
-        <div class="pt-2">
+         <div class="pt-2">
+          @if (engineService.isError()) {
+            <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center mb-4">
+              <p class="text-red-400 text-sm font-bold">Failed to load the chess engine.</p>
+              <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
+                Please check your connection or disable adblockers.
+              </p>
+            </div>
+          }
+
           <app-button
             variant="primary"
             size="lg"
             [fullWidth]="true"
-            [disabled]="!engineService.isReady()"
+            [disabled]="!engineService.isReady() || engineService.isError()"
             (click)="startGame()"
           >
             {{ engineService.isReady() ? 'Challenge Computer' : 'Initializing Engine...' }}
@@ -187,7 +206,7 @@
                     You
                   </div>
                   <div class="text-sm font-black">
-                    {{ playerColor === 'white' ? 'White' : 'Black' }}
+                    {{ playerColor() === 'white' ? 'White' : 'Black' }}
                   </div>
                 </div>
               </div>
@@ -202,15 +221,38 @@
               (moveClicked)="onNavigate($event)"
             />
 
-            <div class="p-2 border-t border-border-theme flex gap-2">
+             <div class="p-2 border-t border-border-theme flex gap-2">
               @if (status() === 'playing') {
-                <app-button
-                  variant="danger"
-                  size="sm"
-                  class="flex-1 font-bold"
-                  (click)="resignGame()"
-                  >Resign</app-button
-                >
+                @if (!showResignConfirm()) {
+                  <app-button
+                    variant="danger"
+                    size="sm"
+                    class="flex-1 font-bold"
+                    (click)="resignGame()"
+                  >
+                    Resign
+                  </app-button>
+                } @else {
+                  <div class="flex gap-1 flex-1 animate-in fade-in slide-in-from-right-2 duration-200">
+                    <app-button
+                      variant="danger"
+                      size="sm"
+                      (click)="resignGame()"
+                      title="Confirm Resign"
+                    >
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </app-button>
+                    <app-button
+                      variant="outline"
+                      size="sm"
+                      (click)="showResignConfirm.set(false)"
+                      title="Cancel"
+                      class="flex-1"
+                    >
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </app-button>
+                  </div>
+                }
               } @else {
                 <app-button
                   variant="primary"
@@ -246,7 +288,7 @@
             <app-chess-board
               #board
               [fen]="displayFen()"
-              [orientation]="playerColor"
+              [orientation]="playerColor()"
               [interactive]="isMyTurn()"
               (moveMade)="onUserMove($event)"
               [size]="480"
@@ -308,9 +350,12 @@
               </div>
             </div>
 
-            <!-- Result Message at the bottom -->
+             <!-- Result Message at the bottom -->
             @if (resultDetails(); as result) {
-              <div class="premium-card p-4 text-center border-border-theme">
+              <div
+                class="premium-card p-4 text-center border-border-theme"
+                aria-live="polite"
+              >
                 <div class="text-xl font-black mb-1 tracking-tighter">{{ result.score }}</div>
                 <div class="text-xs tracking-widest italic">
                   {{ result.detail }}

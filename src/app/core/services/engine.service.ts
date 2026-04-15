@@ -29,7 +29,8 @@ export class EngineService {
   private evalSubject = new Subject<string>();
   evaluation$ = this.evalSubject.asObservable();
 
-  isReady = signal(false);
+  public isReady = signal(false);
+  public isError = signal(false);
   private currentLevel = 1;
 
   constructor() {
@@ -49,6 +50,14 @@ export class EngineService {
       };
 
       // Identify engine and ensure it's ready
+      // Set a timeout to detect engine loading failures
+      setTimeout(() => {
+        if (!this.isReady()) {
+          console.error('Engine initialization timeout (8s)');
+          this.isError.set(true);
+        }
+      }, 8000);
+
       this.sendCommand('uci');
       this.sendCommand('isready');
     } catch (error) {
