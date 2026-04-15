@@ -6,13 +6,12 @@ import { GameService } from '../../../core/services/game.service';
 import { TIME_CONTROLS, TimeControlOption, GameSeek } from '../../../core/models/game.model';
 import { SeekBoardComponent } from '../../../shared/components/seek-board/seek-board.component';
 import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
-import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-matchmaking',
   standalone: true,
-  imports: [CommonModule, RouterModule, SeekBoardComponent, ServerMaintenanceComponent, FormsModule, BadgeComponent, ButtonComponent],
+  imports: [CommonModule, RouterModule, SeekBoardComponent, ServerMaintenanceComponent, FormsModule, ButtonComponent],
   templateUrl: './matchmaking.component.html',
 })
 export class MatchmakingComponent implements OnInit, OnDestroy {

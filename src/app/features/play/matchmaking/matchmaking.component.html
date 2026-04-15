@@ -12,12 +12,12 @@
     <!-- Left panel: time controls or searching state -->
     <div class="h-full w-full">
       <div class="premium-card h-full flex flex-col overflow-hidden rounded-xl">
-        <div class="flex items-center justify-between border-b border-white/5 px-4 py-3 bg-white/[0.02]">
-          <h3 class="m-0 text-xs font-bold uppercase tracking-widest text-slate-400">Quick Play</h3>
+        <div class="flex items-center justify-between px-4 py-3">
+          <h3 class="m-0 text-xs font-bold uppercase tracking-widest ">Quick Play</h3>
         </div>
 
         <div class="flex-1 p-3 lg:p-4 flex flex-col min-h-0">
-          <div class="mb-3 p-3 border border-white/5 bg-white/[0.03] rounded-xl flex items-center justify-center shrink-0">
+          <div class="mb-3 p-3 flex items-center justify-center shrink-0">
             @if (gameService.isSearching()) {
               <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-3">
@@ -27,7 +27,7 @@
                 <app-button variant="outline" size="sm" (click)="cancelSearch()" class="font-bold uppercase tracking-wider scale-75 origin-right">Cancel</app-button>
               </div>
             } @else {
-              <span class="font-medium text-center text-[11px] uppercase tracking-wider opacity-40">Select Format</span>
+              <span class="font-medium text-center text-[11px] uppercase tracking-wider">Select Format</span>
             }
           </div>
 
@@ -44,9 +44,9 @@
                           <span class="text-[9px] font-bold uppercase tracking-tighter mt-1 text-cyan-500">Searching</span>
                         </div>
                       } @else {
-                        <button (click)="seekGame(tc)" [disabled]="gameService.isSearching()" class="flex flex-col items-center justify-center bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 hover:border-white/10 rounded-xl group transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer h-full">
+                        <button (click)="seekGame(tc)" [disabled]="gameService.isSearching()" class="flex flex-col items-center justify-center border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl group transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer h-full">
                           <span class="text-2xl lg:text-3xl xl:text-4xl font-black tracking-tighter">{{ tc.label }}</span>
-                          <span class="text-[9px] font-extrabold uppercase tracking-widest opacity-30 group-hover:opacity-100 group-hover:text-cyan-400 transition-colors">{{ tc.category }}</span>
+                          <span class="text-[9px] font-extrabold uppercase tracking-widest">{{ tc.category }}</span>
                         </button>
                       }
                     }
@@ -55,18 +55,16 @@
               </div>
 
               <div class="shrink-0 mt-auto pt-2 space-y-3">
-                <button (click)="showCustomForm.set(true)" [disabled]="gameService.isSearching()" class="relative w-full flex items-center justify-center py-3 bg-white/[0.03] hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 rounded-xl group text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm">
+                <button (click)="showCustomForm.set(true)" [disabled]="gameService.isSearching()" class="w-full flex items-center justify-center py-3 bg-white/[0.03] hover:bg-cyan-500/10 border border-border-theme hover:border-cyan-500/30 rounded-xl group text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm">
                   Custom Time Control
-                  <app-badge [customClass]="'absolute right-4'">NEW</app-badge>
                 </button>
 
-                <button routerLink="/play-computer" class="w-full flex items-center justify-center py-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/30 rounded-xl group text-base font-black uppercase tracking-widest cursor-pointer transition-all shadow-lg shadow-cyan-500/10 active:scale-[0.98]">
-                  <span class="mr-3">🤖</span>
+                <button routerLink="/play-computer" class="relative w-full flex items-center justify-center py-3 bg-white/[0.03] hover:bg-cyan-500/10 border border-border-theme hover:border-cyan-500/30 rounded-xl group text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm">
                   Play with Computer
                 </button>
               </div>
             } @else {
-              <div class="flex-1 bg-white/[0.03] border border-white/5 rounded-xl p-4 lg:p-6 relative flex flex-col" [class.opacity-50]="gameService.isSearching()">
+              <div class="flex-1 bg-white/[0.03] border border-border-theme rounded-xl p-4 lg:p-6 relative flex flex-col" [class.opacity-50]="gameService.isSearching()">
                 @if (gameService.isSearching()) {
                   <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 rounded-xl backdrop-blur-[2px]">
                     <div class="h-8 w-8 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin mb-4"></div>

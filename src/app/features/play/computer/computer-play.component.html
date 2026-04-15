@@ -1,30 +1,27 @@
-<div class="min-h-[calc(100vh-64px)] p-4 lg:p-8 flex flex-col items-center justify-center">
-  
+<div class="p-4 flex flex-col items-center justify-center">
   <!-- PRE-GAME SETUP VIEW -->
   @if (isSetup()) {
-    <div class="premium-card w-full max-w-4xl overflow-hidden rounded-2xl border border-white/5 animate-in fade-in zoom-in duration-300">
-      <div class="border-b border-white/5 bg-white/[0.02] px-6 py-4 flex items-center justify-between">
-        <h2 class="text-sm font-black uppercase tracking-[0.2em] text-cyan-500">Play with Computer</h2>
-        <app-badge variant="outline" color="cyan">Stockfish 16.1</app-badge>
+    <div class="premium-card w-full max-w-4xl overflow-hidden rounded-xl">
+      <div class="px-4 py-3 flex items-center justify-between">
+        <h2 class="text-xs font-bold uppercase tracking-widest">Play with Computer</h2>
       </div>
 
-      <div class="p-6 lg:p-10 space-y-12">
+      <div class="p-4 lg:p-6 space-y-6">
         <!-- Level Selection -->
         <section>
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400">Difficulty Level</h3>
-            <span class="text-2xl font-black text-white italic">Level {{ selectedLevel() }}</span>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-black uppercase">Difficulty Level</h3>
           </div>
-          <div class="grid grid-cols-4 lg:grid-cols-8 gap-3">
+          <div class="grid grid-cols-4 lg:grid-cols-8 gap-2">
             @for (lvl of levels; track lvl) {
-              <button 
-                (click)="selectedLevel.set(lvl)" 
+              <button
+                (click)="selectedLevel.set(lvl)"
                 [class.bg-cyan-500]="selectedLevel() === lvl"
                 [class.text-slate-900]="selectedLevel() === lvl"
                 [class.border-cyan-500]="selectedLevel() === lvl"
-                [class.bg-white/5]="selectedLevel() !== lvl"
-                [class.border-white/10]="selectedLevel() !== lvl"
-                class="h-12 flex items-center justify-center rounded-xl border text-lg font-black transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                [class.bg-white/[0.03]]="selectedLevel() !== lvl"
+                [class.border-border-theme]="selectedLevel() !== lvl"
+                class="h-10 flex items-center justify-center rounded-xl border text-lg font-black transition-all hover:bg-cyan-500/10 hover:border-cyan-500/30 active:scale-95 cursor-pointer"
               >
                 {{ lvl }}
               </button>
@@ -34,47 +31,133 @@
 
         <!-- Time Control Selection -->
         <section>
-          <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Time Format</h3>
-          <div class="grid grid-cols-3 lg:grid-cols-5 gap-3">
-            @for (tc of timeControls; track tc.value) {
-              <button 
-                (click)="selectedTimeControl.set(tc)"
-                [class.border-cyan-500]="selectedTimeControl()?.value === tc.value"
-                [class.bg-cyan-500/10]="selectedTimeControl()?.value === tc.value"
-                class="flex flex-col items-center justify-center py-4 bg-white/5 border border-white/10 rounded-xl transition-all hover:bg-white/10 cursor-pointer"
+          <h3 class="text-sm font-black uppercase mb-3">Time Format</h3>
+          @if (!showCustomForm()) {
+            <div class="grid grid-cols-3 lg:grid-cols-5 gap-2">
+              @for (tc of timeControls; track tc.value) {
+                <button
+                  (click)="selectedTimeControl.set(tc)"
+                  [ngClass]="{
+                    'bg-cyan-500 text-slate-900': selectedTimeControl()?.value === tc.value,
+                  }"
+                  class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
+                  [class.bg-white/0.03]="selectedTimeControl()?.value !== tc.value"
+                >
+                  <span class="text-xl font-black tracking-tighter">{{ tc.label }}</span>
+                  <span class="text-[9px] font-bold uppercase tracking-widest">{{
+                    tc.category
+                  }}</span>
+                </button>
+              }
+              <button
+                (click)="selectedTimeControl.set(null); showCustomForm.set(true)"
+                [ngClass]="{ 'bg-cyan-500 text-slate-900': showCustomForm() }"
+                class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
+                [class.bg-white/0.03]="!showCustomForm()"
               >
-                <span class="text-xl font-black tracking-tighter">{{ tc.label }}</span>
-                <span class="text-[9px] font-bold uppercase tracking-widest opacity-40">{{ tc.category }}</span>
+                <span class="text-xl font-black tracking-tighter">Custom</span>
+                <span class="text-[9px] font-bold uppercase tracking-widest">Setup</span>
               </button>
-            }
-            <button 
-              (click)="selectedTimeControl.set(null)"
-              [class.border-cyan-500]="selectedTimeControl() === null"
-              [class.bg-cyan-500/10]="selectedTimeControl() === null"
-              class="flex flex-col items-center justify-center py-4 bg-white/5 border border-white/10 rounded-xl transition-all hover:bg-white/10 cursor-pointer"
-            >
-              <span class="text-xl font-black tracking-tighter">Casual</span>
-              <span class="text-[9px] font-bold uppercase tracking-widest opacity-40">No Clock</span>
-            </button>
-          </div>
+            </div>
+          } @else {
+            <div class="bg-white/[0.03] border border-border-theme rounded-xl p-4">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base font-bold m-0 italic">Custom Setup</h3>
+                <button
+                  (click)="showCustomForm.set(false)"
+                  class="hover:text-white bg-transparent border-none cursor-pointer p-1"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div class="space-y-4">
+                <div class="space-y-2">
+                  <div class="flex justify-between items-end">
+                    <label class="block text-sm font-black uppercase">Minutes</label>
+                    <span class="text-xl font-black text-cyan-500">{{ customMinutes() }}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1"
+                    max="180"
+                    [ngModel]="customMinutes()"
+                    (ngModelChange)="customMinutes.set($event)"
+                    class="w-full accent-cyan-500 cursor-pointer"
+                  />
+                </div>
+                <div class="space-y-2">
+                  <div class="flex justify-between items-end">
+                    <label class="block text-sm font-black uppercase">Increment</label>
+                    <span class="text-xl font-black text-cyan-500">{{ customIncrement() }}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="60"
+                    [ngModel]="customIncrement()"
+                    (ngModelChange)="customIncrement.set($event)"
+                    class="w-full accent-cyan-500 cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+          }
         </section>
 
         <!-- Color Selection -->
         <section>
-          <h3 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Play As</h3>
-          <div class="flex gap-4">
-             <button (click)="selectedColor.set('white')" [class.ring-2]="selectedColor() === 'white'" class="flex-1 py-4 bg-white text-slate-900 rounded-xl font-black uppercase tracking-widest ring-white/50 transition-all cursor-pointer">White</button>
-             <button (click)="selectedColor.set('random')" [class.ring-2]="selectedColor() === 'random'" class="flex-1 py-4 bg-gradient-to-r from-slate-900 to-white text-white rounded-xl font-black uppercase tracking-widest ring-cyan-500/50 transition-all cursor-pointer relative overflow-hidden">
-                <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-900 invert">Random</span>
-             </button>
-             <button (click)="selectedColor.set('black')" [class.ring-2]="selectedColor() === 'black'" class="flex-1 py-4 bg-slate-900 text-white border border-white/20 rounded-xl font-black uppercase tracking-widest ring-slate-500/50 transition-all cursor-pointer">Black</button>
+          <h3 class="text-sm font-black uppercase mb-3">Play As</h3>
+          <div class="grid grid-cols-3 gap-2">
+            <button
+              (click)="selectedColor.set('white')"
+              [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'white' }"
+              [class.bg-white/0.03]="selectedColor() !== 'white'"
+              class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
+            >
+              <span class="text-base font-bold uppercase tracking-widest">White</span>
+            </button>
+            <button
+              (click)="selectedColor.set('random')"
+              [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'random' }"
+              [class.bg-white/0.03]="selectedColor() !== 'random'"
+              class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
+            >
+              <span class="text-base font-bold uppercase tracking-widest">Random</span>
+            </button>
+            <button
+              (click)="selectedColor.set('black')"
+              [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'black' }"
+              [class.bg-white/0.03]="selectedColor() !== 'black'"
+              class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
+            >
+              <span class="text-base font-bold uppercase tracking-widest">Black</span>
+            </button>
           </div>
         </section>
 
-        <div class="pt-6">
-          <button (click)="startGame()" class="w-full py-5 bg-cyan-500 hover:bg-cyan-400 text-slate-900 font-black text-xl uppercase tracking-widest rounded-2xl transition-all shadow-xl shadow-cyan-500/20 active:scale-[0.98] cursor-pointer">
-            Challenge Computer
-          </button>
+        <div class="pt-2">
+          <app-button
+            variant="primary"
+            size="lg"
+            [fullWidth]="true"
+            [disabled]="!engineService.isReady()"
+            (click)="startGame()"
+          >
+            {{ engineService.isReady() ? 'Challenge Computer' : 'Initializing Engine...' }}
+          </app-button>
         </div>
       </div>
     </div>
@@ -82,78 +165,161 @@
 
   <!-- ACTIVE GAME VIEW -->
   @if (!isSetup()) {
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full max-w-[1400px] animate-in fade-in slide-in-from-bottom-5 duration-500">
-      
-      <!-- Board Area -->
-      <div class="lg:col-span-2 flex flex-col items-center gap-4">
-        <div class="w-full flex justify-between items-center bg-white/5 backdrop-blur-md border border-white/10 px-6 py-4 rounded-2xl">
-          <div class="flex items-center gap-4">
-            <div class="h-12 w-12 rounded-xl bg-slate-800 flex items-center justify-center text-xl">🤖</div>
-            <div>
-              <div class="text-xs font-bold uppercase tracking-widest text-slate-500">Computer</div>
-              <div class="text-lg font-black">Stockfish Level {{ selectedLevel() }}</div>
+    <div class="w-full h-full flex items-center justify-center">
+      <div
+        class="w-full flex flex-col items-center md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6 md:items-start"
+      >
+        <!-- Left Column: Info & History -->
+        <div class="w-full md:w-96 md:h-[80vh] md:sticky md:top-6 justify-self-end">
+          <div class="flex flex-col premium-card overflow-hidden h-full">
+            <div class="p-4 border-b border-border-theme">
+              <div class="flex items-center gap-3 mb-3">
+                <div>
+                  <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500">
+                    Computer
+                  </div>
+                  <div class="text-sm font-black">Stockfish {{ selectedLevel() }}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div>
+                  <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500">
+                    You
+                  </div>
+                  <div class="text-sm font-black">
+                    {{ playerColor === 'white' ? 'White' : 'Black' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <app-move-notation
+              class="flex-1"
+              [moves]="pgnMoves()"
+              [currentPly]="displayPly()"
+              [showNavigation]="true"
+              (navigate)="onNavigate($event)"
+              (moveClicked)="onNavigate($event)"
+            />
+
+            <div class="p-2 border-t border-border-theme flex gap-2">
+              @if (status() === 'playing') {
+                <app-button
+                  variant="danger"
+                  size="sm"
+                  class="flex-1 font-bold"
+                  (click)="resignGame()"
+                  >Resign</app-button
+                >
+              } @else {
+                <app-button
+                  variant="primary"
+                  size="sm"
+                  class="flex-1 font-bold"
+                  (click)="startGame()"
+                  >Rematch</app-button
+                >
+              }
             </div>
           </div>
-          <div [class.text-red-500]="blackTimeMs() < 30000" class="text-4xl font-mono font-black tracking-tighter tabular-nums">
-            {{ formatTime(playerColor === 'white' ? blackTimeMs() : whiteTimeMs()) }}
-          </div>
         </div>
 
-        <div class="relative group">
-          <app-chess-board 
-            #board
-            [fen]="game.fen()" 
-            [orientation]="playerColor"
-            [interactive]="status() === 'playing'"
-            (moveMade)="onUserMove($event)"
-            [size]="600"
-          ></app-chess-board>
-          
-          @if (isEngineThinking()) {
-            <div class="absolute top-4 right-4 animate-pulse flex items-center gap-2 bg-slate-900/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-cyan-500/30">
-               <div class="h-2 w-2 bg-cyan-500 rounded-full"></div>
-               <span class="text-[10px] font-black uppercase tracking-widest text-cyan-500">Thinking</span>
-            </div>
-          }
-        </div>
-
-        <div class="w-full flex justify-between items-center bg-white/5 backdrop-blur-md border border-white/10 px-6 py-4 rounded-2xl">
-          <div class="flex items-center gap-4">
-            <div class="h-12 w-12 rounded-xl bg-cyan-500 flex items-center justify-center text-xl text-slate-900 font-bold">👤</div>
-            <div>
-              <div class="text-xs font-bold uppercase tracking-widest text-slate-500">You</div>
-              <div class="text-lg font-black">Searching for Best Move...</div>
+        <!-- Center Column: Board Area -->
+        <div class="w-full md:flex md:flex-col md:items-center md:min-w-0 md:overflow-hidden">
+          <!-- Clock Top (mobile) -->
+          <div
+            class="w-full md:hidden flex items-center justify-between gap-2 p-3 border border-border-theme"
+          >
+            <div class="text-xs font-bold uppercase text-slate-500">Computer</div>
+            <div
+              class="font-mono font-black"
+              [class.text-red-500]="opponentTimeMs() < 3000"
+              [class.text-amber-400]="opponentTimeMs() < 10000 && opponentTimeMs() >= 3000"
+            >
+              {{ formatTime(opponentTimeMs()) }}
             </div>
           </div>
-          <div [class.text-red-500]="whiteTimeMs() < 30000" class="text-4xl font-mono font-black tracking-tighter tabular-nums">
-            {{ formatTime(playerColor === 'white' ? whiteTimeMs() : blackTimeMs()) }}
+
+          <div
+            class="relative bg-[var(--bg-card)] p-1 shadow-2xl max-w-full overflow-hidden w-full rounded md:rounded-none"
+          >
+            <app-chess-board
+              #board
+              [fen]="displayFen()"
+              [orientation]="playerColor"
+              [interactive]="isMyTurn()"
+              (moveMade)="onUserMove($event)"
+              [size]="480"
+            ></app-chess-board>
+          </div>
+
+          <!-- Clock Bottom (mobile) -->
+          <div
+            class="w-full md:hidden flex items-center justify-between gap-2 p-3 border border-border-theme"
+          >
+            <div class="text-xs font-bold uppercase text-slate-500">You</div>
+            <div
+              class="font-mono font-black"
+              [class.text-red-500]="playerTimeMs() < 3000"
+              [class.text-amber-400]="playerTimeMs() < 10000 && playerTimeMs() >= 3000"
+            >
+              {{ formatTime(playerTimeMs()) }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Sidebar / Move History -->
-      <div class="flex flex-col gap-6 h-full">
-        <!-- Engine Eval -->
-        <div class="premium-card p-6 flex items-center justify-between border-b-4 border-cyan-500">
-           <span class="text-xs font-bold uppercase tracking-[0.2em] text-cyan-500/60">Engine Eval</span>
-           <span class="text-3xl font-black italic tracking-tighter" [class.text-green-500]="engineEval().startsWith('-') === (playerColor === 'black')">{{ engineEval() }}</span>
-        </div>
+        <!-- Right Column: Clocks (desktop) -->
+        <div class="w-full md:w-64 md:max-w-xl">
+          <div class="flex flex-col h-full gap-4">
+            <!-- Computer Clock -->
+            <div class="premium-card p-3 flex flex-col gap-2">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
+                  >Computer</span
+                >
+              </div>
+              <div
+                class="font-mono text-2xl font-black"
+                [class.text-amber-400]="opponentTimeMs() < 10000 && opponentTimeMs() >= 3000"
+                [class.text-red-500]="opponentTimeMs() < 3000"
+                [class.animate-pulse]="opponentTimeMs() < 3000"
+              >
+                {{ formatTime(opponentTimeMs()) }}
+              </div>
+            </div>
 
-        <!-- Move History -->
-        <div class="premium-card flex-1 flex flex-col min-h-0 bg-white/[0.02]">
-           <div class="p-4 border-b border-white/5">
-             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Move Table</h3>
-           </div>
-           <div class="flex-1 overflow-y-auto p-4 move-notation-container">
-             <app-move-notation [moves]="pgnMoves()"></app-move-notation>
-           </div>
-           <div class="p-4 bg-white/[0.04] flex gap-2">
-             <app-button variant="danger" class="flex-1 font-bold" (click)="exitGame()">Resign</app-button>
-             <app-button variant="outline" class="flex-1 font-bold" [disabled]="status() === 'playing'" (click)="startGame()">New Game</app-button>
-           </div>
+            <!-- Spacer to push player clock down -->
+            <div class="flex-1"></div>
+
+            <!-- Player Clock -->
+            <div class="premium-card p-3 flex flex-col gap-2">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
+                  >You</span
+                >
+              </div>
+              <div
+                class="font-mono text-2xl font-black"
+                [class.text-amber-400]="playerTimeMs() < 10000 && playerTimeMs() >= 3000"
+                [class.text-red-500]="playerTimeMs() < 3000"
+                [class.animate-pulse]="playerTimeMs() < 3000"
+              >
+                {{ formatTime(playerTimeMs()) }}
+              </div>
+            </div>
+
+            <!-- Result Message at the bottom -->
+            @if (resultDetails(); as result) {
+              <div class="premium-card p-4 text-center border-border-theme">
+                <div class="text-xl font-black mb-1 tracking-tighter">{{ result.score }}</div>
+                <div class="text-xs tracking-widest italic">
+                  {{ result.detail }}
+                </div>
+              </div>
+            }
+          </div>
         </div>
       </div>
     </div>
   }
-
 </div>

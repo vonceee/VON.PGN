@@ -5,10 +5,11 @@ import { Chess } from 'chess.js';
 import { EngineService } from '../../../core/services/engine.service';
 import { ChessBoardComponent } from '../../../shared/components/chess-board/chess-board.component';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
-import { BadgeComponent } from '../../../shared/components/badge/badge.component';
 import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
 import { MoveNotationComponent } from '../../../shared/components/move-notation/move-notation.component';
 import { AudioService } from '../../../core/services/audio.service';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-computer-play',
@@ -18,30 +19,93 @@ import { AudioService } from '../../../core/services/audio.service';
     FormsModule,
     ChessBoardComponent,
     ButtonComponent,
-    BadgeComponent,
     MoveNotationComponent
   ],
   templateUrl: './computer-play.component.html',
 })
 export class ComputerPlayComponent implements OnInit, OnDestroy {
-  private engineService = inject(EngineService);
+  engineService = inject(EngineService);
   private audioService = inject(AudioService);
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild(ChessBoardComponent) board!: ChessBoardComponent;
 
   // Game Setup State
   isSetup = signal(true);
   selectedLevel = signal(1);
-  selectedTimeControl = signal<TimeControlOption | null>(null);
+  selectedTimeControl = signal<TimeControlOption | null>(TIME_CONTROLS[5]); // 5+0 as default
   selectedColor = signal<'white' | 'black' | 'random'>('random');
+  showCustomForm = signal(false);
+  customMinutes = signal(10);
+  customIncrement = signal(0);
 
   // Game Play State
   game = new Chess();
   playerColor: 'white' | 'black' = 'white';
-  status = signal<'playing' | 'mate' | 'draw' | 'out-of-time'>('playing');
+  status = signal<'playing' | 'mate' | 'draw' | 'out-of-time' | 'resigned'>('playing');
   engineEval = signal<string>('0.0');
   pgnMoves = signal<string[]>([]);
+  displayPly = signal<number>(0);
   isEngineThinking = signal(false);
+
+  displayFen = computed(() => {
+    const ply = this.displayPly();
+    const moves = this.pgnMoves();
+
+    if (ply === moves.length) {
+      return this.game.fen();
+    }
+
+    const temp = new Chess();
+    for (let i = 0; i < ply; i++) {
+      try {
+        temp.move(moves[i]);
+      } catch (e) {
+        console.error('[ComputerPlay] Navigation error:', e);
+        break;
+      }
+    }
+    return temp.fen();
+  });
+
+  isLive = computed(() => this.displayPly() === this.pgnMoves().length);
+
+  resultDetails = computed(() => {
+    const s = this.status();
+    if (s === 'playing') return null;
+
+    let score = '*';
+    let label = 'Game Over';
+    let detail = '';
+
+    if (s === 'mate') {
+      const winner = this.game.turn() === 'w' ? 'Black' : 'White';
+      score = winner === 'White' ? '1-0' : '0-1';
+      label = 'Checkmate';
+      detail = `${winner} won`;
+    } else if (s === 'resigned') {
+      const winner = this.playerColor === 'white' ? 'Black' : 'White';
+      const loser = this.playerColor === 'white' ? 'White' : 'Black';
+      score = winner === 'White' ? '1-0' : '0-1';
+      label = 'Resigned';
+      detail = `${loser} resigned • ${winner} won`;
+    } else if (s === 'out-of-time') {
+      const winner = this.whiteTimeMs() === 0 ? 'Black' : 'White';
+      const loser = this.whiteTimeMs() === 0 ? 'White' : 'Black';
+      score = winner === 'White' ? '1-0' : '0-1';
+      label = 'Time out';
+      detail = `${loser} out of time • ${winner} won`;
+    } else if (s === 'draw') {
+      score = '½-½';
+      label = 'Draw';
+      if (this.game.isStalemate()) detail = 'Stalemate';
+      else if (this.game.isThreefoldRepetition()) detail = 'Threefold repetition';
+      else if (this.game.isInsufficientMaterial()) detail = 'Insufficient material';
+      else detail = 'Draw by agreement';
+    }
+
+    return { score, label, detail };
+  });
 
   // Time management signals
   whiteTimeMs = signal(0);
@@ -51,14 +115,25 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
   levels = [1, 2, 3, 4, 5, 6, 7, 8];
   timeControls = TIME_CONTROLS;
 
-  ngOnInit() {
-    this.engineService.bestMove$.subscribe(move => {
-      this.onEngineMove(move);
-    });
+  getIncrementSeconds = () => this.showCustomForm() ? this.customIncrement() : (this.selectedTimeControl()?.incrementSeconds || 0);
 
-    this.engineService.evaluation$.subscribe(evalStr => {
-      this.engineEval.set(evalStr);
-    });
+  isMyTurn = computed(() => this.status() === 'playing' && this.game.turn() === this.playerColor[0] && this.isLive());
+
+  playerTimeMs = computed(() => this.playerColor === 'white' ? this.whiteTimeMs() : this.blackTimeMs());
+  opponentTimeMs = computed(() => this.playerColor === 'white' ? this.blackTimeMs() : this.whiteTimeMs());
+
+  ngOnInit() {
+    this.engineService.bestMove$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(move => {
+        this.onEngineMove(move);
+      });
+
+    this.engineService.evaluation$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(evalStr => {
+        this.engineEval.set(evalStr);
+      });
   }
 
   ngOnDestroy() {
@@ -73,14 +148,19 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
       : (this.selectedColor() as 'white' | 'black');
 
     // 2. Setup times
-    if (this.selectedTimeControl()) {
+    if (this.showCustomForm()) {
+      const ms = this.customMinutes() * 60 * 1000;
+      this.whiteTimeMs.set(ms);
+      this.blackTimeMs.set(ms);
+    } else if (this.selectedTimeControl()) {
       const ms = (this.selectedTimeControl()?.baseSeconds || 0) * 1000;
       this.whiteTimeMs.set(ms);
       this.blackTimeMs.set(ms);
     } else {
-      // Infinite/Casual mode if no TC
-      this.whiteTimeMs.set(3600000); // 1 hour default
-      this.blackTimeMs.set(3600000);
+      // Fallback to 10 minutes if no Time Control is selected
+      const ms = 10 * 60 * 1000;
+      this.whiteTimeMs.set(ms);
+      this.blackTimeMs.set(ms);
     }
 
     // 3. Prepare Engine
@@ -91,6 +171,9 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     this.isSetup.set(false);
     this.status.set('playing');
     this.pgnMoves.set([]);
+    this.displayPly.set(0);
+    this.engineEval.set('0.0');
+    this.isEngineThinking.set(false);
     
     this.startTimer();
 
@@ -105,12 +188,13 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     // Update local state
     this.game.load(event.fen);
     this.pgnMoves.update(moves => [...moves, event.san]);
+    this.displayPly.set(this.pgnMoves().length);
     this.isEngineThinking.set(true);
 
     if (this.checkGameOver()) return;
 
     // Apply increment if applicable
-    const inc = (this.selectedTimeControl()?.incrementSeconds || 0) * 1000;
+    const inc = this.getIncrementSeconds() * 1000;
     if (this.playerColor === 'white') {
         this.whiteTimeMs.update(t => t + inc);
     } else {
@@ -126,8 +210,8 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
       fen, 
       this.whiteTimeMs(), 
       this.blackTimeMs(),
-      (this.selectedTimeControl()?.incrementSeconds || 0) * 1000,
-      (this.selectedTimeControl()?.incrementSeconds || 0) * 1000
+      this.getIncrementSeconds() * 1000,
+      this.getIncrementSeconds() * 1000
     );
   }
 
@@ -144,14 +228,15 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
       if (result) {
         this.audioService.playMoveSound(result.san);
         this.pgnMoves.update(moves => [...moves, result.san]);
+        this.displayPly.set(this.pgnMoves().length);
         this.isEngineThinking.set(false);
         
         if (this.board) {
-          this.board.fen = this.game.fen();
+          this.board.fen = this.displayFen();
         }
 
         // Apply engine increment
-        const inc = (this.selectedTimeControl()?.incrementSeconds || 0) * 1000;
+        const inc = this.getIncrementSeconds() * 1000;
         if (this.playerColor === 'white') {
             this.blackTimeMs.update(t => t + inc);
         } else {
@@ -217,8 +302,20 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
-  exitGame() {
+  backToSetup() {
     this.isSetup.set(true);
     this.stopTimer();
+    this.engineService.stop();
+  }
+
+  resignGame() {
+    if (this.status() !== 'playing') return;
+    this.status.set('resigned');
+    this.stopTimer();
+    this.engineService.stop();
+  }
+
+  onNavigate(ply: number) {
+    this.displayPly.set(Math.max(0, Math.min(ply, this.pgnMoves().length)));
   }
 }
