@@ -17,10 +17,10 @@ import {
   template: `
     <div
       class="flex items-center justify-between p-2 rounded-2xl min-w-[70px] border transition-colors duration-200"
-      [class.border-cyan-400]="isActive"
-      [class.bg-cyan-400/10]="isActive"
-      [class.border-border-theme]="!isActive && displayTime >= 10000"
-      [class.border-red-500]="displayTime < 3000"
+      [class.border-cyan-400]="isActive && displayTime >= 0"
+      [class.bg-cyan-400/10]="isActive && displayTime >= 0"
+      [class.border-border-theme]="displayTime < 0 || (!isActive && displayTime >= 10000)"
+      [class.border-red-500]="displayTime >= 0 && displayTime < 3000"
       [class.border-amber-500]="displayTime >= 3000 && displayTime < 10000 && !isActive"
     >
       <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -30,8 +30,8 @@ import {
       <div 
         class="text-2xl font-semibold tabular-nums font-mono"
         [class.text-amber-400]="displayTime < 10000 && displayTime >= 3000"
-        [class.text-red-500]="displayTime < 3000"
-        [class.animate-pulse]="displayTime < 3000"
+        [class.text-red-500]="displayTime >= 0 && displayTime < 3000"
+        [class.animate-pulse]="displayTime >= 0 && displayTime < 3000"
       >{{ formatTime(displayTime) }}</div>
     </div>
   `,
@@ -88,7 +88,7 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
     const timeMs = this.serverTimeMs;
     const timestamp = this.serverTimestamp;
 
-    if (typeof timeMs === 'number' && timeMs >= 0) {
+    if (typeof timeMs === 'number') {
       this.storedTimeMs = timeMs;
       
       if (timestamp) {
@@ -166,7 +166,8 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
   }
 
   formatTime(ms: number): string {
-    if (ms <= 0) return '0:00.0';
+    if (ms < 0) return '-:--';
+    if (ms === 0) return '0:00.0';
 
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);

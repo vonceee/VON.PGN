@@ -1,139 +1,156 @@
-<div class="w-full h-[calc(100vh-64px)] overflow-hidden flex flex-col relative0">
-  <div class="absolute inset-0 bg-slate-900/40 -z-10"></div>
+<div class="tv-root-container">
+  <div class="w-full max-w-[1700px] h-full flex items-center justify-center">
+    @let g = game();
+    <div class="tv-layout">
+      <!-- Left Column: Info & History -->
+      <div class="sidebar-wrapper left-sidebar">
+        <div class="flex flex-col premium-card rounded-xl overflow-hidden h-full">
+          <div class="p-4 border-b border-border-theme">
+            <app-game-info
+              [player]="g?.black_player || placeholderPlayer"
+              [color]="'black'"
+              class="block mb-3"
+            />
+            <app-game-info
+              [player]="g?.white_player || placeholderPlayer"
+              [color]="'white'"
+            />
+          </div>
 
-  <section
-    class="max-w-[1600px] mx-auto w-full px-6 flex flex-col items-center h-full justify-center"
-  >
-    <!-- Main TV Layout -->
-    <div
-      class="w-full flex flex-col lg:flex-row gap-12 items-center justify-center overflow-hidden"
-    >
-      <!-- Sidebar Switcher (Minimal) -->
-      <div class="w-full lg:w-48 flex lg:flex-col gap-2 order-2 lg:order-1 shrink-0 px-2 lg:px-0">
-        @for (cat of categories; track cat.id) {
-          <div
-            class="premium-card flex items-center gap-3 p-3 rounded-xl transition-all duration-300 cursor-pointer w-full group"
-            [class.border-cyan-400]="selectedCategory() === cat.id"
-            [class.bg-cyan-400/5]="selectedCategory() === cat.id"
-            [class.shadow-[0_0_20px_rgba(34,211,238,0.1)]]="selectedCategory() === cat.id"
-            (click)="setCategory(cat.id)"
-          >
+          <app-move-notation
+            class="flex-1"
+            [moves]="g?.moves || []"
+            [currentPly]="currentPly()"
+            [showNavigation]="true"
+            (navigate)="goToMove($event)"
+          />
+
+          <div class="p-4 border-t border-border-theme bg-slate-900/30">
             <div
-              class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-slate-800/50 transition-colors"
-              [class]="
-                selectedCategory() === cat.id
-                  ? 'text-cyan-400'
-                  : 'text-slate-400 group-hover:text-cyan-400'
-              "
+              class="text-[10px] uppercase font-black text-slate-500 text-center tracking-widest opacity-50"
             >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path [attr.d]="cat.icon" />
-              </svg>
-            </div>
-            <div class="hidden md:block text-left">
-              <div class="text-[13px] font-bold">{{ cat.name }}</div>
-            </div>
-            @if (selectedCategory() === cat.id) {
-              <div class="ml-auto hidden lg:block">
-                <div
-                  class="w-1 h-1 rounded-full bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.8)]"
-                ></div>
-              </div>
-            }
-          </div>
-        }
-      </div>
-
-      <!-- Main Board Display -->
-      <div class="w-auto flex flex-col items-center order-1 lg:order-2">
-        @let match = selectedGame();
-
-        <div class="flex flex-col items-center">
-          <!-- Black Player + Clock (Top) -->
-          <div
-            class="flex items-center justify-between mb-3 px-1 w-full"
-            [style.width.px]="boardSize()"
-          >
-            <div class="flex items-center gap-2">
-              <div class="w-4 h-4 rounded bg-slate-900 border border-slate-700"></div>
-              <span class="font-bold text-sm md:text-base">{{
-                match?.blackPlayer?.name || 'Black'
-              }}</span>
-              <span class="text-cyan-400 font-mono text-xs opacity-60"
-                >({{ match?.blackPlayer?.rating || '?' }})</span
-              >
-            </div>
-
-            <div class="w-24">
-              <app-chess-clock
-                [serverTimeMs]="match?.blackTimeRemainingMs || 0"
-                [isActive]="match?.turn === 'black'"
-              ></app-chess-clock>
-            </div>
-          </div>
-
-          <!-- Board (Stand-alone with Glow) -->
-          <div class="relative premium-card rounded-lg overflow-hidden p-0.5">
-            <app-chess-board
-              [fen]="match?.fen || 'start'"
-              [interactive]="false"
-              [size]="boardSize()"
-              [showControls]="false"
-              class="block"
-              (click)="goToGame(match?.gameId)"
-            ></app-chess-board>
-
-            <!-- Resizer handle -->
-            <div
-              class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end p-0.5"
-              style="touch-action: none"
-              (mousedown)="startBoardResize($event)"
-              (touchstart)="startBoardResize($event)"
-            >
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 12 12"
-                class="text-slate-500 opacity-50 group-hover:opacity-100"
-              >
-                <path
-                  d="M11 11H9.5V9.5H11V11ZM11 7.5H9.5V6H11V7.5ZM7.5 11H6V9.5H7.5V11Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <!-- White Player + Clock (Bottom) -->
-          <div
-            class="flex items-center justify-between mt-3 px-1 w-full"
-            [style.width.px]="boardSize()"
-          >
-            <div class="flex items-center gap-2">
-              <div class="w-4 h-4 rounded bg-white border border-slate-300"></div>
-              <span class="font-bold text-sm md:text-base">{{
-                match?.whitePlayer?.name || 'White'
-              }}</span>
-              <span class="text-cyan-400 font-mono text-xs opacity-60"
-                >({{ match?.whitePlayer?.rating || '?' }})</span
-              >
-            </div>
-
-            <div class="w-24">
-              <app-chess-clock
-                [serverTimeMs]="match?.whiteTimeRemainingMs || 0"
-                [isActive]="match?.turn === 'white'"
-              ></app-chess-clock>
+              TV Spectator Mode
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Center Column: Board Area -->
+      <div class="board-container-area">
+        <!-- Mobile Info (Top) -->
+        <div class="w-full md:hidden mb-2 flex items-center justify-between gap-2 px-2">
+          <app-game-info
+            [player]="g?.black_player || placeholderPlayer"
+            [color]="'black'"
+            class="flex-1 min-w-0"
+          />
+          <app-chess-clock
+            class="shrink-0"
+            [serverTimeMs]="g?.black_time_remaining_ms ?? -1"
+            [serverTimestamp]="g?.server_timestamp || ''"
+            [isActive]="g?.turn === 'black' && g?.status === 'active'"
+          />
+        </div>
+
+        <div class="board-wrapper-outer">
+          <app-chess-board
+            [fen]="displayFen()"
+            [orientation]="'white'"
+            [interactive]="false"
+            [size]="boardSize()"
+            [configOverride]="cgConfig()"
+            (sizeChange)="onBoardSizeChange($event)"
+          ></app-chess-board>
+        </div>
+
+        <!-- Mobile Info (Bottom) -->
+        <div class="w-full md:hidden mt-2 flex items-center justify-between gap-2 px-2">
+          <app-game-info
+            [player]="g?.white_player || placeholderPlayer"
+            [color]="'white'"
+            class="flex-1 min-w-0"
+          />
+          <app-chess-clock
+            class="shrink-0"
+            [serverTimeMs]="g?.white_time_remaining_ms ?? -1"
+            [serverTimestamp]="g?.server_timestamp || ''"
+            [isActive]="g?.turn === 'white' && g?.status === 'active'"
+          />
+        </div>
+
+        <!-- Mobile Move Notation (Simplified) -->
+        <div class="md:hidden w-full mt-4 px-2">
+          <div class="premium-card rounded-xl overflow-hidden max-h-[200px]">
+            <app-move-notation
+              [moves]="g?.moves || []"
+              [currentPly]="currentPly()"
+              [showNavigation]="true"
+              (navigate)="goToMove($event)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Clocks & Status -->
+      <div class="sidebar-wrapper right-sidebar">
+        <div class="flex flex-col justify-between h-full">
+          <div class="premium-card rounded-xl p-3 shadow-xl flex flex-col gap-2">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
+                >Black</span
+              >
+              @if (g?.turn === 'black' && g?.status === 'active') {
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              }
+            </div>
+            <app-chess-clock
+              [serverTimeMs]="g?.black_time_remaining_ms ?? -1"
+              [serverTimestamp]="g?.server_timestamp || ''"
+              [isActive]="g?.turn === 'black' && g?.status === 'active'"
+            />
+          </div>
+
+          <div class="flex-1 flex flex-col justify-center py-4 px-2">
+            @if (g?.status === 'completed' || g?.status === 'aborted') {
+              <div
+                class="premium-card rounded-xl p-4 text-center border-border-theme/50 shadow-lg bg-slate-800/20"
+              >
+                <div class="text-xl font-bold tracking-tight" [class]="getResultClass(g?.result || null)">
+                  {{ formatResult(g?.result || null) }}
+                </div>
+                <div
+                  class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest font-bold opacity-60"
+                >
+                  {{ formatTermination(g?.result || null, g?.termination || null) }}
+                </div>
+              </div>
+            } @else {
+              <div class="text-center">
+                <div class="text-[10px] uppercase font-black text-cyan-400/40 tracking-[0.2em]">
+                  {{ g ? 'Live Match' : 'Waiting' }}
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="premium-card rounded-xl p-3 shadow-xl flex flex-col gap-2">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
+                >White</span
+              >
+              @if (g?.turn === 'white' && g?.status === 'active') {
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+              }
+            </div>
+            <app-chess-clock
+              [serverTimeMs]="g?.white_time_remaining_ms ?? -1"
+              [serverTimestamp]="g?.server_timestamp || ''"
+              [isActive]="g?.turn === 'white' && g?.status === 'active'"
+            />
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
 </div>
+

@@ -5,48 +5,89 @@ import {
   OnDestroy,
   signal,
   computed,
-  effect,
   PLATFORM_ID,
+  effect,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { TvService, TvGame } from '../../core/services/tv.service';
+import { TvService } from '../../core/services/tv.service';
+import { GameService } from '../../core/services/game.service';
+import { AudioService } from '../../core/services/audio.service';
 import { ChessBoardComponent } from '../../shared/components/chess-board/chess-board.component';
 import { ChessClockComponent } from '../../shared/components/chess-clock/chess-clock.component';
+import { GameInfoComponent } from '../play/live-game/components/game-info.component';
+import { MoveNotationComponent } from '../../shared/components/move-notation/move-notation.component';
+import { GameControlsComponent } from '../play/live-game/components/game-controls.component';
+import { Chess } from 'chess.js';
+import { Config } from 'chessground/config';
 
 @Component({
   selector: 'app-tv',
   standalone: true,
   imports: [
+    CommonModule,
     RouterModule,
     ChessBoardComponent,
     ChessClockComponent,
+    GameInfoComponent,
+    MoveNotationComponent,
   ],
   templateUrl: './tv.component.html',
+  styleUrls: ['./tv.component.css'],
 })
 export class TvComponent implements OnInit, OnDestroy {
   tvService = inject(TvService);
-  router = inject(Router);
+  gameService = inject(GameService);
   private platformId = inject(PLATFORM_ID);
+  private audioService = inject(AudioService);
+  private router = inject(Router);
 
-  selectedCategory = signal<'bullet' | 'blitz' | 'rapid'>('bullet');
+  readonly STARTING_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+  readonly placeholderPlayer = { id: 0, name: '...' };
+
   boardSize = signal<number>(this.calculateInitialBoardSize());
+  currentPly = signal(0);
+  chess = new Chess();
+  displayFen = signal<string>(this.STARTING_FEN);
+  private moveSanCache = signal<string[]>([]);
 
-  selectedGame = computed(() => {
-    return this.tvService.tvState()[this.selectedCategory()];
+  selectedTvGame = computed(() => {
+    const state = this.tvService.tvState();
+    return state.rapid || state.blitz || state.bullet || null;
   });
 
-  constructor() {
-    // Auto-switch if current category has no games
-    effect(() => {
-      const state = this.tvService.tvState();
-      const current = state[this.selectedCategory()];
+  game = this.gameService.gameState;
 
-      if (!current) {
-        const available = this.categories.find((c) => state[c.id]);
-        if (available) {
-          this.selectedCategory.set(available.id);
+  constructor() {
+    // Watch for featured TV game changes and load full state via GameService
+    effect(() => {
+      const tvGame = this.selectedTvGame();
+      if (tvGame?.gameId) {
+        const currentId = this.gameService.gameState()?.id;
+        if (currentId !== tvGame.gameId) {
+          this.gameService.loadGame(tvGame.gameId);
+          this.currentPly.set(0);
         }
+      } else if (this.gameService.gameState()) {
+        // Clear state if no game is featured on TV
+        this.gameService.clearGame(false);
+      }
+    });
+
+    // Sync chess instance and display when global game state updates
+    effect(() => {
+      const g = this.game();
+      if (g) {
+        this.chess.load(g.fen);
+        this.rebuildSanCache();
+        this.currentPly.set(g.moves.length);
+        this.displayFen.set(g.fen);
+
+        if (isPlatformBrowser(this.platformId)) {
+          document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
+        }
+      } else {
+        this.displayFen.set(this.STARTING_FEN);
       }
     });
   }
@@ -54,70 +95,114 @@ export class TvComponent implements OnInit, OnDestroy {
   private calculateInitialBoardSize(): number {
     if (isPlatformBrowser(this.platformId)) {
       const vh = window.innerHeight;
-      return Math.min(600, vh - 320);
+      return Math.min(600, vh - 280);
     }
     return 600;
   }
 
-  startBoardResize(event: MouseEvent | TouchEvent) {
-    event.preventDefault();
-    const startY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
-    const startSize = this.boardSize();
-
-    const onMouseMove = (moveEvent: MouseEvent | TouchEvent) => {
-      const currentY =
-        moveEvent instanceof MouseEvent ? moveEvent.clientY : moveEvent.touches[0].clientY;
-      const delta = currentY - startY;
-      const newSize = Math.max(300, Math.min(900, startSize + delta));
-      this.boardSize.set(newSize);
-    };
-
-    const onMouseUp = () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      document.removeEventListener('touchmove', onMouseMove);
-      document.removeEventListener('touchend', onMouseUp);
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-    document.addEventListener('touchmove', onMouseMove, { passive: false });
-    document.addEventListener('touchend', onMouseUp);
+  onBoardSizeChange(event: number) {
+    this.boardSize.set(event);
+    if (isPlatformBrowser(this.platformId)) {
+      document.documentElement.style.setProperty('--board-size', `${event}px`);
+    }
   }
 
-  categories = [
-    {
-      id: 'bullet' as const,
-      name: 'Bullet',
-      icon: 'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
-      color: 'text-cyan-400',
-    },
-    {
-      id: 'blitz' as const,
-      name: 'Blitz',
-      icon: 'M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z',
-      color: 'text-orange-400',
-    },
-    {
-      id: 'rapid' as const,
-      name: 'Rapid',
-      icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
-      color: 'text-green-400',
-    },
-  ];
+  rebuildSanCache(): void {
+    const g = this.game();
+    if (!g) return;
 
+    const newCache: string[] = [];
+    const tempChess = new Chess();
+    tempChess.reset();
+
+    for (const uci of g.moves) {
+      if (!uci || uci.length < 4) {
+        newCache.push(uci);
+        continue;
+      }
+      const from = uci.substring(0, 2);
+      const to = uci.substring(2, 4);
+      const promotion = uci.length > 4 ? uci[4] : undefined;
+      try {
+        const result = tempChess.move({ from, to, promotion: promotion as any });
+        if (result) {
+          newCache.push(result.san);
+        } else {
+          newCache.push(uci);
+        }
+      } catch {
+        newCache.push(uci);
+      }
+    }
+    this.moveSanCache.set(newCache);
+  }
+
+  moveRounds = computed(() => {
+    const g = this.game();
+    const san = this.moveSanCache();
+    if (!g) return [];
+    const rounds = [];
+    for (let i = 0; i < g.moves.length; i += 2) {
+      rounds.push({
+        num: Math.floor(i / 2) + 1,
+        white: san[i] ?? g.moves[i],
+        black: i + 1 < g.moves.length ? san[i + 1] ?? g.moves[i + 1] : null,
+        whiteIndex: i,
+        blackIndex: i + 1,
+      });
+    }
+    return rounds;
+  });
+
+  goToMove(ply: number): void {
+    const g = this.game();
+    if (!g || ply < 0 || ply > g.moves.length) return;
+
+    this.currentPly.set(ply);
+    const tempChess = new Chess();
+    for (let i = 0; i < ply; i++) {
+        const uci = g.moves[i];
+        const from = uci.substring(0, 2);
+        const to = uci.substring(2, 4);
+        const promotion = uci.length > 4 ? uci[4] : undefined;
+        try { tempChess.move({ from, to, promotion: promotion as any }); } catch {}
+    }
+    this.displayFen.set(tempChess.fen());
+  }
+
+  formatResult(result: string | null): string {
+    return result || '';
+  }
+
+  formatTermination(result: string | null, termination: string | null): string {
+    if (!termination) return '';
+    if (result === '1/2-1/2') return 'Draw';
+    return termination.toLowerCase();
+  }
+
+  getResultClass(result: string | null): string {
+    if (result === '1/2-1/2') return 'text-slate-400';
+    return result === '1-0' ? 'text-green-500' : 'text-red-500';
+  }
+
+  cgConfig = computed(() => {
+    const g = this.game();
+    if (!g) return {};
+    return {
+      turnColor: g.turn,
+      viewOnly: true,
+      movable: { color: undefined, dests: new Map() },
+      check: this.chess.inCheck() ? (this.chess.turn() === 'w' ? 'white' : 'black') : undefined,
+    } as Config;
+  });
   ngOnInit() {
     this.tvService.joinTv();
   }
 
   ngOnDestroy() {
     this.tvService.leaveTv();
+    this.gameService.clearGame(false);
   }
-
-  setCategory(cat: 'bullet' | 'blitz' | 'rapid') {
-    this.selectedCategory.set(cat);
-  }
-
   goToGame(gameId: string | undefined) {
     if (gameId) {
       this.router.navigate(['/play', gameId]);
