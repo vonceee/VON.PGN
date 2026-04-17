@@ -24,7 +24,7 @@
 
   .sidebar-wrapper {
     min-width: 0;
-    height: var(--board-size, 400px);
+    height: 80vh;
   }
 
   .left-sidebar {
@@ -36,7 +36,7 @@
   .right-sidebar {
     justify-self: start;
     width: 100%;
-    max-width: 320px;
+    max-width: 400px;
   }
 
   .board-container-area {

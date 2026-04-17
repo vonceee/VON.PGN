@@ -12,8 +12,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudyService } from '../../core/services/study.service';
 import { AuthService } from '../../core/services/auth.service';
-import { ChessBoardComponent } from '../../shared/components/chess-board/chess-board.component';
-import { MoveNotationComponent } from '../../shared/components/move-notation/move-notation.component';
+import { ChessBoardComponent  } from '@shared/chess';
+import { MoveNotationComponent  } from '@shared/chess';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Chess } from 'chess.js';
@@ -450,3 +450,4 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.studyService.emitShapes(shapes);
   }
 }
+

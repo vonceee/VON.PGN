@@ -1,0 +1,467 @@
+<header
+  class="relative z-50 w-full flex justify-between items-center px-4 md:px-16 py-3 lg:py-4 sticky top-0"
+>
+  <a
+    routerLink="/home"
+    class="text-xl lg:text-2xl xl:text-3xl font-bold flex items-center gap-3 shrink-0 group"
+  >
+    <span
+      class="font-black tracking-tighter decoration-cyan-400 group-hover:underline underline-offset-8"
+      >vonchess</span
+    >
+  </a>
+
+  <!-- Desktop Navigation -->
+  <div class="hidden md:flex ml-10 gap-6 lg:gap-10 xl:gap-14 mt-1">
+    <!-- Play Dropdown -->
+    <div class="group">
+      <a
+        routerLink="/play"
+        class="hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg transition-colors"
+      >
+        Play
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="w-4 h-4 transition-transform group-hover:rotate-180"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.22 8.574a.75.75 0 0 1 1.06 0L10 11.819l3.72-3.245a.75.75 0 1 1 1.04 1.084l-4.25 3.5a.75.75 0 0 1-1.04 0l-4.25-3.5a.75.75 0 0 1 0-1.06Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </a>
+      <div class="nav-dropdown flex flex-col">
+        <a
+          routerLink="/play"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Play</span
+          >
+        </a>
+        <a
+          routerLink="/tactics"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Tactics</span
+          >
+        </a>
+        <a
+          routerLink="/tactics/leaderboard"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Rankings</span
+          >
+        </a>
+        <a
+          routerLink="/tv"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Watch</span
+          >
+        </a>
+        <a
+          routerLink="/study"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Study</span
+          >
+        </a>
+      </div>
+    </div>
+
+    <!-- <a routerLink="/explorer" class="hover:text-cyan-400">Opening Explorer</a> -->
+    <a
+      routerLink="/roadmap"
+      class="hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg transition-colors"
+    >
+      Roadmap
+    </a>
+
+    <!-- Tournament Dropdown -->
+    <div class="group">
+      <a
+        routerLink="/events"
+        class="hover:text-cyan-400 flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg transition-colors"
+      >
+        Tournaments
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="w-4 h-4 transition-transform group-hover:rotate-180"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.22 8.574a.75.75 0 0 1 1.06 0L10 11.819l3.72-3.245a.75.75 0 1 1 1.04 1.084l-4.25 3.5a.75.75 0 0 1-1.04 0l-4.25-3.5a.75.75 0 0 1 0-1.06Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </a>
+      <div class="nav-dropdown flex flex-col">
+        <a
+          routerLink="/events"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Tournaments</span
+          >
+        </a>
+        <a
+          routerLink="/arena"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Arena</span
+          >
+        </a>
+        <a
+          routerLink="/broadcasts"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Broadcasts</span
+          >
+        </a>
+      </div>
+    </div>
+
+    <!-- Arena Dropdown -->
+    <a
+      routerLink="/coaches"
+      class="hover:text-cyan-400 text-sm lg:text-base xl:text-lg transition-colors mt-0.5"
+      >Coaches</a
+    >
+    <a
+      routerLink="/academy"
+      class="hover:text-cyan-400 text-sm lg:text-base xl:text-lg transition-colors mt-0.5"
+      >Academy</a
+    >
+  </div>
+
+  <!-- Desktop/Tablet Search Bar -->
+  <div class="relative ml-auto sm:ml-10 mr-4 hidden sm:block" #searchContainer>
+    <div class="flex items-center h-10 w-44 lg:w-64 pr-3">
+      <div class="flex items-center justify-center shrink-0 w-10 h-10">
+        <ng-icon name="heroMagnifyingGlass" class="w-4 h-4"></ng-icon>
+      </div>
+
+      <input
+        #searchInput
+        type="text"
+        placeholder="Search..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        (focus)="isSearchOpen.set(true)"
+        class="bg-transparent outline-none text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 w-full"
+      />
+
+      @if (isSearching()) {
+        <div
+          class="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin shrink-0 ml-2"
+        ></div>
+      }
+    </div>
+
+    <!-- Search Results Dropdown -->
+    @if (isSearchOpen()) {
+      @if (searchResults().length > 0) {
+        <div
+          class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-black rounded-xl border border-border-theme py-2 z-50 shadow-lg"
+        >
+          @for (user of searchResults(); track user.uid) {
+            <button
+              (click)="viewUserProfile(user)"
+              class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 text-left transition-colors"
+            >
+              <div class="flex flex-col min-w-0">
+                <span class="text-sm text-slate-900 dark:text-white truncate">{{
+                  user.displayName
+                }}</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400 truncate">{{
+                  '@' + user.username
+                }}</span>
+              </div>
+            </button>
+          }
+        </div>
+      } @else if (searchQuery().length >= 2 && !isSearching()) {
+        <div
+          class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-black rounded-xl border border-border-theme py-2 z-50"
+        >
+          <div class="px-4 py-3 text-sm text-center">player not found</div>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Right Section: Auth + Hamburger -->
+  <div class="flex items-center gap-2 md:gap-3 ml-auto md:ml-0">
+    @if (authService.isAuthenticated()) {
+      <div class="relative hidden md:block" #profileContainer>
+        <button
+          (click)="toggleProfileDropdown()"
+          class="flex items-center gap-2 group cursor-pointer focus:outline-none"
+        >
+          <span
+            class="text-sm lg:text-base xl:text-lg font-bold group-hover:text-cyan-500 transition-colors"
+          >
+            {{ userService.currentUser()?.displayName || 'User' }}
+          </span>
+        </button>
+
+        <!-- Desktop Profile Dropdown -->
+        <div
+          [class.show]="isProfileDropdownOpen()"
+          class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl z-40 overflow-hidden profile-dropdown"
+        >
+          <!-- Navigation Links -->
+          <div class="flex flex-col py-1">
+            <a
+              [routerLink]="['/profile']"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-sm transition-colors"
+            >
+              Profile
+            </a>
+
+            <div class="h-px w-full bg-slate-200 dark:bg-slate-800"></div>
+
+            <!-- Personal Chess Hub -->
+            <a
+              routerLink="/my-progress"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-sm transition-colors"
+            >
+              My Progress
+            </a>
+            <a
+              routerLink="/my-events"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-sm transition-colors"
+            >
+              My Tournaments
+            </a>
+            <a
+              routerLink="/my-arena"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-sm transition-colors"
+            >
+              My Arena
+            </a>
+            <a
+              routerLink="/bookmarks"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-sm transition-colors"
+            >
+              Bookmarks
+            </a>
+            <a
+              routerLink="/chat"
+              (click)="toggleProfileDropdown()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-sm transition-colors"
+            >
+              Messages
+              @if (chatService.totalUnreadCount() > 0) {
+                <span
+                  class="ml-auto min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold"
+                >
+                  {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
+                </span>
+              }
+            </a>
+
+            @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
+              <div class="h-px w-full bg-slate-200 dark:bg-slate-800"></div>
+              <a
+                routerLink="/admin"
+                (click)="toggleProfileDropdown()"
+                class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-sm text-cyan-600 dark:text-cyan-400 transition-colors"
+              >
+                Admin Panel
+              </a>
+            }
+            <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+
+            <!-- Chess Settings -->
+            <div class="px-4 py-2 flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <span
+                  class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+                  >Chess Settings</span
+                >
+              </div>
+
+              <!-- Board Theme -->
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+                  >Board Theme</label
+                >
+                <select
+                  [ngModel]="boardThemeService.boardTheme()"
+                  (ngModelChange)="onBoardThemeChange($event)"
+                  class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
+                >
+                  @for (theme of boardThemes; track theme.value) {
+                    <option [value]="theme.value">{{ theme.label }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Piece Set -->
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+                  >Piece Style</label
+                >
+                <select
+                  [ngModel]="boardThemeService.pieceSet()"
+                  (ngModelChange)="onPieceSetChange($event)"
+                  class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
+                >
+                  @for (set of pieceSets; track set.value) {
+                    <option [value]="set.value">{{ set.label }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Sound Theme -->
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
+                  >Move Sound</label
+                >
+                <select
+                  [ngModel]="audioService.soundEnabled() ? audioService.soundTheme() : 'off'"
+                  (ngModelChange)="onSoundThemeChange($event)"
+                  class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500/50 hover:border-cyan-500/30 transition-colors"
+                >
+                  <option value="off">Off</option>
+                  @for (theme of soundThemes; track theme.value) {
+                    <option [value]="theme.value">{{ theme.label }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+
+            <!-- Theme Toggle -->
+            <button
+              (click)="themeService.toggleTheme()"
+              class="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm w-full text-left"
+            >
+              @if (themeService.isDarkMode()) {
+                <span>Light Mode</span>
+              } @else {
+                <span>Dark Mode</span>
+              }
+            </button>
+
+            <!-- Network Status -->
+            <div class="flex items-center justify-between px-4 py-2">
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-slate-900 dark:text-white">Network</span>
+              </div>
+              <div class="flex items-center gap-2">
+                @if (pingSignal() > 0) {
+                  <span class="text-xs text-slate-500 dark:text-slate-400"
+                    >{{ pingSignal() }}ms</span
+                  >
+                }
+                <div class="flex items-end gap-0.5 h-3.5">
+                  <div
+                    class="w-1 rounded-sm transition-all duration-300"
+                    [style.height]="getPingBarHeight(0)"
+                    [style.backgroundColor]="getPingColor()"
+                  ></div>
+                  <div
+                    class="w-1 rounded-sm transition-all duration-300"
+                    [style.height]="getPingBarHeight(1)"
+                    [style.backgroundColor]="getPingColor()"
+                  ></div>
+                  <div
+                    class="w-1 rounded-sm transition-all duration-300"
+                    [style.height]="getPingBarHeight(2)"
+                    [style.backgroundColor]="getPingColor()"
+                  ></div>
+                  <div
+                    class="w-1 rounded-sm transition-all duration-300"
+                    [style.height]="getPingBarHeight(3)"
+                    [style.backgroundColor]="getPingColor()"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="h-px w-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+
+            <!-- Logout -->
+            <button
+              (click)="logout()"
+              class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 text-sm"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Theme Toggle (Desktop) -->
+      <button
+        (click)="themeService.toggleTheme()"
+        class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+        aria-label="Toggle theme"
+      >
+        @if (themeService.isDarkMode()) {
+          <ng-icon name="heroSun" class="w-5 h-5 text-amber-500" strokeWidth="1.5"></ng-icon>
+        } @else {
+          <ng-icon
+            name="heroMoon"
+            class="w-5 h-5 text-slate-500 dark:text-slate-400"
+            strokeWidth="1.5"
+          ></ng-icon>
+        }
+      </button>
+      <a
+        routerLink="/login"
+        class="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/15 hover:border-cyan-500/60 hover:text-cyan-600 dark:hover:text-cyan-400"
+      >
+        Log in
+      </a>
+    }
+
+    <!-- Mobile Hamburger Button -->
+    <button
+      (click)="toggleMobileMenu()"
+      class="md:hidden p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10"
+      aria-label="Toggle Menu"
+    >
+      @if (isMobileMenuOpen()) {
+        <!-- Close Icon -->
+        <ng-icon name="heroXMark" class="w-6 h-6"></ng-icon>
+      } @else {
+        <!-- Hamburger Icon -->
+        <ng-icon name="heroBars3" class="w-6 h-6"></ng-icon>
+      }
+    </button>
+  </div>
+</header>
+
+<!-- Mobile Menu Overlay -->
+@if (isMobileMenuOpen()) {
+  <app-mobile-menu (close)="isMobileMenuOpen.set(false)"></app-mobile-menu>
+}

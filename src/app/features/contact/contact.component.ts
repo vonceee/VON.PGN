@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FooterComponent } from '../../shared/components/footer/footer.component';
+import { FooterComponent  } from '@shared/layout';
 
 @Component({
   selector: 'app-contact',
@@ -34,3 +34,4 @@ export class ContactComponent {
     }, 1000);
   }
 }
+

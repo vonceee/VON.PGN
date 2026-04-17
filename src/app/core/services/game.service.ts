@@ -106,7 +106,7 @@ export class GameService implements OnDestroy {
     this.searchTimeControl.set(timeControl);
 
     this.http
-      .post<{ matched: boolean; game_id?: string; message: string; existing_game?: GameState }>(
+      .post<{ matched: boolean; game_id?: string; message: string; existing_game?: GameState; game?: GameState }>(
         `${this.apiUrl}/game/seek`,
         { time_control: timeControl },
       )
@@ -125,7 +125,18 @@ export class GameService implements OnDestroy {
         if (res.matched && res.game_id) {
           this.isSearching.set(false);
           this.audioService.playMatchFound();
-          this.loadGameAndNavigate(res.game_id);
+          
+          if (res.game) {
+            // Instant load
+            const gameWithDefaults = this.applyGameDefaults(res.game);
+            this.gameState.set(gameWithDefaults);
+            this.connectSocket();
+            this.subscribeToGame(res.game_id);
+            this.startHeartbeat();
+            this.router.navigate(['/play', res.game_id]);
+          } else {
+            this.loadGameAndNavigate(res.game_id);
+          }
         } else if (res.existing_game) {
           this.isSearching.set(false);
           this.audioService.playMatchFound();
@@ -157,12 +168,13 @@ export class GameService implements OnDestroy {
   }
 
   loadGame(gameId: string): void {
+    this.isLoading.set(true);
     this.http
       .get<{ game: GameState }>(`${this.apiUrl}/game/${gameId}`)
       .pipe(
         catchError((error) => {
-          if (error.status === 404) {
-            // Fallback to microservice for live/arena games
+          // Fallback to microservice for live/arena games on ANY error except auth
+          if (error.status !== 401 && error.status !== 403) {
             return this.http.get<any>(`${this.socketUrl}/api/games/${gameId}`).pipe(
               map(raw => ({ game: this.mapMicroserviceGameToGameState(raw) })),
               catchError(() => of({ game: null }))
@@ -172,6 +184,7 @@ export class GameService implements OnDestroy {
         })
       )
       .subscribe((res) => {
+        this.isLoading.set(false);
         if (res.game) {
           this.gameState.set(res.game);
           this.connectSocket();
@@ -337,7 +350,16 @@ export class GameService implements OnDestroy {
         if (!res) return;
         if (res.matched && res.game_id) {
           this.audioService.playMatchFound();
-          this.loadGameAndNavigate(res.game_id);
+          if (res.game) {
+            const gameWithDefaults = this.applyGameDefaults(res.game);
+            this.gameState.set(gameWithDefaults);
+            this.connectSocket();
+            this.subscribeToGame(res.game_id);
+            this.startHeartbeat();
+            this.router.navigate(['/play', res.game_id]);
+          } else {
+            this.loadGameAndNavigate(res.game_id);
+          }
         } else if (res.game) {
           this.audioService.playMatchFound();
           this.gameState.set(res.game);
@@ -615,11 +637,37 @@ export class GameService implements OnDestroy {
       this.opponentAwayCountdown.set(null);
     });
 
+    this.socket.on('first_move_countdown', (data: any) => {
+      if (data.gameId !== gameId) return;
+      this.gameState.update(g => g ? ({ ...g, firstMoveCountdown: data.secondsRemaining }) : null);
+    });
+
     // The initial state is already set by loadGame/checkActiveGame/pollForMatch
     // before calling setupGameChannel. We only need to listen for events now.
   }
 
+  private applyGameDefaults(game: any): GameState {
+    const myId = String(this.authService.currentUser()?.uid);
+    const whiteId = String(game.white_player_id || game.white_player?.id);
+    const myColor: 'white' | 'black' = whiteId === myId ? 'white' : 'black';
+
+    return {
+      ...game,
+      white_player: game.white_player || { id: game.white_player_id, name: 'White' },
+      black_player: game.black_player || { id: game.black_player_id, name: 'Black' },
+      fen: game.fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+      turn: game.turn || 'white',
+      moves: game.moves || [],
+      white_time_remaining_ms: game.white_time_remaining_ms ?? game.initial_time_ms,
+      black_time_remaining_ms: game.black_time_remaining_ms ?? game.initial_time_ms,
+      server_timestamp: game.server_timestamp || null,
+      my_color: myColor,
+      legal_moves: game.legal_moves || [],
+    };
+  }
+
   loadGameAndNavigate(gameId: string): void {
+    this.isLoading.set(true);
     this.http
       .get<{ game: GameState }>(`${this.apiUrl}/game/${gameId}`)
       .pipe(
@@ -627,8 +675,8 @@ export class GameService implements OnDestroy {
           if (error.status === 503) {
             this.isServiceMaintenance.set(true);
           }
-          if (error.status === 404) {
-            // Fallback to microservice for live/arena games
+          // Fallback to microservice for live/arena games on ANY error except auth
+          if (error.status !== 401 && error.status !== 403) {
             return this.http.get<any>(`${this.socketUrl}/api/games/${gameId}`).pipe(
               map(raw => ({ game: this.mapMicroserviceGameToGameState(raw) })),
               catchError(() => of({ game: null }))
@@ -638,6 +686,7 @@ export class GameService implements OnDestroy {
         })
       )
       .subscribe((res) => {
+        this.isLoading.set(false);
         if (res.game) {
           this.isServiceMaintenance.set(false);
           this.gameState.set(res.game);

@@ -5,8 +5,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ArenaService } from '../../../core/services/arena.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
-import { BackLinkComponent } from '../../../shared/components/back-link/back-link.component';
+import { ButtonComponent  } from '@shared/ui';
+import { BackLinkComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-my-arena-editor',
@@ -74,3 +74,4 @@ export class MyArenaEditorComponent {
     });
   }
 }
+

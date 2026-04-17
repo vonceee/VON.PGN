@@ -2,10 +2,10 @@ import { Component, inject, ChangeDetectorRef, DestroyRef, signal } from '@angul
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { SectionHeadingComponent } from 'src/app/shared/components/section-heading/section-heading.component';
-import { TypewriterTextComponent } from 'src/app/shared/components/typewriter-text/typewriter-text';
-import { BackLinkComponent } from 'src/app/shared/components/back-link/back-link.component';
-import { ButtonComponent } from 'src/app/shared/components/button/button.component';
+import { SectionHeadingComponent  } from '@shared/ui';
+import { TypewriterTextComponent  } from '@shared/ui';
+import { BackLinkComponent  } from '@shared/ui';
+import { ButtonComponent  } from '@shared/ui';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 60_000;
@@ -127,3 +127,4 @@ export class LoginComponent {
     });
   }
 }
+

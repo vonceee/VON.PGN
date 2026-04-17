@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Tournament } from '../../../core/models/tournament.model';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
-import { LoadingComponent } from '../../../shared/components/loading/loading.component';
-import { SectionHeadingComponent } from '../../../shared/components/section-heading/section-heading.component';
-import { ConfirmDeleteModalComponent } from '../../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
+import { ButtonComponent  } from '@shared/ui';
+import { LoadingComponent  } from '@shared/feedback';
+import { SectionHeadingComponent  } from '@shared/ui';
+import { ConfirmDeleteModalComponent  } from '@shared/feedback';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -78,3 +78,4 @@ export class MyTournamentsComponent implements OnInit {
     });
   }
 }
+

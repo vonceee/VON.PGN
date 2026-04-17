@@ -13,10 +13,10 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
-import { MoveNotationComponent } from '../../shared/components/move-notation/move-notation.component';
-import { TacticsBoardComponent } from '../../shared/components/tactics-board/tactics-board.component';
-import { ServerMaintenanceComponent } from '../../shared/components/server-maintenance/server-maintenance.component';
-import { ButtonComponent } from '../../shared/components/button/button.component';
+import { MoveNotationComponent  } from '@shared/chess';
+import { TacticsBoardComponent  } from '@shared/chess';
+import { ServerMaintenanceComponent  } from '@shared/feedback';
+import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-tactics',
@@ -335,4 +335,5 @@ export class TacticsComponent implements OnInit {
     this.currentPly.set(ply);
   }
 }
+
 

@@ -2,7 +2,7 @@ import { Component, inject, signal, ViewChild, ElementRef } from '@angular/core'
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../core/services/chat.service';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-message-input',
@@ -52,3 +52,4 @@ export class MessageInputComponent {
     }
   }
 }
+

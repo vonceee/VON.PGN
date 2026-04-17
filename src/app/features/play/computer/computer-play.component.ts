@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Chess } from 'chess.js';
 import { EngineService } from '../../../core/services/engine.service';
-import { ChessBoardComponent } from '../../../shared/components/chess-board/chess-board.component';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { ChessBoardComponent  } from '@shared/chess';
+import { ButtonComponent  } from '@shared/ui';
 import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
-import { MoveNotationComponent } from '../../../shared/components/move-notation/move-notation.component';
+import { MoveNotationComponent  } from '@shared/chess';
 import { AudioService } from '../../../core/services/audio.service';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -338,3 +338,4 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     this.displayPly.set(Math.max(0, Math.min(ply, this.pgnMoves().length)));
   }
 }
+

@@ -5,7 +5,7 @@ import { TournamentService } from '../../core/services/tournament.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Tournament } from '../../core/models/tournament.model';
-import { ButtonComponent } from '../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-bookmarks',
@@ -65,3 +65,4 @@ export class BookmarksComponent implements OnInit {
     });
   }
 }
+

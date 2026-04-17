@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { GameService } from '../../../core/services/game.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-game-history',
@@ -194,3 +194,4 @@ export class GameHistoryComponent implements OnInit {
     return iWon ? 'text-green-500' : 'text-red-500';
   }
 }
+

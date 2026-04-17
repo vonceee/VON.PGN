@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
 import { FormFieldComponent } from './form-field.component';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 // Step 4: Organizer
 @Component({
@@ -129,3 +129,4 @@ export class StepEligibilityComponent implements OnInit {
     return this.eligibilityArray.at(index) as FormControl;
   }
 }
+

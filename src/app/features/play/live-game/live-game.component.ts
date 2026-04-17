@@ -17,15 +17,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, fromEvent } from 'rxjs';
 import { GameService } from '../../../core/services/game.service';
 import { AudioService } from '../../../core/services/audio.service';
-import { UserService } from '../../../core/services/user.service';
 import { ArenaService } from '../../../core/services/arena.service';
-import { ChessClockComponent } from '../../../shared/components/chess-clock/chess-clock.component';
-import { ServerMaintenanceComponent } from '../../../shared/components/server-maintenance/server-maintenance.component';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { ChessClockComponent } from '@shared/chess';
+import { ServerMaintenanceComponent, LoadingComponent } from '@shared/feedback';
+import { ButtonComponent } from '@shared/ui';
 import { GameInfoComponent } from './components/game-info.component';
 import { GameControlsComponent } from './components/game-controls.component';
-import { ChessBoardComponent } from '../../../shared/components/chess-board/chess-board.component';
-import { MoveNotationComponent } from '../../../shared/components/move-notation/move-notation.component';
+import { ChessBoardComponent } from '@shared/chess';
+import { MoveNotationComponent } from '@shared/chess';
 import {
   MovePlayedPayload,
   GameEndedPayload,
@@ -48,6 +47,7 @@ import { Config } from 'chessground/config';
     GameControlsComponent,
     ChessBoardComponent,
     ButtonComponent,
+    LoadingComponent,
   ],
   templateUrl: './live-game.component.html',
   styleUrls: ['./live-game.component.css'],
@@ -63,6 +63,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
         this.boardInitialized = true;
         this.chess.load(g.fen);
         this.displayFen.set(this.chess.fen());
+        this.currentPly.set(g.moves.length);
         this.rebuildSanCache();
       }
 
@@ -96,6 +97,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   private boardInitialized = false;
   boardSize = signal(this.loadBoardSize());
   currentPly = signal(0);
+  showMobileResult = signal(true);
 
   private loadBoardSize(): number {
     if (isPlatformBrowser(this.platformId)) {
@@ -207,18 +209,23 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   }
 
   formatResult(result: string | null): string {
-    return result || '';
+    if (!result) return '';
+    if (result === '1-0') return 'white won';
+    if (result === '0-1') return 'black won';
+    if (result === '1/2-1/2') return 'draw';
+    return result.toLowerCase();
   }
 
   formatTermination(result: string | null, termination: string | null): string {
     if (!termination) return '';
     const isDraw = result === '1/2-1/2';
     if (isDraw) {
-      if (termination === 'draw') return 'draw';
-      if (termination === 'stalemate') return 'draw by stalemate';
-      if (termination === 'repetition') return 'draw by repetition';
-      if (termination === 'insufficient') return 'draw by insufficient material';
-      return 'draw';
+      if (termination === 'draw') return 'by mutual agreement';
+      if (termination === 'stalemate') return 'by stalemate';
+      if (termination === 'repetition') return 'by 3-fold repetition';
+      if (termination === 'insufficient') return 'by insufficient material';
+      if (termination === 'timeout') return 'by timeout vs insufficient material';
+      return termination.toLowerCase();
     }
     if (termination && termination.startsWith('aborted')) {
       if (termination === 'aborted_white') return 'aborted by white';
@@ -228,15 +235,15 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     }
     if (!result) return '';
     const isWhiteWin = result === '1-0';
-    const winner = isWhiteWin ? 'white' : 'black';
     const loser = isWhiteWin ? 'black' : 'white';
     const reason = termination.toLowerCase();
-    if (reason === 'checkmate') return `${winner} won through checkmate`;
-    if (reason === 'time') return `${loser} ran out of time`;
+    
+    if (reason === 'checkmate') return `by checkmate`;
+    if (reason === 'time' || reason === 'timeout') return `${loser} ran out of time`;
     if (reason === 'abandoned') return `${loser} abandoned the game`;
-    if (reason === 'resignation') return `${loser} resigned`;
-    if (reason === 'timeout') return `${loser} ran out of time`;
-    return `${winner} won`;
+    if (reason === 'resignation' || reason === 'resigned') return `${loser} resigned`;
+    
+    return reason;
   }
 
   getOpponentRatingChange(): number | null {
@@ -264,7 +271,12 @@ export class LiveGameComponent implements OnInit, OnDestroy {
         if (gameId) {
           this.rematchOfferFrom.set(null);
           this.myRematchOffered.set(false);
-          if (!this.gameService.gameState()) {
+          this.showMobileResult.set(true);
+          this.boardInitialized = false;
+          this.currentPly.set(0);
+          this.chess.reset();
+          
+          if (!this.gameService.gameState() || this.gameService.gameState()?.id !== gameId) {
             this.gameService.loadGame(gameId);
           }
         }
@@ -397,6 +409,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   }
 
   private onGameEnded(data: GameEndedPayload): void {
+    this.showMobileResult.set(true);
     this.drawOfferState.set('none');
     const g = this.game();
     if (g) {

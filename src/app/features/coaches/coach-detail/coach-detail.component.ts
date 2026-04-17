@@ -6,7 +6,7 @@ import { CoachService } from '../services/coach.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { Coach } from '../models/coach.model';
 
-import { BackLinkComponent } from '../../../shared/components/back-link/back-link.component';
+import { BackLinkComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-coach-detail',

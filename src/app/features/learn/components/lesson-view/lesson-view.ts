@@ -23,7 +23,7 @@ import { UserService } from '../../../../core/services/user.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { LessonService } from '../../../../core/services/lesson.service';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-lesson-view',
@@ -411,3 +411,4 @@ export class LessonView implements AfterViewInit, OnDestroy, OnChanges, OnInit {
     this.router.navigate(['/roadmap']);
   }
 }
+

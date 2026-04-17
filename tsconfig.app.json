@@ -6,7 +6,12 @@
     "baseUrl": "./",
     "rootDir": "./src",
     "paths": {
-      "environments/*": ["src/environments/*"]
+      "environments/*": ["src/environments/*"],
+      "@shared/ui": ["src/app/shared/components/ui/index"],
+      "@shared/chess": ["src/app/shared/components/chess/index"],
+      "@shared/layout": ["src/app/shared/components/layout/index"],
+      "@shared/feedback": ["src/app/shared/components/feedback/index"],
+      "@shared/directives": ["src/app/shared/directives/index"]
     },
     "outDir": "./out-tsc/app",
     "types": ["node"]

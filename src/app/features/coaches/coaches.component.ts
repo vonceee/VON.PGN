@@ -5,10 +5,10 @@ import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CoachService } from './services/coach.service';
 import { AuthService } from '../../core/services/auth.service';
-import { ButtonComponent } from '../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 import { environment } from '../../../environments/environment';
 
-import { SectionHeadingComponent } from '../../shared/components/section-heading/section-heading.component';
+import { SectionHeadingComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-coaches',

@@ -1,22 +1,14 @@
 <div class="w-full flex flex-col relative overflow-hidden">
   <!-- Academy Spotlight Section -->
-  <section
-    class="w-full py-12 md:py-24 px-6 md:px-16 bg-slate-50 dark:bg-slate-900 relative overflow-hidden"
-  >
-    <div class="absolute inset-0 z-0">
-      <div
-        class="absolute top-0 right-0 w-[50%] h-[100%] bg-cyan-500/10 blur-[120px] rounded-full"
-      ></div>
-    </div>
-
-    <div class="relative z-10 max-w-4xl mx-auto">
+  <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
+    <div class="relative z-10 mx-auto">
       <div class="text-left">
         <app-section-heading
           text="Vonchess"
           highlight="Academy."
           size="text-4xl md:text-6xl mb-2"
         ></app-section-heading>
-        <p class="text-lg md:text-md mb-4 max-w-xl tracking-widest text-slate-500">
+        <p class="text-lg md:text-md mb-4 max-w-xl tracking-widest">
           complete beginner-to-intermediate training for kids. <br />
           <br />
         </p>
@@ -28,17 +20,9 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
           <div class="flex items-start gap-3">
-            <app-icon name="video" class="w-6 h-6 text-cyan-500 shrink-0"></app-icon>
             <div>
-              <p class="font-bold">5 Live Meetings</p>
-              <p class="text-sm">Google Meet + Lichess Interaction</p>
-            </div>
-          </div>
-          <div class="flex items-start gap-3">
-            <app-icon name="graduation-cap" class="w-6 h-6 text-cyan-500 shrink-0"></app-icon>
-            <div>
-              <p class="font-bold">Graduation Tournament</p>
-              <p class="text-sm">Test your skills & win certificates</p>
+              <p class="font-bold">Live Teaching</p>
+              <p class="text-sm">Google Meet + Vonchess Interaction</p>
             </div>
           </div>
         </div>
@@ -52,12 +36,8 @@
     </div>
   </section>
 
-  <div class="absolute inset-0 pointer-events-none z-[-1]">
-    <div class="h-full w-full"></div>
-  </div>
-
   <!-- Tournaments Section -->
-  <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
+  <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
         <app-section-heading
@@ -69,39 +49,16 @@
           size="text-lg md:text-4xl mb-6 md:mb-10"
           text="discover chess events across the Philippines, browse competitions posted by the community, with detailed information, and find the right event to test your skills."
         ></app-typewriter-text>
-        <a
-          routerLink="/events"
-          class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"
-        >
-          Browse Events
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
-        </a>
+        <app-arrow-link link="/events" text="Browse Events"></app-arrow-link>
       </div>
     </div>
   </section>
   <!-- Hero Section -->
-  <section
-    class="relative w-full h-screen pb-24 md:pb-50 px-4 md:px-6 flex flex-col items-center justify-center text-center overflow-hidden"
-  >
-    <!-- Spline 3D Background -->
-    <div class="fixed inset-0 z-0 pointer-events-none" style="opacity: 1; transform: scale(1.2)">
-      <spline-viewer
-        url="https://prod.spline.design/LUEg5K9-Z9VAjeTv/scene.splinecode"
-        style="width: 100%; height: 100%; display: block"
-      ></spline-viewer>
-    </div>
-
+  <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <!-- Hero Content Overlay -->
     <div class="relative z-10 flex flex-col items-center px-4">
       <span class="text-3xl md:text-5xl font-bold mb-4">vonchess</span>
-      <h1 class="text-4xl md:text-7xl mb-8 md:mb-16">Learn to play Chess</h1>
+      <h1 class="text-3xl md:text-7xl mb-8 md:mb-16">Learn to play Chess</h1>
 
       <div class="flex items-center justify-center relative w-full">
         <div class="w-full relative md:!w-[50vw]">
@@ -156,7 +113,7 @@
   </section>
 
   <!-- Openings Section -->
-  <section class="w-full min-h-screen py-16 md:py-32 px-6 md:px-16 flex flex-col">
+  <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="max-w-4xl flex flex-col md:flex-row justify-between gap-8 md:gap-16">
       <div class="text-left">
         <app-section-heading
@@ -196,26 +153,13 @@
           </div>
         </div>
 
-        <a
-          routerLink="/learn"
-          class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"
-        >
-          Browse all openings
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
-        </a>
+        <app-arrow-link link="/learn" text="Browse all openings"></app-arrow-link>
       </div>
     </div>
   </section>
 
   <!-- Tactics Section -->
-  <section class="w-full min-h-screen py-16 md:py-32 px-6 flex flex-col items-center">
+  <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div
       class="w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8 md:gap-16"
     >
@@ -229,26 +173,13 @@
           size="text-lg md:text-4xl mb-6 md:mb-10"
           text="train your pattern recognition with thousands of puzzles curated for your level."
         ></app-typewriter-text>
-        <a
-          routerLink="/tactics"
-          class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"
-        >
-          Start Training
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
-        </a>
+        <app-arrow-link link="/tactics" text="Start Training"></app-arrow-link>
       </div>
     </div>
   </section>
 
   <!-- Featured Courses Section -->
-  <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
+  <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
         <app-section-heading
@@ -295,26 +226,13 @@
           </div>
         }
 
-        <a
-          routerLink="/roadmap"
-          class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"
-        >
-          View Courses
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
-        </a>
+        <app-arrow-link link="/roadmap" text="View Courses"></app-arrow-link>
       </div>
     </div>
   </section>
 
   <!-- Coaches Section -->
-  <section class="w-full py-16 md:py-32 px-6 flex flex-col items-center">
+  <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
         <app-section-heading
@@ -326,27 +244,12 @@
           size="text-lg md:text-4xl mb-6 md:mb-10"
           text="accelerate your progress with personalized 1-on-1 lessons from titled players and experienced trainers."
         ></app-typewriter-text>
-        <a
-          routerLink="/coaches"
-          class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors"
-        >
-          Browse Coaches
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
-        </a>
+        <app-arrow-link link="/coaches" text="Browse Coaches"></app-arrow-link>
       </div>
     </div>
   </section>
 
-  <!-- Global Footer -->
   <app-footer></app-footer>
 
-  <!-- Feedback Button -->
   <app-feedback-button></app-feedback-button>
 </div>

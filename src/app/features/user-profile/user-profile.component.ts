@@ -8,7 +8,7 @@ import { TournamentService } from '../../core/services/tournament.service';
 import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { Tournament } from '../../core/models/tournament.model';
 import { FormsModule } from '@angular/forms';
-import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { LoadingComponent  } from '@shared/feedback';
 
 @Component({
   selector: 'app-user-profile',
@@ -277,3 +277,4 @@ export class UserProfileComponent implements OnInit {
     return count.toString();
   }
 }
+

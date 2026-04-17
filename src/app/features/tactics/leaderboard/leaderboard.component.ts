@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { TacticsService, LeaderboardResponse } from '../../../core/services/tactics.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { TypewriterTextComponent } from '../../../shared/components/typewriter-text/typewriter-text';
+import { TypewriterTextComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-leaderboard',
@@ -45,3 +45,4 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
 
 
 }
+

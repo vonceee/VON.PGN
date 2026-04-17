@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, signal, OnInit } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule, FormArray, FormsModule } from '@angular/forms';
 import { FormFieldComponent } from './form-field.component';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 // Step 1: Basic Info
 @Component({
@@ -238,3 +238,4 @@ export class StepFormatRulesComponent {
   @Input() form!: FormGroup;
   @Input() getError!: (field: string) => string;
 }
+

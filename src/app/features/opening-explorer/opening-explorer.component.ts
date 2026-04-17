@@ -2,7 +2,7 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { OpeningExplorerService } from '../../core/services/opening-explorer.service';
 import { LichessExplorerResponse, LichessExplorerMove } from '../../core/models/opening.model';
-import { ChessBoardComponent } from '../../shared/components/chess-board/chess-board.component';
+import { ChessBoardComponent  } from '@shared/chess';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 

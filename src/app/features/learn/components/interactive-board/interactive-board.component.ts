@@ -13,8 +13,8 @@ import { HttpClient } from '@angular/common/http';
 import { InteractiveTask } from '../../../../core/models/course.model';
 import { environment } from '../../../../../environments/environment';
 import { AudioService } from '../../../../core/services/audio.service';
-import { MoveNotationComponent } from '../../../../shared/components/move-notation/move-notation.component';
-import { ChessBoardComponent } from '../../../../shared/components/chess-board/chess-board.component';
+import { MoveNotationComponent  } from '@shared/chess';
+import { ChessBoardComponent  } from '@shared/chess';
 
 import { Chess } from 'chess.js';
 import { Config } from 'chessground/config';
@@ -237,3 +237,4 @@ export class InteractiveBoardComponent {
     this.goToMove(this.moveHistory.length);
   }
 }
+

@@ -18,7 +18,7 @@ export interface GameState {
   moves: string[];
   white_time_remaining_ms: number;
   black_time_remaining_ms: number;
-  server_timestamp: string;
+  server_timestamp: string | null;
   result: string | null;
   termination: string | null;
   white_rating_change: number | null;
@@ -28,6 +28,7 @@ export interface GameState {
   draw_offered_by: number | null;
   draw_offered_at: string | null;
   opponent_away_countdown?: number | null;
+  firstMoveCountdown?: number | null;
   gameStartedAt?: string | null;
   arena_id?: string | null;
 }

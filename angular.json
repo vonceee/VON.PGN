@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/von-pgn",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
@@ -34,15 +35,43 @@
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": ["vonchess.vercel.app"]
+              "allowedHosts": [
+                "von-pgn.alonarvoncedric.workers.dev",
+                "vonchess.net",
+                "www.vonchess.net"
+              ]
             },
             "ssr": {
-              "entry": "src/server.ts"
+              "entry": "src/server.ts",
+              "experimentalPlatform": "neutral"
             },
             "allowedCommonJsDependencies": [
               "debug",
               "xmlhttprequest-ssl"
-            ]
+            ],
+            "externalDependencies": [
+              "node:module",
+              "node:events",
+              "xmlhttprequest-ssl",
+              "http",
+              "https",
+              "child_process",
+              "url",
+              "stream",
+              "path",
+              "util",
+              "events",
+              "crypto",
+              "buffer",
+              "fs",
+              "net",
+              "tls",
+              "dns",
+              "zlib",
+              "string_decoder",
+              "os"
+            ],
+            "prerender": false
           },
           "configurations": {
             "production": {

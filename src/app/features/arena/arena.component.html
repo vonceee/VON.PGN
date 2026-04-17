@@ -121,7 +121,6 @@
               />
               <app-chess-clock
                 class="shrink-0"
-                [serverTimeMs]="g.black_time_remaining_ms ?? -1"
                 [serverTimestamp]="g.server_timestamp || ''"
                 [isActive]="g.turn === 'black' && g.status === 'active'"
               />
@@ -147,7 +146,6 @@
               />
               <app-chess-clock
                 class="shrink-0"
-                [serverTimeMs]="g.white_time_remaining_ms ?? -1"
                 [serverTimestamp]="g.server_timestamp || ''"
                 [isActive]="g.turn === 'white' && g.status === 'active'"
               />

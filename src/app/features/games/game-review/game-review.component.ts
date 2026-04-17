@@ -20,7 +20,7 @@ import { GameState } from '../../../core/models/game.model';
 import { Chess } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-game-review',
@@ -554,3 +554,4 @@ export class GameReviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
   }
 }
+

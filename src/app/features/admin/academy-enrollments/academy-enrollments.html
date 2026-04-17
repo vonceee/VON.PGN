@@ -16,10 +16,10 @@
 
     <div class="flex flex-wrap gap-3">
       <div class="relative min-w-[240px]">
-        <app-icon
-          name="search"
+        <ng-icon
+          name="heroMagnifyingGlass"
           class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
-        ></app-icon>
+        ></ng-icon>
         <input
           type="text"
           [(ngModel)]="searchTerm"
@@ -121,7 +121,7 @@
                 customRounded="rounded-xl"
                 class="text-rose-500"
               >
-                <app-icon name="trash" class="w-5 h-5"></app-icon>
+                <ng-icon name="heroTrash" class="w-5 h-5"></ng-icon>
               </app-button>
             </td>
           </tr>
@@ -137,7 +137,7 @@
 
     <!-- Loading State -->
     <div *ngIf="isLoading()" class="p-20 flex flex-col items-center justify-center gap-4">
-      <app-icon name="loader" class="w-8 h-8 text-cyan-500 animate-spin"></app-icon>
+      <ng-icon name="heroArrowPath" class="w-8 h-8 text-cyan-500 animate-spin"></ng-icon>
       <p class="text-slate-500 font-medium">Crunching enrollment data...</p>
     </div>
   </div>

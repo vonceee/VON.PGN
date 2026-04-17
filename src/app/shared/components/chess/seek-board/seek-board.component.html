@@ -1,0 +1,97 @@
+<div
+  class="overflow-hidden premium-card h-full flex flex-col"
+  [ngClass]="compact() ? 'rounded-lg' : 'rounded-xl'"
+>
+  @if (seekCount === 0) {
+    <div class="flex flex-col items-center gap-1 px-6 py-12 text-center">
+      <p class="m-0 text-xs font-semibold uppercase tracking-wider opacity-40">No active seeks</p>
+    </div>
+  } @else {
+    <div class="flex flex-col flex-1 overflow-y-auto">
+      @for (seek of visibleSeeks; track seek.id) {
+        <div
+          class="grid grid-cols-[20px_1fr_1fr_1fr] items-center gap-2.5 border-b border-slate-800 px-4 py-2 cursor-pointer transition-colors hover:bg-white/[0.03] last:border-b-0"
+          [ngClass]="isMySeek(seek) ? 'border-l-2 border-l-slate-700 pl-[calc(1rem-2px)]' : ''"
+          (click)="onSeekClick(seek)"
+          [class.opacity-50]="isMySeek(seek)"
+        >
+          <!-- Category icon -->
+          <div class="flex h-5 w-5 items-center justify-center">
+            @switch (getTimeControlCategory(seek.time_control)) {
+              @case ('bullet') {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              }
+              @case ('blitz') {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"
+                  />
+                </svg>
+              }
+              @case ('rapid') {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              }
+              @default {
+                <svg
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M2 20h20M4 20l2-8 4 4 2-8 2 8 4-4 2 8" />
+                </svg>
+              }
+            }
+          </div>
+
+          <!-- Username -->
+          <span class="overflow-hidden text-ellipsis whitespace-nowrap text-[0.8rem] font-medium">
+            {{ seek.username }}
+          </span>
+
+          <!-- Rating -->
+          <span class="text-center text-[0.8rem] font-semibold whitespace-nowrap">
+            {{ formatElo(seek.elo) }}
+          </span>
+
+          <!-- Time control -->
+          <span class="text-right text-[0.8rem] font-semibold whitespace-nowrap">
+            {{ getTimeControlLabel(seek.time_control) }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+</div>

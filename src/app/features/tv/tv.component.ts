@@ -13,10 +13,10 @@ import { RouterModule, Router } from '@angular/router';
 import { TvService } from '../../core/services/tv.service';
 import { GameService } from '../../core/services/game.service';
 import { AudioService } from '../../core/services/audio.service';
-import { ChessBoardComponent } from '../../shared/components/chess-board/chess-board.component';
-import { ChessClockComponent } from '../../shared/components/chess-clock/chess-clock.component';
+import { ChessBoardComponent  } from '@shared/chess';
+import { ChessClockComponent  } from '@shared/chess';
 import { GameInfoComponent } from '../play/live-game/components/game-info.component';
-import { MoveNotationComponent } from '../../shared/components/move-notation/move-notation.component';
+import { MoveNotationComponent  } from '@shared/chess';
 import { GameControlsComponent } from '../play/live-game/components/game-controls.component';
 import { Chess } from 'chess.js';
 import { Config } from 'chessground/config';
@@ -209,3 +209,4 @@ export class TvComponent implements OnInit, OnDestroy {
     }
   }
 }
+

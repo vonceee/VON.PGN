@@ -4,9 +4,9 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { ArenaService } from '../../../core/services/arena.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Arena, ArenaStatus } from '../../../core/models/arena.model';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
-import { LoadingComponent } from '../../../shared/components/loading/loading.component';
-import { SectionHeadingComponent } from '../../../shared/components/section-heading/section-heading.component';
+import { ButtonComponent  } from '@shared/ui';
+import { LoadingComponent  } from '@shared/feedback';
+import { SectionHeadingComponent  } from '@shared/ui';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -189,3 +189,4 @@ export class ArenaListComponent implements OnInit {
     }
   }
 }
+

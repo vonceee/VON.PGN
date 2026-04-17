@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SectionHeadingComponent } from 'src/app/shared/components/section-heading/section-heading.component';
+import { SectionHeadingComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-review-section',
@@ -231,3 +231,4 @@ export class ReviewSectionComponent {
     this.editSection.emit(sectionId);
   }
 }
+

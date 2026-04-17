@@ -4,8 +4,8 @@ import { RouterLink } from '@angular/router';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Tournament } from '../../../core/models/tournament.model';
-import { ConfirmDeleteModalComponent } from '../../../shared/components/confirm-delete-modal/confirm-delete-modal.component';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { ConfirmDeleteModalComponent  } from '@shared/feedback';
+import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-my-arena',
@@ -79,3 +79,4 @@ export class MyArenaComponent implements OnInit {
     });
   }
 }
+

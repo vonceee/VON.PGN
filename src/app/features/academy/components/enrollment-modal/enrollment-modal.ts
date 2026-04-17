@@ -1,18 +1,20 @@
 import { Component, EventEmitter, Output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { IconComponent } from '../../../../shared/components/icon/icon.component';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroXMark } from '@ng-icons/heroicons/outline';
+import { ButtonComponent  } from '@shared/ui';
 import { AcademyService } from '../../../../core/services/academy.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { animate, style, transition, trigger } from '@angular/animations';
 
-import { SectionHeadingComponent } from '../../../../shared/components/section-heading/section-heading.component';
+import { SectionHeadingComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-academy-enrollment-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, IconComponent, ButtonComponent, SectionHeadingComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgIcon, ButtonComponent, SectionHeadingComponent],
+  providers: [provideIcons({ heroXMark })],
   templateUrl: './enrollment-modal.html',
   styles: [`
     :host {
@@ -83,3 +85,4 @@ export class AcademyEnrollmentModalComponent {
     });
   }
 }
+

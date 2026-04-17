@@ -1,6 +1,6 @@
 import { Component, input, output, signal } from '@angular/core';
 import { GameState } from '../../../../core/models/game.model';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-game-controls',
@@ -250,3 +250,4 @@ export class GameControlsComponent {
 
   showResignConfirm = signal(false);
 }
+

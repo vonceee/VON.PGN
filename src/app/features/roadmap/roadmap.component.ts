@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LessonService } from '../../core/services/lesson.service';
 import { Course } from '../../core/models/course.model';
-import { ServerMaintenanceComponent } from '../../shared/components/server-maintenance/server-maintenance.component';
-import { SectionHeadingComponent } from '../../shared/components/section-heading/section-heading.component';
-import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { ServerMaintenanceComponent  } from '@shared/feedback';
+import { SectionHeadingComponent  } from '@shared/ui';
+import { LoadingComponent  } from '@shared/feedback';
 
 @Component({
   selector: 'app-roadmap',
@@ -39,3 +39,4 @@ export class RoadmapComponent implements OnInit {
     this.router.navigate(['/learn', courseId]);
   }
 }
+

@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 
 // Step 7: Prizes
 @Component({
@@ -301,3 +301,4 @@ export class StepScheduleComponent implements OnInit {
     return group.get(name) as FormControl;
   }
 }
+

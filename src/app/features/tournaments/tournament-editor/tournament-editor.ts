@@ -18,7 +18,7 @@ import { environment } from '../../../../environments/environment';
 
 import { AdminService } from '../../../core/services/admin.service';
 import { TournamentService } from '../../../core/services/tournament.service';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { ButtonComponent  } from '@shared/ui';
 import { ToastService } from '../../../core/services/toast.service';
 
 import {
@@ -47,8 +47,8 @@ import {
 import { TournamentFormHandler } from './handlers/tournament-form.handler';
 import { TournamentMapsService } from './services/tournament-maps.service';
 import { TournamentPosterHandler } from './handlers/tournament-poster.handler';
-import { BackLinkComponent } from 'src/app/shared/components/back-link/back-link.component';
-import { SectionHeadingComponent } from 'src/app/shared/components/section-heading/section-heading.component';
+import { BackLinkComponent  } from '@shared/ui';
+import { SectionHeadingComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-tournament-editor',
@@ -393,3 +393,4 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     }
   }
 }
+

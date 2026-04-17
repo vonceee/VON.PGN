@@ -17,9 +17,10 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ReactiveFormsModule, FormArray, FormGroup } from '@angular/forms';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import Konva from 'konva';
-import { jsPDF } from 'jspdf';
+import { ButtonComponent  } from '@shared/ui';
+import type Konva from 'konva';
+// Dynamic imports used below for SSR compatibility
+// import { jsPDF } from 'jspdf';
 
 interface PosterPrize {
   place: string;
@@ -101,10 +102,10 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     }
   }
 
-  private initAndRender() {
-    this.initKonva();
-    this.setupResizeObserver();
-    this.renderPoster();
+  private async initAndRender() {
+    await this.initKonva();
+    await this.setupResizeObserver();
+    await this.renderPoster();
     this.cdr.detectChanges();
   }
 
@@ -124,9 +125,9 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
   get customPosterUrl(): string | null {
     return this.posterSettings.get('customPosterUrl')?.value;
   }
-
-  private initKonva() {
+  private async initKonva() {
     if (!this.konvaHolder?.nativeElement) return;
+    const { default: Konva } = await import('konva');
     this.stage = new Konva.Stage({
       container: this.konvaHolder.nativeElement,
       width: this.CANVAS_WIDTH,
@@ -136,7 +137,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     this.stage.add(this.layer);
   }
 
-  private setupResizeObserver() {
+  private async setupResizeObserver() {
     if (!this.canvasHolder?.nativeElement) return;
     const observer = new ResizeObserver(() => this.fitStageToContainer());
     observer.observe(this.canvasHolder.nativeElement);
@@ -185,6 +186,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     };
 
     // 1. Background
+    const { default: Konva } = await import('konva');
     const rect = new Konva.Rect({
       width: this.CANVAS_WIDTH,
       height: this.CANVAS_HEIGHT,
@@ -235,7 +237,8 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     this.layer.batchDraw();
   }
 
-  private async drawTraditionalPremium(layer: Konva.Layer, data: any, settings: any, colors: any) {
+  private async drawTraditionalPremium(layer: any, data: any, settings: any, colors: any) {
+    const { default: Konva } = await import('konva');
     const v = settings.visibility;
     const margin = 200;
     let currentY = 350;
@@ -335,7 +338,7 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
       layer.add(pHeader);
       currentY += 120;
 
-      this.prizeCategories.slice(0, 4).forEach((cat) => {
+      this.prizeCategories.slice(0, 4).forEach(async (cat) => {
         const catBox = new Konva.Group({ x: margin, y: currentY });
         layer.add(catBox);
 
@@ -401,7 +404,8 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     }
   }
 
-  private async drawLogos(layer: Konva.Layer, logos: string[]) {
+  private async drawLogos(layer: any, logos: string[]) {
+    const { default: Konva } = await import('konva');
     const logoSize = 220; // Reduced from 250
     const spacing = 100;
     const totalWidth = logos.length * logoSize + (logos.length - 1) * spacing;
@@ -473,11 +477,13 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     link.click();
   }
 
-  exportAsPDF() {
+  async exportAsPDF() {
     if (!this.stage) return;
+    const { jsPDF } = await import('jspdf');
     const dataURL = this.stage.toDataURL({ mimeType: 'image/jpeg', quality: 0.95 });
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     pdf.addImage(dataURL, 'JPEG', 0, 0, 210, 297);
     pdf.save(`tournament-poster-${this.tournamentData['name'] || 'export'}.pdf`);
   }
 }
+

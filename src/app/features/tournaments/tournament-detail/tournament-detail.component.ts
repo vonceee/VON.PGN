@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { BackLinkComponent } from '../../../shared/components/back-link/back-link.component';
+import { BackLinkComponent  } from '@shared/ui';
 import { PosterPreviewComponent } from '../tournament-editor/components/poster-preview.component';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { SeoService } from '../../../core/services/seo.service';
@@ -271,3 +271,4 @@ export class TournamentDetailComponent implements OnInit {
     this.posterPrizeCategories.set(categories);
   }
 }
+

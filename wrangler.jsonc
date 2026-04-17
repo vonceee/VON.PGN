@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "von-pgn",
+  "main": "dist/von-pgn/server/server.mjs",
+  "compatibility_date": "2026-04-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "dist/von-pgn/browser",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

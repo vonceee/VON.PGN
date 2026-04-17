@@ -2,17 +2,25 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminService } from '../../../core/services/admin.service';
-import { IconComponent } from '../../../shared/components/icon/icon.component';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
-import { SectionHeadingComponent } from '../../../shared/components/section-heading/section-heading.component';
-import { TypewriterTextComponent } from '../../../shared/components/typewriter-text/typewriter-text';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroMagnifyingGlass, heroTrash, heroArrowPath } from '@ng-icons/heroicons/outline';
+import { ButtonComponent  } from '@shared/ui';
+import { SectionHeadingComponent  } from '@shared/ui';
+import { TypewriterTextComponent  } from '@shared/ui';
 import { ToastService } from '../../../core/services/toast.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-academy-enrollments',
   standalone: true,
-  imports: [CommonModule, IconComponent, FormsModule, ButtonComponent, SectionHeadingComponent, TypewriterTextComponent],
+  imports: [CommonModule, NgIcon, FormsModule, ButtonComponent, SectionHeadingComponent, TypewriterTextComponent],
+  providers: [
+    provideIcons({
+      heroMagnifyingGlass,
+      heroTrash,
+      heroArrowPath,
+    }),
+  ],
   templateUrl: './academy-enrollments.html',
   styleUrl: '../admin-styles.css'
 })
@@ -80,3 +88,4 @@ export class AcademyEnrollmentsComponent implements OnInit {
     }
   }
 }
+

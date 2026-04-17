@@ -5,7 +5,7 @@ import { authGuard } from './core/guards/auth-guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { HomeComponent } from './features/home/home.component';
 import { TournamentsComponent } from './features/tournaments/tournaments.component';
-import { MainLayoutComponent } from './shared/components/layout/main-layout';
+import { MainLayoutComponent } from '@shared/layout';
 
 function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
   const seo = inject(SeoService);
