@@ -43,6 +43,7 @@ export class ArenaService {
   isWaiting = signal(false);
   countdown = signal<string>('00:00:00');
   countdownLabel = signal<string>('Starting in');
+  topGameId = signal<string | null>(null);
 
   private timerInterval: any;
   private serverTimeOffset = 0;
@@ -126,6 +127,7 @@ export class ArenaService {
 
     socket.on('arena_leaderboard_update', (data: any) => {
       this.leaderboard.set(data.leaderboard);
+      this.topGameId.set(data.topGameId || null);
       // Update our own isWaiting status based on leaderboard if needed
       const me = data.leaderboard.find((p: any) => p.userId === this.getUserId());
       if (me) {
@@ -203,6 +205,12 @@ export class ArenaService {
       if (now >= startTime) {
         target = endTime;
         label = 'Time left';
+        
+        // Transition status to ongoing if it was upcoming
+        const current = this.activeArena();
+        if (current && current.status === 'upcoming') {
+           this.activeArena.set({ ...current, status: 'ongoing', isStarted: true });
+        }
       }
 
       this.countdownLabel.set(label);
@@ -211,6 +219,12 @@ export class ArenaService {
       if (diff <= 0 && label === 'Time left') {
         this.countdown.set('00:00:00');
         this.stopCountdown();
+        
+        // Finalize status to past
+        const current = this.activeArena();
+        if (current && current.status !== 'past') {
+           this.activeArena.set({ ...current, status: 'past', isStarted: true });
+        }
         return;
       }
 

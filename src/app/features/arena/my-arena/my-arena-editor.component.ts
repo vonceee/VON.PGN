@@ -1,16 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ArenaService } from '../../../core/services/arena.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { BackLinkComponent } from '../../../shared/components/back-link/back-link.component';
 
 @Component({
   selector: 'app-my-arena-editor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, ButtonComponent, BackLinkComponent],
   templateUrl: './my-arena-editor.component.html',
 })
 export class MyArenaEditorComponent {
@@ -18,27 +19,9 @@ export class MyArenaEditorComponent {
   private arenaService = inject(ArenaService);
   private toastService = inject(ToastService);
   private router = inject(Router);
-  public location = inject(Location);
-
+  
   saving = signal(false);
-
-  categories = [
-    {
-      key: 'bullet',
-      label: 'Bullet',
-      controls: TIME_CONTROLS.filter((tc) => tc.category === 'bullet'),
-    },
-    {
-      key: 'blitz',
-      label: 'Blitz',
-      controls: TIME_CONTROLS.filter((tc) => tc.category === 'blitz'),
-    },
-    {
-      key: 'rapid',
-      label: 'Rapid',
-      controls: TIME_CONTROLS.filter((tc) => tc.category === 'rapid'),
-    },
-  ];
+  timeControls = TIME_CONTROLS;
 
   arenaForm = this.fb.group({
     name: ['', Validators.maxLength(255)],

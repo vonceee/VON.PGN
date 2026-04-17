@@ -6,13 +6,14 @@ import { AuthService } from '../../core/services/auth.service';
 import { Tournament, TournamentStatus } from '../../core/models/tournament.model';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { SectionHeadingComponent } from '../../shared/components/section-heading/section-heading.component';
 
 const ITEMS_PER_PAGE = 6;
 
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent, SectionHeadingComponent],
   templateUrl: './tournaments.component.html'
 })
 export class TournamentsComponent implements OnInit {

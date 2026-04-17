@@ -1,71 +1,172 @@
-<div class="max-w-4xl mx-auto p-4 md:p-8">
-  <!-- Arena Status -->
-  <header class="text-center py-12 border-b border-white/10 mb-8">
-    @if (!isPast()) {
-      <div class="text-xs font-medium opacity-50 uppercase tracking-widest mb-1">
-        {{ countdownLabel() }}
-      </div>
-      <div class="text-6xl font-mono tracking-tighter tabular-nums">
-        {{ countdown() }}
-      </div>
-    } @else {
-      <div class="text-xs font-medium text-cyan-400 uppercase tracking-widest mb-1">
-        Tournament Finished
-      </div>
-      <div class="text-3xl font-bold">
-        Winner: {{ winner() || 'Calculating...' }}
-      </div>
-    }
-
-    <div class="mt-8">
-      @if (!isPast()) {
-        <app-button
-          (click)="toggleJoin()"
-          [variant]="isWaiting() ? 'outline' : 'primary'"
-          [label]="isWaiting() ? 'Searching...' : 'Join the Arena'"
-          class="inline-block"
-        >
-          @if (isWaiting()) {
-            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-2 inline-block"></span>
-          }
-        </app-button>
-      }
-    </div>
-  </header>
-
-  <!-- Leaderboard -->
-  <div class="overflow-x-auto">
-    <table class="w-full text-left border-collapse">
-      <thead>
-        <tr class="text-[10px] uppercase tracking-widest opacity-50 border-b border-white/10">
-          <th class="py-4 font-bold">#</th>
-          <th class="py-4 font-bold">Player</th>
-          <th class="py-4 font-bold text-right">Points</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-white/5">
-        @for (player of leaderboard(); track player.userId; let i = $index) {
-          <tr [class.opacity-100]="true" [class.bg-white/5]="player.userId === authService.currentUser()?.uid">
-            <td class="py-4 font-mono text-sm opacity-50">
-              {{ i + 1 }}
-            </td>
-            <td class="py-4">
-              <span class="font-bold">{{ player.name }}</span>
-              <span class="ml-3 text-[10px] opacity-40 uppercase tracking-tighter">x{{ player.streak }}</span>
-            </td>
-            <td class="py-4 text-right font-mono text-xl">
-              {{ player.score }}
-            </td>
-          </tr>
+<div class="max-w-[1600px] mx-auto p-4 md:p-12">
+  <div
+    class="grid grid-cols-1 lg:grid-cols-[1fr,500px] xl:grid-cols-[1fr,600px] gap-12 items-start"
+  >
+    <!-- Left Column: Arena Info & Leaderboard -->
+    <div class="space-y-12">
+      <!-- Arena Status -->
+      <header class="text-left py-8 border-b border-white/10">
+        @if (!isPast()) {
+          <div
+            class="text-xs font-medium opacity-50 uppercase tracking-[0.2em] mb-2 flex items-center gap-3"
+          >
+            <span class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span>
+            {{ countdownLabel() }}
+          </div>
+          <div class="text-7xl font-mono tracking-tighter tabular-nums mb-8">
+            {{ countdown() }}
+          </div>
+        } @else {
+          <div class="text-xs font-medium text-cyan-400 uppercase tracking-widest mb-1">
+            Tournament Finished
+          </div>
+          <div class="text-4xl font-bold mb-8">
+            Winner: <span class="text-cyan-400">{{ winner() || 'Calculating...' }}</span>
+          </div>
         }
-      </tbody>
-    </table>
 
-    @if (leaderboard().length === 0) {
-      <div class="py-20 text-center opacity-30 text-sm italic">
-        Arena Empty
+        <div class="flex items-center gap-4">
+          @if (!isPast()) {
+            <app-button
+              (click)="toggleJoin()"
+              [variant]="isWaiting() ? 'outline' : 'primary'"
+              [label]="isWaiting() ? 'Searching for match...' : 'Join the Arena'"
+              class="inline-block"
+            >
+              @if (isWaiting()) {
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-2 inline-block"></span>
+              }
+            </app-button>
+          }
+        </div>
+      </header>
+
+      <!-- Leaderboard -->
+      <div class="overflow-x-auto">
+        <div class="text-[10px] uppercase tracking-[0.3em] font-bold text-slate-500 mb-6">
+          Leaderboard
+        </div>
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="text-[10px] uppercase tracking-widest opacity-30 border-b border-white/10">
+              <th class="py-4 font-bold w-12 text-center">#</th>
+              <th class="py-4 font-bold">Player</th>
+              <th class="py-4 font-bold text-right">Points</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            @for (player of leaderboard(); track player.userId; let i = $index) {
+              <tr
+                class="group hover:bg-white/[0.02] transition-colors"
+                [class.bg-white/5]="player.userId === authService.currentUser()?.uid"
+              >
+                <td class="py-6 font-mono text-sm opacity-30 text-center">
+                  {{ i + 1 }}
+                </td>
+                <td class="py-6">
+                  <div class="flex items-center gap-3">
+                    <span class="font-bold text-lg">{{ player.name }}</span>
+                    @if (player.streak >= 2) {
+                      <span class="text-orange-500 text-xs animate-bounce"
+                        >🔥 x{{ player.streak }}</span
+                      >
+                    } @else if (player.streak > 0) {
+                      <span class="text-[10px] opacity-40 uppercase tracking-tighter"
+                        >x{{ player.streak }}</span
+                      >
+                    }
+                  </div>
+                </td>
+                <td class="py-6 text-right font-mono text-2xl font-black">
+                  {{ player.score }}
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        @if (leaderboard().length === 0) {
+          <div
+            class="py-32 text-center opacity-20 text-sm italic border border-dashed border-white/10 rounded-2xl"
+          >
+            Arena Waiting for Participants
+          </div>
+        }
       </div>
-    }
+    </div>
+
+    <!-- Right Column: Watch Feature -->
+    <div class="watch-sidebar sticky top-12">
+      @let g = game();
+      <div
+        class="premium-card rounded-3xl overflow-hidden border border-white/10 bg-slate-900/40 backdrop-blur-xl shadow-2xl"
+      >
+        <div class="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
+          @if (g) {
+            <span
+              class="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded-full border border-cyan-500/20"
+              >LIVE</span
+            >
+          }
+        </div>
+
+        <div class="p-8 space-y-8">
+          @if (g) {
+            <!-- Black info -->
+            <div class="flex items-center justify-between">
+              <app-game-info
+                [player]="g.black_player || placeholderPlayer"
+                [color]="'black'"
+                class="flex-1 min-w-0"
+              />
+              <app-chess-clock
+                class="shrink-0"
+                [serverTimeMs]="g.black_time_remaining_ms ?? -1"
+                [serverTimestamp]="g.server_timestamp || ''"
+                [isActive]="g.turn === 'black' && g.status === 'active'"
+              />
+            </div>
+
+            <!-- Board -->
+            <div class="flex justify-center py-4">
+              <app-chess-board
+                [fen]="displayFen()"
+                [orientation]="'white'"
+                [interactive]="false"
+                [size]="boardSize()"
+                [configOverride]="cgConfig()"
+              ></app-chess-board>
+            </div>
+
+            <!-- White info -->
+            <div class="flex items-center justify-between">
+              <app-game-info
+                [player]="g.white_player || placeholderPlayer"
+                [color]="'white'"
+                class="flex-1 min-w-0"
+              />
+              <app-chess-clock
+                class="shrink-0"
+                [serverTimeMs]="g.white_time_remaining_ms ?? -1"
+                [serverTimestamp]="g.server_timestamp || ''"
+                [isActive]="g.turn === 'white' && g.status === 'active'"
+              />
+            </div>
+          } @else {
+            <!-- Empty State: Show starting board -->
+            <div class="flex justify-center py-4">
+              <div class="relative rounded-sm overflow-hidden">
+                <app-chess-board
+                  [fen]="STARTING_FEN"
+                  [orientation]="'white'"
+                  [interactive]="false"
+                  [size]="boardSize()"
+                ></app-chess-board>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-

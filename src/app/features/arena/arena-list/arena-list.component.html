@@ -1,101 +1,371 @@
-<div class="mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
-  <!-- Ongoing Arenas -->
-  @if (ongoingArenas().length > 0) {
-    <section class="mb-16">
-      <div class="flex items-center gap-3 mb-6">
-        <h2>Active Arenas</h2>
-      </div>
+<div class="flex-1 flex flex-col">
+  <div class="mx-auto px-4 md:px-8 py-4 w-full flex-1">
+    <!-- Search & Filter Bar -->
+    <div class="flex gap-3 flex-wrap md:flex-nowrap items-center mb-4">
+      <app-section-heading
+        text="Event"
+        highlight="Arena"
+        size="text-2xl whitespace-nowrap"
+      ></app-section-heading>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @for (arena of ongoingArenas(); track arena.id) {
-          <div
-            class="group relative overflow-hidden rounded-3xl border border-cyan-500/20 bg-slate-50 dark:bg-slate-900 p-6 shadow-xl transition-all hover:scale-[1.02] hover:shadow-cyan-500/10"
+      <!-- Tab Dropdown (Mobile & Desktop) -->
+      <div class="relative" #tabDropdownContainer>
+        <button
+          (click)="toggleTabDropdown()"
+          class="flex items-center justify-between px-4 py-2.5 bg-white dark:bg-black border border-border-theme rounded-xl text-sm font-semibold text-slate-900 dark:text-white whitespace-nowrap"
+        >
+          <span class="flex items-center gap-2">
+            @if (activeTab() === 'ongoing') {
+              <span class="w-2 h-2 rounded-full bg-green-500"></span>
+            }
+            {{ activeTab() | titlecase }}
+          </span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="w-5 h-5 text-slate-400 transition-transform ml-2"
+            [class.rotate-180]="isTabDropdownOpen()"
           >
-            <div
-              class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"
-            ></div>
+            <path
+              fill-rule="evenodd"
+              d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
 
-            <div class="relative">
-              <div class="flex justify-between items-start mb-4">
-                <span
-                  class="text-[10px] font-black uppercase tracking-widest text-cyan-500 bg-cyan-500/10 px-2 py-1 rounded"
-                  >Ongoing</span
-                >
-                <span class="text-xs font-bold text-slate-500"
-                  >{{ arena.participantsCount }} players</span
-                >
-              </div>
-
-              <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2 leading-tight">
-                {{ arena.name }}
-              </h3>
-              <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 flex items-center gap-2">
-                <svg
-                  class="w-4 h-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor font-black"
-                >
-                  <path d="M12 8V12L15 15" stroke-width="2" stroke-linecap="round" />
-                  <circle cx="12" cy="12" r="9" stroke-width="2" />
-                </svg>
-                {{ arena.timeControl }} · Blitz
-              </p>
-
-              <app-button
-                variant="primary"
-                class="w-full"
-                [routerLink]="['/events', arena.id, 'arena']"
-                label="Enter Lobby"
-              >
-              </app-button>
-            </div>
+        @if (isTabDropdownOpen()) {
+          <div
+            class="absolute top-full left-0 mt-1 bg-white dark:bg-black border border-border-theme rounded-xl shadow-lg z-20 overflow-hidden"
+          >
+            <button
+              (click)="setTab('upcoming')"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+              [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }"
+            >
+              <span>Upcoming</span>
+            </button>
+            <button
+              (click)="setTab('ongoing')"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+              [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }"
+            >
+              <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                Ongoing
+              </span>
+            </button>
+            <button
+              (click)="setTab('past')"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+              [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }"
+            >
+              <span>Past</span>
+            </button>
           </div>
         }
       </div>
-    </section>
-  }
 
-  <!-- Upcoming Arenas -->
-  @if (upcomingArenas().length > 0) {
-    <section class="mb-16">
-      <h2 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-6">
-        Starting Soon
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        @for (arena of upcomingArenas(); track arena.id) {
-          <div
-            class="rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-black p-6 transition-colors hover:border-cyan-500/30"
+      <div class="relative flex-1">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <input
+          type="text"
+          [value]="searchQuery()"
+          (input)="onSearchInput($event)"
+          placeholder="Search arenas..."
+          class="w-full pl-9 pr-9 py-2.5 bg-white dark:bg-black border border-border-theme rounded-xl text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400"
+        />
+        @if (searchQuery()) {
+          <button
+            (click)="clearSearch()"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
           >
-            <h3 class="font-bold text-slate-900 dark:text-white mb-4 text-center">
-              {{ arena.name }}
-            </h3>
-            <div class="text-center">
-              <span class="text-xs font-black text-slate-500 uppercase tracking-widest block mb-1"
-                >Starts At</span
-              >
-              <span class="text-lg font-black text-cyan-500 tabular-nums">{{
-                formatDate(arena.start_date)
-              }}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="w-4 h-4"
+            >
+              <path
+                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
+              />
+            </svg>
+          </button>
+        }
+      </div>
+
+      <div class="flex items-center border border-border-theme rounded-xl overflow-hidden">
+        <button
+          (click)="setViewMode('grid')"
+          class="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium transition-colors"
+          [ngClass]="
+            viewMode() === 'grid'
+              ? 'bg-cyan-500 text-white'
+              : 'bg-white dark:bg-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5'
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="w-4 h-4"
+          >
+            <path
+              d="M5 3a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5ZM5 11a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H5ZM11 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V5ZM11 13a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2Z"
+            />
+          </svg>
+          <span class="hidden lg:inline">Grid</span>
+        </button>
+        <button
+          (click)="setViewMode('list')"
+          class="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium transition-colors border-l border-border-theme"
+          [ngClass]="
+            viewMode() === 'list'
+              ? 'bg-cyan-500 text-white'
+              : 'bg-white dark:bg-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5'
+          "
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="w-4 h-4"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Zm0 5.25a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="hidden lg:inline">List</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Info -->
+    @if (!loading() && filteredArenas().length > 0) {
+      <p class="text-xs text-slate-500 mb-4 px-4">
+        Showing {{ paginatedArenas().length }} of {{ filteredArenas().length }} arena{{
+          filteredArenas().length !== 1 ? 's' : ''
+        }}
+      </p>
+    }
+
+    <!-- Arena Cards -->
+    @if (loading()) {
+      <app-loading message="Loading arenas..."></app-loading>
+    } @else if (paginatedArenas().length === 0) {
+      <div class="flex flex-col items-center justify-center py-20 text-center px-4">
+        <h3 class="text-lg mb-2">No Arenas Found</h3>
+      </div>
+    } @else {
+      @if (viewMode() === 'grid') {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+          @for (arena of paginatedArenas(); track arena.id) {
+            <div class="premium-card rounded-2xl overflow-hidden flex flex-col h-full relative group">
+              <div class="p-5 flex flex-col flex-1">
+                <div class="flex items-start justify-between gap-2 mb-4">
+                  <span
+                    class="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded"
+                    [ngClass]="{
+                      'bg-green-500/10 text-green-500': arena.status === 'ongoing',
+                      'bg-cyan-500/10 text-cyan-500': arena.status === 'upcoming',
+                      'bg-slate-500/10 text-slate-500': arena.status === 'past'
+                    }"
+                  >
+                    {{ arena.status }}
+                  </span>
+                  <span class="text-xs font-bold text-slate-500">
+                    {{ arena.participantsCount }} players
+                  </span>
+                </div>
+
+                <h3 class="text-xl font-black mb-2 leading-tight">{{ arena.name }}</h3>
+
+                <div class="space-y-2 text-sm text-slate-500 mb-6">
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M12 8V12L15 15" stroke-width="2" stroke-linecap="round" />
+                      <circle cx="12" cy="12" r="9" stroke-width="2" />
+                    </svg>
+                    {{ arena.timeControl }} · Blitz
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    {{ formatDate(arena.start_date) }}
+                  </div>
+                </div>
+
+                <div class="mt-auto">
+                  <app-button
+                    variant="primary"
+                    class="w-full"
+                    [routerLink]="['/events', arena.id, 'arena']"
+                    [label]="arena.status === 'past' ? 'View Results' : 'Enter Lobby'"
+                  >
+                  </app-button>
+                </div>
+              </div>
             </div>
-            <div class="mt-6 flex justify-center">
+          }
+        </div>
+      } @else {
+        <div class="flex flex-col gap-3 px-4">
+          @for (arena of paginatedArenas(); track arena.id) {
+            <div
+              class="premium-card rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-4 transition-colors"
+            >
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="text-base font-semibold truncate">{{ arena.name }}</h3>
+                  @if (arena.status === 'ongoing') {
+                    <span
+                      class="shrink-0 px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-400"
+                      >Ongoing</span
+                    >
+                  }
+                </div>
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+                  <span class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M12 8V12L15 15" stroke-width="2" stroke-linecap="round" />
+                      <circle cx="12" cy="12" r="9" stroke-width="2" />
+                    </svg>
+                    {{ arena.timeControl }}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    {{ formatDate(arena.start_date) }}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path
+                        d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <circle cx="9" cy="7" r="4" stroke-width="2" />
+                    </svg>
+                    {{ arena.participantsCount }} players
+                  </span>
+                </div>
+              </div>
               <app-button
                 variant="outline"
                 size="sm"
+                [showArrow]="true"
                 [routerLink]="['/events', arena.id, 'arena']"
-                label="View Arena"
+                [label]="arena.status === 'past' ? 'Results' : 'Lobby'"
               ></app-button>
             </div>
-          </div>
-        }
-      </div>
-    </section>
-  }
+          }
+        </div>
+      }
+    }
 
-  <!-- Empty State -->
-  @if (!loading() && ongoingArenas().length === 0 && upcomingArenas().length === 0) {
-    <div class="py-20 text-center flex flex-col items-center">
-      <h3>No Arenas Active</h3>
-    </div>
-  }
+    <!-- Pagination -->
+    @if (!loading() && totalPages() > 1) {
+      <div class="flex items-center justify-center gap-1 mt-8">
+        <button
+          (click)="prevPage()"
+          [disabled]="currentPage() === 1"
+          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-white/5"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="w-4 h-4"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+
+        @for (page of pages(); track page === '...' ? $index : page) {
+          @if (page === '...') {
+            <span class="px-3 py-2 text-sm text-slate-400">...</span>
+          } @else {
+            <button
+              (click)="goToPage(page)"
+              class="min-w-[36px] px-3 py-2 text-sm font-medium rounded-lg border transition-colors"
+              [ngClass]="{
+                'bg-cyan-500 border-cyan-500 text-white': currentPage() === page,
+                'border-border-theme hover:bg-slate-100 dark:hover:bg-white/5':
+                  currentPage() !== page
+              }"
+            >
+              {{ page }}
+            </button>
+          }
+        }
+
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage() === totalPages()"
+          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-white/5"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="w-4 h-4"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Minimal Organizer CTA -->
+  <div class="mt-auto py-8 border-t border-border-theme text-center w-full">
+    <p class="text-sm text-slate-500 dark:text-slate-400">
+      Are you a tournament organizer?
+      @if (authService.isAuthenticated()) {
+        <a
+          routerLink="/my-events/new"
+          class="text-cyan-500 hover:text-cyan-400 font-bold ml-1 transition-colors"
+          >Create an event</a
+        >
+      } @else {
+        <a
+          routerLink="/register"
+          class="text-cyan-500 hover:text-cyan-400 font-bold ml-1 transition-colors"
+          >Get started</a
+        >
+      }
+    </p>
+  </div>
 </div>

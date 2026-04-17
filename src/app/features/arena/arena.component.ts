@@ -1,29 +1,60 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  signal,
+  computed,
+  effect,
+  PLATFORM_ID,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ArenaService, ArenaParticipant } from '../../core/services/arena.service';
 import { AuthService } from '../../core/services/auth.service';
 import { GameService } from '../../core/services/game.service';
 import { ButtonComponent } from '../../shared/components/button/button.component';
+import { ChessBoardComponent } from '../../shared/components/chess-board/chess-board.component';
+import { ChessClockComponent } from '../../shared/components/chess-clock/chess-clock.component';
+import { GameInfoComponent } from '../play/live-game/components/game-info.component';
+import { Chess } from 'chess.js';
+import { Config } from 'chessground/config';
 
 @Component({
   selector: 'app-arena',
   standalone: true,
-  imports: [CommonModule, ButtonComponent],
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    ChessBoardComponent,
+    ChessClockComponent,
+    GameInfoComponent,
+  ],
   templateUrl: './arena.component.html',
   styleUrl: './arena.component.css',
 })
 export class ArenaComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
   public arenaService = inject(ArenaService);
   public authService = inject(AuthService);
   private gameService = inject(GameService);
 
+  readonly STARTING_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+  readonly placeholderPlayer = { id: 0, name: '...' };
+
   arenaId = signal<string | null>(null);
-  
+
   // Official arena data from Laravel
   arenaData = this.arenaService.activeArena;
+
+  // Board signals
+  boardSize = signal<number>(400);
+  currentPly = signal(0);
+  chess = new Chess();
+  displayFen = signal<string>(this.STARTING_FEN);
+  game = this.gameService.gameState;
 
   // Computed properties for UI
   leaderboard = this.arenaService.leaderboard;
@@ -48,6 +79,75 @@ export class ArenaComponent implements OnInit, OnDestroy {
     return null;
   });
 
+  cgConfig = computed(() => {
+    const g = this.game();
+    if (!g) return {};
+    return {
+      turnColor: g.turn,
+      viewOnly: true,
+      movable: { color: undefined, dests: new Map() },
+      check: this.chess.inCheck() ? (this.chess.turn() === 'w' ? 'white' : 'black') : undefined,
+    } as Config;
+  });
+
+  constructor() {
+    // Watch for top game changes
+    effect(() => {
+      const topGameId = this.arenaService.topGameId();
+      if (topGameId) {
+        const currentId = this.gameService.gameState()?.id;
+        if (currentId !== topGameId) {
+          this.gameService.loadGame(topGameId);
+          this.currentPly.set(0);
+
+          // Retry once after 2 seconds if load failed (handles Laravel/DB race conditions)
+          setTimeout(() => {
+            const current = this.gameService.gameState();
+            if (this.arenaService.topGameId() === topGameId && (!current || current.id !== topGameId)) {
+                console.log(`[Arena] Retrying load for game ${topGameId}...`);
+                this.gameService.loadGame(topGameId);
+            }
+          }, 2000);
+        }
+      } else {
+        // Clear if no top game
+        this.gameService.clearGame(false);
+      }
+    });
+
+    // Sync chess instance and display when game state updates
+    effect(() => {
+      const g = this.game();
+      if (g) {
+        this.chess.load(g.fen);
+        this.currentPly.set(g.moves.length);
+        this.displayFen.set(g.fen);
+      } else {
+        this.displayFen.set(this.STARTING_FEN);
+      }
+    });
+
+    // Handle responsiveness for board size
+    if (isPlatformBrowser(this.platformId)) {
+      this.calculateBoardSize();
+      window.addEventListener('resize', this.onResize);
+    }
+  }
+
+  private onResize = () => {
+    this.calculateBoardSize();
+  };
+
+  calculateBoardSize() {
+    if (isPlatformBrowser(this.platformId)) {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      // In two-column layout, board gets roughly half width on desktop
+      const newSize = width > 768 ? Math.min(500, height - 300) : Math.min(400, width - 40);
+      this.boardSize.set(newSize);
+    }
+  }
+
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -57,8 +157,9 @@ export class ArenaComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // We don't necessarily leave the arena on destroy if we are just playing a game
-    // butt we should stop pairing if we navigate away from tournaments entirely
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('resize', this.onResize);
+    }
   }
 
   private connectAndJoin() {
@@ -76,6 +177,39 @@ export class ArenaComponent implements OnInit, OnDestroy {
         );
       }, 500);
     }
+  }
+
+  goToMove(ply: number): void {
+    const g = this.game();
+    if (!g || ply < 0 || ply > g.moves.length) return;
+
+    this.currentPly.set(ply);
+    const tempChess = new Chess();
+    for (let i = 0; i < ply; i++) {
+      const uci = g.moves[i];
+      const from = uci.substring(0, 2);
+      const to = uci.substring(2, 4);
+      const promotion = uci.length > 4 ? uci[4] : undefined;
+      try {
+        tempChess.move({ from, to, promotion: promotion as any });
+      } catch {}
+    }
+    this.displayFen.set(tempChess.fen());
+  }
+
+  formatResult(result: string | null): string {
+    return result || '';
+  }
+
+  formatTermination(result: string | null, termination: string | null): string {
+    if (!termination) return '';
+    if (result === '1/2-1/2') return 'Draw';
+    return termination.toLowerCase();
+  }
+
+  getResultClass(result: string | null): string {
+    if (result === '1/2-1/2') return 'text-slate-400';
+    return result === '1-0' ? 'text-green-500' : 'text-red-500';
   }
 
   toggleJoin() {
