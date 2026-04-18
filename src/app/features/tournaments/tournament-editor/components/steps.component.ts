@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule, FormArray, FormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FormFieldComponent } from './form-field.component';
 import { ButtonComponent  } from '@shared/ui';
 
@@ -8,21 +7,18 @@ import { ButtonComponent  } from '@shared/ui';
 @Component({
   selector: 'app-step-basic-info',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
-  styleUrls: ['./step-styles.component.css'],
+  imports: [ReactiveFormsModule, FormFieldComponent],
   template: `
-    <div [formGroup]="form">
-      <div class="field-group">
-        <app-form-field
-          formControlName="name"
-          label="Tournament Name"
-          placeholder="e.g. Mobile Chess Bus Tournament 2026"
-          [required]="true"
-          [showCharCount]="true"
-          [charLimit]="64"
-          [errorMessage]="getError('name')"
-        ></app-form-field>
-      </div>
+    <div [formGroup]="form" class="space-y-6">
+      <app-form-field
+        formControlName="name"
+        label="Tournament Name"
+        placeholder="e.g. Mobile Chess Bus Tournament 2026"
+        [required]="true"
+        [showCharCount]="true"
+        [charLimit]="64"
+        [errorMessage]="getError('name')"
+      ></app-form-field>
 
       <app-form-field
         formControlName="description"
@@ -45,11 +41,10 @@ export class StepBasicInfoComponent {
 @Component({
   selector: 'app-step-dates-location',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, FormFieldComponent, ButtonComponent],
-  styleUrls: ['./step-styles.component.css'],
+  imports: [ReactiveFormsModule, FormsModule, FormFieldComponent, ButtonComponent],
   template: `
-    <div [formGroup]="form">
-      <div class="field-row three-col">
+    <div [formGroup]="form" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <app-form-field
           formControlName="startDate"
           label="Start Date"
@@ -98,8 +93,8 @@ export class StepBasicInfoComponent {
         [errorMessage]="getError('location')"
       ></app-form-field>
 
-      <div class="field-group">
-        <label class="field-label optional">Google Maps Link</label>
+      <div class="space-y-1.5">
+        <label class="field-label block text-sm font-medium text-slate-700 dark:text-slate-300">Google Maps Link <span class="text-slate-500 font-normal">(Optional)</span></label>
         <div class="flex gap-2">
           <input
             type="text"
@@ -180,35 +175,30 @@ export class StepDatesLocationComponent implements OnInit {
 @Component({
   selector: 'app-step-format-rules',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
-  styleUrls: ['./step-styles.component.css'],
+  imports: [ReactiveFormsModule, FormFieldComponent],
   template: `
-    <div [formGroup]="form">
-      <div class="field-row">
-        <app-form-field
-          formControlName="format"
-          label="Format"
-          placeholder="e.g. Swiss System, 9 Rounds"
-          [required]="true"
-          [showCharCount]="true"
-          [charLimit]="255"
-          [errorMessage]="getError('format')"
-        ></app-form-field>
-      </div>
+    <div [formGroup]="form" class="space-y-6">
+      <app-form-field
+        formControlName="format"
+        label="Format"
+        placeholder="e.g. Swiss System, 9 Rounds"
+        [required]="true"
+        [showCharCount]="true"
+        [charLimit]="255"
+        [errorMessage]="getError('format')"
+      ></app-form-field>
 
-      <div class="field-group">
-        <app-form-field
-          formControlName="timeControl"
-          label="Time Control"
-          placeholder="e.g. 90 min + 30 sec increment"
-          [required]="true"
-          [showCharCount]="true"
-          [charLimit]="255"
-          [errorMessage]="getError('timeControl')"
-        ></app-form-field>
-      </div>
+      <app-form-field
+        formControlName="timeControl"
+        label="Time Control"
+        placeholder="e.g. 90 min + 30 sec increment"
+        [required]="true"
+        [showCharCount]="true"
+        [charLimit]="255"
+        [errorMessage]="getError('timeControl')"
+      ></app-form-field>
 
-      <div class="field-row">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <app-form-field
           formControlName="rounds"
           label="Rounds"

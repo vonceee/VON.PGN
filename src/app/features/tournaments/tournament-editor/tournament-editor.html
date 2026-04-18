@@ -8,31 +8,33 @@
   />
   <form [formGroup]="tournamentForm" class="editor-layout">
     <!-- Left Sidebar: Section Navigation -->
-    <aside class="sidebar-nav">
-      <h3 class="px-4 text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Sections</h3>
-      <button type="button" class="nav-item" (click)="scrollToSection('sec-basic')">
-        Basic Info
-      </button>
-      <button type="button" class="nav-item" (click)="scrollToSection('sec-dates')">
-        Dates & Location
-      </button>
-      <button type="button" class="nav-item" (click)="scrollToSection('sec-format')">
-        Format & Rules
-      </button>
-      <button type="button" class="nav-item" (click)="scrollToSection('sec-organizer')">
-        Organizer
-      </button>
-      <button type="button" class="nav-item" (click)="scrollToSection('sec-registration')">
-        Registration
-      </button>
-      <button type="button" class="nav-item" (click)="scrollToSection('sec-eligibility')">
-        Eligibility
-      </button>
-      <button type="button" class="nav-item" (click)="scrollToSection('sec-prizes')">Prizes</button>
-      <button type="button" class="nav-item" (click)="scrollToSection('sec-schedule')">
-        Schedule
-      </button>
-
+    <aside class="hidden lg:flex sticky top-6 flex flex-col gap-2">
+      @for (
+        section of [
+          { id: 'sec-basic', label: 'Basic Info' },
+          { id: 'sec-dates', label: 'Dates & Location' },
+          { id: 'sec-format', label: 'Format & Rules' },
+          { id: 'sec-organizer', label: 'Organizer' },
+          { id: 'sec-registration', label: 'Registration' },
+          { id: 'sec-eligibility', label: 'Eligibility' },
+          { id: 'sec-prizes', label: 'Prizes' },
+          { id: 'sec-schedule', label: 'Schedule' },
+        ];
+        track section.id
+      ) {
+        <button
+          type="button"
+          (click)="scrollToSection(section.id)"
+          [class]="
+            activeSection() === section.id
+              ? 'bg-cyan-400'
+              : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+          "
+          class="flex items-center px-4 py-3 rounded-md text-sm font-semibold text-left border-none cursor-pointer"
+        >
+          {{ section.label }}
+        </button>
+      }
     </aside>
 
     <!-- Center Console: Main Form Sections -->
@@ -50,34 +52,30 @@
           <div class="header-actions">
             @if (!useCustomPoster) {
               <app-button
-                variant="outline"
+                variant="primary"
                 size="sm"
-                label="Upload Custom Poster"
+                label="Upload Own Custom Poster"
                 (click)="posterUploadInput.click()"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                </svg>
-              </app-button>
+              ></app-button>
             } @else {
               <app-button
                 variant="danger"
                 size="sm"
                 label="Remove Custom Poster"
                 (click)="removeCustomPoster()"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                </svg>
-              </app-button>
+              ></app-button>
             }
           </div>
         </div>
       </div>
 
       <!-- Basic Info -->
-      <section id="sec-basic" class="form-section">
-        <app-section-heading text="Basic Information" highlight="." size="text-2xl mb-3"></app-section-heading>
+      <section id="sec-basic" class="form-section premium-card">
+        <app-section-heading
+          text="Basic Information"
+          highlight="."
+          size="text-2xl mb-3"
+        ></app-section-heading>
         <app-step-basic-info
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -85,8 +83,12 @@
       </section>
 
       <!-- Dates & Location -->
-      <section id="sec-dates" class="form-section">
-        <app-section-heading text="Dates & Location" highlight="." size="text-2xl mb-3"></app-section-heading>
+      <section id="sec-dates" class="form-section premium-card">
+        <app-section-heading
+          text="Dates & Location"
+          highlight="."
+          size="text-2xl mb-3"
+        ></app-section-heading>
         <app-step-dates-location
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -99,8 +101,12 @@
       </section>
 
       <!-- Format & Rules -->
-      <section id="sec-format" class="form-section">
-        <app-section-heading text="Format & Rules" highlight="." size="text-2xl mb-3"></app-section-heading>
+      <section id="sec-format" class="form-section premium-card">
+        <app-section-heading
+          text="Format & Rules"
+          highlight="."
+          size="text-2xl mb-3"
+        ></app-section-heading>
         <app-step-format-rules
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -108,7 +114,7 @@
       </section>
 
       <!-- Organizer -->
-      <section id="sec-organizer" class="form-section">
+      <section id="sec-organizer" class="form-section premium-card">
         <app-section-heading
           text="Organizer Information"
           highlight="."
@@ -121,7 +127,7 @@
       </section>
 
       <!-- Registration -->
-      <section id="sec-registration" class="form-section">
+      <section id="sec-registration" class="form-section premium-card">
         <app-section-heading
           text="Registration Details"
           highlight="."
@@ -134,7 +140,7 @@
       </section>
 
       <!-- Eligibility -->
-      <section id="sec-eligibility" class="form-section">
+      <section id="sec-eligibility" class="form-section premium-card">
         <app-section-heading
           text="Player Eligibility"
           highlight="."
@@ -148,7 +154,7 @@
       </section>
 
       <!-- Prizes -->
-      <section id="sec-prizes" class="form-section">
+      <section id="sec-prizes" class="form-section premium-card">
         <app-section-heading
           text="Prizes & Categories"
           highlight="."
@@ -166,8 +172,12 @@
       </section>
 
       <!-- Schedule -->
-      <section id="sec-schedule" class="form-section">
-        <app-section-heading text="Event Schedule" highlight="." size="text-2xl mb-3"></app-section-heading>
+      <section id="sec-schedule" class="form-section premium-card">
+        <app-section-heading
+          text="Event Schedule"
+          highlight="."
+          size="text-2xl mb-3"
+        ></app-section-heading>
         <app-step-schedule
           [scheduleDaysArray]="scheduleDaysArray"
           (addScheduleDay)="addScheduleDay()"
@@ -176,8 +186,6 @@
           (removeScheduleEvent)="removeScheduleEvent($event.di, $event.ei)"
         ></app-step-schedule>
       </section>
-
-
     </main>
 
     <!-- Right Sidebar: Live Poster Preview -->
@@ -188,8 +196,6 @@
           [tournamentData]="data"
           [prizeCategories]="posterPrizeCategories"
           [downloading]="downloadingPoster()"
-          [isEditable]="false"
-          (mediaUpload)="handleMediaUpload($event)"
         ></app-poster-preview>
       }
     </aside>
@@ -197,7 +203,7 @@
     <!-- Sticky Footer Actions -->
     <footer class="sticky-footer">
       <div class="footer-content">
-        <span class="text-sm font-medium text-slate-500 hidden md:inline">
+        <span class="text-sm font-medium hidden md:inline">
           {{
             tournamentId()
               ? 'Editing: ' + tournamentForm.get('name')?.value
@@ -226,7 +232,14 @@
     <div class="modal-overlay" (click)="closeReviewModal()">
       <div class="review-modal" (click)="$event.stopPropagation()">
         <button class="modal-close" (click)="closeReviewModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
@@ -240,12 +253,14 @@
         </div>
 
         <div class="modal-footer-actions">
-          <app-button variant="ghost" size="lg" (click)="closeReviewModal()">Back to Editing</app-button>
-          <app-button 
-            variant="primary" 
-            size="lg" 
+          <app-button variant="ghost" size="lg" (click)="closeReviewModal()"
+            >Back to Editing</app-button
+          >
+          <app-button
+            variant="primary"
+            size="lg"
             class="px-10"
-            [loading]="saving()" 
+            [loading]="saving()"
             (click)="executeSave()"
           >
             {{ tournamentId() ? 'Confirm & Update' : 'Confirm & Publish' }}

@@ -17,10 +17,8 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ReactiveFormsModule, FormArray, FormGroup } from '@angular/forms';
-import { ButtonComponent  } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 import type Konva from 'konva';
-// Dynamic imports used below for SSR compatibility
-// import { jsPDF } from 'jspdf';
 
 interface PosterPrize {
   place: string;
@@ -41,7 +39,7 @@ interface PosterCategory {
 @Component({
   selector: 'app-poster-preview',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './poster-preview.component.html',
   styleUrls: ['./poster-preview.component.css'],
 })
@@ -49,22 +47,15 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
   @Input() tournamentData!: Record<string, any>;
   @Input() prizeCategories: PosterCategory[] = [];
   @Input() downloading = false;
-  @Input() isEditable = true;
   @Input() form!: FormGroup;
 
   @Output() download = new EventEmitter<void>();
-  @Output() mediaUpload = new EventEmitter<{
-    file: File;
-    type: 'background' | 'logo' | 'poster';
-  }>();
 
   @ViewChild('canvasHolder') canvasHolder!: ElementRef<HTMLDivElement>;
   @ViewChild('konvaHolder') konvaHolder!: ElementRef<HTMLDivElement>;
 
   private stage?: Konva.Stage;
   private layer?: Konva.Layer;
-
-  zoomLevel = signal(1.0);
 
   // Internal A4 Dimensions (300 DPI)
   private readonly CANVAS_WIDTH = 2480;
@@ -149,24 +140,10 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     const workspaceWidth = this.canvasHolder.nativeElement.parentElement?.offsetWidth || 800;
     const padding = workspaceWidth < 768 ? 16 : 40;
     const availableWidth = Math.max(workspaceWidth - padding, 280);
-    const baseScale = availableWidth / this.CANVAS_WIDTH;
-    const finalScale = baseScale * this.zoomLevel();
+    const finalScale = availableWidth / this.CANVAS_WIDTH;
     this.stage.width(this.CANVAS_WIDTH * finalScale);
     this.stage.height(this.CANVAS_HEIGHT * finalScale);
     this.stage.scale({ x: finalScale, y: finalScale });
-  }
-
-  zoomIn() {
-    this.zoomLevel.set(Math.min(2.0, this.zoomLevel() + 0.1));
-    this.fitStageToContainer();
-  }
-  zoomOut() {
-    this.zoomLevel.set(Math.max(0.1, this.zoomLevel() - 0.1));
-    this.fitStageToContainer();
-  }
-  resetZoom() {
-    this.zoomLevel.set(1.0);
-    this.fitStageToContainer();
   }
 
   async renderPoster() {
@@ -458,16 +435,6 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     });
   }
 
-  onFileSelected(event: any, type: 'background' | 'logo' | 'poster') {
-    const file = event.target.files?.[0];
-    if (file) this.mediaUpload.emit({ file, type });
-  }
-
-  removeLogo(index: number) {
-    this.logosArray.removeAt(index);
-    this.renderPoster();
-  }
-
   handleDownload() {
     if (!this.stage) return;
     const dataURL = this.stage.toDataURL({ mimeType: 'image/jpeg', quality: 0.9 });
@@ -476,14 +443,4 @@ export class PosterPreviewComponent implements OnInit, AfterViewInit, OnDestroy,
     link.href = dataURL;
     link.click();
   }
-
-  async exportAsPDF() {
-    if (!this.stage) return;
-    const { jsPDF } = await import('jspdf');
-    const dataURL = this.stage.toDataURL({ mimeType: 'image/jpeg', quality: 0.95 });
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    pdf.addImage(dataURL, 'JPEG', 0, 0, 210, 297);
-    pdf.save(`tournament-poster-${this.tournamentData['name'] || 'export'}.pdf`);
-  }
 }
-

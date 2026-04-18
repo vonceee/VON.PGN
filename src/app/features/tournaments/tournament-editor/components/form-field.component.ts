@@ -1,11 +1,10 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-form-field',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   styleUrls: ['./form-field.component.css'],
   template: `
     <div class="field-group">
@@ -15,7 +14,7 @@ import { CommonModule } from '@angular/common';
 
       @switch (type) {
         @case ('text') {
-          <div class="flex gap-2 items-start" *ngIf="showCharCount">
+          <div [class.flex]="showCharCount" class="gap-2 items-start">
             <input
               type="text"
               [value]="value"
@@ -25,20 +24,12 @@ import { CommonModule } from '@angular/common';
               [class]="inputClasses"
               [disabled]="disabled"
             />
-            <span class="char-counter" [class.near-limit]="isNearLimit">
-              {{ charCount }}/{{ charLimit }}
-            </span>
+            @if (showCharCount) {
+              <span class="char-counter" [class.near-limit]="isNearLimit">
+                {{ charCount }}/{{ charLimit }}
+              </span>
+            }
           </div>
-          <input
-            *ngIf="!showCharCount"
-            type="text"
-            [value]="value"
-            (input)="onInput($event)"
-            (blur)="onBlur()"
-            [placeholder]="placeholder"
-            [class]="inputClasses"
-            [disabled]="disabled"
-          />
         }
 
         @case ('textarea') {
@@ -52,9 +43,11 @@ import { CommonModule } from '@angular/common';
               [class]="textareaClasses"
               [disabled]="disabled"
             ></textarea>
-            <span class="char-counter textarea-counter" [class.near-limit]="isNearLimit">
-              {{ charCount }}/{{ charLimit }}
-            </span>
+            @if (showCharCount) {
+              <span class="char-counter textarea-counter" [class.near-limit]="isNearLimit">
+                {{ charCount }}/{{ charLimit }}
+              </span>
+            }
           </div>
         }
 
@@ -83,7 +76,9 @@ import { CommonModule } from '@angular/common';
 
         @case ('select') {
           <select [value]="value" (change)="onSelectChange($event)" [class]="inputClasses" [disabled]="disabled">
-            <option *ngFor="let opt of options" [value]="opt.value">{{ opt.label }}</option>
+            @for (opt of options; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
           </select>
         }
 
@@ -104,7 +99,7 @@ import { CommonModule } from '@angular/common';
         }
 
         @case ('url') {
-          <div class="flex gap-2" *ngIf="showCharCount">
+          <div class="flex gap-2">
             <input
               type="url"
               [value]="value"
@@ -114,9 +109,11 @@ import { CommonModule } from '@angular/common';
               class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
               [disabled]="disabled"
             />
-            <span class="char-counter" [class.near-limit]="isNearLimit">
-              {{ charCount }}/{{ charLimit }}
-            </span>
+            @if (showCharCount) {
+              <span class="char-counter" [class.near-limit]="isNearLimit">
+                {{ charCount }}/{{ charLimit }}
+              </span>
+            }
           </div>
         }
       }

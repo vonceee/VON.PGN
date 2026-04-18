@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
     <div>
       <a
         [routerLink]="link()"
-        class="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors group"
+        class="inline-flex items-center gap-2 text-sm font-medium group hover:underline"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

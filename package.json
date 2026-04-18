@@ -30,8 +30,6 @@
     "chess.js": "^1.4.0",
     "chessground": "^9.2.1",
     "express": "^5.1.0",
-    "html2canvas-pro": "^2.0.2",
-    "jspdf": "^4.2.1",
     "konva": "^10.2.5",
     "rxjs": "~7.8.0",
     "socket.io-client": "^4.8.3",

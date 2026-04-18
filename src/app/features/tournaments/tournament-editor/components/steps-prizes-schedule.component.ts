@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
 import { ButtonComponent  } from '@shared/ui';
 
@@ -7,184 +6,195 @@ import { ButtonComponent  } from '@shared/ui';
 @Component({
   selector: 'app-step-prizes',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
-  styleUrls: ['./step-styles.component.css'],
+  imports: [ReactiveFormsModule, ButtonComponent],
   template: `
-    <div>
+    <div class="space-y-6">
       
       @if (categoriesArray.length === 0) {
       <p class="text-slate-400 text-sm py-4 text-center">No prize categories added.</p>
       }
       
-      <div class="space-y-6">
+      <div class="space-y-8">
         @for (cat of categoriesArray.controls; track $index; let ci = $index) {
-        <div class="p-5">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="font-bold text-lg m-0">Category {{ ci + 1 }}</h3>
+        <div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-border-theme">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">Category {{ ci + 1 }}</h3>
             <app-button
               variant="danger"
               size="sm"
-              label="Remove"
+              label="Remove Category"
               (click)="removeCategory.emit(ci)"
             ></app-button>
           </div>
 
-          <div class="field-group mb-4">
-            <label class="block mb-1 text-sm font-medium">Category Name</label>
+          <div class="space-y-4 mb-8">
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Category Name</label>
             <input 
               type="text" 
               [formControl]="getControl(categoryGroup(ci), 'name')" 
               placeholder="e.g. Open, Under 14"
-              class="w-full p-2.5 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+              class="w-full p-3 border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 transition-colors" 
             />
           </div>
 
-
-
-          <div class="mb-4">
-            <label class="text-sm font-medium block mb-2">Main Prizes</label>
-            <div class="space-y-3">
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">1st</label>
-                <input
-                  type="text"
-                  [formControl]="getControl(categoryGroup(ci), 'champion')"
-                  placeholder="P50,000 + trophy"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
-                />
+          <div class="space-y-6">
+            <div class="p-4 bg-white dark:bg-slate-800 rounded-lg border border-border-theme">
+              <label class="text-sm font-bold block mb-4 text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Main Prizes</label>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-semibold text-slate-500 uppercase">1st Place</label>
+                  <input
+                    type="text"
+                    [formControl]="getControl(categoryGroup(ci), 'champion')"
+                    placeholder="P50,000 + trophy"
+                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-semibold text-slate-500 uppercase">2nd Place</label>
+                  <input
+                    type="text"
+                    [formControl]="getControl(categoryGroup(ci), '2nd_place')"
+                    placeholder="Prize value"
+                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+                <div class="space-y-1.5">
+                  <label class="block text-xs font-semibold text-slate-500 uppercase">3rd Place</label>
+                  <input
+                    type="text"
+                    [formControl]="getControl(categoryGroup(ci), '3rd_place')"
+                    placeholder="Prize value"
+                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
               </div>
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">2nd</label>
-                <input
-                  type="text"
-                  [formControl]="getControl(categoryGroup(ci), '2nd_place')"
-                  placeholder="Prize value"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
-                />
+
+              @if (getCategoryExtraPrizes(ci).length > 0) {
+              <div class="space-y-4 mt-6 pt-6 border-t border-dashed border-border-theme">
+                @for (ep of getCategoryExtraPrizes(ci).controls; track $index; let ei = $index) {
+                <div class="flex gap-4 items-start bg-slate-50 dark:bg-slate-900/30 p-3 rounded-lg">
+                  <div class="flex-1 space-y-2">
+                    <div class="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        [formControl]="getControl(extraPrizeGroup(ci, ei), 'label')"
+                        placeholder="Place name (e.g. 4th - 10th)"
+                        class="flex-1 p-2 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                      />
+                      <app-button
+                        variant="danger"
+                        size="sm"
+                        label="✕"
+                        (click)="removeExtraPrize.emit({ci, ei})"
+                      ></app-button>
+                    </div>
+                      <input 
+                        type="text" 
+                        [formControl]="getControl(extraPrizeGroup(ci, ei), 'value')" 
+                        placeholder="Prize value"
+                        class="w-full p-2 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors" 
+                      />
+                  </div>
+                </div>
+                }
               </div>
-              <div>
-                <label class="block mb-1 text-xs text-slate-500">3rd</label>
-                <input
-                  type="text"
-                  [formControl]="getControl(categoryGroup(ci), '3rd_place')"
-                  placeholder="Prize value"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
-                />
+              }
+              <div class="mt-4">
+                <app-button
+                  variant="outline"
+                  size="sm"
+                  label="+ Add Extra Place"
+                  (click)="addExtraPrize.emit(ci)"
+                ></app-button>
               </div>
             </div>
 
-            @if (getCategoryExtraPrizes(ci).length > 0) {
-            <div class="space-y-3 mt-3">
-              @for (ep of getCategoryExtraPrizes(ci).controls; track $index; let ei = $index) {
-              <div class="flex gap-2 items-start">
-                <div class="flex-1">
-                  <div class="flex gap-2 items-center mb-1">
-                    <input
-                      type="text"
-                      [formControl]="getControl(extraPrizeGroup(ci, ei), 'label')"
-                      placeholder="Place name (e.g. 4th - 10th)"
-                      class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
-                    />
+            <div class="p-4 bg-white dark:bg-slate-800 rounded-lg border border-border-theme">
+              <label class="text-sm font-bold block mb-4 text-purple-600 dark:text-purple-400 uppercase tracking-wider">Special Awards</label>
+              <div class="space-y-4">
+                @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
+                <div class="p-4 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-border-theme">
+                  <div class="flex gap-3 items-center mb-3">
+                       <input
+                         type="text"
+                         [formControl]="getControl(specialAwardGroup(ci, ai), 'name')"
+                         placeholder="e.g. Top Senior"
+                         class="flex-1 p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                       />
+                      <select 
+                        [formControl]="getControl(specialAwardGroup(ci, ai), 'type')"
+                        class="p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 bg-white dark:bg-slate-900 transition-colors"
+                      >
+                      <option value="simple">Simple</option>
+                      <option value="nested">1st/2nd/3rd Style</option>
+                    </select>
                     <app-button
                       variant="danger"
                       size="sm"
                       label="✕"
-                      (click)="removeExtraPrize.emit({ci, ei})"
+                      (click)="removeSpecialAward.emit({ci, ai})"
                     ></app-button>
                   </div>
+                  @if (specialAwardGroup(ci, ai).get('type')?.value === 'simple') {
                     <input 
                       type="text" 
-                      [formControl]="getControl(extraPrizeGroup(ci, ei), 'value')" 
+                      [formControl]="getControl(specialAwardGroup(ci, ai), 'value')" 
                       placeholder="Prize value"
-                      class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                      class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors" 
                     />
+                  } @else {
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="space-y-1">
+                      <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">1st</label>
+                      <input 
+                        type="text" 
+                        [formControl]="getControl(specialAwardGroup(ci, ai), '1st')" 
+                        placeholder="1st prize"
+                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                      />
+                    </div>
+                    <div class="space-y-1">
+                      <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">2nd</label>
+                      <input 
+                        type="text" 
+                        [formControl]="getControl(specialAwardGroup(ci, ai), '2nd')" 
+                        placeholder="2nd prize"
+                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                      />
+                    </div>
+                    <div class="space-y-1">
+                      <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">3rd</label>
+                      <input 
+                        type="text" 
+                        [formControl]="getControl(specialAwardGroup(ci, ai), '3rd')" 
+                        placeholder="3rd prize"
+                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                      />
+                    </div>
+                  </div>
+                  }
                 </div>
+                }
               </div>
-              }
-            </div>
-            }
-            <br />
-            <app-button
-              variant="outline"
-              size="sm"
-              label="Add Place"
-              (click)="addExtraPrize.emit(ci)"
-            ></app-button>
-          </div>
-
-          <div>
-            <div class="mb-2">
-              <label class="text-sm font-medium">Special Awards</label>
-            </div>
-            @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
-            <div class="p-3 mb-3">
-              <div class="flex gap-2 items-center mb-2">
-                   <input
-                     type="text"
-                     [formControl]="getControl(specialAwardGroup(ci, ai), 'name')"
-                     placeholder="e.g. Top Senior"
-                     class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
-                   />
-                  <select 
-                    [formControl]="getControl(specialAwardGroup(ci, ai), 'type')"
-                    class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 bg-white dark:bg-slate-900 transition-colors"
-                  >
-                  <option value="simple">Simple</option>
-                  <option value="nested">1st/2nd/3rd</option>
-                </select>
+              <div class="mt-4">
                 <app-button
-                  variant="danger"
+                  variant="outline"
                   size="sm"
-                  label="✕"
-                  (click)="removeSpecialAward.emit({ci, ai})"
+                  label="+ Add Special Award"
+                  (click)="addSpecialAward.emit(ci)"
                 ></app-button>
               </div>
-              @if (specialAwardGroup(ci, ai).get('type')?.value === 'simple') {
-                <input 
-                  type="text" 
-                  [formControl]="getControl(specialAwardGroup(ci, ai), 'value')" 
-                  placeholder="Prize value"
-                  class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
-                />
-              } @else {
-              <div class="grid grid-cols-3 gap-2">
-                <input 
-                  type="text" 
-                  [formControl]="getControl(specialAwardGroup(ci, ai), '1st')" 
-                  placeholder="1st prize"
-                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
-                />
-                <input 
-                  type="text" 
-                  [formControl]="getControl(specialAwardGroup(ci, ai), '2nd')" 
-                  placeholder="2nd prize"
-                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
-                />
-                <input 
-                  type="text" 
-                  [formControl]="getControl(specialAwardGroup(ci, ai), '3rd')" 
-                  placeholder="3rd prize"
-                  class="p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
-                />
-              </div>
-              }
             </div>
-            }
-            <app-button
-              variant="outline"
-              size="sm"
-              label="Add Special Award"
-              (click)="addSpecialAward.emit(ci)"
-              class="mt-3"
-            ></app-button>
           </div>
         </div>
         }
         <app-button
-          variant="outline"
-          size="sm"
-          label="Add Category"
+          variant="primary"
+          size="lg"
+          label="+ Add New Category"
           (click)="addCategory.emit()"
+          class="w-full md:w-auto"
         ></app-button>
       </div>
     </div>
@@ -218,24 +228,23 @@ export class StepPrizesComponent implements OnInit {
 @Component({
   selector: 'app-step-schedule',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
-  styleUrls: ['./step-styles.component.css'],
+  imports: [ReactiveFormsModule, ButtonComponent],
   template: `
-    <div>
+    <div class="space-y-6">
       @if (scheduleDaysArray.length === 0) {
-      <p class="text-slate-400 text-sm py-4 text-center">No schedule days added yet.</p>
+      <p class="text-slate-400 text-sm py-8 text-center bg-slate-50 dark:bg-slate-950/50 rounded-xl border-2 border-dashed border-border-theme">No schedule days added yet.</p>
       }
       
-      <div class="space-y-4">
+      <div class="space-y-6">
         @for (day of scheduleDaysArray.controls; track $index; let di = $index) {
-        <div class="p-5">
-          <div class="flex justify-between items-center mb-4">
-            <span class="bg-slate-200 dark:bg-white/10 px-2 py-1 rounded text-xs font-bold">Day {{ di + 1 }}</span>
+        <div class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-border-theme shadow-sm">
+          <div class="flex justify-between items-center mb-6">
+            <span class="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight">Day {{ di + 1 }} Schedule</span>
             <div class="flex gap-2">
               <app-button
                 variant="outline"
                 size="sm"
-                label="+ Event"
+                label="+ Add Event"
                 (click)="addScheduleEvent.emit(di)"
               ></app-button>
               <app-button
@@ -246,26 +255,27 @@ export class StepPrizesComponent implements OnInit {
               ></app-button>
             </div>
           </div>
-          <div class="space-y-2">
+          <div class="space-y-3">
             @for (event of getScheduleEvents(di).controls; track $index; let ei = $index) {
-            <div class="flex gap-2 items-center">
+            <div class="flex gap-3 items-center group">
               <input 
                 type="text" 
                 [formControl]="getControl(scheduleEventGroup(di, ei), 'name')"
                 placeholder="e.g. Onsite Registration"
-                class="flex-1 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                class="flex-1 p-3 text-sm border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 transition-colors" 
               />
               <input 
                 type="text" 
                 [formControl]="getControl(scheduleEventGroup(di, ei), 'time')"
                 placeholder="Time (e.g. 9:00 AM - 11:00 AM)"
-                class="w-56 p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                class="w-48 p-3 text-sm border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 transition-colors" 
               />
               <app-button
                 variant="danger"
                 size="sm"
                 label="✕"
                 (click)="removeScheduleEvent.emit({di, ei})"
+                class="opacity-50 group-hover:opacity-100 transition-opacity"
               ></app-button>
             </div>
             }
@@ -274,9 +284,10 @@ export class StepPrizesComponent implements OnInit {
         }
         <app-button
           variant="outline"
-          size="sm"
-          label="+ Add Day"
+          size="lg"
+          label="+ Add New Day"
           (click)="addScheduleDay.emit()"
+          class="w-full"
         ></app-button>
       </div>
     </div>

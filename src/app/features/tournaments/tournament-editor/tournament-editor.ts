@@ -4,7 +4,6 @@ import {
   OnInit,
   signal,
   Input,
-  ChangeDetectorRef,
   computed,
   OnDestroy,
   PLATFORM_ID,
@@ -18,7 +17,7 @@ import { environment } from '../../../../environments/environment';
 
 import { AdminService } from '../../../core/services/admin.service';
 import { TournamentService } from '../../../core/services/tournament.service';
-import { ButtonComponent  } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 import { ToastService } from '../../../core/services/toast.service';
 
 import {
@@ -47,8 +46,8 @@ import {
 import { TournamentFormHandler } from './handlers/tournament-form.handler';
 import { TournamentMapsService } from './services/tournament-maps.service';
 import { TournamentPosterHandler } from './handlers/tournament-poster.handler';
-import { BackLinkComponent  } from '@shared/ui';
-import { SectionHeadingComponent  } from '@shared/ui';
+import { BackLinkComponent } from '@shared/ui';
+import { SectionHeadingComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-tournament-editor',
@@ -80,7 +79,6 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
   private http = inject(HttpClient);
   public location = inject(Location);
   private platformId = inject(PLATFORM_ID);
@@ -102,6 +100,7 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   mapsLinkError = signal('');
   mapsLinkLoading = signal(false);
   verificationStatus = signal<VerificationStatus>('idle');
+  activeSection = signal('sec-basic');
 
   // Poster State
   useCustomPosterSignal = signal(false);
@@ -154,6 +153,7 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   // ---- Navigation ----
 
   scrollToSection(sectionId: string) {
+    this.activeSection.set(sectionId);
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -356,21 +356,18 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
       .post<{ url: string }>(`${environment.apiUrl}/${endpoint}/tournaments/media`, formData)
       .subscribe({
         next: (res) => {
-          setTimeout(() => {
-            if (event.type === 'background')
-              this.tournamentForm.get('posterSettings.backgroundImage')?.setValue(res.url);
-            else if (event.type === 'poster') {
-              this.tournamentForm.get('posterSettings.customPosterUrl')?.setValue(res.url);
-              this.tournamentForm.get('posterSettings.useCustomPoster')?.setValue(true);
-              this.useCustomPosterSignal.set(true);
-            } else {
-              (this.tournamentForm.get('posterSettings.logos') as FormArray).push(
-                new FormControl(res.url),
-              );
-            }
-            this.cdr.detectChanges();
-            this.toastService.show('Image uploaded successfully', 'success');
-          });
+          if (event.type === 'background')
+            this.tournamentForm.get('posterSettings.backgroundImage')?.setValue(res.url);
+          else if (event.type === 'poster') {
+            this.tournamentForm.get('posterSettings.customPosterUrl')?.setValue(res.url);
+            this.tournamentForm.get('posterSettings.useCustomPoster')?.setValue(true);
+            this.useCustomPosterSignal.set(true);
+          } else {
+            (this.tournamentForm.get('posterSettings.logos') as FormArray).push(
+              new FormControl(res.url),
+            );
+          }
+          this.toastService.show('Image uploaded successfully', 'success');
         },
         error: (err) =>
           this.toastService.show('Upload failed: ' + (err.error?.message || err.message), 'error'),
@@ -383,7 +380,6 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     });
     this.useCustomPosterSignal.set(false);
     this.toastService.show('Custom poster removed.', 'success');
-    this.cdr.detectChanges();
   }
 
   // ---- UI Helpers ----
@@ -393,4 +389,3 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     }
   }
 }
-

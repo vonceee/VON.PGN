@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
 import { FormFieldComponent } from './form-field.component';
 import { ButtonComponent  } from '@shared/ui';
@@ -8,10 +7,9 @@ import { ButtonComponent  } from '@shared/ui';
 @Component({
   selector: 'app-step-organizer',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
-  styleUrls: ['./step-styles.component.css'],
+  imports: [ReactiveFormsModule, FormFieldComponent],
   template: `
-    <div [formGroup]="form">
+    <div [formGroup]="form" class="space-y-6">
 
       <app-form-field
         formControlName="organizer"
@@ -55,8 +53,7 @@ export class StepOrganizerComponent {
 @Component({
   selector: 'app-step-registration',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormFieldComponent],
-  styleUrls: ['./step-styles.component.css'],
+  imports: [ReactiveFormsModule, FormFieldComponent],
   template: `
     <div [formGroup]="form">
       <app-form-field
@@ -82,8 +79,7 @@ export class StepRegistrationComponent {
 @Component({
   selector: 'app-step-eligibility',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonComponent],
-  styleUrls: ['./step-styles.component.css'],
+  imports: [ReactiveFormsModule, ButtonComponent],
   template: `
     <div>
       <div class="space-y-4">
