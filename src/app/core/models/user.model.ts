@@ -54,6 +54,7 @@ export interface UserProgress {
   lastActiveLessonId: string | null;
 
   currentStreakDays: number;
+  totalPuzzlesSolved: number;
 
   puzzleRating: number;
   puzzleStreak: number;

@@ -3,33 +3,21 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { GameService } from '../../../core/services/game.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { ButtonComponent  } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
+import { LoadingComponent } from '@shared/feedback';
 
 @Component({
   selector: 'app-game-history',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent],
   template: `
     <div>
       @if (isLoading()) {
-        <div class="flex flex-col items-center justify-center py-20">
-          <div
-            class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-4"
-          ></div>
-          <p class="text-xs font-semibold tracking-widest uppercase opacity-40">Loading games...</p>
-        </div>
+        <app-loading message="Loading games..."></app-loading>
       } @else if (games().length > 0) {
-        <div class="border border-border-theme rounded-xl overflow-hidden">
+        <div class="border border-border-theme rounded-xl overflow-hidden premium-card">
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full border-collapse">
-              <thead>
-                <tr class="border-b border-border-theme">
-                  <th class="p-4 text-left text-md uppercase font-black tracking-wider">Players</th>
-                  <th class="p-4 text-left text-md uppercase font-black tracking-wider">Result</th>
-                  <th class="p-4 text-center text-md uppercase font-black tracking-wider">Type</th>
-                  <th class="p-4 text-center text-md uppercase font-black tracking-wider">Action</th>
-                </tr>
-              </thead>
               <tbody class="divide-y divide-border-theme">
                 @for (game of games(); track game.id) {
                   <tr class="hover:bg-white/5 transition-colors group">
@@ -43,10 +31,10 @@ import { ButtonComponent  } from '@shared/ui';
                           >
                             {{ game.white_player.name }}
                           </span>
-                          <span class="text-[10px] font-mono">({{ game.white_elo || 1500 }})</span>
+                          <span class="text-xs">({{ game.white_elo || 1500 }})</span>
                           @if (game.white_rating_change !== null) {
                             <span
-                              class="text-[10px] font-bold"
+                              class="text-xs"
                               [class]="
                                 game.white_rating_change >= 0 ? 'text-green-500' : 'text-red-500'
                               "
@@ -64,10 +52,10 @@ import { ButtonComponent  } from '@shared/ui';
                           >
                             {{ game.black_player.name }}
                           </span>
-                          <span class="text-[10px] font-mono">({{ game.black_elo || 1500 }})</span>
+                          <span class="text-xs">({{ game.black_elo || 1500 }})</span>
                           @if (game.black_rating_change !== null) {
                             <span
-                              class="text-[10px] font-bold"
+                              class="text-xs"
                               [class]="
                                 game.black_rating_change >= 0 ? 'text-green-500' : 'text-red-500'
                               "
@@ -194,4 +182,3 @@ export class GameHistoryComponent implements OnInit {
     return iWon ? 'text-green-500' : 'text-red-500';
   }
 }
-

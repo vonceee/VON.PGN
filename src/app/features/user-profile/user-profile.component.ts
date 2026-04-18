@@ -8,14 +8,16 @@ import { TournamentService } from '../../core/services/tournament.service';
 import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { Tournament } from '../../core/models/tournament.model';
 import { FormsModule } from '@angular/forms';
-import { LoadingComponent  } from '@shared/feedback';
+import { LoadingComponent } from '@shared/feedback';
 import { UserStatusIndicatorComponent } from '@shared/ui';
+import { GameHistoryComponent } from '../profile/game-history/game-history.component';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent],
   templateUrl: './user-profile.component.html',
+  styleUrl: './user-profile.component.css',
 })
 export class UserProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);

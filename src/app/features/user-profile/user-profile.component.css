@@ -1,0 +1,90 @@
+.ratings-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .ratings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .ratings-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.rating-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-theme, rgba(255, 255, 255, 0.1));
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background: white;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+:host-context(.dark) .rating-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+}
+
+.rating-card:hover {
+  transform: translateY(-2px);
+  border-color: #06b6d4; /* cyan-500 */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.rating-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b; /* slate-500 */
+}
+
+:host-context(.dark) .rating-label {
+  color: #94a3b8; /* slate-400 */
+}
+
+.rating-value {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 800;
+  color: #0f172a; /* slate-900 */
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+:host-context(.dark) .rating-value {
+  color: white;
+}
+
+.rating-prov {
+  font-size: 1.25rem;
+  color: #06b6d4;
+  font-weight: 600;
+}
+
+.rating-games {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Glassmorphism accent */
+.rating-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4rem;
+  height: 4rem;
+  background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.1), transparent 70%);
+  pointer-events: none;
+}

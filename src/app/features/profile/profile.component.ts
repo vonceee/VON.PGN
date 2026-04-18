@@ -7,12 +7,15 @@ import { PaymentService } from '../../core/services/payment.service';
 import { FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
 import { GameHistoryComponent } from './game-history/game-history.component';
+import { ButtonComponent } from '../../shared/components/ui/button/button.component';
+import { LoadingComponent } from '@shared/feedback';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, GameHistoryComponent],
+  imports: [CommonModule, RouterLink, FormsModule, GameHistoryComponent, ButtonComponent, LoadingComponent],
   templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
   private userService = inject(UserService);
@@ -46,14 +49,6 @@ export class ProfileComponent implements OnInit {
 
   formattedFollowersCount = computed(() => this.formatCount(this.user()?.followers_count || 0));
   formattedFollowingCount = computed(() => this.formatCount(this.user()?.following_count || 0));
-
-  bulletRating = computed(() => this.user()?.ratings?.bullet?.rating ?? 1500);
-  blitzRating = computed(() => this.user()?.ratings?.blitz?.rating ?? 1500);
-  rapidRating = computed(() => this.user()?.ratings?.rapid?.rating ?? 1500);
-
-  bulletGames = computed(() => this.user()?.ratings?.bullet?.games ?? 0);
-  blitzGames = computed(() => this.user()?.ratings?.blitz?.games ?? 0);
-  rapidGames = computed(() => this.user()?.ratings?.rapid?.games ?? 0);
 
   ngOnInit() {
     // Handle payment callback
