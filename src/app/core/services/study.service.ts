@@ -61,9 +61,12 @@ export class StudyService {
     this.isLoading.set(true);
     this.http.get<{ data: Study }>(`${this.apiUrl}/studies/${id}`).subscribe({
       next: (res) => {
+        console.log('[StudyService] Raw API Response:', res.data);
         this.currentStudy.set(res.data);
         if (res.data.chapters && res.data.chapters.length > 0) {
-          this.currentChapter.set(res.data.chapters[0]);
+          // Unwrap if nested, otherwise use as is
+          const firstChapter = (res.data.chapters[0] as any).data || res.data.chapters[0];
+          this.currentChapter.set(firstChapter);
         }
         this.isLoading.set(false);
         this.connectSocket(res.data);
@@ -95,9 +98,15 @@ export class StudyService {
 
     this.socket.on('connect', () => {
       this.isConnected.set(true);
+      const s = this.currentStudy();
+      if (!s) return;
+
+      // Fallback for ownerId: check user_id, userId, or owner.id
+      const ownerId = s.user_id || (s as any).userId || s.owner?.id;
+
       this.socket?.emit('join_study', {
-        studyId: study.id,
-        ownerId: study.user_id,
+        studyId: s.id,
+        ownerId: ownerId,
         initialState: {
           chapterId: this.currentChapter()?.id,
           fen: this.currentChapter()?.current_fen,
@@ -123,23 +132,57 @@ export class StudyService {
     });
   }
 
-  emitMove(move: string, fen: string): void {
+  emitMove(move: string, fen: string, moves: any[]): void {
     const study = this.currentStudy();
     const chapter = this.currentChapter();
-    if (!study || !chapter || !this.socket) return;
+    
+    if (!study || !chapter) {
+      console.warn('[StudyService] Missing study or chapter to save move.');
+      return;
+    }
 
-    this.socket.emit('study_move', {
+    const chapterId = chapter.id;
+    if (!chapterId) {
+      console.error('[StudyService] Chapter object exists but ID is missing:', chapter);
+      return;
+    }
+
+    this.socket?.emit('study_move', {
       studyId: study.id,
       move,
       fen,
-      chapterId: chapter.id,
+      chapterId: chapterId,
+      moves: moves
     });
 
-    // Also persist to DB (debounced or immediate)
-    this.updateChapter(study.id, chapter.id, {
+    // Persist full tree to database
+    this.updateChapter(study.id, chapterId, {
       current_fen: fen,
-      moves: [...chapter.moves, move],
-    }).subscribe();
+      moves: moves,
+    }).subscribe({
+      next: (res) => {
+        const updated = (res as any).data || res;
+        this.currentChapter.set(updated);
+
+        // SYNC: Update the chapter in the master study list so the sidebar stays current
+        this.currentStudy.update(s => {
+          if (!s || !s.chapters) return s;
+          const chapters = s.chapters.map(c => 
+            String(c.id) === String(updated.id) ? updated : c
+          );
+          return { ...s, chapters };
+        });
+
+        // Broadcast switch...
+        this.socket?.emit('study_change_chapter', {
+          studyId: study.id,
+          chapterId: updated.id,
+          fen: updated.current_fen,
+          moves: updated.moves
+        });
+      },
+      error: (err) => console.error('[StudyService] Failed to save move to DB:', err)
+    });
   }
 
   emitShapes(shapes: any[]): void {
@@ -148,6 +191,15 @@ export class StudyService {
     this.socket.emit('study_draw_shapes', {
       studyId: study.id,
       shapes,
+    });
+  }
+
+  emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[]): void {
+    this.socket?.emit('study_change_chapter', {
+      studyId,
+      chapterId,
+      fen,
+      moves
     });
   }
 

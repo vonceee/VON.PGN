@@ -305,7 +305,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         coordinates: true,
         movable: {
           free: false,
-          color: this.interactive ? this.turnColor() : undefined,
+          color: this.interactive ? 'both' : undefined,
           dests: this.interactive ? this.getLegalMoves() : new Map(),
           events: {
             after: (orig, dest) => this.onMove(orig, dest),
@@ -367,7 +367,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       fen: targetFen,
       turnColor: this.turnColor(),
       movable: {
-        color: this.interactive ? this.turnColor() : undefined,
+        color: this.interactive ? 'both' : undefined,
         dests: this.interactive ? this.getLegalMoves() : new Map(),
       },
       draggable: {

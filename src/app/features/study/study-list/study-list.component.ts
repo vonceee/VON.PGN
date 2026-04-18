@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { StudyService } from '../../../core/services/study.service';
 import { FormsModule } from '@angular/forms';
@@ -69,13 +69,16 @@ import { FormsModule } from '@angular/forms';
 export class StudyListComponent implements OnInit {
   private studyService = inject(StudyService);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
   studies = signal<any[]>([]);
 
   ngOnInit() {
-    this.studyService.getStudies().subscribe((res) => {
-      this.studies.set(res.data);
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.studyService.getStudies().subscribe((res) => {
+        this.studies.set(res.data);
+      });
+    }
   }
 
   createNewStudy() {

@@ -14,13 +14,23 @@ export interface Study {
   updated_at: string;
 }
 
+export interface MoveNode {
+  san: string;
+  fen: string;
+  uci: string;
+  ply: number;
+  comments?: string[];
+  variations: MoveNode[][]; // Array of variation lines, where each line is MoveNode[]
+}
+
 export interface StudyChapter {
   id: number;
   study_id: number;
   name: string;
   initial_fen: string;
   current_fen: string;
-  moves: string[];
+  moves: string[]; // Keep for backward compatibility or flat view
+  move_tree?: MoveNode[]; // Root moves of the mainline
   order: number;
   created_at: string;
   updated_at: string;
