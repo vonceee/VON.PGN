@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { Injectable, inject, signal, OnDestroy, PLATFORM_ID, untracked } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -21,7 +21,7 @@ export class GameService implements OnDestroy {
   private platformId = inject(PLATFORM_ID);
 
   private apiUrl = environment.apiUrl;
-  private socket: Socket | null = null;
+  public socket = signal<Socket | null>(null);
   private socketUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
 
   private pendingGameId: string | null = null;
@@ -68,9 +68,9 @@ export class GameService implements OnDestroy {
 
   ngOnDestroy(): void {
     this.stopHeartbeat();
-    if (this.socket) {
-      this.socket.disconnect();
-      this.socket = null;
+    if (this.socket()) {
+      this.socket()?.disconnect();
+      this.socket.set(null);
     }
   }
 
@@ -204,8 +204,9 @@ export class GameService implements OnDestroy {
 
   sendMove(move: string): void {
     const game = this.gameState();
-    if (!game || !this.socket?.connected) return;
-    this.socket.emit('make_move', { gameId: game.id, move });
+    const s = this.socket();
+    if (!game || !s?.connected) return;
+    s.emit('make_move', { gameId: game.id, move });
   }
 
   resign(): void {
@@ -219,50 +220,50 @@ export class GameService implements OnDestroy {
 
   offerDraw(): void {
     const game = this.gameState();
-    if (this.socket && game) {
-      this.socket.emit('offer_draw', game.id);
+    if (this.socket() && game) {
+      this.socket()?.emit('offer_draw', game.id);
     }
   }
 
   acceptDraw(): void {
     const game = this.gameState();
-    if (this.socket && game) {
-      this.socket.emit('respond_draw', { gameId: game.id, accept: true });
+    if (this.socket() && game) {
+      this.socket()?.emit('respond_draw', { gameId: game.id, accept: true });
     }
   }
 
   declineDraw(): void {
     const game = this.gameState();
-    if (this.socket && game) {
-      this.socket.emit('respond_draw', { gameId: game.id, accept: false });
+    if (this.socket() && game) {
+      this.socket()?.emit('respond_draw', { gameId: game.id, accept: false });
     }
   }
 
   abortGame(): void {
     const game = this.gameState();
-    if (this.socket && game) {
-      this.socket.emit('abort_game', game.id);
+    if (this.socket() && game) {
+      this.socket()?.emit('abort_game', game.id);
     }
   }
 
   offerRematch(): void {
     const game = this.gameState();
-    if (this.socket && game) {
-      this.socket.emit('offer_rematch', game.id);
+    if (this.socket() && game) {
+      this.socket()?.emit('offer_rematch', game.id);
     }
   }
 
   acceptRematch(): void {
     const game = this.gameState();
-    if (this.socket && game) {
-      this.socket.emit('accept_rematch', game.id);
+    if (this.socket() && game) {
+      this.socket()?.emit('accept_rematch', game.id);
     }
   }
 
   declineRematch(): void {
     const game = this.gameState();
-    if (this.socket && game) {
-      this.socket.emit('decline_rematch', game.id);
+    if (this.socket() && game) {
+      this.socket()?.emit('decline_rematch', game.id);
     }
   }
 
@@ -316,10 +317,11 @@ export class GameService implements OnDestroy {
   clearGame(navigateToPlay: boolean = true): void {
     this.stopHeartbeat();
     this.gameState.set(null);
-    if (this.socket) {
-      this.socket.off('move_made');
-      this.socket.off('game_ended');
-      this.socket.off('clock_sync');
+    if (this.socket()) {
+      const s = this.socket();
+      s?.off('move_made');
+      s?.off('game_ended');
+      s?.off('clock_sync');
     }
     if (navigateToPlay) {
       this.router.navigate(['/play']);
@@ -327,7 +329,7 @@ export class GameService implements OnDestroy {
   }
 
   hasSocketConnection(): boolean {
-    return !!this.socket && this.socket.connected;
+    return !!this.socket() && this.socket()!.connected;
   }
 
   // ── Seeks API (for seek-board component) ────────────────────────
@@ -390,61 +392,60 @@ export class GameService implements OnDestroy {
   connectSocket(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    if (this.socket?.connected) return;
+    untracked(() => {
+      if (this.socket()?.connected) return;
 
-    // Don't connect if auth service is not initialized yet
-    if (!this.authService.isInitialized()) {
-      console.log('[Game] Not connecting socket - auth service not initialized');
-      return;
-    }
+      // Don't connect if auth service is not initialized yet
+      if (!this.authService.isInitialized()) {
+        console.log('[Game] Not connecting socket - auth service not initialized');
+        return;
+      }
 
-    const token = this.authService.getToken();
-    const user = this.authService.currentUser();
+      const token = this.authService.getToken();
+      const user = this.authService.currentUser();
 
-    console.log('[Game] Connecting socket with auth:', {
-      hasToken: !!token,
-      userId: user?.uid,
-      userName: user?.username,
-      isAuthenticated: this.authService.isAuthenticated()
+      console.log('[Game] Connecting socket with auth:', {
+        hasToken: !!token,
+        userId: user?.uid,
+        userName: user?.username,
+        isAuthenticated: this.authService.isAuthenticated()
+      });
+
+      // Don't connect if user data is not available
+      if (!user?.uid) {
+        console.log('[Game] Not connecting socket - user data not available');
+        return;
+      }
+
+      const s = io(this.socketUrl, {
+        auth: { token, userId: user.uid, userName: user.username },
+        transports: ['websocket', 'polling'],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+      });
+      this.socket.set(s);
+
+      s.on('connect', () => {
+        console.log('[Game] Socket connected');
+        this.isConnected.set(true);
+        this.flushPendingSubscription();
+      });
+
+      s.on('disconnect', (reason) => {
+        console.log('[Game] Socket disconnected:', reason);
+        this.isConnected.set(false);
+      });
+
+      s.on('connect_error', (err) => {
+        console.log('[Game] Socket connection error:', err);
+      });
     });
-
-    // Don't connect if user data is not available
-    if (!user?.uid) {
-      console.log('[Game] Not connecting socket - user data not available');
-      console.log('[Game] Current user object:', user);
-      console.log('[Game] Auth service initialized:', this.authService.isInitialized());
-      console.log('[Game] Is authenticated:', this.authService.isAuthenticated());
-      return;
-    }
-
-    this.socket = io(this.socketUrl, {
-      auth: { token, userId: user.uid, userName: user.username },
-      transports: ['websocket', 'polling'],
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-    });
-
-    this.socket.on('connect', () => {
-      console.log('[Game] Socket connected');
-      this.isConnected.set(true);
-      this.flushPendingSubscription();
-    });
-
-    this.socket.on('disconnect', (reason) => {
-      console.log('[Game] Socket disconnected:', reason);
-      this.isConnected.set(false);
-    });
-
-    this.socket.on('connect_error', (err) => {
-      console.log('[Game] Socket connection error:', err);
-    });
-
   }
 
   subscribeToGame(gameId: string): void {
     this.pendingGameId = gameId;
-    if (!this.socket) {
+    if (!this.socket()) {
       this.connectSocket();
     }
     if (!this.hasSocketConnection()) return;
@@ -453,19 +454,21 @@ export class GameService implements OnDestroy {
 
   private flushPendingSubscription(): void {
     const gameId = this.pendingGameId;
-    if (!gameId || !this.socket || !this.isConnected()) return;
+    const s = this.socket();
+    if (!gameId || !s || !this.isConnected()) return;
     this.pendingGameId = null;
     this.setupGameChannel(gameId);
   }
 
   private setupGameChannel(gameId: string): void {
-    if (!this.socket) return;
+    const s = this.socket();
+    if (!s) return;
 
     console.log(`[Game] Joining game room ${gameId}`);
-    this.socket.emit('join_game', gameId);
+    s.emit('join_game', gameId);
 
-    this.socket.off('game_state');
-    this.socket.on('game_state', (data: any) => {
+    s.off('game_state');
+    s.on('game_state', (data: any) => {
       const remoteGame = data.game;
       if (!remoteGame || remoteGame.id !== gameId) return;
 
@@ -496,8 +499,8 @@ export class GameService implements OnDestroy {
       });
     });
 
-    this.socket.off('move_made');
-    this.socket.on('move_made', (data: any) => {
+    s.off('move_made');
+    s.on('move_made', (data: any) => {
       if (data.gameId !== gameId) return;
 
       this.gameState.update((state) => {
@@ -544,7 +547,7 @@ export class GameService implements OnDestroy {
       });
     });
 
-    this.socket.on('game_ended', (data: any) => {
+    s.on('game_ended', (data: any) => {
       if (data.gameId !== gameId) return;
 
       const currentState = this.gameState();
@@ -584,19 +587,19 @@ export class GameService implements OnDestroy {
       }
     });
 
-    this.socket.on('rematch_offered', (data: any) => {
+    s.on('rematch_offered', (data: any) => {
       this.rematchOffered$.next(data);
     });
 
-    this.socket.on('rematch_accepted', (data: any) => {
+    s.on('rematch_accepted', (data: any) => {
       this.rematchAccepted$.next(data);
     });
 
-    this.socket.on('rematch_declined', (data: any) => {
+    s.on('rematch_declined', (data: any) => {
       this.rematchDeclined$.next(data);
     });
 
-    this.socket.on('clock_sync', (data: any) => {
+    s.on('clock_sync', (data: any) => {
       this.gameState.update((state) => {
         if (!state) return state;
         return {
@@ -609,19 +612,19 @@ export class GameService implements OnDestroy {
       });
     });
     
-    this.socket.on('draw_offered', (data: DrawOfferedPayload) => {
+    s.on('draw_offered', (data: DrawOfferedPayload) => {
       if (data.gameId !== gameId) return;
       this.gameState.update(g => g ? ({ ...g, draw_offered_by: data.offeredByUserId }) : null);
       this.drawOffered$.next(data);
     });
 
-    this.socket.on('draw_declined', (data: DrawDeclinedPayload) => {
+    s.on('draw_declined', (data: DrawDeclinedPayload) => {
       if (data.gameId !== gameId) return;
       this.gameState.update(g => g ? ({ ...g, draw_offered_by: null }) : null);
       this.drawDeclined$.next(data);
     });
 
-    this.socket.on('opponent_away_countdown', (data: any) => {
+    s.on('opponent_away_countdown', (data: any) => {
       if (data.gameId !== gameId) return;
       const g = this.gameState();
       if (!g) return;
@@ -632,12 +635,12 @@ export class GameService implements OnDestroy {
       }
     });
 
-    this.socket.on('opponent_returned', (data: any) => {
+    s.on('opponent_returned', (data: any) => {
       if (data.gameId !== gameId) return;
       this.opponentAwayCountdown.set(null);
     });
 
-    this.socket.on('first_move_countdown', (data: any) => {
+    s.on('first_move_countdown', (data: any) => {
       if (data.gameId !== gameId) return;
       this.gameState.update(g => g ? ({ ...g, firstMoveCountdown: data.secondsRemaining }) : null);
     });
@@ -743,8 +746,8 @@ export class GameService implements OnDestroy {
     this.stopHeartbeat();
     this.heartbeatInterval = setInterval(() => {
       const game = this.gameState();
-      if (!game || !this.socket?.connected || game.status !== 'active') return;
-      this.socket.emit('heartbeat', { gameId: game.id });
+      if (!game || !this.socket()?.connected || game.status !== 'active') return;
+      this.socket()?.emit('heartbeat', { gameId: game.id });
     }, 10000);
   }
 

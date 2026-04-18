@@ -86,18 +86,20 @@ export class AuthService {
     return this.userService.loadMyProfile().pipe(
       tap({
         next: (res) => {
-          this.currentUser.set(res.data);
-          if (res.data?.preferences?.soundEnabled !== undefined) {
-            this.audioService.soundEnabled.set(res.data.preferences.soundEnabled);
-          }
-          if (res.data?.preferences?.soundTheme) {
-            this.audioService.soundTheme.set(res.data.preferences.soundTheme as any);
-          }
-          if (res.data?.preferences?.boardStyle) {
-            this.boardThemeService.boardTheme.set(res.data.preferences.boardStyle as any);
-          }
-          if (res.data?.preferences?.pieceStyle) {
-            this.boardThemeService.pieceSet.set(res.data.preferences.pieceStyle as any);
+          if (res && res.data) {
+            this.currentUser.set(res.data);
+            if (res.data.preferences?.soundEnabled !== undefined) {
+              this.audioService.soundEnabled.set(res.data.preferences.soundEnabled);
+            }
+            if (res.data.preferences?.soundTheme) {
+              this.audioService.soundTheme.set(res.data.preferences.soundTheme as any);
+            }
+            if (res.data.preferences?.boardStyle) {
+              this.boardThemeService.boardTheme.set(res.data.preferences.boardStyle as any);
+            }
+            if (res.data.preferences?.pieceStyle) {
+              this.boardThemeService.pieceSet.set(res.data.preferences.pieceStyle as any);
+            }
           }
         },
         error: () => {

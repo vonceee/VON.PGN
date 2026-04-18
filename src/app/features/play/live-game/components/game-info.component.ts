@@ -1,9 +1,11 @@
 import { Component, input } from '@angular/core';
 import { GamePlayer } from '../../../../core/models/game.model';
+import { UserStatusIndicatorComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-game-info',
   standalone: true,
+  imports: [UserStatusIndicatorComponent],
   template: `
     <div class="flex items-center gap-2 text-sm overflow-hidden">
       <div
@@ -11,6 +13,7 @@ import { GamePlayer } from '../../../../core/models/game.model';
         [class.bg-white]="color() === 'white'"
         [class.bg-slate-950]="color() === 'black'"
       ></div>
+      <app-user-status-indicator [userId]="player().id" size="w-5 h-5"></app-user-status-indicator>
       <div class="flex items-baseline gap-1.5 overflow-hidden">
         <span class="truncate font-bold">{{ player().name || 'Anonymous' }}</span>
         <span class="text-xs shrink-0">({{ player().rating || 1500 }})</span>

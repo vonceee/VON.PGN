@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { Observable, map, tap, catchError, of } from 'rxjs';
 import { Injectable, inject, signal } from '@angular/core';
 import { GameService } from './game.service';
+import { AuthService } from './auth.service';
 
 export interface ArenaParticipant {
   userId: string;
@@ -31,6 +32,7 @@ export interface ArenaState {
 })
 export class ArenaService {
   private gameService = inject(GameService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
@@ -83,7 +85,7 @@ export class ArenaService {
 
   // Socket Logic
   joinArena(arenaId: string, name: string, rating: number, timeControl: string = '3+0') {
-    const socket = this.gameService['socket']; // Accessing private socket for now
+    const socket = this.gameService.socket();
     if (!socket) {
       console.error('[ArenaService] Socket not initialized');
       return;
@@ -168,7 +170,7 @@ export class ArenaService {
   }
 
   startPairing() {
-    const socket = this.gameService['socket'];
+    const socket = this.gameService.socket();
     if (socket && this.activeArena()) {
       socket.emit('start_pairing', this.activeArena()?.arenaId);
       this.gameService.isSearching.set(true);
@@ -177,7 +179,7 @@ export class ArenaService {
   }
 
   stopPairing() {
-    const socket = this.gameService['socket'];
+    const socket = this.gameService.socket();
     if (socket && this.activeArena()) {
       socket.emit('stop_pairing', this.activeArena()?.arenaId);
       this.gameService.isSearching.set(false);
@@ -186,7 +188,7 @@ export class ArenaService {
 
   leaveArena() {
     const arena = this.activeArena();
-    const socket = this.gameService['socket'];
+    const socket = this.gameService.socket();
     if (arena && socket) {
       socket.emit('leave_arena', arena.arenaId);
       this.activeArena.set(null);
@@ -246,7 +248,6 @@ export class ArenaService {
   }
 
   private getUserId() {
-    // Helper to get current user ID
-    return this.gameService['authService'].currentUser()?.uid;
+    return this.authService.currentUser()?.uid;
   }
 }

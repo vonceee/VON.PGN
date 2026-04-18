@@ -2,7 +2,7 @@ import { inject, Injectable, signal, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { UserProfile, Badge, FollowUser, PaginatedResponse } from '../models/user.model';
-import { tap, map } from 'rxjs';
+import { tap, map, of, catchError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface UserSearchResult {
@@ -61,6 +61,8 @@ export class UserService {
   }
 
   loadMyProfile() {
+    if (!this.isBrowser) return of(null as any);
+
     return this.http.get<{ data: UserProfile }>(`${environment.apiUrl}/profile`).pipe(
       tap({
         next: (response) => {
@@ -71,6 +73,7 @@ export class UserService {
           console.error('Failed to load user profile', err.status, err.message);
         },
       }),
+      catchError(() => of(null as any))
     );
   }
 

@@ -11,6 +11,61 @@
   --color-border-theme: theme(colors.slate.400);
   --color-chess-grid: rgba(0, 0, 0, 0.04);
 }
+ 
+ body {
+   min-height: 100vh;
+   position: relative;
+   overflow-x: hidden;
+ }
+ 
+ body::before {
+   content: "";
+   position: fixed;
+   inset: 0;
+   background-image: url('/background.webp');
+   background-size: cover;
+   background-position: center;
+   background-repeat: no-repeat;
+   transform: scale(1.1);
+   z-index: -2;
+   pointer-events: none;
+ }
+ 
+ body::after {
+   content: "";
+   position: fixed;
+   inset: 0;
+   background: rgba(255, 255, 255, 0.85);
+   z-index: -1;
+   pointer-events: none;
+ }
+ 
+ .dark body::after {
+   background: rgba(10, 10, 12, 0.88);
+ }
+
+ header {
+   background: rgba(255, 255, 255, 0.7);
+   backdrop-filter: blur(12px);
+   -webkit-backdrop-filter: blur(12px);
+   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+   transition: all 0.3s ease;
+ }
+
+ .dark header {
+   background: rgba(10, 10, 12, 0.7);
+   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+ }
+
+ footer {
+   background: rgba(255, 255, 255, 0.5) !important;
+   backdrop-filter: blur(8px);
+   -webkit-backdrop-filter: blur(8px);
+ }
+
+ .dark footer {
+   background: rgba(24, 24, 27, 0.6) !important;
+ }
 
 :root {
   font-size: 16px;

@@ -9,11 +9,12 @@ import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { Tournament } from '../../core/models/tournament.model';
 import { FormsModule } from '@angular/forms';
 import { LoadingComponent  } from '@shared/feedback';
+import { UserStatusIndicatorComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent],
   templateUrl: './user-profile.component.html',
 })
 export class UserProfileComponent implements OnInit {
