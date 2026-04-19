@@ -231,6 +231,23 @@ export class StudyService {
     });
   }
 
+  importPgn(studyId: number, pgn: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/studies/${studyId}/import-pgn`, { pgn });
+  }
+
+  exportPgn(studyId: number): void {
+    this.http.get(`${this.apiUrl}/studies/${studyId}/export-pgn`, { 
+      responseType: 'blob' 
+    }).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `study_${studyId}.pgn`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
   disconnect(): void {
     this.socket?.disconnect();
     this.isConnected.set(false);

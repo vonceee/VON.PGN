@@ -304,6 +304,30 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (this.isOwner()) this.studyService.emitShapes(shapes);
   }
 
+  importPgn() {
+    const pgn = prompt('Paste your Lichess Study PGN here:');
+    if (!pgn) return;
+    const s = this.study();
+    if (!s) return;
+
+    this.studyService.importPgn(s.id, pgn).subscribe({
+      next: (res) => {
+        this.studyService.getStudy(s.id); // Refresh study
+        alert(res.message || 'Import successful!');
+      },
+      error: (err) => {
+        console.error('Import failed:', err);
+        alert('Failed to import PGN. Please check the format.');
+      },
+    });
+  }
+
+  exportPgn() {
+    const s = this.study();
+    if (!s) return;
+    this.studyService.exportPgn(s.id);
+  }
+
   onBoardSizeChange(size: number) {
     this.boardSize.set(size);
     if (isPlatformBrowser(this.platformId)) {

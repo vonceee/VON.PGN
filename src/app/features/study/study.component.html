@@ -66,12 +66,13 @@
             </button>
           </div>
 
-          <div
-            class="flex-1 flex flex-col overflow-y-auto custom-scrollbar"
-            [class.pointer-events-none]="isSyncing() && !isOwner()"
-          >
+          <div class="flex-1 flex flex-col overflow-y-auto custom-scrollbar">
             @if (activeTab() === 'chapters') {
-              <div class="flex-1 flex flex-col gap-1">
+              <div
+                class="flex-1 flex flex-col gap-1"
+                [class.pointer-events-none]="isSyncing() && !isOwner()"
+                [class.opacity-70]="isSyncing() && !isOwner()"
+              >
                 @for (chap of s.chapters; track chap.id) {
                   <button
                     (click)="selectChapter(chap)"
@@ -192,6 +193,54 @@
                       >
                     </div>
                   }
+                </div>
+
+                <div class="pt-4 border-t border-border-theme flex flex-col gap-3">
+                  <label
+                    class="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1"
+                    >Migration</label
+                  >
+                  <div class="flex flex-col gap-2">
+                    <button
+                      (click)="importPgn()"
+                      *ngIf="isOwner()"
+                      class="flex items-center gap-2 px-3 py-2 text-xs font-bold bg-white/5 border border-border-theme rounded-lg hover:bg-white/10 transition-all text-slate-300"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                      </svg>
+                      Import PGN
+                    </button>
+                    <button
+                      (click)="exportPgn()"
+                      class="flex items-center gap-2 px-3 py-2 text-xs font-bold bg-white/5 border border-border-theme rounded-lg hover:bg-white/10 transition-all text-slate-300"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                      </svg>
+                      Export PGN
+                    </button>
+                  </div>
                 </div>
               </div>
             }
