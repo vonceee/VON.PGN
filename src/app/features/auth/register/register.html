@@ -191,7 +191,6 @@
         <app-button
           type="submit"
           variant="outline"
-          [customRounded]="'rounded-lg'"
           [loading]="isLoading()"
           [disabled]="registerForm.invalid"
           label="Continue"
@@ -213,11 +212,19 @@
 
       <p class="mt-8 text-center text-[11px] leading-relaxed">
         By creating an account, you agree to the <br />
-        <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
+        <a
+          href="/terms-of-service"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
           >Terms of Service</a
         >
         and
-        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
+        <a
+          href="/privacy-policy"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
           >Privacy Policy</a
         >
       </p>

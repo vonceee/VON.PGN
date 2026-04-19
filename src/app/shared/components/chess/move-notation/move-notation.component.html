@@ -1,0 +1,122 @@
+<div class="move-notation-container overflow-hidden flex flex-col h-full">
+  <!-- Navigation controls -->
+  @if (showNavigation()) {
+    <div class="flex-none flex items-center justify-center">
+      <app-button
+        variant="ghost"
+        size="md"
+        (click)="navigate.emit(0)"
+        [disabled]="currentPly() === 0"
+      >
+        <svg
+          class="w-5 h-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <polyline points="11 17 6 12 11 7" />
+          <polyline points="18 17 13 12 18 7" />
+        </svg>
+      </app-button>
+      <app-button
+        variant="ghost"
+        size="md"
+        (click)="navigate.emit(currentPly() - 1)"
+        [disabled]="currentPly() === 0"
+      >
+        <svg
+          class="w-5 h-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </app-button>
+      <app-button
+        variant="ghost"
+        size="md"
+        (click)="navigate.emit(currentPly() + 1)"
+        [disabled]="isLastMove()"
+      >
+        <svg
+          class="w-5 h-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </app-button>
+      <app-button
+        variant="ghost"
+        size="md"
+        (click)="navigate.emit(effectiveTree().length)"
+        [disabled]="isLastMove()"
+      >
+        <svg
+          class="w-5 h-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <polyline points="13 17 18 12 13 7" />
+          <polyline points="6 17 11 12 6 7" />
+        </svg>
+      </app-button>
+    </div>
+  }
+
+  <!-- Scrollable Move List -->
+  <div #scrollContainer class="flex-1 overflow-y-auto custom-scrollbar p-4 text-sm leading-relaxed">
+    <div class="move-tree-render">
+      <ng-container
+        *ngTemplateOutlet="renderNodes; context: { nodes: effectiveTree(), isMainline: true }"
+      ></ng-container>
+    </div>
+  </div>
+
+  <!-- Recursive Template for Moves -->
+  <ng-template #renderNodes let-nodes="nodes" let-isMainline="isMainline">
+    @for (node of nodes; track node.fen) {
+      <span class="inline-flex items-center">
+        <!-- Move Number -->
+        @if (node.ply % 2 !== 0) {
+          <span class="font-bold mr-1.5 ml-1 select-none text-cyan-400"
+            >{{ (node.ply + 1) / 2 }}.</span
+          >
+        } @else if ($first && !isMainline) {
+          <span class="font-bold mr-1.5 ml-1 select-none text-cyan-400">{{ node.ply / 2 }}...</span>
+        }
+
+        <!-- Move -->
+        <button
+          (click)="onMoveClick(node)"
+          [class.active-move]="currentFen() === node.fen || currentPly() === node.ply"
+          class="px-1.5 py-0.5 hover:bg-cyan-400"
+        >
+          {{ node.san }}
+        </button>
+
+        <!-- Recursive Variations -->
+        @if (node.variations && node.variations.length > 0) {
+          <span class="variations-container italic">
+            @for (variation of node.variations; track $index) {
+              <span class="variation-bracket mx-1 whitespace-nowrap">
+                (
+                <ng-container
+                  *ngTemplateOutlet="renderNodes; context: { nodes: variation, isMainline: false }"
+                ></ng-container>
+                )
+              </span>
+            }
+          </span>
+        }
+      </span>
+    }
+  </ng-template>
+</div>

@@ -1,0 +1,10 @@
+.active-move {
+  background-color: rgba(34, 211, 238, 0.25);
+  color: #22d3ee;
+  font-weight: 700;
+}
+
+.variations-container {
+  display: inline;
+  color: #94a3b8;
+}
