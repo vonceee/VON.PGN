@@ -72,8 +72,11 @@
   }
 
   <!-- Scrollable Move List -->
-  <div #scrollContainer class="flex-1 overflow-y-auto custom-scrollbar p-4 text-sm leading-relaxed">
-    <div class="move-tree-render">
+  <div
+    #scrollContainer
+    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-2 text-sm scroll-smooth [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:bg-slate-500/40 dark:[&::-webkit-scrollbar-thumb]:bg-cyan-400/40 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-cyan-400/60"
+  >
+    <div class="grid grid-cols-[2.5rem_1fr_1fr] items-center gap-y-0.5">
       <ng-container
         *ngTemplateOutlet="renderNodes; context: { nodes: effectiveTree(), isMainline: true }"
       ></ng-container>
@@ -83,30 +86,40 @@
   <!-- Recursive Template for Moves -->
   <ng-template #renderNodes let-nodes="nodes" let-isMainline="isMainline">
     @for (node of nodes; track node.fen) {
-      <span class="inline-flex items-center">
-        <!-- Move Number -->
+      <div [class.contents]="isMainline" [class.inline-flex]="!isMainline" class="items-center">
+        <!-- Move Number (Only for White moves or start of variation) -->
         @if (node.ply % 2 !== 0) {
-          <span class="font-bold mr-1.5 ml-1 select-none text-cyan-400"
+          <span class="col-start-1 text-slate-500 text-[0.75rem] font-semibold pl-2 select-none"
             >{{ (node.ply + 1) / 2 }}.</span
           >
         } @else if ($first && !isMainline) {
           <span class="font-bold mr-1.5 ml-1 select-none text-cyan-400">{{ node.ply / 2 }}...</span>
         }
 
-        <!-- Move -->
+        <!-- Move Button -->
         <button
           (click)="onMoveClick(node)"
-          [class.active-move]="currentFen() === node.fen"
-          class="px-1.5 py-0.5 hover:bg-cyan-400"
+          (contextmenu)="onContextMenu($event, node)"
+          [class]="currentFen() === node.fen ? '!bg-cyan-400' : ''"
+          [class.col-start-2]="isMainline && node.ply % 2 !== 0"
+          [class.col-start-3]="isMainline && node.ply % 2 === 0"
+          class="w-full text-left px-2 py-1 transition-colors hover:bg-cyan-400/15 mx-0.5"
         >
           {{ node.san }}
         </button>
 
         <!-- Recursive Variations -->
         @if (node.variations && node.variations.length > 0) {
-          <span class="variations-container italic">
+          <div
+            [class.col-span-full]="isMainline"
+            [class.my-1]="isMainline"
+            [class.p-2]="isMainline"
+            [class.rounded]="isMainline"
+            [class.text-[0.85rem]]="isMainline"
+            [class.inline]="!isMainline"
+          >
             @for (variation of node.variations; track $index) {
-              <span class="variation-bracket mx-1 whitespace-nowrap">
+              <span class="mx-1">
                 (
                 <ng-container
                   *ngTemplateOutlet="renderNodes; context: { nodes: variation, isMainline: false }"
@@ -114,9 +127,27 @@
                 )
               </span>
             }
-          </span>
+          </div>
         }
-      </span>
+      </div>
     }
   </ng-template>
+
+  <!-- Premium Context Menu -->
+  @if (contextMenuNode(); as node) {
+    <div
+      class="fixed z-50 min-w-[160px] py-1 bg-white dark:bg-black border border-border-theme"
+      [style.left.px]="contextMenuPos().x"
+      [style.top.px]="contextMenuPos().y"
+      (click)="$event.stopPropagation()"
+      (contextmenu)="$event.preventDefault()"
+    >
+      <button
+        (click)="onDeleteFromHere()"
+        class="w-full text-left px-3 py-2 text-sm hover:underline hover:cursor-pointer flex items-center gap-2"
+      >
+        Delete from here
+      </button>
+    </div>
+  }
 </div>

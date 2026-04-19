@@ -229,6 +229,62 @@ export class StudyComponent implements OnInit, OnDestroy {
     }
   }
 
+  onDeleteFromHere(target: MoveNode) {
+    if (!this.isOwner()) return;
+
+    this.moveTree.update((tree) => {
+      const newTree = this.deleteFromHereRecursive(tree, target);
+      return [...newTree];
+    });
+
+    this.afterTreeMutation();
+  }
+
+  private afterTreeMutation() {
+    const tree = this.moveTree();
+    
+    // Check if current position is still valid
+    const current = this.currentNode();
+    if (current) {
+      const stillExists = this.findNodeRecursive(tree, current.fen);
+      if (!stillExists) {
+        // Fallback to last mainline node or start
+        this.goToLastMainlineNode();
+      }
+    }
+
+    // Sync with backend
+    const latestChapter = this.currentChapter();
+    if (latestChapter) {
+      this.studyService.emitMove(
+        '', // No specific move made, just tree update
+        this.currentFen(),
+        tree
+      );
+    }
+  }
+
+  private deleteFromHereRecursive(nodes: MoveNode[], target: MoveNode): MoveNode[] {
+    const index = nodes.findIndex((n) => n.fen === target.fen && n.ply === target.ply);
+    if (index !== -1) {
+      // Found the target in this list, truncate from here
+      return nodes.slice(0, index);
+    }
+
+    for (const node of nodes) {
+      if (node.variations) {
+        for (let i = 0; i < node.variations.length; i++) {
+          node.variations[i] = this.deleteFromHereRecursive(node.variations[i], target);
+        }
+        // Filter out any variations that are now empty
+        node.variations = node.variations.filter((v) => v.length > 0);
+      }
+    }
+    return nodes;
+  }
+
+
+
   onNavigateToPly(ply: number) {
     if (this.isSyncing() && !this.isOwner()) return;
     if (ply === 0) {
