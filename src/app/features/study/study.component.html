@@ -1,0 +1,209 @@
+<div class="w-full py-8 px-4 lg:px-8">
+  @if (study(); as s) {
+    <div
+      class="grid grid-cols-1 lg:grid-cols-[minmax(280px,1fr)_3fr_minmax(280px,1fr)] gap-8 w-full max-w-[1800px] mx-auto items-start"
+    >
+      <div
+        class="h-[650px] max-h-[80vh] left-sidebar"
+        [class.pointer-events-none]="isSyncing() && !isOwner()"
+        [class.opacity-70]="isSyncing() && !isOwner()"
+      >
+        <div class="flex flex-col premium-card overflow-hidden h-full">
+          <app-move-notation
+            class="flex-1"
+            [moveTree]="moveTree()"
+            [currentFen]="currentFen()"
+            [currentPly]="currentPly()"
+            [showNavigation]="true"
+            (nodeClicked)="onNodeClicked($event)"
+            (navigate)="onNavigateToPly($event)"
+          ></app-move-notation>
+        </div>
+      </div>
+
+      <!-- Center Column: Board -->
+      <div class="flex flex-col items-center min-w-0">
+        <div>
+          <div class="w-full aspect-square">
+            <app-chess-board
+              [fen]="currentFen()"
+              [interactive]="isOwner()"
+              [size]="boardSize()"
+              [storageKey]="'boardSize'"
+              (moveMade)="onMoveMade($event)"
+              (shapeDrawn)="onShapeDrawn($event)"
+              (sizeChange)="onBoardSizeChange($event)"
+              [syncedShapes]="remoteShapes()"
+            ></app-chess-board>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Chapters -->
+      <div class="h-[650px] max-h-[80vh] right-sidebar">
+        <div class="flex flex-col premium-card overflow-hidden h-full">
+          <!-- Sidebar Tabs -->
+          <div class="flex border-b border-border-theme">
+            <button
+              (click)="activeTab.set('chapters')"
+              class="flex-1 py-3 text-xs font-bold transition-all"
+              [class.text-cyan-400]="activeTab() === 'chapters'"
+              [class.bg-cyan-500/5]="activeTab() === 'chapters'"
+              [class.opacity-100]="activeTab() === 'chapters'"
+              [class.opacity-40]="activeTab() !== 'chapters'"
+            >
+              Chapters
+            </button>
+            <button
+              (click)="activeTab.set('info')"
+              class="flex-1 py-3 text-xs font-bold transition-all"
+              [class.text-cyan-400]="activeTab() === 'info'"
+              [class.bg-cyan-500/5]="activeTab() === 'info'"
+              [class.opacity-100]="activeTab() === 'info'"
+              [class.opacity-40]="activeTab() !== 'info'"
+            >
+              Study Info
+            </button>
+          </div>
+
+          <div
+            class="flex-1 flex flex-col overflow-y-auto custom-scrollbar"
+            [class.pointer-events-none]="isSyncing() && !isOwner()"
+          >
+            @if (activeTab() === 'chapters') {
+              <div class="flex-1 flex flex-col gap-1">
+                @for (chap of s.chapters; track chap.id) {
+                  <button
+                    (click)="selectChapter(chap)"
+                    [class.bg-cyan-400/12]="currentChapter()?.id === chap.id"
+                    [class.text-cyan-400]="currentChapter()?.id === chap.id"
+                    [class.font-bold]="currentChapter()?.id === chap.id"
+                    [class.text-slate-400]="currentChapter()?.id !== chap.id"
+                    class="w-full text-left px-2 py-1 group text-sm transition-all hover:bg-white/5"
+                  >
+                    <span>{{ chap.name }}</span>
+                  </button>
+                }
+
+                <!-- Repositioned Add Button -->
+                @if (isOwner()) {
+                  <button
+                    (click)="createChapter()"
+                    class="mt-2 mx-1 p-3 border border-dashed border-border-theme rounded-lg hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all group flex items-center justify-center gap-2"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      class="text-slate-500 group-hover:text-cyan-400"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="M12 5v14" />
+                    </svg>
+                    <span
+                      class="text-[10px] font-bold uppercase tracking-widest text-slate-500 group-hover:text-cyan-400"
+                      >Add Chapter</span
+                    >
+                  </button>
+                }
+              </div>
+            } @else {
+              <!-- Info View -->
+              <div class="p-6 flex flex-col gap-6">
+                <div>
+                  <label
+                    class="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1"
+                    >Study Name</label
+                  >
+                  <h3 class="text-lg font-bold text-white tracking-tight">{{ s.name }}</h3>
+                </div>
+
+                <div>
+                  <label
+                    class="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-1"
+                    >Owner</label
+                  >
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+                    <span class="text-sm font-medium">{{ s.owner.name }}</span>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-border-theme">
+                  <label
+                    class="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-3"
+                    >Live Sync</label
+                  >
+
+                  @if (!isOwner()) {
+                    <button
+                      (click)="toggleSync()"
+                      class="w-full flex items-center justify-between p-3 rounded-xl border transition-all duration-300"
+                      [class]="
+                        isSyncing()
+                          ? 'bg-cyan-500/5 border-cyan-400/30 text-cyan-400'
+                          : 'bg-slate-500/5 border-border-theme text-slate-500'
+                      "
+                    >
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="w-2 h-2 rounded-full"
+                          [class]="
+                            isSyncing()
+                              ? 'bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]'
+                              : 'bg-slate-500'
+                          "
+                        ></div>
+                        <span class="text-xs font-bold uppercase tracking-wide">
+                          {{ isSyncing() ? 'Following Owner' : 'Independent mode' }}
+                        </span>
+                      </div>
+                      <span
+                        class="text-[10px] font-bold opacity-60 px-2 py-0.5 rounded-full border border-current italic"
+                      >
+                        {{ isSyncing() ? 'On' : 'Off' }}
+                      </span>
+                    </button>
+                    <p class="mt-2 text-[10px] leading-relaxed text-slate-500 italic">
+                      When enabled, your board will reveal moves exactly as the teacher plays them.
+                    </p>
+                  } @else {
+                    <div class="flex items-center gap-2 text-cyan-400">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                      >
+                        <path
+                          d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                        />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                      <span class="text-[10px] font-bold uppercase tracking-widest"
+                        >You are driving the sync</span
+                      >
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else if (isLoading()) {
+    <div class="flex items-center justify-center min-h-[400px]">
+      <div
+        class="w-10 h-10 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin"
+      ></div>
+    </div>
+  }
+</div>

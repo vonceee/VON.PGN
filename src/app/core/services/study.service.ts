@@ -40,6 +40,13 @@ export class StudyService {
   onShapesDrawn$ = this.shapesDrawnSubject.asObservable();
   onChapterChanged$ = this.chapterChangedSubject.asObservable();
 
+  // Track the absolute current state of the study room (owner's state)
+  lastRemoteState = signal<{
+    chapterId: number | null;
+    fen: string | null;
+    moves: any[] | null;
+  }>({ chapterId: null, fen: null, moves: null });
+
   constructor() {}
 
   // ── HTTP API ──────────────────────────────────────────────────
@@ -117,9 +124,15 @@ export class StudyService {
 
     this.socket.on('study_synced', (state: StudySyncedPayload) => {
       console.log('[Study] Synced state:', state);
+      this.lastRemoteState.set({
+        chapterId: state.chapterId,
+        fen: state.fen,
+        moves: state.moves,
+      });
     });
 
     this.socket.on('study_move_made', (payload: StudyMoveMadePayload) => {
+      this.lastRemoteState.update(s => ({ ...s, fen: payload.fen, moves: payload.moves }));
       this.moveMadeSubject.next(payload);
     });
 
@@ -128,6 +141,7 @@ export class StudyService {
     });
 
     this.socket.on('study_chapter_changed', (payload: any) => {
+      this.lastRemoteState.set({ chapterId: payload.chapterId, fen: payload.fen, moves: payload.moves });
       this.chapterChangedSubject.next(payload);
     });
   }
@@ -199,7 +213,21 @@ export class StudyService {
       studyId,
       chapterId,
       fen,
-      moves
+      moves,
+    });
+  }
+
+  emitNavigation(fen: string, moves: any[]): void {
+    const s = this.currentStudy();
+    const c = this.currentChapter();
+    if (!s || !c || !this.socket) return;
+
+    this.socket.emit('study_move', {
+      studyId: s.id,
+      chapterId: c.id,
+      fen: fen,
+      moves: moves,
+      isNavigation: true,
     });
   }
 

@@ -96,7 +96,7 @@
         <!-- Move -->
         <button
           (click)="onMoveClick(node)"
-          [class.active-move]="currentFen() === node.fen || currentPly() === node.ply"
+          [class.active-move]="currentFen() === node.fen"
           class="px-1.5 py-0.5 hover:bg-cyan-400"
         >
           {{ node.san }}

@@ -40,6 +40,7 @@ export interface StudyMoveMadePayload {
   move: string;
   fen: string;
   chapterId: number;
+  moves: any[]; // The updated full tree
   userId: string;
 }
 
@@ -50,8 +51,8 @@ export interface StudyShapesDrawnPayload {
 
 export interface StudySyncedPayload {
   ownerId: string;
-  currentChapterId: number | null;
+  chapterId: number | null;
   fen: string;
-  moves: string[];
+  moves: any[];
   shapes: any[];
 }

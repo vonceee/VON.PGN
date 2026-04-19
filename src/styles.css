@@ -11,61 +11,61 @@
   --color-border-theme: theme(colors.slate.400);
   --color-chess-grid: rgba(0, 0, 0, 0.04);
 }
- 
- body {
-   min-height: 100vh;
-   position: relative;
-   overflow-x: hidden;
- }
- 
- body::before {
-   content: "";
-   position: fixed;
-   inset: 0;
-   background-image: url('/background.webp');
-   background-size: cover;
-   background-position: center;
-   background-repeat: no-repeat;
-   transform: scale(1.1);
-   z-index: -2;
-   pointer-events: none;
- }
- 
- body::after {
-   content: "";
-   position: fixed;
-   inset: 0;
-   background: rgba(255, 255, 255, 0.85);
-   z-index: -1;
-   pointer-events: none;
- }
- 
- .dark body::after {
-   background: rgba(10, 10, 12, 0.88);
- }
 
- header {
-   background: rgba(255, 255, 255, 0.7);
-   backdrop-filter: blur(12px);
-   -webkit-backdrop-filter: blur(12px);
-   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-   transition: all 0.3s ease;
- }
+body {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
 
- .dark header {
-   background: rgba(10, 10, 12, 0.7);
-   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
- }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('/background.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.1);
+  z-index: -2;
+  pointer-events: none;
+}
 
- footer {
-   background: rgba(255, 255, 255, 0.5) !important;
-   backdrop-filter: blur(8px);
-   -webkit-backdrop-filter: blur(8px);
- }
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  z-index: -1;
+  pointer-events: none;
+}
 
- .dark footer {
-   background: rgba(24, 24, 27, 0.6) !important;
- }
+.dark body::after {
+  background: rgba(10, 10, 12, 0.88);
+}
+
+header {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.dark header {
+  background: rgba(10, 10, 12, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+footer {
+  background: rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.dark footer {
+  background: rgba(24, 24, 27, 0.6) !important;
+}
 
 :root {
   font-size: 16px;
@@ -99,8 +99,6 @@
   transition-duration: 200ms;
   transition-timing-function: ease;
 }
-
-
 
 .chess-grid {
   background-image: conic-gradient(
@@ -191,7 +189,7 @@
 .dark .premium-card {
   background-color: #09090b !important;
   border: 1px solid rgba(34, 211, 238, 0.35);
-  box-shadow: 
+  box-shadow:
     0 0 60px rgba(34, 211, 238, 0.12),
     0 0 20px rgba(34, 211, 238, 0.12),
     inset 0 0 10px rgba(34, 211, 238, 0.05);
@@ -199,27 +197,8 @@
 
 .dark .premium-card:hover {
   border-color: rgba(34, 211, 238, 0.7);
-  box-shadow: 
+  box-shadow:
     0 0 100px rgba(34, 211, 238, 0.25),
     0 0 30px rgba(34, 211, 238, 0.15),
     inset 0 0 15px rgba(34, 211, 238, 0.1);
 }
-
-.dark .premium-card-pulse {
-  animation: pulse-cyan 3s infinite cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-@keyframes pulse-cyan {
-  0%, 100% {
-    box-shadow: 0 0 60px rgba(34, 211, 238, 0.12), 0 0 20px rgba(34, 211, 238, 0.12), inset 0 0 10px rgba(34, 211, 238, 0.05);
-  }
-  50% {
-    box-shadow: 0 0 120px rgba(34, 211, 238, 0.3), 0 0 40px rgba(34, 211, 238, 0.25), inset 0 0 20px rgba(34, 211, 238, 0.15);
-    border-color: rgba(34, 211, 238, 0.8);
-  }
-}
-
-
-
-
-

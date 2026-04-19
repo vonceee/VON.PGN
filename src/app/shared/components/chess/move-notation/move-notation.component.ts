@@ -9,8 +9,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '@shared/ui';
-import { Chess } from 'chess.js';
 import { MoveNode } from '../../../../core/models/study.model';
+import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
 
 @Component({
   selector: 'app-move-notation',
@@ -32,7 +32,6 @@ export class MoveNotationComponent {
   // Outputs
   navigate = output<number>();
   nodeClicked = output<MoveNode>();
-  moveClicked = output<number>(); // Legacy output
 
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
@@ -43,32 +42,10 @@ export class MoveNotationComponent {
 
     const flatMoves = this.moves();
     if (flatMoves && flatMoves.length > 0) {
-      return this.buildFlatTree(flatMoves);
+      return buildTreeFromMoves(flatMoves);
     }
     return [];
   });
-
-  private buildFlatTree(moves: string[]): MoveNode[] {
-    const list: MoveNode[] = [];
-    const chess = new Chess();
-    moves.forEach((san, index) => {
-      try {
-        const m = chess.move(san);
-        if (m) {
-          list.push({
-            san: m.san,
-            uci: m.from + m.to,
-            fen: chess.fen(),
-            ply: index + 1,
-            variations: [],
-          });
-        }
-      } catch (e) {
-        list.push({ san, uci: '', fen: '', ply: index + 1, variations: [] });
-      }
-    });
-    return list;
-  }
 
   isLastMove(): boolean {
     const tree = this.effectiveTree();
@@ -105,8 +82,7 @@ export class MoveNotationComponent {
   }
 
   onMoveClick(node: MoveNode) {
-    this.navigate.emit(node.ply); 
+    this.navigate.emit(node.ply);
     this.nodeClicked.emit(node);
-    this.moveClicked.emit(node.ply);
   }
 }

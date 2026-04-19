@@ -80,10 +80,7 @@
             </div>
           </div>
 
-          <div
-            class="board-wrapper-outer"
-            [class.premium-card-pulse]="isMyTurn() && g.status === 'active'"
-          >
+          <div class="board-wrapper-outer">
             <div class="board-aspect-hider">
               <app-chess-board
                 [fen]="displayFen()"

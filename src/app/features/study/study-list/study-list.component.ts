@@ -3,63 +3,102 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { StudyService } from '../../../core/services/study.service';
 import { FormsModule } from '@angular/forms';
+import { SectionHeadingComponent } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-study-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent],
   template: `
-    <div class="max-w-6xl mx-auto p-4 md:p-8">
+    <div class="mx-auto p-4 md:p-8">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-          <h1 class="text-3xl font-bold text-white mb-2">Chess Studies</h1>
-          <p class="text-gray-400">
-            Collaborate, analyze, and learn with interactive shared boards.
-          </p>
-        </div>
-        <button
-          (click)="createNewStudy()"
-          class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-all shadow-lg shadow-blue-500/20"
-        >
-          Create New Study
-        </button>
+        <app-section-heading text="Chess" highlight="Study"></app-section-heading>
+
+        <app-button variant="primary" (click)="createNewStudy()"> Create New Study </app-button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         @for (study of studies(); track study.id) {
           <div
-            [routerLink]="['/study', study.id]"
-            class="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/[0.08] hover:border-blue-500/50 transition-all cursor-pointer group flex flex-col h-full"
+            class="premium-card rounded-2xl overflow-hidden flex flex-col h-full relative group cursor-default"
           >
-            <div class="flex justify-between items-start mb-4">
-              <h2 class="text-xl font-bold group-hover:text-blue-400 transition-colors">
-                {{ study.name }}
-              </h2>
-              <span
-                class="text-[10px] px-2 py-0.5 rounded bg-white/10 opacity-60 text-white uppercase"
-                >{{ study.visibility }}</span
-              >
-            </div>
-            <p class="text-gray-400 text-sm line-clamp-3 mb-6 flex-1">
-              {{ study.description || 'No description provided.' }}
-            </p>
-            <div class="flex items-center justify-between pt-4 border-t border-white/5">
-              <div class="flex items-center gap-2">
-                <div
-                  class="w-6 h-6 rounded-full bg-blue-600/20 flex items-center justify-center text-[10px] font-bold text-blue-400"
-                >
-                  {{ study.owner.name.substring(0, 1).toUpperCase() }}
-                </div>
-                <span class="text-xs text-gray-500">{{ study.owner.name }}</span>
+            <!-- Card Body -->
+            <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <h2 class="text-base md:text-2xl font-bold">{{ study.name }}</h2>
+                @if (study.updated_at) {
+                  <span
+                    class="text-xs text-slate-400 whitespace-nowrap shrink-0 mt-1"
+                    [title]="formatDate(study.updated_at)"
+                  >
+                    {{ formatRelativeTime(study.updated_at) }}
+                  </span>
+                }
               </div>
-              <span class="text-xs text-gray-600">{{ study.chapters_count }} Chapters</span>
+
+              <div class="space-y-2 text-sm mb-4">
+                <div class="flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="w-4 h-4 shrink-0"
+                  >
+                    <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+                    <path
+                      fill-rule="evenodd"
+                      d="M.664 10.59a1.651 1.651 0 0 1 0-1.186A10.004 10.004 0 0 1 10 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0 1 10 17c-4.257 0-7.893-2.66-9.336-6.41ZM14 10a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span class="capitalize">{{ study.visibility }}</span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="w-4 h-4 shrink-0"
+                  >
+                    <path
+                      d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
+                    />
+                  </svg>
+                  {{ study.chapters_count }} Chapters
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="w-4 h-4 shrink-0"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span
+                    >Created by <span class="font-semibold">{{ study.owner.name }}</span></span
+                  >
+                </div>
+              </div>
+
+              <!-- Bottom Row -->
+              <div class="mt-auto flex items-center justify-end">
+                <app-button
+                  variant="outline"
+                  size="sm"
+                  [showArrow]="true"
+                  [link]="'/study/' + study.id"
+                  label="View Study"
+                ></app-button>
+              </div>
             </div>
-          </div>
-        } @empty {
-          <div
-            class="col-span-full py-20 text-center bg-white/5 border border-white/10 border-dashed rounded-xl"
-          >
-            <p class="text-gray-500">No studies found. Start by creating one!</p>
           </div>
         }
       </div>
@@ -88,5 +127,28 @@ export class StudyListComponent implements OnInit {
         this.router.navigate(['/study', res.data.id]);
       });
     }
+  }
+
+  formatDate(dateStr: string): string {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
+
+  formatRelativeTime(dateStr: string): string {
+    const now = Date.now();
+    const then = new Date(dateStr).getTime();
+    const diffMs = now - then;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 30) return `${diffDays}d ago`;
+    return this.formatDate(dateStr);
   }
 }
