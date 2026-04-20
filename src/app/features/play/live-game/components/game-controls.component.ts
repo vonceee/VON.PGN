@@ -10,7 +10,7 @@ import { ButtonComponent  } from '@shared/ui';
     <div class="p-2 border-t border-border-theme flex flex-col items-center w-full">
       @if (game()?.status === 'active') {
         <div class="flex items-center justify-center gap-1 w-full">
-          @if (game()!.moves.length < 2) {
+          @if (canAbort()) {
             <button
               appButton
               variant="ghost"
@@ -259,5 +259,12 @@ export class GameControlsComponent {
   newOpponent = output();
 
   showResignConfirm = signal(false);
+
+  canAbort = computed(() => {
+    const g = this.game();
+    if (!g || g.status !== 'active') return false;
+    const movesCount = g.moves.length;
+    return g.my_color === 'white' ? movesCount === 0 : movesCount <= 1;
+  });
 }
 

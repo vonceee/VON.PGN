@@ -3,12 +3,11 @@ import {
   input,
   output,
   computed,
-  ViewChild,
   ElementRef,
   HostListener,
   effect,
-  HostBinding,
   signal,
+  viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '@shared/ui';
@@ -20,11 +19,11 @@ import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   templateUrl: './move-notation.component.html',
-  styleUrls: ['./move-notation.component.css'],
+  host: {
+    class: 'flex flex-col min-h-0 h-full',
+  },
 })
 export class MoveNotationComponent {
-  @HostBinding('class') class = 'flex flex-col min-h-0 h-full';
-
   // Advanced Move Tree (Used by Study)
   moveTree = input<MoveNode[]>([]);
   // Legacy Flat Moves (Used by everything else)
@@ -43,24 +42,24 @@ export class MoveNotationComponent {
   contextMenuNode = signal<MoveNode | null>(null);
   contextMenuPos = signal<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  scrollContainer = viewChild<ElementRef>('scrollContainer');
 
   constructor() {
     effect(() => {
       // Trigger scroll when currentFen changes
-      const _ = this.currentFen();
+      this.currentFen();
       
-      // Use setTimeout to wait for the DOM to update the .active-move class
-      setTimeout(() => {
+      // Use requestAnimationFrame to wait for the DOM to update the .active-move class
+      requestAnimationFrame(() => {
         this.scrollToActiveMove();
-      }, 50);
+      });
     });
   }
 
   private scrollToActiveMove() {
-    if (!this.scrollContainer) return;
+    const container = this.scrollContainer()?.nativeElement;
+    if (!container) return;
 
-    const container = this.scrollContainer.nativeElement;
     const activeMove = container.querySelector('.active-move');
 
     if (activeMove) {
@@ -84,10 +83,10 @@ export class MoveNotationComponent {
     return [];
   });
 
-  isLastMove(): boolean {
+  isLastMove = computed(() => {
     const tree = this.effectiveTree();
     return this.currentPly() >= tree.length;
-  }
+  });
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {

@@ -1,77 +1,99 @@
-<div class="move-notation-container overflow-hidden flex flex-col h-full">
-  <!-- Navigation controls -->
+<div
+  class="move-notation-container overflow-hidden flex flex-col h-full bg-white/5 dark:bg-black/5"
+>
+  <!-- Navigation Controls -->
   @if (showNavigation()) {
-    <div class="flex-none flex items-center justify-center">
-      <button appButton variant="ghost" (click)="navigate.emit(0)" [disabled]="currentPly() === 0">
-        <svg
-          class="w-5 h-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
+    <div
+      class="flex-none flex items-center justify-between p-2 border-b border-border-theme bg-slate-500/5"
+    >
+      <div class="flex items-center gap-0.5">
+        <button
+          appButton
+          variant="ghost"
+          (click)="navigate.emit(0)"
+          [disabled]="currentPly() === 0"
+          class="hover:!bg-cyan-500/10"
         >
-          <polyline points="11 17 6 12 11 7" />
-          <polyline points="18 17 13 12 18 7" />
-        </svg>
-      </button>
-      <button
-        appButton
-        variant="ghost"
-        (click)="navigate.emit(currentPly() - 1)"
-        [disabled]="currentPly() === 0"
-      >
-        <svg
-          class="w-5 h-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
+          <svg
+            class="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polyline points="11 17 6 12 11 7" />
+            <polyline points="18 17 13 12 18 7" />
+          </svg>
+        </button>
+        <button
+          appButton
+          variant="ghost"
+          (click)="navigate.emit(currentPly() - 1)"
+          [disabled]="currentPly() === 0"
+          class="hover:!bg-cyan-500/10"
         >
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-      </button>
-      <button
-        appButton
-        variant="ghost"
-        (click)="navigate.emit(currentPly() + 1)"
-        [disabled]="isLastMove()"
-      >
-        <svg
-          class="w-5 h-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
+          <svg
+            class="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+      </div>
+
+      <span class="text-[10px] font-bold uppercase tracking-tighter text-slate-500/60 select-none">
+        Move Notation
+      </span>
+
+      <div class="flex items-center gap-0.5">
+        <button
+          appButton
+          variant="ghost"
+          (click)="navigate.emit(currentPly() + 1)"
+          [disabled]="isLastMove()"
+          class="hover:!bg-cyan-500/10"
         >
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
-      </button>
-      <button
-        appButton
-        variant="ghost"
-        (click)="navigate.emit(effectiveTree().length)"
-        [disabled]="isLastMove()"
-      >
-        <svg
-          class="w-5 h-5"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
+          <svg
+            class="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+        <button
+          appButton
+          variant="ghost"
+          (click)="navigate.emit(effectiveTree().length)"
+          [disabled]="isLastMove()"
+          class="hover:!bg-cyan-500/10"
         >
-          <polyline points="13 17 18 12 13 7" />
-          <polyline points="6 17 11 12 6 7" />
-        </svg>
-      </button>
+          <svg
+            class="w-4 h-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <polyline points="13 17 18 12 13 7" />
+            <polyline points="6 17 11 12 6 7" />
+          </svg>
+        </button>
+      </div>
     </div>
   }
 
   <!-- Scrollable Move List -->
   <div
     #scrollContainer
-    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-2 text-sm scroll-smooth [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-thumb]:bg-slate-500/40 dark:[&::-webkit-scrollbar-thumb]:bg-cyan-400/40 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-cyan-400/60"
+    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-2 text-base scroll-smooth font-medium"
   >
-    <div class="grid grid-cols-[2.5rem_1fr_1fr] items-center gap-y-0.5">
+    <div class="grid grid-cols-[4.5rem_1fr_1fr] items-center">
       <ng-container
         *ngTemplateOutlet="renderNodes; context: { nodes: effectiveTree(), isMainline: true }"
       ></ng-container>
@@ -81,24 +103,30 @@
   <!-- Recursive Template for Moves -->
   <ng-template #renderNodes let-nodes="nodes" let-isMainline="isMainline">
     @for (node of nodes; track node.fen) {
-      <div [class.contents]="isMainline" [class.inline-flex]="!isMainline" class="items-center">
-        <!-- Move Number (Only for White moves or start of variation) -->
+      <div [class.contents]="isMainline" [class.inline]="!isMainline" class="items-center">
+        <!-- Move Number -->
         @if (node.ply % 2 !== 0) {
-          <span class="col-start-1 text-slate-500 text-[0.75rem] font-semibold pl-2 select-none"
-            >{{ (node.ply + 1) / 2 }}.</span
-          >
+          <span class="col-start-1 text-[0.95rem] font-black tracking-widest pl-3 select-none">{{
+            (node.ply + 1) / 2
+          }}</span>
         } @else if ($first && !isMainline) {
-          <span class="font-bold mr-1.5 ml-1 select-none text-cyan-400">{{ node.ply / 2 }}...</span>
+          <span class="font-bold mr-1.5 ml-1 select-none text-[0.95rem] text-cyan-400"
+            >{{ node.ply / 2 }}...</span
+          >
         }
 
         <!-- Move Button -->
         <button
           (click)="onMoveClick(node)"
           (contextmenu)="onContextMenu($event, node)"
-          [class]="currentFen() === node.fen ? '!bg-cyan-400' : ''"
+          [class]="
+            currentFen() === node.fen
+              ? '!bg-cyan-500/40 !text-white font-bold rounded-[2px]'
+              : 'font-bold text-slate-800 dark:text-slate-200'
+          "
           [class.col-start-2]="isMainline && node.ply % 2 !== 0"
           [class.col-start-3]="isMainline && node.ply % 2 === 0"
-          class="w-full text-left px-2 py-1 transition-colors hover:bg-cyan-400/15 mx-0.5"
+          class="w-full text-left px-2 py-1 transition-all hover:bg-cyan-500/10 hover:cursor-pointer select-none"
         >
           {{ node.san }}
         </button>
@@ -107,20 +135,26 @@
         @if (node.variations && node.variations.length > 0) {
           <div
             [class.col-span-full]="isMainline"
-            [class.my-1]="isMainline"
+            [class.my-2]="isMainline"
+            [class.mx-2]="isMainline"
             [class.p-2]="isMainline"
-            [class.rounded]="isMainline"
-            [class.text-[0.85rem]]="isMainline"
+            [class.rounded-lg]="isMainline"
+            [class.text-[1rem]]="isMainline"
             [class.inline]="!isMainline"
+            [class]="
+              isMainline
+                ? 'border-l-2 border-slate-400/15 bg-slate-400/[0.03] transition-colors duration-300 dark:border-cyan-400/10 dark:bg-cyan-400/[0.02] hover:border-cyan-400/30'
+                : ''
+            "
           >
             @for (variation of node.variations; track $index) {
-              <span class="mx-1">
-                (
+              <div class="mb-1 last:mb-0">
+                <span class="text-slate-400 select-none mr-1">(</span>
                 <ng-container
                   *ngTemplateOutlet="renderNodes; context: { nodes: variation, isMainline: false }"
                 ></ng-container>
-                )
-              </span>
+                <span class="text-slate-400 select-none ml-1">)</span>
+              </div>
             }
           </div>
         }
@@ -131,7 +165,7 @@
   <!-- Premium Context Menu -->
   @if (contextMenuNode(); as node) {
     <div
-      class="fixed z-50 min-w-[160px] py-1 bg-white dark:bg-black border border-border-theme"
+      class="fixed z-50 min-w-[180px] shadow-2xl rounded-lg backdrop-blur-xl bg-white/95 border border-black/5 dark:bg-[#0a0a0c]/95 dark:border-white/10 [animation:_0.15s_cubic-bezier(0,0,0.2,1)] overflow-hidden"
       [style.left.px]="contextMenuPos().x"
       [style.top.px]="contextMenuPos().y"
       (click)="$event.stopPropagation()"
@@ -139,7 +173,7 @@
     >
       <button
         (click)="onDeleteFromHere()"
-        class="w-full text-left px-3 py-2 text-sm hover:underline hover:cursor-pointer flex items-center gap-2"
+        class="w-full text-left px-4 py-2.5 text-sm hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-3 font-semibold text-slate-800 dark:text-slate-200"
       >
         Delete from here
       </button>

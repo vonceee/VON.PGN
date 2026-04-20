@@ -244,16 +244,14 @@
 
             <div class="flex flex-col justify-center">
               @if (g.status === 'completed' || g.status === 'aborted') {
-                <div
-                  class="premium-card rounded-xl p-4 text-center border-border-theme/50 shadow-lg"
-                >
+                <div class="premium-card rounded-xl p-4 text-center">
                   <div
-                    class="text-xl tracking-tight"
+                    class="text-2xl"
                     [class]="g.status === 'aborted' ? '' : getResultClass(g.result)"
                   >
                     {{ g.status === 'aborted' ? '½-½' : g.result || '½-½' }}
                   </div>
-                  <div class="text-xs tracking-widest opacity-80 mt-1">
+                  <div class="text-sm tracking-widest opacity-80 mt-1">
                     @if (g.status === 'aborted') {
                       {{ formatTermination(null, g.termination) || 'game aborted' }}
                     } @else if (g.status === 'completed') {
