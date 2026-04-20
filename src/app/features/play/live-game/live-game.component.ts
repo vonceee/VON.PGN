@@ -72,6 +72,8 @@ export class LiveGameComponent implements OnInit, OnDestroy {
         document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
       }
     });
+
+
   }
 
   private route = inject(ActivatedRoute);
@@ -80,6 +82,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
+  board = viewChild(ChessBoardComponent);
 
   showExitConfirm = signal(false);
   private autoReturnTriggered = false;
@@ -149,13 +152,15 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   isMyTurn = computed(() => {
     const g = this.game();
     if (!g) return false;
-    return g.status === 'active' && g.turn === g.my_color;
+    const isLatest = this.currentPly() === g.moves.length;
+    return g.status === 'active' && isLatest && g.turn === g.my_color;
   });
 
   isOpponentTurn = computed(() => {
     const g = this.game();
     if (!g) return false;
-    return g.status === 'active' && g.turn !== g.my_color;
+    const isLatest = this.currentPly() === g.moves.length;
+    return g.status === 'active' && isLatest && g.turn !== g.my_color;
   });
 
   moveRounds = computed(() => {
@@ -185,14 +190,11 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     const currentIdx = this.currentPly();
     if (!g) return {};
 
-    const isLatest = currentIdx === g.moves.length;
-    const isMyTurn = g.status === 'active' && isLatest && g.turn === g.my_color;
-
     return {
       turnColor: g.turn,
       movable: {
-        color: isMyTurn ? g.my_color : undefined,
-        dests: isMyTurn ? this.getLegalDestinations(g.legal_moves) : new Map(),
+        color: this.isMyTurn() || this.isOpponentTurn() ? g.my_color : undefined,
+        dests: this.isMyTurn() ? this.getLegalDestinations(g.legal_moves) : undefined,
       },
       check: this.chess.inCheck() ? (this.chess.turn() === 'w' ? 'white' : 'black') : undefined,
     } as Config;
@@ -355,29 +357,31 @@ export class LiveGameComponent implements OnInit, OnDestroy {
 
   onBoardMove(event: { from: string; to: string; san: string; fen: string }): void {
     const g = this.game();
-    if (!g || !this.isMyTurn()) return;
+    if (!g) return;
 
-    const moveUci = event.from + event.to;
-    const piece = this.chess.get(event.from as any);
-    const isPromotion =
-      piece &&
-      piece.type === 'p' &&
-      ((piece.color === 'w' && event.to[1] === '8') ||
-        (piece.color === 'b' && event.to[1] === '1'));
+    if (this.isMyTurn()) {
+      const moveUci = event.from + event.to;
+      const piece = this.chess.get(event.from as any);
+      const isPromotion =
+        piece &&
+        piece.type === 'p' &&
+        ((piece.color === 'w' && event.to[1] === '8') ||
+          (piece.color === 'b' && event.to[1] === '1'));
 
-    if (isPromotion) {
-      this.gameService.sendMove(moveUci + 'q');
-    } else {
-      this.gameService.sendMove(moveUci);
-    }
-
-    try {
-      const move = this.chess.move({ from: event.from, to: event.to, promotion: 'q' });
-      if (move) {
-        // Optimistically update local state if needed
+      if (isPromotion) {
+        this.gameService.sendMove(moveUci + 'q');
+      } else {
+        this.gameService.sendMove(moveUci);
       }
-    } catch {
-      this.chess.load(g.fen);
+
+      try {
+        const move = this.chess.move({ from: event.from, to: event.to, promotion: 'q' });
+        if (move) {
+          // Optimistically update local state if needed
+        }
+      } catch {
+        this.chess.load(g.fen);
+      }
     }
   }
 
@@ -397,6 +401,13 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     if (gameState) {
       this.currentPly.set(gameState.moves.length);
       this.clearAbortCountdown();
+      
+      // Trigger native pre-move if present
+      if (this.isMyTurn()) {
+        setTimeout(() => {
+          this.board()?.playPremove();
+        });
+      }
     }
 
     if (data.is_checkmate) this.audioService.playCheckmate();

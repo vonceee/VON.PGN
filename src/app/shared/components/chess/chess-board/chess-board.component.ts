@@ -22,7 +22,7 @@ import { Chess, Move } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
-import { Key } from 'chessground/types';
+import { Key, MoveMetadata } from 'chessground/types';
 import { AudioService } from '../../../../core/services/audio.service';
 
 @Component({
@@ -189,11 +189,13 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() storageKey: string | null = null;
   @Input() syncedShapes: any[] = [];
   @Input() configOverride: Config | null = null;
+  @Input() preMoveEnabled: boolean = true;
 
   @Output() fenChange = new EventEmitter<string>();
   @Output() moveMade = new EventEmitter<{ from: string; to: string; san: string; fen: string }>();
   @Output() sizeChange = new EventEmitter<number>();
   @Output() shapeDrawn = new EventEmitter<any[]>();
+  @Output() preMoveCancelled = new EventEmitter<void>();
 
   boardSize: number = 400;
   private cgApi!: Api;
@@ -215,6 +217,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private isResizing = false;
   private resizeStartX = 0;
   private resizeStartSize = 0;
+  
+
 
   ngOnInit() {
     this.loadPersistedSize();
@@ -270,6 +274,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       if (changes['syncedShapes'] && !changes['syncedShapes'].isFirstChange()) {
         this.cgApi.set({ drawable: { shapes: this.syncedShapes } });
       }
+      if (changes['preMoveEnabled'] && !changes['preMoveEnabled'].isFirstChange()) {
+        this.syncBoard();
+      }
       if (changes['interactive']) {
         this.syncBoard();
       }
@@ -308,8 +315,12 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
           color: this.interactive ? 'both' : undefined,
           dests: this.interactive ? this.getLegalMoves() : new Map(),
           events: {
-            after: (orig, dest) => this.onMove(orig, dest),
+            after: (orig: Key, dest: Key, meta: MoveMetadata) => this.onMove(orig, dest, meta),
           },
+        },
+        premovable: {
+          enabled: this.preMoveEnabled && this.interactive,
+          showDests: true,
         },
         draggable: {
           enabled: this.interactive,
@@ -374,11 +385,29 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         enabled: this.interactive,
       },
       check: this.chess.inCheck() ? this.turnColor() : undefined,
+      premovable: {
+        enabled: this.preMoveEnabled && this.interactive,
+      },
+      drawable: {
+        shapes: this.syncedShapes,
+      },
     });
 
     if (this.configOverride) {
       this.applyConfigOverride(this.configOverride);
     }
+  }
+
+  playPremove(): boolean {
+    if (!this.cgApi) return false;
+    // Safety: ensure local chess engine is in sync with the current FEN before execution
+    this.chess.load(this.fen);
+    return this.cgApi.playPremove();
+  }
+
+  cancelPremove(): void {
+    if (!this.cgApi) return;
+    this.cgApi.cancelPremove();
   }
 
   private turnColor(): 'white' | 'black' {
@@ -397,7 +426,12 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     return dests;
   }
 
-  private onMove(orig: Key, dest: Key) {
+  private onMove(orig: Key, dest: Key, meta?: MoveMetadata) {
+    // Only return if it's a pre-move being SET (opponent's turn).
+    // If it's our turn, we want to allow moves even if meta.premove is true (triggered by playPremove).
+    const isMyTurn = this.turnColor() === this.orientation;
+    if (meta?.premove && !isMyTurn) return;
+
     // Check if this move is a promotion
     const isPromotion = this.isPromotionMove(orig, dest);
 
@@ -433,7 +467,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
           fen: this.chess.fen(),
         });
       }
-    } catch {
+    } catch (e) {
       this.syncBoard();
     }
   }
