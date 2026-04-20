@@ -7,20 +7,16 @@ import { UserStatusIndicatorComponent } from '@shared/ui';
   standalone: true,
   imports: [UserStatusIndicatorComponent],
   template: `
-    <div class="flex items-center gap-2 text-sm overflow-hidden">
-      <div
-        class="w-3 h-3 rounded-full shrink-0 border border-border-theme"
-        [class.bg-white]="color() === 'white'"
-        [class.bg-slate-950]="color() === 'black'"
-      ></div>
-      <app-user-status-indicator [userId]="player().id" size="w-5 h-5"></app-user-status-indicator>
+    <div class="flex items-center gap-2 overflow-hidden">
+      <app-user-status-indicator [userId]="player().id"></app-user-status-indicator>
       <div class="flex items-baseline gap-1.5 overflow-hidden">
-        <span class="truncate font-bold">{{ player().name || 'Anonymous' }}</span>
-        <span class="text-xs shrink-0">({{ player().rating || 1500 }})</span>
+        <span class="truncate text-md">{{ player().name || 'Anonymous' }}</span>
+        <span class="text-sm shrink-0">({{ player().rating || 1500 }})</span>
       </div>
+
       @if (ratingChange() !== null && ratingChange() !== undefined) {
         <span
-          class="text-xs shrink-0 font-bold whitespace-nowrap ml-2"
+          class="text-md shrink-0"
           [class]="ratingChange()! >= 0 ? 'text-green-400' : 'text-red-400'"
         >
           {{ ratingChange()! > 0 ? '+' : '' }}{{ ratingChange() }}

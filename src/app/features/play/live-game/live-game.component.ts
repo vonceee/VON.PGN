@@ -3,18 +3,17 @@ import {
   inject,
   OnInit,
   OnDestroy,
-  ViewChild,
-  ElementRef,
   signal,
   computed,
-  ChangeDetectorRef,
   PLATFORM_ID,
   viewChild,
   effect,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, fromEvent } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { GameService } from '../../../core/services/game.service';
 import { AudioService } from '../../../core/services/audio.service';
 import { ArenaService } from '../../../core/services/arena.service';
@@ -50,7 +49,6 @@ import { Config } from 'chessground/config';
     LoadingComponent,
   ],
   templateUrl: './live-game.component.html',
-  styleUrls: ['./live-game.component.css'],
 })
 export class LiveGameComponent implements OnInit, OnDestroy {
   public arenaService = inject(ArenaService);
@@ -67,21 +65,20 @@ export class LiveGameComponent implements OnInit, OnDestroy {
         this.rebuildSanCache();
       }
 
-      // Update CSS variable for sidebar height
+      // Update CSS variable for layout sizing
       if (isPlatformBrowser(this.platformId)) {
-        document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
+        const size = this.boardSize();
+        document.documentElement.style.setProperty('--board-size', `${size}px`);
       }
     });
-
-
   }
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   gameService = inject(GameService);
-  private cdr = inject(ChangeDetectorRef);
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
+  private destroyRef = inject(DestroyRef);
   board = viewChild(ChessBoardComponent);
 
   showExitConfirm = signal(false);
@@ -115,9 +112,6 @@ export class LiveGameComponent implements OnInit, OnDestroy {
 
   onBoardSizeChange(event: number) {
     this.boardSize.set(event);
-    if (isPlatformBrowser(this.platformId)) {
-      document.documentElement.style.setProperty('--board-size', `${event}px`);
-    }
   }
 
   moveSanCache = signal<string[]>([]);
@@ -127,7 +121,6 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   drawOfferState = signal<'none' | 'iOffered' | 'opponentOffered'>('none');
   showResignConfirm = signal(false);
   opponentAwayCountdown = this.gameService.opponentAwayCountdown;
-  private subs: Subscription[] = [];
   game = this.gameService.gameState;
 
   myTimeMs = () => {
@@ -261,39 +254,33 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   }
 
   getResultClass(result: string | null): string {
-    if (!result) return '';
-    if (result === '1/2-1/2') return 'text-slate-400';
-    return '';
+    return result === '1/2-1/2' ? 'text-slate-400' : '';
   }
 
   ngOnInit(): void {
-    this.subs.push(
-      this.route.paramMap.subscribe((params) => {
-        const gameId = params.get('gameId');
-        if (gameId) {
-          this.rematchOfferFrom.set(null);
-          this.myRematchOffered.set(false);
-          this.showMobileResult.set(true);
-          this.boardInitialized = false;
-          this.currentPly.set(0);
-          this.chess.reset();
-          
-          if (!this.gameService.gameState() || this.gameService.gameState()?.id !== gameId) {
-            this.gameService.loadGame(gameId);
-          }
-        }
-      }),
-    );
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const gameId = params.get('gameId');
+      if (gameId) {
+        this.rematchOfferFrom.set(null);
+        this.myRematchOffered.set(false);
+        this.showMobileResult.set(true);
+        this.boardInitialized = false;
+        this.currentPly.set(0);
+        this.chess.reset();
 
-    this.subs.push(
-      this.gameService.onMovePlayed.subscribe((data) => this.onMovePlayed(data)),
-      this.gameService.onGameEnded.subscribe((data) => this.onGameEnded(data)),
-      this.gameService.onDrawOffered.subscribe((data) => this.onDrawOffered(data)),
-      this.gameService.onRematchOffered.subscribe((data) => this.handleRematchOffer(data)),
-      this.gameService.onRematchAccepted.subscribe((data) => this.handleRematchAccepted(data)),
-      this.gameService.onRematchDeclined.subscribe(() => this.handleRematchDeclined()),
-      this.gameService.onDrawDeclined.subscribe(() => this.onDrawDeclined()),
-    );
+        if (!this.gameService.gameState() || this.gameService.gameState()?.id !== gameId) {
+          this.gameService.loadGame(gameId);
+        }
+      }
+    });
+
+    this.gameService.onMovePlayed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => this.onMovePlayed(data));
+    this.gameService.onGameEnded.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => this.onGameEnded(data));
+    this.gameService.onDrawOffered.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => this.onDrawOffered(data));
+    this.gameService.onRematchOffered.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => this.handleRematchOffer(data));
+    this.gameService.onRematchAccepted.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((data) => this.handleRematchAccepted(data));
+    this.gameService.onRematchDeclined.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.handleRematchDeclined());
+    this.gameService.onDrawDeclined.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.onDrawDeclined());
 
     this.initDrawOfferState();
     this.setupBeforeUnload();
@@ -303,8 +290,9 @@ export class LiveGameComponent implements OnInit, OnDestroy {
 
   private setupKeyboardNavigation(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.subs.push(
-        fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event) => {
+      fromEvent<KeyboardEvent>(document, 'keydown')
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((event) => {
           if ((event.target as HTMLElement).tagName === 'INPUT') return;
           switch (event.key) {
             case 'ArrowLeft':
@@ -320,8 +308,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
               this.goToEnd();
               break;
           }
-        }),
-      );
+        });
     }
   }
 
@@ -351,7 +338,6 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       window.removeEventListener('beforeunload', this.handleBeforeUnload);
     }
-    this.subs.forEach((s) => s.unsubscribe());
     this.clearAbortCountdown();
   }
 
@@ -389,7 +375,6 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     if (!data.fen) {
       if (data.status === 'aborted') {
         this.clearAbortCountdown();
-        this.cdr.markForCheck();
       }
       return;
     }
@@ -401,7 +386,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     if (gameState) {
       this.currentPly.set(gameState.moves.length);
       this.clearAbortCountdown();
-      
+
       // Trigger native pre-move if present
       if (this.isMyTurn()) {
         setTimeout(() => {
@@ -416,7 +401,6 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     else this.audioService.playMoveSound(data.san);
 
     this.drawOfferState.set('none');
-    this.cdr.markForCheck();
   }
 
   private onGameEnded(data: GameEndedPayload): void {
@@ -438,7 +422,6 @@ export class LiveGameComponent implements OnInit, OnDestroy {
         this.myRating.set(this.getMyRating() + change);
       }
     }
-    this.cdr.markForCheck();
   }
 
   private onDrawOffered(data: DrawOfferedPayload): void {
@@ -446,12 +429,10 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     if (!g) return;
     const myUserId = g.my_color === 'white' ? g.white_player.id : g.black_player.id;
     this.drawOfferState.set(data.offeredByUserId === myUserId ? 'iOffered' : 'opponentOffered');
-    this.cdr.markForCheck();
   }
 
   private onDrawDeclined(): void {
     this.drawOfferState.set('none');
-    this.cdr.markForCheck();
   }
 
   private initDrawOfferState(): void {

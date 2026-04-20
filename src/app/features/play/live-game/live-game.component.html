@@ -1,4 +1,6 @@
-<div class="game-root-container">
+<div
+  class="min-h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] flex items-center justify-center p-2 md:p-4 md:overflow-hidden"
+>
   <div class="w-full max-w-[1700px] h-full flex items-center justify-center">
     @if (gameService.isServiceMaintenance()) {
       <app-server-maintenance
@@ -6,11 +8,13 @@
         message="The chess service is currently undergoing maintenance. Your game will resume automatically when the service is back online."
       ></app-server-maintenance>
     } @else if (game(); as g) {
-      <div class="live-game-layout">
+      <div
+        class="flex flex-col items-center w-full md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6 md:items-start"
+      >
         <!-- Left Column: Info & History -->
-        <div class="sidebar-wrapper left-sidebar">
+        <div class="hidden md:block min-w-0 md:h-[80vh] md:justify-self-end w-full max-w-[400px]">
           <div class="flex flex-col premium-card rounded-xl overflow-hidden h-full">
-            <div class="p-4 border-b border-border-theme">
+            <div class="p-8">
               <app-game-info
                 [player]="g.my_color === 'white' ? g.black_player : g.white_player"
                 [color]="g.my_color === 'white' ? 'black' : 'white'"
@@ -55,7 +59,9 @@
         </div>
 
         <!-- Center Column: Board Area -->
-        <div class="board-container-area">
+        <div
+          class="w-full md:w-auto md:flex md:flex-col md:items-center md:min-w-0 md:overflow-hidden"
+        >
           <!-- Mobile Info/Clock -->
           <div class="w-full md:hidden mb-2 flex items-center justify-between gap-2">
             <app-game-info
@@ -80,19 +86,17 @@
             </div>
           </div>
 
-          <div class="board-wrapper-outer">
-            <div class="board-aspect-hider">
-              <app-chess-board
-                [fen]="displayFen()"
-                [orientation]="g.my_color"
-                [interactive]="g.status === 'active' && currentPly() === g.moves.length"
-                [size]="boardSize()"
-                [configOverride]="cgConfig()"
-                [storageKey]="'boardSize'"
-                (moveMade)="onBoardMove($event)"
-                (sizeChange)="onBoardSizeChange($event)"
-              ></app-chess-board>
-            </div>
+          <div>
+            <app-chess-board
+              [fen]="displayFen()"
+              [orientation]="g.my_color"
+              [interactive]="g.status === 'active' && currentPly() === g.moves.length"
+              [size]="boardSize()"
+              [configOverride]="cgConfig()"
+              [storageKey]="'boardSize'"
+              (moveMade)="onBoardMove($event)"
+              (sizeChange)="onBoardSizeChange($event)"
+            ></app-chess-board>
 
             <!-- Mobile Game Over Overlay -->
             @if ((g.status === 'completed' || g.status === 'aborted') && showMobileResult()) {
@@ -222,7 +226,7 @@
         </div>
 
         <!-- Right Column: Clocks -->
-        <div class="sidebar-wrapper right-sidebar">
+        <div class="hidden md:block min-w-0 md:h-[80vh] md:justify-self-start w-full max-w-[400px]">
           <div class="flex flex-col justify-center gap-4 h-full py-12">
             <div class="premium-card rounded-xl p-3 shadow-xl flex flex-col gap-2">
               <app-chess-clock

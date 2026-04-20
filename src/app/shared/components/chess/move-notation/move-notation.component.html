@@ -2,13 +2,7 @@
   <!-- Navigation controls -->
   @if (showNavigation()) {
     <div class="flex-none flex items-center justify-center">
-      <button
-        appButton
-        variant="ghost"
-        size="md"
-        (click)="navigate.emit(0)"
-        [disabled]="currentPly() === 0"
-      >
+      <button appButton variant="ghost" (click)="navigate.emit(0)" [disabled]="currentPly() === 0">
         <svg
           class="w-5 h-5"
           viewBox="0 0 24 24"
@@ -23,7 +17,6 @@
       <button
         appButton
         variant="ghost"
-        size="md"
         (click)="navigate.emit(currentPly() - 1)"
         [disabled]="currentPly() === 0"
       >
@@ -40,7 +33,6 @@
       <button
         appButton
         variant="ghost"
-        size="md"
         (click)="navigate.emit(currentPly() + 1)"
         [disabled]="isLastMove()"
       >
@@ -57,7 +49,6 @@
       <button
         appButton
         variant="ghost"
-        size="md"
         (click)="navigate.emit(effectiveTree().length)"
         [disabled]="isLastMove()"
       >

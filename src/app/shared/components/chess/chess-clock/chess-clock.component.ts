@@ -1,13 +1,12 @@
 import {
   Component,
-  EventEmitter,
-  Input,
-  Output,
-  OnChanges,
+  input,
+  output,
   OnDestroy,
-  SimpleChanges,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
+  signal,
+  computed,
+  effect,
 } from '@angular/core';
 
 @Component({
@@ -15,96 +14,72 @@ import {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div 
-      class="text-2xl font-semibold tabular-nums font-mono transition-colors duration-200 text-center"
-      [class.text-red-500]="displayTime < 20000"
-      [class.text-cyan-400]="isActive && displayTime >= 20000"
-    >{{ formatTime(displayTime) }}</div>
+    <div
+      class="text-5xl font-semibold tabular-nums text-center"
+      [class.text-red-500]="displayTime() < 20000"
+      [class.text-cyan-400]="isActive() && displayTime() >= 20000"
+    >
+      {{ displayString() }}
+    </div>
   `,
 })
-export class ChessClockComponent implements OnChanges, OnDestroy {
-  /**
-   * Lichess-style clock implementation:
-   * - Server stores: time_remaining_ms (after last move), last_move_timestamp
-   * - Client calculates: displayTime = storedTime - (now - lastMoveTimestamp)
-   * - Only the active player's clock ticks down
-   */
-
-  @Input() serverTimeMs: number = 0;      // Time remaining from server (after last move)
-  @Input() serverTimestamp: string | null = null;   // Server timestamp of last move
-  @Input() isActive: boolean = false;      // Is this clock the active player's turn?
-  @Output() expired = new EventEmitter<void>();
-
-  displayTime: number = 0;
+export class ChessClockComponent implements OnDestroy {
+  serverTimeMs = input<number>(0);
+  serverTimestamp = input<string | null>(null);
+  isActive = input<boolean>(false);
+  expired = output<void>();
+  displayTime = signal<number>(0);
+  displayString = computed(() => this.formatTime(this.displayTime()));
 
   private rafId: number | null = null;
   private running = false;
   private hasExpired = false;
 
-  // Stored values for calculation
-  private storedTimeMs: number = 0;
-  private lastMoveTimestamp: number = 0;
-  private offsetMs: number = 0; // Calibration offset: serverTime - clientTime
+  private storedTimeMs = 0;
+  private lastMoveTimestamp = 0;
+  private offsetMs = 0;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  private static readonly LATENCY_BUFFER_MS = 100;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['serverTimeMs'] || changes['serverTimestamp']) {
-      this.updateStoredValues();
-    }
+  constructor() {
+    effect(() => {
+      this.updateStoredValues(this.serverTimeMs(), this.serverTimestamp());
+    });
 
-    if (changes['isActive']) {
-      if (this.isActive) {
+    effect(() => {
+      if (this.isActive()) {
         this.startTicking();
       } else {
         this.stopTicking();
       }
-    }
+    });
   }
 
   ngOnDestroy(): void {
     this.stopTicking();
   }
 
-  /**
-   * Update stored values from server data.
-   * Called when server sends new time/timestamp.
-   */
-  private updateStoredValues(): void {
-    const timeMs = this.serverTimeMs;
-    const timestamp = this.serverTimestamp;
+  private updateStoredValues(timeMs: number, timestamp: string | null): void {
+    this.storedTimeMs = timeMs;
 
-    if (typeof timeMs === 'number') {
-      this.storedTimeMs = timeMs;
-      
-      if (timestamp) {
-        const parsed = Date.parse(timestamp);
-        if (!isNaN(parsed)) {
-          this.lastMoveTimestamp = parsed;
-          
-          /**
-           * Drift Correction (Lichess style):
-           * The first time we receive a timestamp, or periodically, 
-           * we calculate the delta between our machine time and the server time.
-           * We use the MOST RECENT update to recalibrate.
-           */
-          const nowMs = Date.now();
-          // serverTime = clientTime + offset -> offset = serverTime - clientTime
-          // We assume the server sent the timestamp 'now' (ignoring latency for now)
-          this.offsetMs = parsed - nowMs;
-        } else {
-          this.lastMoveTimestamp = 0;
-          this.offsetMs = 0;
-        }
+    if (timestamp) {
+      const parsed = Date.parse(timestamp);
+      if (!isNaN(parsed)) {
+        this.lastMoveTimestamp = parsed;
+
+        const nowMs = Date.now();
+        this.offsetMs = parsed - nowMs + ChessClockComponent.LATENCY_BUFFER_MS;
       } else {
         this.lastMoveTimestamp = 0;
         this.offsetMs = 0;
       }
-      
-      this.displayTime = this.storedTimeMs;
-      this.hasExpired = false;
-      this.cdr.markForCheck();
+    } else {
+      this.lastMoveTimestamp = 0;
+      this.offsetMs = 0;
     }
+
+    this.displayTime.set(this.storedTimeMs);
+    this.hasExpired = false;
   }
 
   private startTicking(): void {
@@ -115,30 +90,25 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
       if (!this.running) return;
 
       const nowMs = Date.now();
-      
+
       if (this.lastMoveTimestamp > 0 && this.storedTimeMs >= 0) {
-        /**
-         * The elapsed time since the server's lastMoveTimestamp.
-         * We adjust our local 'now' with the calibration offset.
-         */
         const calibratedNow = nowMs + this.offsetMs;
         const elapsedMs = Math.max(0, calibratedNow - this.lastMoveTimestamp);
-        
-        if (this.isActive) {
-          this.displayTime = Math.max(0, this.storedTimeMs - elapsedMs);
+
+        if (this.isActive()) {
+          this.displayTime.set(Math.max(0, this.storedTimeMs - elapsedMs));
         } else {
-          this.displayTime = this.storedTimeMs;
+          this.displayTime.set(this.storedTimeMs);
         }
       } else {
-        this.displayTime = this.storedTimeMs;
+        this.displayTime.set(this.storedTimeMs);
       }
 
-      if (this.displayTime <= 0 && !this.hasExpired) {
+      if (this.displayTime() <= 0 && !this.hasExpired) {
         this.hasExpired = true;
         this.expired.emit();
       }
 
-      this.cdr.markForCheck();
       this.rafId = requestAnimationFrame(tick);
     };
 
@@ -153,7 +123,7 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
     }
   }
 
-  formatTime(ms: number): string {
+  private formatTime(ms: number): string {
     if (ms < 0) return '-:--';
     if (ms === 0) return '0:00.0';
 
@@ -161,7 +131,7 @@ export class ChessClockComponent implements OnChanges, OnDestroy {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
 
-    if (ms < 10000) {
+    if (ms < 20000) {
       const tenths = Math.floor((ms % 1000) / 100);
       return `${minutes}:${seconds.toString().padStart(2, '0')}.${tenths}`;
     }
