@@ -3,16 +3,15 @@ import { CommonModule } from '@angular/common';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Tournament } from '../../../core/models/tournament.model';
-import { ButtonComponent  } from '@shared/ui';
-import { LoadingComponent  } from '@shared/feedback';
-import { SectionHeadingComponent  } from '@shared/ui';
-import { ConfirmDeleteModalComponent  } from '@shared/feedback';
+import { RouterLink } from '@angular/router';
+import { ButtonComponent, SectionHeadingComponent } from '@shared/ui';
+import { LoadingComponent, ConfirmDeleteModalComponent } from '@shared/feedback';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-my-tournaments',
   standalone: true,
-  imports: [CommonModule, FormsModule, ConfirmDeleteModalComponent, SectionHeadingComponent, ButtonComponent, LoadingComponent],
+  imports: [CommonModule, FormsModule, ConfirmDeleteModalComponent, SectionHeadingComponent, ButtonComponent, LoadingComponent, RouterLink],
   templateUrl: './my-tournaments.component.html',
 })
 export class MyTournamentsComponent implements OnInit {

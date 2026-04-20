@@ -100,19 +100,20 @@
         }
 
         <!-- Submit Button -->
-        <app-button
+        <button
+          appButton
           type="submit"
           variant="outline"
-          [fullWidth]="true"
           [loading]="isLoading()"
           [disabled]="loginForm.invalid || isLockedOut"
-          [label]="isLockedOut ? 'Locked Out' : 'Continue'"
           class="w-full block"
         >
           @if (isLockedOut) {
             Try again in {{ lockoutSecondsRemaining }}s
+          } @else {
+            Continue
           }
-        </app-button>
+        </button>
       </form>
 
       <p class="mt-6 text-center text-sm">

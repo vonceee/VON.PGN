@@ -104,7 +104,8 @@ import { ButtonComponent  } from '@shared/ui';
               <div
                 class="flex items-center justify-center gap-1 p-2 border-b border-border-theme bg-slate-900/30"
               >
-                <app-button
+                <button
+                  appButton
                   variant="outline"
                   size="sm"
                   (click)="goToStart()"
@@ -120,8 +121,9 @@ import { ButtonComponent  } from '@shared/ui';
                     <polyline points="11 17 6 12 11 7" />
                     <polyline points="18 17 13 12 18 7" />
                   </svg>
-                </app-button>
-                <app-button
+                </button>
+                <button
+                  appButton
                   variant="outline"
                   size="sm"
                   (click)="prevMove()"
@@ -136,8 +138,9 @@ import { ButtonComponent  } from '@shared/ui';
                   >
                     <polyline points="15 18 9 12 15 6" />
                   </svg>
-                </app-button>
-                <app-button
+                </button>
+                <button
+                  appButton
                   variant="outline"
                   size="sm"
                   (click)="nextMove()"
@@ -152,8 +155,9 @@ import { ButtonComponent  } from '@shared/ui';
                   >
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
-                </app-button>
-                <app-button
+                </button>
+                <button
+                  appButton
                   variant="outline"
                   size="sm"
                   (click)="goToEnd()"
@@ -169,7 +173,7 @@ import { ButtonComponent  } from '@shared/ui';
                     <polyline points="13 17 18 12 13 7" />
                     <polyline points="6 17 11 12 6 7" />
                   </svg>
-                </app-button>
+                </button>
               </div>
 
               <!-- Moves grid -->
@@ -238,11 +242,11 @@ import { ButtonComponent  } from '@shared/ui';
 
               <!-- Board Controls Bar -->
               <div class="w-full flex items-center justify-between mt-6">
-                <app-button
+                <a
+                  appButton
                   variant="outline"
                   size="md"
                   routerLink="/games/history"
-                  label="Back to History"
                 >
                   <svg
                     class="w-4 h-4 mr-2"
@@ -253,7 +257,8 @@ import { ButtonComponent  } from '@shared/ui';
                   >
                     <polyline points="15 18 9 12 15 6" />
                   </svg>
-                </app-button>
+                  Back to History
+                </a>
 
                 <div class="flex items-center gap-4">
                   <div

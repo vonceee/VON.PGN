@@ -20,11 +20,12 @@ import {
   heroBars3,
 } from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
+import { ButtonComponent, LinkComponent, SectionHeadingComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgIcon, MobileMenuComponent],
+  imports: [RouterLink, FormsModule, NgIcon, MobileMenuComponent, LinkComponent],
   providers: [
     provideIcons({
       heroChevronDown,

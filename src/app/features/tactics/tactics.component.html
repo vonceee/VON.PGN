@@ -125,7 +125,8 @@
 
                 <div class="flex items-center gap-1.5 ml-auto">
                   @if (status() === 'failed' && !hasRevealedSolution()) {
-                    <app-button
+                    <button
+                      appButton
                       variant="outline"
                       size="sm"
                       (click)="revealSolution()"
@@ -150,15 +151,17 @@
                           d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                         />
                       </svg>
-                    </app-button>
+                      </button>
                   }
                   @if (status() !== 'playing') {
-                    <app-button
+                    <button
+                      appButton
                       variant="outline"
                       size="sm"
-                      label="Next"
                       (click)="loadNextPuzzle()"
-                    ></app-button>
+                    >
+                      Next
+                    </button>
                   }
                 </div>
               </div>

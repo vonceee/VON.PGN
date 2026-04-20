@@ -78,13 +78,14 @@ import { LoadingComponent } from '@shared/feedback';
                       }}</span>
                     </td>
                     <td class="p-4 text-center">
-                      <app-button
+                      <a
+                        appButton
                         variant="ghost"
                         size="sm"
                         [routerLink]="['/games', game.id, 'review']"
-                        label="View Game"
                       >
-                      </app-button>
+                        View Game
+                      </a>
                     </td>
                   </tr>
                 }
@@ -101,22 +102,26 @@ import { LoadingComponent } from '@shared/feedback';
                 >Page {{ currentPage() }} of {{ totalPages() }}</span
               >
               <div class="flex gap-2">
-                <app-button
+                <button
+                  appButton
                   variant="outline"
                   size="sm"
                   [disabled]="currentPage() === 1"
                   (click)="loadPage(currentPage() - 1)"
-                  label="Prev"
                   class="scale-90"
-                ></app-button>
-                <app-button
+                >
+                  Prev
+                </button>
+                <button
+                  appButton
                   variant="outline"
                   size="sm"
                   [disabled]="currentPage() === totalPages()"
                   (click)="loadPage(currentPage() + 1)"
-                  label="Next"
                   class="scale-90"
-                ></app-button>
+                >
+                  Next
+                </button>
               </div>
             </div>
           }
@@ -126,7 +131,7 @@ import { LoadingComponent } from '@shared/feedback';
           class="bg-slate-900/50 border border-border-theme border-dashed rounded-xl p-8 text-center"
         >
           <h3 class="text-sm font-bold mb-2 opacity-60">No games found</h3>
-          <app-button variant="primary" size="sm" routerLink="/play" label="Play Now"></app-button>
+          <a appButton variant="primary" size="sm" routerLink="/play">Play Now</a>
         </div>
       }
     </div>

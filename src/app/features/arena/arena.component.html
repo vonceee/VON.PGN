@@ -27,16 +27,19 @@
 
         <div class="flex items-center gap-4">
           @if (!isPast()) {
-            <app-button
+            <button
+              appButton
               (click)="toggleJoin()"
               [variant]="isWaiting() ? 'outline' : 'primary'"
-              [label]="isWaiting() ? 'Searching for match...' : 'Join the Arena'"
               class="inline-block"
             >
               @if (isWaiting()) {
                 <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-2 inline-block"></span>
+                Searching for match...
+              } @else {
+                Join the Arena
               }
-            </app-button>
+            </button>
           }
         </div>
       </header>

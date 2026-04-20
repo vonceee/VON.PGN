@@ -19,12 +19,14 @@ import { ButtonComponent  } from '@shared/ui';
         <div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-border-theme">
           <div class="flex justify-between items-center mb-6">
             <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">Category {{ ci + 1 }}</h3>
-            <app-button
+            <button
+              appButton
               variant="danger"
               size="sm"
-              label="Remove Category"
               (click)="removeCategory.emit(ci)"
-            ></app-button>
+            >
+              Remove Category
+            </button>
           </div>
 
           <div class="space-y-4 mb-8">
@@ -82,12 +84,14 @@ import { ButtonComponent  } from '@shared/ui';
                         placeholder="Place name (e.g. 4th - 10th)"
                         class="flex-1 p-2 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
                       />
-                      <app-button
+                      <button
+                        appButton
                         variant="danger"
                         size="sm"
-                        label="✕"
                         (click)="removeExtraPrize.emit({ci, ei})"
-                      ></app-button>
+                      >
+                        ✕
+                      </button>
                     </div>
                       <input 
                         type="text" 
@@ -101,12 +105,14 @@ import { ButtonComponent  } from '@shared/ui';
               </div>
               }
               <div class="mt-4">
-                <app-button
+                <button
+                  appButton
                   variant="outline"
                   size="sm"
-                  label="+ Add Extra Place"
                   (click)="addExtraPrize.emit(ci)"
-                ></app-button>
+                >
+                  + Add Extra Place
+                </button>
               </div>
             </div>
 
@@ -129,12 +135,14 @@ import { ButtonComponent  } from '@shared/ui';
                       <option value="simple">Simple</option>
                       <option value="nested">1st/2nd/3rd Style</option>
                     </select>
-                    <app-button
+                    <button
+                      appButton
                       variant="danger"
                       size="sm"
-                      label="✕"
                       (click)="removeSpecialAward.emit({ci, ai})"
-                    ></app-button>
+                    >
+                      ✕
+                    </button>
                   </div>
                   @if (specialAwardGroup(ci, ai).get('type')?.value === 'simple') {
                     <input 
@@ -178,24 +186,28 @@ import { ButtonComponent  } from '@shared/ui';
                 }
               </div>
               <div class="mt-4">
-                <app-button
+                <button
+                  appButton
                   variant="outline"
                   size="sm"
-                  label="+ Add Special Award"
                   (click)="addSpecialAward.emit(ci)"
-                ></app-button>
+                >
+                  + Add Special Award
+                </button>
               </div>
             </div>
           </div>
         </div>
         }
-        <app-button
+        <button
+          appButton
           variant="primary"
           size="lg"
-          label="+ Add New Category"
           (click)="addCategory.emit()"
           class="w-full md:w-auto"
-        ></app-button>
+        >
+          + Add New Category
+        </button>
       </div>
     </div>
   `
@@ -241,18 +253,22 @@ export class StepPrizesComponent implements OnInit {
           <div class="flex justify-between items-center mb-6">
             <span class="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight">Day {{ di + 1 }} Schedule</span>
             <div class="flex gap-2">
-              <app-button
+              <button
+                appButton
                 variant="outline"
                 size="sm"
-                label="+ Add Event"
                 (click)="addScheduleEvent.emit(di)"
-              ></app-button>
-              <app-button
+              >
+                + Add Event
+              </button>
+              <button
+                appButton
                 variant="danger"
                 size="sm"
-                label="Remove Day"
                 (click)="removeScheduleDay.emit(di)"
-              ></app-button>
+              >
+                Remove Day
+              </button>
             </div>
           </div>
           <div class="space-y-3">
@@ -270,25 +286,29 @@ export class StepPrizesComponent implements OnInit {
                 placeholder="Time (e.g. 9:00 AM - 11:00 AM)"
                 class="w-48 p-3 text-sm border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 transition-colors" 
               />
-              <app-button
+              <button
+                appButton
                 variant="danger"
                 size="sm"
-                label="✕"
                 (click)="removeScheduleEvent.emit({di, ei})"
                 class="opacity-50 group-hover:opacity-100 transition-opacity"
-              ></app-button>
+              >
+                ✕
+              </button>
             </div>
             }
           </div>
         </div>
         }
-        <app-button
+        <button
+          appButton
           variant="outline"
           size="lg"
-          label="+ Add New Day"
           (click)="addScheduleDay.emit()"
           class="w-full"
-        ></app-button>
+        >
+          + Add New Day
+        </button>
       </div>
     </div>
   `

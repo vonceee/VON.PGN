@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, inject, signal, ViewChild, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Chess } from 'chess.js';
 import { EngineService } from '../../../core/services/engine.service';
-import { ChessBoardComponent  } from '@shared/chess';
-import { ButtonComponent  } from '@shared/ui';
-import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
-import { MoveNotationComponent  } from '@shared/chess';
+import { ChessBoardComponent } from '@shared/chess';
+import { ButtonComponent } from '@shared/ui';
+import { TIME_CONTROLS } from '../../../core/models/game.model';
+import { MoveNotationComponent } from '@shared/chess';
 import { AudioService } from '../../../core/services/audio.service';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,17 +22,18 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
   engineService = inject(EngineService);
   private audioService = inject(AudioService);
   private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   @ViewChild(ChessBoardComponent) board!: ChessBoardComponent;
 
-  // Game Setup State
+  // Game Setup State (from query params)
   isSetup = signal(true);
-  selectedLevel = signal(1);
-  selectedTimeControl = signal<TimeControlOption | null>(TIME_CONTROLS[5]); // 5+0 as default
-  selectedColor = signal<'white' | 'black' | 'random'>('random');
-  showCustomForm = signal(false);
-  customMinutes = signal(10);
-  customIncrement = signal(0);
+  private gameConfig = {
+    level: 1,
+    color: 'random' as 'white' | 'black' | 'random',
+    time: null as string | null,
+  };
 
   // Game Play State
   game = new Chess();
@@ -43,6 +45,7 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
   isEngineThinking = signal(false);
   gameStateCounter = signal(0);
   showResignConfirm = signal(false);
+  selectedLevel = signal(1); // Kept only for UI display
 
   displayFen = computed(() => {
     const ply = this.displayPly();
@@ -108,13 +111,7 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
   blackTimeMs = signal(0);
   private timerInterval: any;
 
-  levels = [1, 2, 3, 4, 5, 6, 7, 8];
-  timeControls = TIME_CONTROLS;
-
-  getIncrementSeconds = () =>
-    this.showCustomForm()
-      ? this.customIncrement()
-      : this.selectedTimeControl()?.incrementSeconds || 0;
+  private currentIncrementMs = 0;
 
   isMyTurn = computed(() => {
     this.gameStateCounter(); // Track dependency on game state mutations
@@ -140,6 +137,24 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
       .subscribe((evalStr) => {
         this.engineEval.set(evalStr);
       });
+
+    // Handle initialization from query params
+    const params = this.route.snapshot.queryParams;
+    if (!params['level'] || !params['time']) {
+      // Production Safety: Redirect back to play selector if params are missing
+      this.router.navigate(['/play']);
+      return;
+    }
+
+    this.gameConfig = {
+      level: parseInt(params['level'], 10) || 1,
+      color: params['color'] || 'random',
+      time: params['time'],
+    };
+    this.selectedLevel.set(this.gameConfig.level);
+
+    // Initial launch
+    setTimeout(() => this.startGame(), 100);
   }
 
   ngOnDestroy() {
@@ -150,31 +165,37 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
   startGame() {
     // 1. Setup sides
     this.playerColor.set(
-      this.selectedColor() === 'random'
+      this.gameConfig.color === 'random'
         ? Math.random() > 0.5
           ? 'white'
           : 'black'
-        : (this.selectedColor() as 'white' | 'black'),
+        : (this.gameConfig.color as 'white' | 'black'),
     );
 
-    // 2. Setup times
-    if (this.showCustomForm()) {
-      const ms = this.customMinutes() * 60 * 1000;
-      this.whiteTimeMs.set(ms);
-      this.blackTimeMs.set(ms);
-    } else if (this.selectedTimeControl()) {
-      const ms = (this.selectedTimeControl()?.baseSeconds || 0) * 1000;
-      this.whiteTimeMs.set(ms);
-      this.blackTimeMs.set(ms);
-    } else {
-      // Fallback to 10 minutes if no Time Control is selected
-      const ms = 10 * 60 * 1000;
-      this.whiteTimeMs.set(ms);
-      this.blackTimeMs.set(ms);
+    // 2. Setup times & increment
+    let baseMs = 10 * 60 * 1000;
+    this.currentIncrementMs = 0;
+
+    const timeStr = this.gameConfig.time;
+    if (timeStr) {
+      if (timeStr.includes('+')) {
+        const [minStr, incStr] = timeStr.split('+');
+        baseMs = parseInt(minStr, 10) * 1000;
+        this.currentIncrementMs = parseInt(incStr, 10) * 1000;
+      } else {
+        const tc = TIME_CONTROLS.find((t) => t.value === timeStr);
+        if (tc) {
+          baseMs = tc.baseSeconds * 1000;
+          this.currentIncrementMs = tc.incrementSeconds * 1000;
+        }
+      }
     }
 
+    this.whiteTimeMs.set(baseMs);
+    this.blackTimeMs.set(baseMs);
+
     // 3. Prepare Engine
-    this.engineService.prepareGame(this.selectedLevel());
+    this.engineService.prepareGame(this.gameConfig.level);
 
     // 4. Start
     this.game.reset();
@@ -207,11 +228,10 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     if (this.checkGameOver()) return;
 
     // Apply increment if applicable
-    const inc = this.getIncrementSeconds() * 1000;
     if (this.playerColor() === 'white') {
-      this.whiteTimeMs.update((t) => t + inc);
+      this.whiteTimeMs.update((t) => t + this.currentIncrementMs);
     } else {
-      this.blackTimeMs.update((t) => t + inc);
+      this.blackTimeMs.update((t) => t + this.currentIncrementMs);
     }
 
     this.requestEngineMove();
@@ -223,8 +243,8 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
       fen,
       this.whiteTimeMs(),
       this.blackTimeMs(),
-      this.getIncrementSeconds() * 1000,
-      this.getIncrementSeconds() * 1000,
+      this.currentIncrementMs,
+      this.currentIncrementMs,
     );
   }
 
@@ -247,11 +267,10 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
         this.gameStateCounter.update((c) => c + 1);
 
         // Apply engine increment
-        const inc = this.getIncrementSeconds() * 1000;
         if (this.playerColor() === 'white') {
-          this.blackTimeMs.update((t) => t + inc);
+          this.blackTimeMs.update((t) => t + this.currentIncrementMs);
         } else {
-          this.whiteTimeMs.update((t) => t + inc);
+          this.whiteTimeMs.update((t) => t + this.currentIncrementMs);
         }
 
         this.checkGameOver();

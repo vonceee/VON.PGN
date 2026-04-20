@@ -91,20 +91,24 @@ export class StepRegistrationComponent {
             placeholder="e.g. 2200 & Below"
             class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
           />
-          <app-button
+          <button
+            appButton
             variant="danger"
             size="sm"
-            label="✕"
             (click)="removeItem.emit(i)"
-          ></app-button>
+          >
+            ✕
+          </button>
         </div>
         }
-        <app-button
+        <button
+          appButton
           variant="outline"
           size="sm"
-          label="+ Add Requirement"
           (click)="addItem.emit()"
-        ></app-button>
+        >
+          + Add Requirement
+        </button>
       </div>
     </div>
   `

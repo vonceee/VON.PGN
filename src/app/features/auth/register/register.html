@@ -188,16 +188,16 @@
         }
 
         <!-- Submit Button -->
-        <app-button
+        <button
+          appButton
           type="submit"
           variant="outline"
           [loading]="isLoading()"
           [disabled]="registerForm.invalid"
-          label="Continue"
-          [fullWidth]="true"
           class="w-full block"
         >
-        </app-button>
+          Continue
+        </button>
       </form>
 
       <p class="mt-6 text-center text-sm">

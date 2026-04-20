@@ -25,10 +25,8 @@
         </span>
       </div>
       <div class="flex flex-wrap justify-center gap-4">
-        <app-button (click)="openEnrollment()" variant="primary" size="lg" [showArrow]="true">
-          Enroll Now
-        </app-button>
-        <app-button (click)="scrollToOverview()" variant="ghost" size="lg"> Learn More </app-button>
+        <button appButton (click)="openEnrollment()" variant="primary" size="lg">Enroll Now</button>
+        <button appButton (click)="scrollToOverview()" variant="ghost" size="lg">Learn More</button>
       </div>
     </div>
   </section>
@@ -306,9 +304,9 @@
               </li>
             </ul>
           </div>
-          <app-button (click)="openEnrollment()" variant="primary" size="lg" [fullWidth]="true">
+          <button appButton (click)="openEnrollment()" variant="primary" size="lg">
             Secure Your Slot
-          </app-button>
+          </button>
         </div>
       </div>
     </div>
@@ -326,9 +324,9 @@
         Limited to 10 students per batch to ensure quality coaching.
       </p>
       <div class="flex justify-center">
-        <app-button (click)="openEnrollment()" variant="primary" size="lg" [showArrow]="true">
+        <button appButton (click)="openEnrollment()" variant="primary" size="lg">
           Inquire & Enroll
-        </app-button>
+        </button>
       </div>
     </div>
   </section>

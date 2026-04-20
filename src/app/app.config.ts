@@ -13,6 +13,8 @@ import { httpErrorInterceptor } from './core/interceptors/http-error-interceptor
 import { AuthService } from './core/services/auth.service';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { importProvidersFrom } from '@angular/core';
+import { DialogModule } from '@angular/cdk/dialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,5 +29,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideClientHydration(withEventReplay()),
     provideAnimations(),
+    importProvidersFrom(DialogModule),
   ],
 };

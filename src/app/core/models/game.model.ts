@@ -112,7 +112,7 @@ export interface RematchAcceptedPayload {
 
 export const TIME_CONTROLS: TimeControlOption[] = [
   { label: '1+0', value: '60+0', baseSeconds: 60, incrementSeconds: 0, category: 'bullet' },
-  { label: '2+0', value: '120+0', baseSeconds: 120, incrementSeconds: 0, category: 'bullet' },
+  { label: '1+1', value: '60+1', baseSeconds: 60, incrementSeconds: 1, category: 'bullet' },
   { label: '2+1', value: '120+1', baseSeconds: 120, incrementSeconds: 1, category: 'bullet' },
   { label: '3+0', value: '180+0', baseSeconds: 180, incrementSeconds: 0, category: 'blitz' },
   { label: '3+2', value: '180+2', baseSeconds: 180, incrementSeconds: 2, category: 'blitz' },

@@ -10,7 +10,7 @@ import { ButtonComponent  } from '@shared/ui';
 @Component({
   selector: 'app-my-arena',
   standalone: true,
-  imports: [CommonModule, ConfirmDeleteModalComponent, ButtonComponent],
+  imports: [CommonModule, ConfirmDeleteModalComponent, ButtonComponent, RouterLink],
   templateUrl: './my-arena.component.html',
 })
 export class MyArenaComponent implements OnInit {

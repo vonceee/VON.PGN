@@ -7,7 +7,7 @@
         size="text-3xl md:text-5xl mb-4 md:mb-6"
       ></app-section-heading>
     </div>
-    <app-button variant="outline" size="md" link="/my-events/new" label="+ New Event"></app-button>
+    <a appButton variant="outline" size="md" routerLink="/my-events/new">+ New Event</a>
   </div>
 
   @if (loading()) {
@@ -66,24 +66,30 @@
             </p>
           </div>
           <div class="flex gap-2">
-            <app-button
+            <a
+              appButton
               variant="outline"
               size="sm"
-              [link]="'/events/' + tournament.id"
-              label="View"
-            ></app-button>
-            <app-button
+              [routerLink]="'/events/' + tournament.id"
+            >
+              View
+            </a>
+            <a
+              appButton
               variant="primary"
               size="sm"
-              [link]="'/my-events/' + tournament.id"
-              label="Edit"
-            ></app-button>
-            <app-button
+              [routerLink]="'/my-events/' + tournament.id"
+            >
+              Edit
+            </a>
+            <button
+              appButton
               variant="danger"
               size="sm"
               (click)="requestDelete(tournament)"
-              label="Delete"
-            ></app-button>
+            >
+              Delete
+            </button>
           </div>
         </div>
       }

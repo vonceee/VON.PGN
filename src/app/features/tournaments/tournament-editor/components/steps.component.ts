@@ -104,13 +104,15 @@ export class StepBasicInfoComponent {
             placeholder="Paste Google Maps URL to verify location"
             class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
           />
-          <app-button
+          <button
+            appButton
             variant="primary"
             size="lg"
-            [label]="mapsLinkLoading() ? 'Verifying...' : 'Verify'"
             (click)="parseMapsLink.emit()"
             [disabled]="mapsLinkLoading()"
-          ></app-button>
+          >
+            {{ mapsLinkLoading() ? 'Verifying...' : 'Verify' }}
+          </button>
         </div>
         @if (verificationStatus() === 'success') {
           <p class="text-xs text-green-600 mt-1.5">✓ Location verified successfully</p>

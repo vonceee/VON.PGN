@@ -1,27 +1,27 @@
 <div class="premium-card h-full flex flex-col overflow-hidden rounded-xl">
   <div class="flex-1 p-3 lg:p-4 flex flex-col min-h-0">
     <!-- Header -->
-    <div class="mb-2 h-10 flex items-center justify-center shrink-0 px-3">
+    <div class="mb-2 h-10 flex items-center shrink-0 px-3">
       @if (gameService.isSearching()) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-3">
             <div
               class="h-3 w-3 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"
             ></div>
-            <span class="font-medium text-xs">Searching...</span>
+            <span class="font-medium text-md">Searching...</span>
           </div>
-          <app-button
+          <button
+            appButton
             variant="outline"
             size="sm"
             (click)="cancelSearch()"
             class="font-bold uppercase tracking-wider scale-75 origin-right"
-            >Cancel</app-button
           >
+            Cancel
+          </button>
         </div>
       } @else {
-        <span class="font-medium text-center text-[11px] uppercase tracking-wider text-slate-400"
-          >Select Time Format</span
-        >
+        <span class="text-lg font-medium">Select a time format</span>
       }
     </div>
 
@@ -35,9 +35,7 @@
           @for (category of categories; track category.key) {
             <div class="grid grid-cols-3 gap-3">
               @for (tc of category.controls; track tc.value) {
-                @if (
-                  gameService.isSearching() && gameService.searchTimeControl() === tc.value
-                ) {
+                @if (gameService.isSearching() && gameService.searchTimeControl() === tc.value) {
                   <div
                     class="flex flex-col items-center justify-center border-2 border-cyan-500 bg-cyan-500/10 rounded-xl relative overflow-hidden h-full"
                   >
@@ -45,8 +43,7 @@
                     <div
                       class="h-6 w-6 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin"
                     ></div>
-                    <span
-                      class="text-[9px] font-bold uppercase tracking-tighter mt-1 text-cyan-500"
+                    <span class="text-[9px] font-bold uppercase tracking-tighter mt-1 text-cyan-500"
                       >Searching</span
                     >
                   </div>
@@ -56,10 +53,9 @@
                     [disabled]="gameService.isSearching()"
                     class="flex flex-col items-center justify-center border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl group transition-all disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer h-full"
                   >
-                    <span
-                      class="text-2xl lg:text-3xl xl:text-4xl font-black tracking-tighter"
-                      >{{ tc.label }}</span
-                    >
+                    <span class="text-2xl lg:text-3xl xl:text-4xl font-black tracking-tighter">{{
+                      tc.label
+                    }}</span>
                     <span class="text-[9px] font-extrabold uppercase tracking-widest">{{
                       tc.category
                     }}</span>
@@ -72,16 +68,21 @@
 
         <div class="shrink-0 mt-auto pt-2 space-y-3">
           <button
+            appButton
+            variant="primary"
             (click)="showCustomForm.set(true)"
             [disabled]="gameService.isSearching()"
-            class="w-full flex items-center justify-center py-3 bg-white/[0.03] hover:bg-cyan-500/10 border border-border-theme hover:border-cyan-500/30 rounded-xl group text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm"
+            class="w-full"
           >
             Custom Time Control
           </button>
 
           <button
-            routerLink="/play-computer"
-            class="relative w-full flex items-center justify-center py-3 bg-white/[0.03] hover:bg-cyan-500/10 border border-border-theme hover:border-cyan-500/30 rounded-xl group text-sm font-bold disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all shadow-sm"
+            appButton
+            variant="outline"
+            (click)="playWithComputer()"
+            [disabled]="gameService.isSearching()"
+            class="w-full"
           >
             Play with Computer
           </button>

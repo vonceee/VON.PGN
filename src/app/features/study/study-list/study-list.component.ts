@@ -15,7 +15,7 @@ import { ButtonComponent } from '@shared/ui';
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <app-section-heading text="Chess" highlight="Study"></app-section-heading>
 
-        <app-button variant="primary" (click)="createNewStudy()"> Create New Study </app-button>
+        <button appButton variant="primary" (click)="createNewStudy()">Create New Study</button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -90,13 +90,9 @@ import { ButtonComponent } from '@shared/ui';
 
               <!-- Bottom Row -->
               <div class="mt-auto flex items-center justify-end">
-                <app-button
-                  variant="outline"
-                  size="sm"
-                  [showArrow]="true"
-                  [link]="'/study/' + study.id"
-                  label="View Study"
-                ></app-button>
+                <a appButton variant="outline" size="sm" [routerLink]="'/study/' + study.id">
+                  View Study
+                </a>
               </div>
             </div>
           </div>

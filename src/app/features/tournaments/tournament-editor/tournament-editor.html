@@ -51,19 +51,23 @@
 
           <div class="header-actions">
             @if (!useCustomPoster) {
-              <app-button
+              <button
+                appButton
                 variant="primary"
                 size="sm"
-                label="Upload Own Custom Poster"
                 (click)="posterUploadInput.click()"
-              ></app-button>
+              >
+                Upload Own Custom Poster
+              </button>
             } @else {
-              <app-button
+              <button
+                appButton
                 variant="danger"
                 size="sm"
-                label="Remove Custom Poster"
                 (click)="removeCustomPoster()"
-              ></app-button>
+              >
+                Remove Custom Poster
+              </button>
             }
           </div>
         </div>
@@ -211,10 +215,16 @@
           }}
         </span>
         <div class="flex gap-4 w-full md:w-auto">
-          <app-button variant="ghost" class="flex-1 md:flex-none" (click)="location.back()"
-            >Discard Changes</app-button
+          <button
+            appButton
+            variant="ghost"
+            class="flex-1 md:flex-none"
+            (click)="location.back()"
           >
-          <app-button
+            Discard Changes
+          </button>
+          <button
+            appButton
             variant="primary"
             size="lg"
             class="flex-1 md:flex-none px-12"
@@ -222,7 +232,7 @@
             [loading]="saving()"
           >
             {{ tournamentId() ? 'Update Tournament' : 'Publish Tournament' }}
-          </app-button>
+          </button>
         </div>
       </div>
     </footer>
@@ -253,10 +263,11 @@
         </div>
 
         <div class="modal-footer-actions">
-          <app-button variant="ghost" size="lg" (click)="closeReviewModal()"
-            >Back to Editing</app-button
-          >
-          <app-button
+          <button appButton variant="ghost" size="lg" (click)="closeReviewModal()">
+            Back to Editing
+          </button>
+          <button
+            appButton
             variant="primary"
             size="lg"
             class="px-10"
@@ -264,7 +275,7 @@
             (click)="executeSave()"
           >
             {{ tournamentId() ? 'Confirm & Update' : 'Confirm & Publish' }}
-          </app-button>
+          </button>
         </div>
       </div>
     </div>

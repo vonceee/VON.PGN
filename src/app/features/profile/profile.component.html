@@ -57,7 +57,7 @@
               <div class="mt-4 w-full lg:max-w-md">
                 <div class="flex items-center justify-between mb-2">
                   @if (!isEditingBio()) {
-                    <app-button (click)="startEditBio()" variant="ghost" size="sm">Edit</app-button>
+                    <button appButton (click)="startEditBio()" variant="ghost" size="sm">Edit</button>
                   }
                 </div>
 
@@ -76,10 +76,16 @@
                         >{{ bioDraft().length }}/500</span
                       >
                       <div class="flex items-center gap-2">
-                        <app-button (click)="cancelEditBio()" variant="ghost" size="sm"
-                          >Cancel</app-button
+                        <button
+                          appButton
+                          (click)="cancelEditBio()"
+                          variant="ghost"
+                          size="sm"
                         >
-                        <app-button
+                          Cancel
+                        </button>
+                        <button
+                          appButton
                           (click)="saveBio()"
                           [disabled]="isSavingBio()"
                           [loading]="isSavingBio()"
@@ -87,7 +93,7 @@
                           size="sm"
                         >
                           Save
-                        </app-button>
+                        </button>
                       </div>
                     </div>
                   </div>

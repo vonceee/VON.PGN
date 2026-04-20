@@ -1,197 +1,19 @@
 <div class="p-4 flex flex-col items-center justify-center">
-  <!-- PRE-GAME SETUP VIEW -->
   @if (isSetup()) {
-    <div class="premium-card w-full max-w-4xl overflow-hidden rounded-xl">
-      <div class="px-4 py-3 flex items-center justify-between">
-        <h2 class="text-xs font-bold uppercase tracking-widest">Play with Computer</h2>
-      </div>
-
-      <div class="p-4 lg:p-6 space-y-6">
-        <!-- Level Selection -->
-        <section>
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-sm font-black uppercase">Difficulty Level</h3>
-          </div>
-          <div class="grid grid-cols-4 lg:grid-cols-8 gap-2">
-            @for (lvl of levels; track lvl) {
-               <button
-                (click)="selectedLevel.set(lvl)"
-                [attr.aria-label]="'Difficulty Level ' + lvl"
-                [attr.aria-pressed]="selectedLevel() === lvl"
-                [class.bg-cyan-500]="selectedLevel() === lvl"
-                [class.text-slate-900]="selectedLevel() === lvl"
-                [class.border-cyan-500]="selectedLevel() === lvl"
-                [class.bg-white/[0.03]]="selectedLevel() !== lvl"
-                [class.border-border-theme]="selectedLevel() !== lvl"
-                class="h-10 flex items-center justify-center rounded-xl border text-lg font-black transition-all hover:bg-cyan-500/10 hover:border-cyan-500/30 active:scale-95 cursor-pointer"
-              >
-                {{ lvl }}
-              </button>
-            }
-          </div>
-        </section>
-
-        <!-- Time Control Selection -->
-        <section>
-          <h3 class="text-sm font-black uppercase mb-3">Time Format</h3>
-          @if (!showCustomForm()) {
-            <div class="grid grid-cols-3 lg:grid-cols-5 gap-2">
-              @for (tc of timeControls; track tc.value) {
-                 <button
-                  (click)="selectedTimeControl.set(tc)"
-                  [attr.aria-label]="'Time Control ' + tc.label"
-                  [attr.aria-pressed]="selectedTimeControl()?.value === tc.value"
-                  [ngClass]="{
-                    'bg-cyan-500 text-slate-900': selectedTimeControl()?.value === tc.value,
-                  }"
-                  class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
-                  [class.bg-white/0.03]="selectedTimeControl()?.value !== tc.value"
-                >
-                  <span class="text-xl font-black tracking-tighter">{{ tc.label }}</span>
-                  <span class="text-[9px] font-bold uppercase tracking-widest">{{
-                    tc.category
-                  }}</span>
-                </button>
-              }
-              <button
-                (click)="selectedTimeControl.set(null); showCustomForm.set(true)"
-                [ngClass]="{ 'bg-cyan-500 text-slate-900': showCustomForm() }"
-                class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
-                [class.bg-white/0.03]="!showCustomForm()"
-              >
-                <span class="text-xl font-black tracking-tighter">Custom</span>
-                <span class="text-[9px] font-bold uppercase tracking-widest">Setup</span>
-              </button>
-            </div>
-          } @else {
-            <div class="bg-white/[0.03] border border-border-theme rounded-xl p-4">
-              <div class="flex justify-between items-center mb-4">
-                <h3 class="text-base font-bold m-0 italic">Custom Setup</h3>
-                <button
-                  (click)="showCustomForm.set(false)"
-                  class="hover:text-white bg-transparent border-none cursor-pointer p-1"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div class="space-y-4">
-                <div class="space-y-2">
-                  <div class="flex justify-between items-end">
-                    <label class="block text-sm font-black uppercase">Minutes</label>
-                    <span class="text-xl font-black text-cyan-500">{{ customMinutes() }}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="180"
-                    [ngModel]="customMinutes()"
-                    (ngModelChange)="customMinutes.set($event)"
-                    class="w-full accent-cyan-500 cursor-pointer"
-                  />
-                </div>
-                <div class="space-y-2">
-                  <div class="flex justify-between items-end">
-                    <label class="block text-sm font-black uppercase">Increment</label>
-                    <span class="text-xl font-black text-cyan-500">{{ customIncrement() }}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="60"
-                    [ngModel]="customIncrement()"
-                    (ngModelChange)="customIncrement.set($event)"
-                    class="w-full accent-cyan-500 cursor-pointer"
-                  />
-                </div>
-              </div>
-            </div>
-          }
-        </section>
-
-        <!-- Color Selection -->
-        <section>
-          <h3 class="text-sm font-black uppercase mb-3">Play As</h3>
-          <div class="grid grid-cols-3 gap-2">
-             <button
-              (click)="selectedColor.set('white')"
-              aria-label="Play as White"
-              [attr.aria-pressed]="selectedColor() === 'white'"
-              [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'white' }"
-              [class.bg-white/0.03]="selectedColor() !== 'white'"
-              class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
-            >
-              <span class="text-base font-bold uppercase tracking-widest">White</span>
-            </button>
-            <button
-              (click)="selectedColor.set('random')"
-              aria-label="Play as Random"
-              [attr.aria-pressed]="selectedColor() === 'random'"
-              [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'random' }"
-              [class.bg-white/0.03]="selectedColor() !== 'random'"
-              class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
-            >
-              <span class="text-base font-bold uppercase tracking-widest">Random</span>
-            </button>
-            <button
-              (click)="selectedColor.set('black')"
-              aria-label="Play as Black"
-              [attr.aria-pressed]="selectedColor() === 'black'"
-              [ngClass]="{ 'bg-cyan-500 text-slate-900': selectedColor() === 'black' }"
-              [class.bg-white/0.03]="selectedColor() !== 'black'"
-              class="flex flex-col items-center justify-center py-3 border border-border-theme hover:bg-cyan-500/10 hover:border-cyan-500/30 rounded-xl transition-all cursor-pointer"
-            >
-              <span class="text-base font-bold uppercase tracking-widest">Black</span>
-            </button>
-          </div>
-        </section>
-
-         <div class="pt-2">
-          @if (engineService.isError()) {
-            <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center mb-4">
-              <p class="text-red-400 text-sm font-bold">Failed to load the chess engine.</p>
-              <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
-                Please check your connection or disable adblockers.
-              </p>
-            </div>
-          }
-
-          <app-button
-            variant="primary"
-            size="lg"
-            [fullWidth]="true"
-            [disabled]="!engineService.isReady() || engineService.isError()"
-            (click)="startGame()"
-          >
-            {{ engineService.isReady() ? 'Challenge Computer' : 'Initializing Engine...' }}
-          </app-button>
-        </div>
-      </div>
+    <div class="flex flex-col items-center justify-center py-20 animate-pulse">
+      <div class="h-12 w-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
+      <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Preparing Challenge...</p>
     </div>
-  }
-
-  <!-- ACTIVE GAME VIEW -->
-  @if (!isSetup()) {
-    <div class="w-full h-full flex items-center justify-center">
+  } @else {
+    <!-- ACTIVE GAME VIEW -->
+    <div class="w-full h-full flex items-center justify-center animate-in fade-in duration-500">
       <div
         class="w-full flex flex-col items-center md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6 md:items-start"
       >
         <!-- Left Column: Info & History -->
         <div class="w-full md:w-96 md:h-[80vh] md:sticky md:top-6 justify-self-end">
           <div class="flex flex-col premium-card overflow-hidden h-full">
-            <div class="p-4 border-b border-border-theme">
+            <div class="p-4 border-b border-white/5">
               <div class="flex items-center gap-3 mb-3">
                 <div>
                   <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500">
@@ -220,46 +42,74 @@
               (navigate)="onNavigate($event)"
             />
 
-             <div class="p-2 border-t border-border-theme flex gap-2">
+            <div class="p-2 border-t border-white/5 flex gap-2">
               @if (status() === 'playing') {
                 @if (!showResignConfirm()) {
-                  <app-button
+                  <button
+                    appButton
                     variant="danger"
                     size="sm"
                     class="flex-1 font-bold"
                     (click)="resignGame()"
                   >
                     Resign
-                  </app-button>
+                  </button>
                 } @else {
-                  <div class="flex gap-1 flex-1 animate-in fade-in slide-in-from-right-2 duration-200">
-                    <app-button
+                  <div
+                    class="flex gap-1 flex-1 animate-in fade-in slide-in-from-right-2 duration-200"
+                  >
+                    <button
+                      appButton
                       variant="danger"
                       size="sm"
                       (click)="resignGame()"
                       title="Confirm Resign"
                     >
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </app-button>
-                    <app-button
+                      <svg
+                        class="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </button>
+                    <button
+                      appButton
                       variant="outline"
                       size="sm"
                       (click)="showResignConfirm.set(false)"
                       title="Cancel"
                       class="flex-1"
                     >
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </app-button>
+                      <svg
+                        class="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
                   </div>
                 }
               } @else {
-                <app-button
+                <button
+                  appButton
                   variant="primary"
                   size="sm"
                   class="flex-1 font-bold"
                   (click)="startGame()"
-                  >Rematch</app-button
                 >
+                  Rematch
+                </button>
               }
             </div>
           </div>
@@ -269,7 +119,7 @@
         <div class="w-full md:flex md:flex-col md:items-center md:min-w-0 md:overflow-hidden">
           <!-- Clock Top (mobile) -->
           <div
-            class="w-full md:hidden flex items-center justify-between gap-2 p-3 border border-border-theme"
+            class="w-full md:hidden flex items-center justify-between gap-2 p-3 border border-white/5"
           >
             <div class="text-xs font-bold uppercase text-slate-500">Computer</div>
             <div
@@ -282,7 +132,7 @@
           </div>
 
           <div
-            class="relative bg-[var(--bg-card)] p-1 shadow-2xl max-w-full overflow-hidden w-full rounded md:rounded-none"
+            class="relative bg-slate-900 border border-white/5 p-1 shadow-2xl max-w-full overflow-hidden w-full rounded md:rounded-none"
           >
             <app-chess-board
               #board
@@ -296,7 +146,7 @@
 
           <!-- Clock Bottom (mobile) -->
           <div
-            class="w-full md:hidden flex items-center justify-between gap-2 p-3 border border-border-theme"
+            class="w-full md:hidden flex items-center justify-between gap-2 p-3 border border-white/5"
           >
             <div class="text-xs font-bold uppercase text-slate-500">You</div>
             <div
@@ -349,14 +199,11 @@
               </div>
             </div>
 
-             <!-- Result Message at the bottom -->
+            <!-- Result Message at the bottom -->
             @if (resultDetails(); as result) {
-              <div
-                class="premium-card p-4 text-center border-border-theme"
-                aria-live="polite"
-              >
-                <div class="text-xl font-black mb-1 tracking-tighter">{{ result.score }}</div>
-                <div class="text-xs tracking-widest italic">
+              <div class="premium-card p-4 text-center border-white/5" aria-live="polite">
+                <div class="text-xl font-black mb-1 tracking-tighter text-white">{{ result.score }}</div>
+                <div class="text-xs tracking-widest italic text-slate-400">
                   {{ result.detail }}
                 </div>
               </div>

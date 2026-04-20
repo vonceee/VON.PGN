@@ -126,7 +126,7 @@
             <button type="button" (click)="removePlayingExperience(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
           </div>
         </div>
-        <app-button type="button" variant="outline" size="sm" (click)="addPlayingExperience()">+ Add Experience</app-button>
+        <button appButton type="button" variant="outline" size="sm" (click)="addPlayingExperience()">+ Add Experience</button>
       </div>
 
       <div class="mb-6">
@@ -142,7 +142,7 @@
             <button type="button" (click)="removeTeachingExperience(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
           </div>
         </div>
-        <app-button type="button" variant="outline" size="sm" (click)="addTeachingExperience()">+ Add Experience</app-button>
+        <button appButton type="button" variant="outline" size="sm" (click)="addTeachingExperience()">+ Add Experience</button>
       </div>
 
       <div class="mb-6">
@@ -158,7 +158,7 @@
             <button type="button" (click)="removeTeachingMethod(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
           </div>
         </div>
-        <app-button type="button" variant="outline" size="sm" (click)="addTeachingMethod()">+ Add Method</app-button>
+        <button appButton type="button" variant="outline" size="sm" (click)="addTeachingMethod()">+ Add Method</button>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -285,21 +285,23 @@
 
     <!-- Submit -->
     <div class="flex justify-end gap-4">
-      <app-button
+      <a
+        appButton
         variant="outline"
         size="md"
-        link="/coaches"
-        label="Cancel"
+        routerLink="/coaches"
       >
-      </app-button>
-      <app-button
+        Cancel
+      </a>
+      <button
+        appButton
         type="submit"
         variant="primary"
         size="md"
         [disabled]="submitting || applicationForm.invalid"
-        [label]="submitting ? 'Submitting...' : 'Submit Profile'"
       >
-      </app-button>
+        {{ submitting ? 'Submitting...' : 'Submit Profile' }}
+      </button>
     </div>
   </form>
 </div>

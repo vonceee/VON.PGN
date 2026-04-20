@@ -138,22 +138,14 @@
 
                   <div class="flex flex-col gap-2 mt-4">
                     @if (g.arena_id) {
-                      <app-button
-                        variant="primary"
-                        size="md"
-                        (click)="backToArena()"
-                        label="Return to Arena"
-                        [fullWidth]="true"
-                      ></app-button>
+                      <button appButton variant="primary" size="md" (click)="backToArena()">
+                        Return to Arena
+                      </button>
                     } @else {
                       @if (!myRematchOffered() && !rematchOfferFrom()) {
-                        <app-button
-                          variant="primary"
-                          size="md"
-                          (click)="offerRematch()"
-                          [fullWidth]="true"
-                          >Rematch</app-button
-                        >
+                        <button appButton variant="primary" size="md" (click)="offerRematch()">
+                          Rematch
+                        </button>
                       } @else if (myRematchOffered()) {
                         <div
                           class="text-xs uppercase font-black text-slate-500 py-3 animate-pulse bg-slate-400/5 rounded border border-border-theme"
@@ -162,15 +154,17 @@
                         </div>
                       } @else if (rematchOfferFrom()) {
                         <div class="flex gap-2">
-                          <app-button
+                          <button
+                            appButton
                             variant="primary"
                             size="md"
                             (click)="acceptRematch()"
                             class="flex-1"
-                            [fullWidth]="true"
-                            >Accept Rematch</app-button
                           >
-                          <app-button
+                            Accept Rematch
+                          </button>
+                          <button
+                            appButton
                             variant="outline"
                             size="md"
                             (click)="declineRematch()"
@@ -186,16 +180,12 @@
                               <line x1="18" y1="6" x2="6" y2="18"></line>
                               <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
-                          </app-button>
+                          </button>
                         </div>
                       }
-                      <app-button
-                        variant="ghost"
-                        size="md"
-                        (click)="findNewOpponent()"
-                        [fullWidth]="true"
-                        >New Game</app-button
-                      >
+                      <button appButton variant="ghost" size="md" (click)="findNewOpponent()">
+                        New Game
+                      </button>
                     }
                   </div>
                 </div>
@@ -272,22 +262,14 @@
 
                   <div class="flex flex-col gap-2 mt-6">
                     @if (g.arena_id) {
-                      <app-button
-                        variant="primary"
-                        size="md"
-                        (click)="backToArena()"
-                        label="Return to Arena"
-                        [fullWidth]="true"
-                      ></app-button>
+                      <button appButton variant="primary" size="md" (click)="backToArena()">
+                        Return to Arena
+                      </button>
                     } @else {
                       @if (!myRematchOffered() && !rematchOfferFrom()) {
-                        <app-button
-                          variant="primary"
-                          size="md"
-                          (click)="offerRematch()"
-                          label="Rematch"
-                          [fullWidth]="true"
-                        ></app-button>
+                        <button appButton variant="primary" size="md" (click)="offerRematch()">
+                          Rematch
+                        </button>
                       } @else if (myRematchOffered()) {
                         <div
                           class="text-xs uppercase font-black text-slate-500 text-center py-3 animate-pulse bg-slate-400/5 rounded border border-border-theme"
@@ -296,15 +278,17 @@
                         </div>
                       } @else if (rematchOfferFrom()) {
                         <div class="flex gap-2">
-                          <app-button
+                          <button
+                            appButton
                             variant="primary"
                             size="md"
                             (click)="acceptRematch()"
                             class="flex-1"
-                            label="Accept Rematch"
-                            [fullWidth]="true"
-                          ></app-button>
-                          <app-button
+                          >
+                            Accept Rematch
+                          </button>
+                          <button
+                            appButton
                             variant="outline"
                             size="md"
                             (click)="declineRematch()"
@@ -321,16 +305,12 @@
                               <line x1="18" y1="6" x2="6" y2="18"></line>
                               <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
-                          </app-button>
+                          </button>
                         </div>
                       }
-                      <app-button
-                        variant="ghost"
-                        size="md"
-                        (click)="findNewOpponent()"
-                        label="New Game"
-                        [fullWidth]="true"
-                      ></app-button>
+                      <button appButton variant="ghost" size="md" (click)="findNewOpponent()">
+                        New Game
+                      </button>
                     }
                   </div>
                 </div>
@@ -400,7 +380,8 @@
         <div
           class="flex items-center justify-around w-full mb-1 border-b border-border-theme/50 pb-2"
         >
-          <app-button
+          <button
+            appButton
             variant="ghost"
             size="sm"
             (click)="goToStart()"
@@ -418,8 +399,9 @@
               <polyline points="11 17 6 12 11 7" />
               <polyline points="18 17 13 12 18 7" />
             </svg>
-          </app-button>
-          <app-button
+          </button>
+          <button
+            appButton
             variant="ghost"
             size="sm"
             (click)="previousMove()"
@@ -436,8 +418,9 @@
             >
               <polyline points="15 18 9 12 15 6" />
             </svg>
-          </app-button>
-          <app-button
+          </button>
+          <button
+            appButton
             variant="ghost"
             size="sm"
             (click)="nextMove()"
@@ -454,8 +437,9 @@
             >
               <polyline points="9 18 15 12 9 6" />
             </svg>
-          </app-button>
-          <app-button
+          </button>
+          <button
+            appButton
             variant="ghost"
             size="sm"
             (click)="goToEnd()"
@@ -473,11 +457,12 @@
               <polyline points="13 17 18 12 13 7" />
               <polyline points="6 17 11 12 6 7" />
             </svg>
-          </app-button>
+          </button>
 
           <!-- Result Info Toggle (Only if game ended) -->
           @if (g.status === 'completed' || g.status === 'aborted') {
-            <app-button
+            <button
+              appButton
               variant="ghost"
               size="sm"
               (click)="showMobileResult.set(!showMobileResult())"
@@ -497,7 +482,7 @@
                 <line x1="12" y1="16" x2="12" y2="12"></line>
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
               </svg>
-            </app-button>
+            </button>
           }
         </div>
 

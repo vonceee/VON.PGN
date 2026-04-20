@@ -174,7 +174,9 @@
       @if (viewMode() === 'grid') {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
           @for (arena of paginatedArenas(); track arena.id) {
-            <div class="premium-card rounded-2xl overflow-hidden flex flex-col h-full relative group">
+            <div
+              class="premium-card rounded-2xl overflow-hidden flex flex-col h-full relative group"
+            >
               <div class="p-5 flex flex-col flex-1">
                 <div class="flex items-start justify-between gap-2 mb-4">
                   <span
@@ -182,7 +184,7 @@
                     [ngClass]="{
                       'bg-green-500/10 text-green-500': arena.status === 'ongoing',
                       'bg-cyan-500/10 text-cyan-500': arena.status === 'upcoming',
-                      'bg-slate-500/10 text-slate-500': arena.status === 'past'
+                      'bg-slate-500/10 text-slate-500': arena.status === 'past',
                     }"
                   >
                     {{ arena.status }}
@@ -215,13 +217,14 @@
                 </div>
 
                 <div class="mt-auto">
-                  <app-button
+                  <a
+                    appButton
                     variant="primary"
                     class="w-full"
                     [routerLink]="['/events', arena.id, 'arena']"
-                    [label]="arena.status === 'past' ? 'View Results' : 'Enter Lobby'"
                   >
-                  </app-button>
+                    {{ arena.status === 'past' ? 'View Results' : 'Enter Lobby' }}
+                  </a>
                 </div>
               </div>
             </div>
@@ -274,13 +277,14 @@
                   </span>
                 </div>
               </div>
-              <app-button
+              <a
+                appButton
                 variant="outline"
                 size="sm"
-                [showArrow]="true"
                 [routerLink]="['/events', arena.id, 'arena']"
-                [label]="arena.status === 'past' ? 'Results' : 'Lobby'"
-              ></app-button>
+              >
+                {{ arena.status === 'past' ? 'Results' : 'Lobby' }}
+              </a>
             </div>
           }
         </div>
@@ -319,7 +323,7 @@
               [ngClass]="{
                 'bg-cyan-500 border-cyan-500 text-white': currentPage() === page,
                 'border-border-theme hover:bg-slate-100 dark:hover:bg-white/5':
-                  currentPage() !== page
+                  currentPage() !== page,
               }"
             >
               {{ page }}

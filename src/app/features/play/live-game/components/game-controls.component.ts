@@ -11,7 +11,8 @@ import { ButtonComponent  } from '@shared/ui';
       @if (game()?.status === 'active') {
         <div class="flex items-center justify-center gap-1 w-full">
           @if (game()!.moves.length < 2) {
-            <app-button
+            <button
+              appButton
               variant="ghost"
               size="sm"
               (click)="abort.emit()"
@@ -30,7 +31,7 @@ import { ButtonComponent  } from '@shared/ui';
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
-            </app-button>
+            </button>
           } @else {
             <div class="flex gap-1 w-full">
               @if (drawOfferFromOpponent()) {
@@ -42,7 +43,8 @@ import { ButtonComponent  } from '@shared/ui';
                     >Draw Offered</span
                   >
                   <div class="flex gap-1">
-                    <app-button
+                    <button
+                      appButton
                       variant="primary"
                       size="sm"
                       (click)="acceptDraw.emit()"
@@ -59,8 +61,9 @@ import { ButtonComponent  } from '@shared/ui';
                       >
                         <polyline points="20 6 9 17 4 12"></polyline>
                       </svg>
-                    </app-button>
-                    <app-button
+                    </button>
+                    <button
+                      appButton
                       variant="outline"
                       size="sm"
                       (click)="declineDraw.emit()"
@@ -78,7 +81,7 @@ import { ButtonComponent  } from '@shared/ui';
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                       </svg>
-                    </app-button>
+                    </button>
                   </div>
                 </div>
               } @else if (iOfferedDraw()) {
@@ -89,17 +92,20 @@ import { ButtonComponent  } from '@shared/ui';
                 </div>
               } @else {
                 @if (canOfferDraw()) {
-                  <app-button
+                  <button
+                    appButton
                     variant="ghost"
                     size="sm"
                     (click)="offerDraw.emit()"
                     title="Offer Draw"
-                    label="1/2"
-                  ></app-button>
+                  >
+                    1/2
+                  </button>
                 }
 
                 @if (!showResignConfirm()) {
-                  <app-button
+                  <button
+                    appButton
                     variant="ghost"
                     size="sm"
                     (click)="showResignConfirm.set(true)"
@@ -118,12 +124,13 @@ import { ButtonComponent  } from '@shared/ui';
                       <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                       <line x1="4" y1="22" x2="4" y2="15"></line>
                     </svg>
-                  </app-button>
+                  </button>
                 } @else {
                   <div
                     class="flex-1 flex gap-1 animate-in fade-in slide-in-from-right-2 duration-200"
                   >
-                    <app-button
+                    <button
+                      appButton
                       variant="danger"
                       size="sm"
                       (click)="resign.emit(); showResignConfirm.set(false)"
@@ -140,8 +147,9 @@ import { ButtonComponent  } from '@shared/ui';
                       >
                         <polyline points="20 6 9 17 4 12"></polyline>
                       </svg>
-                    </app-button>
-                    <app-button
+                    </button>
+                    <button
+                      appButton
                       variant="outline"
                       size="sm"
                       (click)="showResignConfirm.set(false)"
@@ -159,7 +167,7 @@ import { ButtonComponent  } from '@shared/ui';
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                       </svg>
-                    </app-button>
+                    </button>
                   </div>
                 }
               }
@@ -171,7 +179,7 @@ import { ButtonComponent  } from '@shared/ui';
         <div class="w-full flex gap-1.5">
           @if (!game()?.arena_id) {
             @if (!myRematchOffered() && !rematchOfferFrom()) {
-              <app-button variant="ghost" size="md" (click)="offerRematch.emit()">Rematch</app-button>
+              <button appButton variant="ghost" size="md" (click)="offerRematch.emit()">Rematch</button>
             } @else if (myRematchOffered()) {
               <div
                 class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme"
@@ -180,7 +188,8 @@ import { ButtonComponent  } from '@shared/ui';
               </div>
             } @else if (rematchOfferFrom()) {
               <div class="flex-1 flex gap-1">
-                <app-button
+                <button
+                  appButton
                   variant="primary"
                   size="md"
                   (click)="acceptRematch.emit()"
@@ -198,8 +207,9 @@ import { ButtonComponent  } from '@shared/ui';
                   >
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
-                </app-button>
-                <app-button
+                </button>
+                <button
+                  appButton
                   variant="outline"
                   size="md"
                   (click)="declineRematch.emit()"
@@ -217,13 +227,13 @@ import { ButtonComponent  } from '@shared/ui';
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
-                </app-button>
+                </button>
               </div>
             }
 
-            <app-button variant="ghost" size="md" (click)="newOpponent.emit()" title="New opponent">
+            <button appButton variant="ghost" size="md" (click)="newOpponent.emit()" title="New opponent">
               New Game
-            </app-button>
+            </button>
           }
         </div>
       }
