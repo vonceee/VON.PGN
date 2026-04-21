@@ -589,11 +589,7 @@ export class GameService implements OnDestroy {
           rating_change: data.rating_change || (data.white_rating_change !== undefined ? { white: data.white_rating_change, black: data.black_rating_change } : undefined)
         });
 
-      if (data.result === '1/2-1/2') {
-        this.audioService.playDraw();
-      } else {
-        this.audioService.playVictory();
-      }
+      this.audioService.playBoardEnd();
     });
 
     s.on('rematch_offered', (data: any) => {

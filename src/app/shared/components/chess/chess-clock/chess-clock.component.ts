@@ -7,7 +7,9 @@ import {
   signal,
   computed,
   effect,
+  inject,
 } from '@angular/core';
+import { AudioService } from '../../../../core/services/audio.service';
 
 @Component({
   selector: 'app-chess-clock',
@@ -34,6 +36,8 @@ export class ChessClockComponent implements OnDestroy {
   private rafId: number | null = null;
   private running = false;
   private hasExpired = false;
+  private hasWarnedLowTime = false;
+  private audioService = inject(AudioService);
 
   private storedTimeMs = 0;
   private lastMoveTimestamp = 0;
@@ -79,6 +83,9 @@ export class ChessClockComponent implements OnDestroy {
     }
 
     this.displayTime.set(this.storedTimeMs);
+    if (this.storedTimeMs > 20000) {
+      this.hasWarnedLowTime = false;
+    }
     this.hasExpired = false;
   }
 
@@ -102,6 +109,11 @@ export class ChessClockComponent implements OnDestroy {
         }
       } else {
         this.displayTime.set(this.storedTimeMs);
+      }
+
+      if (this.displayTime() <= 20000 && this.displayTime() > 0 && !this.hasWarnedLowTime && this.isActive()) {
+        this.hasWarnedLowTime = true;
+        this.audioService.playLowTime();
       }
 
       if (this.displayTime() <= 0 && !this.hasExpired) {

@@ -13,24 +13,74 @@ export const SOUND_THEMES: { value: SoundTheme; label: string }[] = [
   { value: 'woodland', label: 'Woodland' },
 ];
 
-type SoundName = 'Move' | 'Capture' | 'Check' | 'Checkmate';
+type SoundName =
+  | 'Move'
+  | 'Capture'
+  | 'Check'
+  | 'GenericNotify'
+  | 'LowTime';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AudioService {
   private platformId = inject(PLATFORM_ID);
-  private cache: Map<string, HTMLAudioElement> = new Map();
+  private context: AudioContext | null = null;
+  private buffers: Map<string, AudioBuffer> = new Map();
   private voices: SpeechSynthesisVoice[] = [];
   private lastMatchFoundTime = 0;
 
   soundEnabled = signal<boolean>(true);
   soundTheme = signal<SoundTheme>('standard');
+  sfxVolume = signal<number>(0.5);
   ttsVolume = signal<number>(0.5);
+  private failedAssets = new Set<string>();
 
   constructor() {
     if (!this.isBrowser) return;
 
+    this.initAudioContext();
+    this.loadSettings();
+
+    effect(() => {
+      if (!this.isBrowser) return;
+      this.safeSave('sound_enabled', String(this.soundEnabled()));
+    });
+
+    effect(() => {
+      if (!this.isBrowser) return;
+      this.safeSave('sound_theme', this.soundTheme());
+      this.buffers.clear();
+      this.failedAssets.clear();
+    });
+
+    effect(() => {
+      if (!this.isBrowser) return;
+      this.safeSave('sfx_volume', String(this.sfxVolume()));
+    });
+
+    effect(() => {
+      if (!this.isBrowser) return;
+      this.safeSave('tts_volume', String(this.ttsVolume()));
+    });
+
+    this.loadVoices();
+  }
+
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
+
+  private initAudioContext(): void {
+    if (this.context || !this.isBrowser) return;
+    try {
+      this.context = new (window.AudioContext || (window as any).webkitAudioContext)();
+    } catch (e) {
+      console.warn('AudioContext not supported');
+    }
+  }
+
+  private loadSettings(): void {
     const savedEnabled = localStorage.getItem('sound_enabled');
     if (savedEnabled !== null) {
       this.soundEnabled.set(savedEnabled === 'true');
@@ -41,102 +91,143 @@ export class AudioService {
       this.soundTheme.set(savedTheme);
     }
 
+    const savedSfxVolume = localStorage.getItem('sfx_volume');
+    if (savedSfxVolume !== null) {
+      const parsed = parseFloat(savedSfxVolume);
+      if (!isNaN(parsed)) this.sfxVolume.set(Math.max(0, Math.min(1, parsed)));
+    }
+
     const savedTtsVolume = localStorage.getItem('tts_volume');
     if (savedTtsVolume !== null) {
       const parsed = parseFloat(savedTtsVolume);
-      if (!isNaN(parsed)) {
-        this.ttsVolume.set(Math.max(0, Math.min(1, parsed)));
-      }
+      if (!isNaN(parsed)) this.ttsVolume.set(Math.max(0, Math.min(1, parsed)));
     }
-
-    effect(() => {
-      if (!this.isBrowser) return;
-      localStorage.setItem('sound_enabled', String(this.soundEnabled()));
-    });
-
-    effect(() => {
-      if (!this.isBrowser) return;
-      localStorage.setItem('sound_theme', this.soundTheme());
-      this.cache.clear();
-    });
-
-    effect(() => {
-      if (!this.isBrowser) return;
-      localStorage.setItem('tts_volume', String(this.ttsVolume()));
-    });
-
-    this.loadVoices();
   }
 
-  private get isBrowser(): boolean {
-    return isPlatformBrowser(this.platformId);
+  private safeSave(key: string, value: string): void {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn(`Could not save setting ${key} to localStorage`, e);
+    }
   }
 
   private loadVoices(): void {
     if (!this.isBrowser) return;
-
     const load = () => {
       this.voices = window.speechSynthesis.getVoices();
     };
-
     load();
-
     if (this.voices.length === 0) {
       window.speechSynthesis.addEventListener('voiceschanged', load, { once: true });
     }
   }
 
-  private getAudio(name: SoundName): HTMLAudioElement | null {
-    if (!this.isBrowser) return null;
+  private async getBuffer(name: SoundName): Promise<AudioBuffer | null> {
+    if (!this.context || !this.isBrowser) return null;
 
     const theme = this.soundTheme();
     const key = `${theme}/${name}`;
 
-    if (!this.cache.has(key)) {
-      const audio = new Audio(`/sounds/${theme}/${name}.mp3`);
-      audio.preload = 'auto';
-      audio.volume = 0.5;
-      this.cache.set(key, audio);
+    if (this.buffers.has(key)) {
+      return this.buffers.get(key)!;
     }
 
-    return this.cache.get(key)!;
-  }
-
-  private play(name: SoundName): void {
-    if (!this.isBrowser || !this.soundEnabled()) return;
+    if (this.failedAssets.has(key)) {
+      return null;
+    }
 
     try {
-      const audio = this.getAudio(name);
-      if (!audio) return;
-      audio.currentTime = 0;
-      audio.play().catch(() => {
-        // Autoplay may be blocked by browser policy
-      });
-    } catch {
-      // Audio may not be available
+      const response = await fetch(`/sounds/${theme}/${name}.mp3`);
+      if (!response.ok) {
+        this.failedAssets.add(key);
+        return null;
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      const audioBuffer = await this.context.decodeAudioData(arrayBuffer);
+      this.buffers.set(key, audioBuffer);
+      return audioBuffer;
+    } catch (e) {
+      this.failedAssets.add(key);
+      return null;
     }
+  }
+
+  private async play(name: SoundName): Promise<void> {
+    if (!this.context || !this.isBrowser || !this.soundEnabled()) return;
+
+    if (this.context.state === 'suspended') {
+      await this.context.resume();
+    }
+
+    const buffer = await this.getBuffer(name);
+    if (!buffer) return;
+
+    const source = this.context.createBufferSource();
+    source.buffer = buffer;
+
+    const gainNode = this.context.createGain();
+    gainNode.gain.value = this.sfxVolume();
+
+    source.connect(gainNode);
+    gainNode.connect(this.context.destination);
+
+    source.start(0);
   }
 
   private speakWithTTS(text: string): void {
     if (!this.isBrowser || !this.soundEnabled()) return;
 
     window.speechSynthesis.cancel();
-
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ja-JP';
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
     utterance.volume = this.ttsVolume();
+    utterance.lang = 'en-US';
 
-    const googleJapaneseVoice = this.voices.find(v => v.name === 'Google 日本語');
-    const japaneseFemaleVoice = this.voices.find(
-      v => v.lang.startsWith('ja') && v.name.toLowerCase().includes('female')
-    );
-    const japaneseVoice = this.voices.find(v => v.lang.startsWith('ja'));
-
-    utterance.voice = googleJapaneseVoice || japaneseFemaleVoice || japaneseVoice || null;
+    const preferredVoice = this.voices.find(v => v.lang.startsWith('en') && v.name.includes('Female')) 
+                        || this.voices.find(v => v.lang.startsWith('en'));
     
+    utterance.voice = preferredVoice || null;
     window.speechSynthesis.speak(utterance);
+  }
+
+  /**
+   * Intelligently plays the correct sound for a chess move.
+   */
+  async playChessMove(move: { san: string; flags: string }): Promise<void> {
+    if (move.san.includes('#')) {
+      await this.playBoardEnd();
+    } else if (move.san.includes('+')) {
+      await this.play('Check');
+    } else if (move.flags.includes('c') || move.flags.includes('e')) {
+      await this.play('Capture');
+    } else {
+      await this.play('Move');
+    }
+  }
+
+  playBoardStart(): void {
+    this.play('GenericNotify');
+  }
+
+  playBoardEnd(): void {
+    this.play('GenericNotify');
+  }
+
+  playLowTime(): void {
+    this.play('LowTime');
+  }
+
+  playMatchFound(): void {
+    const now = Date.now();
+    if (now - this.lastMatchFoundTime < 3000) return;
+    this.lastMatchFoundTime = now;
+    this.playBoardStart();
+    this.speakWithTTS('Match Found');
+  }
+
+  playNotification(): void {
+    this.play('GenericNotify');
   }
 
   toggle(): void {
@@ -147,56 +238,21 @@ export class AudioService {
     this.soundTheme.set(theme);
   }
 
+  setSfxVolume(volume: number): void {
+    this.sfxVolume.set(Math.max(0, Math.min(1, volume)));
+  }
+
   setTtsVolume(volume: number): void {
     this.ttsVolume.set(Math.max(0, Math.min(1, volume)));
   }
 
-  playMove(): void {
-    this.play('Move');
-  }
-
-  playCapture(): void {
-    this.play('Capture');
-  }
-
+  /**
+   * Simple move sound playback based on SAN string.
+   */
   playMoveSound(san: string): void {
-    if (san.includes('x')) {
-      this.playCapture();
-    } else {
-      this.playMove();
-    }
-  }
-
-  playCheck(): void {
-    this.play('Check');
-  }
-
-  playCheckmate(): void {
-    this.play('Checkmate');
-  }
-
-  playVictory(): void {
-    this.speakWithTTS('Victory');
-  }
-
-  playDefeat(): void {
-    this.speakWithTTS('Defeat');
-  }
-
-  playDraw(): void {
-    this.speakWithTTS('Draw');
-  }
-
-  playMatchFound(): void {
-    const now = Date.now();
-    if (now - this.lastMatchFoundTime < 3000) {
-      return;
-    }
-    this.lastMatchFoundTime = now;
-    this.speakWithTTS('Match Found');
-  }
-
-  playNotification(): void {
-    this.speakWithTTS('Notice');
+    if (san.includes('#')) this.playBoardEnd();
+    else if (san.includes('+')) this.play('Check');
+    else if (san.includes('x')) this.play('Capture');
+    else this.play('Move');
   }
 }

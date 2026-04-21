@@ -32,7 +32,7 @@ import {
   RematchAcceptedPayload,
   TIME_CONTROLS,
 } from '../../../core/models/game.model';
-import { Chess } from 'chess.js';
+import { Chess, Move } from 'chess.js';
 import { Config } from 'chessground/config';
 
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -92,6 +92,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
         this.displayFen.set(this.chess.fen());
         this.currentPly.set(g.moves.length);
         this.rebuildSanCache();
+        this.audioService.playBoardStart();
       }
 
       // Update CSS variable for layout sizing
@@ -370,28 +371,31 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     this.clearAbortCountdown();
   }
 
-  onBoardMove(event: { from: string; to: string; san: string; fen: string }): void {
+  onBoardMove(event: { move: Move; fen: string }): void {
     const g = this.game();
     if (!g) return;
 
+    const { move, fen } = event;
+
     if (this.isMyTurn()) {
-      const moveUci = event.from + event.to;
-      const piece = this.chess.get(event.from as any);
+      this.audioService.playChessMove(move);
+      const moveUci = move.from + move.to;
+      const piece = this.chess.get(move.from as any);
       const isPromotion =
         piece &&
         piece.type === 'p' &&
-        ((piece.color === 'w' && event.to[1] === '8') ||
-          (piece.color === 'b' && event.to[1] === '1'));
+        ((piece.color === 'w' && move.to[1] === '8') ||
+          (piece.color === 'b' && move.to[1] === '1'));
 
       if (isPromotion) {
-        this.gameService.sendMove(moveUci + 'q');
+        this.gameService.sendMove(moveUci + (move.promotion || 'q'));
       } else {
         this.gameService.sendMove(moveUci);
       }
 
       try {
-        const move = this.chess.move({ from: event.from, to: event.to, promotion: 'q' });
-        if (move) {
+        const result = this.chess.move({ from: move.from, to: move.to, promotion: 'q' });
+        if (result) {
           // Optimistically update local state if needed
         }
       } catch {
@@ -424,10 +428,17 @@ export class LiveGameComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (data.is_checkmate) this.audioService.playCheckmate();
-    else if (data.is_check) this.audioService.playCheck();
-    else if (data.is_draw || data.is_stalemate) this.audioService.playDraw();
-    else this.audioService.playMoveSound(data.san);
+    if (data.is_checkmate || data.is_draw || data.is_stalemate) {
+      this.audioService.playBoardEnd();
+    } else {
+      // Only play opponent's move sounds here. 
+      // User's move sound was already played in onBoardMove.
+      const g = this.game();
+      const isOpponentMove = g && data.turn === g.my_color;
+      if (isOpponentMove) {
+        this.audioService.playMoveSound(data.san);
+      }
+    }
 
     this.drawOfferState.set('none');
   }
@@ -437,13 +448,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     this.drawOfferState.set('none');
     const g = this.game();
     if (g) {
-      if (g.result === '1/2-1/2') this.audioService.playDraw();
-      else if (
-        (g.result === '1-0' && g.my_color === 'white') ||
-        (g.result === '0-1' && g.my_color === 'black')
-      ) {
-        this.audioService.playVictory();
-      } else this.audioService.playDefeat();
+      this.audioService.playBoardEnd();
 
       if (data.rating_change) {
         const change = g.my_color === 'white' ? data.rating_change.white : data.rating_change.black;

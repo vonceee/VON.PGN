@@ -192,7 +192,7 @@ export class Header implements OnInit, OnDestroy {
     } else {
       this.audioService.soundEnabled.set(true);
       this.audioService.setTheme(value as any);
-      this.audioService.playMove();
+      this.audioService.playNotification();
     }
   }
 

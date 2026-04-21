@@ -16,7 +16,7 @@ import { AudioService } from '../../../../core/services/audio.service';
 import { MoveNotationComponent  } from '@shared/chess';
 import { ChessBoardComponent  } from '@shared/chess';
 
-import { Chess } from 'chess.js';
+import { Chess, Move } from 'chess.js';
 import { Config } from 'chessground/config';
 import { Key } from 'chessground/types';
 
@@ -188,17 +188,19 @@ export class InteractiveBoardComponent {
     this.displayFen.set(this.chess.fen());
   }
 
-  onUserMove(event: { from: string; to: string; san: string; fen: string }) {
+  onUserMove(event: { move: Move; fen: string }) {
     try {
+      const { move, fen } = event;
+      this.audioService.playChessMove(move);
       // Truncate history if moving from a previous position
       this.moveHistory = this.moveHistory.slice(0, this.currentPly());
       this.studyPositions = this.studyPositions.slice(0, this.currentPly() + 1);
       this.studyShapes = this.studyShapes.slice(0, this.currentPly() + 1);
       this.studyInstructions = this.studyInstructions.slice(0, this.currentPly() + 1);
 
-      this.moveHistory.push(event.san);
+      this.moveHistory.push(move.san);
       this.currentPly.update(p => p + 1);
-      this.studyPositions.push(event.fen);
+      this.studyPositions.push(fen);
       this.studyShapes.push([]);
       this.studyInstructions.push('');
 

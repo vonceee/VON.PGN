@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, inject, signal, ViewChild, computed } fro
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Chess } from 'chess.js';
+import { Chess, Move } from 'chess.js';
 import { EngineService } from '../../../core/services/engine.service';
 import { ChessBoardComponent } from '@shared/chess';
 import { ButtonComponent } from '@shared/ui';
@@ -207,6 +207,7 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     this.engineEval.set('0.0');
     this.isEngineThinking.set(false);
     this.gameStateCounter.update((c) => c + 1);
+    this.audioService.playBoardStart();
 
     this.startTimer();
 
@@ -215,12 +216,14 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     }
   }
 
-  onUserMove(event: { from: string; to: string; san: string; fen: string }) {
+  onUserMove(event: { move: Move; fen: string }) {
     if (this.status() !== 'playing' || !this.isMyTurn()) return;
 
+    const { move, fen } = event;
+    this.audioService.playChessMove(move);
     // Update local state
-    this.game.load(event.fen);
-    this.pgnMoves.update((moves) => [...moves, event.san]);
+    this.game.load(fen);
+    this.pgnMoves.update((moves) => [...moves, move.san]);
     this.displayPly.set(this.pgnMoves().length);
     this.isEngineThinking.set(true);
     this.gameStateCounter.update((c) => c + 1);
@@ -283,11 +286,13 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
   private checkGameOver(): boolean {
     if (this.game.isCheckmate()) {
       this.status.set('mate');
+      this.audioService.playBoardEnd();
       this.stopTimer();
       return true;
     }
     if (this.game.isDraw() || this.game.isStalemate() || this.game.isThreefoldRepetition()) {
       this.status.set('draw');
+      this.audioService.playBoardEnd();
       this.stopTimer();
       return true;
     }

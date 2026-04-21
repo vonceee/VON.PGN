@@ -192,7 +192,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() preMoveEnabled: boolean = true;
 
   @Output() fenChange = new EventEmitter<string>();
-  @Output() moveMade = new EventEmitter<{ from: string; to: string; san: string; fen: string }>();
+  @Output() moveMade = new EventEmitter<{ move: Move; fen: string }>();
   @Output() sizeChange = new EventEmitter<number>();
   @Output() shapeDrawn = new EventEmitter<any[]>();
   @Output() preMoveCancelled = new EventEmitter<void>();
@@ -462,13 +462,10 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     try {
       const move = this.chess.move({ from, to, promotion: promotion as any });
       if (move) {
-        this.audioService.playMoveSound(move.san);
         this.syncBoard();
         this.fenChange.emit(this.chess.fen());
         this.moveMade.emit({
-          from,
-          to,
-          san: move.san,
+          move,
           fen: this.chess.fen(),
         });
       }

@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Puzzle } from '../../../../core/services/tactics.service';
-import { Chess } from 'chess.js';
+import { Chess, Move } from 'chess.js';
 import { Config } from 'chessground/config';
 import { AudioService } from '../../../../core/services/audio.service';
 import { ChessBoardComponent } from '@shared/chess';
@@ -127,19 +127,22 @@ export class TacticsBoardComponent implements OnChanges {
     };
   }
 
-  onBoardMove(event: { from: string; to: string; san: string; fen: string }) {
+  onBoardMove(event: { move: Move; fen: string }) {
     if (this.gameMode) return;
     if (this.status !== 'playing') return;
 
+    const { move, fen } = event;
+    this.audioService.playChessMove(move);
+
     const expectedMove = this.solutionMoves[this.solutionPly];
-    const userMoveStr = `${event.from}${event.to}`;
+    const userMoveStr = `${move.from}${move.to}`;
 
     if (expectedMove.startsWith(userMoveStr)) {
       this.chess.move(this.parseUciMove(expectedMove));
       this.solutionPly++;
       
-      this.moveMade.emit(event.san);
-      this.currentFen = this.chess.fen(); // Safe because of new guards in ChessBoardComponent
+      this.moveMade.emit(move.san);
+      this.currentFen = fen; // Safe because of new guards in ChessBoardComponent
 
       if (this.solutionPly >= this.solutionMoves.length) {
         this.status = 'success';
