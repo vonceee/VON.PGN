@@ -80,21 +80,30 @@ import { Router } from '@angular/router';
         }
       </div>
 
-      <!-- Mobile Navigation Links -->
-      <nav class="flex flex-col py-2">
-        @for (link of navLinks; track link.path) {
-          <a
-            [routerLink]="link.path"
-            (click)="close.emit()"
-            class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
-          >
-            {{ link.label }}
-          </a>
+      <!-- Mobile Navigation Sections -->
+      <div class="flex flex-col py-2">
+        @for (group of linkGroups; track group.title) {
+          <div class="px-4 py-2 mt-2">
+            <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ group.title }}</span>
+          </div>
+          @for (link of group.links; track link.path) {
+            <a
+              [routerLink]="link.path"
+              (click)="close.emit()"
+              class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold transition-colors flex items-center justify-between group"
+            >
+              <span class="text-slate-900 dark:text-white">{{ link.label }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-slate-300 dark:text-slate-700 group-hover:text-cyan-500 transition-colors">
+                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+              </svg>
+            </a>
+          }
         }
-      </nav>
+      </div>
 
       <!-- Mobile Auth Section -->
       <div class="border-t border-slate-200 dark:border-slate-800 py-2">
+
         @if (authService.isAuthenticated()) {
           <a
             routerLink="/profile"
@@ -257,18 +266,34 @@ export class MobileMenuComponent {
   pieceSets = PIECE_SETS;
   soundThemes = SOUND_THEMES;
 
-  navLinks = [
-    { path: '/play', label: 'Play' },
-    { path: '/study', label: 'Study' },
-    { path: '/roadmap', label: 'Roadmap' },
-    { path: '/tactics', label: 'Tactics' },
-    { path: '/tactics/leaderboard', label: 'Rankings' },
-    { path: '/explorer', label: 'Opening Explorer' },
-    { path: '/events', label: 'Tournaments' },
-    { path: '/arena', label: 'Arena' },
-    { path: '/broadcasts', label: 'Broadcasts' },
-    { path: '/coaches', label: 'Coaches' },
-    { path: '/academy', label: 'Academy' },
+  linkGroups = [
+    {
+      title: 'Play',
+      links: [
+        { path: '/play', label: 'Play' },
+        { path: '/tactics', label: 'Tactics' },
+        { path: '/tactics/leaderboard', label: 'Rankings' },
+        { path: '/tv', label: 'Watch' },
+        { path: '/explorer', label: 'Opening Explorer' },
+      ],
+    },
+    {
+      title: 'Learn',
+      links: [
+        { path: '/study', label: 'Study' },
+        { path: '/roadmap', label: 'Roadmap' },
+        { path: '/academy', label: 'Academy' },
+        { path: '/coaches', label: 'Coaches' },
+      ],
+    },
+    {
+      title: 'Compete',
+      links: [
+        { path: '/events', label: 'Tournaments' },
+        { path: '/arena', label: 'Arena' },
+        { path: '/broadcasts', label: 'Broadcasts' },
+      ],
+    },
   ];
 
   authLinks = [

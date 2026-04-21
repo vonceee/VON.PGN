@@ -71,6 +71,32 @@
             >Watch</span
           >
         </a>
+      </div>
+    </div>
+
+    <!-- <a routerLink="/explorer" class="hover:text-cyan-400">Opening Explorer</a> -->
+    <!-- Learn Dropdown -->
+    <div class="group">
+      <a
+        appLink
+        routerLink="/study"
+        class="flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg transition-colors"
+      >
+        Learn
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="w-4 h-4 transition-transform group-hover:rotate-180"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.22 8.574a.75.75 0 0 1 1.06 0L10 11.819l3.72-3.245a.75.75 0 1 1 1.04 1.084l-4.25 3.5a.75.75 0 0 1-1.04 0l-4.25-3.5a.75.75 0 0 1 0-1.06Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </a>
+      <div class="nav-dropdown flex flex-col">
         <a
           routerLink="/study"
           class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
@@ -80,17 +106,17 @@
             >Study</span
           >
         </a>
+        <a
+          routerLink="/roadmap"
+          class="px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-white/5 flex items-center transition-colors group/item"
+        >
+          <span
+            class="text-sm text-slate-900 dark:text-white group-hover/item:text-cyan-500 transition-colors"
+            >Roadmap</span
+          >
+        </a>
       </div>
     </div>
-
-    <!-- <a routerLink="/explorer" class="hover:text-cyan-400">Opening Explorer</a> -->
-    <a
-      appLink
-      routerLink="/roadmap"
-      class="flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg transition-colors"
-    >
-      Roadmap
-    </a>
 
     <!-- Tournament Dropdown -->
     <div class="group">

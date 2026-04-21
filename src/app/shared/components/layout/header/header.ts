@@ -62,8 +62,6 @@ export class Header implements OnInit, OnDestroy {
 
   isProfileDropdownOpen = signal(false);
   isMobileMenuOpen = signal(false);
-  isTournamentDropdownOpen = signal(false);
-  isRoadmapDropdownOpen = signal(false);
   searchQuery = signal('');
   searchResults = signal<UserSearchResult[]>([]);
   isSearchOpen = signal(false);
@@ -167,20 +165,7 @@ export class Header implements OnInit, OnDestroy {
     this.isMobileMenuOpen.update((v) => !v);
   }
 
-  toggleTournamentDropdown() {
-    this.isTournamentDropdownOpen.update((v) => !v);
-    this.isRoadmapDropdownOpen.set(false);
-  }
 
-  toggleRoadmapDropdown() {
-    this.isRoadmapDropdownOpen.update((v) => !v);
-    this.isTournamentDropdownOpen.set(false);
-  }
-
-  closeNavDropdowns() {
-    this.isTournamentDropdownOpen.set(false);
-    this.isRoadmapDropdownOpen.set(false);
-  }
 
   logout() {
     this.authService.logout();
@@ -220,7 +205,6 @@ export class Header implements OnInit, OnDestroy {
     ) {
       this.isSearchOpen.set(false);
     }
-    this.closeNavDropdowns();
   }
 
   getConnectionStatus(): string {
