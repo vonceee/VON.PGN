@@ -8,6 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "eslint . --fix",
+    "sitemap": "node scripts/generate-sitemap.mjs",
+    "postbuild": "npm run sitemap",
     "serve:ssr:vonchess": "node dist/vonchess/server/server.mjs",
     "build:cf": "ng build",
     "deploy:cf": "npm run build:cf && wrangler deploy",
