@@ -35,6 +35,20 @@ import {
 import { Chess } from 'chess.js';
 import { Config } from 'chessground/config';
 
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  heroChevronDoubleLeft,
+  heroChevronLeft,
+  heroChevronRight,
+  heroChevronDoubleRight,
+  heroInformationCircle,
+  heroXMark,
+  heroCheck,
+  heroArrowPath,
+  heroPlus,
+  heroFlag,
+} from '@ng-icons/heroicons/outline';
+
 @Component({
   selector: 'app-live-game',
   standalone: true,
@@ -47,6 +61,21 @@ import { Config } from 'chessground/config';
     ChessBoardComponent,
     ButtonComponent,
     LoadingComponent,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      heroChevronDoubleLeft,
+      heroChevronLeft,
+      heroChevronRight,
+      heroChevronDoubleRight,
+      heroInformationCircle,
+      heroXMark,
+      heroCheck,
+      heroArrowPath,
+      heroPlus,
+      heroFlag,
+    }),
   ],
   templateUrl: './live-game.component.html',
 })
@@ -548,6 +577,10 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   offerDraw(): void {
     this.drawOfferState.set('iOffered');
     this.gameService.offerDraw();
+  }
+  cancelDrawOffer(): void {
+    this.gameService.cancelDrawOffer();
+    this.drawOfferState.set('none');
   }
   acceptDraw(): void {
     this.gameService.acceptDraw();

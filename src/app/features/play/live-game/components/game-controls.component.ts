@@ -1,94 +1,82 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, computed } from '@angular/core';
 import { GameState } from '../../../../core/models/game.model';
-import { ButtonComponent  } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  heroXMark,
+  heroFlag,
+  heroHandRaised,
+  heroCheck,
+  heroArrowPath,
+  heroPlus,
+} from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-game-controls',
   standalone: true,
-  imports: [ButtonComponent],
+  imports: [ButtonComponent, NgIcon],
+  providers: [
+    provideIcons({
+      heroXMark,
+      heroFlag,
+      heroHandRaised,
+      heroCheck,
+      heroArrowPath,
+      heroPlus,
+    }),
+  ],
   template: `
-    <div class="p-2 border-t border-border-theme flex flex-col items-center w-full">
+    <div class="p-4 flex flex-col items-center w-full">
       @if (game()?.status === 'active') {
-        <div class="flex items-center justify-center gap-1 w-full">
+        <div class="flex items-center justify-center gap-2 w-full">
           @if (canAbort()) {
-            <button
-              appButton
-              variant="ghost"
-              size="sm"
-              (click)="abort.emit()"
-              title="Abort"
-              class="w-full"
-            >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+            <button appButton variant="ghost" size="sm" (click)="abort.emit()" title="Abort">
+              <ng-icon name="heroXMark" class="text-xl"></ng-icon>
             </button>
           } @else {
-            <div class="flex gap-1 w-full">
+            <div class="flex items-center justify-center gap-2">
               @if (drawOfferFromOpponent()) {
-                <div
-                  class="flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300"
-                >
-                  <span
-                    class="text-[10px] uppercase font-black tracking-wider text-cyan-400 opacity-80 whitespace-nowrap"
-                    >Draw Offered</span
+                <div class="flex items-center gap-1 animate-in slide-in-from-right-2 duration-200">
+                  <button
+                    appButton
+                    variant="primary"
+                    size="sm"
+                    (click)="acceptDraw.emit()"
+                    title="Accept Draw"
                   >
-                  <div class="flex gap-1">
-                    <button
-                      appButton
-                      variant="primary"
-                      size="sm"
-                      (click)="acceptDraw.emit()"
-                      title="Accept Draw"
-                    >
-                      <svg
-                        class="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="3"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                    </button>
-                    <button
-                      appButton
-                      variant="outline"
-                      size="sm"
-                      (click)="declineDraw.emit()"
-                      title="Decline Draw"
-                    >
-                      <svg
-                        class="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="3"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
-                    </button>
-                  </div>
+                    <ng-icon name="heroCheck" class="text-lg"></ng-icon>
+                  </button>
+                  <button
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    (click)="declineDraw.emit()"
+                    title="Decline Draw"
+                  >
+                    <ng-icon name="heroXMark" class="text-lg"></ng-icon>
+                  </button>
                 </div>
               } @else if (iOfferedDraw()) {
-                <div
-                  class="flex-1 text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme"
-                >
-                  Draw Offered
+                <div class="flex items-center gap-1 animate-in slide-in-from-right-2 duration-200">
+                  <button
+                    appButton
+                    variant="primary"
+                    size="sm"
+                    [disabled]="true"
+                    title="Draw Offered"
+                    class="opacity-50 pointer-events-none"
+                  >
+                    <ng-icon name="heroHandRaised" class="text-xl"></ng-icon>
+                  </button>
+                  <button
+                    appButton
+                    variant="ghost"
+                    size="sm"
+                    (click)="cancelDraw.emit()"
+                    title="Cancel draw offer"
+                  >
+                    <ng-icon name="heroXMark" class="text-lg"></ng-icon>
+                  </button>
                 </div>
               } @else {
                 @if (canOfferDraw()) {
@@ -99,7 +87,7 @@ import { ButtonComponent  } from '@shared/ui';
                     (click)="offerDraw.emit()"
                     title="Offer Draw"
                   >
-                    1/2
+                    <ng-icon name="heroHandRaised" class="text-xl"></ng-icon>
                   </button>
                 }
 
@@ -110,25 +98,11 @@ import { ButtonComponent  } from '@shared/ui';
                     size="sm"
                     (click)="showResignConfirm.set(true)"
                     title="Resign"
-                    class="flex-1"
                   >
-                    <svg
-                      class="w-4 h-4 text-red-500/70"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                      <line x1="4" y1="22" x2="4" y2="15"></line>
-                    </svg>
+                    <ng-icon name="heroFlag" class="text-xl"></ng-icon>
                   </button>
                 } @else {
-                  <div
-                    class="flex-1 flex gap-1 animate-in fade-in slide-in-from-right-2 duration-200"
-                  >
+                  <div class="flex items-center gap-1 animate-in slide-in-from-right-2 duration-200">
                     <button
                       appButton
                       variant="danger"
@@ -136,37 +110,16 @@ import { ButtonComponent  } from '@shared/ui';
                       (click)="resign.emit(); showResignConfirm.set(false)"
                       title="Confirm Resign"
                     >
-                      <svg
-                        class="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="3"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
+                      <ng-icon name="heroFlag" class="text-lg"></ng-icon>
                     </button>
                     <button
                       appButton
-                      variant="outline"
+                      variant="ghost"
                       size="sm"
                       (click)="showResignConfirm.set(false)"
                       title="Cancel"
                     >
-                      <svg
-                        class="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="3"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
+                      <ng-icon name="heroXMark" class="text-lg"></ng-icon>
                     </button>
                   </div>
                 }
@@ -176,37 +129,29 @@ import { ButtonComponent  } from '@shared/ui';
         </div>
       } @else if (game()?.status === 'completed' || game()?.status === 'aborted') {
         <!-- Rematch Section -->
-        <div class="w-full flex gap-1.5">
+        <div class="w-full flex justify-center gap-1.5">
           @if (!game()?.arena_id) {
             @if (!myRematchOffered() && !rematchOfferFrom()) {
-              <button appButton variant="ghost" size="md" (click)="offerRematch.emit()">Rematch</button>
+              <button appButton variant="ghost" size="md" (click)="offerRematch.emit()">
+                <ng-icon name="heroArrowPath" class="text-lg mr-2"></ng-icon>
+                Rematch
+              </button>
             } @else if (myRematchOffered()) {
               <div
-                class="text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme"
+                class="flex-1 text-[10px] uppercase font-black text-slate-500 text-center py-2 animate-pulse bg-slate-400/5 rounded border border-border-theme"
               >
                 Waiting...
               </div>
             } @else if (rematchOfferFrom()) {
-              <div class="flex-1 flex gap-1">
+              <div class="flex gap-1">
                 <button
                   appButton
                   variant="primary"
                   size="md"
                   (click)="acceptRematch.emit()"
-                  class="flex-1"
                   title="Accept"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                  <ng-icon name="heroCheck" class="text-lg"></ng-icon>
                 </button>
                 <button
                   appButton
@@ -215,23 +160,19 @@ import { ButtonComponent  } from '@shared/ui';
                   (click)="declineRematch.emit()"
                   title="Decline"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
+                  <ng-icon name="heroXMark" class="text-lg"></ng-icon>
                 </button>
               </div>
             }
 
-            <button appButton variant="ghost" size="md" (click)="newOpponent.emit()" title="New opponent">
+            <button
+              appButton
+              variant="ghost"
+              size="md"
+              (click)="newOpponent.emit()"
+              title="New opponent"
+            >
+              <ng-icon name="heroPlus" class="text-lg mr-2"></ng-icon>
               New Game
             </button>
           }
@@ -253,6 +194,7 @@ export class GameControlsComponent {
   acceptDraw = output();
   declineDraw = output();
   resign = output();
+  cancelDraw = output();
   offerRematch = output();
   acceptRematch = output();
   declineRematch = output();
@@ -267,4 +209,3 @@ export class GameControlsComponent {
     return g.my_color === 'white' ? movesCount === 0 : movesCount <= 1;
   });
 }
-

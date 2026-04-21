@@ -225,6 +225,15 @@ export class GameService implements OnDestroy {
     }
   }
 
+  cancelDrawOffer(): void {
+    const game = this.gameState();
+    if (this.socket() && game) {
+      this.socket()?.emit('cancel_draw_offer', game.id);
+      // Optimistically update local state
+      this.gameState.update(g => g ? ({ ...g, draw_offered_by: null }) : null);
+    }
+  }
+
   acceptDraw(): void {
     const game = this.gameState();
     if (this.socket() && game) {

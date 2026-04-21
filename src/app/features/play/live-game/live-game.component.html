@@ -46,6 +46,7 @@
                 [rematchOfferFrom]="rematchOfferFrom()"
                 (abort)="abort()"
                 (offerDraw)="offerDraw()"
+                (cancelDraw)="cancelDrawOffer()"
                 (acceptDraw)="acceptDraw()"
                 (declineDraw)="declineDraw()"
                 (resign)="confirmResign()"
@@ -111,18 +112,7 @@
                     (click)="showMobileResult.set(false)"
                     class="absolute top-3 right-3 p-1 hover:text-white transition-colors"
                   >
-                    <svg
-                      class="w-5 h-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
+                    <ng-icon name="heroXMark" class="text-xl"></ng-icon>
                   </button>
                   <div
                     class="text-3xl tracking-tighter mb-1"
@@ -174,16 +164,7 @@
                             (click)="declineRematch()"
                             class="shrink-0"
                           >
-                            <svg
-                              class="w-5 h-5"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                            >
-                              <line x1="18" y1="6" x2="6" y2="18"></line>
-                              <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
+                            <ng-icon name="heroXMark" class="text-xl"></ng-icon>
                           </button>
                         </div>
                       }
@@ -246,7 +227,7 @@
               @if (g.status === 'completed' || g.status === 'aborted') {
                 <div class="premium-card rounded-xl p-4 text-center">
                   <div
-                    class="text-2xl"
+                    class="text-2xl font-semibold"
                     [class]="g.status === 'aborted' ? '' : getResultClass(g.result)"
                   >
                     {{ g.status === 'aborted' ? '½-½' : g.result || '½-½' }}
@@ -297,16 +278,7 @@
                             title="Decline"
                             class="shrink-0"
                           >
-                            <svg
-                              class="w-5 h-5"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                            >
-                              <line x1="18" y1="6" x2="6" y2="18"></line>
-                              <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
+                            <ng-icon name="heroXMark" class="text-xl"></ng-icon>
                           </button>
                         </div>
                       }
@@ -389,18 +361,7 @@
             (click)="goToStart()"
             class="opacity-70 hover:opacity-100"
           >
-            <svg
-              class="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="11 17 6 12 11 7" />
-              <polyline points="18 17 13 12 18 7" />
-            </svg>
+            <ng-icon name="heroChevronDoubleLeft" class="text-xl"></ng-icon>
           </button>
           <button
             appButton
@@ -409,17 +370,7 @@
             (click)="previousMove()"
             class="opacity-70 hover:opacity-100"
           >
-            <svg
-              class="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
+            <ng-icon name="heroChevronLeft" class="text-xl"></ng-icon>
           </button>
           <button
             appButton
@@ -428,17 +379,7 @@
             (click)="nextMove()"
             class="opacity-70 hover:opacity-100"
           >
-            <svg
-              class="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
+            <ng-icon name="heroChevronRight" class="text-xl"></ng-icon>
           </button>
           <button
             appButton
@@ -447,18 +388,7 @@
             (click)="goToEnd()"
             class="opacity-70 hover:opacity-100"
           >
-            <svg
-              class="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <polyline points="13 17 18 12 13 7" />
-              <polyline points="6 17 11 12 6 7" />
-            </svg>
+            <ng-icon name="heroChevronDoubleRight" class="text-xl"></ng-icon>
           </button>
 
           <!-- Result Info Toggle (Only if game ended) -->
@@ -471,19 +401,7 @@
               [class.text-cyan-400]="showMobileResult()"
               class="opacity-70 hover:opacity-100"
             >
-              <svg
-                class="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="16" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-              </svg>
+              <ng-icon name="heroInformationCircle" class="text-xl"></ng-icon>
             </button>
           }
         </div>
@@ -499,6 +417,7 @@
             [rematchOfferFrom]="rematchOfferFrom()"
             (abort)="abort()"
             (offerDraw)="offerDraw()"
+            (cancelDraw)="cancelDrawOffer()"
             (acceptDraw)="acceptDraw()"
             (declineDraw)="declineDraw()"
             (resign)="confirmResign()"
