@@ -101,11 +101,6 @@ import { Router } from '@angular/router';
             (click)="close.emit()"
             class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5"
           >
-            <div
-              class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-white uppercase"
-            >
-              {{ userService.currentUser()?.displayName?.charAt(0) || 'V' }}
-            </div>
             <span class="font-semibold">Profile</span>
           </a>
 
