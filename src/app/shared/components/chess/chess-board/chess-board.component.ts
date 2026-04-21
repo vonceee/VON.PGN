@@ -314,6 +314,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
           free: false,
           color: this.interactive ? 'both' : undefined,
           dests: this.interactive ? this.getLegalMoves() : new Map(),
+          showDests: true,
           events: {
             after: (orig: Key, dest: Key, meta: MoveMetadata) => this.onMove(orig, dest, meta),
           },
@@ -327,7 +328,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
           showGhost: true,
         },
         selectable: {
-          enabled: false,
+          enabled: this.interactive,
         },
         drawable: {
           enabled: true,
@@ -380,6 +381,10 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       movable: {
         color: this.interactive ? 'both' : undefined,
         dests: this.interactive ? this.getLegalMoves() : new Map(),
+        showDests: true,
+      },
+      selectable: {
+        enabled: this.interactive,
       },
       draggable: {
         enabled: this.interactive,
