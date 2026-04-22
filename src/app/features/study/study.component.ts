@@ -12,6 +12,11 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudyService } from '../../core/services/study.service';
+import { Dialog, DialogModule } from '@angular/cdk/dialog';
+import { AddChapterDialogComponent } from './dialogs/add-chapter-dialog/add-chapter-dialog.component';
+import { ImportPgnDialogComponent } from './dialogs/import-pgn-dialog/import-pgn-dialog.component';
+import { StudySettingsDialogComponent } from './dialogs/study-settings-dialog/study-settings-dialog.component';
+import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ChessBoardComponent } from '@shared/chess';
 import { MoveNotationComponent } from '@shared/chess';
@@ -22,13 +27,13 @@ import { MoveNode } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 import { BackLinkComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroChevronRight } from '@ng-icons/heroicons/outline';
+import { heroChevronRight, heroCog6Tooth } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-study',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent],
-  providers: [provideIcons({ heroChevronRight })],
+  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent, DialogModule, NgIconComponent],
+  providers: [provideIcons({ heroChevronRight, heroCog6Tooth })],
   templateUrl: './study.component.html',
   host: {
     class: 'absolute inset-0 overflow-hidden',
@@ -39,6 +44,8 @@ export class StudyComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
+  private dialog = inject(Dialog);
+  private toastService = inject(ToastService);
 
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
@@ -408,16 +415,23 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   createChapter() {
     if (!this.isOwner()) return;
-    const name = prompt('Chapter Name:', `Chapter ${(this.study()?.chapters?.length ?? 0) + 1}`);
-    if (!name) return;
-    const s = this.study();
-    if (!s) return;
 
-    this.studyService.addChapter(s.id, name).subscribe({
-      next: (newChapter) => {
-        this.studyService.getStudy(s.id);
-        this.studyService.currentChapter.set(newChapter);
-      },
+    const dialogRef = this.dialog.open<string>(AddChapterDialogComponent, {
+      data: { defaultName: `Chapter ${(this.study()?.chapters?.length ?? 0) + 1}` }
+    });
+
+    dialogRef.closed.subscribe((name) => {
+      if (!name) return;
+      const s = this.study();
+      if (!s) return;
+
+      this.studyService.addChapter(s.id, name).subscribe({
+        next: (newChapter) => {
+          this.studyService.getStudy(s.id);
+          this.studyService.currentChapter.set(newChapter);
+          this.toastService.show('Chapter created successfully!', 'success');
+        },
+      });
     });
   }
 
@@ -426,20 +440,23 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   importPgn() {
-    const pgn = prompt('Paste your Lichess Study PGN here:');
-    if (!pgn) return;
-    const s = this.study();
-    if (!s) return;
+    const dialogRef = this.dialog.open<string>(ImportPgnDialogComponent);
 
-    this.studyService.importPgn(s.id, pgn).subscribe({
-      next: (res) => {
-        this.studyService.getStudy(s.id); // Refresh study
-        alert(res.message || 'Import successful!');
-      },
-      error: (err) => {
-        console.error('Import failed:', err);
-        alert('Failed to import PGN. Please check the format.');
-      },
+    dialogRef.closed.subscribe((pgn) => {
+      if (!pgn) return;
+      const s = this.study();
+      if (!s) return;
+
+      this.studyService.importPgn(s.id, pgn).subscribe({
+        next: (res) => {
+          this.studyService.getStudy(s.id); // Refresh study
+          this.toastService.show(res.message || 'Import successful!', 'success');
+        },
+        error: (err) => {
+          console.error('Import failed:', err);
+          this.toastService.show('Failed to import PGN. Please check the format.', 'error');
+        },
+      });
     });
   }
 
@@ -447,6 +464,35 @@ export class StudyComponent implements OnInit, OnDestroy {
     const s = this.study();
     if (!s) return;
     this.studyService.exportPgn(s.id);
+  }
+
+  openSettings() {
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
+
+    const dialogRef = this.dialog.open(StudySettingsDialogComponent, {
+      data: {
+        name: s.name,
+        description: s.description,
+        visibility: s.visibility
+      }
+    });
+
+    dialogRef.closed.subscribe((result: any) => {
+      if (result) {
+        this.studyService.updateStudy(s.id, result).subscribe({
+          next: () => {
+            this.studyService.getStudy(s.id); // Refresh study data
+            this.toastService.show('Study settings updated!', 'success');
+          },
+          error: (err) => {
+            console.error('Failed to update study settings:', err);
+            this.toastService.show('Failed to update settings.', 'error');
+          }
+        });
+      }
+    });
   }
 
   onBoardSizeChange(size: number) {

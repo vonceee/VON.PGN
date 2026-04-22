@@ -1,6 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import { Router } from '@angular/router';
+import { ToastService } from './toast.service';
 import { io, Socket } from 'socket.io-client';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
@@ -20,6 +22,8 @@ import {
 export class StudyService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
+  private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
 
   private apiUrl = environment.apiUrl;
@@ -64,6 +68,10 @@ export class StudyService {
     return this.http.post(`${this.apiUrl}/studies`, { name, description, visibility });
   }
 
+  updateStudy(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/studies/${id}`, data);
+  }
+
   getStudy(id: number): void {
     this.isLoading.set(true);
     this.http.get<{ data: Study }>(`${this.apiUrl}/studies/${id}`).subscribe({
@@ -78,7 +86,20 @@ export class StudyService {
         this.isLoading.set(false);
         this.connectSocket(res.data);
       },
-      error: () => this.isLoading.set(false),
+      error: (err) => {
+        this.isLoading.set(false);
+        console.error('[StudyService] Failed to fetch study:', err);
+        
+        if (err.status === 403) {
+          this.toastService.show('This study is private.', 'error');
+        } else if (err.status === 404) {
+          this.toastService.show('Study not found.', 'error');
+        } else {
+          this.toastService.show('Failed to load study.', 'error');
+        }
+        
+        this.router.navigate(['/study']);
+      },
     });
   }
 

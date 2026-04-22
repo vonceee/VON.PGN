@@ -2,20 +2,53 @@ import { Component, OnInit, inject, signal, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { StudyService } from '../../../core/services/study.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { Dialog, DialogModule } from '@angular/cdk/dialog';
+import { CreateStudyDialogComponent } from '../dialogs/create-study-dialog/create-study-dialog.component';
 import { FormsModule } from '@angular/forms';
-import { SectionHeadingComponent } from '@shared/ui';
+import { SectionHeadingComponent, BadgeComponent } from '@shared/ui';
 import { ButtonComponent } from '@shared/ui';
+import { effect } from '@angular/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-study-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent],
+  imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent, DialogModule, BadgeComponent, NgIconComponent],
+  providers: [provideIcons({ heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash })],
   template: `
     <div class="mx-auto p-4 md:p-8">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <app-section-heading text="Chess" highlight="Study"></app-section-heading>
 
-        <button appButton variant="primary" (click)="createNewStudy()">Create New Study</button>
+        <div class="flex items-center gap-2">
+           <!-- Tabs -->
+           <div class="flex bg-zinc-100 dark:bg-zinc-800/50 p-1 rounded-xl mr-4">
+             <button 
+               (click)="activeTab.set('all')"
+               [class]="activeTab() === 'all' ? 'bg-white dark:bg-zinc-700 shadow-sm text-cyan-500' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+               class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all"
+             >
+               <ng-icon name="heroGlobeAlt"></ng-icon>
+               Public
+             </button>
+             @if (isLoggedIn()) {
+               <button 
+                 (click)="activeTab.set('my')"
+                 [class]="activeTab() === 'my' ? 'bg-white dark:bg-zinc-700 shadow-sm text-cyan-500' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
+                 class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all"
+               >
+                 <ng-icon name="heroUser"></ng-icon>
+                 My Studies
+               </button>
+             }
+           </div>
+
+          @if (isLoggedIn()) {
+            <button appButton variant="primary" (click)="createNewStudy()">Create New Study</button>
+          }
+        </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -26,7 +59,20 @@ import { ButtonComponent } from '@shared/ui';
             <!-- Card Body -->
             <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
               <div class="flex items-start justify-between gap-2 mb-2">
-                <h2 class="text-base md:text-2xl font-bold">{{ study.name }}</h2>
+                <div class="flex flex-col gap-1">
+                  <h2 class="text-base md:text-2xl font-bold">{{ study.name }}</h2>
+                  <div class="flex gap-2">
+                    @if (study.visibility === 'private') {
+                      <app-badge customClass="!bg-red-500/10 !text-red-500 !border-red-500/20 border">
+                        <ng-icon name="heroLockClosed" class="mr-1"></ng-icon> Private
+                      </app-badge>
+                    } @else if (study.visibility === 'unlisted') {
+                      <app-badge customClass="!bg-amber-500/10 !text-amber-500 !border-amber-500/20 border">
+                        <ng-icon name="heroEyeSlash" class="mr-1"></ng-icon> Unlisted
+                      </app-badge>
+                    }
+                  </div>
+                </div>
                 @if (study.updated_at) {
                   <span
                     class="text-xs text-slate-400 whitespace-nowrap shrink-0 mt-1"
@@ -103,26 +149,49 @@ import { ButtonComponent } from '@shared/ui';
 })
 export class StudyListComponent implements OnInit {
   private studyService = inject(StudyService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
-
+  private dialog = inject(Dialog);
   studies = signal<any[]>([]);
+  activeTab = signal<'all' | 'my'>('all');
+  isLoggedIn = signal(false);
+
+  constructor() {
+    effect(() => {
+      this.isLoggedIn.set(!!this.authService.currentUser());
+      if (!this.isLoggedIn() && this.activeTab() === 'my') {
+        this.activeTab.set('all');
+      }
+    }, { allowSignalWrites: true });
+
+    effect(() => {
+      this.loadStudies();
+    });
+  }
 
   ngOnInit() {
+    // Initial load is handled by effect
+  }
+
+  loadStudies() {
     if (isPlatformBrowser(this.platformId)) {
-      this.studyService.getStudies().subscribe((res) => {
+      this.studyService.getStudies(this.activeTab() === 'my').subscribe((res) => {
         this.studies.set(res.data);
       });
     }
   }
 
   createNewStudy() {
-    const name = prompt('Study name:');
-    if (name) {
-      this.studyService.createStudy(name).subscribe((res) => {
-        this.router.navigate(['/study', res.data.id]);
-      });
-    }
+    const dialogRef = this.dialog.open<{ name: string; visibility: string }>(CreateStudyDialogComponent);
+
+    dialogRef.closed.subscribe((result) => {
+      if (result && result.name) {
+        this.studyService.createStudy(result.name, result.visibility).subscribe((res) => {
+          this.router.navigate(['/study', res.data.id]);
+        });
+      }
+    });
   }
 
   formatDate(dateStr: string): string {

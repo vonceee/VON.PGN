@@ -15,12 +15,26 @@
         </div>
 
         <div>
-          <h2
-            class="px-5 py-2 mt-2 font-black select-none truncate cursor-pointer hover:text-cyan-600"
-            [title]="s.name"
-          >
-            {{ s.name }}
-          </h2>
+          <div class="flex items-center justify-between px-5 mt-2">
+            <h2
+              class="font-black select-none truncate cursor-pointer hover:text-cyan-600"
+              [title]="s.name"
+            >
+              {{ s.name }}
+            </h2>
+            @if (isOwner()) {
+              <button
+                appButton
+                variant="ghost"
+                size="none"
+                (click)="openSettings()"
+                class="p-1 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all"
+                title="Study Settings"
+              >
+                <ng-icon name="heroCog6Tooth" class="text-lg"></ng-icon>
+              </button>
+            }
+          </div>
         </div>
 
         <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-2">
