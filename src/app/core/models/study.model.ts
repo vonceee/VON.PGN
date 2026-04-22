@@ -14,13 +14,34 @@ export interface Study {
   updated_at: string;
 }
 
+export type GlyphId = 1 | 2 | 3 | 4 | 5 | 6;
+
+export const GLYPH_MAPPING: Record<GlyphId, { symbol: string; name: string; class: string }> = {
+  1: { symbol: '?!', name: 'Interesting move', class: 'interesting' },
+  2: { symbol: '??', name: 'Blunder', class: 'mistake' },
+  3: { symbol: '!!', name: 'Brilliant move', class: 'brilliant' },
+  4: { symbol: '?', name: 'Inaccuracy', class: 'inaccuracy' },
+  5: { symbol: '⊕', name: 'Good move', class: 'good' },
+  6: { symbol: '−⊕', name: 'Even better move', class: 'evenbetter' },
+};
+
+export interface MoveEval {
+  cp?: number; // Centipawns
+  mate?: number; // Mate in X
+}
+
 export interface MoveNode {
   san: string;
   fen: string;
   uci: string;
   ply: number;
   comments?: string[];
-  variations: MoveNode[][]; // Array of variation lines, where each line is MoveNode[]
+  variations: MoveNode[][]; // Side variations at this position
+  children?: MoveNode[]; // Mainline continuation (for tree structure)
+  glyphs?: GlyphId[];
+  eval?: MoveEval;
+  shapes?: any[]; // chessground shapes
+  forceVariation?: boolean; // Forced variation display
 }
 
 export interface StudyChapter {

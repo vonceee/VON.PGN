@@ -1,30 +1,25 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { LinkComponent } from '../link/link.component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroArrowLeft } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-back-link',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, LinkComponent, NgIconComponent],
+  providers: [provideIcons({ heroArrowLeft })],
   template: `
-    <div>
+    <div class="shrink-0">
       <a
+        appLink
         [routerLink]="link()"
-        class="inline-flex items-center gap-2 text-sm font-medium group hover:underline"
+        class="group flex items-center gap-2 text-sm font-medium"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
+        <ng-icon
+          name="heroArrowLeft"
           class="w-4 h-4 transition-transform group-hover:-translate-x-1"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-          />
-        </svg>
+        ></ng-icon>
         {{ text() }}
       </a>
     </div>

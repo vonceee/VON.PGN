@@ -1,33 +1,28 @@
-<div class="w-full h-full flex flex-col overflow-hidden">
-  <div
-    class="flex-1 w-full relative overflow-y-auto custom-scrollbar flex flex-col items-center p-2 md:p-8"
-  >
-    @if (hasError() || (!isLoading() && !currentPuzzle() && status() === 'playing')) {
+<div class="h-full w-full flex flex-col overflow-hidden p-2 lg:p-6 font-sans">
+  @if (hasError() || (!isLoading() && !currentPuzzle() && status() === 'playing')) {
+    <div class="flex-1 flex items-center justify-center">
       <app-server-maintenance></app-server-maintenance>
-    } @else if (isLoading()) {
-      <div class="flex-1 flex flex-col items-center justify-center py-20">
-        <div class="relative w-16 h-16">
-          <div class="absolute inset-0 border-4 border-cyan-500/10 rounded-full"></div>
-          <div
-            class="absolute inset-0 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"
-          ></div>
-        </div>
-        <p
-          class="mt-4 text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 animate-pulse"
-        >
-          Loading Puzzle
-        </p>
+    </div>
+  } @else if (isLoading()) {
+    <div class="flex-1 flex flex-col items-center justify-center">
+      <div class="relative w-16 h-16">
+        <div class="absolute inset-0 border-4 border-cyan-500/10 rounded-full"></div>
+        <div
+          class="absolute inset-0 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"
+        ></div>
       </div>
-    } @else {
+      <p class="mt-4 text-[10px] uppercase tracking-[0.2em] font-black text-slate-500 animate-pulse">
+        Loading Puzzle
+      </p>
+    </div>
+  } @else {
+    <div class="flex-1 w-full flex items-center justify-center overflow-hidden">
       <div
-        class="w-full flex flex-col md:flex-row gap-4 md:gap-12 items-center md:items-start justify-center"
+        class="w-full max-w-[1700px] flex flex-col md:flex-row gap-4 md:gap-12 items-center md:items-stretch justify-center h-full max-h-none overflow-hidden"
       >
         <!-- Board Column -->
-        <div class="flex-none flex flex-col items-center">
-          <div 
-            class="relative premium-card overflow-hidden rounded-md"
-            [style.max-height]="isMobile() ? null : '80vh'"
-          >
+        <div class="flex flex-col items-center justify-center min-w-0 h-full overflow-hidden">
+          <div class="relative premium-card overflow-hidden rounded-xl bg-slate-900/50 shadow-2xl">
             <app-tactics-board
               [puzzle]="currentPuzzle()"
               [size]="boardSize()"
@@ -44,11 +39,8 @@
           </div>
         </div>
 
-        <div class="w-full md:flex-1 md:min-w-[300px] max-w-md flex flex-col gap-5">
-          <div
-            class="premium-card rounded-2xl flex flex-col overflow-hidden w-full"
-            [style.height]="isMobile() ? null : '80vh'"
-          >
+        <div class="w-full md:w-[400px] lg:w-[450px] flex flex-col gap-5 py-4 md:py-12 min-h-0">
+          <div class="premium-card rounded-2xl flex flex-col overflow-hidden w-full h-full shadow-xl">
             <!-- Top Section: Stats or Guest Prompt -->
             <div class="p-4 md:p-6 flex flex-col gap-5 shrink-0">
               @if (currentUser()) {
@@ -198,9 +190,9 @@
                 }
               </div>
             }
-          </div>
         </div>
       </div>
-    }
+    </div>
   </div>
+}
 </div>

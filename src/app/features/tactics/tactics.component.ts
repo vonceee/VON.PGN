@@ -8,6 +8,7 @@ import {
   effect,
   ElementRef,
   PLATFORM_ID,
+  HostListener,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
@@ -28,6 +29,9 @@ import { ButtonComponent  } from '@shared/ui';
     MoveNotationComponent,
   ],
   templateUrl: './tactics.component.html',
+  host: {
+    class: 'absolute inset-0 overflow-hidden',
+  },
 })
 export class TacticsComponent implements OnInit {
   private tacticsService = inject(TacticsService);
@@ -52,8 +56,7 @@ export class TacticsComponent implements OnInit {
   newStreak = signal<number>(0);
   userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
-  boardSize = signal(400); 
-
+  boardSize = signal(this.loadBoardSize());
   retryMode = signal(false);
   exploreMode = signal(false);
   isLoadingPgn = signal(false);
@@ -75,10 +78,28 @@ export class TacticsComponent implements OnInit {
       });
     }
     this.loadNextPuzzle();
-    if (typeof window !== 'undefined') {
-      window.addEventListener('resize', () => {
-        this.isMobile.set(window.innerWidth < 768);
-      });
+  }
+
+  private loadBoardSize(): number {
+    if (isPlatformBrowser(this.platformId)) {
+      const saved = localStorage.getItem('boardSize');
+      if (saved) {
+        const size = parseInt(saved, 10);
+        if (size >= 280 && size <= 1200) return size;
+      }
+      return Math.min(800, Math.floor(window.innerHeight * 0.7));
+    }
+    return 500;
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.isMobile.set(window.innerWidth < 768);
+    
+    const maxAllowed = Math.floor(window.innerHeight * 0.72);
+    if (this.boardSize() > maxAllowed) {
+      this.boardSize.set(maxAllowed);
     }
   }
 

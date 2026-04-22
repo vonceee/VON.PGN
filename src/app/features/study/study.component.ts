@@ -7,6 +7,7 @@ import {
   effect,
   computed,
   PLATFORM_ID,
+  HostListener,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,13 +20,19 @@ import { Subscription } from 'rxjs';
 import { Chess } from 'chess.js';
 import { MoveNode } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
+import { BackLinkComponent } from '@shared/ui';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroChevronRight } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-study',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule],
+  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent],
+  providers: [provideIcons({ heroChevronRight })],
   templateUrl: './study.component.html',
-  styleUrls: ['./study.component.css'],
+  host: {
+    class: 'absolute inset-0 overflow-hidden',
+  },
 })
 export class StudyComponent implements OnInit, OnDestroy {
   private studyService = inject(StudyService);
@@ -58,7 +65,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   });
 
   isSyncing = signal(true);
-  activeTab = signal<'chapters' | 'info'>('chapters');
+  activeTab = signal<'notation' | 'info'>('notation');
 
   private subs = new Subscription();
   private lastChapterId: number | null = null;
@@ -152,9 +159,14 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   private updateCurrentPosition(node: MoveNode | null) {
     if (node) {
-      this.currentNode.set(node);
-      this.currentFen.set(node.fen);
-      this.currentPly.set(node.ply);
+      // Use the node's FEN directly if available
+      if (node.fen && node.fen.trim()) {
+        this.currentNode.set(node);
+        this.currentFen.set(node.fen);
+        this.currentPly.set(node.ply);
+      } else {
+        console.warn('[StudyComponent] Node has invalid FEN:', node);
+      }
     } else {
       // Reset to start of chapter
       const chapter = this.currentChapter();
@@ -176,49 +188,89 @@ export class StudyComponent implements OnInit, OnDestroy {
   onMoveMade(event: any) {
     if (!this.isOwner()) return;
 
+    // Extract move details from the event (chess-board emits { move, fen })
+    const move = event.move || event;
+    const san = String(move.san || '');
+    const from = String(move.from || '');
+    const to = String(move.to || '');
+    const fen = String(event.fen || '');
+
     const current = this.currentNode();
     const newNode: MoveNode = {
-      san: event.san,
-      uci: event.from + event.to,
-      fen: event.fen,
+      san,
+      uci: from + to,
+      fen,
       ply: (current?.ply || 0) + 1,
       variations: [],
+      comments: [],
     };
 
     this.moveTree.update((tree) => {
-      if (!current) return [...tree, newNode];
-      return this.insertNode(tree, current, newNode);
+      if (!current) {
+        return [...tree, newNode];
+      }
+
+      const newTree = this.insertNodeDeep(tree, current.ply, current.fen, newNode);
+      return newTree.length > 0 ? newTree : [...tree, newNode];
     });
 
     this.updateCurrentPosition(newNode);
-    this.studyService.emitMove(event.san, event.fen, this.moveTree());
+    this.studyService.emitMove(san, fen, this.moveTree());
   }
 
-  private insertNode(nodes: MoveNode[], parent: MoveNode, newNode: MoveNode): MoveNode[] {
-    const index = nodes.findIndex((n) => n.fen === parent.fen && n.ply === parent.ply);
+  private insertNodeDeep(
+    nodes: MoveNode[],
+    parentPly: number,
+    parentFen: string,
+    newNode: MoveNode,
+  ): MoveNode[] {
+    // Deep copy the nodes to avoid mutation
+    const result: MoveNode[] = nodes.map((node) => ({
+      ...node,
+      variations: node.variations ? node.variations.map((v) => [...v]) : [],
+    }));
 
-    if (index !== -1) {
-      if (index === nodes.length - 1) {
-        nodes.push(newNode);
-      } else {
-        const nextInLine = nodes[index + 1];
-        if (nextInLine.san !== newNode.san) {
-          if (!nextInLine.variations) nextInLine.variations = [];
-          const existingVar = nextInLine.variations.find((v) => v[0].san === newNode.san);
-          if (!existingVar) nextInLine.variations.push([newNode]);
+    for (let i = 0; i < result.length; i++) {
+      const node = result[i];
+
+      if (node.ply === parentPly && node.fen === parentFen) {
+        // Found the parent - append new node to mainline
+        if (i === result.length - 1) {
+          // Parent is last node in mainline, append directly
+          result.push(newNode);
+        } else {
+          // Parent has a successor - check if it's a different move
+          const nextNode = result[i + 1];
+          if (nextNode.san !== newNode.san) {
+            // Different move - add as variation
+            if (!nextNode.variations) nextNode.variations = [];
+            const existingVar = nextNode.variations.find((v) => v.length > 0 && v[0].san === newNode.san);
+            if (!existingVar) {
+              nextNode.variations.push([newNode]);
+            }
+          }
+        }
+        return result;
+      }
+
+      // Check variations recursively
+      if (node.variations && node.variations.length > 0) {
+        let foundInVariation = false;
+        for (let j = 0; j < node.variations.length; j++) {
+          const updated = this.insertNodeDeep(node.variations[j], parentPly, parentFen, newNode);
+          if (updated.length > 0) {
+            node.variations[j] = updated;
+            foundInVariation = true;
+            break;
+          }
+        }
+        if (foundInVariation) {
+          return result;
         }
       }
-      return [...nodes];
     }
 
-    for (const node of nodes) {
-      if (node.variations) {
-        for (let i = 0; i < node.variations.length; i++) {
-          node.variations[i] = this.insertNode(node.variations[i], parent, newNode);
-        }
-      }
-    }
-    return [...nodes];
+    return [];
   }
 
   onNodeClicked(node: MoveNode) {
@@ -315,8 +367,21 @@ export class StudyComponent implements OnInit, OnDestroy {
         const size = parseInt(saved, 10);
         if (size >= 280 && size <= 1200) return size;
       }
+      // Default: Maximize based on viewport height (approx 70% of height)
+      return Math.min(800, Math.floor(window.innerHeight * 0.7));
     }
     return 500;
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    // Only auto-resize if the user hasn't explicitly saved a size or if it overflows
+    const maxAllowed = Math.floor(window.innerHeight * 0.72);
+    if (this.boardSize() > maxAllowed) {
+      this.boardSize.set(maxAllowed);
+    }
   }
 
   ngOnInit() {

@@ -1,30 +1,91 @@
-<div class="w-full py-8 px-4 lg:px-8">
+<div class="h-full w-full overflow-hidden flex flex-col p-2 lg:p-6 font-sans">
   @if (study(); as s) {
     <div
-      class="grid grid-cols-1 lg:grid-cols-[minmax(280px,1fr)_3fr_minmax(25vw,1fr)] gap-8 w-full max-w-[1800px] mx-auto items-start"
+      class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] gap-4 lg:gap-8 w-full max-w-[1920px] mx-auto items-stretch h-full overflow-hidden"
     >
-      <div
-        class="h-[650px] max-h-[80vh] left-sidebar"
+      <!-- Left Column: Chapter Sidebar (Learn Sidebar style) -->
+      <aside
+        class="hidden lg:flex flex-col h-full bg-transparent overflow-hidden"
         [class.pointer-events-none]="isSyncing() && !isOwner()"
         [class.opacity-70]="isSyncing() && !isOwner()"
       >
-        <div class="flex flex-col premium-card overflow-hidden h-full">
-          <app-move-notation
-            class="flex-1"
-            [moveTree]="moveTree()"
-            [currentFen]="currentFen()"
-            [currentPly]="currentPly()"
-            [showNavigation]="true"
-            (nodeClicked)="onNodeClicked($event)"
-            (navigate)="onNavigateToPly($event)"
-            (deleteFromHere)="onDeleteFromHere($event)"
-          ></app-move-notation>
+        <!-- Back to Library -->
+        <div class="px-2 mb-2">
+          <app-back-link link="/study" text="Back to Library"></app-back-link>
         </div>
-      </div>
+
+        <div>
+          <h2
+            class="px-5 py-2 mt-2 font-black select-none truncate cursor-pointer hover:text-cyan-600"
+            [title]="s.name"
+          >
+            {{ s.name }}
+          </h2>
+        </div>
+
+        <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-2">
+          <div class="flex-1 flex flex-col gap-0.5">
+            @for (chap of s.chapters; track chap.id; let idx = $index) {
+              <button
+                (click)="selectChapter(chap)"
+                class="relative flex items-center justify-between py-2 px-4 mx-2 my-0.5 cursor-pointer rounded-lg transition-all duration-200 group text-left border border-transparent
+                {{
+                  currentChapter()?.id === chap.id
+                    ? 'bg-slate-100 dark:bg-white/10'
+                    : 'hover:bg-slate-50 dark:hover:bg-white/5'
+                }}"
+              >
+                <!-- Active Line Indicator -->
+                @if (currentChapter()?.id === chap.id) {
+                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-cyan-400"></div>
+                }
+
+                <div class="flex items-center gap-3">
+                  <span
+                    [class]="
+                      'text-sm font-medium transition-colors ' +
+                      (currentChapter()?.id === chap.id
+                        ? 'text-cyan-400'
+                        : 'text-slate-700 dark:text-slate-200')
+                    "
+                  >
+                    {{ chap.name }}
+                  </span>
+                </div>
+              </button>
+            }
+
+            @if (isOwner()) {
+              <button
+                (click)="createChapter()"
+                class="mt-6 mx-2 p-3 rounded-xl border border-dashed border-border-theme/40 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all duration-300 group flex items-center justify-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  class="text-slate-400 group-hover:text-cyan-400"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span
+                  class="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-cyan-400"
+                  >Add Chapter</span
+                >
+              </button>
+            }
+          </div>
+        </nav>
+      </aside>
 
       <!-- Center Column: Board -->
-      <div class="flex flex-col items-center min-w-0">
-        <div>
+      <div class="flex flex-col items-center justify-center min-w-0 h-full overflow-hidden">
+        <div class="w-full max-w-[800px] flex items-center justify-center p-4">
           <div class="w-full aspect-square">
             <app-chess-board
               [fen]="currentFen()"
@@ -40,154 +101,159 @@
         </div>
       </div>
 
-      <!-- Right Column: Chapters -->
-      <div class="h-[80vh]">
-        <div class="flex flex-col premium-card overflow-hidden h-full">
+      <!-- Right Column: Notation & Info -->
+      <div class="h-full flex flex-col gap-4 overflow-hidden">
+        <div class="flex flex-col premium-card rounded-xl overflow-hidden h-full">
           <!-- Sidebar Tabs -->
-          <div class="flex border-b border-border-theme">
+          <div class="flex border-b border-border-theme/30 bg-white/5">
             <button
-              (click)="activeTab.set('chapters')"
-              class="flex-1 py-3 text-md hover:underline hover:cursor-pointer"
-              [class.text-cyan-400]="activeTab() === 'chapters'"
-              [class.opacity-100]="activeTab() === 'chapters'"
+              (click)="activeTab.set('notation')"
+              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-400 after:-translate-x-1/2 after:transition-all after:duration-300"
+              [class.text-cyan-400]="activeTab() === 'notation'"
+              [class.opacity-100]="activeTab() === 'notation'"
+              [class.opacity-50]="(activeTab() === 'notation') === false"
+              [class.after:w-full]="activeTab() === 'notation'"
             >
-              Chapters
+              Notation
             </button>
             <button
               (click)="activeTab.set('info')"
-              class="flex-1 py-3 text-md hover:underline hover:cursor-pointer"
+              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-400 after:-translate-x-1/2 after:transition-all after:duration-300"
               [class.text-cyan-400]="activeTab() === 'info'"
               [class.opacity-100]="activeTab() === 'info'"
+              [class.opacity-50]="(activeTab() === 'info') === false"
+              [class.after:w-full]="activeTab() === 'info'"
             >
               Study Info
             </button>
           </div>
 
-          <div class="flex-1 flex flex-col overflow-y-auto custom-scrollbar">
-            @if (activeTab() === 'chapters') {
-              <div
-                class="flex-1 flex flex-col gap-1"
-                [class.pointer-events-none]="isSyncing() && !isOwner()"
-                [class.opacity-70]="isSyncing() && !isOwner()"
-              >
-                @for (chap of s.chapters; track chap.id) {
-                  <button
-                    (click)="selectChapter(chap)"
-                    [class.text-cyan-400]="currentChapter()?.id === chap.id"
-                    class="w-full text-left px-2 py-1 group text-md hover:underline hover:cursor-pointer"
-                  >
-                    <span>{{ chap.name }}</span>
-                  </button>
-                }
-
-                <!-- Repositioned Add Button -->
-                @if (isOwner()) {
-                  <button
-                    (click)="createChapter()"
-                    class="mt-2 mx-1 p-3 hover:underline hover:cursor-pointer group flex items-start gap-2"
-                  >
-                    <span class="text-md">Add Chapter</span>
-                  </button>
-                }
+          <div class="flex-1 flex flex-col overflow-hidden relative">
+            @if (activeTab() === 'notation') {
+              <div class="flex-1 flex flex-col overflow-hidden">
+                <app-move-notation
+                  class="flex-1 overflow-y-auto custom-scrollbar"
+                  [moveTree]="moveTree()"
+                  [currentFen]="currentFen()"
+                  [currentPly]="currentPly()"
+                  [showNavigation]="true"
+                  (nodeClicked)="onNodeClicked($event)"
+                  (navigate)="onNavigateToPly($event)"
+                  (deleteFromHere)="onDeleteFromHere($event)"
+                ></app-move-notation>
               </div>
             } @else {
               <!-- Info View -->
-              <div class="p-6 flex flex-col gap-6">
-                <div>
-                  <label class="text-xs block mb-1">Study Name</label>
-                  <h3 class="text-lg">{{ s.name }}</h3>
-                </div>
-
-                <div>
-                  <label class="text-xs block mb-1">Owner</label>
-                  <div class="flex items-center gap-2">
-                    <span class="text-lg">{{ s.owner.name }}</span>
+              <div class="p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar h-full">
+                <div class="flex items-center justify-between px-2">
+                  <div>
+                    <label
+                      class="text-[10px] font-bold uppercase tracking-widest opacity-50 block mb-1"
+                      >Owner</label
+                    >
+                    <div class="flex items-center gap-2">
+                      <span class="text-md font-medium text-white/80">{{ s.owner.name }}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div class="pt-4 border-t border-border-theme">
-                  <label class="text-xs block mb-3">Live Sync</label>
+                <div class="pt-4 border-t border-border-theme/20">
+                  <label
+                    class="text-[10px] font-bold uppercase tracking-widest opacity-50 block mb-3"
+                    >Participation</label
+                  >
 
                   @if (!isOwner()) {
                     <button
                       (click)="toggleSync()"
-                      class="w-full flex items-center justify-between p-3 rounded-xl border duration-300"
+                      class="w-full flex items-center justify-between p-4 rounded-xl border duration-300 relative overflow-hidden group"
                       [class]="
                         isSyncing()
-                          ? 'bg-cyan-500/5 border-cyan-400/30 text-cyan-400'
-                          : 'bg-slate-500/5 border-border-theme'
+                          ? 'bg-cyan-500/5 border-cyan-400/30 text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.05)]'
+                          : 'bg-slate-500/5 border-border-theme opacity-60 hover:opacity-100 hover:border-white/20'
                       "
                     >
                       <div class="flex items-center gap-3">
                         <div
-                          class="w-2 h-2 rounded-full"
+                          class="w-2.5 h-2.5 rounded-full"
                           [class]="
                             isSyncing()
                               ? 'bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]'
                               : 'bg-slate-500'
                           "
                         ></div>
-                        <span class="text-xs font-bold uppercase tracking-wide">
+                        <span class="text-xs font-bold uppercase tracking-widest">
                           {{ isSyncing() ? 'Following Owner' : 'Independent mode' }}
                         </span>
                       </div>
                       <span
-                        class="text-[10px] font-bold opacity-60 px-2 py-0.5 rounded-full border border-current italic"
+                        class="text-[10px] font-black opacity-60 px-2 py-0.5 rounded border border-current italic"
                       >
-                        {{ isSyncing() ? 'On' : 'Off' }}
+                        {{ isSyncing() ? 'ACTIVE' : 'OFF' }}
                       </span>
                     </button>
-                    <p class="mt-2 text-[10px] leading-relaxed italic">
+                    <p class="mt-3 text-[11px] leading-relaxed italic opacity-50 px-2">
                       When enabled, your board will reveal moves exactly as the teacher plays them.
                     </p>
                   } @else {
-                    <div class="flex items-center gap-2 text-cyan-400">
-                      <span class="text-md">You are driving the sync</span>
+                    <div
+                      class="bg-cyan-500/5 border border-cyan-400/20 p-4 rounded-xl flex items-center gap-3 text-cyan-400/90"
+                    >
+                      <div
+                        class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]"
+                      ></div>
+                      <span class="text-xs font-bold uppercase tracking-widest"
+                        >You are driving the sync</span
+                      >
                     </div>
                   }
                 </div>
 
-                <div class="pt-4 border-t border-border-theme flex flex-col gap-3">
-                  <label class="text-xs block mb-1">Migration</label>
-                  <div class="flex flex-col gap-2">
-                    <button
-                      (click)="importPgn()"
-                      *ngIf="isOwner()"
-                      class="flex items-center gap-2 px-3 py-2 text-xs font-bold bg-white/5 border border-border-theme rounded-lg hover:bg-white/10"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
+                <div class="pt-4 border-t border-border-theme/20 flex flex-col gap-3">
+                  <label
+                    class="text-[10px] font-bold uppercase tracking-widest opacity-50 block mb-1"
+                    >Actions</label
+                  >
+                  <div class="grid grid-cols-2 gap-3">
+                    @if (isOwner()) {
+                      <button
+                        (click)="importPgn()"
+                        class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-white/5 border border-border-theme/30 rounded-xl hover:bg-white/10 hover:border-cyan-400/30 transition-all duration-300"
                       >
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" y1="3" x2="12" y2="15" />
-                      </svg>
-                      Import PGN
-                    </button>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="17 8 12 3 7 8" />
+                          <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        Import
+                      </button>
+                    }
                     <button
                       (click)="exportPgn()"
-                      class="flex items-center gap-2 px-3 py-2 text-xs font-bold bg-white/5 border border-border-theme rounded-lg hover:bg-white/10"
+                      class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-white/5 border border-border-theme/30 rounded-xl hover:bg-white/10 hover:border-cyan-400/30 transition-all duration-300"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
+                        width="12"
+                        height="12"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
+                        stroke-width="2.5"
                       >
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                         <polyline points="7 10 12 15 17 10" />
                         <line x1="12" y1="15" x2="12" y2="3" />
                       </svg>
-                      Export PGN
+                      Export
                     </button>
                   </div>
                 </div>

@@ -1,23 +1,8 @@
 @if (course) {
   <aside class="flex flex-col h-full min-h-0">
     <!-- Back to Roadmap -->
-    <div class="shrink-0">
-      <a
-        routerLink="/roadmap"
-        class="group flex items-center gap-2 px-4 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5 cursor-pointer text-sm font-medium"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2.5"
-          stroke="currentColor"
-          class="w-4 h-4 transition-transform group-hover:-translate-x-1"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-        </svg>
-        Back to Roadmap
-      </a>
+    <div class="px-2 mb-2">
+      <app-back-link link="/roadmap" text="Back to Roadmap"></app-back-link>
     </div>
 
     <div>
@@ -36,16 +21,10 @@
             class="px-5 py-2 font-medium cursor-pointer select-none flex items-center justify-between"
           >
             {{ chapter.title }}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="2.5"
-              stroke="currentColor"
+            <ng-icon
+              name="heroChevronRight"
               class="w-3.5 h-3.5 transform transition-transform group-open:rotate-90 opacity-40"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-            </svg>
+            ></ng-icon>
           </summary>
 
           <ul class="flex flex-col mt-1 mb-2">
@@ -86,16 +65,7 @@
         routerLink="/roadmap"
         class="group flex items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer text-sm font-medium"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2.5"
-          stroke="currentColor"
-          class="w-4 h-4"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-        </svg>
+        <ng-icon name="heroArrowLeft" class="w-4 h-4"></ng-icon>
         Back to Roadmap
       </a>
     </div>
