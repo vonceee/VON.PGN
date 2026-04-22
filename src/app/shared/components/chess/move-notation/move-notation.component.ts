@@ -42,6 +42,9 @@ export class MoveNotationComponent {
   contextMenuNode = signal<MoveNode | null>(null);
   contextMenuPos = signal<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  // Navigation Selection State
+  selectedVariationIndex = signal(0);
+
   scrollContainer = viewChild<ElementRef>('scrollContainer');
 
   constructor() {
@@ -83,10 +86,52 @@ export class MoveNotationComponent {
     return [];
   });
 
-  isLastMove = computed(() => {
+  // Determine current navigation context (successors and parent)
+  navigationCtx = computed(() => {
+    const fen = this.currentFen();
+    const ply = this.currentPly();
     const tree = this.effectiveTree();
-    return this.currentPly() >= tree.length;
+    
+    if (ply === 0 || !fen || tree.length === 0) {
+      // At the start of the game/chapter
+      return {
+        current: null,
+        next: tree.length > 0 ? [tree[0], ...(tree[0].variations?.map((v) => v[0]) || [])] : [],
+        parent: null,
+      };
+    }
+    return this.findNodeContext(tree, fen);
   });
+
+  nextOptions = computed(() => this.navigationCtx().next);
+
+  isLastMove = computed(() => this.nextOptions().length === 0);
+
+  private findNodeContext(
+    nodes: MoveNode[],
+    fen: string,
+    parent: MoveNode | null = null,
+  ): { current: MoveNode | null; next: MoveNode[]; parent: MoveNode | null } {
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      if (node.fen === fen) {
+        let next: MoveNode[] = [];
+        if (i + 1 < nodes.length) {
+          const nextNode = nodes[i + 1];
+          next = [nextNode, ...(nextNode.variations?.map((v) => v[0]) || [])];
+        }
+        return { current: node, next, parent: i > 0 ? nodes[i - 1] : parent };
+      }
+
+      if (node.variations) {
+        for (const variation of node.variations) {
+          const res = this.findNodeContext(variation, fen, node);
+          if (res.current) return res;
+        }
+      }
+    }
+    return { current: null, next: [], parent: null };
+  }
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -95,21 +140,49 @@ export class MoveNotationComponent {
     const target = event.target as HTMLElement;
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
 
+    const options = this.nextOptions();
+    const hasMultiple = options.length > 1;
+
     switch (event.key) {
       case 'ArrowLeft':
         event.preventDefault();
-        if (this.currentPly() > 0) this.navigate.emit(this.currentPly() - 1);
+        const parent = this.navigationCtx().parent;
+        if (parent) {
+          this.onMoveClick(parent);
+        } else {
+          this.navigate.emit(0); // Go to start
+        }
         break;
       case 'ArrowRight':
         event.preventDefault();
-        if (!this.isLastMove()) this.navigate.emit(this.currentPly() + 1);
+        if (options.length > 0) {
+          const idx = Math.min(this.selectedVariationIndex(), options.length - 1);
+          this.onMoveClick(options[idx]);
+          this.selectedVariationIndex.set(0); // Reset for next move
+        }
         break;
       case 'ArrowUp':
+        if (hasMultiple) {
+          event.preventDefault();
+          this.selectedVariationIndex.update((i) => (i > 0 ? i - 1 : options.length - 1));
+        } else {
+          event.preventDefault();
+          this.navigate.emit(0);
+        }
+        break;
+      case 'ArrowDown':
+        if (hasMultiple) {
+          event.preventDefault();
+          this.selectedVariationIndex.update((i) => (i < options.length - 1 ? i + 1 : 0));
+        } else {
+          event.preventDefault();
+          this.navigate.emit(this.effectiveTree().length);
+        }
+        break;
       case 'Home':
         event.preventDefault();
         this.navigate.emit(0);
         break;
-      case 'ArrowDown':
       case 'End':
         event.preventDefault();
         this.navigate.emit(this.effectiveTree().length);
@@ -139,5 +212,24 @@ export class MoveNotationComponent {
   onMoveClick(node: MoveNode) {
     this.navigate.emit(node.ply);
     this.nodeClicked.emit(node);
+  }
+
+  onNavigateBack() {
+    const parent = this.navigationCtx().parent;
+    if (parent) {
+      this.onMoveClick(parent);
+    } else {
+      this.navigate.emit(0);
+    }
+  }
+
+  onNavigateNext() {
+    const options = this.nextOptions();
+    if (options.length > 0) {
+      // Preference: current selected variation or mainline
+      const idx = Math.min(this.selectedVariationIndex(), options.length - 1);
+      this.onMoveClick(options[idx]);
+      this.selectedVariationIndex.set(0);
+    }
   }
 }
