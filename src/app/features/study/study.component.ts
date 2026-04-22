@@ -8,6 +8,7 @@ import {
   computed,
   PLATFORM_ID,
   HostListener,
+  NgZone,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,19 +22,22 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChessBoardComponent } from '@shared/chess';
 import { MoveNotationComponent } from '@shared/chess';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
+import { debounceTime, filter } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
 import { MoveNode } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 import { BackLinkComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroChevronRight, heroCog6Tooth } from '@ng-icons/heroicons/outline';
+import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt } from '@ng-icons/heroicons/outline';
+import { EngineService, type SearchMode } from '../../core/services/engine.service';
 
 @Component({
   selector: 'app-study',
   standalone: true,
   imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent, DialogModule, NgIconComponent],
-  providers: [provideIcons({ heroChevronRight, heroCog6Tooth })],
+  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt })],
   templateUrl: './study.component.html',
   host: {
     class: 'absolute inset-0 overflow-hidden',
@@ -44,12 +48,45 @@ export class StudyComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
   private dialog = inject(Dialog);
   private toastService = inject(ToastService);
+  private engineService = inject(EngineService);
 
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
   isLoading = this.studyService.isLoading;
+
+  // Engine state
+  isEngineActive = signal(false);
+  engineEval = signal<string | null>(null);
+  engineBestMove = signal<string | null>(null);
+  enginePvLines = signal<{ eval: string; pv: string[]; pvIndex: number }[]>([]);
+  engineArrows = signal<any[]>([]);
+  engineDepth = signal(0);
+  engineNps = signal(0);
+  isEngineReady = this.engineService.isReady;
+  isEngineError = this.engineService.isError;
+  showEngineSettings = signal(false);
+
+  // Engine settings (bound to UI)
+  multiPvCount = this.engineService.multiPv;
+  searchMode = this.engineService.searchMode;
+  searchValue = this.engineService.searchValue;
+
+  // Computed: whether "Go Deeper" should be available
+  canGoDeeper = computed(() => {
+    return this.isEngineActive() && this.searchMode() !== 'infinite';
+  });
+
+  // Format NPS for display
+  formattedNps = computed(() => {
+    const nps = this.engineNps();
+    if (nps <= 0) return '';
+    if (nps >= 1_000_000) return (nps / 1_000_000).toFixed(1) + ' Mn/s';
+    if (nps >= 1_000) return Math.round(nps / 1_000) + ' kn/s';
+    return nps + ' n/s';
+  });
 
   // Signals for state
   currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
@@ -59,6 +96,11 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   boardSize = signal(this.loadBoardSize());
   remoteShapes = signal<any[]>([]);
+
+  // Combined shapes for the board
+  mergedShapes = computed(() => {
+    return [...this.remoteShapes(), ...this.engineArrows()];
+  });
 
   isOwner = computed(() => {
     const user = this.authService.currentUser();
@@ -76,8 +118,21 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   private subs = new Subscription();
   private lastChapterId: number | null = null;
+  private analysisTrigger$ = new BehaviorSubject<{ fen: string; active: boolean } | null>(null);
+  private pvChess = new Chess();
 
   constructor() {
+    // 1. Debounced Engine Trigger
+    this.analysisTrigger$
+      .pipe(
+        takeUntilDestroyed(),
+        debounceTime(150),
+        filter((v): v is { fen: string; active: boolean } => !!v && v.active)
+      )
+      .subscribe(({ fen }) => {
+        this.engineService.startAnalysis(fen);
+      });
+
     effect(() => {
       const chapter = this.currentChapter();
       if (chapter) {
@@ -113,6 +168,51 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.syncToRemoteState();
       }
     });
+
+    // 2. Engine Analysis Lifecycle & Instant Cache Lookups
+    effect(() => {
+      if (!isPlatformBrowser(this.platformId)) return;
+
+      const active = this.isEngineActive();
+      const fen = this.currentFen();
+      const tab = this.activeTab();
+
+      if (active && tab === 'notation') {
+        // Instant check: If we have a cached result, show it immediately!
+        const cached = this.engineService.getCachedAnalysis(fen);
+        if (cached) {
+          this.engineEval.set(cached.eval);
+          this.engineBestMove.set(cached.bestMove);
+          this.enginePvLines.set([{
+            eval: cached.eval,
+            pv: this.formatPvToSan(cached.pv, fen),
+            pvIndex: 0,
+          }]);
+          this.engineDepth.set(cached.depth || 0);
+          
+          // Re-draw arrows immediately from cache
+          const arrow = {
+            orig: cached.bestMove.substring(0, 2),
+            dest: cached.bestMove.substring(2, 4),
+            brush: 'green',
+          };
+          this.engineArrows.set([arrow]);
+        }
+
+        // Always queue the actual search (debounced)
+        this.analysisTrigger$.next({ fen, active: true });
+      } else {
+        this.analysisTrigger$.next(null);
+        this.engineService.stop();
+        // Clear eval and visuals when stopping
+        this.engineEval.set(null);
+        this.engineBestMove.set(null);
+        this.enginePvLines.set([]);
+        this.engineArrows.set([]);
+        this.engineDepth.set(0);
+        this.engineNps.set(0);
+      }
+    });
   }
 
   toggleSync() {
@@ -120,6 +220,47 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (this.isSyncing()) {
       this.syncToRemoteState();
     }
+  }
+
+  onEngineRetry() {
+    this.engineBestMove.set(null);
+    this.engineEval.set(null);
+    this.enginePvLines.set([]);
+    this.engineService.restart();
+  }
+
+  toggleEngine() {
+    this.isEngineActive.update(v => !v);
+  }
+
+  toggleEngineSettings() {
+    this.showEngineSettings.update(v => !v);
+  }
+
+  onMultiPvChange(count: number) {
+    this.engineService.setMultiPv(count);
+    // Restart analysis with new PV count if engine is active
+    if (this.isEngineActive()) {
+      this.analysisTrigger$.next({ fen: this.currentFen(), active: true });
+    }
+  }
+
+  onSearchModeChange(mode: SearchMode) {
+    this.engineService.setSearchMode(mode);
+    if (this.isEngineActive()) {
+      this.analysisTrigger$.next({ fen: this.currentFen(), active: true });
+    }
+  }
+
+  onSearchValueChange(value: number) {
+    this.engineService.setSearchMode(this.searchMode(), value);
+    if (this.isEngineActive()) {
+      this.analysisTrigger$.next({ fen: this.currentFen(), active: true });
+    }
+  }
+
+  goDeeper() {
+    this.engineService.goDeeper();
   }
 
   private syncToRemoteState() {
@@ -396,7 +537,75 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.route.params.subscribe((p) => p['id'] && this.studyService.getStudy(p['id'])),
       );
+
+      // Subscribe to engine analysis updates
+      this.subs.add(
+        this.engineService.analysis$.subscribe(analysis => {
+          // Re-enter Angular zone for UI updates
+          this.ngZone.run(() => {
+            // Safety: Only update if the analysis is still for the current position
+            if (analysis.fen !== this.currentFen()) return;
+
+            // Update top-level eval (from best line, pvIndex 0)
+            if (analysis.pvIndex === 0) {
+              this.engineEval.set(analysis.eval);
+              this.engineBestMove.set(analysis.bestMove);
+              this.engineDepth.set(analysis.depth);
+              this.engineNps.set(analysis.nps);
+            }
+
+            // Convert aggregated PV lines from the engine service to SAN
+            const rawLines = this.engineService.pvLines();
+            const sanLines = rawLines.map(line => ({
+              eval: line.eval,
+              pv: this.formatPvToSan(line.pv, analysis.fen),
+              pvIndex: line.pvIndex,
+            }));
+            this.enginePvLines.set(sanLines);
+
+            // Generate best move arrow (from line 0)
+            if (analysis.pvIndex === 0 && analysis.bestMove && analysis.bestMove !== '(none)') {
+              const arrow = {
+                orig: analysis.bestMove.substring(0, 2),
+                dest: analysis.bestMove.substring(2, 4),
+                brush: 'green',
+              };
+              this.engineArrows.set([arrow]);
+            }
+          });
+        })
+      );
     }
+  }
+
+  /**
+   * Converts a list of UCI moves to SAN strings based on current position
+   */
+  private formatPvToSan(uciMoves: string[], fen: string): string[] {
+    try {
+      this.pvChess.load(fen);
+    } catch (e) {
+      return [];
+    }
+    
+    const sanMoves: string[] = [];
+    for (const uci of uciMoves) {
+      try {
+        const move = this.pvChess.move({
+          from: uci.substring(0, 2),
+          to: uci.substring(2, 4),
+          promotion: uci.length > 4 ? uci.substring(4, 5) : undefined,
+        });
+        if (move) {
+          sanMoves.push(move.san);
+        } else {
+          break;
+        }
+      } catch (e) {
+        break;
+      }
+    }
+    return sanMoves;
   }
 
   ngOnDestroy() {
