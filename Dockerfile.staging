@@ -1,0 +1,18 @@
+FROM node:20-slim
+
+WORKDIR /app
+
+# Copy .npmrc first (needed for legacy-peer-deps setting)
+COPY .npmrc ./
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+# Build with the staging config (production: true + local URLs)
+RUN npm run build:staging
+
+EXPOSE 8787
+
+# Simulate the Cloudflare Workers runtime with Wrangler local mode
+CMD ["npx", "wrangler", "dev", "--port", "8787", "--ip", "0.0.0.0", "--local"]

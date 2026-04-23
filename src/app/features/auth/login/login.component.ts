@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef, DestroyRef, signal } from '@angular/core';
+import { Component, inject, DestroyRef, signal, computed } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -15,61 +15,66 @@ const LOCKOUT_DURATION_MS = 60_000;
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, SectionHeadingComponent, TypewriterTextComponent, BackLinkComponent, ButtonComponent],
   templateUrl: './login.html',
-  styleUrl: './login.css',
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
   private lockoutTimer: ReturnType<typeof setInterval> | null = null;
 
   isLoading = signal(false);
-  errorMessage = '';
-  showPassword = false;
-  loginAttempts = 0;
-  lockoutUntil: number | null = null;
+  errorMessage = signal('');
+  showPassword = signal(false);
+  loginAttempts = signal(0);
+  lockoutUntil = signal<number | null>(null);
+  private currentTime = signal(Date.now());
+
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
 
-  get isLockedOut(): boolean {
-    if (!this.lockoutUntil) return false;
-    if (Date.now() >= this.lockoutUntil) {
-      this.clearLockout();
-      return false;
-    }
-    return true;
-  }
+  isLockedOut = computed(() => {
+    const until = this.lockoutUntil();
+    const now = this.currentTime();
+    if (!until) return false;
+    return now < until;
+  });
 
-  get lockoutSecondsRemaining(): number {
-    if (!this.lockoutUntil) return 0;
-    return Math.ceil((this.lockoutUntil - Date.now()) / 1000);
-  }
+  lockoutSecondsRemaining = computed(() => {
+    const until = this.lockoutUntil();
+    const now = this.currentTime();
+    if (!until) return 0;
+    return Math.max(0, Math.ceil((until - now) / 1000));
+  });
+
+
 
   private startLockoutTimer() {
     if (this.lockoutTimer) clearInterval(this.lockoutTimer);
+    this.currentTime.set(Date.now());
     this.lockoutTimer = setInterval(() => {
-      if (!this.isLockedOut) {
+      this.currentTime.set(Date.now());
+      const until = this.lockoutUntil();
+      if (until && this.currentTime() >= until) {
         this.clearLockout();
-        this.cdr.detectChanges();
-      } else {
-        this.cdr.detectChanges();
       }
     }, 1000);
   }
+
+
 
   private clearLockout() {
     if (this.lockoutTimer) {
       clearInterval(this.lockoutTimer);
       this.lockoutTimer = null;
     }
-    this.lockoutUntil = null;
-    this.loginAttempts = 0;
-    this.errorMessage = '';
+    this.lockoutUntil.set(null);
+    this.loginAttempts.set(0);
+    this.errorMessage.set('');
   }
+
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -78,37 +83,36 @@ export class LoginComponent {
   }
 
   clearError() {
-    if (this.errorMessage) {
-      this.errorMessage = '';
-      this.cdr.detectChanges();
+    if (this.errorMessage()) {
+      this.errorMessage.set('');
     }
   }
 
+
   onSubmit() {
-    if (this.loginForm.invalid || this.isLockedOut) return;
+    if (this.loginForm.invalid || this.isLockedOut()) return;
 
     const { email, password } = this.loginForm.value;
 
-    // Additional validation to prevent sending empty values
     if (!email || !password || email.trim() === '' || password.trim() === '') {
-      this.errorMessage = 'Please enter both email and password.';
+      this.errorMessage.set('Please enter both email and password.');
       return;
     }
 
     this.isLoading.set(true);
-    this.errorMessage = '';
+    this.errorMessage.set('');
 
     this.authService.login({ email: email.trim(), password }).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.loginAttempts = 0;
-        this.lockoutUntil = null;
+        this.loginAttempts.set(0);
+        this.lockoutUntil.set(null);
       },
       error: (err) => {
-        this.loginAttempts++;
+        this.loginAttempts.update(v => v + 1);
 
-        if (this.loginAttempts >= MAX_LOGIN_ATTEMPTS) {
-          this.lockoutUntil = Date.now() + LOCKOUT_DURATION_MS;
+        if (this.loginAttempts() >= MAX_LOGIN_ATTEMPTS) {
+          this.lockoutUntil.set(Date.now() + LOCKOUT_DURATION_MS);
           this.startLockoutTimer();
         } else {
           let msg = 'Login failed. Please check your credentials.';
@@ -118,13 +122,13 @@ export class LoginComponent {
           } else if (err.error?.message) {
             msg = err.error.message;
           }
-          this.errorMessage = msg;
+          this.errorMessage.set(msg);
         }
 
         this.isLoading.set(false);
-        this.cdr.detectChanges();
       },
     });
   }
+
 }
 

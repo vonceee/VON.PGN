@@ -11,6 +11,8 @@
     "sitemap": "node scripts/generate-sitemap.mjs",
     "postbuild": "npm run sitemap",
     "serve:ssr:vonchess": "node dist/vonchess/server/server.mjs",
+    "build:staging": "ng build --configuration staging",
+    "serve:staging": "npm run build:staging && npx wrangler dev --port 8787 --local",
     "build:cf": "ng build",
     "deploy:cf": "npm run build:cf && wrangler deploy",
     "preview": "wrangler dev"

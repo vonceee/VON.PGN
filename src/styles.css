@@ -22,7 +22,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: url('/background.webp');
+  background-image: url('/assets/vonchess_bg-white.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -31,11 +31,15 @@ body::before {
   pointer-events: none;
 }
 
+.dark body::before {
+  background-image: url('/assets/vonchess_bg-dark.webp');
+}
+
 body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.80);
   z-index: -1;
   pointer-events: none;
 }

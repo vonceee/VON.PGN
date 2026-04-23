@@ -1,12 +1,11 @@
-import { Component, inject, ChangeDetectorRef, NgZone, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidationErrors } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, map } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { SectionHeadingComponent  } from '@shared/ui';
-import { TypewriterTextComponent  } from '@shared/ui';
-import { BackLinkComponent  } from '@shared/ui';
-import { ButtonComponent  } from '@shared/ui';
+import { SectionHeadingComponent, TypewriterTextComponent, BackLinkComponent, ButtonComponent } from '@shared/ui';
+
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -23,20 +22,17 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, SectionHeadingComponent, TypewriterTextComponent, BackLinkComponent, ButtonComponent],
   templateUrl: './register.html',
-  styleUrl: './register.css',
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private cdr = inject(ChangeDetectorRef);
-  private zone = inject(NgZone);
 
   isLoading = signal(false);
-  errorMessage = '';
-  emailError = '';
-  usernameError = '';
-  showPassword = false;
-  showConfirmPassword = false;
+  errorMessage = signal('');
+  emailError = signal('');
+  usernameError = signal('');
+  showPassword = signal(false);
+  showConfirmPassword = signal(false);
 
   registerForm = this.fb.group(
     {
@@ -55,8 +51,14 @@ export class RegisterComponent {
     { validators: passwordsMatchValidator },
   );
 
-  get passwordStrength(): string {
-    const pwd = this.registerForm.get('password')?.value || '';
+  // Track password value for strength calculation using a signal
+  private passwordValue = toSignal(
+    this.registerForm.get('password')!.valueChanges.pipe(map(v => v || '')),
+    { initialValue: '' }
+  );
+
+  passwordStrength = computed(() => {
+    const pwd = this.passwordValue();
     if (!pwd) return '';
     if (pwd.length < 8) return 'weak';
 
@@ -69,15 +71,16 @@ export class RegisterComponent {
     if (pwd.length >= 8 && score >= 4) return 'strong';
     if (pwd.length >= 8 && score >= 3) return 'medium';
     return 'weak';
-  }
+  });
+
 
   onSubmit() {
     if (this.registerForm.invalid) return;
 
     this.isLoading.set(true);
-    this.errorMessage = '';
-    this.emailError = '';
-    this.usernameError = '';
+    this.errorMessage.set('');
+    this.emailError.set('');
+    this.usernameError.set('');
 
     const formValue = this.registerForm.value;
 
@@ -88,48 +91,38 @@ export class RegisterComponent {
       password_confirmation: formValue.password_confirmation || '',
     })
     .pipe(
-      finalize(() => {
-        this.isLoading.set(false);
-        this.cdr.detectChanges();
-      })
+      finalize(() => this.isLoading.set(false)),
+      takeUntilDestroyed()
     )
     .subscribe({
       next: () => {
-        this.zone.run(() => {
-          this.isLoading.set(false);
-          this.cdr.detectChanges();
-        });
+        // Success logic here (e.g., redirect)
       },
       error: (err) => {
-        this.zone.run(() => {
-          this.isLoading.set(false);
+        if (err.status === 429) {
+          this.errorMessage.set(err.error?.message || 'Too many attempts. Please try again later.');
+          return;
+        }
 
-          if (err.status === 429) {
-            this.errorMessage = err.error?.message || 'Too many attempts. Please try again later.';
-            this.cdr.detectChanges();
-            return;
+        const errors = err.error?.errors;
+
+        if (errors && typeof errors === 'object') {
+          if (errors.email) {
+            this.emailError.set(Array.isArray(errors.email) ? errors.email[0] : errors.email);
           }
-
-          const errors = err.error?.errors;
-
-          if (errors && typeof errors === 'object') {
-            if (errors.email) {
-              this.emailError = Array.isArray(errors.email) ? errors.email[0] : errors.email;
-            }
-            if (errors.username) {
-              this.usernameError = Array.isArray(errors.username) ? errors.username[0] : errors.username;
-            }
-            
-            if (!errors.email && !errors.username) {
-              this.errorMessage = err.error?.message || 'Registration failed. Please check your information.';
-            }
-          } else {
-            this.errorMessage = err.error?.message || 'An unexpected error occurred. Please try again.';
+          if (errors.username) {
+            this.usernameError.set(Array.isArray(errors.username) ? errors.username[0] : errors.username);
           }
-          this.cdr.detectChanges();
-        });
+          
+          if (!errors.email && !errors.username) {
+            this.errorMessage.set(err.error?.message || 'Registration failed. Please check your information.');
+          }
+        } else {
+          this.errorMessage.set(err.error?.message || 'An unexpected error occurred. Please try again.');
+        }
       },
     });
   }
+
 }
 

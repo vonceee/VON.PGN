@@ -1,4 +1,4 @@
-<div class="h-screen flex flex-col lg:flex-row selection:bg-cyan-400/30 overflow-hidden">
+<div class="h-screen flex flex-col lg:flex-row selection:bg-cyan-400/30 overflow-hidden bg-white/40 dark:bg-[#0a0a0c]/60 backdrop-blur-sm">
   <!-- Left Column: Form Section -->
   <div class="lg:basis-2/5 flex flex-col px-6 overflow-y-auto h-full">
     <div class="mx-auto my-auto w-full xl:max-w-md py-8">
@@ -26,18 +26,11 @@
 
         <!-- Password Field -->
         <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <label for="password" class="text-sm lg:text-base font-semibold"> Password </label>
-            <a
-              routerLink="/forgot-password"
-              class="text-xs lg:text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
-              >forgot password?</a
-            >
-          </div>
+          <label for="password" class="text-sm lg:text-base font-semibold"> Password </label>
           <div class="relative">
             <input
               id="password"
-              [type]="showPassword ? 'text' : 'password'"
+              [type]="showPassword() ? 'text' : 'password'"
               formControlName="password"
               placeholder="••••••••"
               (input)="clearError()"
@@ -45,10 +38,10 @@
             />
             <button
               type="button"
-              (click)="showPassword = !showPassword"
+              (click)="showPassword.set(!showPassword())"
               class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus:outline-none"
             >
-              @if (showPassword) {
+              @if (showPassword()) {
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -83,19 +76,17 @@
               }
             </button>
           </div>
+          <a
+            routerLink="/forgot-password"
+            class="text-xs lg:text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+            >forgot password?</a
+          >
         </div>
 
         <!-- Error Message -->
-        @if (errorMessage) {
+        @if (errorMessage()) {
           <div class="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg">
-            {{ errorMessage }}
-          </div>
-        } @else if (loginAttempts > 0) {
-          <div
-            class="p-3 text-sm text-amber-500 bg-amber-500/10 border border-amber-500/20 rounded-lg"
-          >
-            {{ loginAttempts }}/{{ 5 }} failed attempts. {{ 5 - loginAttempts }} remaining before
-            lockout.
+            {{ errorMessage() }}
           </div>
         }
 
@@ -103,13 +94,13 @@
         <button
           appButton
           type="submit"
-          variant="outline"
+          variant="primary"
           [loading]="isLoading()"
-          [disabled]="loginForm.invalid || isLockedOut"
+          [disabled]="loginForm.invalid || isLockedOut()"
           class="w-full block"
         >
-          @if (isLockedOut) {
-            Try again in {{ lockoutSecondsRemaining }}s
+          @if (isLockedOut()) {
+            Try again in {{ lockoutSecondsRemaining() }}s
           } @else {
             Continue
           }
@@ -149,17 +140,12 @@
 
   <!-- Right Column: Branding Section -->
   <div
-    class="hidden lg:flex lg:basis-3/5 bg-zinc-900 dark:bg-zinc-925 text-white p-10 flex-col justify-between relative overflow-hidden"
+    class="hidden lg:flex lg:basis-3/5 bg-[#0a0a0c] dark:bg-white p-10 flex-col relative overflow-hidden"
   >
     <div>
-      <app-section-heading
-        text="Master the game of"
-        highlight="Chess."
-        size="text-3xl md:text-5xl mb-4 md:mb-6"
-      ></app-section-heading>
       <app-typewriter-text
-        size="text-3xl md:text-5xl"
-        text="play and learn on vonchess — the ultimate platform for players who aim for the top."
+        size="text-3xl md:text-5xl text-white dark:text-black"
+        text="free online chess, play, learn, and stay updated with chess news & events in the Philippines."
       ></app-typewriter-text>
     </div>
   </div>

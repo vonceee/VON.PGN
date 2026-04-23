@@ -1,7 +1,0 @@
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/vonchess/browser",
-  "rewrites": [
-    { "source": "/((?!assets/).*)", "destination": "/index.csr.html" }
-  ]
-}

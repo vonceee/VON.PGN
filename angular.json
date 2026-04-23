@@ -95,6 +95,17 @@
               ],
               "outputHashing": "all"
             },
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -108,6 +119,9 @@
           "configurations": {
             "production": {
               "buildTarget": "vonchess:build:production"
+            },
+            "staging": {
+              "buildTarget": "vonchess:build:staging"
             },
             "development": {
               "buildTarget": "vonchess:build:development"
