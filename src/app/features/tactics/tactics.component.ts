@@ -30,7 +30,7 @@ import { ButtonComponent } from '@shared/ui';
   ],
   templateUrl: './tactics.component.html',
   host: {
-    class: 'absolute inset-0 overflow-hidden',
+    class: 'relative block w-full',
   },
 })
 export class TacticsComponent implements OnInit {
@@ -72,6 +72,7 @@ export class TacticsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.onResize();
     if (this.currentUser()) {
       this.userService.loadMyProfile().subscribe(() => {
         this.newStreak.set(this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
@@ -82,12 +83,25 @@ export class TacticsComponent implements OnInit {
 
   private loadBoardSize(): number {
     if (isPlatformBrowser(this.platformId)) {
+      const mobile = window.innerWidth < 768;
       const saved = localStorage.getItem('boardSize');
+      let size = mobile ? 360 : 600;
+
       if (saved) {
-        const size = parseInt(saved, 10);
-        if (size >= 280 && size <= 1200) return size;
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed) && parsed >= 280 && parsed <= 1200) {
+          size = parsed;
+        }
       }
-      return Math.min(800, Math.floor(window.innerHeight * 0.7));
+
+      // Enforce strict responsive constraints
+      if (mobile) {
+        const maxAllowed = Math.floor(window.innerWidth * 0.95);
+        return Math.max(280, Math.min(size, maxAllowed, 450));
+      } else {
+        const maxAllowed = Math.floor(window.innerHeight * 0.72);
+        return Math.max(280, Math.min(size, maxAllowed, 900));
+      }
     }
     return 500;
   }
@@ -95,11 +109,19 @@ export class TacticsComponent implements OnInit {
   @HostListener('window:resize')
   onResize() {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.isMobile.set(window.innerWidth < 768);
+    const mobile = window.innerWidth < 768;
+    this.isMobile.set(mobile);
     
-    const maxAllowed = Math.floor(window.innerHeight * 0.72);
-    if (this.boardSize() > maxAllowed) {
-      this.boardSize.set(maxAllowed);
+    if (mobile) {
+      const maxAllowed = Math.floor(window.innerWidth * 0.95);
+      if (this.boardSize() > maxAllowed) {
+        this.boardSize.set(maxAllowed);
+      }
+    } else {
+      const maxAllowed = Math.floor(window.innerHeight * 0.72);
+      if (this.boardSize() > maxAllowed) {
+        this.boardSize.set(maxAllowed);
+      }
     }
   }
 

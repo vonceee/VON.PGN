@@ -1,10 +1,10 @@
-<div class="h-full w-full flex flex-col overflow-hidden">
+<div class="min-h-[calc(100vh-64px)] flex items-start md:items-center justify-center p-2 md:p-4 overflow-y-auto md:overflow-hidden">
   @if (isLoading()) {
     <app-loading message="Loading puzzle..."></app-loading>
   } @else {
-    <div class="flex-1 w-full flex items-center justify-center overflow-hidden">
+    <div class="flex-1 w-full flex items-center justify-center md:overflow-hidden min-h-0">
       <div
-        class="w-full flex flex-col md:flex-row gap-4 items-center md:items-stretch justify-center h-full max-h-none overflow-hidden"
+        class="w-full flex flex-col md:flex-row gap-4 items-center md:items-stretch justify-center h-full max-h-none md:overflow-hidden"
       >
         <!-- Board Column -->
         <app-tactics-board

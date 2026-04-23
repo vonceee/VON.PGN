@@ -228,17 +228,21 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private loadPersistedSize() {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    let initialSize = this.size;
+
     if (this.storageKey) {
       const saved = localStorage.getItem(this.storageKey);
       if (saved) {
-        const size = parseInt(saved, 10);
-        if (size >= this.minSize && size <= this.maxSize) {
-          this.boardSize = size;
-          return;
+        const savedSize = parseInt(saved, 10);
+        if (!isNaN(savedSize) && savedSize >= this.minSize && savedSize <= this.maxSize) {
+          initialSize = savedSize;
         }
       }
     }
-    this.boardSize = this.size;
+    
+    // Apply responsive constraints immediately so it doesn't clip on small screens
+    const dynamicMax = Math.min(this.maxSize, window.innerWidth * 0.95, window.innerHeight * 0.85);
+    this.boardSize = Math.min(initialSize, dynamicMax);
   }
 
   private savePersistedSize() {
