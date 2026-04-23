@@ -8,7 +8,9 @@ import {
   computed,
   effect,
   inject,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { AudioService } from '../../../../core/services/audio.service';
 
 @Component({
@@ -38,6 +40,7 @@ export class ChessClockComponent implements OnDestroy {
   private hasExpired = false;
   private hasWarnedLowTime = false;
   private audioService = inject(AudioService);
+  private platformId = inject(PLATFORM_ID);
 
   private storedTimeMs = 0;
   private lastMoveTimestamp = 0;
@@ -90,7 +93,7 @@ export class ChessClockComponent implements OnDestroy {
   }
 
   private startTicking(): void {
-    if (this.running) return;
+    if (this.running || !isPlatformBrowser(this.platformId)) return;
     this.running = true;
 
     const tick = () => {
@@ -129,7 +132,7 @@ export class ChessClockComponent implements OnDestroy {
 
   private stopTicking(): void {
     this.running = false;
-    if (this.rafId !== null) {
+    if (this.rafId !== null && isPlatformBrowser(this.platformId)) {
       cancelAnimationFrame(this.rafId);
       this.rafId = null;
     }

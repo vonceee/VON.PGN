@@ -92,9 +92,9 @@
   <!-- Scrollable Move List -->
   <div
     #scrollContainer
-    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-2 text-base scroll-smooth font-medium"
+    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base scroll-smooth font-medium"
   >
-    <div class="grid grid-cols-[4.5rem_1fr_1fr] items-center">
+    <div class="flex flex-wrap items-baseline gap-y-1.5 gap-x-1">
       <ng-container
         *ngTemplateOutlet="renderNodes; context: { nodes: effectiveTree(), isMainline: true }"
       ></ng-container>
@@ -104,20 +104,17 @@
   <!-- Recursive Template for Moves -->
   <ng-template #renderNodes let-nodes="nodes" let-isMainline="isMainline">
     @for (node of nodes; track node.fen; let $firstNode = $first) {
-      <div [class.contents]="isMainline" [class.flex]="!isMainline" class="items-center">
+      <div class="inline-flex items-baseline">
         <!-- Move Number -->
         @if (node.ply % 2 !== 0) {
           <span
-            [class.col-start-1]="isMainline"
+            class="font-black tracking-tighter select-none opacity-40 dark:opacity-30 mr-1 ml-1"
             [class.text-[0.95rem]]="isMainline"
             [class.text-[0.8rem]]="!isMainline"
-            [class.pl-3]="isMainline"
-            [class.pr-1]="!isMainline"
-            class="font-black tracking-widest select-none opacity-40 dark:opacity-30"
-            >{{ (node.ply + 1) / 2 }}</span
+            >{{ (node.ply + 1) / 2 }}.</span
           >
         } @else if ($firstNode && !isMainline) {
-          <span class="flex-none font-bold mr-1 ml-0.5 select-none text-[0.85rem] text-cyan-400/80"
+          <span class="flex-none font-bold mr-1 ml-1 select-none text-[0.85rem] text-cyan-400/80"
             >{{ node.ply / 2 }}...</span
           >
         }
@@ -128,30 +125,23 @@
           (contextmenu)="onContextMenu($event, node)"
           [class]="
             currentFen() === node.fen
-              ? 'active-move !bg-cyan-500/30 !text-white font-bold rounded-sm'
+              ? 'active-move !bg-cyan-500/30 !text-white font-black rounded-sm'
               : 'font-bold text-slate-800/90 dark:text-slate-200/90'
           "
-          [class.col-start-2]="isMainline && node.ply % 2 !== 0"
-          [class.col-start-3]="isMainline && node.ply % 2 === 0"
-          [class.w-full]="isMainline"
-          [class.flex-none]="!isMainline"
-          [class.px-2]="isMainline"
+          [class.px-1.5]="isMainline"
           [class.px-1]="!isMainline"
-          [class.py-1]="isMainline"
-          [class.py-0.5]="!isMainline"
+          [class.py-0.5]="true"
           [class.text-sm]="!isMainline"
-          class="text-left transition-all hover:bg-cyan-500/10 hover:cursor-pointer select-none active-move-target"
+          class="text-left transition-all hover:bg-cyan-500/10 hover:cursor-pointer select-none active-move-target rounded"
         >
           {{ node.san }}
         </button>
 
-        <!-- Recursive Variations -->
+        <!-- Variations as Indented Blocks (Optional: keep them inline or as blocks) -->
         @if (node.variations && node.variations.length > 0) {
           <div
-            [class.col-span-full]="isMainline"
-            class="variations-wrapper flex flex-col gap-0.5 mt-0.5 mb-1"
-            [class.ml-6]="isMainline"
-            [class.ml-2]="!isMainline"
+            class="variations-wrapper w-full flex flex-col gap-0.5 mt-1.5 mb-1 bg-black/5 dark:bg-white/5 rounded-md p-1.5"
+            [class.ml-2]="true"
           >
             @for (variation of node.variations; track $index) {
               <div class="variation-row flex items-start group">

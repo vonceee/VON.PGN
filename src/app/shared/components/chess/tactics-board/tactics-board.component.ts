@@ -20,6 +20,7 @@ import { ChessBoardComponent } from '@shared/chess';
   standalone: true,
   imports: [CommonModule, ChessBoardComponent],
   template: `
+  <div class="w-full h-full flex items-center justify-center">
     <app-chess-board
       #board
       [fen]="currentFen"
@@ -30,9 +31,9 @@ import { ChessBoardComponent } from '@shared/chess';
       [storageKey]="'boardSize'"
       (moveMade)="onBoardMove($event)"
       (sizeChange)="sizeChange.emit($event)"
-      class="w-full h-full"
+      class="block"
     ></app-chess-board>
-  `,
+  </div>`,
   styles: [`
     :host {
       display: block;

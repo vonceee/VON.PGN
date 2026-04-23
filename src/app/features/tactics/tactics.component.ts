@@ -16,15 +16,15 @@ import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
 import { MoveNotationComponent  } from '@shared/chess';
 import { TacticsBoardComponent  } from '@shared/chess';
-import { ServerMaintenanceComponent  } from '@shared/feedback';
-import { ButtonComponent  } from '@shared/ui';
+import { LoadingComponent  } from '@shared/feedback';
+import { ButtonComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-tactics',
   standalone: true,
   imports: [
     TacticsBoardComponent,
-    ServerMaintenanceComponent,
+    LoadingComponent,
     ButtonComponent,
     MoveNotationComponent,
   ],

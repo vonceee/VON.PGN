@@ -8,8 +8,10 @@ import {
   effect,
   signal,
   viewChild,
+  PLATFORM_ID,
+  inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ButtonComponent } from '@shared/ui';
 import { MoveNode } from '../../../../core/models/study.model';
 import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
@@ -24,6 +26,7 @@ import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
   },
 })
 export class MoveNotationComponent {
+  private platformId = inject(PLATFORM_ID);
   // Advanced Move Tree (Used by Study)
   moveTree = input<MoveNode[]>([]);
   // Legacy Flat Moves (Used by everything else)
@@ -52,10 +55,12 @@ export class MoveNotationComponent {
       // Trigger scroll when currentFen changes
       this.currentFen();
       
-      // Use requestAnimationFrame to wait for the DOM to update the .active-move class
-      requestAnimationFrame(() => {
-        this.scrollToActiveMove();
-      });
+      if (isPlatformBrowser(this.platformId)) {
+        // Use requestAnimationFrame to wait for the DOM to update the .active-move class
+        requestAnimationFrame(() => {
+          this.scrollToActiveMove();
+        });
+      }
     });
   }
 

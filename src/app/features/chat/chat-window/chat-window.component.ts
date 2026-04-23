@@ -4,8 +4,9 @@ import {
   ViewChild,
   ElementRef,
   NgZone,
+  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ChatService } from '../../../core/services/chat.service';
 import { MessageBubbleComponent } from '../message-bubble/message-bubble.component';
 import { MessageInputComponent } from '../message-input/message-input.component';
@@ -21,6 +22,7 @@ import { ChatMessage } from '../../../core/models/chat.model';
 export class ChatWindowComponent {
   chatService = inject(ChatService);
   private zone = inject(NgZone);
+  private platformId = inject(PLATFORM_ID);
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef<HTMLDivElement>;
 
@@ -48,9 +50,11 @@ export class ChatWindowComponent {
 
     // requestAnimationFrame runs AFTER the browser has painted the new
     // DOM element, so scrollHeight already includes the new message.
-    requestAnimationFrame(() => {
-      this.scrollToBottom();
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      requestAnimationFrame(() => {
+        this.scrollToBottom();
+      });
+    }
   }
 
   onScroll(): void {
@@ -70,13 +74,15 @@ export class ChatWindowComponent {
       this.previousScrollHeight = container.scrollHeight;
       this.chatService.loadMoreMessages();
 
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          const newScrollHeight = container.scrollHeight;
-          container.scrollTop = newScrollHeight - this.previousScrollHeight;
-          this.isLoadingOlder = false;
-        }, 0);
-      });
+      if (isPlatformBrowser(this.platformId)) {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            const newScrollHeight = container.scrollHeight;
+            container.scrollTop = newScrollHeight - this.previousScrollHeight;
+            this.isLoadingOlder = false;
+          }, 0);
+        });
+      }
     }
   }
 
