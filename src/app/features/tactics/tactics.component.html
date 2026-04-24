@@ -146,6 +146,7 @@
                   <app-move-notation
                     class="flex-1"
                     [moves]="pgnMoves()"
+                    [currentFen]="currentFen()"
                     [currentPly]="currentPly()"
                     [showNavigation]="true"
                     (navigate)="goToMove($event)"

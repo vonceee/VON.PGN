@@ -97,7 +97,7 @@ export class MoveNotationComponent {
     const ply = this.currentPly();
     const tree = this.effectiveTree();
     
-    if (ply === 0 || !fen || tree.length === 0) {
+    if (ply === 0 || tree.length === 0) {
       // At the start of the game/chapter
       return {
         current: null,
@@ -105,8 +105,27 @@ export class MoveNotationComponent {
         parent: null,
       };
     }
-    return this.findNodeContext(tree, fen);
+
+    // Try finding by FEN first (most accurate for trees)
+    if (fen) {
+      const context = this.findNodeContext(tree, fen);
+      if (context.current) return context;
+    }
+
+    // Fallback: If we only have ply and it's a simple mainline, try to find by ply
+    // This is useful for flat move lists where FEN might not be perfectly synchronized
+    const nodeByPly = this.findNodeByPlyMainline(tree, ply);
+    if (nodeByPly) {
+      return this.findNodeContext(tree, nodeByPly.fen);
+    }
+
+    return { current: null, next: [], parent: null };
   });
+
+  private findNodeByPlyMainline(nodes: MoveNode[], ply: number): MoveNode | null {
+    // Only search mainline for ply match as ply is not unique in trees
+    return nodes.find((n) => n.ply === ply) || null;
+  }
 
   nextOptions = computed(() => this.navigationCtx().next);
 

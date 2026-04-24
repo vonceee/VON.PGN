@@ -14,6 +14,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
+import { Chess } from 'chess.js';
 import { MoveNotationComponent  } from '@shared/chess';
 import { TacticsBoardComponent  } from '@shared/chess';
 import { LoadingComponent  } from '@shared/feedback';
@@ -38,6 +39,7 @@ export class TacticsComponent implements OnInit {
   private gameService = inject(GameService);
   private userService = inject(UserService);
   private platformId = inject(PLATFORM_ID);
+  private chess = new Chess();
 
   constructor() {}
 
@@ -63,6 +65,7 @@ export class TacticsComponent implements OnInit {
   pgnMoves = signal<string[]>([]);
   basePgnMoves = signal<string[]>([]);
   currentPly = signal(0);
+  currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
   puzzleStartPly = signal(0);
   fullPgnMoves: string[] = [];
   isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
@@ -182,6 +185,15 @@ export class TacticsComponent implements OnInit {
 
           this.basePgnMoves.set(base);
           
+          // Sync internal chess state and currentFen
+          this.chess.load('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+          try {
+            base.forEach(m => this.chess.move(m));
+            this.currentFen.set(this.chess.fen());
+          } catch (e) {
+            console.warn('[Tactics] Failed to sync chess state for base moves:', e);
+          }
+
           let mergedMoves = [...base];
           if (base.length > 0 && currentSessionMoves.length > 0) {
             const lastBase = base[base.length - 1];
@@ -314,6 +326,14 @@ export class TacticsComponent implements OnInit {
       this.boardComponent.setGameMoves(this.pgnMoves());
     }
     this.currentPly.set(this.pgnMoves().length);
+    
+    // Update internal chess state and FEN
+    try {
+      this.chess.move(san);
+      this.currentFen.set(this.chess.fen());
+    } catch (e) {
+      console.warn('[Tactics] Could not update FEN for move:', san, e);
+    }
   }
 
   revealSolution() {
@@ -376,6 +396,18 @@ export class TacticsComponent implements OnInit {
     
     this.boardComponent.setGameModeAtMove(this.pgnMoves(), ply);
     this.currentPly.set(ply);
+
+    // Update internal chess state and FEN
+    this.chess.load('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    const moves = this.pgnMoves();
+    try {
+      for (let i = 0; i < ply; i++) {
+        this.chess.move(moves[i]);
+      }
+      this.currentFen.set(this.chess.fen());
+    } catch (e) {
+      console.warn('[Tactics] Failed to set chess state for ply:', ply, e);
+    }
   }
 }
 
