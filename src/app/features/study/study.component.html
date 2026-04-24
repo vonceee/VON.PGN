@@ -1,11 +1,11 @@
-<div class="h-full w-full overflow-hidden flex flex-col p-2 lg:p-6 font-sans">
+<div class="h-full w-full overflow-hidden flex flex-col p-4 bg-white dark:bg-black">
   @if (study(); as s) {
     <div
-      class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] gap-4 lg:gap-8 w-full max-w-[1920px] mx-auto items-stretch h-full overflow-hidden"
+      class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] gap-4 w-full mx-auto items-stretch h-full overflow-hidden"
     >
       <!-- Left Column: Chapter Sidebar (Learn Sidebar style) -->
       <aside
-        class="hidden lg:flex flex-col h-full bg-white dark:bg-black overflow-hidden"
+        class="hidden lg:flex flex-col h-full overflow-hidden"
         [class.pointer-events-none]="isSyncing() && !isOwner()"
         [class.opacity-70]="isSyncing() && !isOwner()"
       >
@@ -15,9 +15,9 @@
         </div>
 
         <div>
-          <div class="flex items-center justify-between px-5 mt-2">
+          <div class="flex items-center justify-between px-5 mt-2 gap-2">
             <h2
-              class="font-black select-none truncate cursor-pointer hover:text-cyan-600"
+              class="font-black select-none truncate cursor-pointer hover:text-cyan-600 min-w-0"
               [title]="s.name"
             >
               {{ s.name }}
@@ -28,7 +28,7 @@
                 variant="ghost"
                 size="none"
                 (click)="openSettings()"
-                class="p-1 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all"
+                class="p-1 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all shrink-0"
                 title="Study Settings"
               >
                 <ng-icon name="heroCog6Tooth" class="text-lg"></ng-icon>
@@ -42,7 +42,7 @@
             @for (chap of s.chapters; track chap.id; let idx = $index) {
               <button
                 (click)="selectChapter(chap)"
-                class="relative flex items-center justify-between py-2 px-4 mx-2 my-0.5 cursor-pointer rounded-lg transition-all duration-200 group text-left border border-transparent
+                class="relative flex items-center justify-between py-2 px-4 cursor-pointer transition-all duration-200 group text-left
                 {{
                   currentChapter()?.id === chap.id
                     ? 'bg-slate-100 dark:bg-white/10'
@@ -54,10 +54,10 @@
                   <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-cyan-400"></div>
                 }
 
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 min-w-0">
                   <span
                     [class]="
-                      'text-sm font-medium transition-colors ' +
+                      'text-sm font-medium truncate transition-colors ' +
                       (currentChapter()?.id === chap.id
                         ? 'text-cyan-400'
                         : 'text-slate-700 dark:text-slate-200')
@@ -70,10 +70,10 @@
                 @if (isOwner()) {
                   <button
                     (click)="onEditChapter($event, chap)"
-                    class="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-200"
+                    class="text-xs group-hover:cursor-pointer hover:underline shrink-0"
                     title="Edit Chapter"
                   >
-                    <ng-icon name="heroPencil" class="text-sm"></ng-icon>
+                    Edit
                   </button>
                 }
               </button>

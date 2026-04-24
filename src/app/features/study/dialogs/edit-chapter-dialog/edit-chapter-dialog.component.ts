@@ -4,8 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroTrash } from '@ng-icons/heroicons/outline';
 
 export interface EditChapterDialogResult {
   action: 'save' | 'delete';
@@ -20,13 +18,12 @@ export interface EditChapterDialogData {
 @Component({
   selector: 'app-edit-chapter-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent, NgIconComponent],
-  providers: [provideIcons({ heroTrash })],
+  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent],
   template: `
     <app-dialog-wrapper title="Edit Chapter" (close)="dialogRef.close()">
       <div class="space-y-6">
         <div class="space-y-2">
-          <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Chapter Name</label>
+          <label class="text-sm font-bold">Name</label>
           <input
             type="text"
             [(ngModel)]="name"
@@ -37,16 +34,13 @@ export interface EditChapterDialogData {
           />
         </div>
 
-        <div class="pt-4 border-t border-border-theme/10">
-          <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 block mb-3">Danger Zone</label>
+        <div class="pt-4">
           <button
             appButton
-            variant="outline"
-            class="w-full !text-rose-500 !border-rose-500/20 hover:!bg-rose-500/10 flex items-center justify-center gap-2 group transition-all"
+            variant="danger"
             (click)="onDelete()"
             [disabled]="data.isLastChapter"
           >
-            <ng-icon name="heroTrash" class="group-hover:scale-110 transition-transform"></ng-icon>
             Delete Chapter
           </button>
           @if (data.isLastChapter) {
@@ -56,7 +50,6 @@ export interface EditChapterDialogData {
       </div>
 
       <div actions>
-        <button appButton variant="ghost" (click)="dialogRef.close()">Cancel</button>
         <button appButton variant="primary" (click)="onSave()" [disabled]="!name().trim() || name() === data.currentName">
           Save Changes
         </button>
