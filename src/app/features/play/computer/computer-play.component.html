@@ -1,114 +1,79 @@
-<div class="h-full p-4 flex flex-col items-center justify-center">
+<div class="h-full w-full overflow-hidden flex flex-col bg-main p-4 md:p-8">
   @if (isSetup()) {
-    <div class="flex flex-col items-center justify-center py-20 animate-pulse">
+    <div class="flex flex-col items-center justify-center h-full animate-pulse">
       <div class="h-12 w-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
       <p class="text-xs font-black uppercase tracking-[0.2em] text-slate-500">Preparing Challenge...</p>
     </div>
   } @else {
     <!-- ACTIVE GAME VIEW -->
-    <div class="w-full h-full flex items-center justify-center animate-in fade-in duration-500">
+    <div class="flex-1 flex items-center justify-center overflow-hidden animate-in fade-in duration-500">
       <div
-        class="w-full flex flex-col items-center md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6 md:items-start"
+        class="w-full max-w-[1920px] mx-auto h-full flex flex-col items-center md:grid md:grid-cols-[300px_1fr_350px] xl:grid-cols-[340px_1fr_400px] gap-4 md:gap-8 md:items-stretch overflow-hidden"
       >
         <!-- Left Column: Info & History -->
-        <div class="w-full md:w-96 h-[85vh] md:sticky md:top-6 justify-self-end">
-          <div class="flex flex-col ui-panel overflow-hidden h-full">
-            <div class="p-4 border-b border-white/5">
-              <div class="flex items-center gap-3 mb-3">
-                <div>
-                  <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500">
-                    Computer
-                  </div>
-                  <div class="text-sm font-black">Stockfish {{ selectedLevel() }}</div>
-                </div>
-              </div>
-              <div class="flex items-center gap-3">
-                <div>
-                  <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500">
-                    You
-                  </div>
-                  <div class="text-sm font-black">
-                    {{ playerColor() === 'white' ? 'White' : 'Black' }}
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div class="hidden md:flex flex-col min-w-0 h-full w-full border-r border-border-base overflow-hidden">
+          <div class="flex flex-col overflow-hidden h-full">
+            <app-game-info
+              [player]="opponentPlayer()"
+              [color]="playerColor() === 'white' ? 'black' : 'white'"
+              class="block mb-3"
+            />
+            <app-game-info
+              [player]="mePlayer()"
+              [color]="playerColor()"
+            />
 
             <app-move-notation
-              class="flex-1"
+              class="flex-1 pt-2"
               [moves]="pgnMoves()"
               [currentPly]="displayPly()"
               [showNavigation]="true"
               (navigate)="onNavigate($event)"
             />
 
-            <div class="p-2 border-t border-white/5 flex gap-2">
+            <div class="p-4 border-t border-border-base">
               @if (status() === 'playing') {
-                @if (!showResignConfirm()) {
-                  <button
-                    appButton
-                    variant="danger"
-                    size="sm"
-                    class="flex-1 font-bold"
-                    (click)="resignGame()"
-                  >
-                    Resign
-                  </button>
-                } @else {
-                  <div
-                    class="flex gap-1 flex-1 animate-in fade-in slide-in-from-right-2 duration-200"
-                  >
-                    <button
-                      appButton
-                      variant="danger"
-                      size="sm"
-                      (click)="resignGame()"
-                      title="Confirm Resign"
-                    >
-                      <svg
-                        class="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="3"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                    </button>
+                <div class="flex gap-2">
+                  @if (!showResignConfirm()) {
                     <button
                       appButton
                       variant="outline"
-                      size="sm"
-                      (click)="showResignConfirm.set(false)"
-                      title="Cancel"
-                      class="flex-1"
+                      size="md"
+                      class="flex-1 font-bold"
+                      (click)="resignGame()"
                     >
-                      <svg
-                        class="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="3"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                      </svg>
+                      Resign
                     </button>
-                  </div>
-                }
+                  } @else {
+                    <button
+                      appButton
+                      variant="danger"
+                      size="md"
+                      (click)="resignGame()"
+                      class="flex-1 font-bold"
+                    >
+                      Confirm Resign
+                    </button>
+                    <button
+                      appButton
+                      variant="ghost"
+                      size="md"
+                      (click)="showResignConfirm.set(false)"
+                      class="shrink-0"
+                    >
+                      Cancel
+                    </button>
+                  }
+                </div>
               } @else {
                 <button
                   appButton
                   variant="primary"
-                  size="sm"
-                  class="flex-1 font-bold"
+                  size="md"
+                  class="w-full font-bold"
                   (click)="startGame()"
                 >
-                  Rematch
+                  New Game
                 </button>
               }
             </div>
@@ -116,23 +81,24 @@
         </div>
 
         <!-- Center Column: Board Area -->
-        <div class="w-full md:flex md:flex-col md:items-center md:min-w-0 md:overflow-hidden">
-          <!-- Clock Top (mobile) -->
-          <div
-            class="w-full md:hidden flex items-center justify-between gap-2 p-3 border border-white/5"
-          >
-            <div class="text-xs font-bold uppercase text-slate-500">Computer</div>
-            <div
-              class="font-mono font-black"
-              [class.text-red-500]="opponentTimeMs() < 3000"
-              [class.text-amber-400]="opponentTimeMs() < 10000 && opponentTimeMs() >= 3000"
-            >
-              {{ formatTime(opponentTimeMs()) }}
-            </div>
+        <div class="board-container-parent w-full md:w-auto flex flex-col items-center justify-center min-h-0 min-w-0 overflow-hidden relative">
+          <!-- Mobile Info/Clock -->
+          <div class="w-full md:hidden mb-2 flex items-center justify-between gap-2">
+            <app-game-info
+              [player]="opponentPlayer()"
+              [color]="playerColor() === 'white' ? 'black' : 'white'"
+              class="flex-1 min-w-0"
+            />
+            <app-chess-clock
+              class="shrink-0 scale-75 origin-right"
+              [serverTimeMs]="opponentTimeMs()"
+              [serverTimestamp]="lastMoveTimestamp()"
+              [isActive]="!isMyTurn()"
+            />
           </div>
 
           <div
-            class="relative bg-slate-900 border border-white/5 p-1 shadow-2xl max-w-full overflow-hidden w-full rounded md:rounded-none board-container-parent"
+            class="relative w-full h-full flex items-center justify-center"
           >
             <app-chess-board
               #board
@@ -140,73 +106,59 @@
               [orientation]="playerColor()"
               [interactive]="isMyTurn()"
               (moveMade)="onUserMove($event)"
+              (sizeChange)="boardSize.set($event)"
             ></app-chess-board>
           </div>
 
-          <!-- Clock Bottom (mobile) -->
-          <div
-            class="w-full md:hidden flex items-center justify-between gap-2 p-3 border border-white/5"
-          >
-            <div class="text-xs font-bold uppercase text-slate-500">You</div>
-            <div
-              class="font-mono font-black"
-              [class.text-red-500]="playerTimeMs() < 3000"
-              [class.text-amber-400]="playerTimeMs() < 10000 && playerTimeMs() >= 3000"
-            >
-              {{ formatTime(playerTimeMs()) }}
-            </div>
+          <!-- Mobile Info/Clock Bottom -->
+          <div class="w-full md:hidden mt-2 flex items-center justify-between gap-2">
+            <app-game-info
+              [player]="mePlayer()"
+              [color]="playerColor()"
+              class="flex-1 min-w-0"
+            />
+            <app-chess-clock
+              class="shrink-0 scale-75 origin-right"
+              [serverTimeMs]="playerTimeMs()"
+              [serverTimestamp]="lastMoveTimestamp()"
+              [isActive]="isMyTurn()"
+            />
           </div>
         </div>
 
         <!-- Right Column: Clocks (desktop) -->
-        <div class="w-full md:w-64 md:max-w-xl">
-          <div class="flex flex-col h-full gap-4">
+        <div class="hidden md:flex flex-col min-w-0 h-full w-full border-l border-border-base overflow-hidden">
+          <div class="flex flex-col justify-center gap-6 h-full px-4 lg:px-8">
             <!-- Computer Clock -->
-            <div class="ui-panel p-3 flex flex-col gap-2">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
-                  >Computer</span
-                >
-              </div>
-              <div
-                class="font-mono text-2xl font-black"
-                [class.text-amber-400]="opponentTimeMs() < 10000 && opponentTimeMs() >= 3000"
-                [class.text-red-500]="opponentTimeMs() < 3000"
-                [class.animate-pulse]="opponentTimeMs() < 3000"
-              >
-                {{ formatTime(opponentTimeMs()) }}
-              </div>
+            <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
+              <app-chess-clock
+                [serverTimeMs]="opponentTimeMs()"
+                [serverTimestamp]="lastMoveTimestamp()"
+                [isActive]="!isMyTurn()"
+              />
             </div>
 
-            <!-- Spacer to push player clock down -->
-            <div class="flex-1"></div>
-
-            <!-- Player Clock -->
-            <div class="ui-panel p-3 flex flex-col gap-2">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
-                  >You</span
-                >
-              </div>
-              <div
-                class="font-mono text-2xl font-black"
-                [class.text-amber-400]="playerTimeMs() < 10000 && playerTimeMs() >= 3000"
-                [class.text-red-500]="playerTimeMs() < 3000"
-                [class.animate-pulse]="playerTimeMs() < 3000"
-              >
-                {{ formatTime(playerTimeMs()) }}
-              </div>
-            </div>
-
-            <!-- Result Message at the bottom -->
+            <!-- Result Message in middle if finished -->
             @if (resultDetails(); as result) {
-              <div class="ui-panel p-4 text-center border-white/5" aria-live="polite">
-                <div class="text-xl font-black mb-1 tracking-tighter text-white">{{ result.score }}</div>
-                <div class="text-xs tracking-widest italic text-slate-400">
+              <div class="ui-panel p-6 text-center border-border-base rounded-xl bg-white/5 animate-in zoom-in duration-300" aria-live="polite">
+                <div class="text-3xl font-black mb-2 tracking-tighter text-main">{{ result.score }}</div>
+                <div class="text-xs tracking-widest opacity-60 uppercase font-bold">
+                  {{ result.label }}
+                </div>
+                <div class="text-sm mt-3 opacity-80">
                   {{ result.detail }}
                 </div>
               </div>
             }
+
+            <!-- Player Clock -->
+            <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
+              <app-chess-clock
+                [serverTimeMs]="playerTimeMs()"
+                [serverTimestamp]="lastMoveTimestamp()"
+                [isActive]="isMyTurn()"
+              />
+            </div>
           </div>
         </div>
       </div>

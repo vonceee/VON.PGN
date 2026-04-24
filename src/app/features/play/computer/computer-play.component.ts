@@ -4,21 +4,31 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Chess, Move } from 'chess.js';
 import { EngineService } from '../../../core/services/engine.service';
-import { ChessBoardComponent } from '@shared/chess';
+import { ChessBoardComponent, ChessClockComponent, MoveNotationComponent } from '@shared/chess';
 import { ButtonComponent } from '@shared/ui';
-import { TIME_CONTROLS } from '../../../core/models/game.model';
-import { MoveNotationComponent } from '@shared/chess';
+import { GameInfoComponent } from '../live-game/components/game-info.component';
+import { TIME_CONTROLS, GamePlayer } from '../../../core/models/game.model';
 import { AudioService } from '../../../core/services/audio.service';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID, effect } from '@angular/core';
 
 @Component({
   selector: 'app-computer-play',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChessBoardComponent, ButtonComponent, MoveNotationComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ChessBoardComponent,
+    ButtonComponent,
+    MoveNotationComponent,
+    GameInfoComponent,
+    ChessClockComponent
+  ],
   templateUrl: './computer-play.component.html',
   host: {
-    class: 'block h-full',
+    class: 'absolute inset-0 overflow-hidden',
   },
 })
 export class ComputerPlayComponent implements OnInit, OnDestroy {
@@ -27,6 +37,8 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
+  boardSize = signal(600);
 
   @ViewChild(ChessBoardComponent) board!: ChessBoardComponent;
 
@@ -130,6 +142,28 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     this.playerColor() === 'white' ? this.blackTimeMs() : this.whiteTimeMs(),
   );
 
+  opponentPlayer = computed<GamePlayer>(() => ({
+    id: 0,
+    name: `Stockfish Level ${this.selectedLevel()}`,
+    rating: 800 + (this.selectedLevel() * 250)
+  }));
+
+  mePlayer = computed<GamePlayer>(() => ({
+    id: 1,
+    name: 'You',
+    rating: 1500
+  }));
+
+  lastMoveTimestamp = signal(new Date().toISOString());
+
+  constructor() {
+    effect(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
+      }
+    });
+  }
+
   ngOnInit() {
     this.engineService.bestMove$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((move) => {
       this.onEngineMove(move);
@@ -211,6 +245,7 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     this.isEngineThinking.set(false);
     this.gameStateCounter.update((c) => c + 1);
     this.audioService.playBoardStart();
+    this.lastMoveTimestamp.set(new Date().toISOString());
 
     this.startTimer();
 
@@ -230,6 +265,7 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
     this.displayPly.set(this.pgnMoves().length);
     this.isEngineThinking.set(true);
     this.gameStateCounter.update((c) => c + 1);
+    this.lastMoveTimestamp.set(new Date().toISOString());
 
     if (this.checkGameOver()) return;
 
@@ -271,6 +307,7 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
         this.displayPly.set(this.pgnMoves().length);
         this.isEngineThinking.set(false);
         this.gameStateCounter.update((c) => c + 1);
+        this.lastMoveTimestamp.set(new Date().toISOString());
 
         // Apply engine increment
         if (this.playerColor() === 'white') {
@@ -308,14 +345,18 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
       if (this.status() !== 'playing') return;
 
       const turn = this.game.turn();
+      const now = Date.now();
+      const last = Date.parse(this.lastMoveTimestamp());
+      const elapsed = now - last;
+
       if (turn === 'w') {
-        this.whiteTimeMs.update((t) => Math.max(0, t - 100));
-        if (this.whiteTimeMs() === 0) {
+        const remaining = Math.max(0, this.whiteTimeMs() - elapsed);
+        if (remaining <= 0) {
           this.onTimeOut('white');
         }
       } else {
-        this.blackTimeMs.update((t) => Math.max(0, t - 100));
-        if (this.blackTimeMs() === 0) {
+        const remaining = Math.max(0, this.blackTimeMs() - elapsed);
+        if (remaining <= 0) {
           this.onTimeOut('black');
         }
       }
