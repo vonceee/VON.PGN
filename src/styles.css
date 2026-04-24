@@ -70,14 +70,6 @@ body::after {
   pointer-events: none;
 }
 
-header {
-  background: color-mix(in srgb, var(--color-main), transparent 30%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border-base);
-  transition: all 0.3s ease;
-}
-
 footer {
   background: color-mix(in srgb, var(--color-surface), transparent 50%);
   backdrop-filter: blur(8px);

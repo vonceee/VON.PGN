@@ -15,15 +15,9 @@ import { CommonModule } from '@angular/common';
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-weight: 600;
-      color: inherit;
       text-decoration: none;
       transition: color 0.3s ease;
       cursor: pointer;
-    }
-
-    :host(:hover) {
-      color: var(--color-accent);
     }
 
     .underline-bar {
@@ -42,13 +36,6 @@ import { CommonModule } from '@angular/common';
       transform: scaleX(1);
       transform-origin: left;
     }
-
-    :host-context(.text-danger) .underline-bar,
-    :host-context([variant="danger"]) .underline-bar {
-      background-color: #f43f5e; /* rose-500 */
-    }
   `],
 })
-export class LinkComponent {
-  variant = input<'primary' | 'danger' | 'ghost'>('primary');
-}
+export class LinkComponent {}

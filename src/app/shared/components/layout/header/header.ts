@@ -37,9 +37,8 @@ import { ButtonComponent, LinkComponent, SectionHeadingComponent } from '@shared
     }),
   ],
   templateUrl: './header.html',
-  styleUrl: './header.css',
   host: {
-    class: 'relative',
+    class: 'block relative',
   },
 })
 export class Header implements OnInit, OnDestroy {
