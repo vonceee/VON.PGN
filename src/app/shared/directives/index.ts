@@ -1,1 +1,1 @@
-export * from './typewrite.directive';
+export * from '../components/ui/typewriter-text/directives/typewrite.directive';

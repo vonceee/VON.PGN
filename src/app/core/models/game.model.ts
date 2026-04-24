@@ -121,3 +121,17 @@ export const TIME_CONTROLS: TimeControlOption[] = [
   { label: '10+5', value: '600+5', baseSeconds: 600, incrementSeconds: 5, category: 'rapid' },
   { label: '15+0', value: '900+0', baseSeconds: 900, incrementSeconds: 0, category: 'rapid' },
 ];
+
+export interface ChallengeSettings {
+  timeControl: string;
+  color: 'white' | 'black' | 'random';
+}
+
+export interface Challenge {
+  id: string;
+  challenger: GamePlayer;
+  recipient: GamePlayer;
+  settings: ChallengeSettings;
+  status: 'pending' | 'accepted' | 'declined' | 'canceled';
+  createdAt: string;
+}

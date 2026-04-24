@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, inject, signal, PLATFORM_ID, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { StudyService } from '../../../core/services/study.service';
@@ -8,40 +8,56 @@ import { CreateStudyDialogComponent } from '../dialogs/create-study-dialog/creat
 import { FormsModule } from '@angular/forms';
 import { SectionHeadingComponent, BadgeComponent } from '@shared/ui';
 import { ButtonComponent } from '@shared/ui';
+import { LoadingComponent } from '@shared/feedback';
 import { effect } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash } from '@ng-icons/heroicons/outline';
+import { heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash, heroChevronDown } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-study-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent, DialogModule, BadgeComponent, NgIconComponent],
-  providers: [provideIcons({ heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash })],
+  imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent, DialogModule, BadgeComponent, NgIconComponent, LoadingComponent],
+  providers: [provideIcons({ heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash, heroChevronDown })],
   template: `
-    <div class="mx-auto p-4 md:p-8">
+    <div class="px-4 md:px-16 py-8">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <app-section-heading text="Chess" highlight="Study"></app-section-heading>
+        <app-section-heading text="Chess" highlight="Study" size="text-3xl font-bold mb-0"></app-section-heading>
 
         <div class="flex items-center gap-2">
-            <!-- Tabs -->
-            <div class="flex bg-subtle p-1 rounded-xl mr-4">
+            <!-- Dropdown -->
+            <div class="relative" #dropdownContainer>
               <button 
-                (click)="activeTab.set('all')"
-                [class]="activeTab() === 'all' ? 'bg-main shadow-sm text-accent' : 'text-muted hover:text-content'"
-                class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all"
+                (click)="isDropdownOpen.set(!isDropdownOpen())"
+                class="flex items-center justify-between gap-2 px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm font-bold text-content hover:bg-surface transition-all min-w-[140px]"
               >
-                <ng-icon name="heroGlobeAlt"></ng-icon>
-                Public
+                <div class="flex items-center gap-2">
+                  <ng-icon [name]="activeTab() === 'all' ? 'heroGlobeAlt' : 'heroUser'"></ng-icon>
+                  {{ activeTab() === 'all' ? 'Public' : 'My Studies' }}
+                </div>
+                <ng-icon name="heroChevronDown" [class.rotate-180]="isDropdownOpen()" class="transition-transform duration-200"></ng-icon>
               </button>
-              @if (isLoggedIn()) {
-                <button 
-                  (click)="activeTab.set('my')"
-                  [class]="activeTab() === 'my' ? 'bg-main shadow-sm text-accent' : 'text-muted hover:text-content'"
-                  class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all"
-                >
-                  <ng-icon name="heroUser"></ng-icon>
-                  My Studies
-                </button>
+
+              @if (isDropdownOpen()) {
+                <div class="absolute top-full right-0 mt-2 w-48 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <button 
+                    (click)="setTab('all')"
+                    class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors hover:bg-subtle"
+                    [class.text-accent]="activeTab() === 'all'"
+                  >
+                    <ng-icon name="heroGlobeAlt"></ng-icon>
+                    Public
+                  </button>
+                  @if (isLoggedIn()) {
+                    <button 
+                      (click)="setTab('my')"
+                      class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors hover:bg-subtle"
+                      [class.text-accent]="activeTab() === 'my'"
+                    >
+                      <ng-icon name="heroUser"></ng-icon>
+                      My Studies
+                    </button>
+                  }
+                </div>
               }
             </div>
 
@@ -51,99 +67,111 @@ import { heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash } from '@ng-icons/
          </div>
        </div>
  
-       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-         @for (study of studies(); track study.id) {
-           <div
-             class="ui-panel border border-border-base rounded-2xl overflow-hidden flex flex-col h-full relative group cursor-default"
-           >
-            <!-- Card Body -->
-            <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
-              <div class="flex items-start justify-between gap-2 mb-2">
-                <div class="flex flex-col gap-1">
-                  <h2 class="text-base md:text-2xl font-bold">{{ study.name }}</h2>
-                  <div class="flex gap-2">
-                    @if (study.visibility === 'private') {
-                      <app-badge customClass="!bg-red-500/10 !text-red-500 !border-red-500/20 border">
-                        <ng-icon name="heroLockClosed" class="mr-1"></ng-icon> Private
-                      </app-badge>
-                    } @else if (study.visibility === 'unlisted') {
-                      <app-badge customClass="!bg-amber-500/10 !text-amber-500 !border-amber-500/20 border">
-                        <ng-icon name="heroEyeSlash" class="mr-1"></ng-icon> Unlisted
-                      </app-badge>
+       <div class="relative min-h-[400px]">
+         @if (isLoading()) {
+           <div class="absolute inset-0 flex items-center justify-center">
+             <app-loading message="Loading Studies..."></app-loading>
+           </div>
+         } @else {
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+             @for (study of studies(); track study.id) {
+               <div
+                 class="ui-panel border border-border-base rounded-2xl overflow-hidden flex flex-col h-full relative group cursor-default"
+               >
+                <!-- Card Body -->
+                <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
+                  <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="flex flex-col gap-1">
+                      <h2 class="text-base md:text-2xl font-bold">{{ study.name }}</h2>
+                      <div class="flex gap-2">
+                        @if (study.visibility === 'private') {
+                          <app-badge customClass="!bg-red-500/10 !text-red-500 !border-red-500/20 border">
+                            <ng-icon name="heroLockClosed" class="mr-1"></ng-icon> Private
+                          </app-badge>
+                        } @else if (study.visibility === 'unlisted') {
+                          <app-badge customClass="!bg-amber-500/10 !text-amber-500 !border-amber-500/20 border">
+                            <ng-icon name="heroEyeSlash" class="mr-1"></ng-icon> Unlisted
+                          </app-badge>
+                        }
+                      </div>
+                    </div>
+                    @if (study.updated_at) {
+                      <span
+                        class="text-xs text-slate-400 whitespace-nowrap shrink-0 mt-1"
+                        [title]="formatDate(study.updated_at)"
+                      >
+                        {{ formatRelativeTime(study.updated_at) }}
+                      </span>
                     }
                   </div>
+
+                  <div class="space-y-2 text-sm mb-4">
+                    <div class="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        class="w-4 h-4 shrink-0"
+                      >
+                        <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+                        <path
+                          fill-rule="evenodd"
+                          d="M.664 10.59a1.651 1.651 0 0 1 0-1.186A10.004 10.004 0 0 1 10 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0 1 10 17c-4.257 0-7.893-2.66-9.336-6.41ZM14 10a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <span class="capitalize">{{ study.visibility }}</span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        class="w-4 h-4 shrink-0"
+                      >
+                        <path
+                          d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
+                        />
+                      </svg>
+                      {{ study.chapters_count }} Chapters
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        class="w-4 h-4 shrink-0"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <span
+                        >Created by <span class="font-semibold">{{ study.owner.name }}</span></span
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Bottom Row -->
+                  <div class="mt-auto flex items-center justify-end">
+                    <a appButton variant="outline" size="sm" [routerLink]="'/study/' + study.id">
+                      View Study
+                    </a>
+                  </div>
                 </div>
-                @if (study.updated_at) {
-                  <span
-                    class="text-xs text-slate-400 whitespace-nowrap shrink-0 mt-1"
-                    [title]="formatDate(study.updated_at)"
-                  >
-                    {{ formatRelativeTime(study.updated_at) }}
-                  </span>
-                }
               </div>
-
-              <div class="space-y-2 text-sm mb-4">
-                <div class="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="w-4 h-4 shrink-0"
-                  >
-                    <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
-                    <path
-                      fill-rule="evenodd"
-                      d="M.664 10.59a1.651 1.651 0 0 1 0-1.186A10.004 10.004 0 0 1 10 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0 1 10 17c-4.257 0-7.893-2.66-9.336-6.41ZM14 10a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <span class="capitalize">{{ study.visibility }}</span>
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="w-4 h-4 shrink-0"
-                  >
-                    <path
-                      d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
-                    />
-                  </svg>
-                  {{ study.chapters_count }} Chapters
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="w-4 h-4 shrink-0"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                  <span
-                    >Created by <span class="font-semibold">{{ study.owner.name }}</span></span
-                  >
-                </div>
+            } @empty {
+              <div class="col-span-full py-20 text-center text-slate-500">
+                No studies found.
               </div>
-
-              <!-- Bottom Row -->
-              <div class="mt-auto flex items-center justify-end">
-                <a appButton variant="outline" size="sm" [routerLink]="'/study/' + study.id">
-                  View Study
-                </a>
-              </div>
-            </div>
+            }
           </div>
         }
-      </div>
+       </div>
     </div>
   `,
 })
@@ -153,9 +181,14 @@ export class StudyListComponent implements OnInit {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private dialog = inject(Dialog);
+  
+  @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
+  
   studies = signal<any[]>([]);
   activeTab = signal<'all' | 'my'>('all');
   isLoggedIn = signal(false);
+  isDropdownOpen = signal(false);
+  isLoading = signal(false);
 
   constructor() {
     effect(() => {
@@ -163,7 +196,7 @@ export class StudyListComponent implements OnInit {
       if (!this.isLoggedIn() && this.activeTab() === 'my') {
         this.activeTab.set('all');
       }
-    }, { allowSignalWrites: true });
+    });
 
     effect(() => {
       this.loadStudies();
@@ -176,10 +209,22 @@ export class StudyListComponent implements OnInit {
 
   loadStudies() {
     if (isPlatformBrowser(this.platformId)) {
-      this.studyService.getStudies(this.activeTab() === 'my').subscribe((res) => {
-        this.studies.set(res.data);
+      this.isLoading.set(true);
+      this.studyService.getStudies(this.activeTab() === 'my').subscribe({
+        next: (res) => {
+          this.studies.set(res.data);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+        }
       });
     }
+  }
+
+  setTab(tab: 'all' | 'my') {
+    this.activeTab.set(tab);
+    this.isDropdownOpen.set(false);
   }
 
   createNewStudy() {
@@ -215,5 +260,16 @@ export class StudyListComponent implements OnInit {
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 30) return `${diffDays}d ago`;
     return this.formatDate(dateStr);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    if (
+      this.isDropdownOpen() &&
+      this.dropdownContainer &&
+      !this.dropdownContainer.nativeElement.contains(event.target as Node)
+    ) {
+      this.isDropdownOpen.set(false);
+    }
   }
 }

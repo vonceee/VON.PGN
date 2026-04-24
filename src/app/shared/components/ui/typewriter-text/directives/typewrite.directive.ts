@@ -5,7 +5,7 @@ import { Directive, ElementRef, OnDestroy, Input, afterNextRender } from '@angul
   standalone: true,
 })
 export class TypewriteDirective implements OnDestroy {
-  @Input() typewriteSpeed = 20;
+  @Input() typewriteSpeed = 10;
 
   private observer: IntersectionObserver | null = null;
   private timer: ReturnType<typeof setInterval> | null = null;

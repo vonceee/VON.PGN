@@ -9,29 +9,29 @@
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   /* Semantic Tokens */
-  --color-main: #ffffff;
-  --color-surface: #f9fafb;
-  --color-subtle: #f3f4f6;
+  --color-main: hsl(0 0% 100%);
+  --color-surface: hsl(210 20% 98%);
+  --color-subtle: hsl(220 14% 96%);
 
-  --color-content: #0f172a;
-  --color-muted: #64748b;
-  --color-accent: #0891b2; /* Cyan-600 */
+  --color-content: hsl(222 47% 11%);
+  --color-muted: hsl(215 16% 47%);
+  --color-accent: hsl(192 91% 36%); /* Cyan-600 */
 
-  --color-border-base: #0f172a;
+  --color-border-base: hsl(220 13% 91%);
 
   --color-chess-grid: rgba(0, 0, 0, 0.04);
 }
 
 .dark {
-  --color-main: #09090b;
-  --color-surface: #121214;
-  --color-subtle: #18181b;
+  --color-main: hsl(240 10% 4%);
+  --color-surface: hsl(240 6% 7%);
+  --color-subtle: hsl(240 5% 10%);
 
-  --color-content: #f8fafc;
-  --color-muted: #94a3b8;
-  --color-accent: #22d3ee; /* Cyan-400 */
+  --color-content: hsl(210 40% 98%);
+  --color-muted: hsl(215 32% 65%);
+  --color-accent: hsl(189 85% 53%); /* Cyan-400 */
 
-  --color-border-base: #f8fafc;
+  --color-border-base: hsl(215 14% 23%);
 
   --color-chess-grid: rgba(148, 163, 184, 0.12);
 }
@@ -40,32 +40,7 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url('/assets/vonchess_bg-white.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  transform: scale(1.1);
-  z-index: -2;
-  pointer-events: none;
-}
-
-.dark body::before {
-  background-image: url('/assets/vonchess_bg-dark.webp');
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: color-mix(in srgb, var(--color-main), transparent 15%);
-  z-index: -1;
-  pointer-events: none;
+  background-color: var(--color-main);
 }
 
 footer {

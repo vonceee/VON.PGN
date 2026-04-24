@@ -1,5 +1,5 @@
 <header
-  class="sticky top-0 z-50 flex w-full items-center justify-between px-4 md:px-16 py-1.5 lg:py-2.5 bg-main/70 backdrop-blur-xl border-b border-border-base transition-all duration-300"
+  class="sticky top-0 z-50 flex w-full items-center justify-between px-4 md:px-16 py-1.5 lg:py-2.5 bg-main border-b border-border-base transition-all duration-300"
 >
   <a
     routerLink="/home"
@@ -271,13 +271,14 @@
       <div class="relative hidden md:block" #profileContainer>
         <button
           (click)="toggleProfileDropdown()"
-          class="flex items-center gap-2 group cursor-pointer focus:outline-none"
+          class="flex items-center gap-2 group cursor-pointer focus:outline-none relative"
         >
           <span
             class="text-sm lg:text-base xl:text-lg font-bold group-hover:text-accent transition-colors"
           >
             {{ userService.currentUser()?.displayName || 'User' }}
           </span>
+          <app-notification-badge [count]="challengeService.incomingChallenges().length"></app-notification-badge>
         </button>
 
         <!-- Desktop Profile Dropdown -->

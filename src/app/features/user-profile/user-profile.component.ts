@@ -11,11 +11,15 @@ import { FormsModule } from '@angular/forms';
 import { LoadingComponent } from '@shared/feedback';
 import { UserStatusIndicatorComponent } from '@shared/ui';
 import { GameHistoryComponent } from '../profile/game-history/game-history.component';
+import { Dialog, DialogModule } from '@angular/cdk/dialog';
+import { ChallengeService } from '../../core/services/challenge.service';
+import { ChallengeUserModalComponent } from '../play/challenge/challenge-user-modal.component';
+import { ChallengeSettings } from '../../core/models/game.model';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent, DialogModule],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
 })
@@ -26,6 +30,8 @@ export class UserProfileComponent implements OnInit {
   private chatService = inject(ChatService);
   private tournamentService = inject(TournamentService);
   private router = inject(Router);
+  private dialog = inject(Dialog);
+  private challengeService = inject(ChallengeService);
 
   user = signal<UserProfile | null>(null);
   isLoading = signal(true);
@@ -140,6 +146,23 @@ export class UserProfileComponent implements OnInit {
       error: () => {
         this.isMessaging.set(false);
       },
+    });
+  }
+
+  challengeUser() {
+    if (!this.isAuthenticated() || this.isOwnProfile()) return;
+
+    const profileUser = this.user();
+    if (!profileUser) return;
+
+    const dialogRef = this.dialog.open<ChallengeSettings>(ChallengeUserModalComponent, {
+      data: { username: profileUser.displayName || profileUser.username },
+    });
+
+    dialogRef.closed.subscribe((settings) => {
+      if (settings) {
+        this.challengeService.issueChallenge(parseInt(profileUser.uid), settings);
+      }
     });
   }
 

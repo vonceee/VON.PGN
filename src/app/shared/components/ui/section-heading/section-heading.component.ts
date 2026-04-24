@@ -14,5 +14,5 @@ import { CommonModule } from '@angular/common';
 export class SectionHeadingComponent {
   text = input.required<string>();
   highlight = input.required<string>();
-  size = input<string>('text-3xl md:text-5xl mb-4 md:mb-6');
+  size = input<string>('text-3xl font-bold mb-4');
 }

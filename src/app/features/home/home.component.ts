@@ -24,7 +24,6 @@ import { FeedbackButtonComponent } from '@shared/feedback';
   ],
   providers: [],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
   private lessonService = inject(LessonService);

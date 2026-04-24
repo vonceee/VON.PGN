@@ -20,12 +20,14 @@ import {
   heroBars3,
 } from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
-import { ButtonComponent, LinkComponent, SectionHeadingComponent } from '@shared/ui';
+import { ButtonComponent, LinkComponent, SectionHeadingComponent, NotificationBadgeComponent } from '@shared/ui';
+import { ChallengeService } from '../../../../core/services/challenge.service';
+import { heroTrophy } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgIcon, MobileMenuComponent, LinkComponent],
+  imports: [RouterLink, FormsModule, NgIcon, MobileMenuComponent, LinkComponent, NotificationBadgeComponent],
   providers: [
     provideIcons({
       heroChevronDown,
@@ -34,6 +36,7 @@ import { ButtonComponent, LinkComponent, SectionHeadingComponent } from '@shared
       heroMoon,
       heroXMark,
       heroBars3,
+      heroTrophy,
     }),
   ],
   templateUrl: './header.html',
@@ -49,6 +52,7 @@ export class Header implements OnInit, OnDestroy {
   chatService = inject(ChatService);
   audioService = inject(AudioService);
   boardThemeService = inject(BoardThemeService);
+  challengeService = inject(ChallengeService);
   private router = inject(Router);
 
   soundThemes = SOUND_THEMES;

@@ -64,6 +64,32 @@
                 @if (isAuthenticated() && !isOwnProfile()) {
                   <div class="flex items-center gap-2 shrink-0">
                     <button
+                      (click)="challengeUser()"
+                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer bg-accent text-white hover:bg-accent/90 border border-transparent shadow-sm"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                        />
+                      </svg>
+                      Challenge
+                    </button>
+
+                    <button
                       (click)="messageUser()"
                       [disabled]="isMessaging()"
                       class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/15 border border-slate-200 dark:border-white/10"
