@@ -30,7 +30,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
 import { MoveNode, StudyChapter } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
-import { BackLinkComponent } from '@shared/ui';
+import { BackLinkComponent, ButtonComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath } from '@ng-icons/heroicons/outline';
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
@@ -38,7 +38,7 @@ import { EngineService, type SearchMode } from '../../core/services/engine.servi
 @Component({
   selector: 'app-study',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent, DialogModule, NgIconComponent],
+  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent, DialogModule, NgIconComponent, ButtonComponent],
   providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath })],
   templateUrl: './study.component.html',
   host: {
@@ -534,10 +534,10 @@ export class StudyComponent implements OnInit, OnDestroy {
         const size = parseInt(saved, 10);
         if (size >= 280 && size <= 1200) return size;
       }
-      // Default: Maximize based on viewport height (approx 70% of height)
-      return Math.min(800, Math.floor(window.innerHeight * 0.7));
+      // Default: Maximize based on viewport height (approx 75% of height)
+      return Math.min(1000, Math.floor(window.innerHeight * 0.75));
     }
-    return 500;
+    return 600;
   }
 
   @HostListener('window:resize')
@@ -675,6 +675,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open<EditChapterDialogResult>(EditChapterDialogComponent, {
       data: {
         currentName: chap.name,
+        currentOrientation: chap.orientation || 'white',
         isLastChapter: (s.chapters?.length ?? 0) <= 1
       }
     });
@@ -683,9 +684,15 @@ export class StudyComponent implements OnInit, OnDestroy {
       if (!result) return;
 
       if (result.action === 'save' && result.name) {
-        this.studyService.updateChapter(s.id, chap.id, { name: result.name }).subscribe({
+        this.studyService.updateChapter(s.id, chap.id, { 
+          name: result.name,
+          orientation: result.orientation 
+        }).subscribe({
           next: () => {
-            this.toastService.show('Chapter renamed', 'success');
+            this.toastService.show('Chapter updated', 'success');
+            if (this.currentChapter()?.id === chap.id) {
+              this.boardOrientation.set(result.orientation || 'white');
+            }
             this.studyService.getStudy(s.id); // Refresh
           },
           error: (err) => {

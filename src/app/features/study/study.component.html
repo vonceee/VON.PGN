@@ -1,7 +1,7 @@
-<div class="h-full w-full overflow-hidden flex flex-col p-4 bg-main">
+<div class="h-full w-full overflow-hidden flex flex-col p-8 bg-main">
   @if (study(); as s) {
     <div
-      class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] gap-4 w-full mx-auto items-stretch h-full overflow-hidden"
+      class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] xl:grid-cols-[350px_1fr_440px] 2xl:grid-cols-[380px_1fr_480px] gap-6 w-full max-w-[1920px] mx-auto items-stretch h-full overflow-hidden"
     >
       <!-- Left Column: Chapter Sidebar (Learn Sidebar style) -->
       <aside
@@ -9,29 +9,20 @@
         [class.pointer-events-none]="isSyncing() && !isOwner()"
         [class.opacity-70]="isSyncing() && !isOwner()"
       >
-        <!-- Back to Library -->
-        <div class="px-2 mb-2">
-          <app-back-link link="/study" text="Back to Library"></app-back-link>
-        </div>
-
         <div>
-          <div class="flex items-center justify-between px-5 mt-2 gap-2">
+          <div class="flex items-center justify-between mb-4">
             <h2
-              class="font-black select-none truncate cursor-pointer hover:text-accent min-w-0"
+              class="text-xl font-medium select-none truncate cursor-pointer hover:text-accent min-w-0"
               [title]="s.name"
             >
               {{ s.name }}
             </h2>
             @if (isOwner()) {
               <button
-                appButton
-                variant="ghost"
-                size="none"
                 (click)="openSettings()"
-                class="p-1 rounded-lg text-muted hover:text-accent hover:bg-accent/10 transition-all shrink-0"
+                class="text-xs cursor-pointer hover:underline shrink-0"
                 title="Study Settings"
-              >
-                <ng-icon name="heroCog6Tooth" class="text-lg"></ng-icon>
+              >Settings
               </button>
             }
           </div>
@@ -81,26 +72,12 @@
 
             @if (isOwner()) {
               <button
+                appButton
+                variant="outline"
                 (click)="createChapter()"
-                class="mt-6 mx-2 p-3 rounded-xl border border-dashed border-border-base/40 hover:border-border-accent/50 hover:bg-accent/5 transition-all duration-300 group flex items-center justify-center gap-2"
+                class="text-sm"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                  class="text-muted group-hover:text-accent"
-                >
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-                <span
-                  class="text-[10px] font-bold uppercase tracking-widest text-muted group-hover:text-accent"
-                  >Add Chapter</span
-                >
+                + New Chapter
               </button>
             }
           </div>

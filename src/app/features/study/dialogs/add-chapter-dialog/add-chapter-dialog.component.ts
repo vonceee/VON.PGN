@@ -51,16 +51,15 @@ export interface AddChapterDialogResult {
         </div>
 
         <!-- Tab Switcher -->
-        <div class="flex p-1 bg-surface rounded-xl border border-base">
+        <div class="flex border-b border-base bg-surface -mx-6 px-6">
           @for (tab of tabs; track tab.id) {
             <button
               (click)="activeTab.set(tab.id)"
-              class="flex-1 py-2 text-xs font-semibold rounded-lg transition-all"
-              [class.bg-main]="activeTab() === tab.id"
-              [class.shadow-sm]="activeTab() === tab.id"
+              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
               [class.text-accent]="activeTab() === tab.id"
-              [class.text-muted]="activeTab() !== tab.id"
-              [class.hover:text-content]="activeTab() !== tab.id"
+              [class.opacity-100]="activeTab() === tab.id"
+              [class.opacity-50]="activeTab() !== tab.id"
+              [class.after:w-full]="activeTab() === tab.id"
             >
               {{ tab.label }}
             </button>
