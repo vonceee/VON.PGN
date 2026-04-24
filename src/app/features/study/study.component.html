@@ -405,20 +405,31 @@
                         Export
                       </button>
                     </div>
+
+                    </div>
                   </div>
 
                 </div>
-              </div>
-            }
+              }
+            </div>
           </div>
         </div>
       </div>
-    </div>
   } @else if (isLoading()) {
     <div class="flex items-center justify-center min-h-[400px]">
       <div
         class="w-10 h-10 border-3 border-accent border-t-transparent rounded-full animate-spin"
       ></div>
     </div>
+  }
+
+  @if (showDeleteModal() && study(); as s) {
+    <app-confirm-delete-modal
+      [itemName]="s.name"
+      itemType="study"
+      [loading]="isDeleting()"
+      (confirm)="onDeleteConfirmed()"
+      (cancel)="showDeleteModal.set(false)"
+    ></app-confirm-delete-modal>
   }
 </div>

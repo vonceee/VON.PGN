@@ -1,7 +1,6 @@
 export interface Study {
   id: number;
   name: string;
-  description?: string;
   visibility: 'public' | 'private' | 'unlisted';
   user_id: number;
   owner: {

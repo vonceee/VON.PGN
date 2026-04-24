@@ -12,6 +12,7 @@ import { LoadingComponent } from '@shared/feedback';
 import { effect } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash, heroChevronDown } from '@ng-icons/heroicons/outline';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-study-list',
@@ -171,16 +172,17 @@ import { heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash, heroChevronDown }
             }
           </div>
         }
-       </div>
     </div>
+  </div>
   `,
 })
 export class StudyListComponent implements OnInit {
   private studyService = inject(StudyService);
-  private authService = inject(AuthService);
+  public authService = inject(AuthService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private dialog = inject(Dialog);
+  private toastService = inject(ToastService);
   
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
   

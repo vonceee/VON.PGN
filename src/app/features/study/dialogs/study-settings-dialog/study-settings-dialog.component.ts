@@ -10,7 +10,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   standalone: true,
   imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent],
   template: `
-    <app-dialog-wrapper title="Study Settings" (close)="dialogRef.close()">
+    <app-dialog-wrapper title="Study settings" (close)="dialogRef.close()">
       <div class="space-y-4">
         <!-- Study Name -->
         <div class="space-y-2">
@@ -21,17 +21,6 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             placeholder="e.g. My Openings Analysis"
             class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all"
           />
-        </div>
-
-        <!-- Description -->
-        <div class="space-y-2">
-          <label class="text-sm font-semibold text-content">Description</label>
-          <textarea
-            [(ngModel)]="description"
-            rows="3"
-            placeholder="A brief description of this study..."
-            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all resize-none"
-          ></textarea>
         </div>
 
         <!-- Visibility -->
@@ -48,6 +37,16 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         </div>
       </div>
 
+      <button actions
+        appButton
+        variant="ghost"
+        class="!text-rose-500 hover:!bg-rose-500/10"
+        (click)="onDelete()"
+      >
+        Delete Study
+      </button>
+      <div actions class="flex-1"></div>
+
       <button actions appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
       <button actions appButton variant="primary" (click)="onSubmit()" [disabled]="!name().trim()">
         Save Changes
@@ -60,13 +59,11 @@ export class StudySettingsDialogComponent implements OnInit {
   data = inject<any>(DIALOG_DATA);
   
   name = signal('');
-  description = signal('');
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
 
   ngOnInit() {
     if (this.data) {
       this.name.set(this.data.name || '');
-      this.description.set(this.data.description || '');
       this.visibility.set(this.data.visibility || 'public');
     }
   }
@@ -74,10 +71,14 @@ export class StudySettingsDialogComponent implements OnInit {
   onSubmit() {
     if (this.name().trim()) {
       this.dialogRef.close({ 
+        action: 'save',
         name: this.name().trim(), 
-        description: this.description().trim(),
         visibility: this.visibility() 
       });
     }
+  }
+
+  onDelete() {
+    this.dialogRef.close({ action: 'delete' });
   }
 }

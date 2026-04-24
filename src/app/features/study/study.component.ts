@@ -34,13 +34,14 @@ import { ButtonComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath } from '@ng-icons/heroicons/outline';
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
+import { ConfirmDeleteModalComponent } from '@shared/feedback';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-study',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, EvalBarComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent, MatSlideToggleModule],
+  imports: [CommonModule, ChessBoardComponent, EvalBarComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent, MatSlideToggleModule, ConfirmDeleteModalComponent],
   providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath })],
   templateUrl: './study.component.html',
   styles: [`
@@ -180,6 +181,8 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   isSyncing = signal(true);
   activeTab = signal<'notation' | 'info'>('notation');
+  showDeleteModal = signal(false);
+  isDeleting = signal(false);
 
   private subs = new Subscription();
   private lastChapterId: number | null = null;
@@ -811,6 +814,29 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.studyService.exportPgn(s.id);
   }
 
+  confirmDeleteStudy() {
+    this.showDeleteModal.set(true);
+  }
+
+  onDeleteConfirmed() {
+    const s = this.study();
+    if (!s) return;
+
+    this.isDeleting.set(true);
+    this.studyService.deleteStudy(s.id).subscribe({
+      next: () => {
+        this.toastService.show('Study deleted successfully', 'success');
+        this.router.navigate(['/study']);
+        this.isDeleting.set(false);
+        this.showDeleteModal.set(false);
+      },
+      error: () => {
+        this.toastService.show('Failed to delete study', 'error');
+        this.isDeleting.set(false);
+      }
+    });
+  }
+
   openSettings() {
     if (!this.isOwner()) return;
     const s = this.study();
@@ -819,14 +845,20 @@ export class StudyComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(StudySettingsDialogComponent, {
       data: {
         name: s.name,
-        description: s.description,
         visibility: s.visibility
       }
     });
 
     dialogRef.closed.subscribe((result: any) => {
-      if (result) {
-        this.studyService.updateStudy(s.id, result).subscribe({
+      if (!result) return;
+
+      if (result.action === 'delete') {
+        this.confirmDeleteStudy();
+      } else if (result.action === 'save') {
+        this.studyService.updateStudy(s.id, {
+          name: result.name,
+          visibility: result.visibility
+        }).subscribe({
           next: () => {
             this.studyService.getStudy(s.id); // Refresh study data
             this.toastService.show('Study settings updated!', 'success');

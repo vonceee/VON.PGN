@@ -73,6 +73,10 @@ export class StudyService {
     return this.http.put(`${this.apiUrl}/studies/${id}`, data);
   }
 
+  deleteStudy(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/studies/${id}`);
+  }
+
   getStudy(id: number): void {
     this.isLoading.set(true);
     this.http.get<{ data: Study }>(`${this.apiUrl}/studies/${id}`).subscribe({
