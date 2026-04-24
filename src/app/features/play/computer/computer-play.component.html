@@ -132,7 +132,7 @@
           </div>
 
           <div
-            class="relative bg-slate-900 border border-white/5 p-1 shadow-2xl max-w-full overflow-hidden w-full rounded md:rounded-none"
+            class="relative bg-slate-900 border border-white/5 p-1 shadow-2xl max-w-full overflow-hidden w-full rounded md:rounded-none board-container-parent"
           >
             <app-chess-board
               #board
@@ -140,7 +140,6 @@
               [orientation]="playerColor()"
               [interactive]="isMyTurn()"
               (moveMade)="onUserMove($event)"
-              [size]="480"
             ></app-chess-board>
           </div>
 

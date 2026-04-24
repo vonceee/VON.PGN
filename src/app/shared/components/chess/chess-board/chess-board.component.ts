@@ -31,7 +31,7 @@ import { AudioService } from '../../../../core/services/audio.service';
   imports: [FormsModule],
   schemas: [NO_ERRORS_SCHEMA],
   template: `
-    <div class="board-resize-wrapper" [style.width.px]="boardSize">
+    <div class="board-resize-wrapper">
       <div class="board-container-wrapper relative">
         <div #boardEl class="board-container"></div>
 
@@ -57,63 +57,7 @@ import { AudioService } from '../../../../core/services/audio.service';
             </div>
           </div>
         }
-
-        @if (resizable) {
-          <div
-            class="absolute bottom-1 right-1 w-4 h-4 cursor-se-resize flex items-end justify-end z-10"
-            style="touch-action: none"
-            (mousedown)="startResize($event)"
-            (touchstart)="startResize($event)"
-          >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 12 12"
-              class="text-muted opacity-50 hover:opacity-100 transition-opacity"
-            >
-              <path
-                d="M11 11H9.5V9.5H11V11ZM11 7.5H9.5V6H11V7.5ZM7.5 11H6V9.5H7.5V11Z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
-        }
       </div>
-
-      @if (showControls) {
-        <div class="board-controls">
-          <input
-            type="range"
-            [min]="minSize"
-            [max]="maxSize"
-            [(ngModel)]="boardSize"
-            (ngModelChange)="onSliderResize($event)"
-            class="resize-slider"
-            title="Board size"
-          />
-          <span class="size-label">{{ boardSize }}px</span>
-          <button
-            (click)="resetBoard()"
-            class="p-2 border border-border-base rounded hover:bg-accent/10 text-muted hover:text-accent transition-colors"
-            title="Reset to starting position"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-              <path d="M3 3v5h5" />
-            </svg>
-          </button>
-        </div>
-      }
     </div>
   `,
   styles: [
@@ -122,9 +66,11 @@ import { AudioService } from '../../../../core/services/audio.service';
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
         container-type: inline-size;
         max-width: 100%;
+        width: var(--board-size, 100%);
+        height: var(--board-size, auto);
+        cursor: default;
       }
       .board-container-wrapper {
         width: 100%;
@@ -133,30 +79,6 @@ import { AudioService } from '../../../../core/services/audio.service';
       .board-container {
         width: 100%;
         height: 100%;
-      }
-      .board-controls {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        width: 100%;
-        padding: 0 0.5rem;
-      }
-      .resize-slider {
-        flex: 1;
-        height: 4px;
-        accent-color: var(--color-accent);
-        cursor: pointer;
-      }
-      .size-label {
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--color-muted);
-        min-width: 45px;
-        text-align: right;
-        user-select: none;
-        font-family:
-          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-          monospace;
       }
       .promotion-menu {
         transform: translateY(0);
@@ -174,6 +96,9 @@ import { AudioService } from '../../../../core/services/audio.service';
       }
     `,
   ],
+  host: {
+    class: 'block w-full h-full'
+  },
 })
 export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
   @ViewChild('boardEl') boardEl!: ElementRef<HTMLDivElement>;
@@ -181,12 +106,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() fen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   @Input() orientation: 'white' | 'black' = 'white';
   @Input() interactive: boolean = true;
-  @Input() size: number = 400;
   @Input() minSize: number = 240;
   @Input() maxSize: number = 1000;
-  @Input() showControls: boolean = false;
-  @Input() resizable: boolean = true;
-  @Input() storageKey: string | null = null;
   @Input() syncedShapes: any[] = [];
   @Input() configOverride: Config | null = null;
   @Input() preMoveEnabled: boolean = true;
@@ -197,12 +118,17 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Output() shapeDrawn = new EventEmitter<any[]>();
   @Output() preMoveCancelled = new EventEmitter<void>();
 
+  // Sizing State
   boardSize: number = 400;
+  private containerSize: { width: number; height: number } = { width: 800, height: 800 };
+  private resizeObserver: ResizeObserver | null = null;
+
   private cgApi!: Api;
   private chess = new Chess();
   private initialized = false;
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
+  private el = inject(ElementRef);
 
   // Promotion state
   pendingPromotion = signal<{ from: Key; to: Key; color: 'w' | 'b' } | null>(null);
@@ -213,50 +139,64 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     { type: 'n', label: 'Knight' },
   ];
 
-  // Resize state
-  private isResizing = false;
-  private resizeStartX = 0;
-  private resizeStartSize = 0;
-  
-
-
-  ngOnInit() {
-    this.loadPersistedSize();
-    this.sizeChange.emit(this.boardSize);
-  }
-
-  private loadPersistedSize() {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    let initialSize = this.size;
-
-    if (this.storageKey) {
-      const saved = localStorage.getItem(this.storageKey);
-      if (saved) {
-        const savedSize = parseInt(saved, 10);
-        if (!isNaN(savedSize) && savedSize >= this.minSize && savedSize <= this.maxSize) {
-          initialSize = savedSize;
-        }
-      }
-    }
-    
-    // Apply responsive constraints immediately so it doesn't clip on small screens
-    const dynamicMax = Math.min(this.maxSize, window.innerWidth * 0.95, window.innerHeight * 0.85);
-    this.boardSize = Math.min(initialSize, dynamicMax);
-  }
-
-  private savePersistedSize() {
-    if (isPlatformBrowser(this.platformId) && this.storageKey) {
-      localStorage.setItem(this.storageKey, this.boardSize.toString());
-    }
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     this.initBoard();
+    this.setupResizeObserver();
+  }
+
+  private setupResizeObserver() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    // Look for the closest stable boundary container
+    let parent = this.el.nativeElement.parentElement;
+    while (parent && !parent.classList.contains('board-container-parent')) {
+      parent = parent.parentElement;
+    }
+    
+    // Fallback to immediate parent if no boundary class found
+    if (!parent) parent = this.el.nativeElement.parentElement;
+    if (!parent) return;
+
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        this.containerSize = { 
+          width: Math.max(0, width - 8), 
+          height: Math.max(0, height - 8) 
+        };
+        this.updateBoardSize();
+      }
+    });
+
+    this.resizeObserver.observe(parent);
+  }
+
+  private updateBoardSize() {
+    // Determine the maximum square size that fits in the container (100% fit)
+    const maxPossible = Math.min(this.containerSize.width, this.containerSize.height);
+    
+    // Clamp to global min/max
+    const clampedSize = Math.max(this.minSize, Math.min(this.maxSize, maxPossible));
+
+    // Direct DOM update for performance
+    this.el.nativeElement.style.setProperty('--board-size', `${clampedSize}px`);
+
+    if (this.boardSize !== clampedSize) {
+      this.boardSize = clampedSize;
+      this.sizeChange.emit(this.boardSize);
+      
+      // Notify Chessground to redraw
+      if (this.cgApi) {
+        requestAnimationFrame(() => {
+          this.cgApi.redrawAll();
+        });
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // 1. Always sync internal chess instance first if FEN changed
     if (changes['fen']) {
       const currentFen = this.chess.fen();
       if (this.fen && this.fen !== currentFen) {
@@ -271,15 +211,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       if (changes['orientation'] && !changes['orientation'].isFirstChange()) {
         this.cgApi.set({ orientation: this.orientation });
       }
-      if (changes['size'] && !changes['size'].isFirstChange()) {
-        this.boardSize = this.size;
-        setTimeout(() => this.cgApi?.redrawAll());
-      }
       if (changes['syncedShapes'] && !changes['syncedShapes'].isFirstChange()) {
         this.cgApi.set({ drawable: { shapes: this.syncedShapes } });
-      }
-      if (changes['preMoveEnabled'] && !changes['preMoveEnabled'].isFirstChange()) {
-        this.syncBoard();
       }
       if (changes['interactive']) {
         this.syncBoard();
@@ -292,7 +225,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   ngOnDestroy() {
     this.cgApi?.destroy();
-    this.removeResizeListeners();
+    this.resizeObserver?.disconnect();
   }
 
   undoMove() {
@@ -303,13 +236,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   private initBoard() {
     if (!isPlatformBrowser(this.platformId)) return;
-
-    // Wait 50ms to ensure the DOM layout is stable for Chessground
     setTimeout(() => {
       if (!this.boardEl) return;
-      
       this.chess.load(this.fen);
-
       const config: Config = {
         fen: this.fen,
         orientation: this.orientation,
@@ -317,90 +246,53 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         movable: {
           free: false,
           color: this.interactive ? 'both' : undefined,
-          dests: this.interactive ? this.getLegalMoves() : new Map(),
+          dests: this.getLegalMoves(),
           showDests: true,
           events: {
             after: (orig: Key, dest: Key, meta: MoveMetadata) => this.onMove(orig, dest, meta),
           },
         },
-        premovable: {
-          enabled: this.preMoveEnabled && this.interactive,
-          showDests: true,
-        },
-        draggable: {
-          enabled: this.interactive,
-          showGhost: true,
-        },
-        selectable: {
-          enabled: this.interactive,
-        },
-        drawable: {
-          enabled: true,
-          eraseOnClick: true,
-          onChange: () => this.onShapesChanged(),
-        },
+        draggable: { enabled: this.interactive },
+        drawable: { enabled: true, onChange: () => this.onShapesChanged() },
       };
-
       this.cgApi = Chessground(this.boardEl.nativeElement, config);
       this.initialized = true;
-
-      // Apply any overrides that were set before initialization finished
+      
       if (this.configOverride) {
         this.applyConfigOverride(this.configOverride);
       }
-      
-      // Ensure the board is in sync with the current (potentially updated) FEN
       this.syncBoard();
+      this.updateBoardSize(); // Ensure size is correct on init
     }, 50);
   }
 
   private applyConfigOverride(override: Config) {
     if (!this.cgApi) return;
-
     const currentMovable = this.cgApi.state.movable;
     const finalConfig = { ...override };
-
     if (override.movable) {
       finalConfig.movable = {
         ...currentMovable,
         ...override.movable,
       };
-
       if (!finalConfig.movable.dests && this.interactive) {
         finalConfig.movable.dests = this.getLegalMoves();
       }
     }
-
     this.cgApi.set(finalConfig);
   }
 
   private syncBoard() {
     if (!this.cgApi) return;
-    
-    // Safety check: only update Chessground if the FEN is different or we are forced to
-    const targetFen = this.chess.fen();
-    
     this.cgApi.set({
-      fen: targetFen,
-      turnColor: this.turnColor(),
+      fen: this.chess.fen(),
+      turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
       movable: {
         color: this.interactive ? 'both' : undefined,
         dests: this.interactive ? this.getLegalMoves() : new Map(),
-        showDests: true,
       },
-      selectable: {
-        enabled: this.interactive,
-      },
-      draggable: {
-        enabled: this.interactive,
-      },
-      check: this.chess.inCheck() ? this.turnColor() : undefined,
-      premovable: {
-        enabled: this.preMoveEnabled && this.interactive,
-      },
-      drawable: {
-        shapes: [...this.syncedShapes],
-      },
+      selectable: { enabled: this.interactive },
+      draggable: { enabled: this.interactive },
     });
 
     if (this.configOverride) {
@@ -410,7 +302,6 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   playPremove(): boolean {
     if (!this.cgApi) return false;
-    // Safety: ensure local chess engine is in sync with the current FEN before execution
     this.chess.load(this.fen);
     return this.cgApi.playPremove();
   }
@@ -420,8 +311,15 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     this.cgApi.cancelPremove();
   }
 
-  private turnColor(): 'white' | 'black' {
-    return this.chess.turn() === 'w' ? 'white' : 'black';
+  getPieceClass(type: string, color: 'w' | 'b'): string {
+    const typeMap: Record<string, string> = {
+      q: 'queen',
+      r: 'rook',
+      b: 'bishop',
+      n: 'knight',
+    };
+    const colorName = color === 'w' ? 'white' : 'black';
+    return `${typeMap[type]} ${colorName}`;
   }
 
   private getLegalMoves(): Map<Key, Key[]> {
@@ -437,26 +335,11 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   }
 
   private onMove(orig: Key, dest: Key, meta?: MoveMetadata) {
-    // Only return if it's a pre-move being SET (opponent's turn).
-    // If it's our turn, we want to allow moves even if meta.premove is true (triggered by playPremove).
-    const isMyTurn = this.turnColor() === this.orientation;
-    if (meta?.premove && !isMyTurn) return;
-
-    // Check if this move is a promotion
-    const isPromotion = this.isPromotionMove(orig, dest);
-
-    // Clear arrows on move
-    this.cgApi.set({ drawable: { shapes: [] } });
-
-    if (isPromotion) {
-      this.pendingPromotion.set({
-        from: orig,
-        to: dest,
-        color: this.chess.turn(),
-      });
+    if (meta?.premove && this.chess.turn() !== this.orientation[0]) return;
+    if (this.isPromotionMove(orig, dest)) {
+      this.pendingPromotion.set({ from: orig, to: dest, color: this.chess.turn() });
       return;
     }
-
     this.completeMove(orig, dest);
   }
 
@@ -472,12 +355,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       if (move) {
         this.syncBoard();
         this.fenChange.emit(this.chess.fen());
-        this.moveMade.emit({
-          move,
-          fen: this.chess.fen(),
-        });
+        this.moveMade.emit({ move, fen: this.chess.fen() });
       }
-    } catch (e) {
+    } catch {
       this.syncBoard();
     }
   }
@@ -495,21 +375,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     this.syncBoard();
   }
 
-  getPieceClass(type: string, color: 'w' | 'b'): string {
-    const typeMap: Record<string, string> = {
-      q: 'queen',
-      r: 'rook',
-      b: 'bishop',
-      n: 'knight',
-    };
-    const colorName = color === 'w' ? 'white' : 'black';
-    return `${typeMap[type]} ${colorName}`;
-  }
-
   private onShapesChanged() {
     if (this.cgApi) {
-      const shapes = this.cgApi.state.drawable.shapes;
-      this.shapeDrawn.emit(shapes);
+      this.shapeDrawn.emit(this.cgApi.state.drawable.shapes);
     }
   }
 
@@ -519,72 +387,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     this.fenChange.emit(this.chess.fen());
   }
 
-  onSliderResize(size: number) {
-    this.boardSize = size;
-    this.savePersistedSize();
-    this.sizeChange.emit(size);
-    setTimeout(() => this.cgApi?.redrawAll());
-  }
-
-  // --- Resizing Logic (Drag) ---
-
-  startResize(event: MouseEvent | TouchEvent): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    event.preventDefault();
-    this.isResizing = true;
-    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
-    this.resizeStartX = clientX;
-    this.resizeStartSize = this.boardSize;
-
-    document.addEventListener('mousemove', this.handleResize);
-    document.addEventListener('mouseup', this.stopResize);
-    document.addEventListener('touchmove', this.handleTouchResize);
-    document.addEventListener('touchend', this.stopResize);
-  }
-
-  private handleResize = (event: MouseEvent): void => {
-    if (!this.isResizing) return;
-    const delta = event.clientX - this.resizeStartX;
-    this.updateSizeWithDelta(delta);
-  };
-
-  private handleTouchResize = (event: TouchEvent): void => {
-    if (!this.isResizing || !event.touches.length) return;
-    const delta = event.touches[0].clientX - this.resizeStartX;
-    this.updateSizeWithDelta(delta);
-  };
-
-  private updateSizeWithDelta(delta: number) {
-    const dynamicMax = Math.min(this.maxSize, window.innerWidth * 0.95, window.innerHeight * 0.85);
-    const newSize = Math.min(dynamicMax, Math.max(this.minSize, this.resizeStartSize + delta));
-    this.boardSize = newSize;
-    this.sizeChange.emit(this.boardSize);
-    this.cgApi?.redrawAll();
-  }
-
-  private stopResize = (): void => {
-    this.isResizing = false;
-    this.savePersistedSize();
-    this.removeResizeListeners();
-  };
-
-  private removeResizeListeners() {
-    if (isPlatformBrowser(this.platformId)) {
-      document.removeEventListener('mousemove', this.handleResize);
-      document.removeEventListener('mouseup', this.stopResize);
-      document.removeEventListener('touchmove', this.handleTouchResize);
-      document.removeEventListener('touchend', this.stopResize);
-    }
-  }
-
   @HostListener('window:resize')
   onWindowResize() {
-    const dynamicMax = Math.min(this.maxSize, window.innerWidth * 0.95, window.innerHeight * 0.85);
-    if (this.boardSize > dynamicMax) {
-      this.boardSize = dynamicMax;
-      this.cgApi?.redrawAll();
-    }
+    this.updateBoardSize();
   }
 }
-

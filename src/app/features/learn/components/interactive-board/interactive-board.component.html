@@ -34,9 +34,7 @@
             #board
             [fen]="displayFen()"
             [interactive]="true"
-            [size]="400"
             [configOverride]="cgConfig()"
-            [storageKey]="'interactiveBoardSize'"
             (moveMade)="onUserMove($event)"
           ></app-chess-board>
         </div>

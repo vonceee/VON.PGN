@@ -158,7 +158,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   currentNode = signal<MoveNode | null>(null); // Current position in the tree
   currentPly = signal(0);
 
-  boardSize = signal(this.loadBoardSize());
+  boardSize = signal(600);
   boardOrientation = signal<'white' | 'black'>('white');
   remoteShapes = signal<any[]>([]);
 
@@ -587,29 +587,6 @@ export class StudyComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadBoardSize(): number {
-    if (isPlatformBrowser(this.platformId)) {
-      const saved = localStorage.getItem('boardSize');
-      if (saved) {
-        const size = parseInt(saved, 10);
-        if (size >= 280 && size <= 1200) return size;
-      }
-      // Default: Maximize based on viewport height (approx 75% of height)
-      return Math.min(1000, Math.floor(window.innerHeight * 0.75));
-    }
-    return 600;
-  }
-
-  @HostListener('window:resize')
-  onResize() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    
-    // Only auto-resize if the user hasn't explicitly saved a size or if it overflows
-    const maxAllowed = Math.floor(window.innerHeight * 0.72);
-    if (this.boardSize() > maxAllowed) {
-      this.boardSize.set(maxAllowed);
-    }
-  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {

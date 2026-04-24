@@ -77,13 +77,13 @@ export interface AddChapterDialogResult {
           @if (activeTab() === 'editor') {
             <div class="space-y-4">
               <div class="flex justify-center bg-subtle p-4 rounded-xl border border-dashed border-base">
-                <app-chess-board 
-                  [size]="280" 
-                  [fen]="fen()" 
-                  (fenChange)="fen.set($event)"
-                  [orientation]="orientation()"
-                  [resizable]="false"
-                ></app-chess-board>
+                <div class="w-[280px] h-[280px]">
+                  <app-chess-board 
+                    [fen]="fen()" 
+                    (fenChange)="fen.set($event)"
+                    [orientation]="orientation()"
+                  ></app-chess-board>
+                </div>
               </div>
               <p class="text-xs text-center text-muted">Drag pieces to set up the starting position.</p>
             </div>
@@ -101,7 +101,9 @@ export interface AddChapterDialogResult {
                 />
               </div>
               <div class="flex justify-center opacity-60 pointer-events-none scale-75">
-                 <app-chess-board [size]="200" [fen]="fen()" [interactive]="false" [resizable]="false"></app-chess-board>
+                 <div class="w-[200px] h-[200px]">
+                   <app-chess-board [fen]="fen()" [interactive]="false"></app-chess-board>
+                 </div>
               </div>
             </div>
           }

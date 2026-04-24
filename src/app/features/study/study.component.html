@@ -85,7 +85,7 @@
       </aside>
 
       <!-- Center Column: Board -->
-      <div class="flex flex-col items-center justify-center min-w-0 h-full overflow-hidden relative">
+      <div class="flex flex-col items-center justify-center overflow-hidden relative">
         <!-- Mobile Eval Bar (Lila style) -->
         @if (isEngineActive()) {
           <div class="lg:hidden w-full max-w-[800px] px-4 pb-2 animate-in fade-in slide-in-from-top-1 duration-300">
@@ -97,40 +97,30 @@
           </div>
         }
 
-        <div class="w-full max-w-[800px] flex items-start justify-center p-4 relative">
-          <!-- Evaluation Bar (Desktop) -->
-          @if (isEngineActive()) {
-            <div class="hidden lg:block mr-4 h-[var(--board-size)] animate-in fade-in slide-in-from-left-2 duration-500">
+        <div class="flex-1 w-full flex items-center justify-center min-h-0 overflow-hidden relative board-container-parent">
+          <div class="flex items-center justify-center gap-0 max-h-full">
+            <app-chess-board
+              [fen]="currentFen()"
+              [orientation]="boardOrientation()"
+              [interactive]="isOwner()"
+              (moveMade)="onMoveMade($event)"
+              (shapeDrawn)="onShapeDrawn($event)"
+              (sizeChange)="boardSize.set($event)"
+              [syncedShapes]="mergedShapes()"
+            ></app-chess-board>
+
+            <!-- Evaluation Bar (Desktop) - Always present, toggle visibility -->
+            <div 
+              class="hidden lg:block h-[var(--board-size)] transition-all duration-500 ease-in-out"
+              [class.opacity-0]="!isEngineActive()"
+              [class.invisible]="!isEngineActive()"
+              [class.pointer-events-none]="!isEngineActive()"
+            >
               <app-eval-bar
                 [eval]="engineEval()"
                 [orientation]="boardOrientation()"
                 mode="vertical"
               ></app-eval-bar>
-            </div>
-          }
-
-          <div class="relative group">
-            <app-chess-board
-              [fen]="currentFen()"
-              [orientation]="boardOrientation()"
-              [interactive]="isOwner()"
-              [size]="boardSize()"
-              [storageKey]="'boardSize'"
-              (moveMade)="onMoveMade($event)"
-              (shapeDrawn)="onShapeDrawn($event)"
-              (sizeChange)="onBoardSizeChange($event)"
-              [syncedShapes]="mergedShapes()"
-            ></app-chess-board>
-
-            <!-- Board Actions Overlay -->
-            <div class="absolute -right-12 top-0 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <button
-                (click)="flipBoard()"
-                class="p-2.5 rounded-xl bg-surface border border-border-base text-muted hover:text-accent hover:border-accent/50 shadow-xl transition-all active:scale-95"
-                title="Flip Board"
-              >
-                <ng-icon name="heroArrowPath" class="text-lg"></ng-icon>
-              </button>
             </div>
           </div>
         </div>
@@ -360,15 +350,43 @@
                   }
                 </div>
 
-                <div class="pt-4 border-t border-border-base flex flex-col gap-3">
-                  <label
+                <div class="pt-4 border-t border-border-base flex flex-col gap-3">                  <label
                     class="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1"
                     >Actions</label
                   >
-                  <div class="grid grid-cols-2 gap-3">
-                    @if (isOwner()) {
+                  <div class="flex flex-col gap-2">
+                    <button
+                      (click)="flipBoard()"
+                      class="w-full flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all duration-300 text-content"
+                    >
+                      <ng-icon name="heroArrowPath" class="text-xs"></ng-icon>
+                      Flip Board
+                    </button>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                      @if (isOwner()) {
+                        <button
+                          (click)="importPgn()"
+                          class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all duration-300 text-content"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                          >
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                          </svg>
+                          Import
+                        </button>
+                      }
                       <button
-                        (click)="importPgn()"
+                        (click)="exportPgn()"
                         class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all duration-300 text-content"
                       >
                         <svg
@@ -381,32 +399,14 @@
                           stroke-width="2.5"
                         >
                           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                          <polyline points="17 8 12 3 7 8" />
-                          <line x1="12" y1="3" x2="12" y2="15" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
                         </svg>
-                        Import
+                        Export
                       </button>
-                    }
-                    <button
-                      (click)="exportPgn()"
-                      class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all duration-300 text-content"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.5"
-                      >
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7 10 12 15 17 10" />
-                        <line x1="12" y1="15" x2="12" y2="3" />
-                      </svg>
-                      Export
-                    </button>
+                    </div>
                   </div>
+
                 </div>
               </div>
             }

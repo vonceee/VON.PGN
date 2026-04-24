@@ -80,11 +80,8 @@
               [fen]="displayFen()"
               [orientation]="g.my_color"
               [interactive]="g.status === 'active' && currentPly() === g.moves.length"
-              [size]="boardSize()"
               [configOverride]="cgConfig()"
-              [storageKey]="'boardSize'"
               (moveMade)="onBoardMove($event)"
-              (sizeChange)="onBoardSizeChange($event)"
             ></app-chess-board>
 
             <!-- Mobile Game Over Overlay -->

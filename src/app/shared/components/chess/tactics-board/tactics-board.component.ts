@@ -26,11 +26,8 @@ import { ChessBoardComponent } from '@shared/chess';
       [fen]="currentFen"
       [orientation]="userColor"
       [interactive]="status === 'playing' || exploreMode"
-      [size]="size"
       [configOverride]="cgConfig"
-      [storageKey]="'boardSize'"
       (moveMade)="onBoardMove($event)"
-      (sizeChange)="sizeChange.emit($event)"
       class="block"
     ></app-chess-board>
   </div>`,
@@ -62,7 +59,6 @@ export class TacticsBoardComponent implements OnChanges {
   @Output() moveMade = new EventEmitter<string>();
   @Output() sizeChange = new EventEmitter<number>();
 
-  @Input() size: number = 400;
   @Input() exploreMode: boolean = false;
 
   private _retryMode: boolean = false;
