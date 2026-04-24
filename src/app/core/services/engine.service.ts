@@ -179,8 +179,18 @@ export class EngineService {
     if (!scoreMatch) return;
 
     const type = scoreMatch[1];
-    const value = scoreMatch[2];
-    const evalVal = type === 'mate' ? `#${value}` : (parseInt(value) / 100).toFixed(1);
+    let value = parseInt(scoreMatch[2]);
+
+    // UCI scores are relative to the side on move. 
+    // We normalize them to White's perspective for a consistent UI experience.
+    const sideOnMove = this.lastFenSent.split(' ')[1];
+    if (sideOnMove === 'b') {
+      value = -value;
+    }
+
+    const evalVal = type === 'mate' 
+      ? (value > 0 ? `#${value}` : `#-${Math.abs(value)}`)
+      : (value > 0 ? '+' : '') + (value / 100).toFixed(1);
     const depth = depthMatch ? parseInt(depthMatch[1]) : 0;
     const pvIndex = multipvMatch ? parseInt(multipvMatch[1]) - 1 : 0; // UCI multipv is 1-based
     const nodes = nodesMatch ? parseInt(nodesMatch[1]) : 0;

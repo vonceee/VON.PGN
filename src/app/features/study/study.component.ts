@@ -21,7 +21,7 @@ import { EditChapterDialogComponent, EditChapterDialogResult } from './dialogs/e
 import { StudySettingsDialogComponent } from './dialogs/study-settings-dialog/study-settings-dialog.component';
 import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
-import { ChessBoardComponent } from '@shared/chess';
+import { ChessBoardComponent, EvalBarComponent } from '@shared/chess';
 import { MoveNotationComponent } from '@shared/chess';
 import { FormsModule } from '@angular/forms';
 import { Subscription, BehaviorSubject } from 'rxjs';
@@ -35,12 +35,76 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath } from '@ng-icons/heroicons/outline';
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
 
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 @Component({
   selector: 'app-study',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent],
+  imports: [CommonModule, ChessBoardComponent, EvalBarComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent, MatSlideToggleModule],
   providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath })],
   templateUrl: './study.component.html',
+  styles: [`
+    :host ::ng-deep {
+      /* Base Slide Toggle Adjustments */
+      .mat-mdc-slide-toggle {
+        --mdc-switch-selected-track-color: #22d3ee;
+        --mdc-switch-selected-handle-color: #ffffff;
+        --mdc-switch-selected-focus-track-color: #22d3ee;
+        --mdc-switch-selected-hover-track-color: #22d3ee;
+        --mdc-switch-selected-pressed-track-color: #22d3ee;
+        
+        --mdc-switch-unselected-track-color: #1e293b;
+        --mdc-switch-unselected-handle-color: #94a3b8;
+        
+        display: flex;
+        align-items: center;
+        margin: 0 !important;
+      }
+
+      /* Force cyan color for the checked state */
+      .mat-mdc-slide-toggle.mat-checked .mdc-switch__track {
+        background-color: #22d3ee !important;
+        border-color: #22d3ee !important;
+      }
+      
+      .mat-mdc-slide-toggle.mat-checked .mdc-switch__handle {
+        background-color: #ffffff !important;
+      }
+
+      /* Sizing */
+      .mat-mdc-slide-toggle .mdc-switch {
+        width: 30px !important;
+        height: 16px !important;
+        padding: 0 !important;
+      }
+
+      .mat-mdc-slide-toggle .mdc-switch__track {
+        height: 16px !important;
+        border-radius: 8px !important;
+      }
+
+      .mat-mdc-slide-toggle .mdc-switch__handle-container {
+        width: 12px !important;
+        height: 12px !important;
+        top: 2px !important;
+        left: 2px !important;
+      }
+
+      .mat-mdc-slide-toggle.mat-checked .mdc-switch__handle-container {
+        transform: translateX(14px) !important;
+      }
+
+      .mat-mdc-slide-toggle .mdc-switch__handle {
+        width: 12px !important;
+        height: 12px !important;
+      }
+
+      /* Hide the default checkbox checkmark that sometimes appears in unstyled MDC */
+      .mdc-switch__icons {
+        display: none !important;
+      }
+    }
+  `],
   host: {
     class: 'absolute inset-0 overflow-hidden',
   },
@@ -78,10 +142,6 @@ export class StudyComponent implements OnInit, OnDestroy {
   searchMode = this.engineService.searchMode;
   searchValue = this.engineService.searchValue;
 
-  // Computed: whether "Go Deeper" should be available
-  canGoDeeper = computed(() => {
-    return this.isEngineActive() && this.searchMode() !== 'infinite';
-  });
 
   // Format NPS for display
   formattedNps = computed(() => {

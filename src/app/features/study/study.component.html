@@ -22,7 +22,7 @@
                 (click)="openSettings()"
                 class="text-xs cursor-pointer hover:underline shrink-0"
                 title="Study Settings"
-              >Settings
+              >Study Settings
               </button>
             }
           </div>
@@ -86,43 +86,30 @@
 
       <!-- Center Column: Board -->
       <div class="flex flex-col items-center justify-center min-w-0 h-full overflow-hidden relative">
-        <!-- Mobile Eval Bar (horizontal, above board) -->
-        @if (isEngineActive() && engineEval(); as eval) {
-          <div class="lg:hidden flex items-center gap-2 w-full max-w-[800px] px-4 pb-2 animate-in fade-in slide-in-from-top-1 duration-300">
-            <div class="flex-1 h-2 bg-subtle rounded-full overflow-hidden relative border border-border-base">
-              @let mobilePct = 50 + (eval.startsWith('#') ? (eval.startsWith('#-') ? -50 : 50) : (+eval * 5));
-              <div 
-                class="absolute top-0 left-0 bottom-0 bg-content transition-all duration-700 ease-out rounded-l-full" 
-                [style.width.%]="mobilePct"
-              ></div>
-            </div>
-            <span class="text-[10px] font-black min-w-[36px] text-center px-1.5 py-0.5 rounded bg-surface border border-border-base" 
-              [class.text-accent]="!eval.startsWith('-')" 
-              [class.text-rose-400]="eval.startsWith('-')">
-              {{ eval }}
-            </span>
+        <!-- Mobile Eval Bar (Lila style) -->
+        @if (isEngineActive()) {
+          <div class="lg:hidden w-full max-w-[800px] px-4 pb-2 animate-in fade-in slide-in-from-top-1 duration-300">
+            <app-eval-bar
+              [eval]="engineEval()"
+              [orientation]="boardOrientation()"
+              mode="horizontal"
+            ></app-eval-bar>
           </div>
         }
 
-        <div class="w-full max-w-[800px] flex items-center justify-center p-4 relative">
+        <div class="w-full max-w-[800px] flex items-start justify-center p-4 relative">
           <!-- Evaluation Bar (Desktop) -->
-          <div class="hidden lg:flex flex-col w-4 mr-4 bg-subtle rounded-sm overflow-hidden h-[var(--board-size)] border border-border-base relative shadow-2xl">
-            @if (engineEval(); as eval) {
-              @let percentage = 50 + (eval.startsWith('#') ? (eval.startsWith('#-') ? -50 : 50) : (+eval * 5));
-              <div 
-                class="absolute bottom-0 left-0 right-0 bg-content transition-all duration-700 ease-out" 
-                [style.height.%]="percentage"
-              ></div>
-              <div class="absolute inset-0 flex flex-col items-center justify-between py-2 pointer-events-none select-none">
-                <span class="text-[8px] font-black text-main/40">{{ eval.startsWith('-') ? '' : eval }}</span>
-                <span class="text-[8px] font-black text-content/40">{{ eval.startsWith('-') ? eval : '' }}</span>
-              </div>
-            } @else {
-              <div class="absolute bottom-0 left-0 right-0 bg-content h-1/2 transition-all duration-300"></div>
-            }
-          </div>
+          @if (isEngineActive()) {
+            <div class="hidden lg:block mr-4 h-[var(--board-size)] animate-in fade-in slide-in-from-left-2 duration-500">
+              <app-eval-bar
+                [eval]="engineEval()"
+                [orientation]="boardOrientation()"
+                mode="vertical"
+              ></app-eval-bar>
+            </div>
+          }
 
-          <div class="w-full aspect-square relative group">
+          <div class="relative group">
             <app-chess-board
               [fen]="currentFen()"
               [orientation]="boardOrientation()"
@@ -179,23 +166,17 @@
           <div class="flex-1 flex flex-col overflow-hidden relative">
             @if (activeTab() === 'notation') {
               <!-- Analysis Toolbar -->
-              <div class="flex items-center justify-between px-4 py-2 border-b border-border-base bg-surface">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <!-- Engine Toggle -->
-                  <button 
-                    (click)="toggleEngine()"
-                    class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all duration-300 group"
-                    [class]="isEngineActive() 
-                      ? 'bg-accent/10 text-accent border border-accent/20' 
-                      : 'bg-subtle text-muted border border-transparent hover:bg-surface hover:text-content'"
+              <div class="flex items-center justify-between px-4 h-10 border-b border-border-base bg-surface overflow-hidden">
+                <div class="flex items-center gap-3 h-full">
+                  <!-- Engine Slide Toggle (No Label) -->
+                  <mat-slide-toggle 
+                    [checked]="isEngineActive()" 
+                    (change)="toggleEngine()"
+                    color="primary"
+                    class="engine-slide-toggle"
+                    title="Toggle Local Evaluation"
                   >
-                    <ng-icon [name]="isEngineActive() ? (isEngineReady() ? 'heroPause' : 'heroBolt') : 'heroPlay'" 
-                      [class.animate-pulse]="isEngineActive() && !isEngineReady()"
-                      class="text-sm"></ng-icon>
-                    <span class="text-[10px] font-bold uppercase tracking-wider">
-                      {{ isEngineError() && isEngineActive() ? 'Error' : (isEngineActive() ? (isEngineReady() ? 'On' : '...') : 'Engine') }}
-                    </span>
-                  </button>
+                  </mat-slide-toggle>
 
                   <!-- Error Retry -->
                   @if (isEngineError() && isEngineActive()) {
@@ -211,23 +192,15 @@
                   <!-- Eval Badge + Depth + NPS -->
                   @if (isEngineActive()) {
                     <div class="flex items-center gap-2 animate-in fade-in duration-500">
-                      <!-- Eval Score -->
-                      <div class="px-2 py-0.5 rounded bg-subtle border border-border-base shadow-lg min-w-[42px] text-center">
-                        <span class="text-xs font-black" 
-                          [class.text-accent]="!engineEval()?.startsWith('-')" 
-                          [class.text-rose-400]="engineEval()?.startsWith('-')">
-                          {{ engineEval() || '...' }}
-                        </span>
-                      </div>
                       <!-- Depth -->
                       @if (engineDepth() > 0) {
-                        <span class="text-[9px] font-medium text-muted select-none">
-                          d{{ engineDepth() }}{{ searchMode() === 'infinite' ? '/∞' : '' }}
+                        <span class="text-xs font-medium select-none">
+                          depth = {{ engineDepth() }}{{ searchMode() === 'infinite' ? '/∞' : '' }}
                         </span>
                       }
                       <!-- NPS -->
                       @if (formattedNps()) {
-                        <span class="text-[9px] font-medium text-muted/80 select-none hidden sm:inline">
+                        <span class="text-xs font-medium select-none hidden sm:inline">
                           {{ formattedNps() }}
                         </span>
                       }
@@ -237,30 +210,13 @@
 
                 <!-- Right side: Go Deeper + Settings Gear -->
                 <div class="flex items-center gap-1.5">
-                  @if (canGoDeeper()) {
-                    <button
-                      (click)="goDeeper()"
-                      class="flex items-center gap-1 px-2 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider
-                        bg-emerald-500/10 text-emerald-400 border border-emerald-400/20 hover:bg-emerald-500/20 transition-all"
-                      title="Analyze deeper (infinite)"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-                      </svg>
-                      Deeper
-                    </button>
-                  }
                   @if (isEngineActive()) {
                     <button
                       (click)="toggleEngineSettings()"
-                      class="p-1.5 rounded-md transition-all duration-200"
-                      [class]="showEngineSettings()
-                        ? 'bg-accent/10 text-accent border border-accent/20'
-                        : 'text-muted hover:text-content hover:bg-surface'"
+                      class="text-xs cursor-pointer hover:underline shrink-0"
                       title="Engine Settings"
                     >
-                      <ng-icon name="heroCog6Tooth" class="text-sm"></ng-icon>
+                      Engine Settings
                     </button>
                   }
                 </div>
@@ -287,59 +243,6 @@
                     </div>
                   </div>
 
-                  <!-- Search Mode Control -->
-                  <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Search</span>
-                    <div class="flex gap-1">
-                      @for (mode of ['movetime', 'depth', 'infinite']; track mode) {
-                        <button
-                          (click)="onSearchModeChange($any(mode))"
-                          class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider transition-all duration-200"
-                          [class]="searchMode() === mode
-                            ? 'bg-accent/20 text-accent border border-accent/30'
-                            : 'bg-subtle text-muted border border-transparent hover:bg-surface'"
-                        >
-                          {{ mode === 'movetime' ? 'Time' : (mode === 'depth' ? 'Depth' : '∞') }}
-                        </button>
-                      }
-                    </div>
-                  </div>
-
-                  <!-- Value slider (contextual) -->
-                  @if (searchMode() === 'movetime') {
-                    <div class="flex items-center justify-between gap-3">
-                      <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Time</span>
-                      <div class="flex items-center gap-2 flex-1">
-                        <input type="range" min="1000" max="30000" step="1000" 
-                          [value]="searchValue()"
-                          (input)="onSearchValueChange(+$any($event.target).value)"
-                          class="flex-1 h-1 bg-subtle rounded-full appearance-none cursor-pointer accent-accent
-                            [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
-                            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-lg"
-                        >
-                        <span class="text-[10px] font-bold text-accent min-w-[2.5rem] text-right">
-                          {{ searchValue() / 1000 }}s
-                        </span>
-                      </div>
-                    </div>
-                  }
-                  @if (searchMode() === 'depth') {
-                    <div class="flex items-center justify-between gap-3">
-                      <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Depth</span>
-                      <div class="flex items-center gap-2 flex-1">
-                        <input type="range" min="8" max="40" step="2" 
-                          [value]="searchValue()"
-                          (input)="onSearchValueChange(+$any($event.target).value)"
-                          class="flex-1 h-1 bg-subtle rounded-full appearance-none cursor-pointer accent-accent
-                            [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
-                            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-lg"
-                        >
-                        <span class="text-[10px] font-bold text-accent min-w-[2rem] text-right">
-                          {{ searchValue() }}
-                        </span>
-                      </div>
-                    </div>
-                  }
                 </div>
               }
 
@@ -349,30 +252,29 @@
                   @for (line of enginePvLines(); track line.pvIndex) {
                     <div class="flex items-start gap-2 px-4 py-1.5" 
                       [class.border-t]="line.pvIndex > 0"
-                      [class.border-border-base/10]="line.pvIndex > 0">
+                      [class.border-border-base]="line.pvIndex > 0">
                       <!-- Per-line eval badge -->
-                      <span class="text-[10px] font-black min-w-[36px] text-center px-1 py-0.5 rounded shrink-0 mt-px"
-                        [class]="line.pvIndex === 0 
-                          ? 'bg-accent/10 border border-accent/20 ' + (line.eval.startsWith('-') ? 'text-rose-400' : 'text-accent')
-                          : 'bg-subtle border border-border-base ' + (line.eval.startsWith('-') ? 'text-rose-400/70' : 'text-muted')">
+                      <span class="text-xs font-bold min-w-[36px] text-left shrink-0 mt-px text-content">
                         {{ line.eval }}
                       </span>
                       <!-- PV Moves -->
-                      <div class="flex flex-wrap gap-x-1.5 gap-y-0.5">
+                      <div class="flex items-center gap-x-1.5 overflow-hidden min-w-0 flex-1 whitespace-nowrap">
                         @for (move of line.pv.slice(0, 10); track $index) {
                           <div class="flex items-center gap-0.5">
-                            @if ($index % 2 === 0) {
-                              <span class="text-[9px] font-black text-muted select-none">{{ ($index / 2) + 1 }}.</span>
+                            @if ($index === 0 || (currentPly() + $index) % 2 === 0) {
+                              <span class="text-xs font-black select-none">
+                                {{ (currentPly() + $index) / 2 + 1 | number:'1.0-0' }}{{ ($index === 0 && currentPly() % 2 !== 0) ? '...' : '.' }}
+                              </span>
                             }
                             <span [class]="$index === 0 && line.pvIndex === 0 
-                              ? 'text-[10px] font-black text-accent' 
-                              : 'text-[10px] font-medium text-muted cursor-default'">
+                              ? 'text-xs font-black' 
+                              : 'text-xs font-medium cursor-default'">
                               {{ move }}
                             </span>
                           </div>
                         }
-                        @if (line.pv.length > 10) {
-                          <span class="text-[9px] text-muted self-center">...</span>
+                        @if (line.pv.length > 4) {
+                          <span class="text-xs self-center">...</span>
                         }
                       </div>
                     </div>
@@ -406,13 +308,12 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="pt-4 border-t border-border-base">
                   <label
                     class="text-[10px] font-bold uppercase tracking-widest text-muted block mb-3"
                     >Participation</label
                   >
-
+                
                   @if (!isOwner()) {
                     <button
                       (click)="toggleSync()"

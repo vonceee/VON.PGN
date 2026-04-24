@@ -1,11 +1,6 @@
 <div
   class="move-notation-container overflow-hidden flex flex-col h-full bg-main"
 >
-  <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .variation-track { scroll-behavior: smooth; }
-  </style>
   <!-- Navigation Controls -->
   @if (showNavigation()) {
     <div
@@ -108,13 +103,13 @@
         <!-- Move Number -->
         @if (node.ply % 2 !== 0) {
           <span
-            class="font-black tracking-tighter select-none text-muted mr-1 ml-1"
+            class="font-black tracking-tighter select-none text-muted mr-0.5 ml-0.5"
             [class.text-[0.95rem]]="isMainline"
             [class.text-[0.8rem]]="!isMainline"
             >{{ (node.ply + 1) / 2 }}.</span
           >
         } @else if ($firstNode && !isMainline) {
-          <span class="flex-none font-bold mr-1 ml-1 select-none text-[0.85rem] text-accent/80"
+          <span class="flex-none font-bold mr-0.5 ml-0.5 select-none text-[0.85rem] text-accent/80"
             >{{ node.ply / 2 }}...</span
           >
         }
@@ -125,48 +120,34 @@
           (contextmenu)="onContextMenu($event, node)"
           [class]="
             currentFen() === node.fen
-              ? 'active-move !bg-accent/30 !text-content font-black rounded-sm'
-              : 'font-bold text-content'
+              ? 'active-move underline font-semibold'
+              : 'font-semibold text-content'
           "
-          [class.px-1.5]="isMainline"
-          [class.px-1]="!isMainline"
+          [class.px-1]="isMainline"
+          [class.px-0.5]="!isMainline"
           [class.py-0.5]="true"
           [class.text-sm]="!isMainline"
-          class="text-left transition-all hover:bg-accent/10 hover:cursor-pointer select-none active-move-target rounded"
+          class="text-left transition-all hover:bg-accent/10 hover:cursor-pointer select-none active-move-target"
         >
           {{ node.san }}
         </button>
 
-        <!-- Variations as Indented Blocks (Optional: keep them inline or as blocks) -->
+        <!-- Variations as Inline Parentheses -->
         @if (node.variations && node.variations.length > 0) {
-          <div
-            class="variations-wrapper w-full flex flex-col gap-0.5 mt-1.5 mb-1 bg-black/5 dark:bg-white/5 rounded-md p-1.5"
-            [class.ml-2]="true"
-          >
+          <span class="text-muted/60 font-normal contents">
             @for (variation of node.variations; track $index) {
-              <div class="variation-row flex items-start group">
-                <!-- Branch Indicator |- -->
-                <div class="flex-none flex items-center self-stretch mr-1">
-                  <div
-                    class="w-px h-full bg-border-base group-hover:bg-accent/40 transition-colors"
-                  ></div>
-                  <div
-                    class="w-2 h-px bg-border-base group-hover:bg-accent/40 transition-colors mt-[14px]"
-                  ></div>
-                </div>
-
-                <!-- Horizontal scrolling track -->
-                <div class="variation-track flex-1 overflow-x-auto no-scrollbar flex items-center">
-                  <ng-container
-                    *ngTemplateOutlet="
-                      renderNodes;
-                      context: { nodes: variation, isMainline: false }
-                    "
-                  ></ng-container>
-                </div>
-              </div>
+              <span class="inline-flex items-baseline gap-1 mx-1 italic">
+                <span>(</span>
+                <ng-container
+                  *ngTemplateOutlet="
+                    renderNodes;
+                    context: { nodes: variation, isMainline: false }
+                  "
+                ></ng-container>
+                <span>)</span>
+              </span>
             }
-          </div>
+          </span>
         }
       </div>
     }
@@ -180,7 +161,7 @@
       <div
         class="text-[0.65rem] uppercase tracking-[0.15em] font-black text-muted mb-2.5 px-0.5 flex items-center gap-2"
       >
-        <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+        <span class="w-1.5 h-1.5 bg-accent animate-pulse"></span>
         Choose continuation
       </div>
       <div class="flex flex-wrap gap-2">
@@ -192,7 +173,7 @@
                 ? 'bg-accent text-main shadow-lg shadow-accent/25 scale-[1.02]'
                 : 'bg-subtle text-content border border-border-base hover:border-accent/50'
             "
-            class="px-3.5 py-1.5 rounded-md font-bold text-sm transition-all flex items-center gap-2.5 active:scale-95"
+            class="px-3.5 py-1.5 font-bold text-sm transition-all flex items-center gap-2.5 active:scale-95"
           >
             <span class="opacity-50 font-black text-[0.7rem] tracking-tighter">{{
               option.ply % 2 !== 0 ? (option.ply + 1) / 2 : option.ply / 2 + '...'
@@ -220,7 +201,7 @@
   <!-- Premium Context Menu -->
   @if (contextMenuNode(); as node) {
     <div
-      class="fixed z-50 min-w-[180px] shadow-2xl rounded-lg  [animation:_0.15s_cubic-bezier(0,0,0.2,1)] overflow-hidden"
+      class="fixed z-50 min-w-[180px] shadow-2xl [animation:_0.15s_cubic-bezier(0,0,0.2,1)] overflow-hidden"
       [style.left.px]="contextMenuPos().x"
       [style.top.px]="contextMenuPos().y"
       (click)="$event.stopPropagation()"
