@@ -276,7 +276,9 @@
                 </div>
                 @if (tournament.creator) {
                   <a
-                    [routerLink]="['/user', tournament.creator.id]"
+                    [routerLink]="['/user', tournament.creator.name]"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     class="flex items-center gap-2 hover:text-cyan-400 transition-colors"
                   >
                     <svg

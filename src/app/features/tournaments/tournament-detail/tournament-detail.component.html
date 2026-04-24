@@ -9,7 +9,9 @@
       </h1>
       @if (tournament.creator) {
         <a
-          [routerLink]="['/user', tournament.creator.id]"
+          [routerLink]="['/user', tournament.creator.name]"
+          target="_blank"
+          rel="noopener noreferrer"
           class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-cyan-400 transition-colors mt-1"
         >
           <svg
@@ -730,7 +732,9 @@
                 <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
                   <span class="text-slate-500 dark:text-slate-400">Created by</span>
                   <a
-                    [routerLink]="['/user', tournament.creator.id]"
+                    [routerLink]="['/user', tournament.creator.name]"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     class="flex items-center gap-2 mt-1 hover:text-cyan-400 transition-colors"
                   >
                     <span

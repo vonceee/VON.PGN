@@ -150,7 +150,7 @@ export class Header implements OnInit, OnDestroy {
     this.isSearchOpen.set(false);
     this.searchQuery.set('');
     this.searchResults.set([]);
-    this.router.navigate(['/user', user.uid]);
+    this.router.navigate(['/user', user.username]);
   }
 
   toggleProfileDropdown() {

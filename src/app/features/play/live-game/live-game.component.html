@@ -1,35 +1,28 @@
 <div
-  class="h-full flex items-center justify-center p-2 md:p-4 md:overflow-hidden"
+  class="h-full flex items-center justify-center p-2 md:p-8 overflow-hidden bg-main"
 >
-  <div class="w-full max-w-[1700px] h-full flex items-center justify-center">
-    @if (gameService.isServiceMaintenance()) {
-      <app-server-maintenance
-        title="Chess Service Maintenance"
-        message="The chess service is currently undergoing maintenance. Your game will resume automatically when the service is back online."
-      ></app-server-maintenance>
-    } @else if (game(); as g) {
+  <div class="w-full h-full flex items-center justify-center">
+    @if (game(); as g) {
       <div
         class="flex flex-col items-center w-full md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6 md:items-start"
       >
         <!-- Left Column: Info & History -->
-        <div class="hidden md:block min-w-0 h-[85vh] md:justify-self-end w-full max-w-[400px]">
-          <div class="flex flex-col ui-panel rounded-xl overflow-hidden h-full">
-            <div class="p-8">
-              <app-game-info
-                [player]="g.my_color === 'white' ? g.black_player : g.white_player"
-                [color]="g.my_color === 'white' ? 'black' : 'white'"
-                [ratingChange]="getOpponentRatingChange()"
-                class="block mb-3"
-              />
-              <app-game-info
-                [player]="g.my_color === 'white' ? g.white_player : g.black_player"
-                [color]="g.my_color"
-                [ratingChange]="getMyRatingChange()"
-              />
-            </div>
+        <div class="hidden md:block min-w-0 h-[85vh] md:justify-self-end w-full border-r border-border-theme">
+          <div class="flex flex-col overflow-hidden h-full">
+            <app-game-info
+              [player]="g.my_color === 'white' ? g.black_player : g.white_player"
+              [color]="g.my_color === 'white' ? 'black' : 'white'"
+              [ratingChange]="getOpponentRatingChange()"
+              class="block mb-3"
+            />
+            <app-game-info
+              [player]="g.my_color === 'white' ? g.white_player : g.black_player"
+              [color]="g.my_color"
+              [ratingChange]="getMyRatingChange()"
+            />
 
             <app-move-notation
-              class="flex-1"
+              class="flex-1 pt-2"
               [moves]="moveSanCache()"
               [currentPly]="currentPly()"
               [showNavigation]="true"
@@ -79,11 +72,6 @@
                 [isActive]="isOpponentTurn()"
                 (expired)="onClockExpired()"
               />
-              @if (isOpponentTurn() && g.firstMoveCountdown && g.moves.length < 2) {
-                <span class="text-[10px] text-cyan-400 font-medium animate-pulse">
-                  {{ g.firstMoveCountdown }}s to play first move
-                </span>
-              }
             </div>
           </div>
 
@@ -194,13 +182,21 @@
                 [isActive]="isMyTurn()"
                 (expired)="onClockExpired()"
               />
-              @if (isMyTurn() && g.firstMoveCountdown && g.moves.length < 2) {
-                <span class="text-[10px] text-cyan-400 font-medium animate-pulse">
-                  {{ g.firstMoveCountdown }}s to play first move
-                </span>
-              }
             </div>
           </div>
+
+          @if (g.status === 'active' && g.firstMoveCountdown !== undefined && g.firstMoveCountdown !== null && g.moves.length < 2) {
+            <div
+              class="md:hidden w-full ui-panel rounded-xl p-4 text-center bg-slate-900/40 mt-4 animate-in slide-in-from-bottom-4 duration-300"
+            >
+              <div class="text-2xl font-semibold">
+                {{ g.firstMoveCountdown }}s
+              </div>
+              <div class="text-sm tracking-widest mt-1 opacity-80 uppercase font-bold text-slate-400">
+                to play first move
+              </div>
+            </div>
+          }
 
           <!-- Mobile History/Results -->
           <div class="md:hidden w-full mt-4 flex flex-col gap-4 pb-32"></div>
@@ -216,14 +212,19 @@
                 [isActive]="isOpponentTurn()"
                 (expired)="onClockExpired()"
               />
-              @if (isOpponentTurn() && g.firstMoveCountdown && g.moves.length < 2) {
-                <div class="text-[11px] text-cyan-400 font-medium mt-1 text-center animate-pulse">
-                  {{ g.firstMoveCountdown }}s to play first move
-                </div>
-              }
             </div>
 
             <div class="flex flex-col justify-center">
+              @if (g.status === 'active' && g.firstMoveCountdown !== undefined && g.firstMoveCountdown !== null && g.moves.length < 2) {
+                <div class="ui-panel rounded-xl p-4 text-center animate-in fade-in zoom-in duration-300">
+                  <div class="text-2xl font-semibold">
+                    {{ g.firstMoveCountdown }}s
+                  </div>
+                  <div class="text-sm tracking-widest mt-1 opacity-80 uppercase font-bold text-slate-400">
+                    to play first move
+                  </div>
+                </div>
+              }
               @if (g.status === 'completed' || g.status === 'aborted') {
                 <div class="ui-panel rounded-xl p-4 text-center">
                   <div
@@ -289,36 +290,21 @@
                   </div>
                 </div>
               }
-
-              @if (
+                   @if (
                 g.status === 'active' &&
-                (opponentAwayCountdown() !== null || abortCountdown() !== null)
+                opponentAwayCountdown() !== null
               ) {
                 <div class="space-y-3">
-                  @if (opponentAwayCountdown() !== null) {
-                    <div
-                      class="border border-red-500/30 rounded-xl p-3 text-center bg-red-500/5 shadow-inner"
-                    >
-                      <div class="text-sm uppercase font-bold text-red-400 opacity-60 mb-1">
-                        Opponent Disconnected
-                      </div>
-                      <div class="text-2xl font-black font-mono text-red-400 tracking-tighter">
-                        {{ opponentAwayCountdown() }}
-                      </div>
+                  <div
+                    class="border border-red-500/30 rounded-xl p-3 text-center bg-red-500/5 shadow-inner"
+                  >
+                    <div class="text-sm uppercase font-bold text-red-400 opacity-60 mb-1">
+                      Opponent Disconnected
                     </div>
-                  }
-                  @if (abortCountdown() !== null) {
-                    <div
-                      class="border border-cyan-500/30 rounded-xl p-3 text-center bg-cyan-500/5 shadow-inner"
-                    >
-                      <div class="text-[10px] uppercase font-bold text-cyan-400 opacity-60 mb-1">
-                        Auto Abort
-                      </div>
-                      <div class="text-2xl font-black font-mono text-cyan-400 tracking-tighter">
-                        {{ abortCountdown() }}
-                      </div>
+                    <div class="text-2xl font-black font-mono text-red-400 tracking-tighter">
+                      {{ opponentAwayCountdown() }}s
                     </div>
-                  }
+                  </div>
                 </div>
               }
             </div>
@@ -330,11 +316,6 @@
                 [isActive]="isMyTurn()"
                 (expired)="onClockExpired()"
               />
-              @if (isMyTurn() && g.firstMoveCountdown && g.moves.length < 2) {
-                <div class="text-[11px] text-cyan-400 font-medium mt-1 text-center animate-pulse">
-                  {{ g.firstMoveCountdown }}s to play first move
-                </div>
-              }
             </div>
           </div>
         </div>

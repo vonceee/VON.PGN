@@ -237,9 +237,12 @@
           class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50 shadow-lg"
         >
           @for (user of searchResults(); track user.uid) {
-            <button
-              (click)="viewUserProfile(user)"
-              class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-subtle text-left transition-colors"
+            <a
+              [routerLink]="['/user', user.username]"
+              target="_blank"
+              rel="noopener noreferrer"
+              (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
+              class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-subtle text-left transition-colors cursor-pointer"
             >
               <div class="flex flex-col min-w-0">
                 <span class="text-sm text-content truncate">{{
@@ -249,7 +252,7 @@
                   '@' + user.username
                 }}</span>
               </div>
-            </button>
+            </a>
           }
         </div>
       } @else if (searchQuery().length >= 2 && !isSearching()) {

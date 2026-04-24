@@ -336,6 +336,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         },
         drawable: {
           enabled: true,
+          eraseOnClick: true,
           onChange: () => this.onShapesChanged(),
         },
       };
@@ -398,7 +399,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         enabled: this.preMoveEnabled && this.interactive,
       },
       drawable: {
-        shapes: this.syncedShapes,
+        shapes: [...this.syncedShapes],
       },
     });
 
@@ -443,6 +444,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
     // Check if this move is a promotion
     const isPromotion = this.isPromotionMove(orig, dest);
+
+    // Clear arrows on move
+    this.cgApi.set({ drawable: { shapes: [] } });
 
     if (isPromotion) {
       this.pendingPromotion.set({

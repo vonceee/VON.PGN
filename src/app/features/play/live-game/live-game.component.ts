@@ -18,7 +18,7 @@ import { GameService } from '../../../core/services/game.service';
 import { AudioService } from '../../../core/services/audio.service';
 import { ArenaService } from '../../../core/services/arena.service';
 import { ChessClockComponent } from '@shared/chess';
-import { ServerMaintenanceComponent, LoadingComponent } from '@shared/feedback';
+import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
 import { GameInfoComponent } from './components/game-info.component';
 import { GameControlsComponent } from './components/game-controls.component';
@@ -54,7 +54,6 @@ import {
   standalone: true,
   imports: [
     ChessClockComponent,
-    ServerMaintenanceComponent,
     GameInfoComponent,
     MoveNotationComponent,
     GameControlsComponent,

@@ -25,12 +25,15 @@ import { LoadingComponent } from '@shared/feedback';
                       <div class="flex flex-col gap-1">
                         <div class="flex items-center gap-2">
                           <div class="w-2 h-2 rounded-full border border-border-theme"></div>
-                          <span
-                            class="font-bold shrink-0 text-sm"
+                          <a
+                            [routerLink]="['/user', game.white_player.name]"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="font-bold shrink-0 text-sm hover:text-cyan-400 transition-colors cursor-pointer"
                             [class.text-cyan-400]="isMe(game.white_player_id)"
                           >
                             {{ game.white_player.name }}
-                          </span>
+                          </a>
                           <span class="text-xs">({{ game.white_elo || 1500 }})</span>
                           @if (game.white_rating_change !== null) {
                             <span
@@ -46,12 +49,15 @@ import { LoadingComponent } from '@shared/feedback';
                         </div>
                         <div class="flex items-center gap-2">
                           <div class="w-2 h-2 rounded-full border border-border-theme"></div>
-                          <span
-                            class="font-bold shrink-0 text-sm"
+                          <a
+                            [routerLink]="['/user', game.black_player.name]"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="font-bold shrink-0 text-sm hover:text-cyan-400 transition-colors cursor-pointer"
                             [class.text-cyan-400]="isMe(game.black_player_id)"
                           >
                             {{ game.black_player.name }}
-                          </span>
+                          </a>
                           <span class="text-xs">({{ game.black_elo || 1500 }})</span>
                           @if (game.black_rating_change !== null) {
                             <span
