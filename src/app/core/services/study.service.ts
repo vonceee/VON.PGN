@@ -49,6 +49,7 @@ export class StudyService {
     chapterId: number | null;
     fen: string | null;
     moves: any[] | null;
+    orientation?: 'white' | 'black';
   }>({ chapterId: null, fen: null, moves: null });
 
   constructor() {}
@@ -103,8 +104,12 @@ export class StudyService {
     });
   }
 
-  addChapter(studyId: number, name: string, fen?: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies/${studyId}/chapters`, { name, initial_fen: fen });
+  addChapter(studyId: number, name: string, fen?: string, orientation?: 'white' | 'black'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/studies/${studyId}/chapters`, { 
+      name, 
+      initial_fen: fen,
+      orientation: orientation 
+    });
   }
 
   updateChapter(studyId: number, chapterId: number, data: any): Observable<any> {
@@ -143,6 +148,7 @@ export class StudyService {
           chapterId: this.currentChapter()?.id,
           fen: this.currentChapter()?.current_fen,
           moves: this.currentChapter()?.moves,
+          orientation: this.currentChapter()?.orientation,
         },
       });
     });
@@ -153,6 +159,7 @@ export class StudyService {
         chapterId: state.chapterId,
         fen: state.fen,
         moves: state.moves,
+        orientation: (state as any).orientation,
       });
     });
 
@@ -166,7 +173,12 @@ export class StudyService {
     });
 
     this.socket.on('study_chapter_changed', (payload: any) => {
-      this.lastRemoteState.set({ chapterId: payload.chapterId, fen: payload.fen, moves: payload.moves });
+      this.lastRemoteState.set({ 
+        chapterId: payload.chapterId, 
+        fen: payload.fen, 
+        moves: payload.moves,
+        orientation: payload.orientation 
+      });
       this.chapterChangedSubject.next(payload);
     });
   }
@@ -191,7 +203,8 @@ export class StudyService {
       move,
       fen,
       chapterId: chapterId,
-      moves: moves
+      moves: moves,
+      orientation: chapter.orientation
     });
 
     // Persist full tree to database
@@ -217,7 +230,8 @@ export class StudyService {
           studyId: study.id,
           chapterId: updated.id,
           fen: updated.current_fen,
-          moves: updated.moves
+          moves: updated.moves,
+          orientation: updated.orientation
         });
       },
       error: (err) => console.error('[StudyService] Failed to save move to DB:', err)
@@ -233,12 +247,13 @@ export class StudyService {
     });
   }
 
-  emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[]): void {
+  emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[], orientation?: 'white' | 'black'): void {
     this.socket?.emit('study_change_chapter', {
       studyId,
       chapterId,
       fen,
       moves,
+      orientation
     });
   }
 

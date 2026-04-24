@@ -15,10 +15,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudyService } from '../../core/services/study.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
-import { AddChapterDialogComponent } from './dialogs/add-chapter-dialog/add-chapter-dialog.component';
+import { AddChapterDialogComponent, AddChapterDialogResult } from './dialogs/add-chapter-dialog/add-chapter-dialog.component';
 import { ConfirmDeleteDialogComponent } from './dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { EditChapterDialogComponent, EditChapterDialogResult } from './dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
-import { ImportPgnDialogComponent } from './dialogs/import-pgn-dialog/import-pgn-dialog.component';
 import { StudySettingsDialogComponent } from './dialogs/study-settings-dialog/study-settings-dialog.component';
 import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -33,14 +32,14 @@ import { MoveNode, StudyChapter } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 import { BackLinkComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil } from '@ng-icons/heroicons/outline';
+import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath } from '@ng-icons/heroicons/outline';
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
 
 @Component({
   selector: 'app-study',
   standalone: true,
   imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent, DialogModule, NgIconComponent],
-  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil })],
+  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath })],
   templateUrl: './study.component.html',
   host: {
     class: 'absolute inset-0 overflow-hidden',
@@ -100,6 +99,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   currentPly = signal(0);
 
   boardSize = signal(this.loadBoardSize());
+  boardOrientation = signal<'white' | 'black'>('white');
   remoteShapes = signal<any[]>([]);
 
   // Combined shapes for the board
@@ -146,6 +146,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
         if (shouldJump) {
           this.currentFen.set(chapter.current_fen);
+          this.boardOrientation.set(chapter.orientation || 'white');
           const tree = buildTreeFromMoves(chapter.moves || [], chapter.initial_fen);
           this.moveTree.set(tree);
 
@@ -250,6 +251,10 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.showEngineSettings.update(v => !v);
   }
 
+  flipBoard() {
+    this.boardOrientation.update(o => o === 'white' ? 'black' : 'white');
+  }
+
   onMultiPvChange(count: number) {
     this.engineService.setMultiPv(count);
     // Restart analysis with new PV count if engine is active
@@ -296,6 +301,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     
     if (remote.fen) {
       this.currentFen.set(remote.fen);
+      this.boardOrientation.set(remote.orientation || 'white');
       // Try to find the node in the new tree to highlight it
       const node = this.findNodeRecursive(this.moveTree(), remote.fen);
       if (node) {
@@ -627,29 +633,35 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (this.currentChapter()?.id === chap.id) return;
     this.studyService.currentChapter.set(chap);
     if (this.isOwner()) {
-      this.studyService.emitChapterChange(this.study()!.id, chap.id, chap.current_fen, chap.moves || []);
+      this.studyService.emitChapterChange(this.study()!.id, chap.id, chap.current_fen, chap.moves || [], chap.orientation);
     }
   }
 
   createChapter() {
     if (!this.isOwner()) return;
 
-    const dialogRef = this.dialog.open<string>(AddChapterDialogComponent, {
+    const dialogRef = this.dialog.open<AddChapterDialogResult>(AddChapterDialogComponent, {
       data: { defaultName: `Chapter ${(this.study()?.chapters?.length ?? 0) + 1}` }
     });
 
-    dialogRef.closed.subscribe((name) => {
-      if (!name) return;
+    dialogRef.closed.subscribe((result) => {
+      if (!result) return;
       const s = this.study();
       if (!s) return;
 
-      this.studyService.addChapter(s.id, name).subscribe({
-        next: (newChapter) => {
-          this.studyService.getStudy(s.id);
-          this.studyService.currentChapter.set(newChapter);
-          this.toastService.show('Chapter created successfully!', 'success');
-        },
-      });
+      if (result.type === 'pgn' && result.pgn) {
+        this.executePgnImport(s.id, result.pgn);
+      } else {
+        this.studyService.addChapter(s.id, result.name, result.fen, result.orientation).subscribe({
+          next: (newChapter) => {
+            const chapterWithOrientation = { ...newChapter, orientation: result.orientation };
+            this.studyService.getStudy(s.id);
+            this.studyService.currentChapter.set(chapterWithOrientation);
+            this.boardOrientation.set(result.orientation || 'white');
+            this.toastService.show('Chapter created successfully!', 'success');
+          },
+        });
+      }
     });
   }
 
@@ -718,23 +730,34 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   importPgn() {
-    const dialogRef = this.dialog.open<string>(ImportPgnDialogComponent);
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
 
-    dialogRef.closed.subscribe((pgn) => {
-      if (!pgn) return;
-      const s = this.study();
-      if (!s) return;
+    const dialogRef = this.dialog.open<AddChapterDialogResult>(AddChapterDialogComponent, {
+      data: { 
+        defaultName: `Chapter ${(s.chapters?.length ?? 0) + 1}`,
+        tab: 'pgn'
+      }
+    });
 
-      this.studyService.importPgn(s.id, pgn).subscribe({
-        next: (res) => {
-          this.studyService.getStudy(s.id); // Refresh study
-          this.toastService.show(res.message || 'Import successful!', 'success');
-        },
-        error: (err) => {
-          console.error('Import failed:', err);
-          this.toastService.show('Failed to import PGN. Please check the format.', 'error');
-        },
-      });
+    dialogRef.closed.subscribe((result) => {
+      if (result?.pgn) {
+        this.executePgnImport(s.id, result.pgn);
+      }
+    });
+  }
+
+  private executePgnImport(studyId: number, pgn: string) {
+    this.studyService.importPgn(studyId, pgn).subscribe({
+      next: (res) => {
+        this.studyService.getStudy(studyId); // Refresh study
+        this.toastService.show(res.message || 'Import successful!', 'success');
+      },
+      error: (err) => {
+        console.error('Import failed:', err);
+        this.toastService.show('Failed to import PGN. Please check the format.', 'error');
+      },
     });
   }
 
