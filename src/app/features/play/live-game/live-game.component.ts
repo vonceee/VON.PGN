@@ -78,7 +78,7 @@ import {
   ],
   templateUrl: './live-game.component.html',
   host: {
-    class: 'block h-full',
+    class: 'absolute inset-0 overflow-hidden',
   },
 })
 export class LiveGameComponent implements OnInit, OnDestroy {

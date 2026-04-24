@@ -49,7 +49,6 @@ export class ArenaComponent implements OnInit, OnDestroy {
   arenaData = this.arenaService.activeArena;
 
   // Board signals
-  boardSize = signal<number>(400);
   currentPly = signal(0);
   chess = new Chess();
   displayFen = signal<string>(this.STARTING_FEN);
@@ -126,26 +125,8 @@ export class ArenaComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Handle responsiveness for board size
-    if (isPlatformBrowser(this.platformId)) {
-      this.calculateBoardSize();
-      window.addEventListener('resize', this.onResize);
-    }
   }
 
-  private onResize = () => {
-    this.calculateBoardSize();
-  };
-
-  calculateBoardSize() {
-    if (isPlatformBrowser(this.platformId)) {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      // In two-column layout, board gets roughly half width on desktop
-      const newSize = width > 768 ? Math.min(500, height - 300) : Math.min(400, width - 40);
-      this.boardSize.set(newSize);
-    }
-  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -155,11 +136,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      window.removeEventListener('resize', this.onResize);
-    }
-  }
+  ngOnDestroy(): void {}
 
   private connectAndJoin() {
     const user = this.authService.currentUser();

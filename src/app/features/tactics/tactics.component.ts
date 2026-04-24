@@ -31,7 +31,7 @@ import { ButtonComponent } from '@shared/ui';
   ],
   templateUrl: './tactics.component.html',
   host: {
-    class: 'relative block w-full',
+    class: 'absolute inset-0 overflow-hidden',
   },
 })
 export class TacticsComponent implements OnInit {
@@ -58,7 +58,6 @@ export class TacticsComponent implements OnInit {
   newStreak = signal<number>(0);
   userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
-  boardSize = signal(this.loadBoardSize());
   retryMode = signal(false);
   exploreMode = signal(false);
   isLoadingPgn = signal(false);
@@ -69,10 +68,8 @@ export class TacticsComponent implements OnInit {
   puzzleStartPly = signal(0);
   fullPgnMoves: string[] = [];
   isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+  boardSize = signal(600);
 
-  onBoardSizeChange(event: number) {
-    this.boardSize.set(event);
-  }
 
   ngOnInit() {
     this.onResize();
@@ -82,50 +79,20 @@ export class TacticsComponent implements OnInit {
       });
     }
     this.loadNextPuzzle();
+
+    effect(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
+      }
+    });
   }
 
-  private loadBoardSize(): number {
-    if (isPlatformBrowser(this.platformId)) {
-      const mobile = window.innerWidth < 768;
-      const saved = localStorage.getItem('boardSize');
-      let size = mobile ? 360 : 600;
-
-      if (saved) {
-        const parsed = parseInt(saved, 10);
-        if (!isNaN(parsed) && parsed >= 280 && parsed <= 1200) {
-          size = parsed;
-        }
-      }
-
-      // Enforce strict responsive constraints
-      if (mobile) {
-        const maxAllowed = Math.floor(window.innerWidth * 0.95);
-        return Math.max(280, Math.min(size, maxAllowed, 450));
-      } else {
-        const maxAllowed = Math.floor(window.innerHeight * 0.72);
-        return Math.max(280, Math.min(size, maxAllowed, 900));
-      }
-    }
-    return 500;
-  }
 
   @HostListener('window:resize')
   onResize() {
     if (!isPlatformBrowser(this.platformId)) return;
     const mobile = window.innerWidth < 768;
     this.isMobile.set(mobile);
-    
-    if (mobile) {
-      const maxAllowed = Math.floor(window.innerWidth * 0.95);
-      if (this.boardSize() > maxAllowed) {
-        this.boardSize.set(maxAllowed);
-      }
-    } else {
-      const maxAllowed = Math.floor(window.innerHeight * 0.72);
-      if (this.boardSize() > maxAllowed) {
-        this.boardSize.set(maxAllowed);
-      }
-    }
   }
 
   loadNextPuzzle() {

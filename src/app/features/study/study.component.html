@@ -1,11 +1,11 @@
 <div class="h-full w-full overflow-hidden flex flex-col p-8 bg-main">
   @if (study(); as s) {
     <div
-      class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] xl:grid-cols-[350px_1fr_440px] 2xl:grid-cols-[380px_1fr_480px] gap-6 w-full max-w-[1920px] mx-auto items-stretch h-full overflow-hidden"
+      class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] xl:grid-cols-[350px_1fr_440px] 2xl:grid-cols-[380px_1fr_480px] w-full max-w-[1920px] mx-auto items-stretch h-full overflow-hidden"
     >
       <!-- Left Column: Chapter Sidebar (Learn Sidebar style) -->
       <aside
-        class="hidden lg:flex flex-col h-full overflow-hidden"
+        class="hidden lg:flex flex-col h-full overflow-hidden pt-4"
         [class.pointer-events-none]="isSyncing() && !isOwner()"
         [class.opacity-70]="isSyncing() && !isOwner()"
       >
@@ -127,10 +127,10 @@
       </div>
 
       <!-- Right Column: Notation & Info -->
-      <div class="h-full flex flex-col gap-4 overflow-hidden">
-        <div class="flex flex-col ui-panel border border-border-base rounded-xl overflow-hidden h-full">
+      <div class="h-full flex flex-col gap-2 overflow-hidden">
+        <div class="flex flex-col overflow-hidden h-full border-l border-border-base">
           <!-- Sidebar Tabs -->
-          <div class="flex border-b border-border-base bg-surface">
+          <div class="flex">
             <button
               (click)="activeTab.set('notation')"
               class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"

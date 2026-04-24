@@ -1,13 +1,11 @@
-<div
-  class="h-full flex items-center justify-center p-2 md:p-8 overflow-hidden bg-main"
->
-  <div class="w-full h-full flex items-center justify-center">
+<div class="h-full w-full overflow-hidden flex flex-col bg-main p-4 md:p-8">
+  <div class="flex-1 flex items-center justify-center overflow-hidden">
     @if (game(); as g) {
       <div
-        class="flex flex-col items-center w-full md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6 md:items-start"
+        class="w-full max-w-[1920px] mx-auto h-full flex flex-col items-center md:grid md:grid-cols-[300px_1fr_350px] xl:grid-cols-[340px_1fr_400px] gap-4 md:gap-8 md:items-stretch overflow-hidden"
       >
         <!-- Left Column: Info & History -->
-        <div class="hidden md:block min-w-0 h-[85vh] md:justify-self-end w-full border-r border-border-theme">
+        <div class="hidden md:flex flex-col min-w-0 h-full w-full border-r border-border-base overflow-hidden">
           <div class="flex flex-col overflow-hidden h-full">
             <app-game-info
               [player]="g.my_color === 'white' ? g.black_player : g.white_player"
@@ -54,7 +52,7 @@
 
         <!-- Center Column: Board Area -->
         <div
-          class="w-full md:w-auto md:flex md:flex-col md:items-center md:min-w-0 md:overflow-hidden"
+          class="board-container-parent w-full md:w-auto flex flex-col items-center justify-center min-h-0 min-w-0 overflow-hidden relative"
         >
           <!-- Mobile Info/Clock -->
           <div class="w-full md:hidden mb-2 flex items-center justify-between gap-2">
@@ -82,6 +80,7 @@
               [interactive]="g.status === 'active' && currentPly() === g.moves.length"
               [configOverride]="cgConfig()"
               (moveMade)="onBoardMove($event)"
+              (sizeChange)="onBoardSizeChange($event)"
             ></app-chess-board>
 
             <!-- Mobile Game Over Overlay -->
@@ -127,7 +126,7 @@
                         </button>
                       } @else if (myRematchOffered()) {
                         <div
-                          class="text-xs uppercase font-black text-slate-500 py-3 animate-pulse bg-slate-400/5 rounded border border-border-theme"
+                          class="text-xs uppercase font-black text-slate-500 py-3 animate-pulse bg-slate-400/5 rounded border border-border-base"
                         >
                           Waiting for opponent...
                         </div>
@@ -200,8 +199,8 @@
         </div>
 
         <!-- Right Column: Clocks -->
-        <div class="hidden md:block min-w-0 h-[85vh] md:justify-self-start w-full max-w-[400px]">
-          <div class="flex flex-col justify-center gap-4 h-full py-12">
+        <div class="hidden md:flex flex-col min-w-0 h-full w-full border-l border-border-base overflow-hidden">
+          <div class="flex flex-col justify-center gap-6 h-full px-4 lg:px-8">
             <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
               <app-chess-clock
                 [serverTimeMs]="opponentTimeMs()"
@@ -253,7 +252,7 @@
                         </button>
                       } @else if (myRematchOffered()) {
                         <div
-                          class="text-xs uppercase font-black text-slate-500 text-center py-3 animate-pulse bg-slate-400/5 rounded border border-border-theme"
+                          class="text-xs uppercase font-black text-slate-500 text-center py-3 animate-pulse bg-slate-400/5 rounded border border-border-base"
                         >
                           Waiting for opponent...
                         </div>
@@ -326,11 +325,11 @@
     <!-- Sticky Mobile Footer -->
     @if (game(); as g) {
       <div
-        class="md:hidden fixed bottom-0 left-0 right-0 border-t border-border-theme z-40 p-2 safe-area-bottom pb-4 flex flex-col gap-1"
+        class="md:hidden fixed bottom-0 left-0 right-0 border-t border-border-base z-40 p-2 safe-area-bottom pb-4 flex flex-col gap-1"
       >
         <!-- Navigation Row -->
         <div
-          class="flex items-center justify-around w-full mb-1 border-b border-border-theme/50 pb-2"
+          class="flex items-center justify-around w-full mb-1 border-b border-border-base/50 pb-2"
         >
           <button
             appButton
@@ -407,8 +406,8 @@
         }
       </div>
     }
+    </div>
   </div>
-</div>
 
 @if (showExitConfirm()) {
   <div

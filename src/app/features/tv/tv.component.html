@@ -58,6 +58,7 @@
             [orientation]="'white'"
             [interactive]="false"
             [configOverride]="cgConfig()"
+            (sizeChange)="onBoardSizeChange($event)"
           ></app-chess-board>
         </div>
 
