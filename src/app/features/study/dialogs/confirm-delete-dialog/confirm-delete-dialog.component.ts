@@ -17,7 +17,7 @@ export interface ConfirmDeleteDialogData {
   template: `
     <app-dialog-wrapper [title]="data.title || 'Confirm Deletion'" (close)="dialogRef.close(false)">
       <div class="space-y-4">
-        <p class="text-slate-600 dark:text-slate-400">
+        <p class="text-muted">
           {{ data.message || 'Are you sure you want to delete this item? This action cannot be undone.' }}
         </p>
       </div>

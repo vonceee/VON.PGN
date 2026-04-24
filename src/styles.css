@@ -8,8 +8,34 @@
     'Google Sans', 'Outfit', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
-  --color-border-theme: theme(colors.slate.400);
+  /* Semantic Tokens */
+  --color-main: #ffffff;
+  --color-surface: #f9fafb;
+  --color-subtle: #f3f4f6;
+
+  --color-content: #0f172a;
+  --color-muted: #64748b;
+  --color-accent: #0891b2; /* Cyan-600 */
+
+  --color-border-base: #e2e8f0;
+  --color-border-accent: #0891b2;
+
   --color-chess-grid: rgba(0, 0, 0, 0.04);
+}
+
+.dark {
+  --color-main: #09090b;
+  --color-surface: #121214;
+  --color-subtle: #18181b;
+
+  --color-content: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-accent: #22d3ee; /* Cyan-400 */
+
+  --color-border-base: #1e293b;
+  --color-border-accent: #22d3ee;
+
+  --color-chess-grid: rgba(148, 163, 184, 0.12);
 }
 
 body {
@@ -39,36 +65,24 @@ body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.80);
+  background: color-mix(in srgb, var(--color-main), transparent 15%);
   z-index: -1;
   pointer-events: none;
 }
 
-.dark body::after {
-  background: rgba(10, 10, 12, 0.88);
-}
-
 header {
-  background: rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, var(--color-main), transparent 30%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--color-border-base);
   transition: all 0.3s ease;
 }
 
-.dark header {
-  background: rgba(10, 10, 12, 0.7);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
 footer {
-  background: rgba(255, 255, 255, 0.5) !important;
+  background: color-mix(in srgb, var(--color-surface), transparent 50%);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-}
-
-.dark footer {
-  background: rgba(24, 24, 27, 0.6) !important;
+  border-top: 1px solid var(--color-border-base);
 }
 
 :root {
@@ -87,12 +101,14 @@ footer {
   }
 }
 
-.dark {
-  --color-border-theme: rgb(255 255 255 / 0.15);
-  --color-chess-grid: rgba(148, 163, 184, 0.12);
-}
-
 @custom-variant dark (&:where(.dark, .dark *));
+
+@utility surface-glass {
+  background-color: color-mix(in srgb, var(--color-surface), transparent 40%);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-base);
+  border-radius: var(--radius-xl);
+}
 
 /* smooth dark/light mode transitions */
 *,
@@ -152,8 +168,8 @@ footer {
 
 /* Minimalist Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -161,41 +177,33 @@ footer {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3);
-  border-radius: 4px;
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--color-muted), transparent 70%);
+  border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.6);
-}
-
-.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: color-mix(in srgb, var(--color-muted), transparent 40%);
 }
 
 .premium-card {
-  background-color: #ffffff;
-  border: 1px solid var(--color-border-theme);
+  background-color: var(--color-main);
+  border: 1px solid var(--color-border-base);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .premium-card {
-  background-color: #09090b !important;
-  border: 1px solid rgba(34, 211, 238, 0.35);
+  background-color: var(--color-surface) !important;
+  border: 1px solid color-mix(in srgb, var(--color-accent), transparent 65%);
   box-shadow:
-    0 0 60px rgba(34, 211, 238, 0.12),
-    0 0 20px rgba(34, 211, 238, 0.12),
-    inset 0 0 10px rgba(34, 211, 238, 0.05);
+    0 0 60px color-mix(in srgb, var(--color-accent), transparent 88%),
+    0 0 20px color-mix(in srgb, var(--color-accent), transparent 88%),
+    inset 0 0 10px color-mix(in srgb, var(--color-accent), transparent 95%);
 }
 
 .dark .premium-card:hover {
-  border-color: rgba(34, 211, 238, 0.7);
+  border-color: color-mix(in srgb, var(--color-accent), transparent 30%);
   box-shadow:
-    0 0 100px rgba(34, 211, 238, 0.25),
-    0 0 30px rgba(34, 211, 238, 0.15),
-    inset 0 0 15px rgba(34, 211, 238, 0.1);
+    0 0 100px color-mix(in srgb, var(--color-accent), transparent 75%),
+    0 0 30px color-mix(in srgb, var(--color-accent), transparent 85%),
+    inset 0 0 15px color-mix(in srgb, var(--color-accent), transparent 90%);
 }

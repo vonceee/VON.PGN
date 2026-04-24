@@ -48,13 +48,13 @@ export class ButtonComponent {
 
     switch (this.variant()) {
       case 'primary':
-        return `${base} bg-black dark:bg-white text-white dark:text-black rounded-full border-transparent`;
+        return `${base} bg-content text-main rounded-full border-transparent`;
       case 'danger':
-        return `${base} bg-transparent border-transparent text-red-600 hover:text-red-700 underline underline-offset-4 decoration-red-600/30 hover:decoration-red-700`;
+        return `${base} bg-transparent border-transparent text-rose-500 hover:text-rose-600 underline underline-offset-4 decoration-rose-500/30 hover:decoration-rose-600`;
       case 'ghost':
-        return `${base} bg-transparent hover:bg-cyan-400/20 border-transparent`;
+        return `${base} bg-transparent hover:bg-accent/10 border-transparent text-muted hover:text-accent`;
       default:
-        return `${base} border-border-theme hover:text-cyan-400 hover:border-cyan-400 rounded-full`;
+        return `${base} border-border-base hover:text-accent hover:border-accent rounded-full text-content`;
     }
   });
 

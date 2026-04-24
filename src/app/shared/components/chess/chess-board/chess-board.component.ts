@@ -43,15 +43,15 @@ import { AudioService } from '../../../../core/services/audio.service';
             class="absolute inset-0 z-50 flex items-center justify-center transition-all animate-in fade-in zoom-in duration-150"
           >
             <div
-              class="promotion-menu p-4 bg-slate-900 border border-slate-700 rounded-2xl  flex gap-4"
+              class="promotion-menu p-4 bg-surface border border-border-base rounded-2xl shadow-2xl flex gap-4"
               (click)="$event.stopPropagation()"
             >
               @for (piece of promotionPieces; track piece.type) {
                 <button
                   (click)="selectPromotion(piece.type)"
-                  class="w-20 h-20 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-all active:scale-90"
+                  class="w-20 h-20 flex items-center justify-center rounded-xl bg-subtle hover:bg-surface border border-border-base transition-all active:scale-90"
                 >
-                  <span class="text-3xl font-black text-white uppercase">{{ piece.type }}</span>
+                  <span class="text-3xl font-black text-content uppercase">{{ piece.type }}</span>
                 </button>
               }
             </div>
@@ -69,7 +69,7 @@ import { AudioService } from '../../../../core/services/audio.service';
               width="12"
               height="12"
               viewBox="0 0 12 12"
-              class="text-slate-400 opacity-50 hover:opacity-100 transition-opacity"
+              class="text-muted opacity-50 hover:opacity-100 transition-opacity"
             >
               <path
                 d="M11 11H9.5V9.5H11V11ZM11 7.5H9.5V6H11V7.5ZM7.5 11H6V9.5H7.5V11Z"
@@ -94,7 +94,7 @@ import { AudioService } from '../../../../core/services/audio.service';
           <span class="size-label">{{ boardSize }}px</span>
           <button
             (click)="resetBoard()"
-            class="p-2 border border-border-theme rounded hover:bg-cyan-400/20 text-slate-400 hover:text-cyan-400 transition-colors"
+            class="p-2 border border-border-base rounded hover:bg-accent/10 text-muted hover:text-accent transition-colors"
             title="Reset to starting position"
           >
             <svg
@@ -144,13 +144,13 @@ import { AudioService } from '../../../../core/services/audio.service';
       .resize-slider {
         flex: 1;
         height: 4px;
-        accent-color: rgb(34, 211, 238);
+        accent-color: var(--color-accent);
         cursor: pointer;
       }
       .size-label {
         font-size: 0.875rem;
         font-weight: 600;
-        color: rgb(148, 163, 184);
+        color: var(--color-muted);
         min-width: 45px;
         text-align: right;
         user-select: none;

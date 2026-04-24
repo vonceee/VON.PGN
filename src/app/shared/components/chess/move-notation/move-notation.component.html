@@ -1,5 +1,5 @@
 <div
-  class="move-notation-container overflow-hidden flex flex-col h-full bg-white/5 dark:bg-black/5"
+  class="move-notation-container overflow-hidden flex flex-col h-full bg-main"
 >
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -9,7 +9,7 @@
   <!-- Navigation Controls -->
   @if (showNavigation()) {
     <div
-      class="flex-none flex items-center justify-between p-2 border-b border-border-theme bg-slate-500/5"
+      class="flex-none flex items-center justify-between p-2 border-b border-border-base bg-surface"
     >
       <div class="flex items-center gap-0.5">
         <button
@@ -17,7 +17,7 @@
           variant="ghost"
           (click)="navigate.emit(0)"
           [disabled]="currentPly() === 0"
-          class="hover:!bg-cyan-500/10"
+          class="hover:!bg-accent/10"
         >
           <svg
             class="w-4 h-4"
@@ -35,7 +35,7 @@
           variant="ghost"
           (click)="onNavigateBack()"
           [disabled]="!navigationCtx().parent && currentPly() === 0"
-          class="hover:!bg-cyan-500/10"
+          class="hover:!bg-accent/10"
         >
           <svg
             class="w-4 h-4"
@@ -55,7 +55,7 @@
           variant="ghost"
           (click)="onNavigateNext()"
           [disabled]="nextOptions().length === 0"
-          class="hover:!bg-cyan-500/10"
+          class="hover:!bg-accent/10"
         >
           <svg
             class="w-4 h-4"
@@ -72,7 +72,7 @@
           variant="ghost"
           (click)="navigate.emit(effectiveTree().length)"
           [disabled]="isLastMove()"
-          class="hover:!bg-cyan-500/10"
+          class="hover:!bg-accent/10"
         >
           <svg
             class="w-4 h-4"
@@ -108,13 +108,13 @@
         <!-- Move Number -->
         @if (node.ply % 2 !== 0) {
           <span
-            class="font-black tracking-tighter select-none opacity-40 dark:opacity-30 mr-1 ml-1"
+            class="font-black tracking-tighter select-none text-muted mr-1 ml-1"
             [class.text-[0.95rem]]="isMainline"
             [class.text-[0.8rem]]="!isMainline"
             >{{ (node.ply + 1) / 2 }}.</span
           >
         } @else if ($firstNode && !isMainline) {
-          <span class="flex-none font-bold mr-1 ml-1 select-none text-[0.85rem] text-cyan-400/80"
+          <span class="flex-none font-bold mr-1 ml-1 select-none text-[0.85rem] text-accent/80"
             >{{ node.ply / 2 }}...</span
           >
         }
@@ -125,14 +125,14 @@
           (contextmenu)="onContextMenu($event, node)"
           [class]="
             currentFen() === node.fen
-              ? 'active-move !bg-cyan-500/30 !text-white font-black rounded-sm'
-              : 'font-bold text-slate-800/90 dark:text-slate-200/90'
+              ? 'active-move !bg-accent/30 !text-content font-black rounded-sm'
+              : 'font-bold text-content'
           "
           [class.px-1.5]="isMainline"
           [class.px-1]="!isMainline"
           [class.py-0.5]="true"
           [class.text-sm]="!isMainline"
-          class="text-left transition-all hover:bg-cyan-500/10 hover:cursor-pointer select-none active-move-target rounded"
+          class="text-left transition-all hover:bg-accent/10 hover:cursor-pointer select-none active-move-target rounded"
         >
           {{ node.san }}
         </button>
@@ -148,10 +148,10 @@
                 <!-- Branch Indicator |- -->
                 <div class="flex-none flex items-center self-stretch mr-1">
                   <div
-                    class="w-px h-full bg-slate-400/20 dark:bg-slate-500/20 group-hover:bg-cyan-500/40 transition-colors"
+                    class="w-px h-full bg-border-base group-hover:bg-accent/40 transition-colors"
                   ></div>
                   <div
-                    class="w-2 h-px bg-slate-400/20 dark:bg-slate-500/20 group-hover:bg-cyan-500/40 transition-colors mt-[14px]"
+                    class="w-2 h-px bg-border-base group-hover:bg-accent/40 transition-colors mt-[14px]"
                   ></div>
                 </div>
 
@@ -175,12 +175,12 @@
   <!-- Variation Selector -->
   @if (nextOptions().length > 1) {
     <div
-      class="flex-none p-3 bg-slate-50/95 dark:bg-[#0f1115]/95 backdrop-blur-xl border-t border-slate-200 dark:border-white/5 animate-[slide-up_0.2s_ease-out]"
+      class="flex-none p-3 bg-surface border-t border-border-base animate-[slide-up_0.2s_ease-out]"
     >
       <div
-        class="text-[0.65rem] uppercase tracking-[0.15em] font-black text-slate-400 dark:text-slate-500 mb-2.5 px-0.5 flex items-center gap-2"
+        class="text-[0.65rem] uppercase tracking-[0.15em] font-black text-muted mb-2.5 px-0.5 flex items-center gap-2"
       >
-        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
         Choose continuation
       </div>
       <div class="flex flex-wrap gap-2">
@@ -189,8 +189,8 @@
             (click)="onMoveClick(option)"
             [class]="
               selectedVariationIndex() === $index
-                ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 scale-[1.02]'
-                : 'bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/5 hover:border-cyan-500/50'
+                ? 'bg-accent text-main shadow-lg shadow-accent/25 scale-[1.02]'
+                : 'bg-subtle text-content border border-border-base hover:border-accent/50'
             "
             class="px-3.5 py-1.5 rounded-md font-bold text-sm transition-all flex items-center gap-2.5 active:scale-95"
           >
@@ -220,7 +220,7 @@
   <!-- Premium Context Menu -->
   @if (contextMenuNode(); as node) {
     <div
-      class="fixed z-50 min-w-[180px] shadow-2xl rounded-lg backdrop-blur-xl bg-white/95 border border-black/5 dark:bg-[#0a0a0c]/95 dark:border-white/10 [animation:_0.15s_cubic-bezier(0,0,0.2,1)] overflow-hidden"
+      class="fixed z-50 min-w-[180px] shadow-2xl rounded-lg surface-glass [animation:_0.15s_cubic-bezier(0,0,0.2,1)] overflow-hidden"
       [style.left.px]="contextMenuPos().x"
       [style.top.px]="contextMenuPos().y"
       (click)="$event.stopPropagation()"
@@ -228,7 +228,7 @@
     >
       <button
         (click)="onDeleteFromHere()"
-        class="w-full text-left px-4 py-2.5 text-sm hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-3 font-semibold text-slate-800 dark:text-slate-200"
+        class="w-full text-left px-4 py-2.5 text-sm hover:bg-rose-500/10 hover:text-rose-400 transition-colors flex items-center gap-3 font-semibold text-content"
       >
         Delete from here
       </button>

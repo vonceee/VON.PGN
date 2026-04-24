@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
     }
 
     :host(:hover) {
-      color: #22d3ee; /* cyan-400 */
+      color: var(--color-accent);
     }
 
     .underline-bar {
@@ -32,7 +32,7 @@ import { CommonModule } from '@angular/common';
       left: 0;
       width: 100%;
       height: 2px;
-      background-color: #22d3ee; /* cyan-400 */
+      background-color: var(--color-accent);
       transform: scaleX(0);
       transform-origin: right;
       transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -45,7 +45,7 @@ import { CommonModule } from '@angular/common';
 
     :host-context(.text-danger) .underline-bar,
     :host-context([variant="danger"]) .underline-bar {
-      background-color: #ef4444; /* red-500 */
+      background-color: #f43f5e; /* rose-500 */
     }
   `],
 })

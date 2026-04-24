@@ -23,12 +23,12 @@ export interface EditChapterDialogData {
     <app-dialog-wrapper title="Edit Chapter" (close)="dialogRef.close()">
       <div class="space-y-6">
         <div class="space-y-2">
-          <label class="text-sm font-bold">Name</label>
+          <label class="text-sm font-bold text-content">Name</label>
           <input
             type="text"
             [(ngModel)]="name"
             placeholder="Chapter Name"
-            class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white transition-all"
+            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all"
             autofocus
             (keyup.enter)="onSave()"
           />
@@ -44,7 +44,7 @@ export interface EditChapterDialogData {
             Delete Chapter
           </button>
           @if (data.isLastChapter) {
-            <p class="mt-2 text-[10px] text-slate-500 italic text-center">Cannot delete the last chapter of a study.</p>
+            <p class="mt-2 text-[10px] text-muted italic text-center">Cannot delete the last chapter of a study.</p>
           }
         </div>
       </div>

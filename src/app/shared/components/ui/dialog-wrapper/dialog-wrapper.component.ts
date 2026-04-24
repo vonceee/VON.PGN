@@ -11,20 +11,20 @@ import { heroXMark } from '@ng-icons/heroicons/outline';
   template: `
     <div class="premium-card rounded-2xl overflow-hidden flex flex-col w-full">
       <!-- Header -->
-      <div class="flex items-center justify-between p-4 bg-white dark:bg-black">
-        <h2 class="text-xl font-semibold">{{ title() }}</h2>
-        <button class="cursor-pointer" (click)="close.emit()">
+      <div class="flex items-center justify-between p-4 bg-surface">
+        <h2 class="text-xl font-semibold text-content">{{ title() }}</h2>
+        <button class="cursor-pointer text-muted hover:text-accent transition-colors" (click)="close.emit()">
           <ng-icon name="heroXMark" class="text-lg"></ng-icon>
         </button>
       </div>
 
       <!-- Body -->
-      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-white dark:bg-black">
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-main">
         <ng-content></ng-content>
       </div>
 
       <!-- Footer -->
-      <div class="p-6 border-t border-border-theme flex items-center justify-end gap-3 shrink-0">
+      <div class="p-6 border-t border-border-base flex items-center justify-end gap-3 shrink-0 bg-surface/50">
         <ng-content select="[actions]"></ng-content>
       </div>
     </div>

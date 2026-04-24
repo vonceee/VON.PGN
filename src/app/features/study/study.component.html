@@ -1,4 +1,4 @@
-<div class="h-full w-full overflow-hidden flex flex-col p-4 bg-white dark:bg-black">
+<div class="h-full w-full overflow-hidden flex flex-col p-4 bg-main">
   @if (study(); as s) {
     <div
       class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] gap-4 w-full mx-auto items-stretch h-full overflow-hidden"
@@ -17,7 +17,7 @@
         <div>
           <div class="flex items-center justify-between px-5 mt-2 gap-2">
             <h2
-              class="font-black select-none truncate cursor-pointer hover:text-cyan-600 min-w-0"
+              class="font-black select-none truncate cursor-pointer hover:text-accent min-w-0"
               [title]="s.name"
             >
               {{ s.name }}
@@ -28,7 +28,7 @@
                 variant="ghost"
                 size="none"
                 (click)="openSettings()"
-                class="p-1 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all shrink-0"
+                class="p-1 rounded-lg text-muted hover:text-accent hover:bg-accent/10 transition-all shrink-0"
                 title="Study Settings"
               >
                 <ng-icon name="heroCog6Tooth" class="text-lg"></ng-icon>
@@ -45,13 +45,13 @@
                 class="relative flex items-center justify-between py-2 px-4 cursor-pointer transition-all duration-200 group text-left
                 {{
                   currentChapter()?.id === chap.id
-                    ? 'bg-slate-100 dark:bg-white/10'
-                    : 'hover:bg-slate-50 dark:hover:bg-white/5'
+                    ? 'bg-subtle'
+                    : 'hover:bg-surface'
                 }}"
               >
                 <!-- Active Line Indicator -->
                 @if (currentChapter()?.id === chap.id) {
-                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-cyan-400"></div>
+                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-accent"></div>
                 }
 
                 <div class="flex items-center gap-3 min-w-0">
@@ -59,8 +59,8 @@
                     [class]="
                       'text-sm font-medium truncate transition-colors ' +
                       (currentChapter()?.id === chap.id
-                        ? 'text-cyan-400'
-                        : 'text-slate-700 dark:text-slate-200')
+                        ? 'text-accent'
+                        : 'text-content')
                     "
                   >
                     {{ chap.name }}
@@ -82,7 +82,7 @@
             @if (isOwner()) {
               <button
                 (click)="createChapter()"
-                class="mt-6 mx-2 p-3 rounded-xl border border-dashed border-border-theme/40 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all duration-300 group flex items-center justify-center gap-2"
+                class="mt-6 mx-2 p-3 rounded-xl border border-dashed border-border-base/40 hover:border-border-accent/50 hover:bg-accent/5 transition-all duration-300 group flex items-center justify-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -92,13 +92,13 @@
                   fill="none"
                   stroke="currentColor"
                   stroke-width="2.5"
-                  class="text-slate-400 group-hover:text-cyan-400"
+                  class="text-muted group-hover:text-accent"
                 >
                   <line x1="12" y1="5" x2="12" y2="19"></line>
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
                 <span
-                  class="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-cyan-400"
+                  class="text-[10px] font-bold uppercase tracking-widest text-muted group-hover:text-accent"
                   >Add Chapter</span
                 >
               </button>
@@ -112,15 +112,15 @@
         <!-- Mobile Eval Bar (horizontal, above board) -->
         @if (isEngineActive() && engineEval(); as eval) {
           <div class="lg:hidden flex items-center gap-2 w-full max-w-[800px] px-4 pb-2 animate-in fade-in slide-in-from-top-1 duration-300">
-            <div class="flex-1 h-2 bg-[#403d39] rounded-full overflow-hidden relative border border-white/10">
+            <div class="flex-1 h-2 bg-subtle rounded-full overflow-hidden relative border border-border-base">
               @let mobilePct = 50 + (eval.startsWith('#') ? (eval.startsWith('#-') ? -50 : 50) : (+eval * 5));
               <div 
-                class="absolute top-0 left-0 bottom-0 bg-slate-100 transition-all duration-700 ease-out rounded-l-full" 
+                class="absolute top-0 left-0 bottom-0 bg-content transition-all duration-700 ease-out rounded-l-full" 
                 [style.width.%]="mobilePct"
               ></div>
             </div>
-            <span class="text-[10px] font-black min-w-[36px] text-center px-1.5 py-0.5 rounded bg-slate-800 border border-white/10" 
-              [class.text-cyan-400]="!eval.startsWith('-')" 
+            <span class="text-[10px] font-black min-w-[36px] text-center px-1.5 py-0.5 rounded bg-surface border border-border-base" 
+              [class.text-accent]="!eval.startsWith('-')" 
               [class.text-rose-400]="eval.startsWith('-')">
               {{ eval }}
             </span>
@@ -129,19 +129,19 @@
 
         <div class="w-full max-w-[800px] flex items-center justify-center p-4 relative">
           <!-- Evaluation Bar (Desktop) -->
-          <div class="hidden lg:flex flex-col w-4 mr-4 bg-[#403d39] rounded-sm overflow-hidden h-[var(--board-size)] border border-white/10 relative shadow-2xl">
+          <div class="hidden lg:flex flex-col w-4 mr-4 bg-subtle rounded-sm overflow-hidden h-[var(--board-size)] border border-border-base relative shadow-2xl">
             @if (engineEval(); as eval) {
               @let percentage = 50 + (eval.startsWith('#') ? (eval.startsWith('#-') ? -50 : 50) : (+eval * 5));
               <div 
-                class="absolute bottom-0 left-0 right-0 bg-slate-100 transition-all duration-700 ease-out" 
+                class="absolute bottom-0 left-0 right-0 bg-content transition-all duration-700 ease-out" 
                 [style.height.%]="percentage"
               ></div>
               <div class="absolute inset-0 flex flex-col items-center justify-between py-2 pointer-events-none select-none">
-                <span class="text-[8px] font-black text-black/40">{{ eval.startsWith('-') ? '' : eval }}</span>
-                <span class="text-[8px] font-black text-white/40">{{ eval.startsWith('-') ? eval : '' }}</span>
+                <span class="text-[8px] font-black text-main/40">{{ eval.startsWith('-') ? '' : eval }}</span>
+                <span class="text-[8px] font-black text-content/40">{{ eval.startsWith('-') ? eval : '' }}</span>
               </div>
             } @else {
-              <div class="absolute bottom-0 left-0 right-0 bg-slate-100 h-1/2 transition-all duration-300"></div>
+              <div class="absolute bottom-0 left-0 right-0 bg-content h-1/2 transition-all duration-300"></div>
             }
           </div>
 
@@ -162,7 +162,7 @@
             <div class="absolute -right-12 top-0 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <button
                 (click)="flipBoard()"
-                class="p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-slate-500 hover:text-cyan-400 hover:border-cyan-400/50 shadow-xl transition-all active:scale-95"
+                class="p-2.5 rounded-xl bg-surface border border-border-base text-muted hover:text-accent hover:border-accent/50 shadow-xl transition-all active:scale-95"
                 title="Flip Board"
               >
                 <ng-icon name="heroArrowPath" class="text-lg"></ng-icon>
@@ -176,11 +176,11 @@
       <div class="h-full flex flex-col gap-4 overflow-hidden">
         <div class="flex flex-col premium-card rounded-xl overflow-hidden h-full">
           <!-- Sidebar Tabs -->
-          <div class="flex border-b border-border-theme/30 bg-white/5">
+          <div class="flex border-b border-border-base bg-surface">
             <button
               (click)="activeTab.set('notation')"
-              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-400 after:-translate-x-1/2 after:transition-all after:duration-300"
-              [class.text-cyan-400]="activeTab() === 'notation'"
+              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
+              [class.text-accent]="activeTab() === 'notation'"
               [class.opacity-100]="activeTab() === 'notation'"
               [class.opacity-50]="(activeTab() === 'notation') === false"
               [class.after:w-full]="activeTab() === 'notation'"
@@ -189,8 +189,8 @@
             </button>
             <button
               (click)="activeTab.set('info')"
-              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-400 after:-translate-x-1/2 after:transition-all after:duration-300"
-              [class.text-cyan-400]="activeTab() === 'info'"
+              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
+              [class.text-accent]="activeTab() === 'info'"
               [class.opacity-100]="activeTab() === 'info'"
               [class.opacity-50]="(activeTab() === 'info') === false"
               [class.after:w-full]="activeTab() === 'info'"
@@ -202,15 +202,15 @@
           <div class="flex-1 flex flex-col overflow-hidden relative">
             @if (activeTab() === 'notation') {
               <!-- Analysis Toolbar -->
-              <div class="flex items-center justify-between px-4 py-2 border-b border-border-theme/20 bg-white/[0.02]">
+              <div class="flex items-center justify-between px-4 py-2 border-b border-border-base bg-surface">
                 <div class="flex items-center gap-2 flex-wrap">
                   <!-- Engine Toggle -->
                   <button 
                     (click)="toggleEngine()"
                     class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition-all duration-300 group"
                     [class]="isEngineActive() 
-                      ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-400/20' 
-                      : 'bg-white/5 text-slate-400 border border-transparent hover:bg-white/10 hover:text-slate-300'"
+                      ? 'bg-accent/10 text-accent border border-accent/20' 
+                      : 'bg-subtle text-muted border border-transparent hover:bg-surface hover:text-content'"
                   >
                     <ng-icon [name]="isEngineActive() ? (isEngineReady() ? 'heroPause' : 'heroBolt') : 'heroPlay'" 
                       [class.animate-pulse]="isEngineActive() && !isEngineReady()"
@@ -235,22 +235,22 @@
                   @if (isEngineActive()) {
                     <div class="flex items-center gap-2 animate-in fade-in duration-500">
                       <!-- Eval Score -->
-                      <div class="px-2 py-0.5 rounded bg-slate-800 border border-white/10 shadow-lg min-w-[42px] text-center">
+                      <div class="px-2 py-0.5 rounded bg-subtle border border-border-base shadow-lg min-w-[42px] text-center">
                         <span class="text-xs font-black" 
-                          [class.text-cyan-400]="!engineEval()?.startsWith('-')" 
+                          [class.text-accent]="!engineEval()?.startsWith('-')" 
                           [class.text-rose-400]="engineEval()?.startsWith('-')">
                           {{ engineEval() || '...' }}
                         </span>
                       </div>
                       <!-- Depth -->
                       @if (engineDepth() > 0) {
-                        <span class="text-[9px] font-medium text-slate-500 select-none">
+                        <span class="text-[9px] font-medium text-muted select-none">
                           d{{ engineDepth() }}{{ searchMode() === 'infinite' ? '/∞' : '' }}
                         </span>
                       }
                       <!-- NPS -->
                       @if (formattedNps()) {
-                        <span class="text-[9px] font-medium text-slate-600 select-none hidden sm:inline">
+                        <span class="text-[9px] font-medium text-muted/80 select-none hidden sm:inline">
                           {{ formattedNps() }}
                         </span>
                       }
@@ -279,8 +279,8 @@
                       (click)="toggleEngineSettings()"
                       class="p-1.5 rounded-md transition-all duration-200"
                       [class]="showEngineSettings()
-                        ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-400/20'
-                        : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'"
+                        ? 'bg-accent/10 text-accent border border-accent/20'
+                        : 'text-muted hover:text-content hover:bg-surface'"
                       title="Engine Settings"
                     >
                       <ng-icon name="heroCog6Tooth" class="text-sm"></ng-icon>
@@ -291,18 +291,18 @@
 
               <!-- Inline Engine Settings Panel -->
               @if (showEngineSettings() && isEngineActive()) {
-                <div class="px-4 py-3 border-b border-border-theme/10 bg-white/[0.02] animate-in fade-in slide-in-from-top-1 duration-300 flex flex-col gap-3">
+                <div class="px-4 py-3 border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 duration-300 flex flex-col gap-3">
                   <!-- Multi-PV Control -->
                   <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Lines</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Lines</span>
                     <div class="flex gap-1">
                       @for (n of [1,2,3]; track n) {
                         <button
                           (click)="onMultiPvChange(n)"
                           class="w-7 h-7 rounded-md text-[10px] font-black transition-all duration-200"
                           [class]="multiPvCount() === n
-                            ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/30'
-                            : 'bg-white/5 text-slate-500 border border-transparent hover:bg-white/10'"
+                            ? 'bg-accent/20 text-accent border border-accent/30'
+                            : 'bg-subtle text-muted border border-transparent hover:bg-surface'"
                         >
                           {{ n }}
                         </button>
@@ -312,15 +312,15 @@
 
                   <!-- Search Mode Control -->
                   <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Search</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Search</span>
                     <div class="flex gap-1">
                       @for (mode of ['movetime', 'depth', 'infinite']; track mode) {
                         <button
                           (click)="onSearchModeChange($any(mode))"
                           class="px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider transition-all duration-200"
                           [class]="searchMode() === mode
-                            ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-400/30'
-                            : 'bg-white/5 text-slate-500 border border-transparent hover:bg-white/10'"
+                            ? 'bg-accent/20 text-accent border border-accent/30'
+                            : 'bg-subtle text-muted border border-transparent hover:bg-surface'"
                         >
                           {{ mode === 'movetime' ? 'Time' : (mode === 'depth' ? 'Depth' : '∞') }}
                         </button>
@@ -331,16 +331,16 @@
                   <!-- Value slider (contextual) -->
                   @if (searchMode() === 'movetime') {
                     <div class="flex items-center justify-between gap-3">
-                      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Time</span>
+                      <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Time</span>
                       <div class="flex items-center gap-2 flex-1">
                         <input type="range" min="1000" max="30000" step="1000" 
                           [value]="searchValue()"
                           (input)="onSearchValueChange(+$any($event.target).value)"
-                          class="flex-1 h-1 bg-white/10 rounded-full appearance-none cursor-pointer accent-cyan-400
+                          class="flex-1 h-1 bg-subtle rounded-full appearance-none cursor-pointer accent-accent
                             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
-                            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:shadow-lg"
+                            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-lg"
                         >
-                        <span class="text-[10px] font-bold text-cyan-400 min-w-[2.5rem] text-right">
+                        <span class="text-[10px] font-bold text-accent min-w-[2.5rem] text-right">
                           {{ searchValue() / 1000 }}s
                         </span>
                       </div>
@@ -348,16 +348,16 @@
                   }
                   @if (searchMode() === 'depth') {
                     <div class="flex items-center justify-between gap-3">
-                      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Depth</span>
+                      <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Depth</span>
                       <div class="flex items-center gap-2 flex-1">
                         <input type="range" min="8" max="40" step="2" 
                           [value]="searchValue()"
                           (input)="onSearchValueChange(+$any($event.target).value)"
-                          class="flex-1 h-1 bg-white/10 rounded-full appearance-none cursor-pointer accent-cyan-400
+                          class="flex-1 h-1 bg-subtle rounded-full appearance-none cursor-pointer accent-accent
                             [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
-                            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cyan-400 [&::-webkit-slider-thumb]:shadow-lg"
+                            [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-lg"
                         >
-                        <span class="text-[10px] font-bold text-cyan-400 min-w-[2rem] text-right">
+                        <span class="text-[10px] font-bold text-accent min-w-[2rem] text-right">
                           {{ searchValue() }}
                         </span>
                       </div>
@@ -368,16 +368,16 @@
 
               <!-- Multi-PV Lines -->
               @if (isEngineActive() && enginePvLines().length > 0) {
-                <div class="border-b border-border-theme/10 bg-white/[0.01] animate-in fade-in slide-in-from-top-1 duration-500">
+                <div class="border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 duration-500">
                   @for (line of enginePvLines(); track line.pvIndex) {
                     <div class="flex items-start gap-2 px-4 py-1.5" 
                       [class.border-t]="line.pvIndex > 0"
-                      [class.border-border-theme/5]="line.pvIndex > 0">
+                      [class.border-border-base/10]="line.pvIndex > 0">
                       <!-- Per-line eval badge -->
                       <span class="text-[10px] font-black min-w-[36px] text-center px-1 py-0.5 rounded shrink-0 mt-px"
                         [class]="line.pvIndex === 0 
-                          ? 'bg-cyan-500/10 border border-cyan-400/20 ' + (line.eval.startsWith('-') ? 'text-rose-400' : 'text-cyan-400')
-                          : 'bg-white/5 border border-white/5 ' + (line.eval.startsWith('-') ? 'text-rose-400/70' : 'text-slate-400')">
+                          ? 'bg-accent/10 border border-accent/20 ' + (line.eval.startsWith('-') ? 'text-rose-400' : 'text-accent')
+                          : 'bg-subtle border border-border-base ' + (line.eval.startsWith('-') ? 'text-rose-400/70' : 'text-muted')">
                         {{ line.eval }}
                       </span>
                       <!-- PV Moves -->
@@ -385,17 +385,17 @@
                         @for (move of line.pv.slice(0, 10); track $index) {
                           <div class="flex items-center gap-0.5">
                             @if ($index % 2 === 0) {
-                              <span class="text-[9px] font-black text-slate-600 select-none">{{ ($index / 2) + 1 }}.</span>
+                              <span class="text-[9px] font-black text-muted select-none">{{ ($index / 2) + 1 }}.</span>
                             }
                             <span [class]="$index === 0 && line.pvIndex === 0 
-                              ? 'text-[10px] font-black text-cyan-400' 
-                              : 'text-[10px] font-medium text-slate-400 cursor-default'">
+                              ? 'text-[10px] font-black text-accent' 
+                              : 'text-[10px] font-medium text-muted cursor-default'">
                               {{ move }}
                             </span>
                           </div>
                         }
                         @if (line.pv.length > 10) {
-                          <span class="text-[9px] text-slate-600 self-center">...</span>
+                          <span class="text-[9px] text-muted self-center">...</span>
                         }
                       </div>
                     </div>
@@ -417,22 +417,22 @@
               </div>
             } @else {
               <!-- Info View -->
-              <div class="p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar h-full">
+              <div class="p-6 flex flex-col gap-6 overflow-y-auto custom-scrollbar h-full bg-main">
                 <div class="flex items-center justify-between px-2">
                   <div>
                     <label
-                      class="text-[10px] font-bold uppercase tracking-widest opacity-50 block mb-1"
+                      class="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1"
                       >Owner</label
                     >
                     <div class="flex items-center gap-2">
-                      <span class="text-md font-medium text-white/80">{{ s.owner.name }}</span>
+                      <span class="text-md font-medium text-content">{{ s.owner.name }}</span>
                     </div>
                   </div>
                 </div>
 
-                <div class="pt-4 border-t border-border-theme/20">
+                <div class="pt-4 border-t border-border-base">
                   <label
-                    class="text-[10px] font-bold uppercase tracking-widest opacity-50 block mb-3"
+                    class="text-[10px] font-bold uppercase tracking-widest text-muted block mb-3"
                     >Participation</label
                   >
 
@@ -442,8 +442,8 @@
                       class="w-full flex items-center justify-between p-4 rounded-xl border duration-300 relative overflow-hidden group"
                       [class]="
                         isSyncing()
-                          ? 'bg-cyan-500/5 border-cyan-400/30 text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.05)]'
-                          : 'bg-slate-500/5 border-border-theme opacity-60 hover:opacity-100 hover:border-white/20'
+                          ? 'bg-accent/5 border-accent/30 text-accent shadow-[0_0_20px_rgba(34,211,238,0.05)]'
+                          : 'bg-subtle border-border-base text-muted hover:text-content hover:border-accent/30'
                       "
                     >
                       <div class="flex items-center gap-3">
@@ -451,8 +451,8 @@
                           class="w-2.5 h-2.5 rounded-full"
                           [class]="
                             isSyncing()
-                              ? 'bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]'
-                              : 'bg-slate-500'
+                              ? 'bg-accent animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]'
+                              : 'bg-muted'
                           "
                         ></div>
                         <span class="text-xs font-bold uppercase tracking-widest">
@@ -465,15 +465,15 @@
                         {{ isSyncing() ? 'ACTIVE' : 'OFF' }}
                       </span>
                     </button>
-                    <p class="mt-3 text-[11px] leading-relaxed italic opacity-50 px-2">
+                    <p class="mt-3 text-[11px] leading-relaxed italic text-muted px-2">
                       When enabled, your board will reveal moves exactly as the teacher plays them.
                     </p>
                   } @else {
                     <div
-                      class="bg-cyan-500/5 border border-cyan-400/20 p-4 rounded-xl flex items-center gap-3 text-cyan-400/90"
+                      class="bg-accent/5 border border-accent/20 p-4 rounded-xl flex items-center gap-3 text-accent"
                     >
                       <div
-                        class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)]"
+                        class="w-2.5 h-2.5 rounded-full bg-accent shadow-[0_0_8px_rgba(34,211,238,0.6)]"
                       ></div>
                       <span class="text-xs font-bold uppercase tracking-widest"
                         >You are driving the sync</span
@@ -482,16 +482,16 @@
                   }
                 </div>
 
-                <div class="pt-4 border-t border-border-theme/20 flex flex-col gap-3">
+                <div class="pt-4 border-t border-border-base flex flex-col gap-3">
                   <label
-                    class="text-[10px] font-bold uppercase tracking-widest opacity-50 block mb-1"
+                    class="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1"
                     >Actions</label
                   >
                   <div class="grid grid-cols-2 gap-3">
                     @if (isOwner()) {
                       <button
                         (click)="importPgn()"
-                        class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-white/5 border border-border-theme/30 rounded-xl hover:bg-white/10 hover:border-cyan-400/30 transition-all duration-300"
+                        class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all duration-300 text-content"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -511,7 +511,7 @@
                     }
                     <button
                       (click)="exportPgn()"
-                      class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-white/5 border border-border-theme/30 rounded-xl hover:bg-white/10 hover:border-cyan-400/30 transition-all duration-300"
+                      class="flex items-center justify-center gap-2 px-3 py-3 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all duration-300 text-content"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -539,7 +539,7 @@
   } @else if (isLoading()) {
     <div class="flex items-center justify-center min-h-[400px]">
       <div
-        class="w-10 h-10 border-3 border-cyan-400 border-t-transparent rounded-full animate-spin"
+        class="w-10 h-10 border-3 border-accent border-t-transparent rounded-full animate-spin"
       ></div>
     </div>
   }

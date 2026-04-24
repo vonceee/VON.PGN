@@ -26,22 +26,22 @@ export interface AddChapterDialogResult {
         <!-- Chapter Name & Orientation -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
-            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Chapter Name</label>
+            <label class="text-sm font-semibold text-content">Chapter Name</label>
             <input
               type="text"
               [(ngModel)]="name"
               placeholder="e.g. Chapter 1"
-              class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-xl text-sm focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white transition-all"
+              class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all"
               autofocus
             />
           </div>
 
           @if (activeTab() !== 'pgn') {
             <div class="space-y-2">
-              <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Orientation</label>
+              <label class="text-sm font-semibold text-content">Orientation</label>
               <select
                 [(ngModel)]="orientation"
-                class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-xl text-sm focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none dark:text-white transition-all"
+                class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none dark:text-content transition-all"
               >
                 <option value="white">White</option>
                 <option value="black">Black</option>
@@ -51,19 +51,16 @@ export interface AddChapterDialogResult {
         </div>
 
         <!-- Tab Switcher -->
-        <div class="flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <div class="flex p-1 bg-surface rounded-xl border border-base">
           @for (tab of tabs; track tab.id) {
             <button
               (click)="activeTab.set(tab.id)"
               class="flex-1 py-2 text-xs font-semibold rounded-lg transition-all"
-              [class.bg-white]="activeTab() === tab.id"
-              [class.dark:bg-zinc-800]="activeTab() === tab.id"
+              [class.bg-main]="activeTab() === tab.id"
               [class.shadow-sm]="activeTab() === tab.id"
-              [class.text-cyan-600]="activeTab() === tab.id"
-              [class.dark:text-cyan-400]="activeTab() === tab.id"
-              [class.text-slate-500]="activeTab() !== tab.id"
-              [class.hover:text-slate-700]="activeTab() !== tab.id"
-              [class.dark:hover:text-slate-300]="activeTab() !== tab.id"
+              [class.text-accent]="activeTab() === tab.id"
+              [class.text-muted]="activeTab() !== tab.id"
+              [class.hover:text-content]="activeTab() !== tab.id"
             >
               {{ tab.label }}
             </button>
@@ -73,14 +70,14 @@ export interface AddChapterDialogResult {
         <!-- Tab Content -->
         <div class="min-h-[120px] animate-in fade-in slide-in-from-bottom-2 duration-300">
           @if (activeTab() === 'empty') {
-            <p class="text-sm text-slate-500 dark:text-slate-400 py-4">
+            <p class="text-sm text-muted py-4">
               Create a new chapter starting from the standard initial position.
             </p>
           }
 
           @if (activeTab() === 'editor') {
             <div class="space-y-4">
-              <div class="flex justify-center bg-zinc-50 dark:bg-zinc-900/50 p-4 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800">
+              <div class="flex justify-center bg-subtle p-4 rounded-xl border border-dashed border-base">
                 <app-chess-board 
                   [size]="280" 
                   [fen]="fen()" 
@@ -89,19 +86,19 @@ export interface AddChapterDialogResult {
                   [resizable]="false"
                 ></app-chess-board>
               </div>
-              <p class="text-xs text-center text-slate-500">Drag pieces to set up the starting position.</p>
+              <p class="text-xs text-center text-muted">Drag pieces to set up the starting position.</p>
             </div>
           }
 
           @if (activeTab() === 'fen') {
             <div class="space-y-4">
               <div class="space-y-2">
-                <label class="text-xs font-semibold text-slate-500">Paste FEN</label>
+                <label class="text-xs font-semibold text-muted">Paste FEN</label>
                 <input
                   type="text"
                   [(ngModel)]="fen"
                   placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-                  class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-mono focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none dark:text-white transition-all"
+                  class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-xs font-mono focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none dark:text-content transition-all"
                 />
               </div>
               <div class="flex justify-center opacity-60 pointer-events-none scale-75">
@@ -112,12 +109,12 @@ export interface AddChapterDialogResult {
 
           @if (activeTab() === 'pgn') {
             <div class="space-y-2">
-              <label class="text-xs font-semibold text-slate-500">Paste PGN</label>
+              <label class="text-xs font-semibold text-muted">Paste PGN</label>
               <textarea
                 [(ngModel)]="pgn"
                 rows="6"
                 placeholder="[Event '...']\n1. e4 e5 ..."
-                class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-mono focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white transition-all resize-none custom-scrollbar"
+                class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-xs font-mono focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all resize-none custom-scrollbar"
               ></textarea>
             </div>
           }
