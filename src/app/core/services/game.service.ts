@@ -26,6 +26,8 @@ export class GameService implements OnDestroy {
 
   private pendingGameId: string | null = null;
   private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+  private botMatchTimeout: ReturnType<typeof setTimeout> | null = null;
+  private pollInterval: ReturnType<typeof setInterval> | null = null;
 
   gameState = signal<GameState | null>(null);
   isSearching = signal(false);
@@ -68,6 +70,10 @@ export class GameService implements OnDestroy {
 
   ngOnDestroy(): void {
     this.stopHeartbeat();
+    this.stopPolling();
+    if (this.botMatchTimeout) {
+      clearTimeout(this.botMatchTimeout);
+    }
     if (this.socket()) {
       this.socket()?.disconnect();
       this.socket.set(null);
@@ -101,14 +107,20 @@ export class GameService implements OnDestroy {
       });
   }
 
-  seekGame(timeControl: string): void {
+  seekGame(timeControl: string, allowBot: boolean = false): void {
     this.isSearching.set(true);
     this.searchTimeControl.set(timeControl);
+
+    // Clear any existing bot timeout if we are starting a fresh search
+    if (!allowBot && this.botMatchTimeout) {
+      clearTimeout(this.botMatchTimeout);
+      this.botMatchTimeout = null;
+    }
 
     this.http
       .post<{ matched: boolean; game_id?: string; message: string; existing_game?: GameState; game?: GameState }>(
         `${this.apiUrl}/game/seek`,
-        { time_control: timeControl },
+        { time_control: timeControl, allow_bot: allowBot },
       )
       .pipe(
         catchError((error) => {
@@ -124,6 +136,11 @@ export class GameService implements OnDestroy {
         
         if (res.matched && res.game_id) {
           this.isSearching.set(false);
+          this.stopPolling();
+          if (this.botMatchTimeout) {
+            clearTimeout(this.botMatchTimeout);
+            this.botMatchTimeout = null;
+          }
           this.audioService.playMatchFound();
           
           if (res.game) {
@@ -139,6 +156,11 @@ export class GameService implements OnDestroy {
           }
         } else if (res.existing_game) {
           this.isSearching.set(false);
+          this.stopPolling();
+          if (this.botMatchTimeout) {
+            clearTimeout(this.botMatchTimeout);
+            this.botMatchTimeout = null;
+          }
           this.audioService.playMatchFound();
           this.gameState.set(res.existing_game);
           this.connectSocket();
@@ -146,6 +168,19 @@ export class GameService implements OnDestroy {
           this.startHeartbeat();
           this.router.navigate(['/play', res.existing_game.id]);
         } else {
+          // If we haven't matched and we aren't allowing bots yet, 
+          // set a threshold before trying again with bot matching enabled.
+          if (!allowBot) {
+            if (this.botMatchTimeout) clearTimeout(this.botMatchTimeout);
+            this.botMatchTimeout = setTimeout(() => {
+              // Only trigger if we are still searching for the same time control
+              if (this.isSearching() && this.searchTimeControl() === timeControl) {
+                console.log(`[Matchmaking] 8s threshold reached, enabling bot matching for ${timeControl}`);
+                this.seekGame(timeControl, true);
+              }
+            }, 8000);
+          }
+
           // Start polling for match
           this.pollForMatch(timeControl);
           // Refresh lobby list immediately so my seek appears
@@ -156,6 +191,12 @@ export class GameService implements OnDestroy {
 
   cancelSeek(): void {
     this.isSearching.set(false);
+    this.stopPolling();
+    if (this.botMatchTimeout) {
+      clearTimeout(this.botMatchTimeout);
+      this.botMatchTimeout = null;
+    }
+
     const timeControl = this.searchTimeControl();
     if (!timeControl) return;
     this.http
@@ -659,7 +700,7 @@ export class GameService implements OnDestroy {
     const whiteId = String(game.white_player_id || game.white_player?.id);
     const myColor: 'white' | 'black' = whiteId === myId ? 'white' : 'black';
 
-    return {
+    const gameWithDefaults = {
       ...game,
       white_player: game.white_player || { id: game.white_player_id, name: 'White' },
       black_player: game.black_player || { id: game.black_player_id, name: 'Black' },
@@ -672,6 +713,16 @@ export class GameService implements OnDestroy {
       my_color: myColor,
       legal_moves: game.legal_moves || [],
     };
+
+    // Defensive: Ensure ratings are mapped from game record if missing in player object
+    if (gameWithDefaults.white_player && !gameWithDefaults.white_player.rating && game.white_elo) {
+      gameWithDefaults.white_player.rating = game.white_elo;
+    }
+    if (gameWithDefaults.black_player && !gameWithDefaults.black_player.rating && game.black_elo) {
+      gameWithDefaults.black_player.rating = game.black_elo;
+    }
+
+    return gameWithDefaults;
   }
 
   loadGameAndNavigate(gameId: string): void {
@@ -766,14 +817,16 @@ export class GameService implements OnDestroy {
   // ── Match Polling ───────────────────────────────────────────────
 
   private pollForMatch(timeControl: string): void {
+    if (this.pollInterval) return;
+
     let pollCount = 0;
     const maxPolls = 40; // 40 * 3s = 2 minutes
     
-    const poll = setInterval(() => {
+    this.pollInterval = setInterval(() => {
       pollCount++;
       
       if (pollCount >= maxPolls || !this.isSearching()) {
-        clearInterval(poll);
+        this.stopPolling();
         this.isSearching.set(false);
         return;
       }
@@ -783,7 +836,11 @@ export class GameService implements OnDestroy {
         .pipe(catchError(() => of(null)))
         .subscribe((res) => {
           if (res?.game) {
-            clearInterval(poll);
+            this.stopPolling();
+            if (this.botMatchTimeout) {
+              clearTimeout(this.botMatchTimeout);
+              this.botMatchTimeout = null;
+            }
             this.isSearching.set(false);
             this.audioService.playMatchFound();
             this.gameState.set(res.game);
@@ -794,6 +851,13 @@ export class GameService implements OnDestroy {
           }
         });
     }, 3000);
+  }
+
+  private stopPolling(): void {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+      this.pollInterval = null;
+    }
   }
 
   // ── PGN Fetching ─────────────────────────────────────────────────

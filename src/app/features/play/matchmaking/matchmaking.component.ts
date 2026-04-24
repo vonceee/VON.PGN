@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { GameService } from '../../../core/services/game.service';
 import { GameSeek } from '../../../core/models/game.model';
 import { SeekBoardComponent } from '@shared/chess';
-import { ServerMaintenanceComponent } from '@shared/feedback';
 import { PlaySelectorComponent } from './play-selector.component';
 
 @Component({
@@ -12,13 +11,19 @@ import { PlaySelectorComponent } from './play-selector.component';
   imports: [
     CommonModule,
     SeekBoardComponent,
-    ServerMaintenanceComponent,
     PlaySelectorComponent,
   ],
   templateUrl: './matchmaking.component.html',
+  styles: [
+    `
+      :host {
+        display: block;
+        height: 100%;
+      }
+    `,
+  ],
 })
 export class MatchmakingComponent implements OnInit {
-  activeTab = signal<'play' | 'lobby'>('play');
   gameService = inject(GameService);
 
   isServiceMaintenance = () => this.gameService.isServiceMaintenance();

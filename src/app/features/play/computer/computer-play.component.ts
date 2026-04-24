@@ -17,6 +17,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [CommonModule, FormsModule, ChessBoardComponent, ButtonComponent, MoveNotationComponent],
   templateUrl: './computer-play.component.html',
+  host: {
+    class: 'block h-full',
+  },
 })
 export class ComputerPlayComponent implements OnInit, OnDestroy {
   engineService = inject(EngineService);

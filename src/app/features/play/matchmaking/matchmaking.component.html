@@ -1,65 +1,21 @@
-@if (isServiceMaintenance()) {
-  <div class="flex items-center justify-center min-h-[60vh]">
-    <app-server-maintenance
-      title="Chess Service Maintenance"
-      message="The chess service is currently undergoing maintenance. Please check back in a few minutes."
-    ></app-server-maintenance>
-  </div>
-} @else {
+ <section class="h-full w-full bg-main">
   <!-- Mobile Layout -->
   <div class="lg:hidden flex flex-col h-[calc(100vh-120px)] p-4">
-    <!-- Tab Switcher -->
-    <div
-      class="flex p-1 bg-white/5 rounded-2xl mb-4 self-center w-full max-w-[400px] border border-white/5 shadow-xl shrink-0"
-    >
-      <button
-        (click)="activeTab.set('play')"
-        [class.bg-cyan-500]="activeTab() === 'play'"
-        [class.text-slate-900]="activeTab() === 'play'"
-        [class.text-slate-400]="activeTab() !== 'play'"
-        class="flex-1 py-3 rounded-xl font-bold text-sm transition-all duration-300"
-      >
-        Play
-      </button>
-      <button
-        (click)="activeTab.set('lobby')"
-        [class.bg-cyan-500]="activeTab() === 'lobby'"
-        [class.text-slate-900]="activeTab() === 'lobby'"
-        [class.text-slate-400]="activeTab() !== 'lobby'"
-        class="flex-1 py-3 rounded-xl font-bold text-sm transition-all duration-300"
-      >
-        Lobby
-      </button>
-    </div>
-
-    <!-- Tab Content -->
     <div class="flex-1 min-h-0">
-      <div [hidden]="activeTab() !== 'play'" class="h-full">
-        <app-play-selector class="block h-full" />
-      </div>
-
-      <div [hidden]="activeTab() !== 'lobby'" class="h-full">
-        <div class="premium-card h-full flex flex-col overflow-hidden rounded-xl">
-          <app-seek-board (seekClicked)="onSeekClicked($event)" class="block h-full" />
-        </div>
-      </div>
+      <app-play-selector class="block h-full" />
     </div>
   </div>
 
   <!-- Desktop Layout -->
-  <div
-    class="max-lg:hidden grid grid-cols-2 gap-4 lg:gap-8 p-4 lg:p-8 lg:py-6 mx-auto max-w-[1600px] lg:h-[calc(100vh-96px)] lg:max-h-[900px]"
-  >
+  <div class="hidden lg:grid h-full max-w-7xl grid-cols-2 gap-4 lg:gap-8 p-4 lg:p-8 lg:py-6 mx-auto">
     <!-- Left panel: Play Selection -->
-    <div class="h-full w-full">
+    <div class="h-full w-full min-h-0">
       <app-play-selector />
     </div>
 
     <!-- Right panel: Lobby/Seek board -->
-    <div class="h-full">
+    <div class="h-full min-h-0">
       <app-seek-board (seekClicked)="onSeekClicked($event)" class="block h-full" />
     </div>
   </div>
-}
-
-
+</section>

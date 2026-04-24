@@ -9,6 +9,14 @@ import { GameSeek, TIME_CONTROLS } from '../../../../core/models/game.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './seek-board.component.html',
+  styles: [
+    `
+      :host {
+        display: block;
+        height: 100%;
+      }
+    `,
+  ],
 })
 export class SeekBoardComponent implements OnInit {
   private gameService = inject(GameService);

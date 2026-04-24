@@ -1,4 +1,4 @@
-<div class="p-4 flex flex-col items-center justify-center">
+<div class="h-full p-4 flex flex-col items-center justify-center">
   @if (isSetup()) {
     <div class="flex flex-col items-center justify-center py-20 animate-pulse">
       <div class="h-12 w-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
@@ -11,8 +11,8 @@
         class="w-full flex flex-col items-center md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6 md:items-start"
       >
         <!-- Left Column: Info & History -->
-        <div class="w-full md:w-96 md:h-[80vh] md:sticky md:top-6 justify-self-end">
-          <div class="flex flex-col premium-card overflow-hidden h-full">
+        <div class="w-full md:w-96 h-[85vh] md:sticky md:top-6 justify-self-end">
+          <div class="flex flex-col ui-panel overflow-hidden h-full">
             <div class="p-4 border-b border-white/5">
               <div class="flex items-center gap-3 mb-3">
                 <div>
@@ -163,7 +163,7 @@
         <div class="w-full md:w-64 md:max-w-xl">
           <div class="flex flex-col h-full gap-4">
             <!-- Computer Clock -->
-            <div class="premium-card p-3 flex flex-col gap-2">
+            <div class="ui-panel p-3 flex flex-col gap-2">
               <div class="flex items-center justify-between mb-1">
                 <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
                   >Computer</span
@@ -183,7 +183,7 @@
             <div class="flex-1"></div>
 
             <!-- Player Clock -->
-            <div class="premium-card p-3 flex flex-col gap-2">
+            <div class="ui-panel p-3 flex flex-col gap-2">
               <div class="flex items-center justify-between mb-1">
                 <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
                   >You</span
@@ -201,7 +201,7 @@
 
             <!-- Result Message at the bottom -->
             @if (resultDetails(); as result) {
-              <div class="premium-card p-4 text-center border-white/5" aria-live="polite">
+              <div class="ui-panel p-4 text-center border-white/5" aria-live="polite">
                 <div class="text-xl font-black mb-1 tracking-tighter text-white">{{ result.score }}</div>
                 <div class="text-xs tracking-widest italic text-slate-400">
                   {{ result.detail }}

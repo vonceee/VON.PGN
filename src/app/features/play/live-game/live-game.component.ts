@@ -78,6 +78,9 @@ import {
     }),
   ],
   templateUrl: './live-game.component.html',
+  host: {
+    class: 'block h-full',
+  },
 })
 export class LiveGameComponent implements OnInit, OnDestroy {
   public arenaService = inject(ArenaService);

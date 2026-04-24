@@ -13,6 +13,14 @@ import { ComputerSetupModalComponent } from '../computer/computer-setup-modal.co
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, ButtonComponent],
   templateUrl: './play-selector.component.html',
+  styles: [
+    `
+      :host {
+        display: block;
+        height: 100%;
+      }
+    `,
+  ],
 })
 export class PlaySelectorComponent {
   showCustomForm = signal(false);

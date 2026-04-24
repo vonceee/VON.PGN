@@ -23,7 +23,7 @@ export interface ComputerSetupResult {
   providers: [provideIcons({ heroXMark, heroArrowRight })],
   template: `
     <div
-      class="premium-card w-full max-w-3xl rounded-xl bg-white dark:bg-black p-8 font-sans space-y-12 shadow-2xl"
+      class="ui-panel w-full max-w-3xl rounded-xl bg-white dark:bg-black p-8 font-sans space-y-12 shadow-2xl"
     >
       <div class="flex items-center justify-between">
         <h2 class="text-2xl font-semibold">Play with computer</h2>

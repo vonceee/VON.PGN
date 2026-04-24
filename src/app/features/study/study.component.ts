@@ -30,7 +30,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
 import { MoveNode, StudyChapter } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
-import { BackLinkComponent, ButtonComponent } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath } from '@ng-icons/heroicons/outline';
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
@@ -38,7 +38,7 @@ import { EngineService, type SearchMode } from '../../core/services/engine.servi
 @Component({
   selector: 'app-study',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent, DialogModule, NgIconComponent, ButtonComponent],
+  imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent],
   providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath })],
   templateUrl: './study.component.html',
   host: {

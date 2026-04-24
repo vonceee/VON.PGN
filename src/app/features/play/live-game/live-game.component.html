@@ -1,5 +1,5 @@
 <div
-  class="min-h-[calc(100vh-64px)] md:h-[calc(100vh-64px)] flex items-center justify-center p-2 md:p-4 md:overflow-hidden"
+  class="h-full flex items-center justify-center p-2 md:p-4 md:overflow-hidden"
 >
   <div class="w-full max-w-[1700px] h-full flex items-center justify-center">
     @if (gameService.isServiceMaintenance()) {
@@ -12,8 +12,8 @@
         class="flex flex-col items-center w-full md:grid md:grid-cols-[1fr_auto_1fr] md:gap-6 md:items-start"
       >
         <!-- Left Column: Info & History -->
-        <div class="hidden md:block min-w-0 md:h-[80vh] md:justify-self-end w-full max-w-[400px]">
-          <div class="flex flex-col premium-card rounded-xl overflow-hidden h-full">
+        <div class="hidden md:block min-w-0 h-[85vh] md:justify-self-end w-full max-w-[400px]">
+          <div class="flex flex-col ui-panel rounded-xl overflow-hidden h-full">
             <div class="p-8">
               <app-game-info
                 [player]="g.my_color === 'white' ? g.black_player : g.white_player"
@@ -105,7 +105,7 @@
                 class="md:hidden absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/60 animate-in fade-in zoom-in duration-300"
               >
                 <div
-                  class="premium-card p-6 rounded-2xl shadow-2xl text-center border-cyan-500/50 max-w-xs w-full bg-slate-900/95 relative"
+                  class="ui-panel p-6 rounded-2xl shadow-2xl text-center border-cyan-500/50 max-w-xs w-full bg-slate-900/95 relative"
                 >
                   <!-- Close Button -->
                   <button
@@ -207,9 +207,9 @@
         </div>
 
         <!-- Right Column: Clocks -->
-        <div class="hidden md:block min-w-0 md:h-[80vh] md:justify-self-start w-full max-w-[400px]">
+        <div class="hidden md:block min-w-0 h-[85vh] md:justify-self-start w-full max-w-[400px]">
           <div class="flex flex-col justify-center gap-4 h-full py-12">
-            <div class="premium-card rounded-xl p-3 shadow-xl flex flex-col gap-2">
+            <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
               <app-chess-clock
                 [serverTimeMs]="opponentTimeMs()"
                 [serverTimestamp]="g.server_timestamp"
@@ -225,7 +225,7 @@
 
             <div class="flex flex-col justify-center">
               @if (g.status === 'completed' || g.status === 'aborted') {
-                <div class="premium-card rounded-xl p-4 text-center">
+                <div class="ui-panel rounded-xl p-4 text-center">
                   <div
                     class="text-2xl font-semibold"
                     [class]="g.status === 'aborted' ? '' : getResultClass(g.result)"
@@ -323,7 +323,7 @@
               }
             </div>
 
-            <div class="premium-card rounded-xl p-3 shadow-xl flex flex-col gap-2">
+            <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
               <app-chess-clock
                 [serverTimeMs]="myTimeMs()"
                 [serverTimestamp]="g.server_timestamp"

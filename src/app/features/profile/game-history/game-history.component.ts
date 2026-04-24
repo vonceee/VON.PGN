@@ -15,7 +15,7 @@ import { LoadingComponent } from '@shared/feedback';
       @if (isLoading()) {
         <app-loading message="Loading games..."></app-loading>
       } @else if (games().length > 0) {
-        <div class="border border-border-theme rounded-xl overflow-hidden premium-card">
+        <div class="border border-border-theme rounded-xl overflow-hidden ui-panel">
           <div class="overflow-x-auto custom-scrollbar">
             <table class="w-full border-collapse">
               <tbody class="divide-y divide-border-theme">
