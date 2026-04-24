@@ -179,7 +179,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     return String(studyOwnerId) === String(currentUserId);
   });
 
-  isSyncing = signal(true);
+  isSyncing = signal(false);
   activeTab = signal<'notation' | 'info'>('notation');
   showDeleteModal = signal(false);
   isDeleting = signal(false);
@@ -348,6 +348,10 @@ export class StudyComponent implements OnInit, OnDestroy {
     const remote = this.studyService.lastRemoteState();
     if (!remote.chapterId) return;
 
+    // Clear shapes on any remote state change (move/chapter)
+    this.remoteShapes.set([]);
+    this.engineArrows.set([]);
+
     // 1. Switch chapter if needed
     if (this.currentChapter()?.id !== remote.chapterId) {
       const target = this.study()?.chapters?.find((c) => String(c.id) === String(remote.chapterId));
@@ -445,6 +449,11 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
 
     this.updateCurrentPosition(newNode);
+    
+    // Clear shapes on move
+    this.remoteShapes.set([]);
+    this.engineArrows.set([]);
+    
     this.studyService.emitMove(san, fen, this.moveTree());
   }
 
@@ -506,6 +515,11 @@ export class StudyComponent implements OnInit, OnDestroy {
   onNodeClicked(node: MoveNode) {
     if (this.isSyncing() && !this.isOwner()) return;
     this.updateCurrentPosition(node);
+    
+    // Clear shapes when moving to a new position
+    this.remoteShapes.set([]);
+    this.engineArrows.set([]);
+    
     if (this.isOwner()) {
       this.studyService.emitNavigation(node.fen, this.moveTree());
     }
@@ -584,6 +598,11 @@ export class StudyComponent implements OnInit, OnDestroy {
     const node = this.moveTree().find((n) => n.ply === ply);
     if (node) {
       this.updateCurrentPosition(node);
+      
+      // Clear shapes on move
+      this.remoteShapes.set([]);
+      this.engineArrows.set([]);
+
       if (this.isOwner()) {
         this.studyService.emitNavigation(node.fen, this.moveTree());
       }
@@ -626,6 +645,19 @@ export class StudyComponent implements OnInit, OnDestroy {
                 brush: 'green',
               };
               this.engineArrows.set([arrow]);
+            }
+          });
+        })
+      );
+
+      // 2. Subscribe to remote shapes (arrows/circles) from other users (usually the owner)
+      this.subs.add(
+        this.studyService.onShapesDrawn$.subscribe(payload => {
+          this.ngZone.run(() => {
+            // Only update if we are not the one who drew them (or if we want to sync our own state back)
+            // Usually, we just update for viewers.
+            if (!this.isOwner()) {
+              this.remoteShapes.set(payload.shapes || []);
             }
           });
         })
@@ -854,22 +886,44 @@ export class StudyComponent implements OnInit, OnDestroy {
 
       if (result.action === 'delete') {
         this.confirmDeleteStudy();
-      } else if (result.action === 'save') {
+      } else if (result.action === 'save' && result.name) {
         this.studyService.updateStudy(s.id, {
           name: result.name,
           visibility: result.visibility
         }).subscribe({
           next: () => {
-            this.studyService.getStudy(s.id); // Refresh study data
-            this.toastService.show('Study settings updated!', 'success');
+            this.toastService.show('Study updated', 'success');
+            this.studyService.getStudy(s.id);
           },
           error: (err) => {
-            console.error('Failed to update study settings:', err);
-            this.toastService.show('Failed to update settings.', 'error');
+            console.error('Failed to update study:', err);
+            this.toastService.show('Failed to update study', 'error');
           }
         });
       }
     });
+  }
+
+  formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
+  formatRelativeTime(dateStr: string): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+    return this.formatDate(dateStr);
   }
 
   onBoardSizeChange(size: number) {
