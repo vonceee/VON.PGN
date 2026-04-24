@@ -48,12 +48,10 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         </div>
       </div>
 
-      <div actions>
-        <button appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
-        <button appButton variant="primary" (click)="onSubmit()" [disabled]="!name().trim()">
-          Save Changes
-        </button>
-      </div>
+      <button actions appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
+      <button actions appButton variant="primary" (click)="onSubmit()" [disabled]="!name().trim()">
+        Save Changes
+      </button>
     </app-dialog-wrapper>
   `,
 })

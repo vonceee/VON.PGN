@@ -185,25 +185,18 @@ footer {
   background: color-mix(in srgb, var(--color-muted), transparent 40%);
 }
 
-.premium-card {
+.ui-panel {
   background-color: var(--color-main);
   border: 1px solid var(--color-border-base);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dark .premium-card {
+.dark .ui-panel {
   background-color: var(--color-surface) !important;
-  border: 1px solid color-mix(in srgb, var(--color-accent), transparent 65%);
-  box-shadow:
-    0 0 60px color-mix(in srgb, var(--color-accent), transparent 88%),
-    0 0 20px color-mix(in srgb, var(--color-accent), transparent 88%),
-    inset 0 0 10px color-mix(in srgb, var(--color-accent), transparent 95%);
+  border: 1px solid var(--color-border-base) !important;
+  box-shadow: none;
 }
 
-.dark .premium-card:hover {
-  border-color: color-mix(in srgb, var(--color-accent), transparent 30%);
-  box-shadow:
-    0 0 100px color-mix(in srgb, var(--color-accent), transparent 75%),
-    0 0 30px color-mix(in srgb, var(--color-accent), transparent 85%),
-    inset 0 0 15px color-mix(in srgb, var(--color-accent), transparent 90%);
+.dark .ui-panel:hover {
+  border-color: var(--color-border-accent) !important;
 }

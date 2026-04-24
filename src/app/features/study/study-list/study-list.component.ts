@@ -23,39 +23,39 @@ import { heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash } from '@ng-icons/
         <app-section-heading text="Chess" highlight="Study"></app-section-heading>
 
         <div class="flex items-center gap-2">
-           <!-- Tabs -->
-           <div class="flex bg-zinc-100 dark:bg-zinc-800/50 p-1 rounded-xl mr-4">
-             <button 
-               (click)="activeTab.set('all')"
-               [class]="activeTab() === 'all' ? 'bg-white dark:bg-zinc-700 shadow-sm text-cyan-500' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-               class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all"
-             >
-               <ng-icon name="heroGlobeAlt"></ng-icon>
-               Public
-             </button>
-             @if (isLoggedIn()) {
-               <button 
-                 (click)="activeTab.set('my')"
-                 [class]="activeTab() === 'my' ? 'bg-white dark:bg-zinc-700 shadow-sm text-cyan-500' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'"
-                 class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all"
-               >
-                 <ng-icon name="heroUser"></ng-icon>
-                 My Studies
-               </button>
-             }
-           </div>
+            <!-- Tabs -->
+            <div class="flex bg-subtle p-1 rounded-xl mr-4">
+              <button 
+                (click)="activeTab.set('all')"
+                [class]="activeTab() === 'all' ? 'bg-main shadow-sm text-accent' : 'text-muted hover:text-content'"
+                class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all"
+              >
+                <ng-icon name="heroGlobeAlt"></ng-icon>
+                Public
+              </button>
+              @if (isLoggedIn()) {
+                <button 
+                  (click)="activeTab.set('my')"
+                  [class]="activeTab() === 'my' ? 'bg-main shadow-sm text-accent' : 'text-muted hover:text-content'"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all"
+                >
+                  <ng-icon name="heroUser"></ng-icon>
+                  My Studies
+                </button>
+              }
+            </div>
 
-          @if (isLoggedIn()) {
-            <button appButton variant="primary" (click)="createNewStudy()">Create New Study</button>
-          }
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        @for (study of studies(); track study.id) {
-          <div
-            class="premium-card rounded-2xl overflow-hidden flex flex-col h-full relative group cursor-default"
-          >
+           @if (isLoggedIn()) {
+             <button appButton variant="primary" (click)="createNewStudy()">Create New Study</button>
+           }
+         </div>
+       </div>
+ 
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+         @for (study of studies(); track study.id) {
+           <div
+             class="ui-panel border border-border-base rounded-2xl overflow-hidden flex flex-col h-full relative group cursor-default"
+           >
             <!-- Card Body -->
             <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
               <div class="flex items-start justify-between gap-2 mb-2">

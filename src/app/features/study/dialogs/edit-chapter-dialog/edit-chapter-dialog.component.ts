@@ -20,7 +20,7 @@ export interface EditChapterDialogData {
   standalone: true,
   imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent],
   template: `
-    <app-dialog-wrapper title="Edit Chapter" (close)="dialogRef.close()">
+    <app-dialog-wrapper title="Edit chapter" (close)="dialogRef.close()">
       <div class="space-y-6">
         <div class="space-y-2">
           <label class="text-sm font-bold text-content">Name</label>
@@ -49,11 +49,9 @@ export interface EditChapterDialogData {
         </div>
       </div>
 
-      <div actions>
-        <button appButton variant="primary" (click)="onSave()" [disabled]="!name().trim() || name() === data.currentName">
-          Save Changes
-        </button>
-      </div>
+      <button actions appButton variant="primary" (click)="onSave()" [disabled]="!name().trim() || name() === data.currentName">
+        Save Changes
+      </button>
     </app-dialog-wrapper>
   `,
 })

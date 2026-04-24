@@ -22,12 +22,10 @@ export interface ConfirmDeleteDialogData {
         </p>
       </div>
 
-      <div actions>
-        <button appButton variant="ghost" (click)="dialogRef.close(false)">Cancel</button>
-        <button appButton variant="primary" class="!bg-rose-600 !hover:bg-rose-700 !border-rose-600/20 text-white" (click)="dialogRef.close(true)">
-          {{ data.confirmText || 'Delete' }}
-        </button>
-      </div>
+      <button actions appButton variant="ghost" (click)="dialogRef.close(false)">Cancel</button>
+      <button actions appButton variant="primary" class="!bg-rose-600 !hover:bg-rose-700 !border-rose-600/20 text-white" (click)="dialogRef.close(true)">
+        {{ data.confirmText || 'Delete' }}
+      </button>
     </app-dialog-wrapper>
   `,
 })

@@ -21,7 +21,7 @@ export interface AddChapterDialogResult {
   standalone: true,
   imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent, ChessBoardComponent],
   template: `
-    <app-dialog-wrapper title="New Chapter" (close)="dialogRef.close()">
+    <app-dialog-wrapper title="New chapter" (close)="dialogRef.close()">
       <div class="space-y-6">
         <!-- Chapter Name & Orientation -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -70,8 +70,8 @@ export interface AddChapterDialogResult {
         <!-- Tab Content -->
         <div class="min-h-[120px] animate-in fade-in slide-in-from-bottom-2 duration-300">
           @if (activeTab() === 'empty') {
-            <p class="text-sm text-muted py-4">
-              Create a new chapter starting from the standard initial position.
+            <p class="text-md py-4 text-center">
+              create a new chapter starting from the standard initial position.
             </p>
           }
 
@@ -121,12 +121,10 @@ export interface AddChapterDialogResult {
         </div>
       </div>
 
-      <div actions>
-        <button appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
-        <button appButton variant="primary" (click)="onSubmit()" [disabled]="!isFormValid()">
-          Create Chapter
-        </button>
-      </div>
+      <button actions appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
+      <button actions appButton variant="primary" (click)="onSubmit()" [disabled]="!isFormValid()">
+        Create Chapter
+      </button>
     </app-dialog-wrapper>
   `,
 })

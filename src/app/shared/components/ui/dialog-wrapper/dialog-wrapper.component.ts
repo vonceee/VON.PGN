@@ -1,25 +1,20 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroXMark } from '@ng-icons/heroicons/outline';
+import { provideIcons } from '@ng-icons/core';
 
 @Component({
   selector: 'app-dialog-wrapper',
   standalone: true,
-  imports: [CommonModule, NgIconComponent],
-  providers: [provideIcons({ heroXMark })],
+  imports: [CommonModule],
   template: `
-    <div class="premium-card rounded-2xl overflow-hidden flex flex-col w-full">
+    <div class="ui-panel border border-border-base rounded-2xl overflow-hidden flex flex-col w-full">
       <!-- Header -->
       <div class="flex items-center justify-between p-4 bg-surface">
-        <h2 class="text-xl font-semibold text-content">{{ title() }}</h2>
-        <button class="cursor-pointer text-muted hover:text-accent transition-colors" (click)="close.emit()">
-          <ng-icon name="heroXMark" class="text-lg"></ng-icon>
-        </button>
+        <h2 class="text-xl font-medium tracking-wide text-content">{{ title() }}</h2>
       </div>
 
       <!-- Body -->
-      <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-main">
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
         <ng-content></ng-content>
       </div>
 
