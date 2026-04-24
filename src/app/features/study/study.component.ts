@@ -9,12 +9,15 @@ import {
   PLATFORM_ID,
   HostListener,
   NgZone,
+  input,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudyService } from '../../core/services/study.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { AddChapterDialogComponent } from './dialogs/add-chapter-dialog/add-chapter-dialog.component';
+import { ConfirmDeleteDialogComponent } from './dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { EditChapterDialogComponent, EditChapterDialogResult } from './dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
 import { ImportPgnDialogComponent } from './dialogs/import-pgn-dialog/import-pgn-dialog.component';
 import { StudySettingsDialogComponent } from './dialogs/study-settings-dialog/study-settings-dialog.component';
 import { ToastService } from '../../core/services/toast.service';
@@ -26,18 +29,18 @@ import { Subscription, BehaviorSubject } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
-import { MoveNode } from '../../core/models/study.model';
+import { MoveNode, StudyChapter } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 import { BackLinkComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt } from '@ng-icons/heroicons/outline';
+import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil } from '@ng-icons/heroicons/outline';
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
 
 @Component({
   selector: 'app-study',
   standalone: true,
   imports: [CommonModule, ChessBoardComponent, MoveNotationComponent, FormsModule, BackLinkComponent, DialogModule, NgIconComponent],
-  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt })],
+  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil })],
   templateUrl: './study.component.html',
   host: {
     class: 'absolute inset-0 overflow-hidden',
@@ -47,6 +50,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private studyService = inject(StudyService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private dialog = inject(Dialog);
@@ -56,6 +60,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
   isLoading = this.studyService.isLoading;
+  id = input.required<string>();
 
   // Engine state
   isEngineActive = signal(false);
@@ -211,6 +216,14 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.engineArrows.set([]);
         this.engineDepth.set(0);
         this.engineNps.set(0);
+      }
+    });
+
+    // Fetch study when ID changes
+    effect(() => {
+      const studyId = this.id();
+      if (studyId && isPlatformBrowser(this.platformId)) {
+        this.studyService.getStudy(Number(studyId));
       }
     });
   }
@@ -534,10 +547,6 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.subs.add(
-        this.route.params.subscribe((p) => p['id'] && this.studyService.getStudy(p['id'])),
-      );
-
       // Subscribe to engine analysis updates
       this.subs.add(
         this.engineService.analysis$.subscribe(analysis => {
@@ -641,6 +650,66 @@ export class StudyComponent implements OnInit, OnDestroy {
           this.toastService.show('Chapter created successfully!', 'success');
         },
       });
+    });
+  }
+
+  onEditChapter(event: MouseEvent, chap: StudyChapter) {
+    if (!this.isOwner()) return;
+    event.stopPropagation(); // Prevent selection
+
+    const s = this.study();
+    if (!s) return;
+
+    const dialogRef = this.dialog.open<EditChapterDialogResult>(EditChapterDialogComponent, {
+      data: {
+        currentName: chap.name,
+        isLastChapter: (s.chapters?.length ?? 0) <= 1
+      }
+    });
+
+    dialogRef.closed.subscribe((result) => {
+      if (!result) return;
+
+      if (result.action === 'save' && result.name) {
+        this.studyService.updateChapter(s.id, chap.id, { name: result.name }).subscribe({
+          next: () => {
+            this.toastService.show('Chapter renamed', 'success');
+            this.studyService.getStudy(s.id); // Refresh
+          },
+          error: (err) => {
+            console.error('Failed to rename chapter:', err);
+            this.toastService.show('Failed to rename chapter', 'error');
+          }
+        });
+      } else if (result.action === 'delete') {
+        // Still double confirm for safety
+        const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
+          data: {
+            title: 'Delete Chapter',
+            message: `Are you sure you want to delete "${chap.name}"? This action cannot be undone.`,
+            confirmText: 'Delete'
+          }
+        });
+
+        confirmRef.closed.subscribe((confirmed) => {
+          if (confirmed) {
+            this.studyService.deleteChapter(s.id, chap.id).subscribe({
+              next: () => {
+                this.toastService.show('Chapter deleted', 'success');
+                if (this.currentChapter()?.id === chap.id) {
+                  const remaining = s.chapters?.filter(c => c.id !== chap.id) || [];
+                  if (remaining.length > 0) {
+                    this.selectChapter(remaining[0]);
+                  } else {
+                    this.router.navigate(['/study']);
+                  }
+                }
+                this.studyService.getStudy(s.id);
+              }
+            });
+          }
+        });
+      }
     });
   }
 

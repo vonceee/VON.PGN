@@ -5,7 +5,7 @@
     >
       <!-- Left Column: Chapter Sidebar (Learn Sidebar style) -->
       <aside
-        class="hidden lg:flex flex-col h-full bg-transparent overflow-hidden"
+        class="hidden lg:flex flex-col h-full bg-white dark:bg-black overflow-hidden"
         [class.pointer-events-none]="isSyncing() && !isOwner()"
         [class.opacity-70]="isSyncing() && !isOwner()"
       >
@@ -66,6 +66,16 @@
                     {{ chap.name }}
                   </span>
                 </div>
+
+                @if (isOwner()) {
+                  <button
+                    (click)="onEditChapter($event, chap)"
+                    class="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-200"
+                    title="Edit Chapter"
+                  >
+                    <ng-icon name="heroPencil" class="text-sm"></ng-icon>
+                  </button>
+                }
               </button>
             }
 

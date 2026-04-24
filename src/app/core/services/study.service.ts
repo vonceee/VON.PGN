@@ -111,6 +111,10 @@ export class StudyService {
     return this.http.put(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`, data);
   }
 
+  deleteChapter(studyId: number, chapterId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`);
+  }
+
   // ── Socket Logic ──────────────────────────────────────────────
 
   private connectSocket(study: Study): void {
