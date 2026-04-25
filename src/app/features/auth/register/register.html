@@ -31,7 +31,7 @@
               Only letters, numbers, underscores &amp; hyphens are allowed.
             </p>
           } @else {
-            <p class="text-[10px] text-zinc-500 mt-1 px-1">
+            <p class="text-xs text-zinc-500 mt-1 px-1">
               Only letters, numbers, underscores &amp; hyphens. No spaces.
             </p>
           }
@@ -116,7 +116,7 @@
               </span>
             </div>
           }
-          <p class="text-[10px] text-zinc-500 mt-1 px-1">
+          <p class="text-xs text-zinc-500 mt-1 px-1">
             Min 8 characters, incl. uppercase, lowercase & numbers.
           </p>
         </div>
@@ -192,7 +192,7 @@
           appButton
           type="submit"
           variant="primary"
-          [loading]="isLoading()"
+          [loading]="registerResource.isLoading()"
           [disabled]="registerForm.invalid"
           class="w-full block"
         >

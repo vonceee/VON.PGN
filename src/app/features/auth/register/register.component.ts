@@ -1,8 +1,8 @@
-import { Component, inject, signal, computed } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, signal, computed, effect, linkedSignal } from '@angular/core';
+import { toSignal, rxResource } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidationErrors } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { finalize, map } from 'rxjs';
+import { RouterLink, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { SectionHeadingComponent, TypewriterTextComponent, BackLinkComponent, ButtonComponent } from '@shared/ui';
 
@@ -26,11 +26,9 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
-  isLoading = signal(false);
-  errorMessage = signal('');
-  emailError = signal('');
-  usernameError = signal('');
+  // Form State
   showPassword = signal(false);
   showConfirmPassword = signal(false);
 
@@ -51,11 +49,9 @@ export class RegisterComponent {
     { validators: passwordsMatchValidator },
   );
 
-  // Track password value for strength calculation using a signal
-  private passwordValue = toSignal(
-    this.registerForm.get('password')!.valueChanges.pipe(map(v => v || '')),
-    { initialValue: '' }
-  );
+  // Derived Signals
+  private rawPassword = toSignal(this.registerForm.get('password')!.valueChanges);
+  passwordValue = computed(() => this.rawPassword() ?? '');
 
   passwordStrength = computed(() => {
     const pwd = this.passwordValue();
@@ -73,56 +69,88 @@ export class RegisterComponent {
     return 'weak';
   });
 
+  // Resource Management for Registration
+  private submissionPayload = signal<any | null>(null);
+
+  registerResource = rxResource({
+    params: () => this.submissionPayload(),
+    stream: ({ params }) => {
+      if (!params) return of(null);
+      return this.authService.register(params);
+    }
+  });
+
+  // Error States (using linkedSignal to reset on form change)
+  errorMessage = linkedSignal({
+    source: () => this.registerForm.value,
+    computation: () => ''
+  });
+
+  emailError = linkedSignal({
+    source: () => this.registerForm.value,
+    computation: () => ''
+  });
+
+  usernameError = linkedSignal({
+    source: () => this.registerForm.value,
+    computation: () => ''
+  });
+
+  constructor() {
+    // Handle successful registration
+    effect(() => {
+      const result = this.registerResource.value();
+      if (result) {
+        this.router.navigate(['/']);
+      }
+    });
+
+    // Handle errors and map them to our linkedSignals
+    effect(() => {
+      const err = this.registerResource.error() as any;
+      if (!err) return;
+
+      console.error('Registration error:', err);
+      
+      if (err.status === 429) {
+        this.errorMessage.set(err.error?.message || 'Too many attempts. Please try again later.');
+        return;
+      }
+
+      const errors = err.error?.errors;
+      if (errors && typeof errors === 'object') {
+        if (errors.email) {
+          this.emailError.set(Array.isArray(errors.email) ? errors.email[0] : errors.email);
+        }
+        if (errors.username) {
+          this.usernameError.set(Array.isArray(errors.username) ? errors.username[0] : errors.username);
+        }
+
+        const otherErrors = Object.keys(errors)
+          .filter(key => key !== 'email' && key !== 'username')
+          .map(key => Array.isArray(errors[key]) ? errors[key][0] : errors[key]);
+        
+        if (otherErrors.length > 0) {
+          this.errorMessage.set(otherErrors[0]);
+        } else if (!errors.email && !errors.username) {
+          this.errorMessage.set(err.error?.message || 'Registration failed.');
+        }
+      } else {
+        this.errorMessage.set(err.error?.message || 'An unexpected error occurred.');
+      }
+    });
+  }
 
   onSubmit() {
     if (this.registerForm.invalid) return;
 
-    this.isLoading.set(true);
-    this.errorMessage.set('');
-    this.emailError.set('');
-    this.usernameError.set('');
-
     const formValue = this.registerForm.value;
-
-    this.authService.register({
+    this.submissionPayload.set({
       username: (formValue.username || '').trim(),
       email: (formValue.email || '').trim(),
       password: formValue.password || '',
       password_confirmation: formValue.password_confirmation || '',
-    })
-    .pipe(
-      finalize(() => this.isLoading.set(false)),
-      takeUntilDestroyed()
-    )
-    .subscribe({
-      next: () => {
-        // Success logic here (e.g., redirect)
-      },
-      error: (err) => {
-        if (err.status === 429) {
-          this.errorMessage.set(err.error?.message || 'Too many attempts. Please try again later.');
-          return;
-        }
-
-        const errors = err.error?.errors;
-
-        if (errors && typeof errors === 'object') {
-          if (errors.email) {
-            this.emailError.set(Array.isArray(errors.email) ? errors.email[0] : errors.email);
-          }
-          if (errors.username) {
-            this.usernameError.set(Array.isArray(errors.username) ? errors.username[0] : errors.username);
-          }
-          
-          if (!errors.email && !errors.username) {
-            this.errorMessage.set(err.error?.message || 'Registration failed. Please check your information.');
-          }
-        } else {
-          this.errorMessage.set(err.error?.message || 'An unexpected error occurred. Please try again.');
-        }
-      },
     });
   }
-
 }
 
