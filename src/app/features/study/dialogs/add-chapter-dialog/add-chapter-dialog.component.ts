@@ -5,6 +5,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 import { ChessBoardComponent } from '@shared/chess';
+import { BoardEditorComponent } from '../../../../shared/components/chess/board-editor/board-editor.component';
 
 export type ChapterTab = 'empty' | 'editor' | 'fen' | 'pgn';
 
@@ -19,29 +20,30 @@ export interface AddChapterDialogResult {
 @Component({
   selector: 'app-add-chapter-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent, ChessBoardComponent],
+  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent, ChessBoardComponent, BoardEditorComponent],
   template: `
-    <app-dialog-wrapper title="New chapter" (close)="dialogRef.close()">
-      <div class="space-y-6">
+    <div class="block max-w-lg w-[90vw] mx-auto">
+      <app-dialog-wrapper title="New chapter" (close)="dialogRef.close()">
+        <div class="space-y-4 overflow-x-hidden">
         <!-- Chapter Name & Orientation -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <label class="text-sm font-semibold text-content">Chapter Name</label>
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold uppercase text-muted">Chapter Name</label>
             <input
               type="text"
               [(ngModel)]="name"
               placeholder="e.g. Chapter 1"
-              class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all"
+              class="w-full px-4 py-2 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all"
               autofocus
             />
           </div>
 
           @if (activeTab() !== 'pgn') {
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-content">Orientation</label>
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold uppercase text-muted">Orientation</label>
               <select
                 [(ngModel)]="orientation"
-                class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none dark:text-content transition-all"
+                class="w-full px-4 py-2 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none dark:text-content transition-all"
               >
                 <option value="white">White</option>
                 <option value="black">Black</option>
@@ -51,11 +53,11 @@ export interface AddChapterDialogResult {
         </div>
 
         <!-- Tab Switcher -->
-        <div class="flex border-b border-base bg-surface -mx-6 px-6">
+        <div class="flex border-b border-base bg-surface">
           @for (tab of tabs; track tab.id) {
             <button
               (click)="activeTab.set(tab.id)"
-              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
+              class="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
               [class.text-accent]="activeTab() === tab.id"
               [class.opacity-100]="activeTab() === tab.id"
               [class.opacity-50]="activeTab() !== tab.id"
@@ -67,7 +69,7 @@ export interface AddChapterDialogResult {
         </div>
 
         <!-- Tab Content -->
-        <div class="min-h-[120px] animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div class="min-h-[100px] animate-in fade-in slide-in-from-bottom-2 duration-300">
           @if (activeTab() === 'empty') {
             <p class="text-md py-4 text-center">
               create a new chapter starting from the standard initial position.
@@ -75,18 +77,11 @@ export interface AddChapterDialogResult {
           }
 
           @if (activeTab() === 'editor') {
-            <div class="space-y-4">
-              <div class="flex justify-center bg-subtle p-4 rounded-xl border border-dashed border-base">
-                <div class="w-[280px] h-[280px]">
-                  <app-chess-board 
-                    [fen]="fen()" 
-                    (fenChange)="fen.set($event)"
-                    [orientation]="orientation()"
-                  ></app-chess-board>
-                </div>
-              </div>
-              <p class="text-xs text-center text-muted">Drag pieces to set up the starting position.</p>
-            </div>
+            <app-board-editor 
+              [fen]="fen()" 
+              (fenChange)="fen.set($event)"
+              [orientation]="orientation()"
+            ></app-board-editor>
           }
 
           @if (activeTab() === 'fen') {
@@ -99,11 +94,6 @@ export interface AddChapterDialogResult {
                   placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
                   class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-xs font-mono focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none dark:text-content transition-all"
                 />
-              </div>
-              <div class="flex justify-center opacity-60 pointer-events-none scale-75">
-                 <div class="w-[200px] h-[200px]">
-                   <app-chess-board [fen]="fen()" [interactive]="false"></app-chess-board>
-                 </div>
               </div>
             </div>
           }
@@ -122,11 +112,12 @@ export interface AddChapterDialogResult {
         </div>
       </div>
 
-      <button actions appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
-      <button actions appButton variant="primary" (click)="onSubmit()" [disabled]="!isFormValid()">
-        Create Chapter
-      </button>
-    </app-dialog-wrapper>
+        <button actions appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
+        <button actions appButton variant="primary" (click)="onSubmit()" [disabled]="!isFormValid()">
+          Create Chapter
+        </button>
+      </app-dialog-wrapper>
+    </div>
   `,
 })
 export class AddChapterDialogComponent implements OnInit {

@@ -33,7 +33,11 @@ import { AudioService } from '../../../../core/services/audio.service';
   template: `
     <div class="board-resize-wrapper">
       <div class="board-container-wrapper relative">
-        <div #boardEl class="board-container"></div>
+        <div #boardEl class="board-container">
+          <div class="absolute inset-0 flex items-center justify-center text-muted opacity-20 pointer-events-none">
+            {{ isEditor ? 'Editor Board' : 'Loading...' }}
+          </div>
+        </div>
 
         <!-- Promotion Overlay -->
         @if (pendingPromotion(); as p) {
@@ -111,6 +115,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() syncedShapes: any[] = [];
   @Input() configOverride: Config | null = null;
   @Input() preMoveEnabled: boolean = true;
+  @Input() isEditor: boolean = false;
 
   @Output() fenChange = new EventEmitter<string>();
   @Output() moveMade = new EventEmitter<{ move: Move; fen: string }>();
@@ -123,6 +128,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private containerSize: { width: number; height: number } = { width: 800, height: 800 };
   private resizeObserver: ResizeObserver | null = null;
 
+  public get api(): Api { return this.cgApi; }
   private cgApi!: Api;
   private chess = new Chess();
   private initialized = false;
@@ -200,7 +206,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     if (changes['fen']) {
       const currentFen = this.chess.fen();
       if (this.fen && this.fen !== currentFen) {
-        this.chess.load(this.fen);
+        this.safeLoadFen(this.fen);
       }
     }
 
@@ -238,31 +244,40 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     if (!isPlatformBrowser(this.platformId)) return;
     setTimeout(() => {
       if (!this.boardEl) return;
-      this.chess.load(this.fen);
+      this.safeLoadFen(this.fen);
       const config: Config = {
         fen: this.fen,
         orientation: this.orientation,
         coordinates: true,
         movable: {
-          free: false,
+          free: this.isEditor,
           color: this.interactive ? 'both' : undefined,
-          dests: this.getLegalMoves(),
-          showDests: true,
+          dests: (this.interactive && !this.isEditor) ? this.getLegalMoves() : new Map(),
+          showDests: !this.isEditor,
           events: {
             after: (orig: Key, dest: Key, meta: MoveMetadata) => this.onMove(orig, dest, meta),
           },
         },
-        draggable: { enabled: this.interactive },
+        draggable: { 
+          enabled: this.interactive,
+          deleteOnDropOff: this.isEditor
+        },
+        selectable: { enabled: this.interactive },
         drawable: { enabled: true, onChange: () => this.onShapesChanged() },
+        events: {
+          change: () => this.onBoardChange()
+        }
       };
       this.cgApi = Chessground(this.boardEl.nativeElement, config);
       this.initialized = true;
       
-      if (this.configOverride) {
-        this.applyConfigOverride(this.configOverride);
-      }
       this.syncBoard();
-      this.updateBoardSize(); // Ensure size is correct on init
+      this.updateBoardSize();
+      
+      // Secondary sync to ensure pieces are rendered
+      requestAnimationFrame(() => {
+        this.cgApi?.redrawAll();
+      });
     }, 50);
   }
 
@@ -284,15 +299,21 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   private syncBoard() {
     if (!this.cgApi) return;
+    const fenToUse = this.isEditor ? this.fen : this.chess.fen();
     this.cgApi.set({
-      fen: this.chess.fen(),
+      fen: fenToUse,
       turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
       movable: {
+        free: this.isEditor,
         color: this.interactive ? 'both' : undefined,
-        dests: this.interactive ? this.getLegalMoves() : new Map(),
+      dests: (this.interactive && !this.isEditor) ? this.getLegalMoves() : new Map(),
+        showDests: !this.isEditor,
       },
       selectable: { enabled: this.interactive },
-      draggable: { enabled: this.interactive },
+      draggable: { 
+        enabled: this.interactive,
+        deleteOnDropOff: this.isEditor
+      },
     });
 
     if (this.configOverride) {
@@ -302,7 +323,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   playPremove(): boolean {
     if (!this.cgApi) return false;
-    this.chess.load(this.fen);
+    this.safeLoadFen(this.fen);
     return this.cgApi.playPremove();
   }
 
@@ -324,14 +345,43 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   private getLegalMoves(): Map<Key, Key[]> {
     const dests = new Map<Key, Key[]>();
-    this.chess.moves({ verbose: true }).forEach((m) => {
-      const from = m.from as Key;
-      const to = m.to as Key;
-      const list = dests.get(from) || [];
-      list.push(to);
-      dests.set(from, list);
-    });
+    try {
+      this.chess.moves({ verbose: true }).forEach((m) => {
+        const from = m.from as Key;
+        const to = m.to as Key;
+        const list = dests.get(from) || [];
+        list.push(to);
+        dests.set(from, list);
+      });
+    } catch (e) {
+      // Ignore errors if FEN is partial or invalid for legal moves
+    }
     return dests;
+  }
+
+  private safeLoadFen(fen: string) {
+    if (!fen) return;
+    let fullFen = fen;
+    const parts = fen.split(' ');
+    if (parts.length < 6) {
+      // Append default fields if missing: turn(w) castling(-) ep(-) half(0) full(1)
+      const defaults = ['w', '-', '-', '0', '1'];
+      fullFen = parts.concat(defaults.slice(parts.length - 1)).join(' ');
+    }
+    try {
+      this.chess.load(fullFen);
+    } catch (e) {
+      console.warn('Could not load FEN into chess.js:', fullFen);
+    }
+  }
+
+  private onBoardChange() {
+    if (this.isEditor && this.cgApi) {
+      const newFen = this.cgApi.getFen();
+      if (newFen !== this.fen) {
+        this.fenChange.emit(newFen);
+      }
+    }
   }
 
   private onMove(orig: Key, dest: Key, meta?: MoveMetadata) {
