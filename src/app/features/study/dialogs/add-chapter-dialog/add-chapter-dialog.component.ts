@@ -20,7 +20,7 @@ export interface AddChapterDialogResult {
 @Component({
   selector: 'app-add-chapter-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent, ChessBoardComponent, BoardEditorComponent],
+  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent, BoardEditorComponent],
   template: `
     <div class="block max-w-lg w-[90vw] mx-auto">
       <app-dialog-wrapper title="New chapter" (close)="dialogRef.close()">

@@ -6,8 +6,8 @@
       <!-- Left Column: Chapter Sidebar (Learn Sidebar style) -->
       <aside
         class="hidden lg:flex flex-col h-full overflow-hidden pt-4"
-        [class.pointer-events-none]="isSyncing() && !isOwner()"
-        [class.opacity-70]="isSyncing() && !isOwner()"
+        [class.pointer-events-none]="isSyncing() && !canEdit()"
+        [class.opacity-70]="isSyncing() && !canEdit()"
       >
         <div>
           <div class="flex items-center justify-between mb-4">
@@ -58,7 +58,7 @@
                   </span>
                 </div>
 
-                @if (isOwner()) {
+                @if (canEdit()) {
                   <button
                     (click)="onEditChapter($event, chap)"
                     class="text-xs group-hover:cursor-pointer hover:underline shrink-0"
@@ -70,12 +70,12 @@
               </button>
             }
 
-            @if (isOwner()) {
+            @if (canEdit()) {
               <button
                 appButton
                 variant="outline"
                 (click)="createChapter()"
-                class="text-sm"
+                class="text-sm pt-2"
               >
                 + New Chapter
               </button>
@@ -102,7 +102,7 @@
             <app-chess-board
               [fen]="currentFen()"
               [orientation]="boardOrientation()"
-              [interactive]="isOwner()"
+              [interactive]="canEdit()"
               (moveMade)="onMoveMade($event)"
               (shapeDrawn)="onShapeDrawn($event)"
               (sizeChange)="boardSize.set($event)"
@@ -311,53 +311,89 @@
                 <div class="flex flex-col gap-3">
                   <label class="text-[10px] font-bold uppercase tracking-widest text-muted px-2">Learning Mode</label>
                   
-                  @if (!isOwner()) {
-                    <button
-                      (click)="toggleSync()"
-                      class="w-full flex items-center justify-between p-4 rounded-2xl border duration-300 relative overflow-hidden group transition-all"
-                      [class]="
-                        isSyncing()
-                          ? 'bg-accent/5 border-accent/30 text-accent shadow-[0_0_20px_rgba(34,211,238,0.05)]'
-                          : 'bg-subtle border-border-base text-muted hover:text-content hover:border-accent/30'
-                      "
-                    >
-                      <div class="flex items-center gap-3">
-                        <div
-                          class="w-2.5 h-2.5 rounded-full"
-                          [class]="
-                            isSyncing()
-                              ? 'bg-accent animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]'
-                              : 'bg-slate-500'
-                          "
-                        ></div>
-                        <div class="flex flex-col items-start">
-                          <span class="text-sm font-bold tracking-tight">
-                            {{ isSyncing() ? 'Tutor Mode' : 'Self Study Mode' }}
-                          </span>
-                          <span class="text-[10px] opacity-70">
-                            {{ isSyncing() ? 'following teacher moves' : 'independent exploration' }}
-                          </span>
-                        </div>
-                      </div>
-                      <div class="flex items-center gap-1.5">
-                        <span class="text-[9px] font-black tracking-tighter opacity-40 uppercase">
-                          {{ isSyncing() ? 'Live' : 'Off' }}
+                  <button
+                    (click)="toggleSync()"
+                    class="w-full flex items-center justify-between p-4 rounded-2xl border duration-300 relative overflow-hidden group transition-all"
+                    [class]="
+                      isSyncing()
+                        ? 'bg-accent/5 border-accent/30 text-accent shadow-[0_0_20px_rgba(34,211,238,0.05)]'
+                        : 'bg-subtle border-border-base text-muted hover:text-content hover:border-accent/30'
+                    "
+                  >
+                    <div class="flex items-center gap-3 relative z-10">
+                      <div
+                        class="w-2.5 h-2.5 rounded-full"
+                        [class]="
+                          isSyncing()
+                            ? 'bg-accent animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]'
+                            : 'bg-slate-500'
+                        "
+                      ></div>
+                      <div class="flex flex-col items-start">
+                        <span class="text-sm font-bold tracking-tight">
+                          {{ isSyncing() ? (canEdit() ? 'Teaching Mode' : 'Tutor Mode') : 'Self Study Mode' }}
                         </span>
-                        <div class="w-1.5 h-1.5 rounded-full bg-current opacity-20"></div>
+                        <span class="text-[10px] opacity-70">
+                          {{ isSyncing() ? (canEdit() ? 'leading the session' : 'following teacher moves') : 'independent exploration' }}
+                        </span>
                       </div>
-                    </button>
-                  } @else {
-                    <div class="bg-accent/5 border border-accent/20 p-4 rounded-2xl flex items-center justify-between text-accent overflow-hidden relative group">
-                      <div class="flex items-center gap-3 relative z-10">
-                        <div class="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.6)]"></div>
-                        <div class="flex flex-col">
-                          <span class="text-sm font-bold tracking-tight">Teacher Mode</span>
-                          <span class="text-[10px] opacity-70">leading the study session</span>
-                        </div>
-                      </div>
-                      <ng-icon name="heroBolt" class="text-2xl opacity-10 absolute -right-1 -bottom-1 rotate-12 group-hover:rotate-0 transition-transform duration-500"></ng-icon>
                     </div>
-                  }
+                    <div class="flex items-center gap-1.5 relative z-10">
+                      <span class="text-[9px] font-black tracking-tighter opacity-40 uppercase">
+                        {{ isSyncing() ? 'Live' : 'Off' }}
+                      </span>
+                      <div class="w-1.5 h-1.5 rounded-full bg-current opacity-20"></div>
+                    </div>
+                    @if (isSyncing() && canEdit()) {
+                      <ng-icon name="heroBolt" class="text-2xl opacity-10 absolute -right-1 -bottom-1 rotate-12 group-hover:rotate-0 transition-transform duration-500"></ng-icon>
+                    }
+                  </button>
+                </div>
+
+                <!-- Collaborators -->
+                <div class="flex flex-col gap-3">
+                  <div class="flex items-center justify-between px-2">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-muted">Collaborators</label>
+                    @if (isOwner()) {
+                      <button 
+                        (click)="addCollaborator()"
+                        class="text-[10px] font-bold uppercase text-accent hover:underline flex items-center gap-1"
+                      >
+                        <ng-icon name="heroUserPlus" class="text-xs"></ng-icon>
+                        Add
+                      </button>
+                    }
+                  </div>
+                  
+                  <div class="flex flex-col gap-2">
+                    @for (collab of s.collaborators; track collab.uid) {
+                      <div class="flex items-center justify-between p-3 rounded-xl bg-subtle border border-border-base group">
+                        <div class="flex items-center gap-3">
+                          <div class="w-8 h-8 rounded-full bg-surface border border-base flex items-center justify-center overflow-hidden">
+                            @if (collab.avatarUrl) {
+                              <img [src]="collab.avatarUrl" class="w-full h-full object-cover" />
+                            } @else {
+                              <span class="text-[10px] font-bold">{{ collab.username.substring(0, 2).toUpperCase() }}</span>
+                            }
+                          </div>
+                          <span class="text-sm font-medium text-content">{{ collab.username }}</span>
+                        </div>
+                        @if (isOwner()) {
+                          <button 
+                            (click)="removeCollaborator(collab.uid)"
+                            class="opacity-0 group-hover:opacity-100 text-muted hover:text-rose-400 transition-all p-1"
+                            title="Remove Collaborator"
+                          >
+                            <ng-icon name="heroTrash" class="text-sm"></ng-icon>
+                          </button>
+                        }
+                      </div>
+                    } @empty {
+                      <div class="px-2 py-4 text-xs text-muted italic border border-dashed border-border-base rounded-xl text-center">
+                        No collaborators added yet.
+                      </div>
+                    }
+                  </div>
                 </div>
 
                 <!-- Details List -->
@@ -397,7 +433,7 @@
                       Flip
                     </button>
                     
-                    @if (isOwner()) {
+                    @if (canEdit()) {
                       <button
                         (click)="importPgn()"
                         class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"

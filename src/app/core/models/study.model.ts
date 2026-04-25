@@ -1,3 +1,5 @@
+import { UserProfile } from './user.model';
+
 export interface Study {
   id: number;
   name: string;
@@ -7,6 +9,7 @@ export interface Study {
     id: number;
     name: string;
   };
+  collaborators?: UserProfile[];
   chapters_count: number;
   chapters?: StudyChapter[];
   created_at: string;

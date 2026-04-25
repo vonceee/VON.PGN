@@ -124,6 +124,14 @@ export class StudyService {
     return this.http.delete(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`);
   }
 
+  addCollaborator(studyId: number, userId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/studies/${studyId}/collaborators`, { user_id: userId });
+  }
+
+  removeCollaborator(studyId: number, userId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/studies/${studyId}/collaborators/${userId}`);
+  }
+
   // ── Socket Logic ──────────────────────────────────────────────
 
   private connectSocket(study: Study): void {
@@ -148,6 +156,7 @@ export class StudyService {
       this.socket?.emit('join_study', {
         studyId: s.id,
         ownerId: ownerId,
+        collaboratorIds: s.collaborators?.map(c => String(c.uid)) || [],
         initialState: {
           chapterId: this.currentChapter()?.id,
           fen: this.currentChapter()?.current_fen,

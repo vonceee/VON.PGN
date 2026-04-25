@@ -21,6 +21,8 @@ import { EditChapterDialogComponent, EditChapterDialogResult } from './dialogs/e
 import { StudySettingsDialogComponent } from './dialogs/study-settings-dialog/study-settings-dialog.component';
 import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
+import { UserService, UserSearchResult } from '../../core/services/user.service';
+import { AddCollaboratorDialogComponent } from './dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
 import { ChessBoardComponent, EvalBarComponent } from '@shared/chess';
 import { MoveNotationComponent } from '@shared/chess';
 import { FormsModule } from '@angular/forms';
@@ -32,7 +34,7 @@ import { MoveNode, StudyChapter } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 import { ButtonComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath } from '@ng-icons/heroicons/outline';
+import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath, heroUserPlus, heroTrash } from '@ng-icons/heroicons/outline';
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 
@@ -42,7 +44,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   selector: 'app-study',
   standalone: true,
   imports: [CommonModule, ChessBoardComponent, EvalBarComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent, MatSlideToggleModule, ConfirmDeleteModalComponent],
-  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath })],
+  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath, heroUserPlus, heroTrash })],
   templateUrl: './study.component.html',
   styles: [`
     :host ::ng-deep {
@@ -179,7 +181,18 @@ export class StudyComponent implements OnInit, OnDestroy {
     return String(studyOwnerId) === String(currentUserId);
   });
 
-  isSyncing = signal(false);
+  canEdit = computed(() => {
+    if (this.isOwner()) return true;
+
+    const user = this.authService.currentUser();
+    const s = this.study();
+    if (!user || !s) return false;
+
+    const currentUserId = user.id || user.uid;
+    return s.collaborators?.some(c => String(c.uid) === String(currentUserId)) ?? false;
+  });
+
+  isSyncing = signal(true);
   activeTab = signal<'notation' | 'info'>('notation');
   showDeleteModal = signal(false);
   isDeleting = signal(false);
@@ -214,7 +227,7 @@ export class StudyComponent implements OnInit, OnDestroy {
           this.moveTree.set(tree);
 
           // Only jump to end if we're the owner OR if we are NOT sync-locked
-          if (!this.isSyncing() || this.isOwner()) {
+          if (!this.isSyncing() || this.canEdit()) {
             this.goToLastMainlineNode();
           }
         }
@@ -230,10 +243,9 @@ export class StudyComponent implements OnInit, OnDestroy {
     // Auto-sync effect
     effect(() => {
       const isSyncing = this.isSyncing();
-      const isOwner = this.isOwner();
       const remoteState = this.studyService.lastRemoteState();
 
-      if (isSyncing && !isOwner && remoteState.chapterId) {
+      if (isSyncing && remoteState.chapterId) {
         this.syncToRemoteState();
       }
     });
@@ -420,7 +432,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onMoveMade(event: any) {
-    if (!this.isOwner()) return;
+    if (!this.canEdit()) return;
 
     // Extract move details from the event (chess-board emits { move, fen })
     const move = event.move || event;
@@ -513,20 +525,20 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onNodeClicked(node: MoveNode) {
-    if (this.isSyncing() && !this.isOwner()) return;
+    if (this.isSyncing() && !this.canEdit()) return;
     this.updateCurrentPosition(node);
     
     // Clear shapes when moving to a new position
     this.remoteShapes.set([]);
     this.engineArrows.set([]);
     
-    if (this.isOwner()) {
+    if (this.canEdit()) {
       this.studyService.emitNavigation(node.fen, this.moveTree());
     }
   }
 
   onDeleteFromHere(target: MoveNode) {
-    if (!this.isOwner()) return;
+    if (!this.canEdit()) return;
 
     this.moveTree.update((tree) => {
       const newTree = this.deleteFromHereRecursive(tree, target);
@@ -582,10 +594,10 @@ export class StudyComponent implements OnInit, OnDestroy {
 
 
   onNavigateToPly(ply: number) {
-    if (this.isSyncing() && !this.isOwner()) return;
+    if (this.isSyncing() && !this.canEdit()) return;
     if (ply === 0) {
       this.updateCurrentPosition(null);
-      if (this.isOwner()) {
+      if (this.canEdit()) {
         const chapter = this.currentChapter();
         this.studyService.emitNavigation(
           chapter?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
@@ -603,7 +615,7 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.remoteShapes.set([]);
       this.engineArrows.set([]);
 
-      if (this.isOwner()) {
+      if (this.canEdit()) {
         this.studyService.emitNavigation(node.fen, this.moveTree());
       }
     }
@@ -654,9 +666,9 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.studyService.onShapesDrawn$.subscribe(payload => {
           this.ngZone.run(() => {
-            // Only update if we are not the one who drew them (or if we want to sync our own state back)
-            // Usually, we just update for viewers.
-            if (!this.isOwner()) {
+            // Only update if we are not the one who drew them
+            const myUid = this.authService.currentUser()?.uid || this.authService.currentUser()?.id;
+            if (String(payload.userId) !== String(myUid)) {
               this.remoteShapes.set(payload.shapes || []);
             }
           });
@@ -701,16 +713,16 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   selectChapter(chap: any) {
-    if (this.isSyncing() && !this.isOwner()) return;
+    if (this.isSyncing() && !this.canEdit()) return;
     if (this.currentChapter()?.id === chap.id) return;
     this.studyService.currentChapter.set(chap);
-    if (this.isOwner()) {
+    if (this.canEdit()) {
       this.studyService.emitChapterChange(this.study()!.id, chap.id, chap.current_fen, chap.moves || [], chap.orientation);
     }
   }
 
   createChapter() {
-    if (!this.isOwner()) return;
+    if (!this.canEdit()) return;
 
     const dialogRef = this.dialog.open<AddChapterDialogResult>(AddChapterDialogComponent, {
       data: { defaultName: `Chapter ${(this.study()?.chapters?.length ?? 0) + 1}` }
@@ -738,7 +750,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onEditChapter(event: MouseEvent, chap: StudyChapter) {
-    if (!this.isOwner()) return;
+    if (!this.canEdit()) return;
     event.stopPropagation(); // Prevent selection
 
     const s = this.study();
@@ -805,11 +817,52 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onShapeDrawn(shapes: any[]) {
-    if (this.isOwner()) this.studyService.emitShapes(shapes);
+    if (this.canEdit()) this.studyService.emitShapes(shapes);
+  }
+
+  addCollaborator() {
+    if (!this.isOwner()) return;
+
+    const dialogRef = this.dialog.open<UserSearchResult>(AddCollaboratorDialogComponent);
+
+    dialogRef.closed.subscribe((result) => {
+      if (result) {
+        const s = this.study();
+        if (!s) return;
+
+        this.studyService.addCollaborator(s.id, result.uid).subscribe({
+          next: () => {
+            this.toastService.show('Collaborator added', 'success');
+            this.studyService.getStudy(s.id); // Refresh
+          },
+          error: (err) => {
+            console.error('Failed to add collaborator:', err);
+            this.toastService.show('Failed to add collaborator', 'error');
+          }
+        });
+      }
+    });
+  }
+
+  removeCollaborator(userId: string) {
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
+
+    this.studyService.removeCollaborator(s.id, userId).subscribe({
+      next: () => {
+        this.toastService.show('Collaborator removed', 'success');
+        this.studyService.getStudy(s.id); // Refresh
+      },
+      error: (err) => {
+        console.error('Failed to remove collaborator:', err);
+        this.toastService.show('Failed to remove collaborator', 'error');
+      }
+    });
   }
 
   importPgn() {
-    if (!this.isOwner()) return;
+    if (!this.canEdit()) return;
     const s = this.study();
     if (!s) return;
 

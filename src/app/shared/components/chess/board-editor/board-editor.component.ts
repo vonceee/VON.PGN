@@ -10,7 +10,7 @@ import { Role, Color } from 'chessground/types';
 @Component({
   selector: 'app-board-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChessBoardComponent, NgIconComponent],
+  imports: [CommonModule, FormsModule, ChessBoardComponent],
   providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark })],
   template: `
     <div class="board-editor-container w-full overflow-hidden p-1">
