@@ -268,7 +268,7 @@ export class StudyService {
           return { ...s, chapters };
         });
 
-        // Broadcast switch...
+        // Broadcast switch to other clients
         if (broadcast) {
           this.socket?.emit('study_change_chapter', {
             studyId: study.id,
@@ -279,7 +279,10 @@ export class StudyService {
           });
         }
       },
-      error: (err) => console.error('[StudyService] Failed to save move to DB:', err)
+      error: (err) => {
+        console.error('[StudyService] Failed to save move to DB:', err);
+        this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
+      }
     });
   }
 

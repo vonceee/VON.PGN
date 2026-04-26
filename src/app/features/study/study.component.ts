@@ -579,12 +579,16 @@ export class StudyComponent implements OnInit, OnDestroy {
     // Sync with backend
     const latestChapter = this.currentChapter();
     if (latestChapter) {
-      this.studyService.emitMove(
-        '', // No specific move made, just tree update
-        this.currentFen(),
-        tree,
-        this.isSyncing()
-      );
+      // Small timeout to ensure signal updates are flushed before reading them
+      // (though Signal updates are technically synchronous, this is safer for complex trees)
+      setTimeout(() => {
+        this.studyService.emitMove(
+          '', // No specific move made, just tree update
+          this.currentFen(),
+          this.moveTree(),
+          this.isSyncing()
+        );
+      }, 0);
     }
   }
 
@@ -595,16 +599,27 @@ export class StudyComponent implements OnInit, OnDestroy {
       return nodes.slice(0, index);
     }
 
-    for (const node of nodes) {
-      if (node.variations) {
-        for (let i = 0; i < node.variations.length; i++) {
-          node.variations[i] = this.deleteFromHereRecursive(node.variations[i], target);
-        }
-        // Filter out any variations that are now empty
-        node.variations = node.variations.filter((v) => v.length > 0);
+    // Deep copy/map to avoid direct mutation of the signal's objects
+    return nodes.map((node) => {
+      if (!node.variations || node.variations.length === 0) return node;
+
+      const updatedVariations = node.variations
+        .map((v) => this.deleteFromHereRecursive(v, target))
+        .filter((v) => v.length > 0);
+
+      // Only return a new object if variations actually changed
+      if (updatedVariations.length !== node.variations.length) {
+        return { ...node, variations: updatedVariations };
       }
-    }
-    return nodes;
+
+      // Check if any specific variation was truncated
+      const variationChanged = updatedVariations.some((v, i) => v !== node.variations[i]);
+      if (variationChanged) {
+        return { ...node, variations: updatedVariations };
+      }
+
+      return node;
+    });
   }
 
 
