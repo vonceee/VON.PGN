@@ -120,7 +120,7 @@
           (contextmenu)="onContextMenu($event, node)"
           [class]="
             currentFen() === node.fen
-              ? 'active-move underline font-semibold'
+              ? 'active-move underline font-bold bg-cyan-400 text-slate-950'
               : 'font-semibold text-content'
           "
           [class.px-1]="isMainline"
