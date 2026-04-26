@@ -2,13 +2,11 @@
   class="sticky top-0 z-50 flex w-full items-center justify-between px-4 md:px-16 py-1.5 lg:py-2.5 bg-main border-b border-border-base transition-all duration-300"
 >
   <a
+    appLink
     routerLink="/home"
-    class="text-lg lg:text-xl flex items-center gap-2 shrink-0 group"
+    class="text-lg lg:text-xl flex items-center gap-2 shrink-0 group font-semibold"
   >
-    <span
-      class="font-semibold decoration-accent group-hover:underline"
-      >vonchess</span
-    >
+    vonchess
   </a>
 
   <!-- Desktop Navigation -->
@@ -18,7 +16,7 @@
       <a
         appLink
         routerLink="/play"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg font-semibold transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
       >
         Play
 
@@ -75,7 +73,7 @@
       <a
         appLink
         routerLink="/study"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg font-semibold transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
       >
         Learn
 
@@ -111,7 +109,7 @@
       <a
         appLink
         routerLink="/events"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg font-semibold transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
       >
         Tournaments
 
@@ -156,13 +154,13 @@
     <a
       appLink
       routerLink="/coaches"
-      class="text-sm lg:text-base xl:text-lg transition-colors mt-0.5 text-content"
+      class="text-sm lg:text-base xl:text-lg font-semibold transition-colors mt-0.5 text-content"
       >Coaches</a
     >
     <a
       appLink
       routerLink="/academy"
-      class="text-sm lg:text-base xl:text-lg transition-colors mt-0.5 text-content"
+      class="text-sm lg:text-base xl:text-lg font-semibold transition-colors mt-0.5 text-content"
       >Academy</a
     >
   </div>
@@ -327,67 +325,6 @@
             }
             <div class="h-px w-full bg-border-base my-1"></div>
 
-            <!-- Chess Settings -->
-            <div class="px-4 py-2 flex flex-col gap-2">
-              <div class="flex items-center justify-between">
-                <span
-                  class="text-xs font-bold text-muted uppercase tracking-wider"
-                  >Chess Settings</span
-                >
-              </div>
-
-              <!-- Board Theme -->
-              <div class="flex flex-col gap-1">
-                <label class="text-[10px] font-bold text-muted uppercase"
-                  >Board Theme</label
-                >
-                <select
-                  [ngModel]="boardThemeService.boardTheme()"
-                  (ngModelChange)="onBoardThemeChange($event)"
-                  class="bg-surface border border-border-base rounded-md px-2 py-1 text-xs text-content outline-none focus:border-accent/50 hover:border-accent/30 transition-colors"
-                >
-                  @for (theme of boardThemes; track theme.value) {
-                    <option [value]="theme.value">{{ theme.label }}</option>
-                  }
-                </select>
-              </div>
-
-              <!-- Piece Set -->
-              <div class="flex flex-col gap-1">
-                <label class="text-[10px] font-bold text-muted uppercase"
-                  >Piece Style</label
-                >
-                <select
-                  [ngModel]="boardThemeService.pieceSet()"
-                  (ngModelChange)="onPieceSetChange($event)"
-                  class="bg-surface border border-border-base rounded-md px-2 py-1 text-xs text-content outline-none focus:border-accent/50 hover:border-accent/30 transition-colors"
-                >
-                  @for (set of pieceSets; track set.value) {
-                    <option [value]="set.value">{{ set.label }}</option>
-                  }
-                </select>
-              </div>
-
-              <!-- Sound Theme -->
-              <div class="flex flex-col gap-1">
-                <label class="text-[10px] font-bold text-muted uppercase"
-                  >Move Sound</label
-                >
-                <select
-                  [ngModel]="audioService.soundEnabled() ? audioService.soundTheme() : 'off'"
-                  (ngModelChange)="onSoundThemeChange($event)"
-                  class="bg-surface border border-border-base rounded-md px-2 py-1 text-xs text-content outline-none focus:border-accent/50 hover:border-accent/30 transition-colors"
-                >
-                  <option value="off">Off</option>
-                  @for (theme of soundThemes; track theme.value) {
-                    <option [value]="theme.value">{{ theme.label }}</option>
-                  }
-                </select>
-              </div>
-            </div>
-
-            <div class="h-px w-full bg-border-base my-1"></div>
-
             <!-- Theme Toggle -->
             <button
               (click)="themeService.toggleTheme()"
@@ -441,7 +378,7 @@
             <!-- Logout -->
             <button
               (click)="logout()"
-              class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 text-sm"
+              class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 text-sm font-semibold"
             >
               Logout
             </button>
@@ -449,7 +386,7 @@
         </div>
       </div>
     } @else {
-      <a appLink routerLink="/login">Log in</a>
+      <a appLink routerLink="/login" class="font-semibold">Log in</a>
     }
 
     <!-- Mobile Hamburger Button -->

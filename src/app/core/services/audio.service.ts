@@ -1,16 +1,10 @@
 import { Injectable, inject, PLATFORM_ID, signal, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-export type SoundTheme = 'standard' | 'futuristic' | 'lisp' | 'nes' | 'piano' | 'sfx' | 'woodland';
+export type SoundTheme = 'standard';
 
 export const SOUND_THEMES: { value: SoundTheme; label: string }[] = [
   { value: 'standard', label: 'Standard' },
-  { value: 'futuristic', label: 'Futuristic' },
-  { value: 'lisp', label: 'Lisp' },
-  { value: 'nes', label: 'NES' },
-  { value: 'piano', label: 'Piano' },
-  { value: 'sfx', label: 'SFX' },
-  { value: 'woodland', label: 'Woodland' },
 ];
 
 type SoundName =
@@ -49,7 +43,7 @@ export class AudioService {
 
     effect(() => {
       if (!this.isBrowser) return;
-      this.safeSave('sound_theme', this.soundTheme());
+      this.safeSave('sound_theme', 'standard');
       this.buffers.clear();
       this.failedAssets.clear();
     });
@@ -86,10 +80,7 @@ export class AudioService {
       this.soundEnabled.set(savedEnabled === 'true');
     }
 
-    const savedTheme = localStorage.getItem('sound_theme') as SoundTheme | null;
-    if (savedTheme && SOUND_THEMES.some((t) => t.value === savedTheme)) {
-      this.soundTheme.set(savedTheme);
-    }
+    this.soundTheme.set('standard');
 
     const savedSfxVolume = localStorage.getItem('sfx_volume');
     if (savedSfxVolume !== null) {
@@ -235,7 +226,7 @@ export class AudioService {
   }
 
   setTheme(theme: SoundTheme): void {
-    this.soundTheme.set(theme);
+    this.soundTheme.set('standard');
   }
 
   setSfxVolume(volume: number): void {

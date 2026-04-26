@@ -5,12 +5,6 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
 import { ChatService } from '../../../../core/services/chat.service';
 import { ThemeService } from '../../../../core/services/theme.service';
-import {
-  BoardThemeService,
-  BOARD_THEMES,
-  PIECE_SETS,
-} from '../../../../core/services/board-theme.service';
-import { AudioService, SOUND_THEMES } from '../../../../core/services/audio.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroXMark, heroSun, heroMoon, heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
@@ -131,45 +125,6 @@ import { Router } from '@angular/router';
             </a>
           }
 
-          <!-- Chess Settings -->
-          <div
-            class="px-4 py-4 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-4"
-          >
-            <span
-              class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >Chess Settings</span
-            >
-
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
-                >Board Theme</label
-              >
-              <select
-                [ngModel]="boardThemeService.boardTheme()"
-                (ngModelChange)="boardThemeService.boardTheme.set($event)"
-                class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
-              >
-                @for (theme of boardThemes; track theme.value) {
-                  <option [value]="theme.value">{{ theme.label }}</option>
-                }
-              </select>
-            </div>
-
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase"
-                >Piece Style</label
-              >
-              <select
-                [ngModel]="boardThemeService.pieceSet()"
-                (ngModelChange)="boardThemeService.pieceSet.set($event)"
-                class="bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-slate-700 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white outline-none"
-              >
-                @for (set of pieceSets; track set.value) {
-                  <option [value]="set.value">{{ set.label }}</option>
-                }
-              </select>
-            </div>
-          </div>
 
           <button
             (click)="themeService.toggleTheme(); close.emit()"
@@ -212,8 +167,6 @@ export class MobileMenuComponent {
   userService = inject(UserService);
   chatService = inject(ChatService);
   themeService = inject(ThemeService);
-  boardThemeService = inject(BoardThemeService);
-  audioService = inject(AudioService);
   private router = inject(Router);
 
   close = output();
@@ -262,9 +215,6 @@ export class MobileMenuComponent {
     this.close.emit();
   }
 
-  boardThemes = BOARD_THEMES;
-  pieceSets = PIECE_SETS;
-  soundThemes = SOUND_THEMES;
 
   linkGroups = [
     {

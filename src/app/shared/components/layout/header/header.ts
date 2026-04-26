@@ -6,8 +6,7 @@ import { UserService, UserSearchResult } from '../../../../core/services/user.se
 import { AuthService } from '../../../../core/services/auth.service';
 import { GameService } from '../../../../core/services/game.service';
 import { ChatService } from '../../../../core/services/chat.service';
-import { AudioService, SOUND_THEMES } from '../../../../core/services/audio.service';
-import { BoardThemeService, BOARD_THEMES, PIECE_SETS } from '../../../../core/services/board-theme.service';
+import { ChallengeService } from '../../../../core/services/challenge.service';
 import { environment } from 'environments/environment';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -21,7 +20,6 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
 import { ButtonComponent, LinkComponent, SectionHeadingComponent, NotificationBadgeComponent } from '@shared/ui';
-import { ChallengeService } from '../../../../core/services/challenge.service';
 import { heroTrophy } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -50,14 +48,9 @@ export class Header implements OnInit, OnDestroy {
   authService = inject(AuthService);
   gameService = inject(GameService);
   chatService = inject(ChatService);
-  audioService = inject(AudioService);
-  boardThemeService = inject(BoardThemeService);
   challengeService = inject(ChallengeService);
   private router = inject(Router);
 
-  soundThemes = SOUND_THEMES;
-  boardThemes = BOARD_THEMES;
-  pieceSets = PIECE_SETS;
 
   @ViewChild('profileContainer') profileContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('searchContainer') searchContainer!: ElementRef<HTMLDivElement>;
@@ -174,23 +167,6 @@ export class Header implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  onSoundThemeChange(value: string) {
-    if (value === 'off') {
-      this.audioService.soundEnabled.set(false);
-    } else {
-      this.audioService.soundEnabled.set(true);
-      this.audioService.setTheme(value as any);
-      this.audioService.playNotification();
-    }
-  }
-
-  onBoardThemeChange(value: string) {
-    this.boardThemeService.boardTheme.set(value as any);
-  }
-
-  onPieceSetChange(value: string) {
-    this.boardThemeService.pieceSet.set(value as any);
-  }
 
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
