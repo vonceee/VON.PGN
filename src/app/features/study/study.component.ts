@@ -23,6 +23,7 @@ import { ToastService } from '../../core/services/toast.service';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService, UserSearchResult } from '../../core/services/user.service';
 import { AddCollaboratorDialogComponent } from './dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
+import { ViewersDialogComponent } from './dialogs/viewers-dialog/viewers-dialog.component';
 import { ChessBoardComponent, EvalBarComponent } from '@shared/chess';
 import { MoveNotationComponent } from '@shared/chess';
 import { AudioService } from '../../core/services/audio.service';
@@ -35,7 +36,7 @@ import { MoveNode, StudyChapter } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 import { ButtonComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath, heroUserPlus, heroTrash } from '@ng-icons/heroicons/outline';
+import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath, heroUserPlus, heroTrash, heroEye } from '@ng-icons/heroicons/outline';
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { UserHovercardDirective } from '@shared/directives';
@@ -46,7 +47,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   selector: 'app-study',
   standalone: true,
   imports: [CommonModule, ChessBoardComponent, EvalBarComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent, MatSlideToggleModule, ConfirmDeleteModalComponent, UserHovercardDirective],
-  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath, heroUserPlus, heroTrash })],
+  providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath, heroUserPlus, heroTrash, heroEye })],
   templateUrl: './study.component.html',
   styles: [`
     :host ::ng-deep {
@@ -129,6 +130,15 @@ export class StudyComponent implements OnInit, OnDestroy {
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
   isLoading = this.studyService.isLoading;
+  viewerCount = this.studyService.viewerCount;
+  viewerNames = this.studyService.viewerNames;
+  
+  formattedViewers = computed(() => {
+    const names = this.viewerNames();
+    if (names.length === 0) return 'No viewers';
+    return names.join(', ');
+  });
+
   id = input.required<string>();
 
   // Engine state
@@ -1057,5 +1067,14 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       document.documentElement.style.setProperty('--board-size', `${size}px`);
     }
+  }
+
+  openViewers() {
+    this.dialog.open(ViewersDialogComponent, {
+      data: {
+        viewers: this.viewerNames(),
+        count: this.viewerCount()
+      }
+    });
   }
 }

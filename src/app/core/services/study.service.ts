@@ -34,6 +34,8 @@ export class StudyService {
   currentChapter = signal<StudyChapter | null>(null);
   isLoading = signal(false);
   isConnected = signal(false);
+  viewerCount = signal(1);
+  viewerNames = signal<string[]>([]);
 
   // Real-time updates
   private moveMadeSubject = new Subject<StudyMoveMadePayload>();
@@ -169,8 +171,11 @@ export class StudyService {
     const user = this.authService.currentUser();
     const token = this.authService.getToken();
 
+    const userId = user?.uid || user?.id;
+    const userName = user?.username || user?.displayName || user?.name || 'Anonymous';
+
     this.socket = io(this.socketUrl, {
-      auth: { token, userId: user?.uid, userName: user?.username },
+      auth: { token, userId, userName },
     });
 
     this.socket.on('connect', () => {
@@ -226,6 +231,11 @@ export class StudyService {
         orientation: payload.orientation 
       });
       this.chapterChangedSubject.next(payload);
+    });
+
+    this.socket.on('viewer_list_update', (payload: { studyId: string | number; viewers: string[]; count: number }) => {
+      this.viewerNames.set(payload.viewers || []);
+      this.viewerCount.set(payload.count || 0);
     });
   }
 
@@ -346,5 +356,7 @@ export class StudyService {
   disconnect(): void {
     this.socket?.disconnect();
     this.isConnected.set(false);
+    this.viewerNames.set([]);
+    this.viewerCount.set(0);
   }
 }

@@ -10,21 +10,30 @@
         [class.opacity-70]="isSyncing() && !canEdit()"
       >
         <div>
-          <div class="flex items-center justify-between mb-4">
-            <h2
-              class="text-xl font-medium select-none truncate cursor-pointer hover:text-accent min-w-0"
-              [title]="s.name"
+          <div class="flex flex-col mb-4">
+            <div class="flex items-center justify-between">
+              <h2
+                class="text-xl font-medium select-none truncate cursor-pointer hover:text-accent min-w-0"
+                [title]="s.name"
+              >
+                {{ s.name }}
+              </h2>
+              @if (isOwner()) {
+                <button
+                  (click)="openSettings()"
+                  class="text-xs cursor-pointer hover:underline shrink-0"
+                  title="Study Settings"
+                >Study Settings
+                </button>
+              }
+            </div>
+            <div 
+              (click)="openViewers()"
+              class="flex items-center gap-1.5 mt-0.5 text-[10px] font-bold uppercase tracking-wider text-muted/80 cursor-pointer hover:text-accent transition-colors"
             >
-              {{ s.name }}
-            </h2>
-            @if (isOwner()) {
-              <button
-                (click)="openSettings()"
-                class="text-xs cursor-pointer hover:underline shrink-0"
-                title="Study Settings"
-              >Study Settings
-              </button>
-            }
+              <ng-icon name="heroEye" class="text-xs text-accent/70"></ng-icon>
+              <span>{{ viewerCount() }} viewer{{ viewerCount() === 1 ? '' : 's' }}</span>
+            </div>
           </div>
         </div>
 
