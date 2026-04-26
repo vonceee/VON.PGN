@@ -15,7 +15,6 @@ import { LoadingComponent } from '@shared/feedback';
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule, GameHistoryComponent, ButtonComponent, LoadingComponent],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css',
 })
 export class ProfileComponent implements OnInit {
   private userService = inject(UserService);
