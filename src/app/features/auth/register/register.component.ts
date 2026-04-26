@@ -97,14 +97,6 @@ export class RegisterComponent {
   });
 
   constructor() {
-    // Handle successful registration
-    effect(() => {
-      const result = this.registerResource.value();
-      if (result) {
-        this.router.navigate(['/']);
-      }
-    });
-
     // Handle errors and map them to our linkedSignals
     effect(() => {
       const err = this.registerResource.error() as any;

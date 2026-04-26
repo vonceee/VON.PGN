@@ -116,6 +116,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() configOverride: Config | null = null;
   @Input() preMoveEnabled: boolean = true;
   @Input() isEditor: boolean = false;
+  @Input() lastMove: Key[] | undefined = undefined;
 
   @Output() fenChange = new EventEmitter<string>();
   @Output() moveMade = new EventEmitter<{ move: Move; fen: string }>();
@@ -226,6 +227,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       if (changes['configOverride']) {
         this.applyConfigOverride(this.configOverride || {});
       }
+      if (changes['lastMove']) {
+        this.syncBoard();
+      }
     }
   }
 
@@ -300,8 +304,20 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private syncBoard() {
     if (!this.cgApi) return;
     const fenToUse = this.isEditor ? this.fen : this.chess.fen();
+    
+    // Determine last move to highlight
+    let lastMoveToSet = this.lastMove;
+    if (lastMoveToSet === undefined) {
+      const history = this.chess.history({ verbose: true });
+      const last = history[history.length - 1];
+      if (last) {
+        lastMoveToSet = [last.from as Key, last.to as Key];
+      }
+    }
+
     this.cgApi.set({
       fen: fenToUse,
+      lastMove: lastMoveToSet as any,
       turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
       movable: {
         free: this.isEditor,

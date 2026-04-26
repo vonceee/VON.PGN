@@ -107,6 +107,7 @@
               (shapeDrawn)="onShapeDrawn($event)"
               (sizeChange)="boardSize.set($event)"
               [syncedShapes]="mergedShapes()"
+              [lastMove]="lastMoveSquares()"
             ></app-chess-board>
 
             <!-- Evaluation Bar (Desktop) - Always present, toggle visibility -->

@@ -171,6 +171,12 @@ export class StudyComponent implements OnInit, OnDestroy {
   mergedShapes = computed(() => {
     return [...this.remoteShapes(), ...this.engineArrows()];
   });
+  
+  lastMoveSquares = computed(() => {
+    const node = this.currentNode();
+    if (!node || !node.uci || node.uci.length < 4) return undefined;
+    return [node.uci.slice(0, 2), node.uci.slice(2, 4)] as any[];
+  });
 
   isOwner = computed(() => {
     const user = this.authService.currentUser();
@@ -223,6 +229,7 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.lastChapterId = chapter.id;
 
         if (shouldJump) {
+          this.currentNode.set(null); // Clear state before jumping to new chapter
           this.currentFen.set(chapter.current_fen);
           this.boardOrientation.set(chapter.orientation || 'white');
           const tree = buildTreeFromMoves(chapter.moves || [], chapter.initial_fen);
@@ -388,6 +395,9 @@ export class StudyComponent implements OnInit, OnDestroy {
       if (node) {
         this.currentNode.set(node);
         this.currentPly.set(node.ply);
+      } else {
+        this.currentNode.set(null);
+        this.currentPly.set(0);
       }
     }
   }
@@ -720,7 +730,6 @@ export class StudyComponent implements OnInit, OnDestroy {
   selectChapter(chap: any) {
     if (this.isSyncing() && !this.canEdit()) return;
     if (this.currentChapter()?.id === chap.id) return;
-    this.audioService.playBoardStart();
     this.studyService.currentChapter.set(chap);
     if (this.canEdit()) {
       this.studyService.emitChapterChange(this.study()!.id, chap.id, chap.current_fen, chap.moves || [], chap.orientation);
