@@ -25,6 +25,7 @@ import { UserService, UserSearchResult } from '../../core/services/user.service'
 import { AddCollaboratorDialogComponent } from './dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
 import { ChessBoardComponent, EvalBarComponent } from '@shared/chess';
 import { MoveNotationComponent } from '@shared/chess';
+import { AudioService } from '../../core/services/audio.service';
 import { FormsModule } from '@angular/forms';
 import { Subscription, BehaviorSubject } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
@@ -122,6 +123,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private dialog = inject(Dialog);
   private toastService = inject(ToastService);
   private engineService = inject(EngineService);
+  private audioService = inject(AudioService);
 
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
@@ -466,6 +468,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.remoteShapes.set([]);
     this.engineArrows.set([]);
     
+    this.audioService.playChessMove(move);
     this.studyService.emitMove(san, fen, this.moveTree());
   }
 
@@ -531,6 +534,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     // Clear shapes when moving to a new position
     this.remoteShapes.set([]);
     this.engineArrows.set([]);
+    this.audioService.playMoveSound(node.san);
     
     if (this.canEdit()) {
       this.studyService.emitNavigation(node.fen, this.moveTree());
@@ -614,6 +618,7 @@ export class StudyComponent implements OnInit, OnDestroy {
       // Clear shapes on move
       this.remoteShapes.set([]);
       this.engineArrows.set([]);
+      this.audioService.playMoveSound(node.san);
 
       if (this.canEdit()) {
         this.studyService.emitNavigation(node.fen, this.moveTree());
@@ -715,6 +720,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   selectChapter(chap: any) {
     if (this.isSyncing() && !this.canEdit()) return;
     if (this.currentChapter()?.id === chap.id) return;
+    this.audioService.playBoardStart();
     this.studyService.currentChapter.set(chap);
     if (this.canEdit()) {
       this.studyService.emitChapterChange(this.study()!.id, chap.id, chap.current_fen, chap.moves || [], chap.orientation);

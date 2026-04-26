@@ -535,6 +535,13 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     if (pos) {
       this.chess.load(pos.fen());
       this.displayFen.set(this.chess.fen());
+      
+      if (ply > 0) {
+        const san = this.moveSanCache()[ply - 1];
+        this.audioService.playMoveSound(san);
+      } else {
+        this.audioService.playNavigationSound();
+      }
     }
   }
 

@@ -240,10 +240,21 @@ export class AudioService {
   /**
    * Simple move sound playback based on SAN string.
    */
-  playMoveSound(san: string): void {
+  playMoveSound(san: string | null | undefined): void {
+    if (!san) {
+      this.play('Move');
+      return;
+    }
     if (san.includes('#')) this.playBoardEnd();
     else if (san.includes('+')) this.play('Check');
     else if (san.includes('x')) this.play('Capture');
     else this.play('Move');
+  }
+
+  /**
+   * Specifically for UI navigation (arrow keys, notation clicks).
+   */
+  playNavigationSound(): void {
+    this.play('Move');
   }
 }

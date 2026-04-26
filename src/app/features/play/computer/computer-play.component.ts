@@ -403,7 +403,13 @@ export class ComputerPlayComponent implements OnInit, OnDestroy {
   }
 
   onNavigate(ply: number) {
-    this.displayPly.set(Math.max(0, Math.min(ply, this.pgnMoves().length)));
+    const newPly = Math.max(0, Math.min(ply, this.pgnMoves().length));
+    this.displayPly.set(newPly);
+    if (newPly > 0) {
+      this.audioService.playMoveSound(this.pgnMoves()[newPly - 1]);
+    } else {
+      this.audioService.playNavigationSound();
+    }
   }
 }
 

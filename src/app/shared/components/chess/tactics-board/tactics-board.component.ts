@@ -252,6 +252,7 @@ export class TacticsBoardComponent implements OnChanges {
     this.chess.undo();
     this.gamePly--;
     this.currentFen = this.chess.fen();
+    this.audioService.playNavigationSound();
   }
 
   nextGameMove() {

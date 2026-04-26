@@ -15,6 +15,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ButtonComponent } from '@shared/ui';
 import { MoveNode } from '../../../../core/models/study.model';
 import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
+import { AudioService } from '../../../../core/services/audio.service';
 
 @Component({
   selector: 'app-move-notation',
@@ -27,6 +28,7 @@ import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
 })
 export class MoveNotationComponent {
   private platformId = inject(PLATFORM_ID);
+  private audioService = inject(AudioService);
   // Advanced Move Tree (Used by Study)
   moveTree = input<MoveNode[]>([]);
   // Legacy Flat Moves (Used by everything else)
@@ -175,6 +177,7 @@ export class MoveNotationComponent {
           this.onMoveClick(parent);
         } else {
           this.navigate.emit(0); // Go to start
+          this.audioService.playNavigationSound();
         }
         break;
       case 'ArrowRight':
@@ -189,27 +192,33 @@ export class MoveNotationComponent {
         if (hasMultiple) {
           event.preventDefault();
           this.selectedVariationIndex.update((i) => (i > 0 ? i - 1 : options.length - 1));
+          this.audioService.playNavigationSound();
         } else {
           event.preventDefault();
           this.navigate.emit(0);
+          this.audioService.playNavigationSound();
         }
         break;
       case 'ArrowDown':
         if (hasMultiple) {
           event.preventDefault();
           this.selectedVariationIndex.update((i) => (i < options.length - 1 ? i + 1 : 0));
+          this.audioService.playNavigationSound();
         } else {
           event.preventDefault();
           this.navigate.emit(this.effectiveTree().length);
+          this.audioService.playNavigationSound();
         }
         break;
       case 'Home':
         event.preventDefault();
         this.navigate.emit(0);
+        this.audioService.playNavigationSound();
         break;
       case 'End':
         event.preventDefault();
         this.navigate.emit(this.effectiveTree().length);
+        this.audioService.playNavigationSound();
         break;
     }
   }
@@ -236,6 +245,7 @@ export class MoveNotationComponent {
   onMoveClick(node: MoveNode) {
     this.navigate.emit(node.ply);
     this.nodeClicked.emit(node);
+    this.audioService.playMoveSound(node.san);
   }
 
   onNavigateBack() {
