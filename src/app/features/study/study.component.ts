@@ -200,7 +200,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     return s.collaborators?.some(c => String(c.uid) === String(currentUserId)) ?? false;
   });
 
-  isSyncing = signal(true);
+  isSyncing = signal(false);
   activeTab = signal<'notation' | 'info'>('notation');
   showDeleteModal = signal(false);
   isDeleting = signal(false);
@@ -479,7 +479,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.engineArrows.set([]);
     
     this.audioService.playChessMove(move);
-    this.studyService.emitMove(san, fen, this.moveTree());
+    this.studyService.emitMove(san, fen, this.moveTree(), this.isSyncing());
   }
 
   private insertNodeDeep(
@@ -547,7 +547,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.audioService.playMoveSound(node.san);
     
     if (this.canEdit()) {
-      this.studyService.emitNavigation(node.fen, this.moveTree());
+      this.studyService.emitNavigation(node.fen, this.moveTree(), this.isSyncing());
     }
   }
 
@@ -581,7 +581,8 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.studyService.emitMove(
         '', // No specific move made, just tree update
         this.currentFen(),
-        tree
+        tree,
+        this.isSyncing()
       );
     }
   }
@@ -616,6 +617,7 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.studyService.emitNavigation(
           chapter?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
           this.moveTree(),
+          this.isSyncing(),
         );
       }
       return;
@@ -631,7 +633,7 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.audioService.playMoveSound(node.san);
 
       if (this.canEdit()) {
-        this.studyService.emitNavigation(node.fen, this.moveTree());
+        this.studyService.emitNavigation(node.fen, this.moveTree(), this.isSyncing());
       }
     }
   }
@@ -732,7 +734,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (this.currentChapter()?.id === chap.id) return;
     this.studyService.currentChapter.set(chap);
     if (this.canEdit()) {
-      this.studyService.emitChapterChange(this.study()!.id, chap.id, chap.current_fen, chap.moves || [], chap.orientation);
+      this.studyService.emitChapterChange(this.study()!.id, chap.id, chap.current_fen, chap.moves || [], chap.orientation, this.isSyncing());
     }
   }
 

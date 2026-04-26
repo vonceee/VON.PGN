@@ -196,7 +196,7 @@ export class StudyService {
     });
   }
 
-  emitMove(move: string, fen: string, moves: any[]): void {
+  emitMove(move: string, fen: string, moves: any[], broadcast: boolean = true): void {
     const study = this.currentStudy();
     const chapter = this.currentChapter();
     
@@ -211,14 +211,16 @@ export class StudyService {
       return;
     }
 
-    this.socket?.emit('study_move', {
-      studyId: study.id,
-      move,
-      fen,
-      chapterId: chapterId,
-      moves: moves,
-      orientation: chapter.orientation
-    });
+    if (broadcast) {
+      this.socket?.emit('study_move', {
+        studyId: study.id,
+        move,
+        fen,
+        chapterId: chapterId,
+        moves: moves,
+        orientation: chapter.orientation
+      });
+    }
 
     // Persist full tree to database
     this.updateChapter(study.id, chapterId, {
@@ -239,13 +241,15 @@ export class StudyService {
         });
 
         // Broadcast switch...
-        this.socket?.emit('study_change_chapter', {
-          studyId: study.id,
-          chapterId: updated.id,
-          fen: updated.current_fen,
-          moves: updated.moves,
-          orientation: updated.orientation
-        });
+        if (broadcast) {
+          this.socket?.emit('study_change_chapter', {
+            studyId: study.id,
+            chapterId: updated.id,
+            fen: updated.current_fen,
+            moves: updated.moves,
+            orientation: updated.orientation
+          });
+        }
       },
       error: (err) => console.error('[StudyService] Failed to save move to DB:', err)
     });
@@ -260,7 +264,8 @@ export class StudyService {
     });
   }
 
-  emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[], orientation?: 'white' | 'black'): void {
+  emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
+    if (!broadcast) return;
     this.socket?.emit('study_change_chapter', {
       studyId,
       chapterId,
@@ -270,10 +275,10 @@ export class StudyService {
     });
   }
 
-  emitNavigation(fen: string, moves: any[]): void {
+  emitNavigation(fen: string, moves: any[], broadcast: boolean = true): void {
     const s = this.currentStudy();
     const c = this.currentChapter();
-    if (!s || !c || !this.socket) return;
+    if (!s || !c || !this.socket || !broadcast) return;
 
     this.socket.emit('study_move', {
       studyId: s.id,
