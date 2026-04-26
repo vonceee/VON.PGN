@@ -338,6 +338,11 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   flipBoard() {
     this.boardOrientation.update(o => o === 'white' ? 'black' : 'white');
+    
+    // Broadcast flip to others if syncing and can edit
+    if (this.isSyncing() && this.canEdit()) {
+      this.studyService.emitNavigation(this.currentFen(), this.moveTree(), this.boardOrientation(), true);
+    }
   }
 
   onMultiPvChange(count: number) {
@@ -480,7 +485,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.engineArrows.set([]);
     
     this.audioService.playChessMove(move);
-    this.studyService.emitMove(san, fen, this.moveTree(), this.isSyncing());
+    this.studyService.emitMove(san, fen, this.moveTree(), this.boardOrientation(), this.isSyncing());
   }
 
   private insertNodeDeep(
@@ -548,7 +553,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.audioService.playMoveSound(node.san);
     
     if (this.canEdit()) {
-      this.studyService.emitNavigation(node.fen, this.moveTree(), this.isSyncing());
+      this.studyService.emitNavigation(node.fen, this.moveTree(), this.boardOrientation(), this.isSyncing());
     }
   }
 
@@ -586,6 +591,7 @@ export class StudyComponent implements OnInit, OnDestroy {
           '', // No specific move made, just tree update
           this.currentFen(),
           this.moveTree(),
+          this.boardOrientation(),
           this.isSyncing()
         );
       }, 0);
@@ -633,6 +639,7 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.studyService.emitNavigation(
           chapter?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
           this.moveTree(),
+          this.boardOrientation(),
           this.isSyncing(),
         );
       }
@@ -649,7 +656,7 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.audioService.playMoveSound(node.san);
 
       if (this.canEdit()) {
-        this.studyService.emitNavigation(node.fen, this.moveTree(), this.isSyncing());
+        this.studyService.emitNavigation(node.fen, this.moveTree(), this.boardOrientation(), this.isSyncing());
       }
     }
   }

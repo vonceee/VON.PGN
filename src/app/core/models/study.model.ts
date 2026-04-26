@@ -70,6 +70,7 @@ export interface StudyMoveMadePayload {
   chapterId: number;
   moves: any[]; // The updated full tree
   userId: string;
+  orientation?: 'white' | 'black';
 }
 
 export interface StudyShapesDrawnPayload {
@@ -83,4 +84,5 @@ export interface StudySyncedPayload {
   fen: string;
   moves: any[];
   shapes: any[];
+  orientation?: 'white' | 'black';
 }

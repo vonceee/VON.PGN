@@ -200,12 +200,17 @@ export class StudyService {
         chapterId: state.chapterId,
         fen: state.fen,
         moves: state.moves,
-        orientation: (state as any).orientation,
+        orientation: state.orientation,
       });
     });
 
     this.socket.on('study_move_made', (payload: StudyMoveMadePayload) => {
-      this.lastRemoteState.update(s => ({ ...s, fen: payload.fen, moves: payload.moves }));
+      this.lastRemoteState.update(s => ({ 
+        ...s, 
+        fen: payload.fen, 
+        moves: payload.moves,
+        orientation: payload.orientation
+      }));
       this.moveMadeSubject.next(payload);
     });
 
@@ -224,7 +229,7 @@ export class StudyService {
     });
   }
 
-  emitMove(move: string, fen: string, moves: any[], broadcast: boolean = true): void {
+  emitMove(move: string, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
     const study = this.currentStudy();
     const chapter = this.currentChapter();
     
@@ -246,7 +251,7 @@ export class StudyService {
         fen,
         chapterId: chapterId,
         moves: moves,
-        orientation: chapter.orientation
+        orientation: orientation || chapter.orientation
       });
     }
 
@@ -306,7 +311,7 @@ export class StudyService {
     });
   }
 
-  emitNavigation(fen: string, moves: any[], broadcast: boolean = true): void {
+  emitNavigation(fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
     const s = this.currentStudy();
     const c = this.currentChapter();
     if (!s || !c || !this.socket || !broadcast) return;
@@ -316,6 +321,7 @@ export class StudyService {
       chapterId: c.id,
       fen: fen,
       moves: moves,
+      orientation: orientation || c.orientation,
       isNavigation: true,
     });
   }
