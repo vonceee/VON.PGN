@@ -37,6 +37,33 @@ export class UserService {
   }
 
   currentUser = signal<UserProfile | null>(null);
+  private profileCache = new Map<string, { profile: UserProfile; expiry: number }>();
+
+  getUserProfileByUsername(username: string) {
+    // Check cache
+    const cached = this.profileCache.get(username);
+    if (cached && cached.expiry > Date.now()) {
+      return of(cached.profile);
+    }
+
+    return this.http
+      .get<{ data: UserProfile }>(`${environment.apiUrl}/users/${username}`)
+      .pipe(
+        map((res) => res.data),
+        tap((profile) => {
+          // Cache management: Keep cache size reasonable
+          if (this.profileCache.size > 100) {
+            this.profileCache.clear();
+          }
+          
+          // Cache for 30 seconds
+          this.profileCache.set(username, {
+            profile,
+            expiry: Date.now() + 30000,
+          });
+        })
+      );
+  }
 
   getCachedProfile(): UserProfile | null {
     if (!this.isBrowser) return null;

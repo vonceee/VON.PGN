@@ -9,11 +9,12 @@ import { TournamentService } from '../../../core/services/tournament.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Tournament } from '../../../core/models/tournament.model';
+import { UserHovercardDirective } from '@shared/directives';
 
 @Component({
   selector: 'app-tournament-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, BackLinkComponent, PosterPreviewComponent, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, BackLinkComponent, PosterPreviewComponent, ReactiveFormsModule, UserHovercardDirective],
   templateUrl: './tournament-detail.component.html'
 })
 export class TournamentDetailComponent implements OnInit {

@@ -32,6 +32,22 @@ export interface UserProfile {
   // nested objects keep the database clean and organized
   preferences: UserPreferences;
   progress: UserProgress;
+
+  // Live status
+  is_online?: boolean;
+  last_seen_at?: string;
+
+  // Active game preview
+  active_game?: ActiveGame;
+}
+
+export interface ActiveGame {
+  id: string;
+  white_player: { id: string; name: string };
+  black_player: { id: string; name: string };
+  fen: string;
+  time_control: string;
+  status: string;
 }
 
 export interface LiveChessRating {

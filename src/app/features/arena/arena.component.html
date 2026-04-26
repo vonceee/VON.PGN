@@ -21,7 +21,7 @@
             Tournament Finished
           </div>
           <div class="text-4xl font-bold mb-8">
-            Winner: <span class="text-cyan-400">{{ winner() || 'Calculating...' }}</span>
+          Winner: <a [routerLink]="['/user', winner()]" [appUserHovercard]="winner()!" class="text-cyan-400 hover:underline transition-all cursor-pointer">{{ winner() || 'Calculating...' }}</a>
           </div>
         }
 
@@ -68,7 +68,13 @@
                 </td>
                 <td class="py-6">
                   <div class="flex items-center gap-3">
-                    <span class="font-bold text-lg">{{ player.name }}</span>
+                    <a 
+                      [routerLink]="['/user', player.name]" 
+                      [appUserHovercard]="player.name"
+                      class="font-bold text-lg hover:text-cyan-400 transition-colors cursor-pointer"
+                    >
+                      {{ player.name }}
+                    </a>
                     @if (player.streak >= 2) {
                       <span class="text-orange-500 text-xs animate-bounce"
                         >🔥 x{{ player.streak }}</span

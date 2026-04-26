@@ -267,6 +267,7 @@
                         <a
                           (click)="closeFollowModal()"
                           [routerLink]="['/user', userItem.username]"
+                          [appUserHovercard]="userItem.username"
                           target="_blank"
                           rel="noopener noreferrer"
                           class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-sm font-semibold text-slate-700 dark:text-white uppercase shrink-0"
@@ -277,6 +278,7 @@
                           <a
                             (click)="closeFollowModal()"
                             [routerLink]="['/user', userItem.username]"
+                            [appUserHovercard]="userItem.username"
                             target="_blank"
                             rel="noopener noreferrer"
                             class="text-sm font-semibold text-slate-900 dark:text-white truncate block hover:text-cyan-500 transition-colors"

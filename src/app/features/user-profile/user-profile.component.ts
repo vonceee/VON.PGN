@@ -15,11 +15,12 @@ import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { ChallengeService } from '../../core/services/challenge.service';
 import { ChallengeUserModalComponent } from '../play/challenge/challenge-user-modal.component';
 import { ChallengeSettings } from '../../core/models/game.model';
+import { UserHovercardDirective } from '@shared/directives';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent, DialogModule],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent, DialogModule, UserHovercardDirective],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css',
 })

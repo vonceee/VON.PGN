@@ -8,11 +8,12 @@ import { UserService, UserSearchResult } from '../../../../core/services/user.se
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UserHovercardDirective } from '@shared/directives';
 
 @Component({
   selector: 'app-add-collaborator-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent, UserHovercardDirective],
   template: `
     <div class="block max-w-md w-[90vw] mx-auto">
       <app-dialog-wrapper title="Add Collaborator" (close)="dialogRef.close()">
@@ -43,7 +44,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
                   [class.bg-accent/10]="selectedUser()?.uid === user.uid"
                 >
                   <div class="flex flex-col">
-                    <span class="text-sm font-bold text-content group-hover:text-accent transition-colors">{{ user.username }}</span>
+                    <span 
+                      class="text-sm font-bold text-content group-hover:text-accent transition-colors"
+                      [appUserHovercard]="user.username"
+                    >{{ user.username }}</span>
                     <span class="text-xs text-muted">{{ user.displayName || user.username }}</span>
                   </div>
                 </button>

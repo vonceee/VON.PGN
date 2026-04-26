@@ -10,10 +10,12 @@ import { GameHistoryComponent } from './game-history/game-history.component';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { LoadingComponent } from '@shared/feedback';
 
+import { UserHovercardDirective } from '@shared/directives';
+
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, GameHistoryComponent, ButtonComponent, LoadingComponent],
+  imports: [CommonModule, RouterLink, FormsModule, GameHistoryComponent, ButtonComponent, LoadingComponent, UserHovercardDirective],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {

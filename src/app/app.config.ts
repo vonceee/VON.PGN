@@ -15,6 +15,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { importProvidersFrom } from '@angular/core';
 import { DialogModule } from '@angular/cdk/dialog';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,6 +30,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideClientHydration(withEventReplay()),
     provideAnimations(),
-    importProvidersFrom(DialogModule),
+    importProvidersFrom(DialogModule, OverlayModule),
   ],
 };

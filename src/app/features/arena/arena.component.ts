@@ -14,8 +14,9 @@ import { ArenaService, ArenaParticipant } from '../../core/services/arena.servic
 import { AuthService } from '../../core/services/auth.service';
 import { GameService } from '../../core/services/game.service';
 import { ButtonComponent } from '@shared/ui';
-import { ChessBoardComponent, ChessClockComponent } from '@shared/chess';
 import { GameInfoComponent } from '../play/live-game/components/game-info.component';
+import { UserHovercardDirective } from '@shared/directives';
+import { ChessBoardComponent, ChessClockComponent } from '@shared/chess';
 import { Chess } from 'chess.js';
 import { Config } from 'chessground/config';
 
@@ -28,6 +29,8 @@ import { Config } from 'chessground/config';
     ChessBoardComponent,
     ChessClockComponent,
     GameInfoComponent,
+    UserHovercardDirective,
+    RouterLink,
   ],
   templateUrl: './arena.component.html',
   styleUrl: './arena.component.css',

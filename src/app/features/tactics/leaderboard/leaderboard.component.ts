@@ -5,11 +5,12 @@ import { interval, Subscription } from 'rxjs';
 import { TacticsService, LeaderboardResponse } from '../../../core/services/tactics.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TypewriterTextComponent  } from '@shared/ui';
+import { UserHovercardDirective } from '@shared/directives';
 
 @Component({
   selector: 'app-leaderboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, UserHovercardDirective],
   templateUrl: './leaderboard.component.html',
 })
 export class LeaderboardComponent implements OnInit, OnDestroy {

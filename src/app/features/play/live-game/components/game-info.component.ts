@@ -2,11 +2,12 @@ import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GamePlayer } from '../../../../core/models/game.model';
 import { UserStatusIndicatorComponent } from '@shared/ui';
+import { UserHovercardDirective } from '@shared/directives';
 
 @Component({
   selector: 'app-game-info',
   standalone: true,
-  imports: [UserStatusIndicatorComponent, RouterLink],
+  imports: [UserStatusIndicatorComponent, RouterLink, UserHovercardDirective],
   template: `
     <div class="flex items-center gap-2 overflow-hidden">
       <app-user-status-indicator [userId]="player().id"></app-user-status-indicator>
@@ -14,6 +15,7 @@ import { UserStatusIndicatorComponent } from '@shared/ui';
         @if (player().name) {
           <a
             [routerLink]="['/user', player().name]"
+            [appUserHovercard]="player().name"
             target="_blank"
             rel="noopener noreferrer"
             class="truncate text-md hover:text-cyan-400 transition-colors cursor-pointer"
