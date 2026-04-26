@@ -61,7 +61,7 @@
                 @if (canEdit()) {
                   <button
                     (click)="onEditChapter($event, chap)"
-                    class="text-xs group-hover:cursor-pointer hover:underline shrink-0"
+                    class="text-xs cursor-pointer hover:underline shrink-0"
                     title="Edit Chapter"
                   >
                     Edit
@@ -286,150 +286,99 @@
                 ></app-move-notation>
               </div>
             } @else {               
-              <!-- Info View -->
-              <div class="p-6 flex flex-col gap-8 overflow-y-auto custom-scrollbar h-full bg-main">
+              <!-- Info View -->              <div class="p-4 flex flex-col gap-5 overflow-y-auto custom-scrollbar h-full bg-main">
                 
-                <!-- Study Overview Card -->
-                <div class="flex flex-col gap-4 p-5 rounded-2xl bg-subtle border border-border-base">
-                  <div class="flex items-start justify-between">
-                    <div class="flex flex-col gap-1">
-                      <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Study Title</span>
-                      <h3 class="text-xl font-bold text-content">{{ s.name }}</h3>
-                    </div>
-                  </div>
-
-                  <div class="grid grid-cols-2 gap-4 pt-4 border-t border-border-base/50">
-                    <div class="flex flex-col gap-1">
-                      <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Owner</span>
-                      <div class="flex items-center gap-2">
-                        <span class="text-sm font-medium text-content">{{ s.owner.name }}</span>
-                      </div>
-                    </div>
+                <!-- Study Header -->
+                <div class="flex flex-col gap-1 p-1">
+                  <h3 class="text-xl font-extrabold text-content leading-tight tracking-tight">{{ s.name }}</h3>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-xs font-semibold text-accent/90">{{ s.owner.name }}</span>
+                    <span class="text-[10px] text-muted">•</span>
+                    <span class="text-[10px] text-muted font-medium">Study Owner</span>
                   </div>
                 </div>
 
-                <!-- Participation / Mode -->
-                <div class="flex flex-col gap-3">
-                  <label class="text-[10px] font-bold uppercase tracking-widest text-muted px-2">Learning Mode</label>
-                  
-                  <button
-                    (click)="toggleSync()"
-                    class="w-full flex items-center justify-between p-4 rounded-2xl border duration-300 relative overflow-hidden group transition-all"
-                    [class]="
-                      isSyncing()
-                        ? 'bg-accent/5 border-accent/30 text-accent shadow-[0_0_20px_rgba(34,211,238,0.05)]'
-                        : 'bg-subtle border-border-base text-muted hover:text-content hover:border-accent/30'
-                    "
-                  >
-                    <div class="flex items-center gap-3 relative z-10">
-                      <div
-                        class="w-2.5 h-2.5 rounded-full"
-                        [class]="
-                          isSyncing()
-                            ? 'bg-accent animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]'
-                            : 'bg-slate-500'
-                        "
-                      ></div>
-                      <div class="flex flex-col items-start">
-                        <span class="text-sm font-bold tracking-tight">
-                          {{ isSyncing() ? (canEdit() ? 'Teaching Mode' : 'Tutor Mode') : 'Self Study Mode' }}
-                        </span>
-                        <span class="text-[10px] opacity-70">
-                          {{ isSyncing() ? (canEdit() ? 'leading the session' : 'following teacher moves') : 'independent exploration' }}
-                        </span>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-1.5 relative z-10">
-                      <span class="text-[9px] font-black tracking-tighter opacity-40 uppercase">
-                        {{ isSyncing() ? 'Live' : 'Off' }}
-                      </span>
-                      <div class="w-1.5 h-1.5 rounded-full bg-current opacity-20"></div>
-                    </div>
-                    @if (isSyncing() && canEdit()) {
-                      <ng-icon name="heroBolt" class="text-2xl opacity-10 absolute -right-1 -bottom-1 rotate-12 group-hover:rotate-0 transition-transform duration-500"></ng-icon>
-                    }
-                  </button>
+                <!-- Sync Mode (Hierarchical) -->
+                <div class="flex items-center justify-between p-4 rounded-2xl bg-subtle/50 border border-border-base/50">
+                  <div class="flex flex-col">
+                    <span class="text-base font-bold text-content tracking-tight">
+                      {{ isSyncing() ? (canEdit() ? 'Live Teaching' : 'Tutor Follow') : 'Self Exploration' }}
+                    </span>
+                    <span class="text-[10px] text-muted font-medium tracking-wide uppercase">Synchronization</span>
+                  </div>
+                  <mat-slide-toggle 
+                    [checked]="isSyncing()" 
+                    (change)="toggleSync()"
+                    color="primary"
+                  ></mat-slide-toggle>
                 </div>
 
-                <!-- Collaborators -->
-                <div class="flex flex-col gap-3">
-                  <div class="flex items-center justify-between px-2">
-                    <label class="text-[10px] font-bold uppercase tracking-widest text-muted">Collaborators</label>
-                    @if (isOwner()) {
-                      <button 
+                <!-- Timestamps & Stats (Minimal) -->
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-[10px] font-medium text-muted">
+                  <div class="flex items-center gap-1">
+                    <ng-icon name="heroCalendar" class="text-xs opacity-60"></ng-icon>
+                    <span>Created {{ formatDate(s.created_at) }}</span>
+                  </div>
+                  <span class="opacity-30">|</span>
+                  <div class="flex items-center gap-1">
+                    <ng-icon name="heroClock" class="text-xs opacity-60"></ng-icon>
+                    <span>Updated {{ formatRelativeTime(s.updated_at) }}</span>
+                  </div>
+                </div>
+
+                <!-- Collaborators (Minimalist) -->
+                <div class="flex flex-col gap-3 mt-2">
+                  @if (isOwner()) {
+                    <div class="flex justify-start px-1">
+                      <button
+                        appButton
+                        variant="outline"
                         (click)="addCollaborator()"
-                        class="text-[10px] font-bold uppercase text-accent hover:underline flex items-center gap-1"
+                        class="w-full text-xs"
                       >
-                        <ng-icon name="heroUserPlus" class="text-xs"></ng-icon>
-                        Add
+                        + Add Collaborator
                       </button>
-                    }
-                  </div>
+                    </div>
+                  }
                   
                   <div class="flex flex-col gap-2">
                     @for (collab of s.collaborators; track collab.uid) {
-                      <div class="flex items-center justify-between p-3 rounded-xl bg-subtle border border-border-base group">
-                        <div class="flex items-center gap-3">
-                          <div class="w-8 h-8 rounded-full bg-surface border border-base flex items-center justify-center overflow-hidden">
-                            @if (collab.avatarUrl) {
-                              <img [src]="collab.avatarUrl" class="w-full h-full object-cover" />
-                            } @else {
-                              <span class="text-[10px] font-bold">{{ collab.username.substring(0, 2).toUpperCase() }}</span>
-                            }
-                          </div>
-                          <span class="text-sm font-medium text-content">{{ collab.username }}</span>
+                      <div class="flex items-center justify-between p-2.5 px-4 rounded-xl bg-subtle/30 border border-border-base/40 group hover:border-accent/20 transition-all">
+                        <div class="flex flex-col">
+                          <span class="text-sm font-semibold text-content/90">{{ collab.username }}</span>
+                          <span class="text-[10px] text-muted font-medium">{{ collab.can_edit ? 'Can Edit' : 'View Only' }}</span>
                         </div>
+                        
                         @if (isOwner()) {
-                          <button 
-                            (click)="removeCollaborator(collab.uid)"
-                            class="opacity-0 group-hover:opacity-100 text-muted hover:text-rose-400 transition-all p-1"
-                            title="Remove Collaborator"
-                          >
-                            <ng-icon name="heroTrash" class="text-sm"></ng-icon>
-                          </button>
+                          <div class="flex items-center gap-4">
+                            <mat-slide-toggle 
+                              [checked]="collab.can_edit"
+                              (change)="toggleCollaboratorPermission(collab.uid, $event.checked)"
+                              title="Toggle Edit Permission"
+                            ></mat-slide-toggle>
+
+                            <button 
+                              (click)="removeCollaborator(collab.uid)"
+                              class="text-xs text-rose-400 hover:underline cursor-pointer transition-all"
+                              title="Remove"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         }
-                      </div>
-                    } @empty {
-                      <div class="px-2 py-4 text-xs text-muted italic border border-dashed border-border-base rounded-xl text-center">
-                        No collaborators added yet.
                       </div>
                     }
                   </div>
                 </div>
 
-                <!-- Details List -->
-                <div class="flex flex-col gap-4 px-2">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-muted">
-                      <ng-icon name="heroChevronRight" class="text-xs"></ng-icon>
-                      <span class="text-xs font-medium">Chapters</span>
-                    </div>
-                    <span class="text-xs font-bold text-content">{{ s.chapters?.length || 0 }}</span>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-muted">
-                      <ng-icon name="heroChevronRight" class="text-xs"></ng-icon>
-                      <span class="text-xs font-medium">Created</span>
-                    </div>
-                    <span class="text-xs font-medium text-content">{{ formatDate(s.created_at) }}</span>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2 text-muted">
-                      <ng-icon name="heroChevronRight" class="text-xs"></ng-icon>
-                      <span class="text-xs font-medium">Last Update</span>
-                    </div>
-                    <span class="text-xs font-medium text-content">{{ formatRelativeTime(s.updated_at) }}</span>
-                  </div>
-                </div>
-
-                <div class="pt-6 border-t border-border-base">
+                <div class="pt-6 border-t border-border-base mt-auto">
                   <div 
-                    class="grid gap-2"
+                    class="grid gap-3"
                     [class]="isOwner() ? 'grid-cols-3' : 'grid-cols-2'"
                   >
                     <button
                       (click)="flipBoard()"
-                      class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
+                      class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
                     >
                       Flip
                     </button>
@@ -437,7 +386,7 @@
                     @if (canEdit()) {
                       <button
                         (click)="importPgn()"
-                        class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
+                        class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
                       >
                         Import
                       </button>
@@ -445,7 +394,7 @@
 
                     <button
                       (click)="exportPgn()"
-                      class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle border border-border-base rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
+                      class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
                     >
                       Export
                     </button>

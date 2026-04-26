@@ -197,7 +197,8 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (!user || !s) return false;
 
     const currentUserId = user.id || user.uid;
-    return s.collaborators?.some(c => String(c.uid) === String(currentUserId)) ?? false;
+    const collaborator = s.collaborators?.find(c => String(c.uid) === String(currentUserId));
+    return collaborator?.can_edit ?? false;
   });
 
   isSyncing = signal(false);
@@ -754,10 +755,9 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.executePgnImport(s.id, result.pgn);
       } else {
         this.studyService.addChapter(s.id, result.name, result.fen, result.orientation).subscribe({
-          next: (newChapter) => {
-            const chapterWithOrientation = { ...newChapter, orientation: result.orientation };
-            this.studyService.getStudy(s.id);
-            this.studyService.currentChapter.set(chapterWithOrientation);
+          next: (res) => {
+            const newChapter = res?.data || res;
+            this.studyService.getStudy(s.id, newChapter.id);
             this.boardOrientation.set(result.orientation || 'white');
             this.toastService.show('Chapter created successfully!', 'success');
           },
@@ -866,14 +866,46 @@ export class StudyComponent implements OnInit, OnDestroy {
     const s = this.study();
     if (!s) return;
 
-    this.studyService.removeCollaborator(s.id, userId).subscribe({
+    const collaborator = s.collaborators?.find(c => String(c.uid) === String(userId));
+    const username = collaborator?.username || 'this user';
+
+    const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
+      data: {
+        title: 'Remove Collaborator',
+        message: `Are you sure you want to remove "${username}" from this study?`,
+        confirmText: 'Remove'
+      }
+    });
+
+    confirmRef.closed.subscribe((confirmed) => {
+      if (confirmed) {
+        this.studyService.removeCollaborator(s.id, userId).subscribe({
+          next: () => {
+            this.toastService.show('Collaborator removed', 'success');
+            this.studyService.getStudy(s.id); // Refresh
+          },
+          error: (err) => {
+            console.error('Failed to remove collaborator:', err);
+            this.toastService.show('Failed to remove collaborator', 'error');
+          }
+        });
+      }
+    });
+  }
+
+  toggleCollaboratorPermission(userId: string, canEdit: boolean) {
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
+
+    this.studyService.updateCollaboratorPermission(s.id, userId, canEdit).subscribe({
       next: () => {
-        this.toastService.show('Collaborator removed', 'success');
+        this.toastService.show(canEdit ? 'Permission granted' : 'Permission revoked', 'success');
         this.studyService.getStudy(s.id); // Refresh
       },
       error: (err) => {
-        console.error('Failed to remove collaborator:', err);
-        this.toastService.show('Failed to remove collaborator', 'error');
+        console.error('Failed to update permission:', err);
+        this.toastService.show('Failed to update permission', 'error');
       }
     });
   }
@@ -900,7 +932,8 @@ export class StudyComponent implements OnInit, OnDestroy {
   private executePgnImport(studyId: number, pgn: string) {
     this.studyService.importPgn(studyId, pgn).subscribe({
       next: (res) => {
-        this.studyService.getStudy(studyId); // Refresh study
+        const firstNewChapter = (res.data?.chapters || res.chapters)?.[0];
+        this.studyService.getStudy(studyId, firstNewChapter?.id);
         this.toastService.show(res.message || 'Import successful!', 'success');
       },
       error: (err) => {

@@ -39,12 +39,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
               @for (user of results(); track user.uid) {
                 <button
                   (click)="selectUser(user)"
-                  class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-surface transition-all text-left group"
+                  class="w-full flex items-center p-3 px-4 rounded-xl hover:bg-surface transition-all text-left group"
                   [class.bg-accent/10]="selectedUser()?.uid === user.uid"
                 >
-                  <div class="w-10 h-10 rounded-full bg-subtle border border-base flex items-center justify-center overflow-hidden">
-                    <span class="text-xs font-bold">{{ user.username.substring(0, 2).toUpperCase() }}</span>
-                  </div>
                   <div class="flex flex-col">
                     <span class="text-sm font-bold text-content group-hover:text-accent transition-colors">{{ user.username }}</span>
                     <span class="text-xs text-muted">{{ user.displayName || user.username }}</span>

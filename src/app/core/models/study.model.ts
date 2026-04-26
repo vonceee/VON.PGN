@@ -1,5 +1,9 @@
 import { UserProfile } from './user.model';
 
+export interface StudyCollaborator extends UserProfile {
+  can_edit: boolean;
+}
+
 export interface Study {
   id: number;
   name: string;
@@ -9,7 +13,7 @@ export interface Study {
     id: number;
     name: string;
   };
-  collaborators?: UserProfile[];
+  collaborators?: StudyCollaborator[];
   chapters_count: number;
   chapters?: StudyChapter[];
   created_at: string;

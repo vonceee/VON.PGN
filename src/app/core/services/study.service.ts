@@ -77,17 +77,41 @@ export class StudyService {
     return this.http.delete(`${this.apiUrl}/studies/${id}`);
   }
 
-  getStudy(id: number): void {
+  getStudy(id: number, targetChapterId?: number): void {
     this.isLoading.set(true);
     this.http.get<{ data: Study }>(`${this.apiUrl}/studies/${id}`).subscribe({
       next: (res) => {
         console.log('[StudyService] Raw API Response:', res.data);
         this.currentStudy.set(res.data);
-        if (res.data.chapters && res.data.chapters.length > 0) {
-          // Unwrap if nested, otherwise use as is
-          const firstChapter = (res.data.chapters[0] as any).data || res.data.chapters[0];
-          this.currentChapter.set(firstChapter);
+        
+        const chapters = res.data.chapters || [];
+        if (chapters.length > 0) {
+          const unwrap = (c: any) => (c as any)?.data || c;
+          let chapterToSet = null;
+
+          // 1. Try to find targetChapterId if provided
+          if (targetChapterId) {
+            const found = chapters.find(c => String(unwrap(c).id) === String(targetChapterId));
+            if (found) chapterToSet = unwrap(found);
+          }
+
+          // 2. Fallback to currently selected if it exists in the refreshed list
+          if (!chapterToSet) {
+            const current = this.currentChapter();
+            if (current) {
+              const found = chapters.find(c => String(unwrap(c).id) === String(current.id));
+              if (found) chapterToSet = unwrap(found);
+            }
+          }
+
+          // 3. Fallback to first chapter
+          if (!chapterToSet) {
+            chapterToSet = unwrap(chapters[0]);
+          }
+
+          this.currentChapter.set(chapterToSet);
         }
+        
         this.isLoading.set(false);
         this.connectSocket(res.data);
       },
@@ -130,6 +154,10 @@ export class StudyService {
 
   removeCollaborator(studyId: number, userId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/studies/${studyId}/collaborators/${userId}`);
+  }
+
+  updateCollaboratorPermission(studyId: number, userId: string, canEdit: boolean): Observable<any> {
+    return this.http.put(`${this.apiUrl}/studies/${studyId}/collaborators/${userId}`, { can_edit: canEdit });
   }
 
   // ── Socket Logic ──────────────────────────────────────────────
