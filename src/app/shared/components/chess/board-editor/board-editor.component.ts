@@ -5,7 +5,9 @@ import { ChessBoardComponent } from '../chess-board/chess-board.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark } from '@ng-icons/heroicons/outline';
 import { dragNewPiece } from 'chessground/drag';
-import { Role, Color } from 'chessground/types';
+import { Role, Color, Key } from 'chessground/types';
+
+export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
 @Component({
   selector: 'app-board-editor',
@@ -13,24 +15,36 @@ import { Role, Color } from 'chessground/types';
   imports: [CommonModule, FormsModule, ChessBoardComponent],
   providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark })],
   template: `
-    <div class="board-editor-container w-full overflow-hidden p-1">
-      <div class="flex flex-row gap-4 items-start justify-center w-full">
+    <div class="board-editor-container w-full overflow-hidden p-1 select-none">
+      <div class="flex flex-row items-center justify-center gap-6 w-full">
         
-        <!-- White Spare Pieces -->
-        <div class="flex flex-col gap-1 p-1 bg-surface border border-base rounded-xl shadow-sm">
-          @for (role of pieceRoles; track role) {
-            <div 
-              class="piece-slot w-8 h-8 flex items-center justify-center cursor-grab active:cursor-grabbing hover:bg-subtle rounded-lg transition-all border border-transparent hover:border-base"
-              (mousedown)="onSparePieceMouseDown($event, 'white', role)"
-            >
-              <div [class]="getPieceClass('white', role)" class="w-6 h-6 pointer-events-none"></div>
-            </div>
-          }
-        </div>
+        <!-- Left: Board flanked by Piece Palettes -->
+        <div class="flex flex-row items-center gap-3">
+          <!-- White Pieces Palette (Vertical) -->
+          <div class="flex flex-col gap-1 p-2 bg-surface border border-base rounded-xl shadow-sm">
+            @for (role of pieceRoles; track role) {
+              <button 
+                class="piece-slot w-7 h-7 flex items-center justify-center rounded-lg transition-all border-2 group"
+                [class.bg-accent/10]="isToolSelected('white', role)"
+                [class.border-accent]="isToolSelected('white', role)"
+                [class.border-transparent]="!isToolSelected('white', role)"
+                (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
+                (click)="selectTool({color: 'white', role})"
+              >
+                <div [class]="getPieceClass('white', role)" class="w-5 h-5 pointer-events-none transition-transform group-hover:scale-110"></div>
+              </button>
+            }
+          </div>
 
-        <!-- Center: Board & Essential Tools -->
-        <div class="flex flex-col gap-3 items-center min-w-0">
-          <div class="relative aspect-square w-full max-w-[280px] board-container-parent z-10 overflow-hidden shadow-lg bg-surface border border-base rounded-lg">
+          <!-- Board -->
+          <div 
+            class="relative aspect-square w-full max-w-[180px] board-container-parent z-10 overflow-hidden shadow-lg bg-surface border border-base rounded-lg"
+            [style.cursor]="getBoardCursor()"
+            (mousedown)="onBoardMouseDown($event)"
+            (mousemove)="onBoardMouseMove($event)"
+            (mouseup)="onBoardMouseUp()"
+            (mouseleave)="onBoardMouseUp()"
+          >
             <app-chess-board
               #board
               [fen]="displayFen()"
@@ -40,41 +54,71 @@ import { Role, Color } from 'chessground/types';
               (fenChange)="onBoardFenChange($event)"
             ></app-chess-board>
           </div>
-          
-          <!-- Compact Toolbar & Turn Selection -->
-          <div class="flex flex-col gap-2 w-full max-w-[280px]">
-            <!-- Turn Selection -->
-            <div class="flex gap-1 p-1 bg-subtle/50 rounded-xl border border-base">
+
+          <!-- Black Pieces Palette (Vertical) -->
+          <div class="flex flex-col gap-1 p-1 bg-surface border border-base rounded-xl shadow-sm">
+            @for (role of pieceRoles; track role) {
               <button 
-                class="flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all"
-                [class.bg-surface]="turn() === 'w'"
-                [class.shadow-sm]="turn() === 'w'"
-                [class.text-accent]="turn() === 'w'"
-                [class.text-muted]="turn() !== 'w'"
-                (click)="turn.set('w')"
-              >White to Move</button>
-              <button 
-                class="flex-1 py-1.5 text-[10px] font-bold rounded-lg transition-all"
-                [class.bg-surface]="turn() === 'b'"
-                [class.shadow-sm]="turn() === 'b'"
-                [class.text-accent]="turn() === 'b'"
-                [class.text-muted]="turn() !== 'b'"
-                (click)="turn.set('b')"
-              >Black to Move</button>
-            </div>
+                class="piece-slot w-7 h-7 flex items-center justify-center rounded-lg transition-all border-2 group"
+                [class.bg-accent/10]="isToolSelected('black', role)"
+                [class.border-accent]="isToolSelected('black', role)"
+                [class.border-transparent]="!isToolSelected('black', role)"
+                (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
+                (click)="selectTool({color: 'black', role})"
+              >
+                <div [class]="getPieceClass('black', role)" class="w-5 h-5 pointer-events-none transition-transform group-hover:scale-110"></div>
+              </button>
+            }
           </div>
         </div>
 
-        <!-- Black Spare Pieces -->
-        <div class="flex flex-col gap-1 p-1 bg-surface border border-base rounded-xl shadow-sm">
-          @for (role of pieceRoles; track role) {
-            <div 
-              class="piece-slot w-8 h-8 flex items-center justify-center cursor-grab active:cursor-grabbing hover:bg-subtle rounded-lg transition-all border border-transparent hover:border-base"
-              (mousedown)="onSparePieceMouseDown($event, 'black', role)"
-            >
-              <div [class]="getPieceClass('black', role)" class="w-6 h-6 pointer-events-none"></div>
+        <!-- Right: Controls Section -->
+        <div class="flex flex-col gap-4">
+          <!-- Editor Tools Pills -->
+          <div class="flex flex-col gap-2">
+            <h3 class="text-[10px] font-bold text-muted uppercase tracking-wider">Tools</h3>
+            <div class="flex flex-col gap-2">
+              <div class="flex gap-2">
+                <button 
+                  (click)="selectTool('hand')"
+                  class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border"
+                  [class]="selectedTool() === 'hand' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
+                >Move</button>
+                <button 
+                  (click)="selectTool('trash')"
+                  class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border"
+                  [class]="selectedTool() === 'trash' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
+                >Delete</button>
+              </div>
+              <div class="flex gap-2">
+                <button 
+                  (click)="resetToInitial()"
+                  class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border bg-white text-black border-base hover:bg-subtle"
+                >Init</button>
+                <button 
+                  (click)="clearBoard()"
+                  class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border bg-white text-black border-base hover:bg-subtle"
+                >Clear</button>
+              </div>
             </div>
-          }
+          </div>
+
+          <!-- Turn Selection Pills -->
+          <div class="flex flex-col gap-2">
+            <h3 class="text-[10px] font-bold text-muted uppercase tracking-wider">Turn</h3>
+            <div class="flex gap-2">
+              <button 
+                (click)="turn.set('w')"
+                class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border"
+                [class]="turn() === 'w' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
+              >White</button>
+              <button 
+                (click)="turn.set('b')"
+                class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border"
+                [class]="turn() === 'b' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
+              >Black</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -126,6 +170,10 @@ export class BoardEditorComponent implements AfterViewInit {
   whiteQueenside = signal(true);
   blackKingside = signal(true);
   blackQueenside = signal(true);
+
+  selectedTool = signal<SelectedTool>('hand');
+  private isMouseDown = false;
+  private lastKey: Key | null = null;
 
   pieceRoles: Role[] = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
 
@@ -179,11 +227,89 @@ export class BoardEditorComponent implements AfterViewInit {
     return `${color} ${role}`;
   }
 
-  onSparePieceMouseDown(event: MouseEvent, color: Color, role: Role) {
+  onPiecePaletteMouseDown(event: MouseEvent, color: Color, role: Role) {
+    // If user starts dragging from the palette, we use Chessground's dragNewPiece
+    // This allows both clicking to select a tool AND dragging to place a single piece
     event.preventDefault();
     if (!this.boardComponent?.api) return;
 
+    this.selectTool('hand'); // Temporarily revert to hand for the drag
     dragNewPiece(this.boardComponent.api.state, { color, role }, event, true);
+
+    // After drag finishes (on mouseup), we want to select the piece tool
+    const upHandler = () => {
+      this.selectTool({ color, role });
+      document.removeEventListener('mouseup', upHandler);
+    };
+    document.addEventListener('mouseup', upHandler);
+  }
+
+  selectTool(tool: SelectedTool) {
+    this.selectedTool.set(tool);
+    this.updateBoardConfig();
+  }
+
+  isToolSelected(color: Color, roleOrHand: Role | 'hand'): boolean {
+    const current = this.selectedTool();
+    if (roleOrHand === 'hand') return current === 'hand';
+    if (typeof current === 'string') return false;
+    return current.color === color && current.role === roleOrHand;
+  }
+
+  private updateBoardConfig() {
+    if (!this.boardComponent?.api) return;
+    const tool = this.selectedTool();
+    
+    this.boardComponent.api.set({
+      draggable: {
+        enabled: tool === 'hand'
+      },
+      selectable: {
+        enabled: tool === 'hand'
+      }
+    });
+  }
+
+  getBoardCursor(): string {
+    const tool = this.selectedTool();
+    if (tool === 'hand') return 'default';
+    if (tool === 'trash') return 'crosshair';
+    return 'copy';
+  }
+
+  onBoardMouseDown(event: MouseEvent) {
+    if (this.selectedTool() === 'hand') return;
+    this.isMouseDown = true;
+    this.handleToolAction(event);
+  }
+
+  onBoardMouseMove(event: MouseEvent) {
+    if (!this.isMouseDown || this.selectedTool() === 'hand') return;
+    this.handleToolAction(event);
+  }
+
+  onBoardMouseUp() {
+    this.isMouseDown = false;
+    this.lastKey = null;
+  }
+
+  private handleToolAction(event: MouseEvent) {
+    const api = this.boardComponent?.api;
+    if (!api) return;
+
+    const pos: [number, number] = [event.clientX, event.clientY];
+    const key = api.getKeyAtDomPos(pos);
+    
+    if (key && key !== this.lastKey) {
+      this.lastKey = key;
+      const tool = this.selectedTool();
+      
+      if (tool === 'trash') {
+        api.setPieces(new Map([[key, undefined]]));
+      } else if (typeof tool === 'object') {
+        api.setPieces(new Map([[key, { color: tool.color, role: tool.role }]]));
+      }
+    }
   }
 
   resetToInitial() {
