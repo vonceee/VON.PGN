@@ -23,12 +23,12 @@ export interface Study {
 export type GlyphId = 1 | 2 | 3 | 4 | 5 | 6;
 
 export const GLYPH_MAPPING: Record<GlyphId, { symbol: string; name: string; class: string }> = {
-  1: { symbol: '?!', name: 'Interesting move', class: 'interesting' },
-  2: { symbol: '??', name: 'Blunder', class: 'mistake' },
+  1: { symbol: '!', name: 'Good move', class: 'good' },
+  2: { symbol: '?', name: 'Mistake', class: 'mistake' },
   3: { symbol: '!!', name: 'Brilliant move', class: 'brilliant' },
-  4: { symbol: '?', name: 'Inaccuracy', class: 'inaccuracy' },
-  5: { symbol: '⊕', name: 'Good move', class: 'good' },
-  6: { symbol: '−⊕', name: 'Even better move', class: 'evenbetter' },
+  4: { symbol: '??', name: 'Blunder', class: 'blunder' },
+  5: { symbol: '!?', name: 'Interesting move', class: 'interesting' },
+  6: { symbol: '?!', name: 'Dubious move', class: 'dubious' },
 };
 
 export interface MoveEval {

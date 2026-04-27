@@ -1,5 +1,5 @@
 import { Chess } from 'chess.js';
-import { MoveNode } from '../models/study.model';
+import { MoveNode, GlyphId } from '../models/study.model';
 
 /**
  * Validates and normalizes a MoveNode to ensure all properties are correct types
@@ -44,7 +44,34 @@ function normalizeMoveNode(node: any): MoveNode {
     ply,
     variations,
     comments: Array.isArray(node.comments) ? node.comments.map(String) : [],
+    glyphs: Array.isArray(node.glyphs) ? (node.glyphs.map(Number) as GlyphId[]) : [],
   };
+}
+
+/**
+ * Updates a specific node in the tree with new properties.
+ * Searches by FEN and Ply.
+ */
+export function updateNodeInTree(
+  nodes: MoveNode[],
+  fen: string,
+  ply: number,
+  updates: Partial<MoveNode>,
+): MoveNode[] {
+  return nodes.map((node) => {
+    if (node.fen === fen && node.ply === ply) {
+      return { ...node, ...updates };
+    }
+
+    if (node.variations && node.variations.length > 0) {
+      const updatedVariations = node.variations.map((v) =>
+        updateNodeInTree(v, fen, ply, updates),
+      );
+      return { ...node, variations: updatedVariations };
+    }
+
+    return node;
+  });
 }
 
 /**
@@ -81,7 +108,7 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
       const nodes: MoveNode[] = [];
       const tempChess = new Chess(initialFen);
       
-      history.forEach((m, i) => {
+      history.forEach((m: any, i: number) => {
         tempChess.move(m.san);
         nodes.push({
           san: m.san,
@@ -89,7 +116,8 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
           fen: tempChess.fen(),
           ply: i + 1,
           variations: [],
-          comments: [],
+          comments: m.comment ? [m.comment] : [],
+          glyphs: m.nags ? m.nags.map((n: string) => parseInt(n, 10)) : [],
         });
       });
       return nodes;

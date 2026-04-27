@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ButtonComponent } from '@shared/ui';
-import { MoveNode } from '../../../../core/models/study.model';
+import { MoveNode, GLYPH_MAPPING } from '../../../../core/models/study.model';
 import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
 import { AudioService } from '../../../../core/services/audio.service';
 
@@ -29,6 +29,13 @@ import { AudioService } from '../../../../core/services/audio.service';
 export class MoveNotationComponent {
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
+  
+  glyphMapping = GLYPH_MAPPING;
+
+  getGlyph(id: number) {
+    return (this.glyphMapping as any)[id];
+  }
+
   // Advanced Move Tree (Used by Study)
   moveTree = input<MoveNode[]>([]);
   // Legacy Flat Moves (Used by everything else)
@@ -42,6 +49,7 @@ export class MoveNotationComponent {
   navigate = output<number>();
   nodeClicked = output<MoveNode>();
   deleteFromHere = output<MoveNode>();
+  annotateMove = output<MoveNode>();
 
   // Context Menu State
   contextMenuNode = signal<MoveNode | null>(null);
@@ -238,6 +246,14 @@ export class MoveNotationComponent {
     const node = this.contextMenuNode();
     if (node) {
       this.deleteFromHere.emit(node);
+    }
+    this.closeContextMenu();
+  }
+
+  onAnnotate() {
+    const node = this.contextMenuNode();
+    if (node) {
+      this.annotateMove.emit(node);
     }
     this.closeContextMenu();
   }

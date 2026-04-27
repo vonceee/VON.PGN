@@ -130,7 +130,26 @@
           class="text-left transition-all hover:bg-accent/10 hover:cursor-pointer select-none active-move-target"
         >
           {{ node.san }}
+          <!-- Glyph Rendering -->
+          @if (node.glyphs && node.glyphs.length > 0) {
+            @for (glyphId of node.glyphs; track glyphId) {
+              @if (getGlyph(glyphId); as glyph) {
+                <span 
+                  [class]="glyph.class"
+                  class="ml-0.5 font-black text-accent drop-shadow-sm"
+                  [title]="glyph.name"
+                >{{ glyph.symbol }}</span>
+              }
+            }
+          }
         </button>
+
+        <!-- Comment Rendering -->
+        @if (node.comments && node.comments.length > 0) {
+          <div class="w-full block text-[0.8rem] text-muted leading-snug italic px-2 py-1 mb-1 bg-subtle/30 rounded border-l-2 border-accent/30 font-normal">
+            {{ node.comments[0] }}
+          </div>
+        }
 
         <!-- Variations as Inline Parentheses -->
         @if (node.variations && node.variations.length > 0) {
@@ -208,9 +227,21 @@
       (contextmenu)="$event.preventDefault()"
     >
       <button
+        (click)="onAnnotate()"
+        class="w-full text-left px-4 py-2.5 text-sm hover:bg-accent/10 hover:text-accent transition-colors flex items-center gap-3 font-semibold text-content border-b border-border-base/50"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Annotate move
+      </button>
+      <button
         (click)="onDeleteFromHere()"
         class="w-full text-left px-4 py-2.5 text-sm hover:bg-rose-500/10 hover:text-rose-400 transition-colors flex items-center gap-3 font-semibold text-content"
       >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
         Delete from here
       </button>
     </div>

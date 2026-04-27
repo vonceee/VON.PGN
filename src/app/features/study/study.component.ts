@@ -13,20 +13,21 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudyService } from '../../core/services/study.service';
-import { DialogModule } from '@angular/cdk/dialog';
+import { AudioService } from '../../core/services/audio.service';
+import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { AuthService } from '../../core/services/auth.service';
 import { ChessBoardComponent, EvalBarComponent } from '@shared/chess';
 import { MoveNotationComponent } from '@shared/chess';
-import { AudioService } from '../../core/services/audio.service';
 import { FormsModule } from '@angular/forms';
 import { Subscription, BehaviorSubject, fromEvent } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
 import { MoveNode } from '../../core/models/study.model';
-import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
+import { buildTreeFromMoves, updateNodeInTree } from '../../core/utils/chess-tree.utils';
 import { EngineService } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
+import { AnnotateMoveDialogComponent } from './dialogs/annotate-move-dialog/annotate-move-dialog.component';
 import { StudySidebarComponent } from './study-sidebar/study-sidebar.component';
 import { StudyInfoComponent } from './study-info/study-info.component';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
@@ -48,6 +49,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     StudyInfoComponent,
     StudyAnalysisComponent,
     StudyChatComponent,
+    AnnotateMoveDialogComponent,
   ],
   templateUrl: './study.component.html',
   styles: [`
@@ -95,6 +97,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private engineService = inject(EngineService);
   private audioService = inject(AudioService);
   private router = inject(Router);
+  private dialog = inject(Dialog);
 
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
@@ -395,6 +398,34 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.audioService.playMoveSound(node.san);
       if (this.canEdit()) this.studyService.emitNavigation(node.fen, this.moveTree(), this.boardOrientation(), this.isSyncing());
     }
+  }
+
+  onAnnotateMove(node: MoveNode) {
+    if (!this.canEdit()) return;
+    
+    const dialogRef = this.dialog.open(AnnotateMoveDialogComponent, {
+      data: node,
+    });
+
+    dialogRef.closed.subscribe((result: any) => {
+      if (result) {
+        this.moveTree.update(tree => 
+          updateNodeInTree(tree, node.fen, node.ply, {
+            comments: result.comment ? [result.comment] : [],
+            glyphs: result.glyphs,
+          })
+        );
+        
+        // Broadcast and save
+        this.studyService.emitMove(
+          '', // No SAN change
+          this.currentFen(),
+          this.moveTree(),
+          this.boardOrientation(),
+          this.isSyncing()
+        );
+      }
+    });
   }
 
   ngOnInit() {
