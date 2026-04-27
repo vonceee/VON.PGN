@@ -1,0 +1,106 @@
+<!-- Analysis Toolbar -->
+<div class="flex items-center justify-between px-4 h-10 border-b border-border-base bg-surface overflow-hidden">
+  <div class="flex items-center gap-3 h-full">
+    <mat-slide-toggle 
+      [checked]="isEngineActive()" 
+      (change)="onToggleEngine()"
+      color="primary"
+      class="engine-slide-toggle"
+      title="Toggle Local Evaluation"
+    >
+    </mat-slide-toggle>
+
+    @if (isEngineError() && isEngineActive()) {
+      <button
+        (click)="onRetryEngine()"
+        class="flex items-center gap-1 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-all"
+        title="Retry Engine"
+      >
+        <span class="text-[10px] font-bold uppercase tracking-wider">Retry</span>
+      </button>
+    }
+
+    @if (isEngineActive()) {
+      <div class="flex items-center gap-2 animate-in fade-in duration-500">
+        @if (engineDepth() > 0) {
+          <span class="text-xs font-medium select-none">
+            depth = {{ engineDepth() }}
+          </span>
+        }
+        @if (formattedNps()) {
+          <span class="text-xs font-medium select-none hidden sm:inline">
+            {{ formattedNps() }}
+          </span>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="flex items-center gap-1.5">
+    @if (isEngineActive()) {
+      <button
+        (click)="onToggleSettings()"
+        class="text-xs cursor-pointer hover:underline shrink-0"
+        title="Engine Settings"
+      >
+        Engine Settings
+      </button>
+    }
+  </div>
+</div>
+
+<!-- Inline Engine Settings Panel -->
+@if (showEngineSettings() && isEngineActive()) {
+  <div class="px-4 py-3 border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 duration-300 flex flex-col gap-3">
+    <div class="flex items-center justify-between">
+      <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Lines</span>
+      <div class="flex gap-1">
+        @for (n of [1,2,3]; track n) {
+          <button
+            (click)="onMultiPvChange(n)"
+            class="w-7 h-7 rounded-md text-[10px] font-black transition-all duration-200"
+            [class]="multiPvCount() === n
+              ? 'bg-accent/20 text-accent border border-accent/30'
+              : 'bg-subtle text-muted border border-transparent hover:bg-surface'"
+          >
+            {{ n }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Multi-PV Lines -->
+@if (isEngineActive() && enginePvLines().length > 0) {
+  <div class="border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 duration-500">
+    @for (line of enginePvLines(); track line.pvIndex) {
+      <div class="flex items-start gap-2 px-4 py-1.5" 
+        [class.border-t]="line.pvIndex > 0"
+        [class.border-border-base]="line.pvIndex > 0">
+        <span class="text-xs font-bold min-w-[36px] text-left shrink-0 mt-px text-content">
+          {{ line.eval }}
+        </span>
+        <div class="flex items-center gap-x-1.5 overflow-hidden min-w-0 flex-1 whitespace-nowrap">
+          @for (move of line.pv.slice(0, 10); track $index) {
+            <div class="flex items-center gap-0.5">
+              @if ($index === 0 || (currentPly() + $index) % 2 === 0) {
+                <span class="text-xs font-black select-none">
+                  {{ (currentPly() + $index) / 2 + 1 | number:'1.0-0' }}{{ ($index === 0 && currentPly() % 2 !== 0) ? '...' : '.' }}
+                </span>
+              }
+              <span [class]="$index === 0 && line.pvIndex === 0 
+                ? 'text-xs font-black' 
+                : 'text-xs font-medium cursor-default'">
+                {{ move }}
+              </span>
+            </div>
+          }
+          @if (line.pv.length > 4) {
+            <span class="text-xs self-center">...</span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

@@ -1,288 +1,82 @@
-<div class="h-full w-full overflow-hidden flex flex-col p-8 bg-main">
+<div class="absolute inset-0 overflow-hidden flex flex-col bg-main">
   @if (study(); as s) {
-    <div
-      class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] xl:grid-cols-[350px_1fr_440px] 2xl:grid-cols-[380px_1fr_480px] w-full max-w-[1920px] mx-auto items-stretch h-full overflow-hidden"
-    >
-      <!-- Left Column: Chapter Sidebar (Learn Sidebar style) -->
-      <aside
-        class="hidden lg:flex flex-col h-full overflow-hidden pt-4"
-        [class.pointer-events-none]="isSyncing() && !canEdit()"
-        [class.opacity-70]="isSyncing() && !canEdit()"
-      >
-        <div>
-          <div class="flex flex-col mb-4">
-            <div class="flex items-center justify-between">
-              <h2
-                class="text-xl font-medium select-none truncate cursor-pointer hover:text-accent min-w-0"
-                [title]="s.name"
-              >
-                {{ s.name }}
-              </h2>
+    <!-- Main Content Grid Wrapper -->
+    <div class="flex-1 w-full max-w-[1920px] mx-auto overflow-hidden p-4 lg:p-6 xl:p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] xl:grid-cols-[350px_1fr_440px] 2xl:grid-cols-[380px_1fr_480px] gap-4 lg:gap-6 h-full overflow-hidden">
+        
+        <!-- Left Column: Sidebar -->
+        <app-study-sidebar
+          class="h-full overflow-hidden"
+          [isLargeScreen]="isLargeScreen()"
+          [isSyncing]="isSyncing()"
+          [canEdit]="canEdit()"
+        ></app-study-sidebar>
+
+        <!-- Center Column: Board -->
+        <div class="flex flex-col items-center justify-center overflow-hidden relative">
+          @if (isEngineActive()) {
+            <div class="lg:hidden w-full max-w-[800px] px-4 pb-2 animate-in fade-in slide-in-from-top-1 duration-300">
+              <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="horizontal"></app-eval-bar>
             </div>
-            <div 
-              (click)="openViewers()"
-              class="flex items-center gap-1.5 mt-0.5 text-[10px] font-bold uppercase tracking-wider text-muted/80 cursor-pointer hover:text-accent transition-colors"
-            >
-              <ng-icon name="heroEye" class="text-xs text-accent/70"></ng-icon>
-              <span>{{ viewerCount() }} viewer{{ viewerCount() === 1 ? '' : 's' }}</span>
-            </div>
-          </div>
-        </div>
+          }
 
-        <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-2">
-          <div class="flex-1 flex flex-col gap-0.5">
-            @for (chap of s.chapters; track chap.id; let idx = $index) {
-              <button
-                (click)="selectChapter(chap)"
-                class="relative flex items-center justify-between py-2 px-4 cursor-pointer transition-all duration-200 group text-left
-                {{
-                  currentChapter()?.id === chap.id
-                    ? 'bg-subtle'
-                    : 'hover:bg-surface'
-                }}"
-              >
-                <!-- Active Line Indicator -->
-                @if (currentChapter()?.id === chap.id) {
-                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-accent"></div>
-                }
-
-                <div class="flex items-center gap-3 min-w-0">
-                  <span
-                    [class]="
-                      'text-sm font-medium truncate transition-colors ' +
-                      (currentChapter()?.id === chap.id
-                        ? 'text-accent'
-                        : 'text-content')
-                    "
-                  >
-                    {{ chap.name }}
-                  </span>
-                </div>
-
-                @if (canEdit()) {
-                  <button
-                    (click)="onEditChapter($event, chap)"
-                    class="text-xs cursor-pointer hover:underline shrink-0"
-                    title="Edit Chapter"
-                  >
-                    Edit
-                  </button>
-                }
-              </button>
-            }
-
-            @if (canEdit()) {
-              <button
-                appButton
-                variant="outline"
-                (click)="createChapter()"
-                class="text-sm pt-2"
-              >
-                + New Chapter
-              </button>
-            }
-          </div>
-        </nav>
-      </aside>
-
-      <!-- Center Column: Board -->
-      <div class="flex flex-col items-center justify-center overflow-hidden relative">
-        <!-- Mobile Eval Bar (Lila style) -->
-        @if (isEngineActive()) {
-          <div class="lg:hidden w-full max-w-[800px] px-4 pb-2 animate-in fade-in slide-in-from-top-1 duration-300">
-            <app-eval-bar
-              [eval]="engineEval()"
-              [orientation]="boardOrientation()"
-              mode="horizontal"
-            ></app-eval-bar>
-          </div>
-        }
-
-        <div class="flex-1 w-full flex items-center justify-center min-h-0 overflow-hidden relative board-container-parent">
-          <div class="flex items-center justify-center gap-0 max-h-full">
-            <app-chess-board
-              [fen]="currentFen()"
-              [orientation]="boardOrientation()"
-              [interactive]="canEdit()"
-              (moveMade)="onMoveMade($event)"
-              (shapeDrawn)="onShapeDrawn($event)"
-              (sizeChange)="boardSize.set($event)"
-              [syncedShapes]="mergedShapes()"
-              [lastMove]="lastMoveSquares()"
-            ></app-chess-board>
-
-            <!-- Evaluation Bar (Desktop) - Always present, toggle visibility -->
-            <div 
-              class="hidden lg:block h-[var(--board-size)] transition-all duration-500 ease-in-out"
-              [class.opacity-0]="!isEngineActive()"
-              [class.invisible]="!isEngineActive()"
-              [class.pointer-events-none]="!isEngineActive()"
-            >
-              <app-eval-bar
-                [eval]="engineEval()"
+          <div class="flex-1 w-full flex items-center justify-center min-h-0 overflow-hidden relative board-container-parent">
+            <div class="flex items-center justify-center gap-0 max-h-full">
+              <app-chess-board
+                [fen]="currentFen()"
                 [orientation]="boardOrientation()"
-                mode="vertical"
-              ></app-eval-bar>
+                [interactive]="canEdit()"
+                (moveMade)="onMoveMade($event)"
+                (shapeDrawn)="onShapeDrawn($event)"
+                (sizeChange)="boardSize.set($event)"
+                [syncedShapes]="mergedShapes()"
+                [lastMove]="lastMoveSquares()"
+              ></app-chess-board>
+
+              <div class="hidden lg:block h-[var(--board-size)] transition-all duration-500 ease-in-out"
+                   [class.opacity-0]="!isEngineActive()" [class.invisible]="!isEngineActive()">
+                <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="vertical"></app-eval-bar>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Right Column: Notation & Info -->
-      <div class="h-full flex flex-col gap-2 overflow-hidden">
-        <div class="flex flex-col overflow-hidden h-full border-l border-border-base">
+        <!-- Right Column: Notation & Info -->
+        <div class="h-full flex flex-col gap-2 overflow-hidden border-l border-border-base bg-surface/5">
           <!-- Sidebar Tabs -->
-          <div class="flex">
-            <button
-              (click)="activeTab.set('notation')"
-              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
-              [class.text-accent]="activeTab() === 'notation'"
-              [class.opacity-100]="activeTab() === 'notation'"
-              [class.opacity-50]="(activeTab() === 'notation') === false"
-              [class.after:w-full]="activeTab() === 'notation'"
-            >
-              Notation
-            </button>
-            <button
-              (click)="activeTab.set('info')"
-              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
-              [class.text-accent]="activeTab() === 'info'"
-              [class.opacity-100]="activeTab() === 'info'"
-              [class.opacity-50]="(activeTab() === 'info') === false"
-              [class.after:w-full]="activeTab() === 'info'"
-            >
-              Study Info
-            </button>
-            <button
-              (click)="activeTab.set('chat')"
-              class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
-              [class.text-accent]="activeTab() === 'chat'"
-              [class.opacity-100]="activeTab() === 'chat'"
-              [class.opacity-50]="(activeTab() === 'chat') === false"
-              [class.after:w-full]="activeTab() === 'chat'"
-            >
-              Chat
-            </button>
+          <div class="flex border-b border-border-base">
+            @for (tab of ['notation', 'info', 'chat']; track tab) {
+              <button
+                (click)="activeTab.set(tab === 'notation' ? 'notation' : tab === 'info' ? 'info' : 'chat')"
+                class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
+                [class.text-accent]="activeTab() === tab"
+                [class.opacity-50]="activeTab() !== tab"
+                [class.after:w-full]="activeTab() === tab"
+                [class.lg:hidden]="tab === 'chat'"
+              >
+                {{ tab }}
+              </button>
+            }
           </div>
 
           <div class="flex-1 flex flex-col overflow-hidden relative">
             @if (activeTab() === 'notation') {
-              <!-- Analysis Toolbar -->
-              <div class="flex items-center justify-between px-4 h-10 border-b border-border-base bg-surface overflow-hidden">
-                <div class="flex items-center gap-3 h-full">
-                  <!-- Engine Slide Toggle (No Label) -->
-                  <mat-slide-toggle 
-                    [checked]="isEngineActive()" 
-                    (change)="toggleEngine()"
-                    color="primary"
-                    class="engine-slide-toggle"
-                    title="Toggle Local Evaluation"
-                  >
-                  </mat-slide-toggle>
-
-                  <!-- Error Retry -->
-                  @if (isEngineError() && isEngineActive()) {
-                    <button
-                      (click)="onEngineRetry()"
-                      class="flex items-center gap-1 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-all"
-                      title="Retry Engine"
-                    >
-                      <span class="text-[10px] font-bold uppercase tracking-wider">Retry</span>
-                    </button>
-                  }
-
-                  <!-- Eval Badge + Depth + NPS -->
-                  @if (isEngineActive()) {
-                    <div class="flex items-center gap-2 animate-in fade-in duration-500">
-                      <!-- Depth -->
-                      @if (engineDepth() > 0) {
-                        <span class="text-xs font-medium select-none">
-                          depth = {{ engineDepth() }}{{ searchMode() === 'infinite' ? '/∞' : '' }}
-                        </span>
-                      }
-                      <!-- NPS -->
-                      @if (formattedNps()) {
-                        <span class="text-xs font-medium select-none hidden sm:inline">
-                          {{ formattedNps() }}
-                        </span>
-                      }
-                    </div>
-                  }
-                </div>
-
-                <!-- Right side: Go Deeper + Settings Gear -->
-                <div class="flex items-center gap-1.5">
-                  @if (isEngineActive()) {
-                    <button
-                      (click)="toggleEngineSettings()"
-                      class="text-xs cursor-pointer hover:underline shrink-0"
-                      title="Engine Settings"
-                    >
-                      Engine Settings
-                    </button>
-                  }
-                </div>
-              </div>
-
-              <!-- Inline Engine Settings Panel -->
-              @if (showEngineSettings() && isEngineActive()) {
-                <div class="px-4 py-3 border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 duration-300 flex flex-col gap-3">
-                  <!-- Multi-PV Control -->
-                  <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Lines</span>
-                    <div class="flex gap-1">
-                      @for (n of [1,2,3]; track n) {
-                        <button
-                          (click)="onMultiPvChange(n)"
-                          class="w-7 h-7 rounded-md text-[10px] font-black transition-all duration-200"
-                          [class]="multiPvCount() === n
-                            ? 'bg-accent/20 text-accent border border-accent/30'
-                            : 'bg-subtle text-muted border border-transparent hover:bg-surface'"
-                        >
-                          {{ n }}
-                        </button>
-                      }
-                    </div>
-                  </div>
-
-                </div>
-              }
-
-              <!-- Multi-PV Lines -->
-              @if (isEngineActive() && enginePvLines().length > 0) {
-                <div class="border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 duration-500">
-                  @for (line of enginePvLines(); track line.pvIndex) {
-                    <div class="flex items-start gap-2 px-4 py-1.5" 
-                      [class.border-t]="line.pvIndex > 0"
-                      [class.border-border-base]="line.pvIndex > 0">
-                      <!-- Per-line eval badge -->
-                      <span class="text-xs font-bold min-w-[36px] text-left shrink-0 mt-px text-content">
-                        {{ line.eval }}
-                      </span>
-                      <!-- PV Moves -->
-                      <div class="flex items-center gap-x-1.5 overflow-hidden min-w-0 flex-1 whitespace-nowrap">
-                        @for (move of line.pv.slice(0, 10); track $index) {
-                          <div class="flex items-center gap-0.5">
-                            @if ($index === 0 || (currentPly() + $index) % 2 === 0) {
-                              <span class="text-xs font-black select-none">
-                                {{ (currentPly() + $index) / 2 + 1 | number:'1.0-0' }}{{ ($index === 0 && currentPly() % 2 !== 0) ? '...' : '.' }}
-                              </span>
-                            }
-                            <span [class]="$index === 0 && line.pvIndex === 0 
-                              ? 'text-xs font-black' 
-                              : 'text-xs font-medium cursor-default'">
-                              {{ move }}
-                            </span>
-                          </div>
-                        }
-                        @if (line.pv.length > 4) {
-                          <span class="text-xs self-center">...</span>
-                        }
-                      </div>
-                    </div>
-                  }
-                </div>
-              }
+              <app-study-analysis
+                [isEngineActive]="isEngineActive()"
+                [isEngineError]="isEngineError()"
+                [engineEval]="engineEval()"
+                [engineDepth]="engineDepth()"
+                [formattedNps]="formattedNps()"
+                [showEngineSettings]="showEngineSettings()"
+                [multiPvCount]="multiPvCount()"
+                [searchMode]="searchMode()"
+                [enginePvLines]="enginePvLines()"
+                [currentPly]="currentPly()"
+                (toggleEngine)="toggleEngine()"
+                (retryEngine)="onEngineRetry()"
+                (toggleSettings)="toggleEngineSettings()"
+                (multiPvChange)="onMultiPvChange($event)"
+              ></app-study-analysis>
 
               <div class="flex-1 flex flex-col overflow-hidden">
                 <app-move-notation
@@ -296,145 +90,26 @@
                   (deleteFromHere)="onDeleteFromHere($event)"
                 ></app-move-notation>
               </div>
-            } @else if (activeTab() === 'info') {               
-              <!-- Info View -->              <div class="p-4 flex flex-col gap-5 overflow-y-auto custom-scrollbar h-full bg-main">
-                
-                <!-- Study Header -->
-                <div class="flex items-center justify-between p-1">
-                  <div class="flex flex-col gap-1 min-w-0">
-                    <h3 class="text-xl font-extrabold text-content leading-tight tracking-tight truncate">{{ s.name }}</h3>
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-xs font-semibold text-accent/90 cursor-pointer hover:underline" [appUserHovercard]="s.owner.name">{{ s.owner.name }}</span>
-                      <span class="text-[10px] text-muted">•</span>
-                      <span class="text-[10px] text-muted font-medium">Study Owner</span>
-                    </div>
-                  </div>
-                  
-                  @if (isOwner()) {
-                    <button
-                      (click)="openSettings()"
-                      class="text-xs font-bold uppercase tracking-widest text-accent hover:underline px-2 py-1"
-                    >
-                      Edit
-                    </button>
-                  }
-                </div>
-
-                <!-- Sync Mode (Hierarchical) -->
-                <div class="flex items-center justify-between p-4 rounded-2xl bg-subtle/50 border border-border-base/50">
-                  <div class="flex flex-col">
-                    <span class="text-base font-bold text-content tracking-tight">
-                      {{ isSyncing() ? (canEdit() ? 'Live Teaching' : 'Tutor Follow') : 'Self Exploration' }}
-                    </span>
-                    <span class="text-[10px] text-muted font-medium tracking-wide uppercase">Synchronization</span>
-                  </div>
-                  <mat-slide-toggle 
-                    [checked]="isSyncing()" 
-                    (change)="toggleSync()"
-                    color="primary"
-                  ></mat-slide-toggle>
-                </div>
-
-                <!-- Timestamps & Stats (Minimal) -->
-                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-[10px] font-medium text-muted">
-                  <div class="flex items-center gap-1">
-                    <ng-icon name="heroCalendar" class="text-xs opacity-60"></ng-icon>
-                    <span>Created {{ formatDate(s.created_at) }}</span>
-                  </div>
-                  <span class="opacity-30">|</span>
-                  <div class="flex items-center gap-1">
-                    <ng-icon name="heroClock" class="text-xs opacity-60"></ng-icon>
-                    <span>Updated {{ formatRelativeTime(s.updated_at) }}</span>
-                  </div>
-                </div>
-
-                <!-- Collaborators (Minimalist) -->
-                <div class="flex flex-col gap-3 mt-2">
-                  @if (isOwner()) {
-                    <div class="flex justify-start px-1">
-                      <button
-                        appButton
-                        variant="outline"
-                        (click)="addCollaborator()"
-                        class="w-full text-xs"
-                      >
-                        + Add Collaborator
-                      </button>
-                    </div>
-                  }
-                  
-                  <div class="flex flex-col gap-2">
-                    @for (collab of s.collaborators; track collab.uid) {
-                      <div class="flex items-center justify-between p-2.5 px-4 rounded-xl bg-subtle/30 border border-border-base/40 group hover:border-accent/20 transition-all">
-                        <div class="flex flex-col">
-                          <span class="text-sm font-semibold text-content/90 cursor-pointer hover:underline" [appUserHovercard]="collab.username">{{ collab.username }}</span>
-                          <span class="text-[10px] text-muted font-medium">{{ collab.can_edit ? 'Can Edit' : 'View Only' }}</span>
-                        </div>
-                        
-                        @if (isOwner()) {
-                          <div class="flex items-center gap-4">
-                            <mat-slide-toggle 
-                              [checked]="collab.can_edit"
-                              (change)="toggleCollaboratorPermission(collab.uid, $event.checked)"
-                              title="Toggle Edit Permission"
-                            ></mat-slide-toggle>
-
-                            <button 
-                              (click)="removeCollaborator(collab.uid)"
-                              class="text-xs text-rose-400 hover:underline cursor-pointer transition-all"
-                              title="Remove"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        }
-                      </div>
-                    }
-                  </div>
-                </div>
-
-                <div class="pt-6 border-t border-border-base mt-auto">
-                  <div 
-                    class="grid gap-3"
-                    [class]="isOwner() ? 'grid-cols-3' : 'grid-cols-2'"
-                  >
-                    <button
-                      (click)="flipBoard()"
-                      class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
-                    >
-                      Flip
-                    </button>
-                    
-                    @if (canEdit()) {
-                      <button
-                        (click)="importPgn()"
-                        class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
-                      >
-                        Import
-                      </button>
-                    }
-
-                    <button
-                      (click)="exportPgn()"
-                      class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
-                    >
-                      Export
-                    </button>
-                  </div>
-                </div>
-              </div>
+            } @else if (activeTab() === 'info') {
+              <app-study-info
+                [isOwner]="isOwner()"
+                [canEdit]="canEdit()"
+                [isSyncing]="isSyncing()"
+                (syncToggle)="toggleSync()"
+                (flipBoard)="flipBoard()"
+              ></app-study-info>
             } @else if (activeTab() === 'chat') {
-              <app-study-chat class="flex-1 overflow-hidden"></app-study-chat>
+              <div class="flex-1 overflow-hidden lg:hidden">
+                <app-study-chat class="flex-1 overflow-hidden"></app-study-chat>
+              </div>
             }
-            </div>
           </div>
         </div>
       </div>
+    </div>
   } @else if (isLoading()) {
     <div class="flex items-center justify-center min-h-[400px]">
-      <div
-        class="w-10 h-10 border-3 border-accent border-t-transparent rounded-full animate-spin"
-      ></div>
+      <div class="w-10 h-10 border-3 border-accent border-t-transparent rounded-full animate-spin"></div>
     </div>
   }
 
