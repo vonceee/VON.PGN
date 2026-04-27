@@ -45,6 +45,16 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
       >
         Delete Study
       </button>
+
+      <button actions
+        appButton
+        variant="ghost"
+        class="hover:!bg-muted/10"
+        (click)="onClearChat()"
+      >
+        Clear Chat Lobby
+      </button>
+
       <div actions class="flex-1"></div>
 
       <button actions appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
@@ -80,5 +90,9 @@ export class StudySettingsDialogComponent implements OnInit {
 
   onDelete() {
     this.dialogRef.close({ action: 'delete' });
+  }
+
+  onClearChat() {
+    this.dialogRef.close({ action: 'clear_chat' });
   }
 }

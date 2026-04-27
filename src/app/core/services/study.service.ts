@@ -41,10 +41,14 @@ export class StudyService {
   private moveMadeSubject = new Subject<StudyMoveMadePayload>();
   private shapesDrawnSubject = new Subject<StudyShapesDrawnPayload>();
   private chapterChangedSubject = new Subject<any>();
+  private chatMessageSubject = new Subject<any>();
+  private chatClearedSubject = new Subject<void>();
 
   onMoveMade$ = this.moveMadeSubject.asObservable();
   onShapesDrawn$ = this.shapesDrawnSubject.asObservable();
   onChapterChanged$ = this.chapterChangedSubject.asObservable();
+  onChatMessage$ = this.chatMessageSubject.asObservable();
+  onChatCleared$ = this.chatClearedSubject.asObservable();
 
   // Track the absolute current state of the study room (owner's state)
   lastRemoteState = signal<{
@@ -162,6 +166,18 @@ export class StudyService {
     return this.http.put(`${this.apiUrl}/studies/${studyId}/collaborators/${userId}`, { can_edit: canEdit });
   }
 
+  getStudyMessages(studyId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/studies/${studyId}/messages`);
+  }
+
+  sendMessageToDb(studyId: number, body: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/studies/${studyId}/messages`, { body });
+  }
+
+  clearStudyChat(studyId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/studies/${studyId}/messages`);
+  }
+
   // ── Socket Logic ──────────────────────────────────────────────
 
   private connectSocket(study: Study): void {
@@ -237,6 +253,14 @@ export class StudyService {
       this.viewerNames.set(payload.viewers || []);
       this.viewerCount.set(payload.count || 0);
     });
+
+    this.socket.on('study_chat_message', (payload: any) => {
+      this.chatMessageSubject.next(payload);
+    });
+
+    this.socket.on('study_chat_cleared', () => {
+      this.chatClearedSubject.next();
+    });
   }
 
   emitMove(move: string, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
@@ -307,6 +331,23 @@ export class StudyService {
     this.socket.emit('study_draw_shapes', {
       studyId: study.id,
       shapes,
+    });
+  }
+
+  sendChatMessage(text: string): void {
+    const study = this.currentStudy();
+    if (!study || !this.socket) return;
+    this.socket.emit('study_send_chat', {
+      studyId: study.id,
+      text
+    });
+  }
+
+  emitClearChat(): void {
+    const study = this.currentStudy();
+    if (!study || !this.socket) return;
+    this.socket.emit('study_clear_chat', {
+      studyId: study.id
     });
   }
 

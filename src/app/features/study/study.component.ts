@@ -40,13 +40,14 @@ import { heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPen
 import { EngineService, type SearchMode } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { UserHovercardDirective } from '@shared/directives';
+import { StudyChatComponent } from './study-chat/study-chat.component';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-study',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, EvalBarComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent, MatSlideToggleModule, ConfirmDeleteModalComponent, UserHovercardDirective],
+  imports: [CommonModule, ChessBoardComponent, EvalBarComponent, MoveNotationComponent, FormsModule, DialogModule, NgIconComponent, ButtonComponent, MatSlideToggleModule, ConfirmDeleteModalComponent, UserHovercardDirective, StudyChatComponent],
   providers: [provideIcons({ heroChevronRight, heroCog6Tooth, heroPlay, heroPause, heroBolt, heroPencil, heroArrowPath, heroUserPlus, heroTrash, heroEye })],
   templateUrl: './study.component.html',
   styles: [`
@@ -213,7 +214,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   });
 
   isSyncing = signal(false);
-  activeTab = signal<'notation' | 'info'>('notation');
+  activeTab = signal<'notation' | 'info' | 'chat'>('notation');
   showDeleteModal = signal(false);
   isDeleting = signal(false);
 
@@ -1010,35 +1011,48 @@ export class StudyComponent implements OnInit, OnDestroy {
     const s = this.study();
     if (!s) return;
 
-    const dialogRef = this.dialog.open(StudySettingsDialogComponent, {
+    const dialogRef = this.dialog.open<any>(StudySettingsDialogComponent, {
       data: {
         name: s.name,
         visibility: s.visibility
       }
     });
 
-    dialogRef.closed.subscribe((result: any) => {
+    dialogRef.closed.subscribe((result) => {
       if (!result) return;
 
-      if (result.action === 'delete') {
-        this.confirmDeleteStudy();
-      } else if (result.action === 'save' && result.name) {
+      if (result.action === 'save') {
         this.studyService.updateStudy(s.id, {
           name: result.name,
           visibility: result.visibility
         }).subscribe({
           next: () => {
-            this.toastService.show('Study updated', 'success');
-            this.studyService.getStudy(s.id);
+            this.toastService.show('Study settings updated', 'success');
+            this.studyService.getStudy(s.id); // Refresh
           },
           error: (err) => {
-            console.error('Failed to update study:', err);
-            this.toastService.show('Failed to update study', 'error');
+            console.error('Failed to update study settings:', err);
+            this.toastService.show('Failed to update study settings', 'error');
+          }
+        });
+      } else if (result.action === 'delete') {
+        this.confirmDeleteStudy();
+      } else if (result.action === 'clear_chat') {
+        this.studyService.clearStudyChat(s.id).subscribe({
+          next: () => {
+            this.studyService.emitClearChat();
+            this.toastService.show('Chat lobby cleared', 'success');
+          },
+          error: (err) => {
+            console.error('Failed to clear chat:', err);
+            this.toastService.show('Failed to clear chat', 'error');
           }
         });
       }
     });
   }
+
+
 
   formatDate(dateStr: string): string {
     if (!dateStr) return '';
