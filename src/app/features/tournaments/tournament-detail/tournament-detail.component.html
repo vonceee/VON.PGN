@@ -404,7 +404,7 @@
                   }
 
                   <!-- Main Prizes -->
-                  <div class="ui-panel rounded-xl overflow-hidden mb-4">
+                  <div class="ui-panel overflow-hidden mb-4">
                     <table class="w-full text-sm">
                       <thead class="border-b border-border-theme">
                         <tr>
@@ -442,7 +442,7 @@
 
                   <!-- Special Awards -->
                   @if (tournament.categories![catKey].specialAwards) {
-                    <div class="ui-panel rounded-xl p-4">
+                    <div class="ui-panel p-4">
                       <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-3">
                         Special Awards
                       </h4>
@@ -529,7 +529,7 @@
                 </svg>
                 Prizes
               </h2>
-              <div class="ui-panel rounded-xl p-5">
+              <div class="ui-panel p-5">
                 <div class="text-3xl font-bold text-slate-900 dark:text-white">
                   {{ formatCurrency(tournament.prizePool) }}
                 </div>
@@ -562,7 +562,7 @@
             <div class="space-y-4">
               @for (dayKey of objectKeys(tournament.schedule); track dayKey) {
                 @if (tournament.schedule![dayKey].events.length > 0) {
-                  <div class="ui-panel rounded-xl overflow-hidden">
+                  <div class="ui-panel overflow-hidden">
                     <div class="px-4 py-3 border-b border-border-theme flex items-center gap-3">
                       <span class="text-xs font-bold text-cyan-500 uppercase">{{
                         formatDayLabel(dayKey)
@@ -617,7 +617,7 @@
                 </svg>
                 Final Standings
               </h2>
-              <div class="ui-panel rounded-xl overflow-hidden">
+              <div class="ui-panel overflow-hidden">
                 <table class="w-full text-sm">
                   <thead class="border-b border-border-theme">
                     <tr>
@@ -686,7 +686,7 @@
 
         <!-- Right Column -->
         <div class="space-y-6">
-          <div class="ui-panel rounded-xl p-5">
+          <div class="ui-panel p-5">
             <h3 class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -755,7 +755,7 @@
             </div>
           </div>
 
-          <div class="ui-panel rounded-xl p-5">
+          <div class="ui-panel p-5">
             <h3 class="font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -823,7 +823,7 @@
 
     <!-- Disclaimer Footer -->
     <div class="px-8 pb-8">
-      <div class="ui-panel rounded-xl p-5">
+      <div class="ui-panel p-5">
         <div class="flex items-start gap-3">
           <div>
             <p class="text-md font-semibold text-slate-900 dark:text-white mb-1">Disclaimer</p>

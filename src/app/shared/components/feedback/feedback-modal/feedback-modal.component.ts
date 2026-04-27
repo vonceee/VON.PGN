@@ -21,7 +21,7 @@ interface FeedbackForm {
   providers: [provideIcons({ heroXMark, heroCheckCircle })],
   template: `
     <div
-      class="ui-panel w-full max-w-2xl rounded-xl bg-white dark:bg-black p-8 font-sans shadow-2xl relative"
+      class="ui-panel w-full max-w-2xl p-8 font-sans relative"
     >
       <button
         (click)="dialogRef.close()"

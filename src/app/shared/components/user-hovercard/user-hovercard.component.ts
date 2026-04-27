@@ -8,7 +8,7 @@ import { ChessBoardComponent } from '../chess/chess-board/chess-board.component'
   standalone: true,
   imports: [CommonModule, ChessBoardComponent],
   template: `
-    <div class="ui-panel p-4 rounded-2xl w-[320px] overflow-hidden animate-in fade-in zoom-in duration-200">
+    <div class="ui-panel p-4 w-[320px] overflow-hidden animate-in fade-in zoom-in duration-200">
       @if (user()) {
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">

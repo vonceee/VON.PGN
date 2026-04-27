@@ -186,7 +186,7 @@
     @if (viewMode() === 'grid') {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 px-8 md:px-16">
         @for (tournament of paginatedTournaments(); track tournament.id) {
-          <div class="ui-panel rounded-2xl overflow-hidden flex flex-col h-full relative group">
+          <div class="ui-panel overflow-hidden flex flex-col h-full relative group">
             <!-- Poster Image / Thumbnail -->
             <div class="h-40 relative group/poster overflow-hidden bg-slate-100 dark:bg-slate-800">
               @if (getTournamentThumbnail(tournament); as thumb) {
@@ -367,7 +367,7 @@
       <div class="flex flex-col gap-3 px-8 md:px-16">
         @for (tournament of paginatedTournaments(); track tournament.id) {
           <div
-            class="ui-panel rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-4 transition-colors"
+            class="ui-panel p-3 flex flex-col sm:flex-row sm:items-center gap-4 transition-colors"
           >
             <!-- List Thumbnail -->
             <div

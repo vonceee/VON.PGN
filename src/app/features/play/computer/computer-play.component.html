@@ -130,7 +130,7 @@
         <div class="hidden md:flex flex-col min-w-0 h-full w-full border-l border-border-base overflow-hidden">
           <div class="flex flex-col justify-center gap-6 h-full px-4 lg:px-8">
             <!-- Computer Clock -->
-            <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
+            <div class="ui-panel p-3 flex flex-col gap-2">
               <app-chess-clock
                 [serverTimeMs]="opponentTimeMs()"
                 [serverTimestamp]="lastMoveTimestamp()"
@@ -140,7 +140,7 @@
 
             <!-- Result Message in middle if finished -->
             @if (resultDetails(); as result) {
-              <div class="ui-panel p-6 text-center border-border-base rounded-xl bg-white/5 animate-in zoom-in duration-300" aria-live="polite">
+              <div class="ui-panel p-6 text-center border-border-base bg-white/5 animate-in zoom-in duration-300" aria-live="polite">
                 <div class="text-3xl font-black mb-2 tracking-tighter text-main">{{ result.score }}</div>
                 <div class="text-xs tracking-widest opacity-60 uppercase font-bold">
                   {{ result.label }}
@@ -152,7 +152,7 @@
             }
 
             <!-- Player Clock -->
-            <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
+            <div class="ui-panel p-3 flex flex-col gap-2">
               <app-chess-clock
                 [serverTimeMs]="playerTimeMs()"
                 [serverTimestamp]="lastMoveTimestamp()"

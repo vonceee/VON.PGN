@@ -7,7 +7,7 @@ import { provideIcons } from '@ng-icons/core';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="ui-panel border border-border-base rounded-2xl overflow-hidden flex flex-col w-full">
+    <div class="ui-panel overflow-hidden flex flex-col w-full">
       <!-- Header -->
       <div class="flex items-center justify-between p-4 bg-surface">
         <h2 class="text-xl font-medium tracking-wide text-content">{{ title() }}</h2>

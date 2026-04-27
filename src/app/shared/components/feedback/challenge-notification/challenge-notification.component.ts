@@ -14,7 +14,7 @@ import { heroCheck, heroXMark, heroTrophy } from '@ng-icons/heroicons/outline';
     <div class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none">
       @for (challenge of challengeService.incomingChallenges(); track challenge.id) {
         <div
-          class="pointer-events-auto ui-panel w-80 rounded-xl bg-white dark:bg-slate-900 border border-accent/20 p-5 shadow-2xl animate-in slide-in-from-right-full duration-300"
+          class="pointer-events-auto ui-panel w-80 border border-accent/20 p-5 animate-in slide-in-from-right-full duration-300"
         >
           <div class="flex items-start gap-4">
             <div class="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">

@@ -4,7 +4,7 @@
     <div class="tv-layout">
       <!-- Left Column: Info & History -->
       <div class="sidebar-wrapper left-sidebar">
-        <div class="flex flex-col ui-panel rounded-xl overflow-hidden h-full">
+        <div class="flex flex-col ui-panel overflow-hidden h-full">
           <div class="p-4 border-b border-border-theme">
             <app-game-info
               [player]="g?.black_player || placeholderPlayer"
@@ -79,7 +79,7 @@
 
         <!-- Mobile Move Notation (Simplified) -->
         <div class="md:hidden w-full mt-4 px-2">
-          <div class="ui-panel rounded-xl overflow-hidden max-h-[200px]">
+          <div class="ui-panel overflow-hidden max-h-[200px]">
             <app-move-notation
               [moves]="g?.moves || []"
               [currentPly]="currentPly()"
@@ -93,7 +93,7 @@
       <!-- Right Column: Clocks & Status -->
       <div class="sidebar-wrapper right-sidebar">
         <div class="flex flex-col justify-between h-full">
-          <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
+          <div class="ui-panel p-3 flex flex-col gap-2">
             <div class="flex items-center justify-between mb-1">
               <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
                 >Black</span
@@ -112,7 +112,7 @@
           <div class="flex-1 flex flex-col justify-center py-4 px-2">
             @if (g?.status === 'completed' || g?.status === 'aborted') {
               <div
-                class="ui-panel rounded-xl p-4 text-center border-border-theme/50 shadow-lg bg-slate-800/20"
+                class="ui-panel p-4 text-center border-border-theme/50 bg-slate-800/20"
               >
                 <div class="text-xl font-bold tracking-tight" [class]="getResultClass(g?.result || null)">
                   {{ formatResult(g?.result || null) }}
@@ -132,7 +132,7 @@
             }
           </div>
 
-          <div class="ui-panel rounded-xl p-3 shadow-xl flex flex-col gap-2">
+          <div class="ui-panel p-3 flex flex-col gap-2">
             <div class="flex items-center justify-between mb-1">
               <span class="text-[10px] uppercase tracking-widest font-bold text-slate-500"
                 >White</span
