@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StudyService } from '../../../core/services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -14,7 +14,8 @@ import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ViewersDialogComponent } from '../dialogs/viewers-dialog/viewers-dialog.component';
 import { StudyChatComponent } from '../study-chat/study-chat.component';
-import { computed, input } from '@angular/core';
+import { input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-study-sidebar',
@@ -32,6 +33,7 @@ export class StudySidebarComponent {
   private dialog = inject(Dialog);
   private toastService = inject(ToastService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   // Inputs
   isLargeScreen = input.required<boolean>();
@@ -70,31 +72,33 @@ export class StudySidebarComponent {
       data: { defaultName: `Chapter ${(s.chapters?.length ?? 0) + 1}` }
     });
 
-    dialogRef.closed.subscribe((result) => {
-      if (!result) return;
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        if (!result) return;
 
-      if (result.type === 'pgn' && result.pgn) {
-        this.studyService.importPgn(s.id, result.pgn).subscribe({
-          next: (res) => {
-            const firstNewChapter = (res.data?.chapters || res.chapters)?.[0];
-            this.studyService.getStudy(s.id, firstNewChapter?.id);
-            this.toastService.show(res.message || 'Import successful!', 'success');
-          },
-          error: (err) => {
-            console.error('Import failed:', err);
-            this.toastService.show('Failed to import PGN.', 'error');
-          }
-        });
-      } else {
-        this.studyService.addChapter(s.id, result.name, result.fen, result.orientation).subscribe({
-          next: (res) => {
-            const newChapter = res?.data || res;
-            this.studyService.getStudy(s.id, newChapter.id);
-            this.toastService.show('Chapter created successfully!', 'success');
-          },
-        });
-      }
-    });
+        if (result.type === 'pgn' && result.pgn) {
+          this.studyService.importPgn(s.id, result.pgn).subscribe({
+            next: (res) => {
+              const firstNewChapter = (res.data?.chapters || res.chapters)?.[0];
+              this.studyService.getStudy(s.id, firstNewChapter?.id);
+              this.toastService.show(res.message || 'Import successful!', 'success');
+            },
+            error: (err) => {
+              console.error('Import failed:', err);
+              this.toastService.show('Failed to import PGN.', 'error');
+            }
+          });
+        } else {
+          this.studyService.addChapter(s.id, result.name, result.fen, result.orientation).subscribe({
+            next: (res) => {
+              const newChapter = res?.data || res;
+              this.studyService.getStudy(s.id, newChapter.id);
+              this.toastService.show('Chapter created successfully!', 'success');
+            },
+          });
+        }
+      });
   }
 
   onEditChapter(event: MouseEvent, chap: StudyChapter) {
@@ -112,49 +116,53 @@ export class StudySidebarComponent {
       }
     });
 
-    dialogRef.closed.subscribe((result) => {
-      if (!result) return;
+    dialogRef.closed
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        if (!result) return;
 
-      if (result.action === 'save' && result.name) {
-        this.studyService.updateChapter(s.id, chap.id, { 
-          name: result.name,
-          orientation: result.orientation 
-        }).subscribe({
-          next: () => {
-            this.toastService.show('Chapter updated', 'success');
-            this.studyService.getStudy(s.id);
-          },
-          error: () => this.toastService.show('Failed to update chapter', 'error')
-        });
-      } else if (result.action === 'delete') {
-        const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
-          data: {
-            title: 'Delete Chapter',
-            message: `Are you sure you want to delete "${chap.name}"?`,
-            confirmText: 'Delete'
-          }
-        });
+        if (result.action === 'save' && result.name) {
+          this.studyService.updateChapter(s.id, chap.id, { 
+            name: result.name,
+            orientation: result.orientation 
+          }).subscribe({
+            next: () => {
+              this.toastService.show('Chapter updated', 'success');
+              this.studyService.getStudy(s.id);
+            },
+            error: () => this.toastService.show('Failed to update chapter', 'error')
+          });
+        } else if (result.action === 'delete') {
+          const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
+            data: {
+              title: 'Delete Chapter',
+              message: `Are you sure you want to delete "${chap.name}"?`,
+              confirmText: 'Delete'
+            }
+          });
 
-        confirmRef.closed.subscribe((confirmed) => {
-          if (confirmed) {
-            this.studyService.deleteChapter(s.id, chap.id).subscribe({
-              next: () => {
-                this.toastService.show('Chapter deleted', 'success');
-                if (this.currentChapter()?.id === chap.id) {
-                  const remaining = s.chapters?.filter(c => c.id !== chap.id) || [];
-                  if (remaining.length > 0) {
-                    this.selectChapter(remaining[0]);
-                  } else {
-                    this.router.navigate(['/study']);
+          confirmRef.closed
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((confirmed) => {
+              if (confirmed) {
+                this.studyService.deleteChapter(s.id, chap.id).subscribe({
+                  next: () => {
+                    this.toastService.show('Chapter deleted', 'success');
+                    if (this.currentChapter()?.id === chap.id) {
+                      const remaining = s.chapters?.filter(c => c.id !== chap.id) || [];
+                      if (remaining.length > 0) {
+                        this.selectChapter(remaining[0]);
+                      } else {
+                        this.router.navigate(['/study']);
+                      }
+                    }
+                    this.studyService.getStudy(s.id);
                   }
-                }
-                this.studyService.getStudy(s.id);
+                });
               }
             });
-          }
-        });
-      }
-    });
+        }
+      });
   }
 
   openViewers() {

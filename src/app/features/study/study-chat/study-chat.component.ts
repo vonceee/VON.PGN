@@ -1,18 +1,18 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   inject,
   signal,
   effect,
   ViewChild,
   ElementRef,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { StudyService } from '../../../core/services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { Subscription } from 'rxjs';
 
 export interface ChatMessage {
   text: string;
@@ -34,17 +34,12 @@ export interface ChatMessage {
       height: 100%;
       overflow: hidden;
     }
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { 
-      background: rgba(156, 163, 175, 0.2); 
-      border-radius: 10px; 
-    }
   `]
 })
-export class StudyChatComponent implements OnInit, OnDestroy {
+export class StudyChatComponent implements OnInit {
   private studyService = inject(StudyService);
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
 
@@ -53,9 +48,8 @@ export class StudyChatComponent implements OnInit, OnDestroy {
   newMessage = signal('');
   currentUserId = signal<string | null>(null);
 
-  private subs = new Subscription();
-
   constructor() {
+    // Auto-update current user ID
     effect(() => {
       const user = this.authService.currentUser();
       if (user) {
@@ -63,49 +57,58 @@ export class StudyChatComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subs.add(this.studyService.onChatMessage$.subscribe(payload => {
-      this.messages.update(msgs => [...msgs, payload]);
-      this.scrollToBottom();
-    }));
+    // Handle incoming messages
+    this.studyService.onChatMessage$
+      .pipe(takeUntilDestroyed())
+      .subscribe(payload => {
+        this.messages.update(msgs => [...msgs, payload]);
+        this.scrollToBottom();
+      });
 
-    this.subs.add(this.studyService.onChatCleared$.subscribe(() => {
-      this.messages.set([]);
-    }));
+    // Handle chat clear
+    this.studyService.onChatCleared$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.messages.set([]);
+      });
   }
 
   ngOnInit() {
     const studyId = this.studyService.currentStudy()?.id;
     if (studyId) {
       this.isLoadingHistory.set(true);
-      this.studyService.getStudyMessages(studyId).subscribe({
-        next: (history: any[]) => {
-          const mapped = history.map(m => ({
-            text: m.body,
-            senderId: String(m.user_id),
-            senderName: m.user?.name || 'Anonymous',
-            timestamp: m.created_at
-          }));
-          this.messages.set(mapped);
-          this.isLoadingHistory.set(false);
-          this.scrollToBottom();
-        },
-        error: () => this.isLoadingHistory.set(false),
-      });
+      this.studyService.getStudyMessages(studyId)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (history: any[]) => {
+            const mapped = history.map(m => ({
+              text: m.body,
+              senderId: String(m.user_id),
+              senderName: m.user?.name || 'Anonymous',
+              timestamp: m.created_at
+            }));
+            this.messages.set(mapped);
+            this.isLoadingHistory.set(false);
+            this.scrollToBottom();
+          },
+          error: () => this.isLoadingHistory.set(false),
+        });
     }
-  }
-
-  ngOnDestroy() {
-    this.subs.unsubscribe();
   }
 
   sendMessage() {
     const text = this.newMessage().trim();
     if (!text) return;
+
     this.studyService.sendChatMessage(text);
+    
     const studyId = this.studyService.currentStudy()?.id;
     if (studyId) {
-      this.studyService.sendMessageToDb(studyId, text).subscribe();
+      this.studyService.sendMessageToDb(studyId, text)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
     }
+
     this.newMessage.set('');
   }
 

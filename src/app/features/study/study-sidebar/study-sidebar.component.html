@@ -23,7 +23,7 @@
 
     <!-- Chapters Section -->
     <div 
-      class="flex flex-col min-h-0 overflow-hidden"
+      class="flex flex-col min-h-0 overflow-hidden ui-panel"
       [class.pointer-events-none]="isSyncing() && !canEdit()"
       [class.opacity-70]="isSyncing() && !canEdit()"
     >
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Chat Section -->
-    <div class="flex flex-col min-h-0 overflow-hidden ui-panel rounded-lg shadow-sm">
+    <div class="flex flex-col min-h-0 overflow-hidden ui-panel">
       <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
     </div>
   </aside>
