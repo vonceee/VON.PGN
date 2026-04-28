@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { StudyService } from '../../../core/services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
+import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -27,6 +28,7 @@ export class StudyInfoComponent {
   private authService = inject(AuthService);
   private dialog = inject(Dialog);
   private toastService = inject(ToastService);
+  private router = inject(Router);
 
   // Inputs
   isOwner = input.required<boolean>();
@@ -149,6 +151,33 @@ export class StudyInfoComponent {
           next: () => {
             this.studyService.emitClearChat();
             this.toastService.show('Chat lobby cleared', 'success');
+          }
+        });
+      } else if (result.action === 'delete') {
+        this.onDeleteStudy();
+      }
+    });
+  }
+
+  onDeleteStudy() {
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
+
+    const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
+      data: {
+        title: 'Delete Study',
+        message: 'Are you sure you want to delete this study? This will delete all chapters and comments forever.',
+        confirmText: 'Delete Forever'
+      }
+    });
+
+    confirmRef.closed.subscribe((confirmed) => {
+      if (confirmed) {
+        this.studyService.deleteStudy(s.id).subscribe({
+          next: () => {
+            this.toastService.show('Study deleted successfully', 'success');
+            this.router.navigate(['/study']);
           }
         });
       }
