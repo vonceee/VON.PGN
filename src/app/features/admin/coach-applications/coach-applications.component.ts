@@ -3,11 +3,36 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CoachApplication } from '../../coaches/models/coach-application.model';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  heroUser,
+  heroCheckCircle,
+  heroXCircle,
+  heroClock,
+  heroTrash,
+  heroChevronRight,
+  heroEnvelope,
+  heroMapPin,
+  heroIdentification,
+} from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-coach-applications',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgIcon],
+  providers: [
+    provideIcons({
+      heroUser,
+      heroCheckCircle,
+      heroXCircle,
+      heroClock,
+      heroTrash,
+      heroChevronRight,
+      heroEnvelope,
+      heroMapPin,
+      heroIdentification,
+    }),
+  ],
   templateUrl: './coach-applications.component.html',
 })
 export class CoachApplicationsComponent {

@@ -20,6 +20,11 @@ function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
 
 export const routes: Routes = [
   {
+    path: 'admin',
+    canActivate: [adminGuard],
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
+  },
+  {
     path: 'login',
     loadComponent: () =>
       import('./features/auth/login/login.component').then((m) => m.LoginComponent),
@@ -411,11 +416,5 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
     ],
-  },
-  {
-    path: 'admin',
-    component: MainLayoutComponent,
-    canActivate: [adminGuard],
-    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
 ];

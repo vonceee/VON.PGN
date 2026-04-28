@@ -1,0 +1,147 @@
+<div class="admin-page space-y-6 animate-in fade-in duration-500">
+
+  <div class="ui-panel bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <!-- Filters -->
+    <div class="p-4 border-bottom border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-4 bg-slate-50/50 dark:bg-slate-800/30">
+      <div class="relative flex-1 min-w-[240px]">
+        <ng-icon name="heroMagnifyingGlass" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></ng-icon>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery" 
+          (keyup.enter)="onSearch()"
+          placeholder="Search users by name or email..." 
+          class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+        >
+      </div>
+      
+      <select 
+        [(ngModel)]="selectedRole" 
+        (change)="loadUsers()"
+        class="px-4 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+      >
+        <option value="all">All Roles</option>
+        <option value="admin">Admins</option>
+        <option value="organizer">Organizers</option>
+      </select>
+
+      <button (click)="loadUsers()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors">
+        Search
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 uppercase text-[10px] font-bold tracking-wider">
+            <th class="px-6 py-4">User</th>
+            <th class="px-6 py-4">Status</th>
+            <th class="px-6 py-4">Ratings</th>
+            <th class="px-6 py-4">Joined</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+          @if (loading()) {
+            <tr>
+              <td colspan="5" class="px-6 py-12 text-center">
+                <div class="flex flex-col items-center gap-3">
+                  <div class="w-8 h-8 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+                  <span class="text-sm text-slate-500">Loading users...</span>
+                </div>
+              </td>
+            </tr>
+          } @else if (users().length === 0) {
+            <tr>
+              <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                No users found matching your criteria.
+              </td>
+            </tr>
+          } @else {
+            @for (user of users(); track user.id) {
+              <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                      <ng-icon name="heroUser" class="text-lg"></ng-icon>
+                    </div>
+                    <div>
+                      <div class="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                        {{ user.name }}
+                        @if (user.is_admin) {
+                          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">ADMIN</span>
+                        }
+                      </div>
+                      <div class="text-xs text-slate-500">{{ user.email }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    @if (user.is_online) {
+                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                      <span class="text-xs font-medium text-emerald-600">Online</span>
+                    } @else {
+                      <span class="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+                      <span class="text-xs font-medium text-slate-500">Offline</span>
+                    }
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex gap-3 text-[10px] font-bold">
+                    <div class="flex flex-col">
+                      <span class="text-slate-400 uppercase">Bullet</span>
+                      <span class="text-slate-700 dark:text-slate-300">{{ user.ratings.bullet }}</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-slate-400 uppercase">Blitz</span>
+                      <span class="text-slate-700 dark:text-slate-300">{{ user.ratings.blitz }}</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-slate-400 uppercase">Rapid</span>
+                      <span class="text-slate-700 dark:text-slate-300">{{ user.ratings.rapid }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-500">
+                  {{ formatDate(user.created_at) }}
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <button 
+                      (click)="toggleAdmin(user)"
+                      [title]="user.is_admin ? 'Remove Admin' : 'Make Admin'"
+                      class="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-400 hover:text-blue-600 transition-colors"
+                    >
+                      <ng-icon name="heroShieldCheck"></ng-icon>
+                    </button>
+                    <button 
+                      (click)="toggleOrganizer(user)"
+                      [title]="user.verified_organizer ? 'Remove Organizer' : 'Make Organizer'"
+                      class="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-400 hover:text-emerald-600 transition-colors"
+                      [class.text-emerald-500]="user.verified_organizer"
+                    >
+                      <ng-icon name="heroCheckBadge"></ng-icon>
+                    </button>
+                    <button 
+                      (click)="deleteUser(user)"
+                      title="Delete User"
+                      class="p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/20 text-slate-400 hover:text-rose-600 transition-colors"
+                    >
+                      <ng-icon name="heroTrash"></ng-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Count -->
+    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/10 flex items-center justify-between">
+      <span class="text-xs text-slate-500">Showing {{ users().length }} users</span>
+    </div>
+  </div>
+</div>

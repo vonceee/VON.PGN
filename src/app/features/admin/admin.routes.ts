@@ -13,6 +13,12 @@ export const ADMIN_ROUTES: Routes = [
         title: 'Admin Dashboard - CHESS.PGN',
       },
       {
+        path: 'users',
+        loadComponent: () =>
+          import('./user-list/user-list.component').then((m) => m.UserListComponent),
+        title: 'User Management - CHESS.PGN',
+      },
+      {
         path: 'courses',
         loadComponent: () =>
           import('./course-list/course-list').then((m) => m.CourseListComponent),

@@ -111,4 +111,21 @@ export class AdminService {
   deleteAcademyEnrollment(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/academy/enrollments/${id}`, { headers: this.headers });
   }
+
+  // Users
+  getUsers(params: any = {}): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/users`, { headers: this.headers, params });
+  }
+
+  toggleAdmin(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/users/${id}/toggle-admin`, {}, { headers: this.headers });
+  }
+
+  toggleOrganizer(id: number): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/users/${id}/toggle-organizer`, {}, { headers: this.headers });
+  }
+
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/users/${id}`, { headers: this.headers });
+  }
 }

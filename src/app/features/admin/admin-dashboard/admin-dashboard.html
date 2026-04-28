@@ -1,52 +1,115 @@
-<div class="admin-page">
-  <div class="admin-page-header">
-    <div>
-      <h1 class="admin-page-title">Dashboard</h1>
-      <p class="admin-page-subtitle">Welcome to the admin panel</p>
+<div class="admin-page space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+  <!-- Stat Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="ui-panel p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+          <ng-icon name="heroAcademicCap" class="text-2xl"></ng-icon>
+        </div>
+        <span class="text-xs font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-0.5 rounded-full">+12%</span>
+      </div>
+      <div class="mt-4">
+        <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ coursesCount() }}</div>
+        <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Courses</div>
+      </div>
+    </div>
+
+    <div class="ui-panel p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-lg bg-purple-50 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+          <ng-icon name="heroIdentification" class="text-2xl"></ng-icon>
+        </div>
+        <span class="text-xs font-medium text-amber-600 bg-amber-50 dark:bg-amber-900/30 px-2.5 py-0.5 rounded-full">3 Pending</span>
+      </div>
+      <div class="mt-4">
+        <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ coachesCount() }}</div>
+        <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Coaches</div>
+      </div>
+    </div>
+
+    <div class="ui-panel p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-lg bg-rose-50 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 dark:text-rose-400">
+          <ng-icon name="heroChatBubbleLeftEllipsis" class="text-2xl"></ng-icon>
+        </div>
+        <span class="text-xs font-medium text-rose-600 bg-rose-50 dark:bg-rose-900/30 px-2.5 py-0.5 rounded-full">{{ feedbackCount() }} New</span>
+      </div>
+      <div class="mt-4">
+        <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ feedbackCount() }}</div>
+        <div class="text-sm font-medium text-slate-500 dark:text-slate-400">User Feedback</div>
+      </div>
+    </div>
+
+    <div class="ui-panel p-6 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between">
+        <div class="w-12 h-12 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+          <ng-icon name="heroUserGroup" class="text-2xl"></ng-icon>
+        </div>
+        <span class="text-xs font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-0.5 rounded-full">Live</span>
+      </div>
+      <div class="mt-4">
+        <div class="text-2xl font-bold text-slate-900 dark:text-white">1,284</div>
+        <div class="text-sm font-medium text-slate-500 dark:text-slate-400">Active Users</div>
+      </div>
     </div>
   </div>
 
-  <div class="admin-stats">
-    <div class="admin-stat">
-      <div class="admin-stat-value">{{ coursesCount() }}</div>
-      <div class="admin-stat-label">Courses</div>
-    </div>
-    <div class="admin-stat">
-      <div class="admin-stat-value">{{ feedbackCount() }}</div>
-      <div class="admin-stat-label">Feedback</div>
-    </div>
-    <div class="admin-stat">
-      <div class="admin-stat-value">{{ coachesCount() }}</div>
-      <div class="admin-stat-label">Coach Applications</div>
-    </div>
-  </div>
+  <div class="grid grid-cols-1 gap-8">
+    <!-- Recent Activity Section -->
+    <div class="ui-panel p-8 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900 dark:text-white">Recent Enrollments</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Latest academy students waiting for review.</p>
+        </div>
+        <a routerLink="/admin/academy-enrollments" class="text-sm font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-2 group">
+          View All
+          <ng-icon name="heroArrowUpRight" class="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></ng-icon>
+        </a>
+      </div>
 
-  <div class="admin-card">
-    <div class="admin-card-header">
-      <h2 class="admin-card-title">Quick Actions</h2>
+      <div class="overflow-x-auto -mx-8 px-8">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-100 dark:border-slate-800">
+              <th class="pb-4 text-xs font-black uppercase tracking-widest text-slate-400">Student</th>
+              <th class="pb-4 text-xs font-black uppercase tracking-widest text-slate-400">Level</th>
+              <th class="pb-4 text-xs font-black uppercase tracking-widest text-slate-400">Status</th>
+              <th class="pb-4 text-xs font-black uppercase tracking-widest text-slate-400 text-right">Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-50 dark:divide-slate-800">
+            @for (item of recentEnrollments(); track item.id) {
+              <tr class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                <td class="py-4">
+                  <div class="font-bold text-slate-900 dark:text-white">{{ item.full_name }}</div>
+                  <div class="text-xs text-slate-500">{{ item.email }}</div>
+                </td>
+                <td class="py-4">
+                  <span class="text-xs font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                    {{ item.chess_level }}
+                  </span>
+                </td>
+                <td class="py-4">
+                  <span [class]="'text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded ' + getStatusClass(item.status)">
+                    {{ item.status }}
+                  </span>
+                </td>
+                <td class="py-4 text-right text-xs font-medium text-slate-500">
+                  {{ item.created_at | date:'MMM d, h:mm a' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="py-12 text-center text-slate-500 font-medium">
+                  No recent enrollments to show.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
-    <ul class="admin-list">
-      <li class="admin-list-item">
-        <div class="admin-list-item-content">
-          <div class="admin-list-item-title">Courses</div>
-          <div class="admin-list-item-meta">Create and manage courses with chapters and lessons</div>
-        </div>
-        <a routerLink="/admin/courses" class="admin-btn admin-btn-primary">Manage</a>
-      </li>
-      <li class="admin-list-item">
-        <div class="admin-list-item-content">
-          <div class="admin-list-item-title">Feedback</div>
-          <div class="admin-list-item-meta">View and manage user feedback</div>
-        </div>
-        <a routerLink="/admin/feedback" class="admin-btn admin-btn-primary">View</a>
-      </li>
-      <li class="admin-list-item">
-        <div class="admin-list-item-content">
-          <div class="admin-list-item-title">Coach Applications</div>
-          <div class="admin-list-item-meta">Review coach applications</div>
-        </div>
-        <a routerLink="/admin/coach-applications" class="admin-btn admin-btn-primary">Review</a>
-      </li>
-    </ul>
   </div>
 </div>

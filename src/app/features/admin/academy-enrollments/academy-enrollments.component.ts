@@ -5,15 +5,13 @@ import { AdminService } from '../../../core/services/admin.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass, heroTrash, heroArrowPath } from '@ng-icons/heroicons/outline';
 import { ButtonComponent  } from '@shared/ui';
-import { SectionHeadingComponent  } from '@shared/ui';
-import { TypewriterTextComponent  } from '@shared/ui';
 import { ToastService } from '../../../core/services/toast.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-academy-enrollments',
   standalone: true,
-  imports: [CommonModule, NgIcon, FormsModule, ButtonComponent, SectionHeadingComponent, TypewriterTextComponent],
+  imports: [CommonModule, NgIcon, FormsModule, ButtonComponent],
   providers: [
     provideIcons({
       heroMagnifyingGlass,
