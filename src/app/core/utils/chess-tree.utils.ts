@@ -2,6 +2,23 @@ import { Chess } from 'chess.js';
 import { MoveNode, GlyphId } from '../models/study.model';
 
 /**
+ * Calculates absolute ply from a FEN string.
+ * Ply starts at 0 for initial position (White to move, Fullmove 1).
+ * Ply 1 is White's first move, Ply 2 is Black's first move, etc.
+ */
+export function getPlyFromFen(fen: string): number {
+  if (!fen) return 0;
+  const parts = fen.split(' ');
+  if (parts.length < 6) return 0;
+
+  const fullmove = parseInt(parts[5], 10) || 1;
+  const turn = parts[1];
+
+  // Formula: (fullmove - 1) * 2 + (turn === 'w' ? 0 : 1)
+  return (fullmove - 1) * 2 + (turn === 'w' ? 0 : 1);
+}
+
+/**
  * Validates and normalizes a MoveNode to ensure all properties are correct types
  */
 function normalizeMoveNode(node: any): MoveNode {
@@ -44,6 +61,7 @@ function normalizeMoveNode(node: any): MoveNode {
     ply,
     variations,
     comments: Array.isArray(node.comments) ? node.comments.map(String) : [],
+    preComments: Array.isArray(node.preComments) ? node.preComments.map(String) : [],
     glyphs: Array.isArray(node.glyphs) ? (node.glyphs.map(Number) as GlyphId[]) : [],
   };
 }
@@ -106,17 +124,26 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
       chess.loadPgn(pgnString);
       const history = chess.history({ verbose: true });
       const nodes: MoveNode[] = [];
-      const tempChess = new Chess(initialFen);
-      
+      const startPly = getPlyFromFen(initialFen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+
+      // Get initial position comment
+      const crawler = new Chess(initialFen);
+      crawler.loadPgn(pgnString);
+      while (crawler.undo()) {}
+      const startComment = crawler.getComment();
+
       history.forEach((m: any, i: number) => {
-        tempChess.move(m.san);
+        crawler.move(m.san);
+        const comment = crawler.getComment();
+        
         nodes.push({
           san: m.san,
           uci: m.from + m.to,
-          fen: tempChess.fen(),
-          ply: i + 1,
+          fen: crawler.fen(),
+          ply: startPly + i + 1,
           variations: [],
-          comments: m.comment ? [m.comment] : [],
+          comments: comment ? [comment] : [],
+          preComments: (i === 0 && startComment) ? [startComment] : [],
           glyphs: m.nags ? m.nags.map((n: string) => parseInt(n, 10)) : [],
         });
       });
@@ -150,6 +177,7 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
   // 3. Convert legacy flat string lists (PGN slices) to the modern tree structure
   const rootNodes: MoveNode[] = [];
   const chess = new Chess(initialFen);
+  const startPly = getPlyFromFen(initialFen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
 
   try {
     processedMoves.forEach((san: string, index: number) => {
@@ -160,7 +188,7 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
             san: m.san,
             uci: m.from + m.to,
             fen: chess.fen(),
-            ply: index + 1,
+            ply: startPly + index + 1,
             variations: [],
             comments: [],
           });

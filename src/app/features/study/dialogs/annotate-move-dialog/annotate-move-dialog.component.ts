@@ -36,7 +36,7 @@ export interface AnnotateMoveDialogResult {
                   [class.border-base]="!isSelected(glyph.id)"
                   [class.hover:border-accent/50]="!isSelected(glyph.id)"
                 >
-                  <span class="text-xl font-bold mb-1">{{ glyph.symbol }}</span>
+                  <span [class]="glyph.class" class="text-xl font-bold mb-1">{{ glyph.symbol }}</span>
                   <span class="text-[9px] uppercase tracking-tighter opacity-70 font-black">{{ glyph.name }}</span>
                 </button>
               }

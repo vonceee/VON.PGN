@@ -24,7 +24,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
 import { MoveNode } from '../../core/models/study.model';
-import { buildTreeFromMoves, updateNodeInTree } from '../../core/utils/chess-tree.utils';
+import { buildTreeFromMoves, updateNodeInTree, getPlyFromFen } from '../../core/utils/chess-tree.utils';
 import { EngineService } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { AnnotateMoveDialogComponent } from './dialogs/annotate-move-dialog/annotate-move-dialog.component';
@@ -32,7 +32,6 @@ import { StudySidebarComponent } from './study-sidebar/study-sidebar.component';
 import { StudyInfoComponent } from './study-info/study-info.component';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { StudyChatComponent } from './study-chat/study-chat.component';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-study',
@@ -136,6 +135,11 @@ export class StudyComponent implements OnInit, OnDestroy {
   remoteShapes = signal<any[]>([]);
 
   mergedShapes = computed(() => [...this.remoteShapes(), ...this.engineArrows()]);
+
+  initialPly = computed(() => {
+    const chapter = this.currentChapter();
+    return getPlyFromFen(chapter?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  });
   
   lastMoveSquares = computed(() => {
     const node = this.currentNode();
@@ -275,7 +279,7 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.boardOrientation.set(remote.orientation || 'white');
       const node = this.findNodeRecursive(this.moveTree(), remote.fen);
       this.currentNode.set(node);
-      this.currentPly.set(node?.ply || 0);
+      this.currentPly.set(node?.ply || this.initialPly());
     }
   }
 
@@ -301,7 +305,7 @@ export class StudyComponent implements OnInit, OnDestroy {
       const chapter = this.currentChapter();
       this.currentNode.set(null);
       this.currentFen.set(chapter?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
-      this.currentPly.set(0);
+      this.currentPly.set(this.initialPly());
     }
   }
 
@@ -316,7 +320,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     const san = String(move.san || '');
     const fen = String(event.fen || '');
     const current = this.currentNode();
-    const newNode: MoveNode = { san, uci: String(move.from || '') + String(move.to || ''), fen, ply: (current?.ply || 0) + 1, variations: [], comments: [] };
+    const newNode: MoveNode = { san, uci: String(move.from || '') + String(move.to || ''), fen, ply: (current?.ply || this.initialPly()) + 1, variations: [], comments: [] };
     this.moveTree.update(tree => {
       if (!current) return [...tree, newNode];
       const newTree = this.insertNodeDeep(tree, current.ply, current.fen, newNode);
@@ -385,7 +389,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   onNavigateToPly(ply: number) {
     if (this.isSyncing() && !this.canEdit()) return;
-    if (ply === 0) {
+    if (ply <= this.initialPly()) {
       this.updateCurrentPosition(null);
       if (this.canEdit()) this.studyService.emitNavigation(this.currentChapter()?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', this.moveTree(), this.boardOrientation(), this.isSyncing());
       return;

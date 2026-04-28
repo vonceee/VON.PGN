@@ -42,6 +42,7 @@ export interface MoveNode {
   uci: string;
   ply: number;
   comments?: string[];
+  preComments?: string[];
   variations: MoveNode[][]; // Side variations at this position
   children?: MoveNode[]; // Mainline continuation (for tree structure)
   glyphs?: GlyphId[];

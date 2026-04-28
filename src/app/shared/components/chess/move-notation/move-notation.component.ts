@@ -43,6 +43,7 @@ export class MoveNotationComponent {
 
   currentFen = input<string>('');
   currentPly = input<number>(0);
+  initialPly = input<number>(0);
   showNavigation = input<boolean>(false);
 
   // Outputs
@@ -105,9 +106,10 @@ export class MoveNotationComponent {
   navigationCtx = computed(() => {
     const fen = this.currentFen();
     const ply = this.currentPly();
+    const initialPly = this.initialPly();
     const tree = this.effectiveTree();
     
-    if (ply === 0 || tree.length === 0) {
+    if (ply <= initialPly || tree.length === 0) {
       // At the start of the game/chapter
       return {
         current: null,
@@ -184,7 +186,7 @@ export class MoveNotationComponent {
         if (parent) {
           this.onMoveClick(parent);
         } else {
-          this.navigate.emit(0); // Go to start
+          this.navigate.emit(this.initialPly()); // Go to start
           this.audioService.playNavigationSound();
         }
         break;
@@ -203,7 +205,7 @@ export class MoveNotationComponent {
           this.audioService.playNavigationSound();
         } else {
           event.preventDefault();
-          this.navigate.emit(0);
+          this.navigate.emit(this.initialPly());
           this.audioService.playNavigationSound();
         }
         break;
@@ -214,18 +216,20 @@ export class MoveNotationComponent {
           this.audioService.playNavigationSound();
         } else {
           event.preventDefault();
-          this.navigate.emit(this.effectiveTree().length);
+          const tree = this.effectiveTree();
+          this.navigate.emit(tree.length > 0 ? tree[tree.length - 1].ply : this.initialPly());
           this.audioService.playNavigationSound();
         }
         break;
       case 'Home':
         event.preventDefault();
-        this.navigate.emit(0);
+        this.navigate.emit(this.initialPly());
         this.audioService.playNavigationSound();
         break;
       case 'End':
         event.preventDefault();
-        this.navigate.emit(this.effectiveTree().length);
+        const tree = this.effectiveTree();
+        this.navigate.emit(tree.length > 0 ? tree[tree.length - 1].ply : this.initialPly());
         this.audioService.playNavigationSound();
         break;
     }
@@ -269,7 +273,7 @@ export class MoveNotationComponent {
     if (parent) {
       this.onMoveClick(parent);
     } else {
-      this.navigate.emit(0);
+      this.navigate.emit(this.initialPly());
     }
   }
 
