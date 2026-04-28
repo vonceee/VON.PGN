@@ -1,4 +1,11 @@
-@if (coach) {
+@if (loading()) {
+<div class="flex items-center justify-center h-64">
+    <div class="flex flex-col items-center gap-4">
+        <div class="w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-500 animate-pulse">Loading coach profile...</p>
+    </div>
+</div>
+} @else if (coach()) {
 <div class="mx-auto px-8 py-10">
     <app-back-link
         link="/coaches"
@@ -8,21 +15,21 @@
 
     <div
         class="ui-panel rounded-2xl p-8 mb-8 flex flex-col md:flex-row gap-8 items-start">
-        <img [src]="coach.profilePicture" [alt]="coach.name"
+        <img [src]="coach()!.profilePicture" [alt]="coach()!.name"
             class="w-32 h-32 rounded-2xl border-4 border-cyan-500/20 object-cover">
 
         <div class="flex-1 w-full">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                 <div>
                     <h1 class="text-3xl font-bold flex items-center gap-3">
-                        @if (coach.title) {
-                            <span class="px-2 py-1 bg-red-600 text-white text-sm font-bold rounded">{{ coach.title }}</span>
+                        @if (coach()!.title) {
+                            <span class="px-2 py-1 bg-red-600 text-white text-sm font-bold rounded">{{ coach()!.title }}</span>
                         }
-                        {{ coach.name }}
+                        {{ coach()!.name }}
                     </h1>
                     
                     <!-- Academy Instructor Badge -->
-                    @if (coach.isAcademyInstructor) {
+                    @if (coach()!.isAcademyInstructor) {
                       <div class="flex items-center gap-1.5 text-cyan-500 mt-2">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +49,7 @@
                     <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm font-medium text-slate-500 dark:text-slate-400">
                         <span class="flex items-center gap-1.5">
                             <span class="text-slate-400">FIDE:</span>
-                            <span class="font-bold">{{ coach.fideRating }}</span>
+                            <span class="font-bold">{{ coach()!.fideRating }}</span>
                         </span>
                         <span class="text-slate-300 dark:text-slate-700">•</span>
                         <span class="flex items-center gap-1.5">
@@ -52,42 +59,42 @@
                                     d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"
                                     clip-rule="evenodd" />
                             </svg>
-                            {{ coach.location }}
+                            {{ coach()!.location }}
                         </span>
                         <span class="text-slate-300 dark:text-slate-700">•</span>
                         <span class="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-bold">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
                                 <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
                             </svg>
-                            {{ coach.coachingType }} Coaching
+                            {{ coach()!.coachingType }} Coaching
                         </span>
                     </div>
                 </div>
             </div>
 
             <div class="flex items-center gap-3 mt-4">
-                @if (coach.socialMedia.youtube) {
-                <a [href]="coach.socialMedia.youtube" target="_blank"
+                @if (coach()!.socialMedia.youtube) {
+                <a [href]="coach()!.socialMedia.youtube" target="_blank"
                     class="p-2.5 hover:underline">YouTube</a>
                 }
-                @if (coach.socialMedia.twitter) {
-                <a [href]="coach.socialMedia.twitter" target="_blank"
+                @if (coach()!.socialMedia.twitter) {
+                <a [href]="coach()!.socialMedia.twitter" target="_blank"
                     class="p-2.5 hover:underline">Twitter</a>
                 }
-                @if (coach.socialMedia.facebook) {
-                <a [href]="coach.socialMedia.facebook" target="_blank"
+                @if (coach()!.socialMedia.facebook) {
+                <a [href]="coach()!.socialMedia.facebook" target="_blank"
                     class="p-2.5 hover:underline">Facebook</a>
                 }
-                @if (coach.socialMedia.instagram) {
-                <a [href]="coach.socialMedia.instagram" target="_blank"
+                @if (coach()!.socialMedia.instagram) {
+                <a [href]="coach()!.socialMedia.instagram" target="_blank"
                     class="p-2.5 hover:underline">Instagram</a>
                 }
-                @if (coach.socialMedia.lichess) {
-                <a [href]="coach.socialMedia.lichess" target="_blank"
+                @if (coach()!.socialMedia.lichess) {
+                <a [href]="coach()!.socialMedia.lichess" target="_blank"
                     class="p-2.5 hover:underline">Lichess</a>
                 }
-                @if (coach.socialMedia.chesscom) {
-                <a [href]="coach.socialMedia.chesscom" target="_blank"
+                @if (coach()!.socialMedia.chesscom) {
+                <a [href]="coach()!.socialMedia.chesscom" target="_blank"
                     class="p-2.5 hover:underline">Chess.com</a>
                 }
 
@@ -107,7 +114,7 @@
                     </svg>
                     About Me
                 </h2>
-                <p class="leading-relaxed">{{ coach.bio }}</p>
+                <p class="leading-relaxed">{{ coach()!.bio }}</p>
             </section>
 
             <section>
@@ -120,7 +127,7 @@
                     Playing Experience
                 </h2>
                 <ul class="space-y-3">
-                    @for (exp of coach.playingExperience; track exp) {
+                    @for (exp of coach()!.playingExperience; track exp) {
                     <li class="flex items-start gap-3">
                         <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 shrink-0"></span>
                         {{ exp }}
@@ -139,7 +146,7 @@
                     Teaching Experience
                 </h2>
                 <ul class="space-y-3">
-                    @for (exp of coach.teachingExperience; track exp) {
+                    @for (exp of coach()!.teachingExperience; track exp) {
                     <li class="flex items-start gap-3">
                         <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 shrink-0"></span>
                         {{ exp }}
@@ -160,7 +167,7 @@
                     </svg>
                     Availability
                 </h3>
-                <p class="text-sm">{{ coach.availability }}</p>
+                <p class="text-sm">{{ coach()!.availability }}</p>
             </div>
 
             <div class="ui-panel rounded-xl p-5">
@@ -173,7 +180,7 @@
                     Teaching Methods
                 </h3>
                 <ul class="space-y-2">
-                    @for (method of coach.teachingMethods; track method) {
+                    @for (method of coach()!.teachingMethods; track method) {
                     <li class="text-sm flex items-center gap-2">
                         <span class="w-1 h-1 rounded-full bg-slate-400"></span>
                         {{ method }}
@@ -186,6 +193,12 @@
 </div>
 } @else {
 <div class="flex items-center justify-center h-64">
-    <p>Coach not found.</p>
+    <div class="text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-slate-300 mx-auto mb-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+        </svg>
+        <p class="text-slate-500 font-medium">Coach not found.</p>
+        <a routerLink="/coaches" class="text-cyan-500 hover:underline mt-2 inline-block">Back to Coaches</a>
+    </div>
 </div>
 }
