@@ -67,7 +67,26 @@ export const ADMIN_ROUTES: Routes = [
         title: 'Feedback - CHESS.PGN',
       },
       {
+        path: 'coaches',
+        loadComponent: () =>
+          import('./coach-management/coach-management.component').then((m) => m.CoachManagementComponent),
+        title: 'Coach Management - CHESS.PGN',
+      },
+      {
+        path: 'coach/new',
+        loadComponent: () =>
+          import('./coach-editor/coach-editor.component').then((m) => m.CoachEditorComponent),
+        title: 'New Coach Profile',
+      },
+      {
+        path: 'coach/:coachId',
+        loadComponent: () =>
+          import('./coach-editor/coach-editor.component').then((m) => m.CoachEditorComponent),
+        title: 'Edit Coach Profile',
+      },
+      {
         path: 'coach-applications',
+
         loadComponent: () =>
           import('./coach-applications/coach-applications.component').then((m) => m.CoachApplicationsComponent),
         title: 'Coach Applications - CHESS.PGN',

@@ -96,9 +96,15 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
+              <a routerLink="/admin/coaches" routerLinkActive="active" class="nav-link">
+                <ng-icon name="heroUser" class="nav-icon"></ng-icon>
+                <span>Coach Profiles</span>
+              </a>
+            </li>
+            <li>
               <a routerLink="/admin/coach-applications" routerLinkActive="active" class="nav-link">
                 <ng-icon name="heroIdentification" class="nav-icon"></ng-icon>
-                <span>Coaches</span>
+                <span>Applications</span>
               </a>
             </li>
             <li>
@@ -182,7 +188,10 @@ export class AdminLayoutComponent {
     const url = this.router.url;
     if (url.includes('/admin/users')) this.pageTitle.set('User Management');
     else if (url.includes('/admin/courses')) this.pageTitle.set('Course Management');
+    else if (url.includes('/admin/coaches')) this.pageTitle.set('Coach Management');
+    else if (url.includes('/admin/coach/')) this.pageTitle.set('Coach Editor');
     else if (url.includes('/admin/coach-applications')) this.pageTitle.set('Coach Applications');
+
     else if (url.includes('/admin/academy-enrollments')) this.pageTitle.set('Academy Enrollments');
     else if (url.includes('/admin/feedback')) this.pageTitle.set('User Feedback');
     else this.pageTitle.set('Dashboard Overview');
