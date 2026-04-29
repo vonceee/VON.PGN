@@ -221,6 +221,12 @@ export class AudioService {
     this.play('GenericNotify');
   }
 
+  async resume(): Promise<void> {
+    if (this.context && this.context.state === 'suspended') {
+      await this.context.resume();
+    }
+  }
+
   toggle(): void {
     this.soundEnabled.update((v) => !v);
   }

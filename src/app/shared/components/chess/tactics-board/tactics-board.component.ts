@@ -7,8 +7,9 @@ import {
   SimpleChanges,
   inject,
   ViewChild,
+  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Puzzle } from '../../../../core/services/tactics.service';
 import { Chess, Move } from 'chess.js';
 import { Config } from 'chessground/config';
@@ -24,6 +25,7 @@ import { ChessBoardComponent } from '@shared/chess';
     <app-chess-board
       #board
       [fen]="currentFen"
+      [lastMove]="lastMove"
       [orientation]="userColor"
       [interactive]="status === 'playing' || exploreMode"
       [configOverride]="cgConfig"
@@ -70,6 +72,7 @@ export class TacticsBoardComponent implements OnChanges {
 
   private chess = new Chess();
   currentFen: string = '';
+  lastMove: any[] | undefined = undefined;
   solutionMoves: string[] = [];
   solutionPly = 0;
   userColor: 'white' | 'black' = 'white';
@@ -83,8 +86,14 @@ export class TacticsBoardComponent implements OnChanges {
 
   cgConfig: Config = {};
   isRevealing = false;
+  private introTimeout: any;
 
   private audioService = inject(AudioService);
+  private platformId = inject(PLATFORM_ID);
+
+  get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['exploreMode'] && !changes['exploreMode'].isFirstChange()) {
@@ -104,16 +113,15 @@ export class TacticsBoardComponent implements OnChanges {
     this.gamePly = 0;
     this.solutionMoves = this.puzzle.moves.split(' ');
     this.solutionPly = 0;
-    this.chess.load(this.puzzle.fen);
-
-    const opponentInitialMove = this.solutionMoves[this.solutionPly];
-    const moveResult = this.chess.move(this.parseUciMove(opponentInitialMove));
-    this.solutionPly++;
-    if (moveResult) this.moveMade.emit(moveResult.san);
+    this.lastMove = undefined;
     
-    this.userColor = this.chess.turn() === 'w' ? 'white' : 'black';
-    this.initialFen = this.chess.fen();
-    this.currentFen = this.initialFen;
+    // Set board to the puzzle's starting FEN
+    this.chess.load(this.puzzle.fen);
+    this.currentFen = this.puzzle.fen;
+    
+    // The side that is NOT currently to move in puzzle.fen is the user, 
+    // because the first move in solutionMoves is the opponent's move.
+    this.userColor = this.chess.turn() === 'w' ? 'black' : 'white';
     this.userColorChange.emit(this.userColor);
 
     this.cgConfig = {
@@ -122,20 +130,33 @@ export class TacticsBoardComponent implements OnChanges {
         free: false
       }
     };
+
+    // Play the first opponent move (intro move) after a delay to allow board load
+    if (!this.isBrowser) return;
+
+    if (this.introTimeout) clearTimeout(this.introTimeout);
+    this.introTimeout = setTimeout(() => {
+      if (this.solutionPly === 0 && !this.gameMode) {
+        this.playOpponentMove();
+      }
+    }, 1000);
   }
 
   onBoardMove(event: { move: Move; fen: string }) {
+    // Resume audio context on first move if needed
+    this.audioService.resume();
     if (this.gameMode) return;
     if (this.status !== 'playing') return;
 
     const { move, fen } = event;
     this.audioService.playChessMove(move);
+    this.lastMove = [move.from, move.to];
 
     const expectedMove = this.solutionMoves[this.solutionPly];
     const userMoveStr = `${move.from}${move.to}`;
 
     if (expectedMove.startsWith(userMoveStr)) {
-      this.chess.move(this.parseUciMove(expectedMove));
+      const moveResult = this.chess.move(this.parseUciMove(expectedMove));
       this.solutionPly++;
       
       this.moveMade.emit(move.san);
@@ -178,6 +199,13 @@ export class TacticsBoardComponent implements OnChanges {
     this.chess.load(this.initialFen);
     this.currentFen = this.initialFen;
     this.solutionPly = 1; // Correctly start after the initial opponent move
+    
+    // Set lastMove to the move that led to initialFen (the first computer move)
+    const firstMoveUci = this.solutionMoves[0];
+    if (firstMoveUci) {
+      this.lastMove = [firstMoveUci.substring(0, 2), firstMoveUci.substring(2, 4)];
+    }
+
     this.cgConfig = {
       movable: {
         color: this.userColor,
@@ -212,6 +240,7 @@ export class TacticsBoardComponent implements OnChanges {
         color: this.status === 'playing' ? this.userColor : undefined
       }
     };
+    this.syncLastMoveFromChess();
 
     if (this.exploreMode && this.status === 'success') {
       this.enableFreePlay();
@@ -224,6 +253,7 @@ export class TacticsBoardComponent implements OnChanges {
     this.gameMode = true;
     this.chess.load(this.gameStartFen);
     this.currentFen = this.chess.fen();
+    this.syncLastMoveFromChess();
   }
 
   setGameModeAtMove(moves: string[], ply: number) {
@@ -237,6 +267,7 @@ export class TacticsBoardComponent implements OnChanges {
        if (m) this.chess.move(m);
     }
     this.currentFen = this.chess.fen();
+    this.syncLastMoveFromChess();
   }
 
   resetToGameStart() {
@@ -244,6 +275,7 @@ export class TacticsBoardComponent implements OnChanges {
     this.chess.load(this.gameStartFen);
     this.gamePly = 0;
     this.currentFen = this.chess.fen();
+    this.syncLastMoveFromChess();
   }
 
   previousGameMove() {
@@ -252,6 +284,7 @@ export class TacticsBoardComponent implements OnChanges {
     this.chess.undo();
     this.gamePly--;
     this.currentFen = this.chess.fen();
+    this.syncLastMoveFromChess();
     this.audioService.playNavigationSound();
   }
 
@@ -264,6 +297,17 @@ export class TacticsBoardComponent implements OnChanges {
     if (moveResult) {
       this.audioService.playMoveSound(moveResult.san || '');
       this.currentFen = this.chess.fen();
+      this.syncLastMoveFromChess();
+    }
+  }
+
+  private syncLastMoveFromChess() {
+    const history = this.chess.history({ verbose: true });
+    const last = history[history.length - 1];
+    if (last) {
+      this.lastMove = [last.from, last.to];
+    } else {
+      this.lastMove = undefined;
     }
   }
 
@@ -279,9 +323,18 @@ export class TacticsBoardComponent implements OnChanges {
     const oppMove = this.solutionMoves[this.solutionPly];
     const moveResult = this.chess.move(this.parseUciMove(oppMove));
     this.solutionPly++;
-    if (moveResult) this.moveMade.emit(moveResult.san);
-    this.audioService.playMoveSound(moveResult?.san || '');
-    this.currentFen = this.chess.fen();
+    if (moveResult) {
+      this.moveMade.emit(moveResult.san);
+      this.lastMove = [moveResult.from, moveResult.to];
+      this.audioService.playChessMove(moveResult);
+      this.currentFen = this.chess.fen();
+
+      // In the rare case that the opponent move was the only/last move of the puzzle
+      if (this.solutionPly >= this.solutionMoves.length) {
+        this.status = 'success';
+        this.puzzleSolved.emit();
+      }
+    }
   }
 
   revealSolution() {

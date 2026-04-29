@@ -10,22 +10,23 @@ export class ThemeService {
   // Use a signal to hold the dark mode state
   public isDarkMode = signal<boolean>(false);
 
+  // Effect to persist to local storage and update the DOM class when the signal changes
+  private themeEffect = effect(() => {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    const dark = this.isDarkMode();
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+
+    if (dark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  });
+
   constructor() {
     if (!isPlatformBrowser(this.platformId)) return;
-
     this.initTheme();
-
-    // Effect to persist to local storage and update the DOM class when the signal changes
-    effect(() => {
-      const dark = this.isDarkMode();
-      localStorage.setItem('theme', dark ? 'dark' : 'light');
-
-      if (dark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    });
   }
 
   private initTheme(): void {

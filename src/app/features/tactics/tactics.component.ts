@@ -14,7 +14,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
-import { Chess } from 'chess.js';
+import { Chess, Move } from 'chess.js';
 import { MoveNotationComponent  } from '@shared/chess';
 import { TacticsBoardComponent  } from '@shared/chess';
 import { LoadingComponent  } from '@shared/feedback';
@@ -71,20 +71,22 @@ export class TacticsComponent implements OnInit {
   boardSize = signal(600);
 
 
+  private sizeEffect = effect(() => {
+    if (isPlatformBrowser(this.platformId)) {
+      document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
+    }
+  });
+
   ngOnInit() {
     this.onResize();
     if (this.currentUser()) {
-      this.userService.loadMyProfile().subscribe(() => {
-        this.newStreak.set(this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
+      setTimeout(() => {
+        this.userService.loadMyProfile().subscribe(() => {
+          this.newStreak.set(this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
+        });
       });
     }
     this.loadNextPuzzle();
-
-    effect(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
-      }
-    });
   }
 
 
@@ -109,6 +111,14 @@ export class TacticsComponent implements OnInit {
 
     this.tacticsService.getDailyPuzzle().subscribe({
       next: (res: { data: Puzzle }) => {
+        // Synchronize internal chess state and FEN before triggering board init
+        try {
+          this.chess.load(res.data.fen);
+          this.currentFen.set(res.data.fen);
+        } catch (e) {
+          console.warn('[Tactics] Failed to load puzzle FEN:', e);
+        }
+        
         this.currentPuzzle.set(res.data);
         this.isLoading.set(false);
         this.loadGameWithPuzzle(res.data);
@@ -121,7 +131,8 @@ export class TacticsComponent implements OnInit {
   }
 
   private loadGameWithPuzzle(puzzle: Puzzle) {
-    if (!puzzle?.game_url) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!puzzle.game_url) {
       this.isLoadingPgn.set(false);
       return;
     }
@@ -152,15 +163,6 @@ export class TacticsComponent implements OnInit {
 
           this.basePgnMoves.set(base);
           
-          // Sync internal chess state and currentFen
-          this.chess.load('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
-          try {
-            base.forEach(m => this.chess.move(m));
-            this.currentFen.set(this.chess.fen());
-          } catch (e) {
-            console.warn('[Tactics] Failed to sync chess state for base moves:', e);
-          }
-
           let mergedMoves = [...base];
           if (base.length > 0 && currentSessionMoves.length > 0) {
             const lastBase = base[base.length - 1];
@@ -176,8 +178,34 @@ export class TacticsComponent implements OnInit {
 
           this.pgnMoves.set(mergedMoves);
 
-          if (this.boardComponent) {
-            this.boardComponent.setGameMoves(mergedMoves);
+          // Sync internal chess state and currentFen with the FINAL merged moves
+          this.chess.load('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+          try {
+            mergedMoves.forEach(m => {
+              try {
+                this.chess.move(m);
+              } catch (e) {
+                // If a move fails during sync, it might be a duplicate or slightly different SAN
+                // We attempt to continue to keep the state as close as possible
+                console.warn('[Tactics] Sync move failed:', m, e);
+              }
+            });
+            this.currentFen.set(this.chess.fen());
+            
+            if (this.boardComponent) {
+              this.boardComponent.setGameMoves(mergedMoves);
+              
+              // No need for explicit playIntro call here, 
+              // the board's initPuzzle handles the first solution move animation.
+              // Just ensure lastMove highlight is synced.
+              const history = this.chess.history({ verbose: true });
+              const last = history[history.length - 1];
+              if (last) {
+                this.boardComponent.lastMove = [last.from, last.to];
+              }
+            }
+          } catch (e) {
+            console.warn('[Tactics] Failed to sync chess state for merged moves:', e);
           }
           
           this.currentPly.set(mergedMoves.length);
@@ -268,15 +296,45 @@ export class TacticsComponent implements OnInit {
         this.newRating.set(res.new_rating);
         this.newStreak.set(res.new_streak);
         this.userService.loadMyProfile().subscribe();
-        this.retryMode.set(true);
-        this.pgnMoves.set([...this.basePgnMoves()]);
-        this.currentPly.set(this.pgnMoves().length);
+        this.resetToInitialPuzzleState();
       });
     } else {
-      this.retryMode.set(true);
-      this.pgnMoves.set([...this.basePgnMoves()]);
-      this.currentPly.set(this.pgnMoves().length);
+      this.resetToInitialPuzzleState();
     }
+  }
+
+  private resetToInitialPuzzleState() {
+    this.retryMode.set(true);
+    
+    // The board resets to initialFen, which includes the first computer move.
+    // We should keep the computer move in pgnMoves and sync this.chess.
+    const puzzle = this.currentPuzzle();
+    if (!puzzle) return;
+
+    try {
+      this.chess.load(puzzle.fen);
+      const solutionMoves = puzzle.moves.split(' ');
+      if (solutionMoves.length > 0) {
+        const moveResult = this.chess.move(this.parseUciMove(solutionMoves[0]));
+        if (moveResult) {
+          const base = this.basePgnMoves();
+          this.pgnMoves.set([...base, moveResult.san]);
+          this.currentFen.set(this.chess.fen());
+        }
+      }
+    } catch (e) {
+      console.warn('[Tactics] Failed to reset to initial puzzle state:', e);
+    }
+    
+    this.currentPly.set(this.pgnMoves().length);
+  }
+
+  private parseUciMove(uci: string): { from: string; to: string; promotion?: string } {
+    return {
+      from: uci.substring(0, 2),
+      to: uci.substring(2, 4),
+      promotion: uci.length > 4 ? uci.substring(4, 5) : undefined,
+    };
   }
 
   onUserColorChange(color: 'white' | 'black') {
@@ -372,6 +430,14 @@ export class TacticsComponent implements OnInit {
         this.chess.move(moves[i]);
       }
       this.currentFen.set(this.chess.fen());
+      
+      const history = this.chess.history({ verbose: true });
+      const last = history[history.length - 1];
+      if (last && this.boardComponent) {
+        this.boardComponent.lastMove = [last.from, last.to];
+      } else if (this.boardComponent) {
+        this.boardComponent.lastMove = undefined;
+      }
     } catch (e) {
       console.warn('[Tactics] Failed to set chess state for ply:', ply, e);
     }

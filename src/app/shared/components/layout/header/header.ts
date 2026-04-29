@@ -69,9 +69,6 @@ export class Header implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
 
   constructor() {
-    if (this.authService.isAuthenticated()) {
-      this.chatService.loadUnreadCount();
-    }
 
     this.searchSubject
       .pipe(
@@ -100,7 +97,11 @@ export class Header implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.authService.isAuthenticated()) {
+      this.chatService.loadUnreadCount();
+    }
+  }
 
   ngOnDestroy() {}
 

@@ -15,6 +15,7 @@ import {
   HostListener,
   signal,
   NO_ERRORS_SCHEMA,
+  ViewEncapsulation,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
@@ -30,6 +31,7 @@ import { AudioService } from '../../../../core/services/audio.service';
   standalone: true,
   imports: [FormsModule],
   schemas: [NO_ERRORS_SCHEMA],
+  encapsulation: ViewEncapsulation.None,
   template: `
     <div class="board-resize-wrapper">
       <div class="board-container-wrapper relative">
@@ -61,6 +63,18 @@ import { AudioService } from '../../../../core/services/audio.service';
             </div>
           </div>
         }
+
+        <!-- Resize Handle -->
+        <div
+          class="board-resize-handle"
+          (mousedown)="startResizing($event)"
+          (touchstart)="startResizing($event)"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="21" y1="3" x2="3" y2="21"></line>
+            <line x1="21" y1="12" x2="12" y2="21"></line>
+          </svg>
+        </div>
       </div>
     </div>
   `,
@@ -79,14 +93,97 @@ import { AudioService } from '../../../../core/services/audio.service';
       .board-container-wrapper {
         width: 100%;
         aspect-ratio: 1 / 1;
+        padding-left: 32px;
+        padding-bottom: 32px;
+        box-sizing: border-box;
       }
       .board-container {
         width: 100%;
         height: 100%;
+        position: relative;
+        overflow: visible;
       }
+
+      /* Coordinate Overrides */
+      .cg-wrap {
+        overflow: visible !important;
+      }
+
+      .cg-wrap coords {
+        color: #000 !important;
+        font-weight: 800 !important;
+        font-size: 12px !important;
+        font-family: var(--font-sans) !important;
+        pointer-events: none !important;
+        text-transform: uppercase !important;
+      }
+
+      .dark .cg-wrap coords {
+        color: #fff !important;
+      }
+
+      .cg-wrap coords.ranks {
+        left: -28px !important;
+        top: 0 !important;
+        width: 20px !important;
+        text-align: right !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-around !important;
+        height: 100% !important;
+        right: auto !important;
+      }
+
+      .cg-wrap coords.files {
+        bottom: -28px !important;
+        left: 4px !important; /* Shifting letters slightly to the right */
+        height: 20px !important;
+        width: 100% !important;
+        text-align: left !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        top: auto !important;
+      }
+
+      /* Clean up default styling and remove alternating colors */
+      .cg-wrap coords.ranks coord,
+      .cg-wrap coords.files coord {
+        color: inherit !important;
+        text-shadow: none !important;
+        background: none !important;
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        line-height: 1 !important;
+      }
+
       .promotion-menu {
         transform: translateY(0);
         animation: promo-slide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .board-resize-handle {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 16px;
+        height: 16px;
+        cursor: nwse-resize;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-muted);
+        opacity: 0.4;
+        z-index: 20;
+        transition: opacity 0.2s;
+      }
+
+      .board-resize-handle svg {
+        width: 14px;
+        height: 14px;
+        transform: rotate(0deg);
       }
       @keyframes promo-slide {
         from {
@@ -128,6 +225,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   boardSize: number = 400;
   private containerSize: { width: number; height: number } = { width: 800, height: 800 };
   private resizeObserver: ResizeObserver | null = null;
+  private readonly STORAGE_KEY = 'von-chess.board-size';
+  private manualSize = signal<number | null>(null);
+  public isResizing = signal(false);
 
   public get api(): Api { return this.cgApi; }
   private cgApi!: Api;
@@ -146,7 +246,14 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     { type: 'n', label: 'Knight' },
   ];
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      const saved = localStorage.getItem(this.STORAGE_KEY);
+      if (saved) {
+        this.manualSize.set(parseInt(saved, 10));
+      }
+    }
+  }
 
   ngAfterViewInit() {
     this.initBoard();
@@ -181,17 +288,22 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   }
 
   private updateBoardSize() {
+    const GUTTER = 32;
     // Determine the maximum square size that fits in the container (100% fit)
     const maxPossible = Math.min(this.containerSize.width, this.containerSize.height);
     
-    // Clamp to global min/max
-    const clampedSize = Math.max(this.minSize, Math.min(this.maxSize, maxPossible));
+    // Use manual size if set, otherwise fit to parent
+    const targetSize = this.manualSize() || maxPossible;
+
+    // Clamp to global min/max and current container limits
+    const totalSize = Math.max(this.minSize + GUTTER, Math.min(this.maxSize, targetSize, maxPossible));
 
     // Direct DOM update for performance
-    this.el.nativeElement.style.setProperty('--board-size', `${clampedSize}px`);
+    this.el.nativeElement.style.setProperty('--board-size', `${totalSize}px`);
 
-    if (this.boardSize !== clampedSize) {
-      this.boardSize = clampedSize;
+    const boardSize = totalSize - GUTTER;
+    if (this.boardSize !== boardSize) {
+      this.boardSize = boardSize;
       this.sizeChange.emit(this.boardSize);
       
       // Notify Chessground to redraw
@@ -201,6 +313,39 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         });
       }
     }
+  }
+
+  @HostListener('window:mousemove', ['$event'])
+  @HostListener('window:touchmove', ['$event'])
+  onMouseMove(event: MouseEvent | TouchEvent) {
+    if (!this.isResizing()) return;
+    
+    const clientX = 'touches' in event ? event.touches[0].clientX : (event as MouseEvent).clientX;
+    const rect = this.el.nativeElement.getBoundingClientRect();
+    
+    // The manual size is based on total component width from its left edge
+    const newSize = Math.round(clientX - rect.left);
+    
+    if (newSize !== this.manualSize()) {
+      this.manualSize.set(newSize);
+      this.updateBoardSize();
+      
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem(this.STORAGE_KEY, newSize.toString());
+      }
+    }
+  }
+
+  @HostListener('window:mouseup')
+  @HostListener('window:touchend')
+  onMouseUp() {
+    this.isResizing.set(false);
+  }
+
+  startResizing(event: MouseEvent | TouchEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isResizing.set(true);
   }
 
   ngOnChanges(changes: SimpleChanges) {

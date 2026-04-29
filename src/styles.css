@@ -81,40 +81,6 @@ footer {
   transition-timing-function: ease;
 }
 
-/* Chessboard Resizing */
-.board-resize-wrapper {
-  container-type: inline-size;
-}
-
-/* Chess Coordinates */
-.cg-wrap coords {
-  text-transform: lowercase !important;
-  font-size: 13px !important;
-  font-weight: 700 !important;
-  transition: none !important; /* Disable global transition */
-}
-
-/* Disable global transitions for Chessground internal elements to prevent "shading" lag */
-.cg-wrap,
-.cg-wrap *,
-.cg-wrap::before,
-.cg-wrap::after {
-  transition: none !important;
-}
-
-.cg-wrap coords.files {
-  left: 4px !important;
-  bottom: 0 !important;
-  text-align: left !important;
-}
-
-.cg-wrap coords.ranks {
-  right: 2px !important;
-  top: 2px !important;
-  left: auto !important;
-  text-align: right !important;
-}
-
 /* Minimalist Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
