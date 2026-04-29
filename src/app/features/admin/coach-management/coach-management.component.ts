@@ -3,90 +3,69 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CoachService } from '../../coaches/services/coach.service';
 import { Coach } from '../../coaches/models/coach.model';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { 
-  heroPlus, 
-  heroPencilSquare, 
-  heroTrash, 
-  heroMagnifyingGlass,
-  heroCheckBadge,
-  heroMapPin,
-  heroAcademicCap
-} from '@ng-icons/heroicons/outline';
+
 import { ToastService } from '../../../core/services/toast.service';
 
 
 @Component({
   selector: 'app-coach-management',
   standalone: true,
-  imports: [CommonModule, RouterLink, NgIcon],
-  providers: [
-    provideIcons({ 
-      heroPlus, 
-      heroPencilSquare, 
-      heroTrash, 
-      heroMagnifyingGlass,
-      heroCheckBadge,
-      heroMapPin,
-      heroAcademicCap
-    })
-  ],
+  imports: [CommonModule, RouterLink],
+  providers: [],
   template: `
-    <div class="coach-management space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div class="coach-management space-y-8">
       <!-- Header Actions -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Coach Profiles</h1>
-          <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">Manage and curate public coach profiles on the platform.</p>
+          <h1 class="text-3xl font-bold tracking-tight text-slate-900">Coach Profiles</h1>
+          <p class="text-slate-500 mt-1 font-medium">Manage and curate public coach profiles on the platform.</p>
         </div>
-        <a routerLink="/admin/coach/new" class="flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold shadow-lg shadow-slate-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
-          <ng-icon name="heroPlus" class="text-lg"></ng-icon>
+        <a routerLink="/admin/coach/new" class="px-6 py-3 rounded bg-slate-900 text-white font-bold hover:bg-slate-800">
           <span>Add New Coach</span>
         </a>
       </div>
 
       <!-- Filters & Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 p-6 flex flex-col justify-between">
+        <div class="bg-white rounded border border-slate-200 p-6 flex flex-col justify-between">
           <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Coaches</span>
           <div class="flex items-end justify-between mt-2">
-            <span class="text-3xl font-black text-slate-900 dark:text-white">{{ coaches().length }}</span>
-            <span class="text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full">+1 this month</span>
+            <span class="text-3xl font-bold text-slate-900">{{ coaches().length }}</span>
+            <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">+1 this month</span>
           </div>
         </div>
-        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 p-6 flex flex-col justify-between">
+        <div class="bg-white rounded border border-slate-200 p-6 flex flex-col justify-between">
           <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Academy Instructors</span>
           <div class="flex items-end justify-between mt-2">
-            <span class="text-3xl font-black text-slate-900 dark:text-white">{{ academyInstructorsCount() }}</span>
-            <span class="text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full">Top Tier</span>
+            <span class="text-3xl font-bold text-slate-900">{{ academyInstructorsCount() }}</span>
+            <span class="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">Top Tier</span>
           </div>
         </div>
-        <div class="md:col-span-2 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 p-2 flex items-center">
+        <div class="md:col-span-2 bg-white rounded border border-slate-200 p-2 flex items-center">
           <div class="flex-1 flex items-center px-4">
-            <ng-icon name="heroMagnifyingGlass" class="text-slate-400 text-xl"></ng-icon>
             <input 
               type="text" 
               placeholder="Search coaches by name, title, or location..." 
               (input)="searchTerm.set($any($event.target).value)"
-              class="w-full bg-transparent border-none outline-none px-4 py-3 text-slate-900 dark:text-white placeholder:text-slate-400"
+              class="w-full bg-transparent border-none outline-none px-4 py-3 text-slate-900 placeholder:text-slate-400"
             >
           </div>
         </div>
       </div>
 
       <!-- Coaches List -->
-      <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
+      <div class="bg-white rounded border border-slate-200 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-100 dark:border-slate-800">
+              <tr class="border-b border-slate-100">
                 <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Coach</th>
                 <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-50 dark:divide-slate-900">
+            <tbody class="divide-y divide-slate-50">
               @for (coach of filteredCoaches(); track coach.id) {
-                <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors group">
+                <tr class="hover:bg-slate-50/50 transition-colors group">
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       @if (coach.title) {
@@ -94,18 +73,18 @@ import { ToastService } from '../../../core/services/toast.service';
                           {{ coach.title }}
                         </span>
                       }
-                      <span class="font-bold text-slate-900 dark:text-white">{{ coach.name }}</span>
+                      <span class="font-bold text-slate-900">{{ coach.name }}</span>
                       @if (coach.isAcademyInstructor) {
-                        <ng-icon name="heroCheckBadge" class="text-blue-500" title="Academy Instructor"></ng-icon>
+                        <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">ACADEMY</span>
                       }
                     </div>
                   </td>
                   <td class="px-6 py-4 text-right">
                     <div class="flex items-center justify-end gap-4">
-                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors uppercase tracking-widest">
+                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors uppercase tracking-widest">
                         Edit
                       </a>
-                      <button (click)="deleteCoach(coach)" class="text-xs font-bold text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 transition-colors uppercase tracking-widest">
+                      <button (click)="deleteCoach(coach)" class="text-xs font-bold text-rose-600 hover:underline transition-colors uppercase tracking-widest">
                         Delete
                       </button>
                     </div>
@@ -116,10 +95,7 @@ import { ToastService } from '../../../core/services/toast.service';
                   <td colspan="2" class="px-6 py-20 text-center">
 
                     <div class="flex flex-col items-center">
-                      <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-4">
-                        <ng-icon name="heroMagnifyingGlass" class="text-3xl"></ng-icon>
-                      </div>
-                      <h3 class="text-lg font-bold text-slate-900 dark:text-white">No coaches found</h3>
+                      <h3 class="text-lg font-bold text-slate-900">No coaches found</h3>
                       <p class="text-slate-500 text-sm">Try adjusting your search or add a new coach profile.</p>
                     </div>
                   </td>

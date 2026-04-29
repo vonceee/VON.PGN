@@ -2,30 +2,12 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  heroMagnifyingGlass,
-  heroUser,
-  heroShieldCheck,
-  heroTrash,
-  heroEllipsisVertical,
-  heroCheckBadge,
-} from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgIcon],
-  providers: [
-    provideIcons({
-      heroMagnifyingGlass,
-      heroUser,
-      heroShieldCheck,
-      heroTrash,
-      heroEllipsisVertical,
-      heroCheckBadge,
-    }),
-  ],
+  imports: [CommonModule, FormsModule],
+  providers: [],
   templateUrl: './user-list.component.html',
 })
 export class UserListComponent implements OnInit {

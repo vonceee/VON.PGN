@@ -1,30 +1,29 @@
-<div class="admin-page space-y-6 animate-in fade-in duration-500">
+<div class="max-w-[1200px] space-y-6">
 
-  <div class="ui-panel bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+  <div class="bg-white rounded border border-slate-200 overflow-hidden">
     <!-- Filters -->
-    <div class="p-4 border-bottom border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-4 bg-slate-50/50 dark:bg-slate-800/30">
+    <div class="p-4 border-bottom border-slate-100 flex flex-wrap items-center gap-4 bg-slate-50/50">
       <div class="relative flex-1 min-w-[240px]">
-        <ng-icon name="heroMagnifyingGlass" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></ng-icon>
         <input 
           type="text" 
           [(ngModel)]="searchQuery" 
           (keyup.enter)="onSearch()"
           placeholder="Search users by name or email..." 
-          class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+          class="w-full px-4 py-2 bg-white border border-slate-200 rounded text-sm outline-none"
         >
       </div>
       
       <select 
         [(ngModel)]="selectedRole" 
         (change)="loadUsers()"
-        class="px-4 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+        class="px-4 py-2 bg-white border border-slate-200 rounded text-sm outline-none"
       >
         <option value="all">All Roles</option>
         <option value="admin">Admins</option>
         <option value="organizer">Organizers</option>
       </select>
 
-      <button (click)="loadUsers()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors">
+      <button (click)="loadUsers()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-semibold">
         Search
       </button>
     </div>
@@ -33,7 +32,7 @@
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 uppercase text-[10px] font-bold tracking-wider">
+          <tr class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider">
             <th class="px-6 py-4">User</th>
             <th class="px-6 py-4">Status</th>
             <th class="px-6 py-4">Ratings</th>
@@ -41,7 +40,7 @@
             <th class="px-6 py-4 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+        <tbody class="divide-y divide-slate-100">
           @if (loading()) {
             <tr>
               <td colspan="5" class="px-6 py-12 text-center">
@@ -59,17 +58,17 @@
             </tr>
           } @else {
             @for (user of users(); track user.id) {
-              <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors group">
+              <tr class="hover:bg-slate-50">
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
-                      <ng-icon name="heroUser" class="text-lg"></ng-icon>
+                    <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold">
+                      {{ user.name.charAt(0) }}
                     </div>
                     <div>
-                      <div class="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                      <div class="font-semibold text-slate-900 flex items-center gap-2">
                         {{ user.name }}
                         @if (user.is_admin) {
-                          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">ADMIN</span>
+                          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-600">ADMIN</span>
                         }
                       </div>
                       <div class="text-xs text-slate-500">{{ user.email }}</div>
@@ -82,7 +81,7 @@
                       <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                       <span class="text-xs font-medium text-emerald-600">Online</span>
                     } @else {
-                      <span class="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+                      <span class="w-2 h-2 rounded-full bg-slate-300"></span>
                       <span class="text-xs font-medium text-slate-500">Offline</span>
                     }
                   </div>
@@ -91,15 +90,15 @@
                   <div class="flex gap-3 text-[10px] font-bold">
                     <div class="flex flex-col">
                       <span class="text-slate-400 uppercase">Bullet</span>
-                      <span class="text-slate-700 dark:text-slate-300">{{ user.ratings.bullet }}</span>
+                      <span class="text-slate-700">{{ user.ratings.bullet }}</span>
                     </div>
                     <div class="flex flex-col">
                       <span class="text-slate-400 uppercase">Blitz</span>
-                      <span class="text-slate-700 dark:text-slate-300">{{ user.ratings.blitz }}</span>
+                      <span class="text-slate-700">{{ user.ratings.blitz }}</span>
                     </div>
                     <div class="flex flex-col">
                       <span class="text-slate-400 uppercase">Rapid</span>
-                      <span class="text-slate-700 dark:text-slate-300">{{ user.ratings.rapid }}</span>
+                      <span class="text-slate-700">{{ user.ratings.rapid }}</span>
                     </div>
                   </div>
                 </td>
@@ -111,24 +110,24 @@
                     <button 
                       (click)="toggleAdmin(user)"
                       [title]="user.is_admin ? 'Remove Admin' : 'Make Admin'"
-                      class="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-400 hover:text-blue-600 transition-colors"
+                      class="px-2 py-1 text-xs font-bold rounded border border-slate-200 hover:bg-slate-50 text-slate-600"
                     >
-                      <ng-icon name="heroShieldCheck"></ng-icon>
+                      Admin
                     </button>
                     <button 
                       (click)="toggleOrganizer(user)"
                       [title]="user.verified_organizer ? 'Remove Organizer' : 'Make Organizer'"
-                      class="p-2 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-400 hover:text-emerald-600 transition-colors"
-                      [class.text-emerald-500]="user.verified_organizer"
+                      class="px-2 py-1 text-xs font-bold rounded border border-slate-200 hover:bg-slate-50 text-slate-600"
+                      [class.bg-emerald-50.text-emerald-600.border-emerald-200]="user.verified_organizer"
                     >
-                      <ng-icon name="heroCheckBadge"></ng-icon>
+                      Org
                     </button>
                     <button 
                       (click)="deleteUser(user)"
                       title="Delete User"
-                      class="p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/20 text-slate-400 hover:text-rose-600 transition-colors"
+                      class="px-2 py-1 text-xs font-bold rounded border border-slate-200 hover:bg-rose-50 text-rose-600"
                     >
-                      <ng-icon name="heroTrash"></ng-icon>
+                      Delete
                     </button>
                   </div>
                 </td>
@@ -140,7 +139,7 @@
     </div>
 
     <!-- Count -->
-    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/10 flex items-center justify-between">
+    <div class="p-4 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
       <span class="text-xs text-slate-500">Showing {{ users().length }} users</span>
     </div>
   </div>

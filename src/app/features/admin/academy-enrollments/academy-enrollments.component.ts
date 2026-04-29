@@ -2,25 +2,15 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminService } from '../../../core/services/admin.service';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroMagnifyingGlass, heroTrash, heroArrowPath } from '@ng-icons/heroicons/outline';
-import { ButtonComponent  } from '@shared/ui';
 import { ToastService } from '../../../core/services/toast.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-academy-enrollments',
   standalone: true,
-  imports: [CommonModule, NgIcon, FormsModule, ButtonComponent],
-  providers: [
-    provideIcons({
-      heroMagnifyingGlass,
-      heroTrash,
-      heroArrowPath,
-    }),
-  ],
+  imports: [CommonModule, FormsModule],
+  providers: [],
   templateUrl: './academy-enrollments.html',
-  styleUrl: '../admin-styles.css'
 })
 export class AcademyEnrollmentsComponent implements OnInit {
   private adminService = inject(AdminService);

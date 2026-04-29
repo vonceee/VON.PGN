@@ -3,28 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  heroAcademicCap,
-  heroPlus,
-  heroPencilSquare,
-  heroTrash,
-  heroBookOpen,
-} from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-course-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, NgIcon],
-  providers: [
-    provideIcons({
-      heroAcademicCap,
-      heroPlus,
-      heroPencilSquare,
-      heroTrash,
-      heroBookOpen,
-    }),
-  ],
+  imports: [CommonModule, RouterLink],
+  providers: [],
   templateUrl: './course-list.html'
 })
 export class CourseListComponent implements OnInit {
