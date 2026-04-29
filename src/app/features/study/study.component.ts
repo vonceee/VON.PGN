@@ -48,7 +48,6 @@ import { StudyChatComponent } from './study-chat/study-chat.component';
     StudyInfoComponent,
     StudyAnalysisComponent,
     StudyChatComponent,
-    AnnotateMoveDialogComponent,
   ],
   templateUrl: './study.component.html',
   styles: [`
