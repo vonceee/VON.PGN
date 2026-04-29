@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
 import { FeedbackService } from '../../../core/services/feedback.service';
@@ -22,14 +22,18 @@ export class AdminDashboardComponent implements OnInit {
   // Reactive feedback count using computed signal
   feedbackCount = computed(() => this.feedbackService.feedbackItems().length);
 
-  ngOnInit() {
-    this.adminService.getCourses().subscribe({
-      next: (data) => this.coursesCount.set(data.length),
-      error: () => {}
-    });
+  private platformId = inject(PLATFORM_ID);
 
-    this.loadCoachApplications();
-    this.loadRecentEnrollments();
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.adminService.getCourses().subscribe({
+        next: (data) => this.coursesCount.set(data.length),
+        error: () => {}
+      });
+
+      this.loadCoachApplications();
+      this.loadRecentEnrollments();
+    }
   }
 
   loadCoachApplications() {

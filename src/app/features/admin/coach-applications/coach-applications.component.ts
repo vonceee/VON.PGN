@@ -1,7 +1,7 @@
-import { Component, inject, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { Component, inject, signal, computed, PLATFORM_ID, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { environment } from '../../../../environments/environment';
+import { AdminService } from '../../../core/services/admin.service';
 import { CoachApplication } from '../../coaches/models/coach-application.model';
 
 @Component({
@@ -11,8 +11,8 @@ import { CoachApplication } from '../../coaches/models/coach-application.model';
   providers: [],
   templateUrl: './coach-applications.component.html',
 })
-export class CoachApplicationsComponent {
-  private http = inject(HttpClient);
+export class CoachApplicationsComponent implements OnInit {
+  private adminService = inject(AdminService);
 
   applications = signal<CoachApplication[]>([]);
   loading = signal(true);
@@ -20,8 +20,12 @@ export class CoachApplicationsComponent {
   selectedApplication = signal<CoachApplication | null>(null);
   deleteTarget = signal<string | null>(null);
 
-  constructor() {
-    this.loadApplications();
+  private platformId = inject(PLATFORM_ID);
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadApplications();
+    }
   }
 
   filteredApplications = computed(() => {
@@ -36,7 +40,7 @@ export class CoachApplicationsComponent {
   });
 
   loadApplications() {
-    this.http.get<CoachApplication[]>(`${environment.apiUrl}/admin/coach-applications`).subscribe({
+    this.adminService.getCoachApplications().subscribe({
       next: (applications) => {
         this.applications.set(applications);
         this.loading.set(false);
@@ -67,7 +71,7 @@ export class CoachApplicationsComponent {
   }
 
   approveApplication(id: string) {
-    this.http.post(`${environment.apiUrl}/admin/coach-applications/${id}/approve`, {}).subscribe({
+    this.adminService.approveCoachApplication(id).subscribe({
       next: (application: any) => {
         this.updateApplicationInList(application as CoachApplication);
         this.closeApplication();
@@ -77,7 +81,7 @@ export class CoachApplicationsComponent {
   }
 
   rejectApplication(id: string) {
-    this.http.post(`${environment.apiUrl}/admin/coach-applications/${id}/reject`, {}).subscribe({
+    this.adminService.rejectCoachApplication(id).subscribe({
       next: (application: any) => {
         this.updateApplicationInList(application as CoachApplication);
         this.closeApplication();
@@ -97,7 +101,7 @@ export class CoachApplicationsComponent {
   confirmDelete() {
     const id = this.deleteTarget();
     if (id) {
-      this.http.delete(`${environment.apiUrl}/admin/coach-applications/${id}`).subscribe({
+      this.adminService.deleteCoachApplication(id).subscribe({
         next: () => {
           this.applications.update(apps => apps.filter(app => app.id !== id));
           this.deleteTarget.set(null);

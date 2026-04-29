@@ -9,123 +9,127 @@ import { environment } from '../../../environments/environment';
 })
 export class AdminService {
   private http = inject(HttpClient);
-  private auth = inject(AuthService);
   private apiUrl = environment.apiUrl + '/admin';
-
-  private get headers() {
-    return {
-      Authorization: `Bearer ${this.auth.getToken()}`
-    };
-  }
 
   // Courses
   getCourses(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/courses`, { headers: this.headers });
+    return this.http.get<any[]>(`${this.apiUrl}/courses`);
   }
 
   getCourse(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/courses/${id}`, { headers: this.headers });
+    return this.http.get<any>(`${this.apiUrl}/courses/${id}`);
   }
 
   createCourse(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/courses`, data, { headers: this.headers });
+    return this.http.post<any>(`${this.apiUrl}/courses`, data);
   }
 
   updateCourse(id: number, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/courses/${id}`, data, { headers: this.headers });
+    return this.http.put<any>(`${this.apiUrl}/courses/${id}`, data);
   }
 
   deleteCourse(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/courses/${id}`, { headers: this.headers });
+    return this.http.delete<any>(`${this.apiUrl}/courses/${id}`);
   }
 
   // Chapters
   getChapter(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/chapters/${id}`, { headers: this.headers });
+    return this.http.get<any>(`${this.apiUrl}/chapters/${id}`);
   }
 
   createChapter(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/chapters`, data, { headers: this.headers });
+    return this.http.post<any>(`${this.apiUrl}/chapters`, data);
   }
 
   updateChapter(id: number, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/chapters/${id}`, data, { headers: this.headers });
+    return this.http.put<any>(`${this.apiUrl}/chapters/${id}`, data);
   }
 
   deleteChapter(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/chapters/${id}`, { headers: this.headers });
+    return this.http.delete<any>(`${this.apiUrl}/chapters/${id}`);
   }
 
   // Lessons
   getLesson(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/lessons/${id}`, { headers: this.headers });
+    return this.http.get<any>(`${this.apiUrl}/lessons/${id}`);
   }
 
   createLesson(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/lessons`, data, { headers: this.headers });
+    return this.http.post<any>(`${this.apiUrl}/lessons`, data);
   }
 
   updateLesson(id: number, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/lessons/${id}`, data, { headers: this.headers });
+    return this.http.put<any>(`${this.apiUrl}/lessons/${id}`, data);
   }
 
   deleteLesson(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/lessons/${id}`, { headers: this.headers });
+    return this.http.delete<any>(`${this.apiUrl}/lessons/${id}`);
   }
 
   // Tournaments
   getTournaments(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/tournaments`, { headers: this.headers });
+    return this.http.get<any>(`${this.apiUrl}/tournaments`);
   }
 
   getTournament(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/tournaments/${id}`, { headers: this.headers });
+    return this.http.get<any>(`${this.apiUrl}/tournaments/${id}`);
   }
 
   createTournament(data: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/tournaments`, data, { headers: this.headers });
+    return this.http.post<any>(`${this.apiUrl}/tournaments`, data);
   }
 
   updateTournament(id: string, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/tournaments/${id}`, data, { headers: this.headers });
+    return this.http.put<any>(`${this.apiUrl}/tournaments/${id}`, data);
   }
 
   deleteTournament(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/tournaments/${id}`, { headers: this.headers });
+    return this.http.delete<any>(`${this.apiUrl}/tournaments/${id}`);
   }
 
   // Coach Applications
   getCoachApplications(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/coach-applications`, { headers: this.headers });
+    return this.http.get<any[]>(`${this.apiUrl}/coach-applications`);
+  }
+
+  approveCoachApplication(id: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/coach-applications/${id}/approve`, {});
+  }
+
+  rejectCoachApplication(id: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/coach-applications/${id}/reject`, {});
+  }
+
+  deleteCoachApplication(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/coach-applications/${id}`);
   }
 
   // Academy Enrollments
   getAcademyEnrollments(params: any = {}): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/academy/enrollments`, { headers: this.headers, params });
+    return this.http.get<any[]>(`${this.apiUrl}/academy/enrollments`, { params });
   }
 
   updateAcademyEnrollmentStatus(id: number, status: string): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/academy/enrollments/${id}`, { status }, { headers: this.headers });
+    return this.http.put<any>(`${this.apiUrl}/academy/enrollments/${id}`, { status });
   }
 
   deleteAcademyEnrollment(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/academy/enrollments/${id}`, { headers: this.headers });
+    return this.http.delete<any>(`${this.apiUrl}/academy/enrollments/${id}`);
   }
 
-  // Users
   getUsers(params: any = {}): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/users`, { headers: this.headers, params });
+    return this.http.get<any>(`${this.apiUrl}/users`, { params });
   }
 
   toggleAdmin(id: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/users/${id}/toggle-admin`, {}, { headers: this.headers });
+    return this.http.post<any>(`${this.apiUrl}/users/${id}/toggle-admin`, {});
   }
 
   toggleOrganizer(id: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/users/${id}/toggle-organizer`, {}, { headers: this.headers });
+    return this.http.post<any>(`${this.apiUrl}/users/${id}/toggle-organizer`, {});
   }
 
   deleteUser(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/users/${id}`, { headers: this.headers });
+    return this.http.delete<any>(`${this.apiUrl}/users/${id}`);
   }
 }

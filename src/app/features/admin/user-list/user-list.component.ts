@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
 
@@ -18,16 +18,29 @@ export class UserListComponent implements OnInit {
   searchQuery = signal('');
   selectedRole = signal('all');
 
+  private platformId = inject(PLATFORM_ID);
+
   ngOnInit() {
-    this.loadUsers();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadUsers();
+    }
   }
 
   loadUsers() {
     this.loading.set(true);
-    const params = {
+    
+    // Clean params: only include defined values
+    const rawParams: any = {
       search: this.searchQuery(),
       role: this.selectedRole() !== 'all' ? this.selectedRole() : undefined,
     };
+    
+    const params: any = {};
+    Object.keys(rawParams).forEach(key => {
+      if (rawParams[key] !== undefined && rawParams[key] !== null && rawParams[key] !== '') {
+        params[key] = rawParams[key];
+      }
+    });
 
     this.adminService.getUsers(params).subscribe({
       next: (response) => {

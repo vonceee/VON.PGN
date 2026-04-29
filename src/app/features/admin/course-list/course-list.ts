@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -19,8 +19,12 @@ export class CourseListComponent implements OnInit {
   loading = signal(true);
   deleteCourseTarget = signal<number | null>(null);
 
+  private platformId = inject(PLATFORM_ID);
+
   ngOnInit() {
-    this.loadCourses();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadCourses();
+    }
   }
 
   loadCourses() {

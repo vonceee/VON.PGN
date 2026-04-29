@@ -1,5 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminService } from '../../../core/services/admin.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -21,8 +21,12 @@ export class AcademyEnrollmentsComponent implements OnInit {
   searchTerm = signal('');
   statusFilter = signal('');
 
+  private platformId = inject(PLATFORM_ID);
+
   ngOnInit() {
-    this.loadEnrollments();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadEnrollments();
+    }
   }
 
   loadEnrollments() {
