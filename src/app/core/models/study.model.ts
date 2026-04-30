@@ -2,6 +2,7 @@ import { UserProfile } from './user.model';
 
 export interface StudyCollaborator extends UserProfile {
   can_edit: boolean;
+  is_syncing: boolean;
 }
 
 export interface Study {

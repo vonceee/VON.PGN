@@ -1,5 +1,6 @@
 import { Component, inject, signal, HostListener, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { UserService, UserSearchResult } from '../../../../core/services/user.service';
@@ -7,6 +8,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { GameService } from '../../../../core/services/game.service';
 import { ChatService } from '../../../../core/services/chat.service';
 import { ChallengeService } from '../../../../core/services/challenge.service';
+import { NotificationService } from '../../../../core/services/notification.service';
 import { environment } from 'environments/environment';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -20,12 +22,12 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
 import { ButtonComponent, LinkComponent, SectionHeadingComponent, NotificationBadgeComponent } from '@shared/ui';
-import { heroTrophy } from '@ng-icons/heroicons/outline';
+import { heroTrophy, heroBell } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgIcon, MobileMenuComponent, LinkComponent, NotificationBadgeComponent],
+  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent, LinkComponent, NotificationBadgeComponent],
   providers: [
     provideIcons({
       heroChevronDown,
@@ -35,6 +37,7 @@ import { heroTrophy } from '@ng-icons/heroicons/outline';
       heroXMark,
       heroBars3,
       heroTrophy,
+      heroBell,
     }),
   ],
   templateUrl: './header.html',
@@ -49,6 +52,7 @@ export class Header implements OnInit, OnDestroy {
   gameService = inject(GameService);
   chatService = inject(ChatService);
   challengeService = inject(ChallengeService);
+  notificationService = inject(NotificationService);
   private router = inject(Router);
 
 
@@ -62,6 +66,14 @@ export class Header implements OnInit, OnDestroy {
   searchResults = signal<UserSearchResult[]>([]);
   isSearchOpen = signal(false);
   isSearching = signal(false);
+  isNotificationsOpen = signal(false);
+
+  toggleNotifications() {
+    this.isNotificationsOpen.update(v => !v);
+    if (this.isNotificationsOpen()) {
+      this.notificationService.getNotifications().subscribe();
+    }
+  }
   pingSignal = signal(0);
   pingStrength = signal<'strong' | 'medium' | 'weak'>('strong');
   lastPingTime = 0;
@@ -100,6 +112,7 @@ export class Header implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.authService.isAuthenticated()) {
       this.chatService.loadUnreadCount();
+      this.notificationService.getUnreadCount().subscribe();
     }
   }
 
@@ -160,6 +173,14 @@ export class Header implements OnInit, OnDestroy {
 
   toggleMobileMenu() {
     this.isMobileMenuOpen.update((v) => !v);
+  }
+
+  navigateToNotification(n: any) {
+    this.notificationService.markAsRead(n.id).subscribe();
+    this.isNotificationsOpen.set(false);
+    if (n.data?.action_url) {
+      this.router.navigateByUrl(n.data.action_url);
+    }
   }
 
 

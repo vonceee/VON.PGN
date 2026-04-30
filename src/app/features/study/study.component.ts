@@ -163,7 +163,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     return s.collaborators?.find(c => String(c.uid) === String(user.id || user.uid))?.can_edit ?? false;
   });
 
-  isSyncing = signal(false);
+  isSyncing = signal(true);
   isLargeScreen = signal(false);
   activeTab = signal<'notation' | 'info' | 'chat'>('notation');
   showDeleteModal = signal(false);
@@ -227,6 +227,19 @@ export class StudyComponent implements OnInit, OnDestroy {
     effect(() => {
       const studyId = this.id();
       if (studyId && isPlatformBrowser(this.platformId)) this.studyService.getStudy(Number(studyId));
+    });
+
+    effect(() => {
+      const s = this.study();
+      const user = this.authService.currentUser();
+      if (s && user) {
+        const collaborator = s.collaborators?.find(c => String(c.uid) === String(user.id || user.uid));
+        if (collaborator) {
+          this.ngZone.runOutsideAngular(() => {
+            setTimeout(() => this.isSyncing.set(collaborator.is_syncing), 0);
+          });
+        }
+      }
     });
 
     if (isPlatformBrowser(this.platformId)) {

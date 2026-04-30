@@ -233,6 +233,54 @@
   <!-- Right Section: Auth + Hamburger -->
   <div class="flex items-center gap-2 md:gap-3 ml-auto md:ml-0">
     @if (authService.isAuthenticated()) {
+      <!-- Notifications Dropdown -->
+      <div class="relative hidden md:block">
+        <button
+          (click)="toggleNotifications()"
+          class="p-2 rounded-full hover:bg-subtle transition-colors relative group"
+          aria-label="Notifications"
+        >
+          <ng-icon name="heroBell" class="w-6 h-6 text-content group-hover:text-accent"></ng-icon>
+          @if (notificationService.unreadCount() > 0) {
+            <span class="absolute top-1 right-1 w-4 h-4 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+              {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
+            </span>
+          }
+        </button>
+
+        @if (isNotificationsOpen()) {
+          <div class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden flex flex-col">
+            <div class="px-4 py-3 border-b border-border-base flex items-center justify-between">
+              <span class="font-bold text-sm">Notifications</span>
+              @if (notificationService.unreadCount() > 0) {
+                <button (click)="notificationService.markAllAsRead().subscribe()" class="text-xs text-accent hover:underline font-semibold">Mark all as read</button>
+              }
+            </div>
+
+            <div class="max-h-96 overflow-y-auto">
+              @if (notificationService.isLoading() && notificationService.notifications().length === 0) {
+                <div class="px-4 py-8 text-center text-muted text-sm italic">Loading...</div>
+              } @else if (notificationService.notifications().length === 0) {
+                <div class="px-4 py-8 text-center text-muted text-sm italic">No notifications yet</div>
+              } @else {
+                @for (n of notificationService.notifications(); track n.id) {
+                  <div 
+                    class="px-4 py-3 hover:bg-subtle transition-colors cursor-pointer border-b border-border-base last:border-0"
+                    [class.bg-accent/5]="!n.read_at"
+                    (click)="navigateToNotification(n)"
+                  >
+                    <div class="flex flex-col gap-1">
+                      <p class="text-sm text-content leading-snug">{{ n.data.message }}</p>
+                      <span class="text-[10px] text-muted">{{ n.created_at | date:'short' }}</span>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+
       <div class="relative hidden md:block" #profileContainer>
         <button
           (click)="toggleProfileDropdown()"
