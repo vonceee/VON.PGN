@@ -123,40 +123,51 @@ import { AudioService } from '../../../../core/services/audio.service';
       }
 
       .cg-wrap coords.ranks {
-        left: -28px !important;
+        left: -32px !important;
         top: 0 !important;
-        width: 20px !important;
-        text-align: right !important;
+        width: 32px !important;
         display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-around !important;
-        height: 100% !important;
+        flex-direction: column-reverse !important; /* Default for White: 1..8 -> 8 at top */
         right: auto !important;
       }
 
+      .cg-wrap.orientation-black coords.ranks {
+        flex-direction: column !important; /* For Black: 1..8 -> 1 at top */
+      }
+
       .cg-wrap coords.files {
-        bottom: -28px !important;
-        left: 4px !important; /* Shifting letters slightly to the right */
-        height: 20px !important;
+        bottom: -32px !important;
+        left: 0 !important;
+        height: 32px !important;
         width: 100% !important;
-        text-align: left !important;
         display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-around !important;
-        align-items: center !important;
+        flex-direction: row !important; /* Default for White: a..h -> a at left */
         top: auto !important;
       }
 
-      /* Clean up default styling and remove alternating colors */
+      .cg-wrap.orientation-black coords.files {
+        flex-direction: row-reverse !important; /* For Black: a..h -> h at left */
+      }
+
       .cg-wrap coords.ranks coord,
       .cg-wrap coords.files coord {
         color: inherit !important;
         text-shadow: none !important;
         background: none !important;
-        position: static !important;
-        width: auto !important;
-        height: auto !important;
         line-height: 1 !important;
+        position: static !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex: 1 !important;
+      }
+
+      .cg-wrap coords.ranks coord {
+        justify-content: center !important;
+      }
+
+      .cg-wrap coords.files coord {
+        align-items: center !important;
       }
 
       .promotion-menu {
