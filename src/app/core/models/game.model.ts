@@ -9,6 +9,8 @@ export interface GameState {
   id: string;
   white_player: GamePlayer;
   black_player: GamePlayer;
+  white_player_id?: number | string;
+  black_player_id?: number | string;
   status: 'pending' | 'active' | 'completed' | 'aborted';
   time_control: string;
   initial_time_ms: number;
