@@ -9,6 +9,7 @@ import { GameState, MovePlayedPayload, GameEndedPayload, GameSeek, RematchOffere
 import { Subject, of, Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { io, Socket } from 'socket.io-client';
+import { DevLogger } from '../utils/dev-logger';
 
 @Injectable({
   providedIn: 'root',
@@ -175,7 +176,7 @@ export class GameService implements OnDestroy {
             this.botMatchTimeout = setTimeout(() => {
               // Only trigger if we are still searching for the same time control
               if (this.isSearching() && this.searchTimeControl() === timeControl) {
-                console.log(`[Matchmaking] 8s threshold reached, enabling bot matching for ${timeControl}`);
+                DevLogger.log(`[Matchmaking] 8s threshold reached, enabling bot matching for ${timeControl}`);
                 this.seekGame(timeControl, true);
               }
             }, 8000);
@@ -447,14 +448,14 @@ export class GameService implements OnDestroy {
 
       // Don't connect if auth service is not initialized yet
       if (!this.authService.isInitialized()) {
-        console.log('[Game] Not connecting socket - auth service not initialized');
+        DevLogger.log('[Game] Not connecting socket - auth service not initialized');
         return;
       }
 
       const token = this.authService.getToken();
       const user = this.authService.currentUser();
 
-      console.log('[Game] Connecting socket with auth:', {
+      DevLogger.log('[Game] Connecting socket with auth:', {
         hasToken: !!token,
         userId: user?.uid,
         userName: user?.username,
@@ -463,7 +464,7 @@ export class GameService implements OnDestroy {
 
       // Don't connect if user data is not available
       if (!user?.uid) {
-        console.log('[Game] Not connecting socket - user data not available');
+        DevLogger.log('[Game] Not connecting socket - user data not available');
         return;
       }
 
@@ -477,18 +478,18 @@ export class GameService implements OnDestroy {
       this.socket.set(s);
 
       s.on('connect', () => {
-        console.log('[Game] Socket connected');
+        DevLogger.log('[Game] Socket connected');
         this.isConnected.set(true);
         this.flushPendingSubscription();
       });
 
       s.on('disconnect', (reason) => {
-        console.log('[Game] Socket disconnected:', reason);
+        DevLogger.log('[Game] Socket disconnected:', reason);
         this.isConnected.set(false);
       });
 
       s.on('connect_error', (err) => {
-        console.log('[Game] Socket connection error:', err);
+        DevLogger.log('[Game] Socket connection error:', err);
       });
     });
   }
@@ -514,7 +515,7 @@ export class GameService implements OnDestroy {
     const s = this.socket();
     if (!s) return;
 
-    console.log(`[Game] Joining game room ${gameId}`);
+    DevLogger.log(`[Game] Joining game room ${gameId}`);
     s.emit('join_game', gameId);
 
     s.off('game_state');
@@ -522,7 +523,7 @@ export class GameService implements OnDestroy {
       const remoteGame = data.game;
       if (!remoteGame || remoteGame.id !== gameId) return;
 
-      console.log(`[Game] Received authoritative state for ${gameId}`);
+      DevLogger.log(`[Game] Received authoritative state for ${gameId}`);
       this.gameState.update((state) => {
         // If we don't have a local state yet, use the one from the microservice
         if (!state) {
@@ -865,16 +866,16 @@ export class GameService implements OnDestroy {
   fetchPgnFromLichess(gameUrl: string): Observable<string> {
     const match = gameUrl.match(/lichess\.org\/([a-zA-Z0-9]+)/);
     if (!match) {
-      console.log('[GameService] Invalid game URL:', gameUrl);
+      DevLogger.log('[GameService] Invalid game URL:', gameUrl);
       return of('');
     }
     const gameId = match[1];
-    console.log('[GameService] Fetching game:', gameId);
+    DevLogger.log('[GameService] Fetching game:', gameId);
     return this.http.get(`https://lichess.org/game/export/${gameId}?pgnInJson=true`, {
       responseType: 'text',
     }).pipe(
       catchError((err) => {
-        console.log('[GameService] Fetch error:', err);
+        DevLogger.log('[GameService] Fetch error:', err);
         return of('');
       })
     );

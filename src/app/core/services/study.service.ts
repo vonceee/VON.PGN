@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
+import { DevLogger } from '../utils/dev-logger';
 import {
   Study,
   StudyChapter,
@@ -87,7 +88,7 @@ export class StudyService {
     this.isLoading.set(true);
     this.http.get<{ data: Study }>(`${this.apiUrl}/studies/${id}`).subscribe({
       next: (res) => {
-        console.log('[StudyService] Raw API Response:', res.data);
+        DevLogger.log('[StudyService] Raw API Response:', res.data);
         this.currentStudy.set(res.data);
         
         const chapters = res.data.chapters || [];
@@ -123,7 +124,7 @@ export class StudyService {
       },
       error: (err) => {
         this.isLoading.set(false);
-        console.error('[StudyService] Failed to fetch study:', err);
+        DevLogger.error('[StudyService] Failed to fetch study:', err);
         
         if (err.status === 403) {
           this.toastService.show('This study is private.', 'error');
@@ -216,7 +217,7 @@ export class StudyService {
     });
 
     this.socket.on('study_synced', (state: StudySyncedPayload) => {
-      console.log('[Study] Synced state:', state);
+      DevLogger.log('[Study] Synced state:', state);
       this.lastRemoteState.set({
         chapterId: state.chapterId,
         fen: state.fen,
@@ -268,13 +269,13 @@ export class StudyService {
     const chapter = this.currentChapter();
     
     if (!study || !chapter) {
-      console.warn('[StudyService] Missing study or chapter to save move.');
+      DevLogger.warn('[StudyService] Missing study or chapter to save move.');
       return;
     }
 
     const chapterId = chapter.id;
     if (!chapterId) {
-      console.error('[StudyService] Chapter object exists but ID is missing:', chapter);
+      DevLogger.error('[StudyService] Chapter object exists but ID is missing:', chapter);
       return;
     }
 
@@ -319,7 +320,7 @@ export class StudyService {
         }
       },
       error: (err) => {
-        console.error('[StudyService] Failed to save move to DB:', err);
+        DevLogger.error('[StudyService] Failed to save move to DB:', err);
         this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
       }
     });

@@ -19,6 +19,7 @@ import { MoveNotationComponent  } from '@shared/chess';
 import { TacticsBoardComponent  } from '@shared/chess';
 import { LoadingComponent  } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
+import { DevLogger } from '../../core/utils/dev-logger';
 
 @Component({
   selector: 'app-tactics',
@@ -116,7 +117,7 @@ export class TacticsComponent implements OnInit {
           this.chess.load(res.data.fen);
           this.currentFen.set(res.data.fen);
         } catch (e) {
-          console.warn('[Tactics] Failed to load puzzle FEN:', e);
+          DevLogger.warn('[Tactics] Failed to load puzzle FEN:', e);
         }
         
         this.currentPuzzle.set(res.data);
@@ -139,7 +140,7 @@ export class TacticsComponent implements OnInit {
 
     const parsed = this.parseGameUrl(puzzle.game_url);
     if (!parsed.gameId) {
-      console.warn('[Tactics] Could not parse gameId from URL:', puzzle.game_url);
+      DevLogger.warn('[Tactics] Could not parse gameId from URL:', puzzle.game_url);
       this.isLoadingPgn.set(false);
       return;
     }
@@ -187,7 +188,7 @@ export class TacticsComponent implements OnInit {
               } catch (e) {
                 // If a move fails during sync, it might be a duplicate or slightly different SAN
                 // We attempt to continue to keep the state as close as possible
-                console.warn('[Tactics] Sync move failed:', m, e);
+                DevLogger.warn('[Tactics] Sync move failed:', m, e);
               }
             });
             this.currentFen.set(this.chess.fen());
@@ -205,16 +206,16 @@ export class TacticsComponent implements OnInit {
               }
             }
           } catch (e) {
-            console.warn('[Tactics] Failed to sync chess state for merged moves:', e);
+            DevLogger.warn('[Tactics] Failed to sync chess state for merged moves:', e);
           }
           
           this.currentPly.set(mergedMoves.length);
         } else {
-          console.warn('[Tactics] PGN fetched but empty');
+          DevLogger.warn('[Tactics] PGN fetched but empty');
         }
       },
       error: (err: Error) => {
-        console.error('[Tactics] Error fetching PGN:', err);
+        DevLogger.error('[Tactics] Error fetching PGN:', err);
         this.isLoadingPgn.set(false);
       },
     });
@@ -323,7 +324,7 @@ export class TacticsComponent implements OnInit {
         }
       }
     } catch (e) {
-      console.warn('[Tactics] Failed to reset to initial puzzle state:', e);
+      DevLogger.warn('[Tactics] Failed to reset to initial puzzle state:', e);
     }
     
     this.currentPly.set(this.pgnMoves().length);
@@ -357,7 +358,7 @@ export class TacticsComponent implements OnInit {
       this.chess.move(san);
       this.currentFen.set(this.chess.fen());
     } catch (e) {
-      console.warn('[Tactics] Could not update FEN for move:', san, e);
+      DevLogger.warn('[Tactics] Could not update FEN for move:', san, e);
     }
   }
 
@@ -439,7 +440,7 @@ export class TacticsComponent implements OnInit {
         this.boardComponent.lastMove = undefined;
       }
     } catch (e) {
-      console.warn('[Tactics] Failed to set chess state for ply:', ply, e);
+      DevLogger.warn('[Tactics] Failed to set chess state for ply:', ply, e);
     }
   }
 }
