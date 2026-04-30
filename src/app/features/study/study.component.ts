@@ -32,6 +32,7 @@ import { StudySidebarComponent } from './study-sidebar/study-sidebar.component';
 import { StudyInfoComponent } from './study-info/study-info.component';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { StudyChatComponent } from './study-chat/study-chat.component';
+import { ExplorerBoxComponent } from '../explorer/explorer-box.component';
 
 @Component({
   selector: 'app-study',
@@ -48,6 +49,7 @@ import { StudyChatComponent } from './study-chat/study-chat.component';
     StudyInfoComponent,
     StudyAnalysisComponent,
     StudyChatComponent,
+    ExplorerBoxComponent,
   ],
   templateUrl: './study.component.html',
   styles: [`

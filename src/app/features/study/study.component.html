@@ -78,20 +78,25 @@
                 (multiPvChange)="onMultiPvChange($event)"
               ></app-study-analysis>
 
-              <div class="flex-1 flex flex-col overflow-hidden">
-                <app-move-notation
-                  class="flex-1 overflow-y-auto custom-scrollbar"
-                  [moveTree]="moveTree()"
-                  [currentFen]="currentFen()"
-                  [currentPly]="currentPly()"
-                  [initialPly]="initialPly()"
-                  [showNavigation]="true"
-                  (nodeClicked)="onNodeClicked($event)"
-                  (navigate)="onNavigateToPly($event)"
-                  (deleteFromHere)="onDeleteFromHere($event)"
-                  (annotateMove)="onAnnotateMove($event)"
-                ></app-move-notation>
-              </div>
+              <app-move-notation
+                class="flex-1 overflow-y-auto custom-scrollbar"
+                [moveTree]="moveTree()"
+                [currentFen]="currentFen()"
+                [currentPly]="currentPly()"
+                [initialPly]="initialPly()"
+                [showNavigation]="true"
+                (nodeClicked)="onNodeClicked($event)"
+                (navigate)="onNavigateToPly($event)"
+                (deleteFromHere)="onDeleteFromHere($event)"
+                (annotateMove)="onAnnotateMove($event)"
+              ></app-move-notation>
+
+              <!-- Opening Explorer & Tablebase -->
+              <app-explorer-box 
+                [fen]="currentFen()" 
+                [variant]="currentChapter()?.variant || 'standard'"
+                [orientation]="boardOrientation()"
+              ></app-explorer-box>
             } @else if (activeTab() === 'info') {
               <app-study-info
                 [isOwner]="isOwner()"

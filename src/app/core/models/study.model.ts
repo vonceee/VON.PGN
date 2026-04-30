@@ -58,6 +58,7 @@ export interface StudyChapter {
   initial_fen: string;
   current_fen: string;
   orientation?: 'white' | 'black';
+  variant?: string;
   moves: string[]; // Keep for backward compatibility or flat view
   move_tree?: MoveNode[]; // Root moves of the mainline
   order: number;

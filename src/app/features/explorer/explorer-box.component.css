@@ -1,0 +1,86 @@
+:host {
+  display: block;
+  z-index: 50;
+}
+
+:host.collapsed {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  width: auto;
+  height: auto;
+  pointer-events: auto;
+}
+
+:host:not(.collapsed) {
+  width: 100%;
+  border-top: 1px solid var(--color-border-base);
+  background-color: var(--color-surface-subtle);
+}
+
+.db-tab {
+  padding: 0.25rem 0.75rem;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+}
+
+.db-tab:hover:not(:disabled) {
+  color: var(--color-content);
+}
+
+.db-tab.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.db-tab:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--color-border-base), transparent 50%);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--color-accent), transparent 60%);
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background-color: var(--color-surface);
+  z-index: 10;
+}
+
+.loading-spinner {
+  opacity: 0.8;
+}
+
+.explorer-container {
+  height: 350px;
+}
+
+.pill-container {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
+}
+
+.pill-container:hover {
+  transform: scale(1.02);
+}

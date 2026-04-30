@@ -8,3 +8,4 @@ export * from './user-status-indicator/user-status-indicator.component';
 export * from './dialog-wrapper/dialog-wrapper.component';
 export * from './link/link.component';
 export * from './notification-badge/notification-badge.component';
+export * from './win-rate-bar.component';

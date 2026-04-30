@@ -1,0 +1,158 @@
+@if (isCollapsed()) {
+  <!-- Pill Style (Collapsed) -->
+  <div class="pill-container flex items-center gap-2 px-3 py-1.5 border border-border-base rounded-full cursor-pointer w-fit"
+       (click)="toggleCollapse()">
+    <span class="text-sm font-bold">Opening Explorer</span>
+  </div>
+} @else {
+  <!-- Full Explorer View (Expanded) -->
+  <div class="explorer-container flex flex-col h-full border border-border-base rounded-md overflow-hidden shadow-sm animate-in zoom-in-95 duration-200">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between px-3 h-10 border-b border-border-base cursor-pointer"
+         (click)="toggleCollapse()">
+      <div class="flex items-center gap-2">
+        
+        <div class="flex items-center gap-1">
+          <button 
+            (click)="$event.stopPropagation(); setDb('masters')"
+            class="db-tab"
+            [class.active]="dbType() === 'masters'"
+            [disabled]="isTablebase()"
+          >
+            Masters
+          </button>
+          <button 
+            (click)="$event.stopPropagation(); setDb('lichess')"
+            class="db-tab"
+            [class.active]="dbType() === 'lichess'"
+            [disabled]="isTablebase()"
+          >
+            Lichess
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        @if (isLoading()) {
+          <div class="loading-spinner w-3 h-3 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+        }
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto custom-scrollbar relative">
+      @if (error()) {
+        <div class="absolute inset-0 flex items-center justify-center p-4 text-center">
+          <span class="text-xs text-rose-400 opacity-80">{{ error() }}</span>
+        </div>
+      }
+
+      @if (openingData; as d) {
+        <div class="p-2 animate-in fade-in duration-300">
+          <!-- Opening Title -->
+          @if (d.opening) {
+            <div class="px-2 pb-3 pt-1 border-b border-border-base/50 mb-3 rounded-sm">
+              <div class="flex items-baseline gap-2">
+                <span class="text-[11px] font-black text-accent uppercase tracking-wider">{{ d.opening.eco }}</span>
+                <span class="text-sm font-bold text-content leading-tight">{{ d.opening.name }}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Moves Table -->
+          <table class="w-full text-[11px]">
+            <thead>
+              <tr class="text-muted opacity-60 font-bold uppercase text-[9px] border-b border-border-base/30">
+                <th class="text-left py-1 px-2 w-14">Move</th>
+                <th class="text-right py-1 px-2 w-16">Games</th>
+                <th class="text-left py-1 px-2">W / D / B</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (move of d.moves; track move.uci) {
+                <tr class="hover:bg-accent/5 cursor-pointer group transition-colors border-b border-border-base/10 last:border-0">
+                  <td class="py-2 px-2 font-black text-content">{{ move.san }}</td>
+                  <td class="py-2 px-2 text-right text-muted font-medium">
+                    {{ formatTotal(move.white + move.draws + move.black) }}
+                  </td>
+                  <td class="py-2 px-2">
+                    <div class="h-4 w-full">
+                      <app-win-rate-bar 
+                        [white]="move.white" 
+                        [draws]="move.draws" 
+                        [black]="move.black"
+                      ></app-win-rate-bar>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <!-- Top Games -->
+          @if (d.topGames?.length) {
+            <div class="mt-6">
+              <div class="px-2 py-1 text-[9px] font-bold text-muted uppercase tracking-widest border-b border-border-base/30 mb-1">
+                Top Games
+              </div>
+              <div class="flex flex-col">
+                @for (game of d.topGames.slice(0, 5); track game.id) {
+                  <div class="px-2 py-2 hover:bg-accent/5 cursor-pointer flex flex-col gap-0.5 border-b border-border-base/10 last:border-0">
+                    <div class="flex justify-between items-center text-[10px]">
+                      <span class="font-bold text-content truncate max-w-[150px]">{{ game.white.name }} ({{ game.white.rating }})</span>
+                      <span class="text-muted opacity-60">{{ game.year }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px]">
+                      <span class="font-bold text-content truncate max-w-[150px]">{{ game.black.name }} ({{ game.black.rating }})</span>
+                      <span class="font-bold uppercase" [class]="game.winner === 'white' ? 'text-zinc-200' : game.winner === 'black' ? 'text-zinc-900' : 'text-zinc-500'">
+                        {{ game.winner === 'white' ? '1-0' : game.winner === 'black' ? '0-1' : '½-½' }}
+                      </span>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      @if (tablebaseData; as td) {
+        <div class="p-2 animate-in fade-in duration-300">
+          <div class="px-2 py-3 border-b border-border-base/50 mb-3 text-center">
+            <div class="text-[10px] font-bold text-muted uppercase tracking-widest mb-1">Endgame Tablebase</div>
+            <div class="text-xs font-bold text-accent">Syzygy 7-piece enabled</div>
+          </div>
+
+          <table class="w-full text-[11px]">
+            <thead>
+              <tr class="text-muted opacity-60 font-bold uppercase text-[9px] border-b border-border-base/30">
+                <th class="text-left py-1 px-2 w-14">Move</th>
+                <th class="text-right py-1 px-2 w-24">DTZ / DTM</th>
+                <th class="text-right py-1 px-2">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (move of td.moves; track move.uci) {
+                <tr class="hover:bg-accent/5 cursor-pointer group transition-colors border-b border-border-base/10 last:border-0">
+                  <td class="py-2 px-2 font-black text-content">{{ move.san }}</td>
+                  <td class="py-2 px-2 text-right text-muted font-medium">
+                    @if (move.dtz !== undefined) { 
+                      <span class="mr-2">DTZ {{ move.dtz }}</span>
+                    }
+                    @if (move.dtm !== undefined) { 
+                      <span>DTM {{ move.dtm }}</span>
+                    }
+                  </td>
+                  <td class="py-2 px-2 text-right font-bold uppercase" [class]="getCategoryColor(move.category)">
+                    {{ move.category }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+}
