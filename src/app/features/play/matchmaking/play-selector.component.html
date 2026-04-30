@@ -13,11 +13,25 @@
           <button
             appButton
             variant="outline"
-            size="sm"
             (click)="cancelSearch()"
-            class="font-bold uppercase tracking-wider scale-75 origin-right"
+            class="text-xs"
           >
             Cancel
+          </button>
+        </div>
+      } @else if (activeGameId()) {
+        <div class="flex items-center justify-between w-full">
+          <div class="flex items-center gap-3">
+            <div class="h-2 w-2 rounded-full bg-cyan-500 animate-pulse"></div>
+            <span class="font-medium text-md text-cyan-500">Active Game Found</span>
+          </div>
+          <button
+            appButton
+            variant="outline"
+            (click)="rejoinGame()"
+            class="text-xs"
+          >
+            Rejoin
           </button>
         </div>
       }
@@ -176,18 +190,5 @@
       }
     </div>
 
-    @if (activeGameId()) {
-      <div
-        class="mt-3 shrink-0 flex items-center justify-between rounded-xl bg-cyan-500/5 border border-cyan-500/20 px-4 py-3 text-cyan-500"
-      >
-        <span class="text-[11px] font-bold uppercase tracking-wider">Active Game Found</span>
-        <button
-          (click)="rejoinGame()"
-          class="rounded-lg bg-cyan-500 px-4 py-2 text-[11px] font-black text-slate-900 cursor-pointer border-none hover:bg-cyan-400"
-        >
-          REJOIN
-        </button>
-      </div>
-    }
   </div>
 </div>
