@@ -29,7 +29,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class StudySidebarComponent {
   private studyService = inject(StudyService);
-  private authService = inject(AuthService);
   private dialog = inject(Dialog);
   private toastService = inject(ToastService);
   private router = inject(Router);
