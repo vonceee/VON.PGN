@@ -124,15 +124,14 @@ import { AudioService } from '../../../../core/services/audio.service';
 
       .cg-wrap coords.ranks {
         left: -32px !important;
-        top: 0 !important;
         width: 32px !important;
         display: flex !important;
-        flex-direction: column-reverse !important; /* Default for White: 1..8 -> 8 at top */
+        flex-direction: column-reverse !important;
         right: auto !important;
       }
 
       .cg-wrap.orientation-black coords.ranks {
-        flex-direction: column !important; /* For Black: 1..8 -> 1 at top */
+        flex-direction: column !important;
       }
 
       .cg-wrap coords.files {
