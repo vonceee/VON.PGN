@@ -1,9 +1,13 @@
 @if (isCollapsed()) {
-  <!-- Pill Style (Collapsed) -->
-  <div class="pill-container flex items-center gap-2 px-3 py-1.5 border border-border-base rounded-full cursor-pointer w-fit"
-       (click)="toggleCollapse()">
-    <span class="text-sm font-bold">Opening Explorer</span>
-  </div>
+  <button
+    appButton
+    variant="outline"
+    size="sm"
+    class="shadow-lg backdrop-blur-md"
+    (click)="toggleCollapse()"
+  >
+    Opening Explorer
+  </button>
 } @else {
   <!-- Full Explorer View (Expanded) -->
   <div class="explorer-container flex flex-col h-full border border-border-base rounded-md overflow-hidden shadow-sm animate-in zoom-in-95 duration-200">
@@ -15,18 +19,22 @@
         
         <div class="flex items-center gap-1">
           <button 
+            appButton
+            [variant]="dbType() === 'masters' ? 'primary' : 'ghost'"
+            size="sm"
             (click)="$event.stopPropagation(); setDb('masters')"
-            class="db-tab"
-            [class.active]="dbType() === 'masters'"
             [disabled]="isTablebase()"
+            class="px-3"
           >
             Masters
           </button>
           <button 
+            appButton
+            [variant]="dbType() === 'lichess' ? 'primary' : 'ghost'"
+            size="sm"
             (click)="$event.stopPropagation(); setDb('lichess')"
-            class="db-tab"
-            [class.active]="dbType() === 'lichess'"
             [disabled]="isTablebase()"
+            class="px-3"
           >
             Lichess
           </button>

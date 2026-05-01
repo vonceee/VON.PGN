@@ -31,7 +31,7 @@ import { AnnotateMoveDialogComponent } from './dialogs/annotate-move-dialog/anno
 import { StudySidebarComponent } from './study-sidebar/study-sidebar.component';
 import { StudyInfoComponent } from './study-info/study-info.component';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
-import { StudyChatComponent } from './study-chat/study-chat.component';
+import { ButtonComponent } from '@shared/ui';
 import { ExplorerBoxComponent } from '../explorer/explorer-box.component';
 import { DevLogger } from '../../core/utils/dev-logger';
 
@@ -49,8 +49,8 @@ import { DevLogger } from '../../core/utils/dev-logger';
     StudySidebarComponent,
     StudyInfoComponent,
     StudyAnalysisComponent,
-    StudyChatComponent,
     ExplorerBoxComponent,
+    ButtonComponent,
   ],
   templateUrl: './study.component.html',
   styles: [`
@@ -166,7 +166,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   isSyncing = signal(true);
   isLargeScreen = signal(false);
-  activeTab = signal<'notation' | 'info' | 'chat'>('notation');
+  activeTab = signal<'notation' | 'info'>('notation');
   showDeleteModal = signal(false);
   isDeleting = signal(false);
   isActionInProgress = signal(false);
@@ -248,10 +248,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.isLargeScreen.set(window.innerWidth >= 1024);
       fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => {
-        const wasLarge = this.isLargeScreen();
-        const isLarge = window.innerWidth >= 1024;
-        this.isLargeScreen.set(isLarge);
-        if (isLarge && !wasLarge && this.activeTab() === 'chat') this.activeTab.set('notation');
+        this.isLargeScreen.set(window.innerWidth >= 1024);
       });
     }
   }

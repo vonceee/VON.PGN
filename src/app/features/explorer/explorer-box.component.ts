@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { OpeningExplorerService } from '../../core/services/opening-explorer.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LichessExplorerResponse, TablebaseResponse, LichessExplorerMove, TablebaseMove, ExplorerData } from '../../core/models/opening.model';
-import { WinRateBarComponent } from '@shared/ui';
+import { WinRateBarComponent, ButtonComponent } from '@shared/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatIconModule, 
     MatTooltipModule, 
     MatButtonModule, 
-    MatMenuModule
+    MatMenuModule,
+    ButtonComponent
   ],
   templateUrl: './explorer-box.component.html',
   styleUrls: ['./explorer-box.component.css']
@@ -51,7 +52,7 @@ export class ExplorerBoxComponent {
       if (this.authService.isInitialized()) {
         this.fetchData();
       }
-    }, { allowSignalWrites: true });
+    });
   }
 
   toggleCollapse() {

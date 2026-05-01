@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroCalendar, heroClock, heroUserPlus } from '@ng-icons/heroicons/outline';
+import { heroCalendar, heroClock, heroUserPlus, heroArrowsUpDown, heroArrowUpTray, heroArrowDownTray } from '@ng-icons/heroicons/outline';
 import { ButtonComponent } from '@shared/ui';
 import { UserHovercardDirective } from '@shared/directives';
 import { AddCollaboratorDialogComponent } from '../dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
@@ -20,7 +20,7 @@ import { UserSearchResult } from '../../../core/services/user.service';
   selector: 'app-study-info',
   standalone: true,
   imports: [CommonModule, MatSlideToggleModule, NgIconComponent, ButtonComponent, UserHovercardDirective, DialogModule],
-  providers: [provideIcons({ heroCalendar, heroClock, heroUserPlus })],
+  providers: [provideIcons({ heroCalendar, heroClock, heroUserPlus, heroArrowsUpDown, heroArrowUpTray, heroArrowDownTray })],
   templateUrl: './study-info.component.html',
 })
 export class StudyInfoComponent {

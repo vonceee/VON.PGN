@@ -71,19 +71,15 @@ export interface AddChapterDialogResult {
             }
           </div>
 
-          <!-- Tab Switcher (Pill Style) -->
+          <!-- Tab Switcher (appButton Style) -->
           <div class="flex flex-wrap gap-2 px-1">
             @for (tab of tabs; track tab.id) {
               <button
+                appButton
+                [variant]="activeTab() === tab.id ? 'primary' : 'outline'"
+                size="sm"
                 (click)="activeTab.set(tab.id)"
-                class="px-5 py-1.5 rounded-full text-[11px] font-semibold transition-all duration-300 border whitespace-nowrap"
-                [class.bg-content]="activeTab() === tab.id"
-                [class.text-surface]="activeTab() === tab.id"
-                [class.border-content]="activeTab() === tab.id"
-                [class.bg-surface]="activeTab() !== tab.id"
-                [class.text-content]="activeTab() !== tab.id"
-                [class.border-base]="activeTab() !== tab.id"
-                [class.hover:bg-subtle]="activeTab() !== tab.id"
+                class="whitespace-nowrap"
               >
                 {{ tab.label }}
               </button>

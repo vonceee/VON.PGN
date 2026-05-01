@@ -42,74 +42,72 @@
         </div>
 
         <!-- Right Column: Notation & Info -->
-        <div class="h-full flex flex-col gap-2 overflow-hidden border-l border-border-base bg-surface/5 ui-panel">
-          <!-- Sidebar Tabs -->
-          <div class="flex border-b border-border-base">
-            @for (tab of ['notation', 'info', 'chat']; track tab) {
+        <div class="h-full flex flex-col gap-4 overflow-hidden">
+          <!-- Sidebar Pills (Outside Panel) -->
+          <div class="flex items-center gap-2 px-1 h-10 shrink-0">
+            @for (tab of ['notation', 'info']; track tab) {
               <button
-                (click)="activeTab.set(tab === 'notation' ? 'notation' : tab === 'info' ? 'info' : 'chat')"
-                class="flex-1 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after:transition-all after:duration-300"
-                [class.text-accent]="activeTab() === tab"
-                [class.opacity-50]="activeTab() !== tab"
-                [class.after:w-full]="activeTab() === tab"
-                [class.lg:hidden]="tab === 'chat'"
+                appButton
+                [variant]="activeTab() === tab ? 'primary' : 'outline'"
+                size="sm"
+                (click)="activeTab.set(tab === 'notation' ? 'notation' : 'info')"
+                class="capitalize min-w-[100px]"
               >
                 {{ tab }}
               </button>
             }
           </div>
 
-          <div class="flex-1 flex flex-col overflow-hidden relative">
-            @if (activeTab() === 'notation') {
-              <app-study-analysis
-                [isEngineActive]="isEngineActive()"
-                [isEngineError]="isEngineError()"
-                [engineEval]="engineEval()"
-                [engineDepth]="engineDepth()"
-                [formattedNps]="formattedNps()"
-                [showEngineSettings]="showEngineSettings()"
-                [multiPvCount]="multiPvCount()"
-                [searchMode]="searchMode()"
-                [enginePvLines]="enginePvLines()"
-                [currentPly]="currentPly()"
-                (toggleEngine)="toggleEngine()"
-                (retryEngine)="onEngineRetry()"
-                (toggleSettings)="toggleEngineSettings()"
-                (multiPvChange)="onMultiPvChange($event)"
-              ></app-study-analysis>
-
-              <app-move-notation
-                class="flex-1 overflow-y-auto custom-scrollbar"
-                [moveTree]="moveTree()"
-                [currentFen]="currentFen()"
-                [currentPly]="currentPly()"
-                [initialPly]="initialPly()"
-                [showNavigation]="true"
-                (nodeClicked)="onNodeClicked($event)"
-                (navigate)="onNavigateToPly($event)"
-                (deleteFromHere)="onDeleteFromHere($event)"
-                (annotateMove)="onAnnotateMove($event)"
-              ></app-move-notation>
-
-              <!-- Opening Explorer & Tablebase -->
-              <app-explorer-box 
-                [fen]="currentFen()" 
-                [variant]="currentChapter()?.variant || 'standard'"
-                [orientation]="boardOrientation()"
-              ></app-explorer-box>
-            } @else if (activeTab() === 'info') {
-              <app-study-info
-                [isOwner]="isOwner()"
-                [canEdit]="canEdit()"
-                [isSyncing]="isSyncing()"
-                (syncToggle)="toggleSync()"
-                (flipBoard)="flipBoard()"
-              ></app-study-info>
-            } @else if (activeTab() === 'chat') {
-              <div class="flex-1 overflow-hidden lg:hidden">
-                <app-study-chat class="flex-1 overflow-hidden"></app-study-chat>
-              </div>
-            }
+          <!-- Main Content Panel -->
+          <div class="flex-1 flex flex-col overflow-hidden bg-surface/5 ui-panel border-l border-border-base/50">
+            <div class="flex-1 flex flex-col overflow-hidden relative">
+              @if (activeTab() === 'notation') {
+                <app-study-analysis
+                  [isEngineActive]="isEngineActive()"
+                  [isEngineError]="isEngineError()"
+                  [engineEval]="engineEval()"
+                  [engineDepth]="engineDepth()"
+                  [formattedNps]="formattedNps()"
+                  [showEngineSettings]="showEngineSettings()"
+                  [multiPvCount]="multiPvCount()"
+                  [searchMode]="searchMode()"
+                  [enginePvLines]="enginePvLines()"
+                  [currentPly]="currentPly()"
+                  (toggleEngine)="toggleEngine()"
+                  (retryEngine)="onEngineRetry()"
+                  (toggleSettings)="toggleEngineSettings()"
+                  (multiPvChange)="onMultiPvChange($event)"
+                ></app-study-analysis>
+  
+                <app-move-notation
+                  class="flex-1 overflow-y-auto custom-scrollbar"
+                  [moveTree]="moveTree()"
+                  [currentFen]="currentFen()"
+                  [currentPly]="currentPly()"
+                  [initialPly]="initialPly()"
+                  [showNavigation]="true"
+                  (nodeClicked)="onNodeClicked($event)"
+                  (navigate)="onNavigateToPly($event)"
+                  (deleteFromHere)="onDeleteFromHere($event)"
+                  (annotateMove)="onAnnotateMove($event)"
+                ></app-move-notation>
+  
+                <!-- Opening Explorer & Tablebase -->
+                <app-explorer-box 
+                  [fen]="currentFen()" 
+                  [variant]="currentChapter()?.variant || 'standard'"
+                  [orientation]="boardOrientation()"
+                ></app-explorer-box>
+              } @else if (activeTab() === 'info') {
+                <app-study-info
+                  [isOwner]="isOwner()"
+                  [canEdit]="canEdit()"
+                  [isSyncing]="isSyncing()"
+                  (syncToggle)="toggleSync()"
+                  (flipBoard)="flipBoard()"
+                ></app-study-info>
+              }
+            </div>
           </div>
         </div>
       </div>
