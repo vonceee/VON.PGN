@@ -38,6 +38,7 @@
                 <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="vertical"></app-eval-bar>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -79,6 +80,7 @@
                   (multiPvChange)="onMultiPvChange($event)"
                 ></app-study-analysis>
   
+  
                 <app-move-notation
                   class="flex-1 overflow-y-auto custom-scrollbar"
                   [moveTree]="moveTree()"
@@ -91,13 +93,6 @@
                   (deleteFromHere)="onDeleteFromHere($event)"
                   (annotateMove)="onAnnotateMove($event)"
                 ></app-move-notation>
-  
-                <!-- Opening Explorer & Tablebase -->
-                <app-explorer-box 
-                  [fen]="currentFen()" 
-                  [variant]="currentChapter()?.variant || 'standard'"
-                  [orientation]="boardOrientation()"
-                ></app-explorer-box>
               } @else if (activeTab() === 'info') {
                 <app-study-info
                   [isOwner]="isOwner()"
@@ -108,6 +103,15 @@
                 ></app-study-info>
               }
             </div>
+          </div>
+
+          <!-- Opening Explorer & Tablebase -->
+          <div class="px-1">
+            <app-explorer-box 
+              [fen]="currentFen()" 
+              [variant]="currentChapter()?.variant || 'standard'"
+              [orientation]="boardOrientation()"
+            ></app-explorer-box>
           </div>
         </div>
       </div>

@@ -22,7 +22,9 @@ import { MatMenuModule } from '@angular/material/menu';
     ButtonComponent
   ],
   templateUrl: './explorer-box.component.html',
-  styleUrls: ['./explorer-box.component.css']
+  host: {
+    'class': 'block z-50 relative transition-all duration-300 ease-in-out w-full'
+  }
 })
 export class ExplorerBoxComponent {
   @HostBinding('class.collapsed') get collapsed() { return this.isCollapsed(); }
@@ -36,7 +38,7 @@ export class ExplorerBoxComponent {
   
   dbType = signal<'masters' | 'lichess' | 'player'>('lichess');
   isLoading = signal(false);
-  isCollapsed = signal(true); // Closed by default
+  isCollapsed = signal(true);
   error = signal<string | null>(null);
   data = signal<ExplorerData | null>(null);
   
