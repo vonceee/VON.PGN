@@ -33,6 +33,7 @@ import { StudyInfoComponent } from './study-info/study-info.component';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { StudyChatComponent } from './study-chat/study-chat.component';
 import { ExplorerBoxComponent } from '../explorer/explorer-box.component';
+import { DevLogger } from '../../core/utils/dev-logger';
 
 @Component({
   selector: 'app-study',
@@ -174,6 +175,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private lastChapterId: number | null = null;
   private analysisTrigger$ = new BehaviorSubject<{ fen: string; active: boolean } | null>(null);
   private pvChess = new Chess();
+  private lastLocalInteractionTime = 0;
 
   constructor() {
     this.analysisTrigger$
@@ -282,6 +284,20 @@ export class StudyComponent implements OnInit, OnDestroy {
   private syncToRemoteState() {
     const remote = this.studyService.lastRemoteState();
     if (!remote.chapterId) return;
+
+    // Guard against remote updates overwriting very recent local interactions 
+    // unless it's a chapter change or we've been idle for at least 1000ms
+    const isChapterChange = String(this.currentChapter()?.id) !== String(remote.chapterId);
+    if (!isChapterChange && Date.now() - this.lastLocalInteractionTime < 1000) {
+      DevLogger.log('[Study] Skipping remote sync due to recent local interaction');
+      return;
+    }
+
+    // Only sync if the FEN is actually different to avoid redundant board resets
+    if (!isChapterChange && this.currentFen() === remote.fen) {
+      return;
+    }
+
     this.remoteShapes.set([]);
     this.engineArrows.set([]);
     if (this.currentChapter()?.id !== remote.chapterId) {
@@ -331,6 +347,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   onMoveMade(event: any) {
     if (!this.canEdit()) return;
+    this.lastLocalInteractionTime = Date.now();
     const move = event.move || event;
     const san = String(move.san || '');
     const fen = String(event.fen || '');
@@ -375,6 +392,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   onNodeClicked(node: MoveNode) {
     if (this.isSyncing() && !this.canEdit()) return;
+    this.lastLocalInteractionTime = Date.now();
     this.updateCurrentPosition(node);
     this.remoteShapes.set([]);
     this.engineArrows.set([]);
@@ -417,6 +435,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   onNavigateToPly(ply: number) {
     if (this.isSyncing() && !this.canEdit()) return;
+    this.lastLocalInteractionTime = Date.now();
     if (ply <= this.initialPly()) {
       this.updateCurrentPosition(null);
       if (this.canEdit()) this.studyService.emitNavigation(this.currentChapter()?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', this.moveTree(), this.boardOrientation(), this.isSyncing());

@@ -74,6 +74,7 @@ export interface StudyMoveMadePayload {
   moves: any[]; // The updated full tree
   userId: string;
   orientation?: 'white' | 'black';
+  clientGeneratedId?: string;
 }
 
 export interface StudyShapesDrawnPayload {

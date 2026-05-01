@@ -37,6 +37,9 @@ export class StudyService {
   isConnected = signal(false);
   viewerCount = signal(1);
   viewerNames = signal<string[]>([]);
+  
+  // Track recently emitted move IDs to prevent 'back and forth' stuttering when receiving own broadcasts
+  private emittedMoveIds = new Set<string>();
 
   // Real-time updates
   private moveMadeSubject = new Subject<StudyMoveMadePayload>();
@@ -217,7 +220,8 @@ export class StudyService {
     });
 
     this.socket.on('study_synced', (state: StudySyncedPayload) => {
-      DevLogger.log('[Study] Synced state:', state);
+      DevLogger.log('[Study] Synced state received');
+      // Only sync if we haven't interacted recently
       this.lastRemoteState.set({
         chapterId: state.chapterId,
         fen: state.fen,
@@ -227,6 +231,13 @@ export class StudyService {
     });
 
     this.socket.on('study_move_made', (payload: StudyMoveMadePayload) => {
+      // Ignore own move broadcasts to prevent 'back and forth' stuttering
+      if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
+        DevLogger.log('[Study] Ignoring own move broadcast:', payload.clientGeneratedId);
+        // Optional: keep it for a bit longer to be safe, then cleanup is handled by emitMove's timeout
+        return;
+      }
+
       this.lastRemoteState.update(s => ({ 
         ...s, 
         fen: payload.fen, 
@@ -241,6 +252,12 @@ export class StudyService {
     });
 
     this.socket.on('study_chapter_changed', (payload: any) => {
+      // Ignore own chapter change broadcasts
+      if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
+        DevLogger.log('[Study] Ignoring own chapter change broadcast:', payload.clientGeneratedId);
+        return;
+      }
+
       this.lastRemoteState.set({ 
         chapterId: payload.chapterId, 
         fen: payload.fen, 
@@ -279,15 +296,22 @@ export class StudyService {
       return throwError(() => new Error('Chapter ID missing'));
     }
 
+    const clientGeneratedId = crypto.randomUUID();
     if (broadcast) {
+      this.emittedMoveIds.add(clientGeneratedId);
+      
       this.socket?.emit('study_move', {
         studyId: study.id,
         move,
         fen,
         chapterId: chapterId,
         moves: moves,
-        orientation: orientation || chapter.orientation
+        orientation: orientation || chapter.orientation,
+        clientGeneratedId
       });
+
+      // Cleanup ID after 15 seconds
+      setTimeout(() => this.emittedMoveIds.delete(clientGeneratedId), 15000);
     }
 
     // Persist full tree to database
@@ -309,14 +333,15 @@ export class StudyService {
             return { ...s, chapters };
           });
 
-          // Broadcast switch to other clients
+          // Broadcast switch to other clients with the same ID to prevent self-sync
           if (broadcast) {
             this.socket?.emit('study_change_chapter', {
               studyId: study.id,
               chapterId: updated.id,
               fen: updated.current_fen,
               moves: updated.moves,
-              orientation: updated.orientation
+              orientation: updated.orientation,
+              clientGeneratedId // REUSE the same ID
             });
           }
         },
@@ -356,19 +381,28 @@ export class StudyService {
 
   emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
     if (!broadcast) return;
+    const clientGeneratedId = crypto.randomUUID();
+    this.emittedMoveIds.add(clientGeneratedId);
+    
     this.socket?.emit('study_change_chapter', {
       studyId,
       chapterId,
       fen,
       moves,
-      orientation
+      orientation,
+      clientGeneratedId
     });
+    
+    setTimeout(() => this.emittedMoveIds.delete(clientGeneratedId), 15000);
   }
 
   emitNavigation(fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
     const s = this.currentStudy();
     const c = this.currentChapter();
     if (!s || !c || !this.socket || !broadcast) return;
+
+    const clientGeneratedId = crypto.randomUUID();
+    if (broadcast) this.emittedMoveIds.add(clientGeneratedId);
 
     this.socket.emit('study_move', {
       studyId: s.id,
@@ -377,7 +411,12 @@ export class StudyService {
       moves: moves,
       orientation: orientation || c.orientation,
       isNavigation: true,
+      clientGeneratedId
     });
+
+    if (broadcast) {
+      setTimeout(() => this.emittedMoveIds.delete(clientGeneratedId), 10000);
+    }
   }
 
   importPgn(studyId: number, pgn: string): Observable<any> {
