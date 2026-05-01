@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, input, computed, effect, HostBinding } from '@angular/core';
+import { Component, OnInit, signal, inject, input, computed, effect, HostBinding, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OpeningExplorerService } from '../../core/services/opening-explorer.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -32,6 +32,9 @@ export class ExplorerBoxComponent {
   fen = input.required<string>();
   variant = input<string>('standard');
   orientation = input<'white' | 'black'>('white');
+  
+  // Outputs
+  flipBoard = output<void>();
   
   explorerService = inject(OpeningExplorerService);
   authService = inject(AuthService);

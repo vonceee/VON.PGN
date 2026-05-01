@@ -6,22 +6,19 @@ import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroCalendar, heroClock, heroUserPlus, heroArrowsUpDown, heroArrowUpTray, heroArrowDownTray } from '@ng-icons/heroicons/outline';
 import { ButtonComponent } from '@shared/ui';
 import { UserHovercardDirective } from '@shared/directives';
 import { AddCollaboratorDialogComponent } from '../dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { StudySettingsDialogComponent } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
-import { AddChapterDialogComponent, AddChapterDialogResult } from '../dialogs/add-chapter-dialog/add-chapter-dialog.component';
 import { UserSearchResult } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-study-info',
   standalone: true,
-  imports: [CommonModule, MatSlideToggleModule, NgIconComponent, ButtonComponent, UserHovercardDirective, DialogModule],
-  providers: [provideIcons({ heroCalendar, heroClock, heroUserPlus, heroArrowsUpDown, heroArrowUpTray, heroArrowDownTray })],
+  imports: [CommonModule, MatSlideToggleModule, ButtonComponent, UserHovercardDirective, DialogModule],
   templateUrl: './study-info.component.html',
+  host: { class: 'flex-1 flex flex-col min-h-0' }
 })
 export class StudyInfoComponent {
   private studyService = inject(StudyService);
@@ -37,16 +34,11 @@ export class StudyInfoComponent {
 
   // Outputs
   syncToggle = output<boolean>();
-  flipBoard = output<void>();
 
   study = this.studyService.currentStudy;
 
   toggleSync() {
     this.syncToggle.emit(!this.isSyncing());
-  }
-
-  onFlipBoard() {
-    this.flipBoard.emit();
   }
 
   addCollaborator() {
@@ -99,34 +91,9 @@ export class StudyInfoComponent {
     });
   }
 
-  importPgn() {
-    if (!this.canEdit()) return;
-    const s = this.study();
-    if (!s) return;
 
-    const dialogRef = this.dialog.open<AddChapterDialogResult>(AddChapterDialogComponent, {
-      data: { 
-        defaultName: `Chapter ${(s.chapters?.length ?? 0) + 1}`,
-        tab: 'pgn'
-      }
-    });
 
-    dialogRef.closed.subscribe((result) => {
-      if (result?.pgn) {
-        this.studyService.importPgn(s.id, result.pgn).subscribe({
-          next: (res) => {
-            const firstNewChapter = (res.data?.chapters || res.chapters)?.[0];
-            this.studyService.getStudy(s.id, firstNewChapter?.id);
-            this.toastService.show('Import successful!', 'success');
-          }
-        });
-      }
-    });
-  }
 
-  exportPgn() {
-    if (this.study()) this.studyService.exportPgn(this.study()!.id);
-  }
 
   openSettings() {
     if (!this.isOwner()) return;

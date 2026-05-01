@@ -45,18 +45,23 @@
         <!-- Right Column: Notation & Info -->
         <div class="h-full flex flex-col gap-4 overflow-hidden">
           <!-- Sidebar Pills (Outside Panel) -->
-          <div class="flex items-center gap-2 px-1 h-10 shrink-0">
-            @for (tab of ['notation', 'info']; track tab) {
-              <button
-                appButton
-                [variant]="activeTab() === tab ? 'primary' : 'outline'"
-                size="sm"
-                (click)="activeTab.set(tab === 'notation' ? 'notation' : 'info')"
-                class="capitalize min-w-[100px]"
-              >
-                {{ tab }}
-              </button>
-            }
+          <div class="flex items-center gap-2 px-1 shrink-0">
+            <button
+              appButton
+              [variant]="activeTab() === 'notation' ? 'primary' : 'outline'"
+              (click)="activeTab.set('notation')"
+              class="capitalize"
+            >
+              Notation
+            </button>
+            <button
+              appButton
+              [variant]="activeTab() === 'info' ? 'primary' : 'outline'"
+              (click)="activeTab.set('info')"
+              class="capitalize"
+            >
+              Study Info
+            </button>
           </div>
 
           <!-- Main Content Panel -->
@@ -99,7 +104,6 @@
                   [canEdit]="canEdit()"
                   [isSyncing]="isSyncing()"
                   (syncToggle)="toggleSync()"
-                  (flipBoard)="flipBoard()"
                 ></app-study-info>
               }
             </div>
@@ -111,6 +115,7 @@
               [fen]="currentFen()" 
               [variant]="currentChapter()?.variant || 'standard'"
               [orientation]="boardOrientation()"
+              (flipBoard)="flipBoard()"
             ></app-explorer-box>
           </div>
         </div>

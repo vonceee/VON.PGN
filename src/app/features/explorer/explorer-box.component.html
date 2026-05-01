@@ -154,16 +154,23 @@
     </div>
   }
 
-  <!-- Trigger Button (Always at bottom) -->
-  <div class="flex justify-start">
+  <!-- Trigger Buttons (Always at bottom) -->
+  <div class="flex items-center gap-2">
     <button
       appButton
       [variant]="isCollapsed() ? 'outline' : 'primary'"
-      size="sm"
-      class="backdrop-blur-md transition-all duration-300 min-w-[140px]"
       (click)="toggleCollapse()"
     >
       {{ isCollapsed() ? 'Opening Explorer' : 'Close Explorer' }}
+    </button>
+
+    <button
+      appButton
+      variant="outline"
+      (click)="flipBoard.emit()"
+      title="Flip Board"
+    >
+      Flip Board
     </button>
   </div>
 </div>

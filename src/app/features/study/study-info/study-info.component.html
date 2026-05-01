@@ -1,20 +1,20 @@
 @if (study(); as s) {
-  <div class="p-4 flex flex-col gap-5 overflow-y-auto custom-scrollbar h-full bg-main">
+  <div class="flex-1 min-h-0 p-4 flex flex-col gap-5 overflow-y-auto custom-scrollbar bg-main">
     <!-- Study Header -->
     <div class="flex items-center justify-between p-1">
       <div class="flex flex-col gap-1 min-w-0">
-        <h3 class="text-xl font-extrabold text-content leading-tight tracking-tight truncate">{{ s.name }}</h3>
+        <h3 class="text-2xl font-bold text-content leading-tight tracking-tight truncate">{{ s.name }}</h3>
         <div class="flex items-center gap-1.5">
-          <span class="text-xs font-semibold text-accent/90 cursor-pointer hover:underline" [appUserHovercard]="s.owner.name">{{ s.owner.name }}</span>
-          <span class="text-[10px] text-muted">•</span>
-          <span class="text-[10px] text-muted font-medium">Study Owner</span>
+          <span class="text-sm font-semibold text-accent/90 cursor-pointer hover:underline" [appUserHovercard]="s.owner.name">{{ s.owner.name }}</span>
+          <span class="text-sm text-muted">•</span>
+          <span class="text-sm text-muted font-medium">Study Owner</span>
         </div>
       </div>
       
       @if (isOwner()) {
         <button
           (click)="openSettings()"
-          class="text-xs font-bold uppercase tracking-widest text-accent hover:underline px-2 py-1"
+          class="text-xs hover:underline cursor-pointer"
         >
           Edit
         </button>
@@ -37,14 +37,12 @@
     </div>
 
     <!-- Timestamps & Stats -->
-    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-[10px] font-medium text-muted">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-xs font-medium text-muted">
       <div class="flex items-center gap-1">
-        <ng-icon name="heroCalendar" class="text-xs opacity-60"></ng-icon>
         <span>Created {{ formatDate(s.created_at) }}</span>
       </div>
       <span class="opacity-30">|</span>
       <div class="flex items-center gap-1">
-        <ng-icon name="heroClock" class="text-xs opacity-60"></ng-icon>
         <span>Updated {{ formatRelativeTime(s.updated_at) }}</span>
       </div>
     </div>
@@ -57,7 +55,7 @@
             appButton
             variant="outline"
             (click)="addCollaborator()"
-            class="w-full text-xs"
+            class="w-full"
           >
             + Add Collaborator
           </button>
@@ -69,7 +67,7 @@
           <div class="flex items-center justify-between p-2.5 px-4 rounded-xl bg-subtle/30 border border-border-base/40 group hover:border-accent/20 transition-all">
             <div class="flex flex-col">
               <span class="text-sm font-semibold text-content/90 cursor-pointer hover:underline" [appUserHovercard]="collab.username">{{ collab.username }}</span>
-              <span class="text-[10px] text-muted font-medium">{{ collab.can_edit ? 'Can Edit' : 'View Only' }}</span>
+              <span class="text-xs text-muted font-medium">{{ collab.can_edit ? 'Can Edit' : 'View Only' }}</span>
             </div>
             
             @if (isOwner()) {
@@ -94,41 +92,6 @@
       </div>
     </div>
 
-    <!-- Action List Section -->
-    <div class="mt-auto pt-4">
-      <div class="p-4 rounded-2xl bg-surface border border-border-base/40 shadow-sm">
-        <div class="text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-4 px-1">Study Actions</div>
-        <div 
-          class="grid gap-2.5"
-          [class]="isOwner() ? 'grid-cols-3' : 'grid-cols-2'"
-        >
-          <button
-            (click)="onFlipBoard()"
-            class="flex flex-col items-center justify-center gap-1.5 p-3 text-[10px] font-bold uppercase tracking-widest bg-subtle/40 border border-border-base/30 rounded-xl hover:bg-accent/10 hover:border-accent/30 hover:text-accent transition-all group"
-          >
-            <ng-icon name="heroArrowsUpDown" class="text-base opacity-70 group-hover:opacity-100"></ng-icon>
-            Flip
-          </button>
-          
-          @if (canEdit()) {
-            <button
-              (click)="importPgn()"
-              class="flex flex-col items-center justify-center gap-1.5 p-3 text-[10px] font-bold uppercase tracking-widest bg-subtle/40 border border-border-base/30 rounded-xl hover:bg-accent/10 hover:border-accent/30 hover:text-accent transition-all group"
-            >
-              <ng-icon name="heroArrowUpTray" class="text-base opacity-70 group-hover:opacity-100"></ng-icon>
-              Import
-            </button>
-          }
 
-          <button
-            (click)="exportPgn()"
-            class="flex flex-col items-center justify-center gap-1.5 p-3 text-[10px] font-bold uppercase tracking-widest bg-subtle/40 border border-border-base/30 rounded-xl hover:bg-accent/10 hover:border-accent/30 hover:text-accent transition-all group"
-          >
-            <ng-icon name="heroArrowDownTray" class="text-base opacity-70 group-hover:opacity-100"></ng-icon>
-            Export
-          </button>
-        </div>
-      </div>
-    </div>
   </div>
 }
