@@ -38,7 +38,7 @@
 
     <div class="flex-1 overflow-y-auto w-full relative custom-scrollbar pl-4">
       @if (isLoadingCourse()) {
-        <app-loading message="Loading Course..."></app-loading>
+        <app-loading></app-loading>
       } @else if (course()) {
         <app-lesson-view
           [courseData]="course()"

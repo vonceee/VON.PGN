@@ -1,12 +1,13 @@
 import { Component, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
 import { AdminService } from '../../../core/services/admin.service';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingComponent],
   providers: [],
   templateUrl: './user-list.component.html',
 })

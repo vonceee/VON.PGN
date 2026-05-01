@@ -111,8 +111,8 @@
     </div>
 
     <!-- Loading State -->
-    <div *ngIf="isLoading()" class="p-20 flex flex-col items-center justify-center gap-4">
-      <p class="text-slate-500 font-medium">Loading enrollment data...</p>
-    </div>
+    @if (isLoading()) {
+      <app-loading></app-loading>
+    }
   </div>
 </div>

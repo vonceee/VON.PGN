@@ -4,11 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { AdminService } from '../../../core/services/admin.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { FormsModule } from '@angular/forms';
+import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
 
 @Component({
   selector: 'app-academy-enrollments',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingComponent],
   providers: [],
   templateUrl: './academy-enrollments.html',
 })

@@ -7,6 +7,4 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './loading.component.html',
 })
-export class LoadingComponent {
-  @Input() message = 'LOADING...';
-}
+export class LoadingComponent {}

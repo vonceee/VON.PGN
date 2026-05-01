@@ -13,7 +13,7 @@ import { LoadingComponent } from '@shared/feedback';
   template: `
     <div class="flex flex-col gap-6">
       @if (isLoading()) {
-        <app-loading message="Loading games..."></app-loading>
+        <app-loading></app-loading>
       } @else if (games().length > 0) {
         <!-- Table Header -->
         <div class="hidden md:flex items-center px-6 py-3 border-b border-border-theme opacity-40">

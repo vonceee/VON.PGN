@@ -71,7 +71,7 @@ import { ToastService } from '../../../core/services/toast.service';
        <div class="relative min-h-[400px]">
          @if (isLoading()) {
            <div class="absolute inset-0 flex items-center justify-center">
-             <app-loading message="Loading Studies..."></app-loading>
+             <app-loading></app-loading>
            </div>
          } @else {
            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">

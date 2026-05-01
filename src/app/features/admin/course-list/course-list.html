@@ -10,9 +10,7 @@
   </header>
 
   @if (loading()) {
-    <div class="p-12 flex flex-col items-center justify-center text-slate-400 bg-white border border-slate-200 rounded">
-      <p class="text-sm font-medium">Loading courses...</p>
-    </div>
+    <app-loading></app-loading>
   } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (course of courses(); track course.id) {

@@ -1,7 +1,7 @@
 <div class="h-full w-full flex flex-col">
   @if (isLoading()) {
     <div class="flex-1 flex items-center justify-center">
-      <app-loading message="Loading profile..."></app-loading>
+      <app-loading></app-loading>
     </div>
   } @else if (error()) {
     <div class="flex-1 flex items-center justify-center">
@@ -251,7 +251,7 @@
                 </h3>
 
                 @if (tournamentsLoading()) {
-                  <app-loading message="Loading tournaments..."></app-loading>
+                  <app-loading></app-loading>
                 } @else {
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @for (tournament of userTournaments(); track tournament.id) {
@@ -400,7 +400,7 @@
         <!-- User List -->
         <div class="flex-1 overflow-y-auto px-5 py-4 custom-scrollbar">
           @if (tabLoading()) {
-            <app-loading message="Loading users..."></app-loading>
+            <app-loading></app-loading>
           } @else if (tabUsers().length === 0) {
             <div
               class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border-theme text-slate-400"
