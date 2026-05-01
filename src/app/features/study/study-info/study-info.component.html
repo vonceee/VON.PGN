@@ -94,34 +94,40 @@
       </div>
     </div>
 
-    <!-- Actions -->
-    <div class="pt-6 border-t border-border-base mt-auto">
-      <div 
-        class="grid gap-3"
-        [class]="isOwner() ? 'grid-cols-3' : 'grid-cols-2'"
-      >
-        <button
-          (click)="onFlipBoard()"
-          class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
+    <!-- Action List Section -->
+    <div class="mt-auto pt-4">
+      <div class="p-4 rounded-2xl bg-surface border border-border-base/40 shadow-sm">
+        <div class="text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-4 px-1">Study Actions</div>
+        <div 
+          class="grid gap-2.5"
+          [class]="isOwner() ? 'grid-cols-3' : 'grid-cols-2'"
         >
-          Flip
-        </button>
-        
-        @if (canEdit()) {
           <button
-            (click)="importPgn()"
-            class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
+            (click)="flipBoard()"
+            class="flex flex-col items-center justify-center gap-1.5 p-3 text-[10px] font-bold uppercase tracking-widest bg-subtle/40 border border-border-base/30 rounded-xl hover:bg-accent/10 hover:border-accent/30 hover:text-accent transition-all group"
           >
-            Import
+            <ng-icon name="heroArrowsUpDown" class="text-base opacity-70 group-hover:opacity-100"></ng-icon>
+            Flip
           </button>
-        }
+          
+          @if (canEdit()) {
+            <button
+              (click)="importPgn()"
+              class="flex flex-col items-center justify-center gap-1.5 p-3 text-[10px] font-bold uppercase tracking-widest bg-subtle/40 border border-border-base/30 rounded-xl hover:bg-accent/10 hover:border-accent/30 hover:text-accent transition-all group"
+            >
+              <ng-icon name="heroArrowUpTray" class="text-base opacity-70 group-hover:opacity-100"></ng-icon>
+              Import
+            </button>
+          }
 
-        <button
-          (click)="exportPgn()"
-          class="flex items-center justify-center px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest bg-subtle/50 border border-border-base/50 rounded-xl hover:bg-surface hover:border-accent/30 transition-all text-content"
-        >
-          Export
-        </button>
+          <button
+            (click)="exportPgn()"
+            class="flex flex-col items-center justify-center gap-1.5 p-3 text-[10px] font-bold uppercase tracking-widest bg-subtle/40 border border-border-base/30 rounded-xl hover:bg-accent/10 hover:border-accent/30 hover:text-accent transition-all group"
+          >
+            <ng-icon name="heroArrowDownTray" class="text-base opacity-70 group-hover:opacity-100"></ng-icon>
+            Export
+          </button>
+        </div>
       </div>
     </div>
   </div>

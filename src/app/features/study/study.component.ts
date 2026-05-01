@@ -168,6 +168,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   activeTab = signal<'notation' | 'info' | 'chat'>('notation');
   showDeleteModal = signal(false);
   isDeleting = signal(false);
+  isActionInProgress = signal(false);
 
   private subs = new Subscription();
   private lastChapterId: number | null = null;
@@ -198,7 +199,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      if (this.isSyncing() && this.studyService.lastRemoteState().chapterId) this.syncToRemoteState();
+      if (this.isSyncing() && this.studyService.lastRemoteState().chapterId && !this.isActionInProgress()) this.syncToRemoteState();
     });
 
     effect(() => {
@@ -344,7 +345,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.remoteShapes.set([]);
     this.engineArrows.set([]);
     this.audioService.playChessMove(move);
-    this.studyService.emitMove(san, fen, this.moveTree(), this.boardOrientation(), this.isSyncing());
+    this.studyService.emitMove(san, fen, this.moveTree(), this.boardOrientation(), this.isSyncing()).subscribe();
   }
 
   private insertNodeDeep(nodes: MoveNode[], parentPly: number, parentFen: string, newNode: MoveNode): MoveNode[] {
@@ -383,12 +384,25 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   onDeleteFromHere(target: MoveNode) {
     if (!this.canEdit()) return;
+
+    this.isActionInProgress.set(true);
+
+    // 1. Update tree locally first (synchronous)
     this.moveTree.update(tree => this.deleteFromHereRecursive(tree, target));
-    setTimeout(() => {
-      const tree = this.moveTree();
-      if (this.currentNode() && !this.findNodeRecursive(tree, this.currentNode()!.fen)) this.goToLastMainlineNode();
-      this.studyService.emitMove('', this.currentFen(), this.moveTree(), this.boardOrientation(), this.isSyncing());
-    }, 0);
+    
+    // 2. Adjust current position if it was deleted
+    const tree = this.moveTree();
+    if (this.currentNode() && !this.findNodeRecursive(tree, this.currentNode()!.fen)) {
+      this.goToLastMainlineNode();
+    }
+
+    // 3. Sync with server
+    this.studyService.emitMove('', this.currentFen(), this.moveTree(), this.boardOrientation(), this.isSyncing())
+      .subscribe({
+        next: () => this.isActionInProgress.set(false),
+        error: () => this.isActionInProgress.set(false),
+        complete: () => this.isActionInProgress.set(false)
+      });
   }
 
   private deleteFromHereRecursive(nodes: MoveNode[], target: MoveNode): MoveNode[] {
@@ -441,7 +455,7 @@ export class StudyComponent implements OnInit, OnDestroy {
           this.moveTree(),
           this.boardOrientation(),
           this.isSyncing()
-        );
+        ).subscribe();
       }
     });
   }

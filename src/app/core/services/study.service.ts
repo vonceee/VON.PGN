@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, EMPTY, throwError, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastService } from './toast.service';
 import { io, Socket } from 'socket.io-client';
@@ -264,19 +264,19 @@ export class StudyService {
     });
   }
 
-  emitMove(move: string, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
+  emitMove(move: string, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): Observable<any> {
     const study = this.currentStudy();
     const chapter = this.currentChapter();
     
     if (!study || !chapter) {
       DevLogger.warn('[StudyService] Missing study or chapter to save move.');
-      return;
+      return EMPTY;
     }
 
     const chapterId = chapter.id;
     if (!chapterId) {
       DevLogger.error('[StudyService] Chapter object exists but ID is missing:', chapter);
-      return;
+      return throwError(() => new Error('Chapter ID missing'));
     }
 
     if (broadcast) {
@@ -291,39 +291,41 @@ export class StudyService {
     }
 
     // Persist full tree to database
-    this.updateChapter(study.id, chapterId, {
+    return this.updateChapter(study.id, chapterId, {
       current_fen: fen,
       moves: moves,
-    }).subscribe({
-      next: (res) => {
-        const updated = (res as any).data || res;
-        this.currentChapter.set(updated);
+    }).pipe(
+      tap({
+        next: (res) => {
+          const updated = (res as any).data || res;
+          this.currentChapter.set(updated);
 
-        // SYNC: Update the chapter in the master study list so the sidebar stays current
-        this.currentStudy.update(s => {
-          if (!s || !s.chapters) return s;
-          const chapters = s.chapters.map(c => 
-            String(c.id) === String(updated.id) ? updated : c
-          );
-          return { ...s, chapters };
-        });
-
-        // Broadcast switch to other clients
-        if (broadcast) {
-          this.socket?.emit('study_change_chapter', {
-            studyId: study.id,
-            chapterId: updated.id,
-            fen: updated.current_fen,
-            moves: updated.moves,
-            orientation: updated.orientation
+          // SYNC: Update the chapter in the master study list so the sidebar stays current
+          this.currentStudy.update(s => {
+            if (!s || !s.chapters) return s;
+            const chapters = s.chapters.map(c => 
+              String(c.id) === String(updated.id) ? updated : c
+            );
+            return { ...s, chapters };
           });
+
+          // Broadcast switch to other clients
+          if (broadcast) {
+            this.socket?.emit('study_change_chapter', {
+              studyId: study.id,
+              chapterId: updated.id,
+              fen: updated.current_fen,
+              moves: updated.moves,
+              orientation: updated.orientation
+            });
+          }
+        },
+        error: (err) => {
+          DevLogger.error('[StudyService] Failed to save move to DB:', err);
+          this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
         }
-      },
-      error: (err) => {
-        DevLogger.error('[StudyService] Failed to save move to DB:', err);
-        this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
-      }
-    });
+      })
+    );
   }
 
   emitShapes(shapes: any[]): void {
