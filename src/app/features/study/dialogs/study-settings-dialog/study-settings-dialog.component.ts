@@ -18,6 +18,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
           <input
             type="text"
             [(ngModel)]="name"
+            maxlength="100"
             placeholder="e.g. My Openings Analysis"
             class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all"
           />
