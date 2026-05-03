@@ -10,7 +10,6 @@ export const SOUND_THEMES: { value: SoundTheme; label: string }[] = [
 type SoundName =
   | 'Move'
   | 'Capture'
-  | 'Check'
   | 'GenericNotify'
   | 'LowTime';
 
@@ -188,8 +187,6 @@ export class AudioService {
   async playChessMove(move: { san: string; flags: string }): Promise<void> {
     if (move.san.includes('#')) {
       await this.playBoardEnd();
-    } else if (move.san.includes('+')) {
-      await this.play('Check');
     } else if (move.flags.includes('c') || move.flags.includes('e')) {
       await this.play('Capture');
     } else {
@@ -252,7 +249,6 @@ export class AudioService {
       return;
     }
     if (san.includes('#')) this.playBoardEnd();
-    else if (san.includes('+')) this.play('Check');
     else if (san.includes('x')) this.play('Capture');
     else this.play('Move');
   }
