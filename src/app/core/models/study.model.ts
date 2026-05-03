@@ -63,6 +63,7 @@ export interface StudyChapter {
   moves: string[]; // Keep for backward compatibility or flat view
   move_tree?: MoveNode[]; // Root moves of the mainline
   order: number;
+  pgn_tags?: Record<string, string>;
   created_at: string;
   updated_at: string;
 }

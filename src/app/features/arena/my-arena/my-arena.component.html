@@ -6,7 +6,7 @@
         Create and manage your online Arena lobbies
       </p>
     </div>
-    <a appButton variant="primary" size="sm" routerLink="/my-arena/new">+ New Arena</a>
+    <a appButton variant="primary" routerLink="/my-arena/new">+ New Arena</a>
   </div>
 
   @if (loading()) {
@@ -115,7 +115,6 @@
             <a
               appButton
               variant="outline"
-              size="sm"
               [routerLink]="'/events/' + arena.id + '/arena'"
               class="flex-1 md:flex-none"
             >
@@ -124,7 +123,6 @@
             <button
               appButton
               variant="danger"
-              size="sm"
               (click)="requestDelete(arena)"
               class="flex-1 md:flex-none"
             >
@@ -146,3 +144,4 @@
     (cancel)="cancelDelete()"
   />
 }
+

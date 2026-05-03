@@ -57,7 +57,7 @@
               <div class="mt-4 w-full lg:max-w-md">
                 <div class="flex items-center justify-between mb-2">
                   @if (!isEditingBio()) {
-                    <button appButton (click)="startEditBio()" variant="ghost" size="sm">Edit</button>
+                    <button appButton (click)="startEditBio()" variant="ghost">Edit</button>
                   }
                 </div>
 
@@ -80,7 +80,6 @@
                           appButton
                           (click)="cancelEditBio()"
                           variant="ghost"
-                          size="sm"
                         >
                           Cancel
                         </button>
@@ -90,7 +89,6 @@
                           [disabled]="isSavingBio()"
                           [loading]="isSavingBio()"
                           variant="primary"
-                          size="sm"
                         >
                           Save
                         </button>
@@ -445,3 +443,4 @@
     </div>
   }
 </div>
+

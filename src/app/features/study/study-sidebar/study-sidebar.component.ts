@@ -123,7 +123,7 @@ export class StudySidebarComponent {
         if (result.action === 'save' && result.name) {
           this.studyService.updateChapter(s.id, chap.id, { 
             name: result.name,
-            orientation: result.orientation 
+            orientation: result.orientation
           }).subscribe({
             next: () => {
               this.toastService.show('Chapter updated', 'success');

@@ -94,7 +94,6 @@ export class StepRegistrationComponent {
           <button
             appButton
             variant="danger"
-            size="sm"
             (click)="removeItem.emit(i)"
           >
             ✕
@@ -104,7 +103,6 @@ export class StepRegistrationComponent {
         <button
           appButton
           variant="outline"
-          size="sm"
           (click)="addItem.emit()"
         >
           + Add Requirement
@@ -129,4 +127,5 @@ export class StepEligibilityComponent implements OnInit {
     return this.eligibilityArray.at(index) as FormControl;
   }
 }
+
 

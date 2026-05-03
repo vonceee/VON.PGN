@@ -93,6 +93,36 @@ export function updateNodeInTree(
 }
 
 /**
+ * Sanitizes a PGN string to make it more compatible with the chess.js parser.
+ * - Merges adjacent comment blocks (e.g. "} {" -> " ").
+ * - Normalizes whitespace and newlines.
+ * - Ensures a blank line between tags and moves.
+ */
+function preprocessPgn(pgn: string): string {
+  if (!pgn) return '';
+
+  // 1. Normalize line endings and trim
+  let cleaned = pgn.replace(/\r\n/g, '\n').trim();
+
+  // 2. Fix adjacent comment blocks: "} {" -> " "
+  // Also handles cases with whitespace between them: "}   {"
+  cleaned = cleaned.replace(/\}\s*\{/g, ' ');
+
+  // 3. Ensure a blank line between the last tag and the first move/comment
+  // PGN tags end with ] and the body starts with either { or a move like 1.
+  if (cleaned.includes(']')) {
+    const lastTagIndex = cleaned.lastIndexOf(']');
+    const afterTags = cleaned.substring(lastTagIndex + 1);
+    // If there's no blank line between tags and moves, add one
+    if (afterTags.trim() && !afterTags.startsWith('\n\n')) {
+      cleaned = cleaned.substring(0, lastTagIndex + 1) + '\n\n' + afterTags.trim();
+    }
+  }
+
+  return cleaned;
+}
+
+/**
  * Converts a list of moves (either as a flat string array or a nested MoveNode tree)
  * into a standard MoveNode[] tree structure.
  */
@@ -118,7 +148,7 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
     'pgn' in processedMoves
   ) {
     const chess = new Chess(initialFen);
-    const pgnString = processedMoves.pgn as string;
+    const pgnString = preprocessPgn(processedMoves.pgn as string);
     
     try {
       chess.loadPgn(pgnString);

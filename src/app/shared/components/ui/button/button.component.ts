@@ -2,7 +2,6 @@ import { Component, input, ElementRef, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 type ButtonVariant = 'outline' | 'primary' | 'danger' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg' | 'none';
 
 @Component({
   selector: 'button[appButton], a[appButton]',
@@ -21,7 +20,6 @@ export class ButtonComponent {
   private el = inject(ElementRef);
 
   variant = input<ButtonVariant>('outline');
-  size = input<ButtonSize>('md');
   disabled = input(false);
   loading = input(false);
   type = input<'button' | 'submit' | 'reset'>('button');
@@ -30,21 +28,8 @@ export class ButtonComponent {
     return this.el.nativeElement.tagName.toLowerCase() === 'button';
   }
 
-  sizeClasses = computed(() => {
-    switch (this.size()) {
-      case 'sm':
-        return 'px-4 py-2 text-sm';
-      case 'lg':
-        return 'px-6 py-3 text-base';
-      case 'none':
-        return '';
-      default:
-        return 'px-6 py-2.5 text-md';
-    }
-  });
-
   variantClasses = computed(() => {
-    const base = `group flex items-center justify-center gap-2 border font-bold transition-all duration-300 cursor-pointer active:scale-[0.98]`;
+    const base = `group flex items-center justify-center gap-2 border px-5 py-2.5 text-sm font-medium transition-all duration-300 cursor-pointer`;
 
     switch (this.variant()) {
       case 'primary':
@@ -59,6 +44,6 @@ export class ButtonComponent {
   });
 
   finalClasses = computed(() => {
-    return `${this.variantClasses()} ${this.sizeClasses()}`;
+    return this.variantClasses();
   });
 }

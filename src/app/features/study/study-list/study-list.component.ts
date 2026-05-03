@@ -159,7 +159,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
                   <!-- Bottom Row -->
                   <div class="mt-auto flex items-center justify-end">
-                    <a appButton variant="outline" size="sm" [routerLink]="'/study/' + study.id">
+                    <a appButton variant="outline" [routerLink]="'/study/' + study.id">
                       View Study
                     </a>
                   </div>
@@ -275,3 +275,4 @@ export class StudyListComponent implements OnInit {
     }
   }
 }
+

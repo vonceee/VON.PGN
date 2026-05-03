@@ -107,7 +107,6 @@ export class StepBasicInfoComponent {
           <button
             appButton
             variant="primary"
-            size="lg"
             (click)="parseMapsLink.emit()"
             [disabled]="mapsLinkLoading()"
           >
@@ -230,4 +229,5 @@ export class StepFormatRulesComponent {
   @Input() form!: FormGroup;
   @Input() getError!: (field: string) => string;
 }
+
 

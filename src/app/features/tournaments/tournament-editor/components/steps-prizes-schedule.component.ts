@@ -22,7 +22,6 @@ import { ButtonComponent  } from '@shared/ui';
             <button
               appButton
               variant="danger"
-              size="sm"
               (click)="removeCategory.emit(ci)"
             >
               Remove Category
@@ -87,7 +86,6 @@ import { ButtonComponent  } from '@shared/ui';
                       <button
                         appButton
                         variant="danger"
-                        size="sm"
                         (click)="removeExtraPrize.emit({ci, ei})"
                       >
                         ✕
@@ -108,7 +106,6 @@ import { ButtonComponent  } from '@shared/ui';
                 <button
                   appButton
                   variant="outline"
-                  size="sm"
                   (click)="addExtraPrize.emit(ci)"
                 >
                   + Add Extra Place
@@ -138,7 +135,6 @@ import { ButtonComponent  } from '@shared/ui';
                     <button
                       appButton
                       variant="danger"
-                      size="sm"
                       (click)="removeSpecialAward.emit({ci, ai})"
                     >
                       ✕
@@ -189,7 +185,6 @@ import { ButtonComponent  } from '@shared/ui';
                 <button
                   appButton
                   variant="outline"
-                  size="sm"
                   (click)="addSpecialAward.emit(ci)"
                 >
                   + Add Special Award
@@ -202,7 +197,6 @@ import { ButtonComponent  } from '@shared/ui';
         <button
           appButton
           variant="primary"
-          size="lg"
           (click)="addCategory.emit()"
           class="w-full md:w-auto"
         >
@@ -256,7 +250,6 @@ export class StepPrizesComponent implements OnInit {
               <button
                 appButton
                 variant="outline"
-                size="sm"
                 (click)="addScheduleEvent.emit(di)"
               >
                 + Add Event
@@ -264,7 +257,6 @@ export class StepPrizesComponent implements OnInit {
               <button
                 appButton
                 variant="danger"
-                size="sm"
                 (click)="removeScheduleDay.emit(di)"
               >
                 Remove Day
@@ -289,7 +281,6 @@ export class StepPrizesComponent implements OnInit {
               <button
                 appButton
                 variant="danger"
-                size="sm"
                 (click)="removeScheduleEvent.emit({di, ei})"
                 class="opacity-50 group-hover:opacity-100 transition-opacity"
               >
@@ -303,7 +294,6 @@ export class StepPrizesComponent implements OnInit {
         <button
           appButton
           variant="outline"
-          size="lg"
           (click)="addScheduleDay.emit()"
           class="w-full"
         >
@@ -332,4 +322,5 @@ export class StepScheduleComponent implements OnInit {
     return group.get(name) as FormControl;
   }
 }
+
 

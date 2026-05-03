@@ -134,7 +134,7 @@
                 {{ removingId() === tournament.id ? 'Removing...' : 'Remove' }}
               </button>
 
-              <a appButton variant="outline" size="sm" [routerLink]="['/events', tournament.id]">
+              <a appButton variant="outline" [routerLink]="['/events', tournament.id]">
                 {{ tournament.status === 'past' ? 'View Results' : 'View Details' }}
               </a>
             </div>
@@ -144,3 +144,4 @@
     </div>
   }
 </div>
+

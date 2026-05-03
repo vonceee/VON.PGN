@@ -77,7 +77,6 @@ export interface AddChapterDialogResult {
               <button
                 appButton
                 [variant]="activeTab() === tab.id ? 'primary' : 'outline'"
-                size="sm"
                 (click)="activeTab.set(tab.id)"
                 class="whitespace-nowrap"
               >
@@ -276,3 +275,4 @@ export class AddChapterDialogComponent implements OnInit {
     }
   }
 }
+

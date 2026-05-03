@@ -53,22 +53,6 @@ footer {
   border-top: 1px solid var(--color-border-base);
 }
 
-:root {
-  font-size: 16px;
-}
-
-@media (min-width: 1536px) {
-  :root {
-    font-size: 18px;
-  }
-}
-
-@media (min-width: 1920px) {
-  :root {
-    font-size: 20px;
-  }
-}
-
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* smooth dark/light mode transitions */

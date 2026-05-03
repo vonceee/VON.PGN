@@ -84,7 +84,6 @@ import { LoadingComponent } from '@shared/feedback';
                       <a
                         appButton
                         variant="outline"
-                        size="sm"
                         [routerLink]="['/games', game.id, 'review']"
                         class="px-5 border-white/10 hover:bg-white/5"
                       >
@@ -108,7 +107,6 @@ import { LoadingComponent } from '@shared/feedback';
               <button
                 appButton
                 variant="ghost"
-                size="sm"
                 [disabled]="currentPage() === 1"
                 (click)="loadPage(currentPage() - 1)"
                 class="hover:bg-white/5"
@@ -118,7 +116,6 @@ import { LoadingComponent } from '@shared/feedback';
               <button
                 appButton
                 variant="ghost"
-                size="sm"
                 [disabled]="currentPage() === totalPages()"
                 (click)="loadPage(currentPage() + 1)"
                 class="hover:bg-white/5"
@@ -219,3 +216,4 @@ export class GameHistoryComponent implements OnInit {
     return iWon ? 'text-green-500' : 'text-red-500';
   }
 }
+

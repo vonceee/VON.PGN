@@ -32,7 +32,7 @@ import { UserHovercardDirective } from '@shared/directives';
         </div>
 
         <div actions class="flex justify-end items-center w-full">
-          <button appButton variant="ghost" size="sm" (click)="dialogRef.close()">Close</button>
+          <button appButton variant="ghost" (click)="dialogRef.close()">Close</button>
         </div>
       </app-dialog-wrapper>
     </div>
@@ -57,3 +57,4 @@ export class ViewersDialogComponent {
   dialogRef = inject(DialogRef);
   data = inject<{ viewers: string[], count: number }>(DIALOG_DATA);
 }
+

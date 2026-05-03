@@ -7,7 +7,7 @@
         size="text-3xl md:text-5xl mb-4 md:mb-6"
       ></app-section-heading>
     </div>
-    <a appButton variant="outline" size="md" routerLink="/my-events/new">+ New Event</a>
+    <a appButton variant="outline" routerLink="/my-events/new">+ New Event</a>
   </div>
 
   @if (loading()) {
@@ -69,7 +69,6 @@
             <a
               appButton
               variant="outline"
-              size="sm"
               [routerLink]="'/events/' + tournament.id"
             >
               View
@@ -77,7 +76,6 @@
             <a
               appButton
               variant="primary"
-              size="sm"
               [routerLink]="'/my-events/' + tournament.id"
             >
               Edit
@@ -85,7 +83,6 @@
             <button
               appButton
               variant="danger"
-              size="sm"
               (click)="requestDelete(tournament)"
             >
               Delete
@@ -106,3 +103,4 @@
     (cancel)="cancelDelete()"
   />
 }
+

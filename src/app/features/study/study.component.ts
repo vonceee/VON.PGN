@@ -33,6 +33,9 @@ import { StudyInfoComponent } from './study-info/study-info.component';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { ButtonComponent } from '@shared/ui';
 import { ExplorerBoxComponent } from '../explorer/explorer-box.component';
+import { StudyMetadataComponent } from './study-metadata/study-metadata.component';
+import { StudyMetadataTabComponent } from './study-metadata-tab/study-metadata-tab.component';
+import { EditMetadataDialogComponent } from './dialogs/edit-metadata-dialog/edit-metadata-dialog.component';
 import { DevLogger } from '../../core/utils/dev-logger';
 
 @Component({
@@ -51,6 +54,8 @@ import { DevLogger } from '../../core/utils/dev-logger';
     StudyAnalysisComponent,
     ExplorerBoxComponent,
     ButtonComponent,
+    StudyMetadataComponent,
+    StudyMetadataTabComponent,
   ],
   templateUrl: './study.component.html',
   styles: [`
@@ -166,7 +171,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   isSyncing = signal(true);
   isLargeScreen = signal(false);
-  activeTab = signal<'notation' | 'info'>('notation');
+  activeTab = signal<'notation' | 'info' | 'metadata'>('notation');
   showDeleteModal = signal(false);
   isDeleting = signal(false);
   isActionInProgress = signal(false);
@@ -528,4 +533,37 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onShapeDrawn(shapes: any[]) { if (this.canEdit()) this.studyService.emitShapes(shapes); }
+
+  onSaveMetadata(tags: Record<string, string>) {
+    const s = this.study();
+    const c = this.currentChapter();
+    if (!s || !c || !this.canEdit()) return;
+
+    this.studyService.updateChapter(s.id, c.id, {
+      name: c.name,
+      orientation: c.orientation,
+      pgn_tags: tags
+    }).subscribe({
+      next: () => {
+        // Update local chapter object to reflect changes
+        this.currentChapter.update(prev => prev ? { ...prev, pgn_tags: tags } : null);
+        this.studyService.getStudy(s.id); // Refresh full study to sync other clients
+      }
+    });
+  }
+
+  onEditMetadata() {
+    const c = this.currentChapter();
+    if (!c || !this.canEdit()) return;
+
+    const dialogRef = this.dialog.open(EditMetadataDialogComponent, {
+      data: c.pgn_tags || {},
+    });
+
+    dialogRef.closed.subscribe((result: any) => {
+      if (result) {
+        this.onSaveMetadata(result);
+      }
+    });
+  }
 }

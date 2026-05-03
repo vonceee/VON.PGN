@@ -30,7 +30,7 @@ import {
       @if (game()?.status === 'active') {
         <div class="flex items-center justify-center gap-2 w-full">
           @if (canAbort()) {
-            <button appButton variant="ghost" size="sm" (click)="abort.emit()" title="Abort">
+            <button appButton variant="ghost" (click)="abort.emit()" title="Abort">
               <ng-icon name="heroXMark" class="text-xl"></ng-icon>
             </button>
           } @else {
@@ -40,7 +40,6 @@ import {
                   <button
                     appButton
                     variant="primary"
-                    size="sm"
                     (click)="acceptDraw.emit()"
                     title="Accept Draw"
                   >
@@ -49,7 +48,6 @@ import {
                   <button
                     appButton
                     variant="outline"
-                    size="sm"
                     (click)="declineDraw.emit()"
                     title="Decline Draw"
                   >
@@ -61,7 +59,6 @@ import {
                   <button
                     appButton
                     variant="primary"
-                    size="sm"
                     [disabled]="true"
                     title="Draw Offered"
                     class="opacity-50 pointer-events-none"
@@ -71,7 +68,6 @@ import {
                   <button
                     appButton
                     variant="ghost"
-                    size="sm"
                     (click)="cancelDraw.emit()"
                     title="Cancel draw offer"
                   >
@@ -83,7 +79,6 @@ import {
                   <button
                     appButton
                     variant="ghost"
-                    size="sm"
                     (click)="offerDraw.emit()"
                     title="Offer Draw"
                   >
@@ -95,7 +90,6 @@ import {
                   <button
                     appButton
                     variant="ghost"
-                    size="sm"
                     (click)="showResignConfirm.set(true)"
                     title="Resign"
                   >
@@ -106,7 +100,6 @@ import {
                     <button
                       appButton
                       variant="danger"
-                      size="sm"
                       (click)="resign.emit(); showResignConfirm.set(false)"
                       title="Confirm Resign"
                     >
@@ -115,7 +108,6 @@ import {
                     <button
                       appButton
                       variant="ghost"
-                      size="sm"
                       (click)="showResignConfirm.set(false)"
                       title="Cancel"
                     >
@@ -132,7 +124,7 @@ import {
         <div class="w-full flex justify-center gap-1.5">
           @if (!game()?.arena_id) {
             @if (!myRematchOffered() && !rematchOfferFrom()) {
-              <button appButton variant="ghost" size="md" (click)="offerRematch.emit()">
+              <button appButton variant="ghost" (click)="offerRematch.emit()">
                 <ng-icon name="heroArrowPath" class="text-lg mr-2"></ng-icon>
                 Rematch
               </button>
@@ -147,7 +139,6 @@ import {
                 <button
                   appButton
                   variant="primary"
-                  size="md"
                   (click)="acceptRematch.emit()"
                   title="Accept"
                 >
@@ -156,7 +147,6 @@ import {
                 <button
                   appButton
                   variant="outline"
-                  size="md"
                   (click)="declineRematch.emit()"
                   title="Decline"
                 >
@@ -168,7 +158,6 @@ import {
             <button
               appButton
               variant="ghost"
-              size="md"
               (click)="newOpponent.emit()"
               title="New opponent"
             >
@@ -209,3 +198,4 @@ export class GameControlsComponent {
     return g.my_color === 'white' ? movesCount === 0 : movesCount <= 1;
   });
 }
+

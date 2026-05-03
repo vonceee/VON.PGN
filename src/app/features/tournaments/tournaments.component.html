@@ -355,7 +355,7 @@
                   </div>
                 }
 
-                <a appButton variant="outline" size="sm" [routerLink]="['/events', tournament.id]">
+                <a appButton variant="outline" [routerLink]="['/events', tournament.id]">
                   More Details
                 </a>
               </div>
@@ -484,7 +484,7 @@
                 }
               </div>
             </div>
-            <a appButton variant="outline" size="sm" [routerLink]="['/events', tournament.id]">
+            <a appButton variant="outline" [routerLink]="['/events', tournament.id]">
               More Details
             </a>
           </div>
@@ -574,3 +574,4 @@
     }
   </p>
 </div>
+

@@ -111,7 +111,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 
                 <!-- Quick Actions -->
                 <div class="flex flex-col gap-2 pt-2">
-                  <a appButton variant="outline" size="sm" routerLink="/games/history" class="w-full">
+                  <a appButton variant="outline" routerLink="/games/history" class="w-full">
                     Back to History
                   </a>
                 </div>
@@ -546,4 +546,5 @@ export class GameReviewComponent implements OnInit, OnDestroy {
     return iWon ? 'text-green-500' : 'text-red-500';
   }
 }
+
 

@@ -54,7 +54,6 @@
               <button
                 appButton
                 variant="primary"
-                size="sm"
                 (click)="posterUploadInput.click()"
               >
                 Upload Own Custom Poster
@@ -63,7 +62,6 @@
               <button
                 appButton
                 variant="danger"
-                size="sm"
                 (click)="removeCustomPoster()"
               >
                 Remove Custom Poster
@@ -226,7 +224,6 @@
           <button
             appButton
             variant="primary"
-            size="lg"
             class="flex-1 md:flex-none px-12"
             (click)="confirmSave()"
             [loading]="saving()"
@@ -263,13 +260,12 @@
         </div>
 
         <div class="modal-footer-actions">
-          <button appButton variant="ghost" size="lg" (click)="closeReviewModal()">
+          <button appButton variant="ghost" (click)="closeReviewModal()">
             Back to Editing
           </button>
           <button
             appButton
             variant="primary"
-            size="lg"
             class="px-10"
             [loading]="saving()"
             (click)="executeSave()"
