@@ -36,6 +36,19 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <option value="private">Private (Only me)</option>
           </select>
         </div>
+
+        <!-- Engine Analysis Visibility -->
+        <div class="space-y-2">
+          <label class="text-sm font-semibold text-content">Engine Analysis</label>
+          <select
+            [(ngModel)]="engineVisibility"
+            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none dark:text-content transition-all"
+          >
+            <option value="everyone">Everyone</option>
+            <option value="owner">Only me</option>
+          </select>
+          <p class="text-[10px] text-muted">Controls who can see the engine toggle and evaluation bar.</p>
+        </div>
       </div>
 
       <button actions
@@ -71,11 +84,13 @@ export class StudySettingsDialogComponent implements OnInit {
   
   name = signal('');
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
+  engineVisibility = signal<'everyone' | 'owner'>('everyone');
 
   ngOnInit() {
     if (this.data) {
       this.name.set(this.data.name || '');
       this.visibility.set(this.data.visibility || 'public');
+      this.engineVisibility.set(this.data.engine_visibility || 'everyone');
     }
   }
 
@@ -84,7 +99,8 @@ export class StudySettingsDialogComponent implements OnInit {
       this.dialogRef.close({ 
         action: 'save',
         name: this.name().trim(), 
-        visibility: this.visibility() 
+        visibility: this.visibility(),
+        engine_visibility: this.engineVisibility()
       });
     }
   }

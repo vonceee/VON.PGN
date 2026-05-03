@@ -9,6 +9,7 @@ export interface Study {
   id: number;
   name: string;
   visibility: 'public' | 'private' | 'unlisted';
+  engine_visibility: 'everyone' | 'owner';
   user_id: number;
   owner: {
     id: number;

@@ -182,6 +182,13 @@ export class StudyComponent implements OnInit, OnDestroy {
   private pvChess = new Chess();
   private lastLocalInteractionTime = 0;
 
+  isEngineVisible = computed(() => {
+    const s = this.study();
+    if (!s) return false;
+    if (s.engine_visibility === 'everyone') return true;
+    return this.isOwner();
+  });
+
   constructor() {
     this.analysisTrigger$
       .pipe(takeUntilDestroyed(), debounceTime(150), filter((v): v is { fen: string; active: boolean } => !!v && v.active))
@@ -211,7 +218,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
     effect(() => {
       if (!isPlatformBrowser(this.platformId)) return;
-      const active = this.isEngineActive();
+      const active = this.isEngineActive() && this.isEngineVisible();
       const fen = this.currentFen();
       if (active && this.activeTab() === 'notation') {
         const cached = this.engineService.getCachedAnalysis(fen);

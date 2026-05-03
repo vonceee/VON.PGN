@@ -101,13 +101,17 @@ export class StudyInfoComponent {
     if (!s) return;
 
     const dialogRef = this.dialog.open<any>(StudySettingsDialogComponent, {
-      data: { name: s.name, visibility: s.visibility }
+      data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility }
     });
 
     dialogRef.closed.subscribe((result) => {
       if (!result) return;
       if (result.action === 'save') {
-        this.studyService.updateStudy(s.id, { name: result.name, visibility: result.visibility }).subscribe({
+        this.studyService.updateStudy(s.id, { 
+          name: result.name, 
+          visibility: result.visibility,
+          engine_visibility: result.engine_visibility
+        }).subscribe({
           next: () => {
             this.toastService.show('Study settings updated', 'success');
             this.studyService.getStudy(s.id);
