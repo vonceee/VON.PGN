@@ -8,7 +8,7 @@ import { ChessBoardComponent } from '../chess/chess-board/chess-board.component'
   standalone: true,
   imports: [CommonModule, ChessBoardComponent],
   template: `
-    <div class="ui-panel p-4 w-[320px] overflow-hidden animate-in fade-in zoom-in duration-200">
+    <div class="ui-panel p-4 w-80 overflow-hidden animate-in fade-in zoom-in duration-200">
       @if (user()) {
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">
@@ -28,12 +28,12 @@ import { ChessBoardComponent } from '../chess/chess-board/chess-board.component'
                 [title]="user()!.is_online ? 'Online' : 'Offline'"
               ></div>
             </div>
-            <span class="text-[10px] text-muted font-medium uppercase tracking-wider">
+            <span class="text-xs text-muted font-medium uppercase tracking-wider">
               {{ user()!.displayName || 'Chess Enthusiast' }}
             </span>
           </div>
           @if (user()!.verified_organizer) {
-            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-[9px] font-bold uppercase tracking-widest">
+            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-bold uppercase tracking-widest">
               Verified
             </div>
           }
@@ -43,7 +43,7 @@ import { ChessBoardComponent } from '../chess/chess-board/chess-board.component'
         <div class="grid grid-cols-3 gap-2 mb-4">
           @for (type of ratingTypes; track type.id) {
             <div class="flex flex-col items-center p-2 rounded-xl bg-subtle/50 border border-border-base/50">
-              <span class="text-[8px] text-muted font-bold uppercase tracking-widest mb-1">
+              <span class="text-xs text-muted font-bold uppercase tracking-widest mb-1">
                 {{ type.label }}
               </span>
               <span class="text-sm font-black text-content">
@@ -54,7 +54,7 @@ import { ChessBoardComponent } from '../chess/chess-board/chess-board.component'
         </div>
 
         <!-- Stats -->
-        <div class="flex items-center gap-4 mb-4 px-1 text-[9px] font-bold uppercase tracking-widest text-muted">
+        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-bold uppercase tracking-widest text-muted">
           <div class="flex items-center gap-1.5">
             <span>{{ user()!.followers_count }} Followers</span>
           </div>
@@ -67,8 +67,8 @@ import { ChessBoardComponent } from '../chess/chess-board/chess-board.component'
         @if (user()!.active_game; as game) {
           <div class="mt-4 pt-4 border-t border-border-base/50">
             <div class="flex items-center justify-between mb-2 px-1">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-accent">Playing Now</span>
-              <span class="text-[9px] text-muted">{{ game.time_control }}</span>
+              <span class="text-xs font-bold uppercase tracking-widest text-accent">Playing Now</span>
+              <span class="text-xs text-muted">{{ game.time_control }}</span>
             </div>
             
             <div class="relative rounded-xl overflow-hidden border border-border-base/50 aspect-square w-full board-container-parent">
@@ -81,12 +81,12 @@ import { ChessBoardComponent } from '../chess/chess-board/chess-board.component'
               
               <!-- Opponent Overlay -->
               <div class="absolute bottom-0 left-0 right-0 p-2 bg-main/80 backdrop-blur-md border-t border-border-base/50 flex items-center justify-between">
-                <span class="text-[10px] font-bold text-content truncate max-w-[120px]">
+                <span class="text-xs font-bold text-content truncate max-w-[120px]">
                   vs {{ game.white_player.id === user()!.uid ? game.black_player.name : game.white_player.name }}
                 </span>
                 <div class="flex items-center gap-1">
                   <div class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></div>
-                  <span class="text-[8px] font-black uppercase text-accent">Live</span>
+                  <span class="text-xs font-black uppercase text-accent">Live</span>
                 </div>
               </div>
             </div>

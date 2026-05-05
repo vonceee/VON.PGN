@@ -1,21 +1,21 @@
- <section class="h-full w-full bg-main">
+<section class="min-h-full w-full bg-main flex flex-col">
   <!-- Mobile Layout -->
-  <div class="lg:hidden flex flex-col h-[calc(100vh-120px)] p-4">
-    <div class="flex-1 min-h-0">
-      <app-play-selector class="block h-full" />
-    </div>
+  <div class="lg:hidden flex flex-col p-4 pb-12">
+    <app-play-selector class="block w-full" />
   </div>
 
   <!-- Desktop Layout -->
-  <div class="hidden lg:grid h-full max-w-7xl grid-cols-2 gap-4 lg:gap-8 p-4 lg:p-8 lg:py-6 mx-auto">
-    <!-- Left panel: Play Selection -->
-    <div class="h-full w-full min-h-0">
-      <app-play-selector />
-    </div>
+  <div class="hidden lg:flex items-start justify-center flex-1 w-full p-4 lg:p-8">
+    <div class="grid w-full max-w-7xl grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mx-auto items-stretch">
+      <!-- Left panel: Play Selection -->
+      <div class="w-full">
+        <app-play-selector />
+      </div>
 
-    <!-- Right panel: Lobby/Seek board -->
-    <div class="h-full min-h-0">
-      <app-seek-board (seekClicked)="onSeekClicked($event)" class="block h-full" />
+      <!-- Right panel: Lobby/Seek board -->
+      <div class="w-full">
+        <app-seek-board (seekClicked)="onSeekClicked($event)" class="block" />
+      </div>
     </div>
   </div>
 </section>

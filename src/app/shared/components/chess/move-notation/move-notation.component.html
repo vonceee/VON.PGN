@@ -101,7 +101,7 @@
     @for (node of nodes; track node.fen; let $firstNode = $first) {
       <!-- Pre-Move Comment -->
       @if (node.preComments && node.preComments.length > 0) {
-        <div class="w-full block text-[0.8rem] text-muted/80 leading-snug px-2 py-1 mb-1 mt-1 bg-accent/5 rounded font-normal select-text">
+        <div class="w-full block text-sm text-muted/80 leading-snug px-2 py-1 mb-1 mt-1 bg-accent/5 rounded font-normal select-text">
           {{ node.preComments[0] }}
         </div>
       }
@@ -111,12 +111,12 @@
         @if (node.ply % 2 !== 0) {
           <span
             class="font-black tracking-tighter select-none text-muted mr-0.5 ml-0.5"
-            [class.text-[0.95rem]]="isMainline"
-            [class.text-[0.8rem]]="!isMainline"
+            [class.text-base]="isMainline"
+            [class.text-sm]="!isMainline"
             >{{ (node.ply + 1) / 2 }}.</span
           >
         } @else if ($firstNode) {
-          <span class="flex-none font-bold mr-0.5 ml-0.5 select-none text-[0.85rem] text-accent/80"
+          <span class="flex-none font-bold mr-0.5 ml-0.5 select-none text-sm text-accent/80"
             >{{ node.ply / 2 }}...</span
           >
         }
@@ -172,7 +172,7 @@
 
       <!-- After-Move Comment -->
       @if (node.comments && node.comments.length > 0) {
-        <div class="w-full block text-[0.8rem] text-muted/80 leading-snug px-2 py-1 mb-1 mt-0.5 bg-subtle/30 rounded font-normal select-text">
+        <div class="w-full block text-sm text-muted/80 leading-snug px-2 py-1 mb-1 mt-0.5 bg-subtle/30 rounded font-normal select-text">
           {{ node.comments[0] }}
         </div>
       }
@@ -185,7 +185,7 @@
       class="flex-none p-3 bg-surface border-t border-border-base animate-[slide-up_0.2s_ease-out]"
     >
       <div
-        class="text-[0.65rem] uppercase tracking-[0.15em] font-black text-muted mb-2.5 px-0.5 flex items-center gap-2"
+        class="text-xs uppercase tracking-tightest font-black text-muted mb-2.5 px-0.5 flex items-center gap-2"
       >
         <span class="w-1.5 h-1.5 bg-accent animate-pulse"></span>
         Choose continuation
@@ -201,7 +201,7 @@
             "
             class="px-3.5 py-1.5 font-bold text-sm transition-all flex items-center gap-2.5 active:scale-95"
           >
-            <span class="opacity-50 font-black text-[0.7rem] tracking-tighter">{{
+            <span class="opacity-50 font-black text-xs tracking-tighter">{{
               option.ply % 2 !== 0 ? (option.ply + 1) / 2 : option.ply / 2 + '...'
             }}</span>
             {{ option.san }}

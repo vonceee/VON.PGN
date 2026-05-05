@@ -3,11 +3,11 @@
     <!-- Event & Date -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2 overflow-hidden">
-        <span class="text-[10px] font-black uppercase tracking-widest text-accent shrink-0">Event</span>
+        <span class="text-xs font-black uppercase tracking-widest text-accent shrink-0">Event</span>
         <span class="text-xs font-bold text-content truncate">{{ event() }}</span>
       </div>
       @if (date() || round()) {
-        <div class="flex items-center gap-2 text-[10px] font-bold text-muted whitespace-nowrap">
+        <div class="flex items-center gap-2 text-xs font-bold text-muted whitespace-nowrap">
           @if (date()) { <span>{{ date() }}</span> }
           @if (date() && round()) { <span>•</span> }
           @if (round()) { <span>Rd {{ round() }}</span> }
@@ -21,18 +21,18 @@
       <div class="flex-1 flex flex-col min-w-0">
         <div class="flex items-center gap-1.5 min-w-0">
           @if (whitePlayer().title) {
-            <span class="px-1 py-0.5 rounded bg-accent/10 text-[9px] font-black text-accent leading-none uppercase">{{ whitePlayer().title }}</span>
+            <span class="px-1 py-0.5 rounded bg-accent/10 text-xs font-black text-accent leading-none uppercase">{{ whitePlayer().title }}</span>
           }
           <span class="text-sm font-bold text-content truncate">{{ whitePlayer().name }}</span>
         </div>
         @if (whitePlayer().elo) {
-          <span class="text-[10px] font-medium text-muted">{{ whitePlayer().elo }}</span>
+          <span class="text-xs font-medium text-muted">{{ whitePlayer().elo }}</span>
         }
       </div>
 
       <!-- Result/VS Spacer -->
       <div class="shrink-0 flex flex-col items-center justify-center">
-        <div class="px-2 py-1 rounded-md bg-subtle/50 border border-border-base/30 text-[10px] font-black text-content tabular-nums">
+        <div class="px-2 py-1 rounded-md bg-subtle/50 border border-border-base/30 text-xs font-black text-content tabular-nums">
           {{ result() }}
         </div>
       </div>
@@ -42,11 +42,11 @@
         <div class="flex items-center gap-1.5 min-w-0 justify-end w-full">
           <span class="text-sm font-bold text-content truncate">{{ blackPlayer().name }}</span>
           @if (blackPlayer().title) {
-            <span class="px-1 py-0.5 rounded bg-accent/10 text-[9px] font-black text-accent leading-none uppercase">{{ blackPlayer().title }}</span>
+            <span class="px-1 py-0.5 rounded bg-accent/10 text-xs font-black text-accent leading-none uppercase">{{ blackPlayer().title }}</span>
           }
         </div>
         @if (blackPlayer().elo) {
-          <span class="text-[10px] font-medium text-muted">{{ blackPlayer().elo }}</span>
+          <span class="text-xs font-medium text-muted">{{ blackPlayer().elo }}</span>
         }
       </div>
     </div>

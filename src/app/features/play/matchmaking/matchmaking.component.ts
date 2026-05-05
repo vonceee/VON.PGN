@@ -18,7 +18,7 @@ import { PlaySelectorComponent } from './play-selector.component';
     `
       :host {
         display: block;
-        height: 100%;
+        min-height: 100%;
       }
     `,
   ],

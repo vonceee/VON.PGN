@@ -7,6 +7,7 @@ import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.mode
 import { ButtonComponent } from '@shared/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ComputerSetupModalComponent } from '../computer/computer-setup-modal.component';
+import { CustomTimeControlModalComponent } from './custom-time-control-modal.component';
 
 @Component({
   selector: 'app-play-selector',
@@ -23,12 +24,23 @@ import { ComputerSetupModalComponent } from '../computer/computer-setup-modal.co
   ],
 })
 export class PlaySelectorComponent {
-  showCustomForm = signal(false);
-  customMinutes = signal(10);
-  customIncrement = signal(0);
   gameService = inject(GameService);
   private router = inject(Router);
   private dialog = inject(Dialog);
+
+  openCustomTimeControl(): void {
+    const dialogRef = this.dialog.open(CustomTimeControlModalComponent, {
+      maxWidth: '95vw',
+      backdropClass: ['bg-slate-950/80'],
+    });
+
+    dialogRef.closed.subscribe((result: any) => {
+      if (result) {
+        const value = `${result.minutes * 60}+${result.increment}`;
+        this.gameService.seekGame(value);
+      }
+    });
+  }
 
   playWithComputer(): void {
     const dialogRef = this.dialog.open(ComputerSetupModalComponent, {
@@ -75,19 +87,6 @@ export class PlaySelectorComponent {
       return;
     }
     this.gameService.seekGame(tc.value);
-  }
-
-  seekCustomGame(): void {
-    const g = this.gameService.gameState();
-    if (g && g.status === 'active') {
-      this.rejoinGame();
-      return;
-    }
-    if (this.gameService.isSearching()) {
-      return;
-    }
-    const value = `${this.customMinutes() * 60}+${this.customIncrement()}`;
-    this.gameService.seekGame(value);
   }
 
   cancelSearch(): void {

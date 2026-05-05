@@ -76,28 +76,28 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         <div class="flex flex-col gap-4">
           <!-- Editor Tools Pills -->
           <div class="flex flex-col gap-2">
-            <h3 class="text-[10px] font-bold text-muted uppercase tracking-wider">Tools</h3>
+            <h3 class="text-xs font-bold text-muted uppercase tracking-wider">Tools</h3>
             <div class="flex flex-col gap-2">
               <div class="flex gap-2">
                 <button 
                   (click)="selectTool('hand')"
-                  class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border"
+                  class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border"
                   [class]="selectedTool() === 'hand' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
                 >Move</button>
                 <button 
                   (click)="selectTool('trash')"
-                  class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border"
+                  class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border"
                   [class]="selectedTool() === 'trash' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
                 >Delete</button>
               </div>
               <div class="flex gap-2">
                 <button 
                   (click)="resetToInitial()"
-                  class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border bg-white text-black border-base hover:bg-subtle"
+                  class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border bg-white text-black border-base hover:bg-subtle"
                 >Init</button>
                 <button 
                   (click)="clearBoard()"
-                  class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border bg-white text-black border-base hover:bg-subtle"
+                  class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border bg-white text-black border-base hover:bg-subtle"
                 >Clear</button>
               </div>
             </div>
@@ -105,16 +105,16 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
           <!-- Turn Selection Pills -->
           <div class="flex flex-col gap-2">
-            <h3 class="text-[10px] font-bold text-muted uppercase tracking-wider">Turn</h3>
+            <h3 class="text-xs font-bold text-muted uppercase tracking-wider">Turn</h3>
             <div class="flex gap-2">
               <button 
                 (click)="turn.set('w')"
-                class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border"
+                class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border"
                 [class]="turn() === 'w' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
               >White</button>
               <button 
                 (click)="turn.set('b')"
-                class="flex-1 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase transition-all border"
+                class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border"
                 [class]="turn() === 'b' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
               >Black</button>
             </div>

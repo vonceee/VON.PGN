@@ -242,7 +242,7 @@
         >
           <ng-icon name="heroBell" class="w-6 h-6 text-content group-hover:text-accent"></ng-icon>
           @if (notificationService.unreadCount() > 0) {
-            <span class="absolute top-1 right-1 w-4 h-4 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+            <span class="absolute top-1 right-1 w-4 h-4 bg-accent text-white text-xs font-bold rounded-full flex items-center justify-center">
               {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
             </span>
           }
@@ -271,7 +271,7 @@
                   >
                     <div class="flex flex-col gap-1">
                       <p class="text-sm text-content leading-snug">{{ n.data.message }}</p>
-                      <span class="text-[10px] text-muted">{{ n.created_at | date:'short' }}</span>
+                      <span class="text-xs text-muted">{{ n.created_at | date:'short' }}</span>
                     </div>
                   </div>
                 }
