@@ -197,6 +197,11 @@ export class BoardEditorComponent implements AfterViewInit {
     this.fenChange.emit(this.fullFen());
   }
 
+  ngOnInit() {
+    // Ensure initial state is emitted
+    this.emitChange();
+  }
+
   ngAfterViewInit() {
     // Redraw after a delay to ensure parent sizing is captured
     setTimeout(() => {
@@ -206,15 +211,17 @@ export class BoardEditorComponent implements AfterViewInit {
 
   loadFen(fen: string) {
     if (!fen) return;
-    const parts = fen.split(' ');
-    this.boardFen.set(parts[0] || '8/8/8/8/8/8/8/8');
-    this.turn.set((parts[1] as 'w' | 'b') || 'w');
+    const parts = fen.trim().split(/\s+/);
+    if (parts[0]) this.boardFen.set(parts[0]);
+    if (parts[1]) this.turn.set(parts[1] as 'w' | 'b');
     
-    const castling = parts[2] || '-';
-    this.whiteKingside.set(castling.includes('K'));
-    this.whiteQueenside.set(castling.includes('Q'));
-    this.blackKingside.set(castling.includes('k'));
-    this.blackQueenside.set(castling.includes('q'));
+    if (parts[2]) {
+      const castling = parts[2];
+      this.whiteKingside.set(castling.includes('K'));
+      this.whiteQueenside.set(castling.includes('Q'));
+      this.blackKingside.set(castling.includes('k'));
+      this.blackQueenside.set(castling.includes('q'));
+    }
   }
 
   setTurn(color: 'w' | 'b') {
@@ -224,7 +231,7 @@ export class BoardEditorComponent implements AfterViewInit {
 
   onBoardFenChange(newBoardFen: string) {
     // Only take the board part
-    const boardPart = newBoardFen.split(' ')[0];
+    const boardPart = newBoardFen.trim().split(/\s+/)[0];
     if (boardPart !== this.boardFen()) {
       this.boardFen.set(boardPart);
       this.emitChange();
@@ -236,20 +243,19 @@ export class BoardEditorComponent implements AfterViewInit {
   }
 
   onPiecePaletteMouseDown(event: MouseEvent, color: Color, role: Role) {
-    // If user starts dragging from the palette, we use Chessground's dragNewPiece
-    // This allows both clicking to select a tool AND dragging to place a single piece
-    event.preventDefault();
     if (!this.boardComponent?.api) return;
-
+    
     this.selectTool('hand'); // Temporarily revert to hand for the drag
     dragNewPiece(this.boardComponent.api.state, { color, role }, event, true);
-
-    // After drag finishes (on mouseup), we want to select the piece tool
-    const upHandler = () => {
+    
+    // Chessground's dragNewPiece doesn't trigger change event automatically in all cases
+    // We listen for the end of the drag to ensure FEN is updated
+    const upListener = () => {
+      this.boardComponent.onBoardChange();
+      window.removeEventListener('mouseup', upListener);
       this.selectTool({ color, role });
-      document.removeEventListener('mouseup', upHandler);
     };
-    document.addEventListener('mouseup', upHandler);
+    window.addEventListener('mouseup', upListener);
   }
 
   selectTool(tool: SelectedTool) {
@@ -313,9 +319,18 @@ export class BoardEditorComponent implements AfterViewInit {
       const tool = this.selectedTool();
       
       if (tool === 'trash') {
-        api.setPieces(new Map([[key, undefined]]));
+        this.boardComponent.setPieces(new Map([[key, undefined]]));
       } else if (typeof tool === 'object') {
-        api.setPieces(new Map([[key, { color: tool.color, role: tool.role }]]));
+        const existingPiece = api.state.pieces.get(key);
+        const isSamePiece = existingPiece && 
+                           existingPiece.color === tool.color && 
+                           existingPiece.role === tool.role;
+        
+        if (isSamePiece) {
+          this.boardComponent.setPieces(new Map([[key, undefined]]));
+        } else {
+          this.boardComponent.setPieces(new Map([[key, { color: tool.color, role: tool.role }]]));
+        }
       }
     }
   }
@@ -333,5 +348,8 @@ export class BoardEditorComponent implements AfterViewInit {
   getPieceStyle(color: Color, role: Role) {
     // This could be used if we don't rely on global chessground styles
     return {};
+  }
+  getFen(): string {
+    return this.fullFen();
   }
 }

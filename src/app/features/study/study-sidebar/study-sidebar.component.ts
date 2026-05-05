@@ -68,7 +68,9 @@ export class StudySidebarComponent {
     if (!s) return;
 
     const dialogRef = this.dialog.open<AddChapterDialogResult>(AddChapterDialogComponent, {
-      data: { defaultName: `Chapter ${(s.chapters?.length ?? 0) + 1}` }
+      data: { 
+        defaultName: `Chapter ${(s.chapters?.length ?? 0) + 1}`,
+      }
     });
 
     dialogRef.closed

@@ -232,7 +232,10 @@ export interface AddChapterDialogResult {
 export class AddChapterDialogComponent implements OnInit {
   @ViewChild('editor') boardEditor?: BoardEditorComponent;
   dialogRef = inject(DialogRef<AddChapterDialogResult>);
-  data = inject<{ defaultName?: string; tab?: ChapterTab }>(DIALOG_DATA, { optional: true });
+  data = inject<{ 
+    defaultName?: string; 
+    tab?: ChapterTab; 
+  }>(DIALOG_DATA, { optional: true });
   
   name = signal('');
   activeTab = signal<ChapterTab>('empty');
@@ -302,7 +305,9 @@ export class AddChapterDialogComponent implements OnInit {
         orientation: this.orientation(),
       };
 
-      if (this.activeTab() === 'fen' || this.activeTab() === 'editor') {
+      if (this.activeTab() === 'editor' && this.boardEditor) {
+        result.fen = this.boardEditor.getFen();
+      } else if (this.activeTab() === 'fen') {
         result.fen = this.fen();
       } else if (this.activeTab() === 'pgn') {
         result.pgn = this.pgn();

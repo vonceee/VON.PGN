@@ -23,7 +23,7 @@ import { Chess, Move } from 'chess.js';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
-import { Key, MoveMetadata } from 'chessground/types';
+import { Key, MoveMetadata, Piece } from 'chessground/types';
 import { AudioService } from '../../../../core/services/audio.service';
 
 @Component({
@@ -241,6 +241,12 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   public isResizing = signal(false);
 
   public get api(): Api { return this.cgApi; }
+  
+  setPieces(pieces: Map<Key, Piece | undefined>) {
+    if (!this.cgApi) return;
+    this.cgApi.setPieces(pieces);
+    this.onBoardChange();
+  }
   private cgApi!: Api;
   private chess = new Chess();
   private initialized = false;
@@ -548,12 +554,10 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     }
   }
 
-  private onBoardChange() {
+  public onBoardChange() {
     if (this.isEditor && this.cgApi) {
       const newFen = this.cgApi.getFen();
-      if (newFen !== this.fen) {
-        this.fenChange.emit(newFen);
-      }
+      this.fenChange.emit(newFen);
     }
   }
 
