@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, signal, computed, ViewChild, ef
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChessBoardComponent } from '../chess-board/chess-board.component';
+import { ButtonComponent } from '../../ui/button/button.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark } from '@ng-icons/heroicons/outline';
 import { dragNewPiece } from 'chessground/drag';
@@ -12,116 +13,114 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 @Component({
   selector: 'app-board-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChessBoardComponent],
+  imports: [CommonModule, FormsModule, ChessBoardComponent, ButtonComponent],
   providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark })],
   template: `
-    <div class="board-editor-container w-full overflow-hidden p-1 select-none">
-      <div class="flex flex-row items-center justify-center gap-6 w-full">
-        
-        <!-- Left: Board flanked by Piece Palettes -->
-        <div class="flex flex-row items-center gap-3">
-          <!-- White Pieces Palette (Vertical) -->
-          <div class="flex flex-col gap-1 p-2 bg-surface border border-base rounded-xl shadow-sm">
-            @for (role of pieceRoles; track role) {
-              <button 
-                class="piece-slot w-7 h-7 flex items-center justify-center rounded-lg transition-all border-2 group"
-                [class.bg-accent/10]="isToolSelected('white', role)"
-                [class.border-accent]="isToolSelected('white', role)"
-                [class.border-transparent]="!isToolSelected('white', role)"
-                (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
-                (click)="selectTool({color: 'white', role})"
-              >
-                <div [class]="getPieceClass('white', role)" class="w-5 h-5 pointer-events-none transition-transform group-hover:scale-110"></div>
-              </button>
-            }
+        <!-- 2-Column Compact Layout with Left-Side Pieces -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full animate-in fade-in zoom-in-95 duration-500">
+          
+          <!-- Column 1: Pieces + Board (8/12) -->
+          <div class="lg:col-span-8 flex flex-row gap-6 items-start">
+            
+            <!-- Pieces (Left of Board) -->
+            <div class="flex flex-col gap-8 shrink-0">
+              <!-- Black Pieces -->
+              <div class="space-y-2">
+                <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
+                  @for (role of pieceRoles; track role) {
+                    <button 
+                      class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg transition-all border-2 group"
+                      [class.bg-accent]="isToolSelected('black', role)"
+                      [class.border-accent]="isToolSelected('black', role)"
+                      [class.border-transparent]="!isToolSelected('black', role)"
+                      (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
+                      (click)="selectTool({color: 'black', role})"
+                    >
+                      <div [class]="getPieceClass('black', role)" class="w-8 h-8 pointer-events-none transition-transform group-hover:scale-110"></div>
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <!-- White Pieces -->
+              <div class="space-y-2">
+                <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
+                  @for (role of pieceRoles; track role) {
+                    <button 
+                      class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg transition-all border-2 group"
+                      [class.bg-accent]="isToolSelected('white', role)"
+                      [class.border-accent]="isToolSelected('white', role)"
+                      [class.border-transparent]="!isToolSelected('white', role)"
+                      (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
+                      (click)="selectTool({color: 'white', role})"
+                    >
+                      <div [class]="getPieceClass('white', role)" class="w-8 h-8 pointer-events-none transition-transform group-hover:scale-110"></div>
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Board Area -->
+            <div 
+              class="relative aspect-square w-full board-container-parent z-10 overflow-hidden"
+              [style.cursor]="getBoardCursor()"
+              (mousedown)="onBoardMouseDown($event)"
+              (mousemove)="onBoardMouseMove($event)"
+              (mouseup)="onBoardMouseUp()"
+              (mouseleave)="onBoardMouseUp()"
+            >
+              <app-chess-board
+                #board
+                [fen]="displayFen()"
+                [orientation]="orientation"
+                [interactive]="true"
+                [isEditor]="true"
+                [hideCoordinates]="hideCoordinates"
+                (fenChange)="onBoardFenChange($event)"
+              ></app-chess-board>
+            </div>
           </div>
 
-          <!-- Board -->
-          <div 
-            class="relative aspect-square w-full max-w-[180px] board-container-parent z-10 overflow-hidden shadow-lg bg-surface border border-base rounded-lg"
-            [style.cursor]="getBoardCursor()"
-            (mousedown)="onBoardMouseDown($event)"
-            (mousemove)="onBoardMouseMove($event)"
-            (mouseup)="onBoardMouseUp()"
-            (mouseleave)="onBoardMouseUp()"
-          >
-            <app-chess-board
-              #board
-              [fen]="displayFen()"
-              [orientation]="orientation"
-              [interactive]="true"
-              [isEditor]="true"
-              (fenChange)="onBoardFenChange($event)"
-            ></app-chess-board>
-          </div>
-
-          <!-- Black Pieces Palette (Vertical) -->
-          <div class="flex flex-col gap-1 p-1 bg-surface border border-base rounded-xl shadow-sm">
-            @for (role of pieceRoles; track role) {
-              <button 
-                class="piece-slot w-7 h-7 flex items-center justify-center rounded-lg transition-all border-2 group"
-                [class.bg-accent/10]="isToolSelected('black', role)"
-                [class.border-accent]="isToolSelected('black', role)"
-                [class.border-transparent]="!isToolSelected('black', role)"
-                (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
-                (click)="selectTool({color: 'black', role})"
-              >
-                <div [class]="getPieceClass('black', role)" class="w-5 h-5 pointer-events-none transition-transform group-hover:scale-110"></div>
-              </button>
-            }
-          </div>
-        </div>
-
-        <!-- Right: Controls Section -->
-        <div class="flex flex-col gap-4">
-          <!-- Editor Tools Pills -->
-          <div class="flex flex-col gap-2">
-            <h3 class="text-xs font-bold text-muted uppercase tracking-wider">Tools</h3>
-            <div class="flex flex-col gap-2">
-              <div class="flex gap-2">
+          <!-- Column 2: Tools (4/12) -->
+          <div class="lg:col-span-4 flex flex-col gap-8 pt-6">
+            
+            <!-- Editor Tools -->
+            <div class="space-y-3">
+              <div class="grid grid-cols-2 gap-2">
                 <button 
+                  appButton
+                  [variant]="selectedTool() === 'hand' ? 'primary' : 'outline'"
                   (click)="selectTool('hand')"
-                  class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border"
-                  [class]="selectedTool() === 'hand' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
                 >Move</button>
                 <button 
+                  appButton
+                  [variant]="selectedTool() === 'trash' ? 'primary' : 'outline'"
                   (click)="selectTool('trash')"
-                  class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border"
-                  [class]="selectedTool() === 'trash' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
                 >Delete</button>
               </div>
-              <div class="flex gap-2">
-                <button 
-                  (click)="resetToInitial()"
-                  class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border bg-white text-black border-base hover:bg-subtle"
-                >Init</button>
-                <button 
-                  (click)="clearBoard()"
-                  class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border bg-white text-black border-base hover:bg-subtle"
-                >Clear</button>
-              </div>
             </div>
-          </div>
 
-          <!-- Turn Selection Pills -->
-          <div class="flex flex-col gap-2">
-            <h3 class="text-xs font-bold text-muted uppercase tracking-wider">Turn</h3>
-            <div class="flex gap-2">
+            <!-- Turn Selection -->
+            <div class="space-y-3">
               <button 
-                (click)="turn.set('w')"
-                class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border"
-                [class]="turn() === 'w' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
-              >White</button>
+                appButton
+                [variant]="turn() === 'w' ? 'primary' : 'ghost'"
+                (click)="setTurn('w')"
+                [class.shadow-md]="turn() === 'w'"
+              >White to move</button>
               <button 
-                (click)="turn.set('b')"
-                class="flex-1 px-3 py-1.5 rounded-full text-xs font-bold uppercase transition-all border"
-                [class]="turn() === 'b' ? 'bg-black text-white border-black' : 'bg-white text-black border-base hover:bg-subtle'"
-              >Black</button>
+                appButton
+                [variant]="turn() === 'b' ? 'primary' : 'ghost'"
+                (click)="setTurn('b')"
+                [class.shadow-md]="turn() === 'b'"
+              >Black to move</button>
             </div>
+
+            <!-- Spacer to push content up -->
+            <div class="flex-1"></div>
           </div>
         </div>
-      </div>
-    </div>
   `,
   styles: [`
     :host {
@@ -157,9 +156,13 @@ export class BoardEditorComponent implements AfterViewInit {
   @ViewChild('board') boardComponent!: ChessBoardComponent;
 
   @Input() set fen(value: string) {
-    this.loadFen(value);
+    if (value && value !== this.fullFen()) {
+      this.loadFen(value);
+    }
   }
   @Input() orientation: 'white' | 'black' = 'white';
+  @Input() compact: boolean = false;
+  @Input() hideCoordinates: boolean = false;
   @Output() fenChange = new EventEmitter<string>();
 
   boardFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR');
@@ -190,11 +193,8 @@ export class BoardEditorComponent implements AfterViewInit {
     return `${this.boardFen()} ${this.turn()} ${castling} - 0 1`;
   });
 
-
-  constructor() {
-    effect(() => {
-      this.fenChange.emit(this.fullFen());
-    });
+  private emitChange() {
+    this.fenChange.emit(this.fullFen());
   }
 
   ngAfterViewInit() {
@@ -217,10 +217,18 @@ export class BoardEditorComponent implements AfterViewInit {
     this.blackQueenside.set(castling.includes('q'));
   }
 
+  setTurn(color: 'w' | 'b') {
+    this.turn.set(color);
+    this.emitChange();
+  }
+
   onBoardFenChange(newBoardFen: string) {
     // Only take the board part
     const boardPart = newBoardFen.split(' ')[0];
-    this.boardFen.set(boardPart);
+    if (boardPart !== this.boardFen()) {
+      this.boardFen.set(boardPart);
+      this.emitChange();
+    }
   }
 
   getPieceClass(color: Color, role: Role): string {
@@ -314,10 +322,12 @@ export class BoardEditorComponent implements AfterViewInit {
 
   resetToInitial() {
     this.loadFen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    this.emitChange();
   }
 
   clearBoard() {
     this.loadFen('8/8/8/8/8/8/8/8 w - - 0 1');
+    this.emitChange();
   }
 
   getPieceStyle(color: Color, role: Role) {

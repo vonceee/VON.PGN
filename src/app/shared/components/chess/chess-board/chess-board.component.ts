@@ -93,8 +93,8 @@ import { AudioService } from '../../../../core/services/audio.service';
       .board-container-wrapper {
         width: 100%;
         aspect-ratio: 1 / 1;
-        padding-left: 32px;
-        padding-bottom: 32px;
+        padding-left: var(--board-gutter, 32px);
+        padding-bottom: var(--board-gutter, 32px);
         box-sizing: border-box;
       }
       .board-container {
@@ -223,6 +223,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() configOverride: Config | null = null;
   @Input() preMoveEnabled: boolean = true;
   @Input() isEditor: boolean = false;
+  @Input() hideCoordinates: boolean = false;
   @Input() lastMove: Key[] | undefined = undefined;
 
   @Output() fenChange = new EventEmitter<string>();
@@ -298,7 +299,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   }
 
   private updateBoardSize() {
-    const GUTTER = 32;
+    const GUTTER = this.hideCoordinates ? 0 : 32;
     // Determine the maximum square size that fits in the container (100% fit)
     const maxPossible = Math.min(this.containerSize.width, this.containerSize.height);
     
@@ -310,6 +311,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
     // Direct DOM update for performance
     this.el.nativeElement.style.setProperty('--board-size', `${totalSize}px`);
+    this.el.nativeElement.style.setProperty('--board-gutter', `${GUTTER}px`);
 
     const boardSize = totalSize - GUTTER;
     if (this.boardSize !== boardSize) {
@@ -407,7 +409,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       const config: Config = {
         fen: this.fen,
         orientation: this.orientation,
-        coordinates: true,
+        coordinates: !this.hideCoordinates,
         movable: {
           free: this.isEditor,
           color: this.interactive ? 'both' : undefined,
