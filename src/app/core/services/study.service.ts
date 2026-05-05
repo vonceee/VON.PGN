@@ -157,6 +157,12 @@ export class StudyService {
   deleteChapter(studyId: number, chapterId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`);
   }
+  
+  reorderChapters(studyId: number, chapterIds: number[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}/studies/${studyId}/chapters/reorder`, { 
+      chapter_ids: chapterIds 
+    });
+  }
 
   addCollaborator(studyId: number, userId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/studies/${studyId}/collaborators`, { user_id: userId });

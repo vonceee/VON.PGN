@@ -1,5 +1,6 @@
 import { Component, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { StudyService } from '../../../core/services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -20,7 +21,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-study-sidebar',
   standalone: true,
-  imports: [CommonModule, NgIconComponent, ButtonComponent, DialogModule, StudyChatComponent],
+  imports: [CommonModule, NgIconComponent, ButtonComponent, DialogModule, StudyChatComponent, DragDropModule],
   providers: [provideIcons({ heroEye })],
   templateUrl: './study-sidebar.component.html',
   host: {
@@ -171,6 +172,27 @@ export class StudySidebarComponent {
       data: {
         viewers: this.viewerNames(),
         count: this.viewerCount()
+      }
+    });
+  }
+
+  onDrop(event: CdkDragDrop<StudyChapter[]>) {
+    if (!this.canEdit()) return;
+    const s = this.study();
+    if (!s || !s.chapters) return;
+
+    // Local update for instant feedback
+    const chapters = [...s.chapters];
+    moveItemInArray(chapters, event.previousIndex, event.currentIndex);
+    
+    this.studyService.currentStudy.update(curr => curr ? { ...curr, chapters } : null);
+
+    // Persist to backend
+    const chapterIds = chapters.map(c => c.id);
+    this.studyService.reorderChapters(s.id, chapterIds).subscribe({
+      error: () => {
+        this.toastService.show('Failed to save new order', 'error');
+        this.studyService.getStudy(s.id); // Revert on error
       }
     });
   }

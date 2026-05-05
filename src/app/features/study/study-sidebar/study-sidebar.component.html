@@ -28,10 +28,17 @@
       [class.opacity-70]="isSyncing() && !canEdit()"
     >
       <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-        <div class="flex-1 flex flex-col gap-0.5">
+        <div 
+          class="flex-1 flex flex-col gap-0.5"
+          cdkDropList
+          (cdkDropListDropped)="onDrop($event)"
+          [cdkDropListDisabled]="!canEdit()"
+        >
           @for (chap of s.chapters; track chap.id; let idx = $index) {
             <button
               (click)="selectChapter(chap)"
+              cdkDrag
+              [cdkDragDisabled]="!canEdit()"
               class="relative flex items-center justify-between py-2 px-4 cursor-pointer transition-all duration-200 group text-left
               {{
                 currentChapter()?.id === chap.id
@@ -39,10 +46,16 @@
                   : 'hover:bg-surface'
               }}"
             >
+              <!-- Drag Placeholder -->
+              <div *cdkDragPlaceholder class="h-10 bg-subtle/50 border-2 border-dashed border-border-accent/30 rounded-lg mx-2 my-0.5"></div>
+
               @if (currentChapter()?.id === chap.id) {
                 <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-accent"></div>
               }
-              <div class="flex items-center gap-3 min-w-0">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-xs font-bold text-muted tabular-nums shrink-0 opacity-60 group-active:cursor-grabbing cursor-grab">
+                  {{ idx + 1 }}.
+                </span>
                 <span [class]="'text-sm font-medium truncate transition-colors ' + (currentChapter()?.id === chap.id ? 'text-accent' : 'text-content')">
                   {{ chap.name }}
                 </span>
