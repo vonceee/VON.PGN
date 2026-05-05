@@ -112,6 +112,29 @@ footer {
   border-color: var(--color-accent) !important;
 }
 
+.ui-glass {
+  background: color-mix(in srgb, var(--color-surface), transparent 20%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-base);
+}
+
+.dark .ui-glass {
+  background: color-mix(in srgb, var(--color-surface), transparent 40%);
+}
+
+.ui-sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--color-main), transparent 10%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--color-border-base);
+  z-index: 50;
+}
+
 /* Annotation Glyphs */
 .good, .brilliant {
   color: var(--color-annotation-good) !important;

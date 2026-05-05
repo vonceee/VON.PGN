@@ -187,53 +187,53 @@
         </div>
 
         <!-- Ratings Grid -->
-        <div class="ratings-grid">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Bullet -->
-          <div class="rating-card">
-            <span class="rating-label">Bullet</span>
-            <div class="rating-value">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg dark:bg-white/[0.03] dark:backdrop-blur-md">
+            <span class="text-xs font-bold uppercase tracking-widest text-muted">Bullet</span>
+            <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.bullet?.rating ?? 1500 }}
               @if (profile.ratings?.bullet?.prov) {
-                <span class="rating-prov">?</span>
+                <span class="text-xl text-accent font-semibold">?</span>
               }
             </div>
-            <span class="rating-games">{{ profile.ratings?.bullet?.games ?? 0 }} games</span>
+            <span class="text-xs font-medium text-muted mt-2 block">{{ profile.ratings?.bullet?.games ?? 0 }} games</span>
           </div>
 
           <!-- Blitz -->
-          <div class="rating-card">
-            <span class="rating-label">Blitz</span>
-            <div class="rating-value">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg dark:bg-white/[0.03] dark:backdrop-blur-md">
+            <span class="text-xs font-bold uppercase tracking-widest text-muted">Blitz</span>
+            <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.blitz?.rating ?? 1500 }}
               @if (profile.ratings?.blitz?.prov) {
-                <span class="rating-prov">?</span>
+                <span class="text-xl text-accent font-semibold">?</span>
               }
             </div>
-            <span class="rating-games">{{ profile.ratings?.blitz?.games ?? 0 }} games</span>
+            <span class="text-xs font-medium text-muted mt-2 block">{{ profile.ratings?.blitz?.games ?? 0 }} games</span>
           </div>
 
           <!-- Rapid -->
-          <div class="rating-card">
-            <span class="rating-label">Rapid</span>
-            <div class="rating-value">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg dark:bg-white/[0.03] dark:backdrop-blur-md">
+            <span class="text-xs font-bold uppercase tracking-widest text-muted">Rapid</span>
+            <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.rapid?.rating ?? 1500 }}
               @if (profile.ratings?.rapid?.prov) {
-                <span class="rating-prov">?</span>
+                <span class="text-xl text-accent font-semibold">?</span>
               }
             </div>
-            <span class="rating-games">{{ profile.ratings?.rapid?.games ?? 0 }} games</span>
+            <span class="text-xs font-medium text-muted mt-2 block">{{ profile.ratings?.rapid?.games ?? 0 }} games</span>
           </div>
 
           <!-- Tactics -->
-          <div class="rating-card">
-            <span class="rating-label">Tactics</span>
-            <div class="rating-value">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg dark:bg-white/[0.03] dark:backdrop-blur-md">
+            <span class="text-xs font-bold uppercase tracking-widest text-muted">Tactics</span>
+            <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.progress.puzzleRating }}
               @if (profile.progress.totalPuzzlesSolved < 10) {
-                <span class="rating-prov">?</span>
+                <span class="text-xl text-accent font-semibold">?</span>
               }
             </div>
-            <span class="rating-games">{{ profile.progress.totalPuzzlesSolved }} puzzles</span>
+            <span class="text-xs font-medium text-muted mt-2 block">{{ profile.progress.totalPuzzlesSolved }} puzzles</span>
           </div>
         </div>
 

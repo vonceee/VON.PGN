@@ -70,8 +70,7 @@ import { SectionHeadingComponent } from '@shared/ui';
     BackLinkComponent,
     SectionHeadingComponent,
   ],
-  templateUrl: './tournament-editor.html',
-  styleUrls: ['./tournament-editor.css'],
+  templateUrl: './tournament-editor.html'
 })
 export class TournamentEditorComponent implements OnInit, OnDestroy {
   private adminService = inject(AdminService);

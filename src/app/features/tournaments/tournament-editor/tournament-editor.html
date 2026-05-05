@@ -1,4 +1,4 @@
-<div class="editor-container">
+<div class="mx-auto p-6 max-w-[1600px]">
   <input
     #posterUploadInput
     type="file"
@@ -6,7 +6,7 @@
     (change)="onPosterFileSelected($event)"
     accept="image/png, image/jpeg, image/webp"
   />
-  <form [formGroup]="tournamentForm" class="editor-layout">
+  <form [formGroup]="tournamentForm" class="grid grid-cols-1 lg:grid-cols-[180px_1fr_420px] 2xl:grid-cols-[200px_1fr_500px] gap-2 items-start">
     <!-- Left Sidebar: Section Navigation -->
     <aside class="hidden lg:flex sticky top-6 flex flex-col gap-2">
       @for (
@@ -38,7 +38,7 @@
     </aside>
 
     <!-- Center Console: Main Form Sections -->
-    <main class="form-console">
+    <main class="flex flex-col gap-8 pb-32">
       <div class="flex flex-col items-start gap-2">
         <app-back-link size="sm" text="Back to Dashboard" (click)="location.back()"></app-back-link>
 
@@ -72,7 +72,7 @@
       </div>
 
       <!-- Basic Info -->
-      <section id="sec-basic" class="form-section ui-panel">
+      <section id="sec-basic" class="p-8 scroll-mt-6 ui-panel">
         <app-section-heading
           text="Basic Information"
           highlight="."
@@ -85,7 +85,7 @@
       </section>
 
       <!-- Dates & Location -->
-      <section id="sec-dates" class="form-section ui-panel">
+      <section id="sec-dates" class="p-8 scroll-mt-6 ui-panel">
         <app-section-heading
           text="Dates & Location"
           highlight="."
@@ -103,7 +103,7 @@
       </section>
 
       <!-- Format & Rules -->
-      <section id="sec-format" class="form-section ui-panel">
+      <section id="sec-format" class="p-8 scroll-mt-6 ui-panel">
         <app-section-heading
           text="Format & Rules"
           highlight="."
@@ -116,7 +116,7 @@
       </section>
 
       <!-- Organizer -->
-      <section id="sec-organizer" class="form-section ui-panel">
+      <section id="sec-organizer" class="p-8 scroll-mt-6 ui-panel">
         <app-section-heading
           text="Organizer Information"
           highlight="."
@@ -129,7 +129,7 @@
       </section>
 
       <!-- Registration -->
-      <section id="sec-registration" class="form-section ui-panel">
+      <section id="sec-registration" class="p-8 scroll-mt-6 ui-panel">
         <app-section-heading
           text="Registration Details"
           highlight="."
@@ -142,7 +142,7 @@
       </section>
 
       <!-- Eligibility -->
-      <section id="sec-eligibility" class="form-section ui-panel">
+      <section id="sec-eligibility" class="p-8 scroll-mt-6 ui-panel">
         <app-section-heading
           text="Player Eligibility"
           highlight="."
@@ -156,7 +156,7 @@
       </section>
 
       <!-- Prizes -->
-      <section id="sec-prizes" class="form-section ui-panel">
+      <section id="sec-prizes" class="p-8 scroll-mt-6 ui-panel">
         <app-section-heading
           text="Prizes & Categories"
           highlight="."
@@ -174,7 +174,7 @@
       </section>
 
       <!-- Schedule -->
-      <section id="sec-schedule" class="form-section ui-panel">
+      <section id="sec-schedule" class="p-8 scroll-mt-6 ui-panel">
         <app-section-heading
           text="Event Schedule"
           highlight="."
@@ -191,7 +191,7 @@
     </main>
 
     <!-- Right Sidebar: Live Poster Preview -->
-    <aside class="preview-sidebar">
+    <aside class="sticky top-6 flex flex-col gap-6">
       @if (tournamentDataSignal(); as data) {
         <app-poster-preview
           [form]="tournamentForm"
@@ -203,8 +203,8 @@
     </aside>
 
     <!-- Sticky Footer Actions -->
-    <footer class="sticky-footer">
-      <div class="footer-content">
+    <footer class="ui-sticky-footer px-8 py-4">
+      <div class="max-w-[1600px] mx-auto w-full flex justify-between items-center">
         <span class="text-sm font-medium hidden md:inline">
           {{
             tournamentId()
@@ -236,9 +236,12 @@
   </form>
 
   @if (showReviewModal()) {
-    <div class="modal-overlay" (click)="closeReviewModal()">
-      <div class="review-modal" (click)="$event.stopPropagation()">
-        <button class="modal-close" (click)="closeReviewModal()">
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" (click)="closeReviewModal()">
+      <div class="ui-panel bg-main w-full max-w-4xl max-h-[90vh] flex flex-col relative animate-in slide-in-from-bottom-4 duration-300" (click)="$event.stopPropagation()">
+        <button 
+          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30 transition-all z-10" 
+          (click)="closeReviewModal()"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -251,7 +254,7 @@
           </svg>
         </button>
 
-        <div class="modal-body">
+        <div class="p-10 overflow-y-auto flex-1 custom-scrollbar">
           <app-review-section
             [data]="tournamentDataSignal()"
             [comparePrizeKeys]="comparePrizeKeys"
@@ -259,7 +262,7 @@
           ></app-review-section>
         </div>
 
-        <div class="modal-footer-actions">
+        <div class="p-6 px-10 bg-subtle border-t border-border-base flex justify-between items-center gap-6">
           <button appButton variant="ghost" (click)="closeReviewModal()">
             Back to Editing
           </button>

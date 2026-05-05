@@ -21,8 +21,7 @@ import { UserHovercardDirective } from '@shared/directives';
   selector: 'app-user-profile',
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent, DialogModule, UserHovercardDirective],
-  templateUrl: './user-profile.component.html',
-  styleUrl: './user-profile.component.css',
+  templateUrl: './user-profile.component.html'
 })
 export class UserProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);
