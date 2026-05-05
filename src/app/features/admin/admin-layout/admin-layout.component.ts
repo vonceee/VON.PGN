@@ -12,9 +12,9 @@ import { filter, map, startWith } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
   providers: [],
   template: `
-    <div class="flex min-h-screen bg-slate-50">
+    <div class="flex min-h-screen bg-subtle text-content">
       <!-- Sidebar -->
-      <aside class="w-[280px] bg-white text-slate-800 fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-slate-200">
+      <aside class="w-80 bg-main text-content fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-border-base">
         <div class="p-8 border-b border-slate-100">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-slate-900 rounded flex items-center justify-center text-white font-bold">
@@ -90,9 +90,9 @@ import { filter, map, startWith } from 'rxjs';
       <!-- Main Content -->
       <div class="ml-[280px] flex-1 flex flex-col min-h-screen">
         <!-- Header -->
-        <header class="sticky top-0 right-0 w-full z-40 bg-white border-b border-slate-200 px-8 h-20 flex items-center justify-between">
+        <header class="sticky top-0 right-0 w-full z-40 bg-main border-b border-border-base px-8 h-20 flex items-center justify-between">
           <div class="flex items-center gap-8">
-            <h2 class="text-lg font-bold text-slate-900 tracking-tight">{{ pageTitle() }}</h2>
+            <h2 class="text-lg font-bold text-content tracking-tight">{{ pageTitle() }}</h2>
           </div>
 
           <div class="flex items-center gap-4">
@@ -107,16 +107,18 @@ import { filter, map, startWith } from 'rxjs';
                 }
               </div>
               <div class="hidden sm:block text-left">
-                <div class="text-sm font-bold text-slate-900 leading-none mb-1">{{ user()?.name }}</div>
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Super Admin</div>
+                <div class="text-sm font-bold text-content leading-none mb-1">{{ user()?.name }}</div>
+                <div class="text-xs font-bold text-muted uppercase tracking-widest leading-none">Super Admin</div>
               </div>
               
             </div>
           </div>
         </header>
 
-        <main class="flex-1 p-8 lg:p-12 bg-slate-50">
-          <router-outlet></router-outlet>
+        <main class="flex-1 p-8 lg:p-12 bg-subtle">
+          <div class="max-w-7xl mx-auto w-full h-full">
+            <router-outlet></router-outlet>
+          </div>
         </main>
       </div>
     </div>
