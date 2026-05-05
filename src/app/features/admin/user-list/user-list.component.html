@@ -1,128 +1,130 @@
 <div class="space-y-6">
 
-  <div class="bg-white rounded border border-slate-200 overflow-hidden">
+  <div class="bg-main rounded-xl border border-border-base overflow-hidden shadow-sm">
     <!-- Filters -->
-    <div class="p-4 border-bottom border-slate-100 flex flex-wrap items-center gap-4 bg-slate-50/50">
+    <div class="p-5 border-b border-border-base/50 flex flex-wrap items-center gap-4 bg-subtle/50">
       <div class="relative flex-1 min-w-[240px]">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </span>
         <input 
           type="text" 
-          [(ngModel)]="searchQuery" 
-          (keyup.enter)="onSearch()"
-          placeholder="Search users by name or email..." 
-          class="w-full px-4 py-2 bg-white border border-slate-200 rounded text-sm outline-none"
+          [formControl]="searchControl"
+          placeholder="Search by username, name or email..."
+          class="w-full pl-10 pr-4 py-2 bg-main border border-border-base rounded-lg text-sm outline-none focus:border-accent transition-all"
         >
       </div>
       
       <select 
-        [(ngModel)]="selectedRole" 
-        (change)="loadUsers()"
-        class="px-4 py-2 bg-white border border-slate-200 rounded text-sm outline-none"
+        [formControl]="roleFilter"
+        class="px-4 py-2 bg-main border border-border-base rounded-lg text-sm outline-none focus:border-accent transition-all"
       >
-        <option value="all">All Roles</option>
-        <option value="admin">Admins</option>
-        <option value="organizer">Organizers</option>
+        <option value="">All Roles</option>
+        <option value="admin">Admin</option>
+        <option value="coach">Coach</option>
+        <option value="user">User</option>
       </select>
-
-      <button (click)="loadUsers()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm font-semibold">
-        Search
-      </button>
     </div>
 
-    <!-- Table -->
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold tracking-wider">
+          <tr class="bg-subtle text-muted uppercase text-xs font-bold tracking-wider">
             <th class="px-6 py-4">User</th>
             <th class="px-6 py-4">Status</th>
             <th class="px-6 py-4">Ratings</th>
-            <th class="px-6 py-4">Joined</th>
+            <th class="px-6 py-4">Role</th>
             <th class="px-6 py-4 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
-          @if (loading()) {
+        <tbody class="divide-y divide-border-base/50">
+          @if (isLoading()) {
             <tr>
-              <td colspan="5" class="px-6 py-12 text-center">
-                <app-loading></app-loading>
+              <td colspan="5" class="px-6 py-20 text-center">
+                <div class="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <span class="text-sm text-muted font-medium">Loading users...</span>
               </td>
             </tr>
           } @else if (users().length === 0) {
             <tr>
-              <td colspan="5" class="px-6 py-12 text-center text-slate-500">
-                No users found matching your criteria.
+              <td colspan="5" class="px-6 py-12 text-center text-muted">
+                No users found matching your filters.
               </td>
             </tr>
           } @else {
-            @for (user of users(); track user.id) {
-              <tr class="hover:bg-slate-50">
+            @for (user of users(); track user.uid) {
+              <tr class="hover:bg-subtle transition-colors group">
                 <td class="px-6 py-4">
-                  <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold">
-                      {{ user.name.charAt(0) }}
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center text-muted font-bold overflow-hidden border border-border-base">
+                      @if (user.avatar) {
+                        <img [src]="user.avatar" class="w-full h-full object-cover">
+                      } @else {
+                        <span>{{ user.displayName?.charAt(0) || user.username.charAt(0) }}</span>
+                      }
                     </div>
                     <div>
-                      <div class="font-semibold text-slate-900 flex items-center gap-2">
-                        {{ user.name }}
-                        @if (user.is_admin) {
-                          <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-600">ADMIN</span>
+                      <div class="font-semibold text-content flex items-center gap-2 group-hover:text-accent transition-colors cursor-pointer" (click)="viewProfile(user.uid)">
+                        {{ user.displayName || user.username }}
+                        @if (user.role === 'admin') {
+                          <span class="text-[10px] bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 px-1.5 py-0.5 rounded font-black uppercase">Admin</span>
                         }
                       </div>
-                      <div class="text-xs text-slate-500">{{ user.email }}</div>
+                      <div class="text-xs text-muted">{{ user.email }}</div>
                     </div>
                   </div>
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-2">
                     @if (user.is_online) {
-                      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                      <span class="text-xs font-medium text-emerald-600">Online</span>
+                      <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                      <span class="text-xs font-medium text-green-600 dark:text-green-400">Online</span>
                     } @else {
-                      <span class="w-2 h-2 rounded-full bg-slate-300"></span>
-                      <span class="text-xs font-medium text-slate-500">Offline</span>
+                      <span class="w-2 h-2 rounded-full bg-muted/40"></span>
+                      <span class="text-xs font-medium text-muted">Offline</span>
                     }
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="flex gap-3 text-[10px] font-bold">
-                    <div class="flex flex-col">
-                      <span class="text-slate-400 uppercase">Bullet</span>
-                      <span class="text-slate-700">{{ user.ratings.bullet }}</span>
+                  <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2 text-xs">
+                      <span class="text-muted uppercase font-bold tracking-tighter">Bullet</span>
+                      <span class="text-content font-bold">{{ user.ratings.bullet }}</span>
                     </div>
-                    <div class="flex flex-col">
-                      <span class="text-slate-400 uppercase">Blitz</span>
-                      <span class="text-slate-700">{{ user.ratings.blitz }}</span>
+                    <div class="flex items-center gap-2 text-xs">
+                      <span class="text-muted uppercase font-bold tracking-tighter">Blitz</span>
+                      <span class="text-content font-bold">{{ user.ratings.blitz }}</span>
                     </div>
-                    <div class="flex flex-col">
-                      <span class="text-slate-400 uppercase">Rapid</span>
-                      <span class="text-slate-700">{{ user.ratings.rapid }}</span>
+                    <div class="flex items-center gap-2 text-xs">
+                      <span class="text-muted uppercase font-bold tracking-tighter">Rapid</span>
+                      <span class="text-content font-bold">{{ user.ratings.rapid }}</span>
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-sm text-slate-500">
-                  {{ formatDate(user.created_at) }}
+                <td class="px-6 py-4 text-sm">
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-subtle text-muted capitalize border border-border-base">
+                    {{ user.role }}
+                  </span>
                 </td>
                 <td class="px-6 py-4 text-right">
                   <div class="flex items-center justify-end gap-2">
                     <button 
-                      (click)="toggleAdmin(user)"
-                      [title]="user.is_admin ? 'Remove Admin' : 'Make Admin'"
-                      class="px-2 py-1 text-xs font-bold rounded border border-slate-200 hover:bg-slate-50 text-slate-600"
+                      (click)="viewProfile(user.uid)"
+                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-subtle text-content transition-all"
                     >
-                      Admin
+                      Profile
                     </button>
                     <button 
-                      (click)="toggleOrganizer(user)"
-                      [title]="user.verified_organizer ? 'Remove Organizer' : 'Make Organizer'"
-                      class="px-2 py-1 text-xs font-bold rounded border border-slate-200 hover:bg-slate-50 text-slate-600"
-                      [class.bg-emerald-50.text-emerald-600.border-emerald-200]="user.verified_organizer"
+                      (click)="editUser(user.uid)"
+                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-subtle text-content transition-all"
                     >
-                      Org
+                      Edit
                     </button>
                     <button 
                       (click)="deleteUser(user)"
-                      title="Delete User"
-                      class="px-2 py-1 text-xs font-bold rounded border border-slate-200 hover:bg-rose-50 text-rose-600"
+                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 transition-all"
                     >
                       Delete
                     </button>
@@ -135,9 +137,8 @@
       </table>
     </div>
 
-    <!-- Count -->
-    <div class="p-4 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
-      <span class="text-xs text-slate-500">Showing {{ users().length }} users</span>
+    <div class="p-5 border-t border-border-base/50 bg-subtle/30 flex items-center justify-between">
+      <span class="text-xs text-muted font-medium">Showing {{ users().length }} users</span>
     </div>
   </div>
 </div>

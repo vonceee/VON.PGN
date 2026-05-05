@@ -11,7 +11,7 @@ import { heroCheck, heroXMark, heroTrophy } from '@ng-icons/heroicons/outline';
   imports: [CommonModule, ButtonComponent, NgIcon],
   providers: [provideIcons({ heroCheck, heroXMark, heroTrophy })],
   template: `
-    <div class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none">
+    <div class="fixed bottom-6 right-6 z-overlay flex flex-col gap-3 pointer-events-none">
       @for (challenge of challengeService.incomingChallenges(); track challenge.id) {
         <div
           class="pointer-events-auto ui-panel w-80 border border-accent/20 p-5 animate-in slide-in-from-right-full duration-300"

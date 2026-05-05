@@ -1,13 +1,13 @@
 import { Component, inject, OnInit, signal, computed, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, LoadingComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   providers: [],
   templateUrl: './user-list.component.html',
 })
@@ -15,9 +15,12 @@ export class UserListComponent implements OnInit {
   private adminService = inject(AdminService);
 
   users = signal<any[]>([]);
-  loading = signal(true);
-  searchQuery = signal('');
-  selectedRole = signal('all');
+  isLoading = signal(true);
+  
+  searchControl = new FormControl('');
+  roleFilter = new FormControl('');
+
+  private router = inject(Router);
 
   private platformId = inject(PLATFORM_ID);
 
@@ -28,12 +31,12 @@ export class UserListComponent implements OnInit {
   }
 
   loadUsers() {
-    this.loading.set(true);
+    this.isLoading.set(true);
     
     // Clean params: only include defined values
     const rawParams: any = {
-      search: this.searchQuery(),
-      role: this.selectedRole() !== 'all' ? this.selectedRole() : undefined,
+      search: this.searchControl.value,
+      role: this.roleFilter.value || undefined,
     };
     
     const params: any = {};
@@ -46,11 +49,11 @@ export class UserListComponent implements OnInit {
     this.adminService.getUsers(params).subscribe({
       next: (response) => {
         this.users.set(response.data);
-        this.loading.set(false);
+        this.isLoading.set(false);
       },
       error: (err) => {
         console.error('Failed to load users', err);
-        this.loading.set(false);
+        this.isLoading.set(false);
       }
     });
   }
@@ -75,11 +78,19 @@ export class UserListComponent implements OnInit {
     });
   }
 
+  viewProfile(uid: string) {
+    this.router.navigate(['/profile', uid]);
+  }
+
+  editUser(uid: string) {
+    this.router.navigate(['/admin/users/edit', uid]);
+  }
+
   deleteUser(user: any) {
-    if (confirm(`Are you sure you want to delete user ${user.name}?`)) {
-      this.adminService.deleteUser(user.id).subscribe({
+    if (confirm(`Are you sure you want to delete user ${user.displayName || user.username}?`)) {
+      this.adminService.deleteUser(user.uid).subscribe({
         next: () => {
-          this.users.update(users => users.filter(u => u.id !== user.id));
+          this.users.update(users => users.filter(u => u.uid !== user.uid));
         }
       });
     }
