@@ -5,6 +5,8 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 import { MoveNode, GLYPH_MAPPING, GlyphId } from '../../../../core/models/study.model';
+import { Dialog } from '@angular/cdk/dialog';
+import { ShortcutsDialogComponent } from '../shortcuts-dialog/shortcuts-dialog.component';
 
 export interface AnnotateMoveDialogResult {
   comment: string;
@@ -16,19 +18,29 @@ export interface AnnotateMoveDialogResult {
   standalone: true,
   imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent],
   template: `
-    <div class="block max-w-md w-[90vw] mx-auto">
+    <div class="block max-w-lg w-[95vw] sm:w-[500px] mx-auto">
       <app-dialog-wrapper [title]="'Annotate ' + node.san" (close)="dialogRef.close()">
         <div class="space-y-6">
           <!-- Glyphs Selection -->
           <div class="space-y-3">
-            <label class="text-[10px] font-bold uppercase tracking-wider text-muted ml-1">
-              Move Evaluation (Glyphs)
-            </label>
-            <div class="grid grid-cols-3 gap-2">
+            <div class="flex items-center justify-between ml-1">
+              <label class="text-[10px] font-bold uppercase tracking-wider text-muted">
+                Move Evaluation (Glyphs)
+              </label>
+              <button 
+                (click)="openShortcuts()" 
+                class="text-[10px] font-black text-accent hover:underline px-2 py-1"
+                title="View Keyboard Shortcuts"
+              >
+                SHORTCUTS?
+              </button>
+            </div>
+            <div class="grid grid-cols-6 sm:grid-cols-8 gap-2">
               @for (glyph of glyphs; track glyph.id) {
                 <button
                   (click)="toggleGlyph(glyph.id)"
-                  class="flex flex-col items-center justify-center p-3 rounded-xl border transition-all duration-300 group"
+                  [title]="glyph.name"
+                  class="flex items-center justify-center aspect-square rounded-lg border transition-all duration-200 group relative"
                   [class.bg-accent]="isSelected(glyph.id)"
                   [class.text-main]="isSelected(glyph.id)"
                   [class.border-accent]="isSelected(glyph.id)"
@@ -36,8 +48,12 @@ export interface AnnotateMoveDialogResult {
                   [class.border-base]="!isSelected(glyph.id)"
                   [class.hover:border-accent/50]="!isSelected(glyph.id)"
                 >
-                  <span [class]="glyph.class" class="text-xl font-bold mb-1">{{ glyph.symbol }}</span>
-                  <span class="text-[9px] uppercase tracking-tighter opacity-70 font-black">{{ glyph.name }}</span>
+                  <span class="text-lg font-bold">{{ glyph.symbol }}</span>
+                  
+                  <!-- Tooltip hint on hover -->
+                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-bold uppercase tracking-tighter whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 shadow-xl">
+                    {{ glyph.name }}
+                  </div>
                 </button>
               }
             </div>
@@ -50,7 +66,8 @@ export interface AnnotateMoveDialogResult {
             </label>
             <div class="relative group">
               <textarea
-                [(ngModel)]="comment"
+                [ngModel]="comment()"
+                (ngModelChange)="comment.set($event)"
                 placeholder="add your thoughts on this move.."
                 rows="4"
                 class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-2xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none dark:text-content transition-all duration-300 resize-none custom-scrollbar"
@@ -75,6 +92,7 @@ export interface AnnotateMoveDialogResult {
 export class AnnotateMoveDialogComponent implements OnInit {
   dialogRef = inject(DialogRef<AnnotateMoveDialogResult>);
   node = inject<MoveNode>(DIALOG_DATA);
+  private dialog = inject(Dialog);
 
   comment = signal('');
   selectedGlyphs = signal<GlyphId[]>([]);
@@ -112,5 +130,9 @@ export class AnnotateMoveDialogComponent implements OnInit {
       comment: this.comment().trim(),
       glyphs: this.selectedGlyphs(),
     });
+  }
+
+  openShortcuts() {
+    this.dialog.open(ShortcutsDialogComponent);
   }
 }

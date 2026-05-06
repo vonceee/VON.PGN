@@ -147,37 +147,11 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
     processedMoves !== null &&
     'pgn' in processedMoves
   ) {
-    const chess = new Chess(initialFen);
     const pgnString = preprocessPgn(processedMoves.pgn as string);
-    
     try {
-      chess.loadPgn(pgnString);
-      const history = chess.history({ verbose: true });
-      const nodes: MoveNode[] = [];
-      const startPly = getPlyFromFen(initialFen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
-
-      // Get initial position comment
-      const crawler = new Chess(initialFen);
-      crawler.loadPgn(pgnString);
-      while (crawler.undo()) {}
-      const startComment = crawler.getComment();
-
-      history.forEach((m: any, i: number) => {
-        crawler.move(m.san);
-        const comment = crawler.getComment();
-        
-        nodes.push({
-          san: m.san,
-          uci: m.from + m.to,
-          fen: crawler.fen(),
-          ply: startPly + i + 1,
-          variations: [],
-          comments: comment ? [comment] : [],
-          preComments: (i === 0 && startComment) ? [startComment] : [],
-          glyphs: m.nags ? m.nags.map((n: string) => parseInt(n, 10)) : [],
-        });
-      });
-      return nodes;
+      const pgnBody = pgnString.replace(/\[.*?\]/g, '').trim();
+      const tokens = tokenizePgn(pgnBody);
+      return parsePgnToNodes(tokens, initialFen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
     } catch (e) {
       console.error('[ChessTreeUtils] Failed to parse PGN string:', e);
       return [];
@@ -233,4 +207,137 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
   }
 
   return rootNodes;
+}
+/**
+ * Tokenizes a PGN string into moves, comments, brackets, and NAGs.
+ */
+function tokenizePgn(pgn: string): string[] {
+  const tokens: string[] = [];
+  let i = 0;
+  while (i < pgn.length) {
+    const char = pgn[i];
+    if (char === '{') {
+      let end = pgn.indexOf('}', i);
+      if (end === -1) end = pgn.length;
+      tokens.push(pgn.substring(i, end + 1));
+      i = end + 1;
+    } else if (char === '(' || char === ')') {
+      tokens.push(char);
+      i++;
+    } else if (/\s/.test(char)) {
+      i++;
+    } else {
+      let end = i;
+      while (end < pgn.length && !/\s|\(|\)|\{|\}/.test(pgn[end])) {
+        end++;
+      }
+      tokens.push(pgn.substring(i, end));
+      i = end;
+    }
+  }
+  return tokens;
+}
+
+/**
+ * Recursively parses PGN tokens into a MoveNode tree.
+ */
+function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
+  const nodes: MoveNode[] = [];
+  const chess = new Chess(initialFen);
+  let lastNode: MoveNode | null = null;
+  let preComment: string | null = null;
+
+  while (tokens.length > 0) {
+    const token = tokens.shift()!;
+
+    if (token.startsWith('{')) {
+      const comment = token.slice(1, -1).trim();
+      if (lastNode) {
+        if (!lastNode.comments) lastNode.comments = [];
+        lastNode.comments.push(comment);
+      } else {
+        preComment = comment;
+      }
+    } else if (token === '(') {
+      let depth = 1;
+      const subTokens: string[] = [];
+      while (tokens.length > 0) {
+        const sub = tokens.shift()!;
+        if (sub === '(') depth++;
+        if (sub === ')') depth--;
+        if (depth === 0) break;
+        subTokens.push(sub);
+      }
+      
+      // Variation branches from the position BEFORE the current lastNode
+      const parentFen = nodes.length > 1 ? nodes[nodes.length - 2].fen : initialFen;
+      const variation = parsePgnToNodes(subTokens, parentFen);
+      if (variation.length > 0 && lastNode) {
+        if (!lastNode.variations) lastNode.variations = [];
+        lastNode.variations.push(variation);
+      }
+    } else if (token === ')' || /^[0-9]+\.*$/.test(token) || /^(1-0|0-1|1\/2-1\/2|\*)$/.test(token)) {
+      continue;
+    } else if (token.startsWith('$')) {
+      if (lastNode) {
+        const nag = parseInt(token.slice(1), 10);
+        if (!isNaN(nag)) {
+          if (!lastNode.glyphs) lastNode.glyphs = [];
+          lastNode.glyphs.push(nag as GlyphId);
+        }
+      }
+    } else {
+      // Handle positional symbols that might be independent tokens (e.g., 1. e4 e5 +- )
+      const symbolNagMap: Record<string, number> = {
+        '=': 10, '∞': 13, '⩲': 14, '⩱': 15, '±': 16, '∓': 17, '+-': 18, '-+': 19,
+        '□': 7, '⊙': 22, 'N': 146
+      };
+
+      if (symbolNagMap[token]) {
+        if (lastNode) {
+          if (!lastNode.glyphs) lastNode.glyphs = [];
+          if (!lastNode.glyphs.includes(symbolNagMap[token])) {
+            lastNode.glyphs.push(symbolNagMap[token] as GlyphId);
+          }
+        }
+        continue;
+      }
+
+      // Strip glyphs from SAN if present (e.g. Nf6!, e4??, d4+-)
+      const glyphMatch = token.match(/([!?]+|\+\-|\-\+|\±|\∓|\=|\∞)$/);
+      const cleanSan = token.replace(/([!?]+|\+\-|\-\+|\±|\∓|\=|\∞)$/, '');
+      
+      try {
+        const move = chess.move(cleanSan);
+        if (move) {
+          const node: MoveNode = {
+            san: move.san,
+            uci: move.from + move.to,
+            fen: chess.fen(),
+            ply: getPlyFromFen(chess.fen()),
+            variations: [],
+            comments: [],
+            preComments: preComment ? [preComment] : [],
+            glyphs: []
+          };
+
+          if (glyphMatch) {
+            const sym = glyphMatch[0];
+            const nagMap: Record<string, number> = { 
+              '!': 1, '?': 2, '!!': 3, '??': 4, '!?': 5, '?!': 6,
+              '=': 10, '∞': 13, '⩲': 14, '⩱': 15, '±': 16, '∓': 17, '+-': 18, '-+': 19
+            };
+            if (nagMap[sym]) node.glyphs!.push(nagMap[sym] as GlyphId);
+          }
+
+          nodes.push(node);
+          lastNode = node;
+          preComment = null;
+        }
+      } catch (e) {
+        // Not a valid move, ignore
+      }
+    }
+  }
+  return nodes;
 }

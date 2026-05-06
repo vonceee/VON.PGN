@@ -98,7 +98,7 @@
 
   <!-- Recursive Template for Moves -->
   <ng-template #renderNodes let-nodes="nodes" let-isMainline="isMainline">
-    @for (node of nodes; track node.fen; let $firstNode = $first) {
+    @for (node of nodes; track node.fen; let i = $index; let $firstNode = $first) {
       <!-- Pre-Move Comment -->
       @if (node.preComments && node.preComments.length > 0) {
         <div class="w-full block text-sm text-muted/80 leading-snug px-2 py-1 mb-1 mt-1 bg-accent/5 rounded font-normal select-text">
@@ -115,8 +115,11 @@
             [class.text-sm]="!isMainline"
             >{{ (node.ply + 1) / 2 }}.</span
           >
-        } @else if ($firstNode) {
-          <span class="flex-none font-bold mr-0.5 ml-0.5 select-none text-sm text-accent/80"
+        } @else if ($firstNode || (i > 0 && nodes[i-1].comments && nodes[i-1].comments.length > 0)) {
+          <span
+            class="font-black tracking-tighter select-none text-muted mr-0.5 ml-0.5"
+            [class.text-base]="isMainline"
+            [class.text-sm]="!isMainline"
             >{{ node.ply / 2 }}...</span
           >
         }
@@ -142,8 +145,7 @@
             @for (glyphId of node.glyphs; track glyphId) {
               @if (getGlyph(glyphId); as glyph) {
                 <span 
-                  [class]="glyph.class"
-                  class="ml-0.5 font-black drop-shadow-sm"
+                  class="ml-0.5 font-black text-muted/80"
                   [title]="glyph.name"
                 >{{ glyph.symbol }}</span>
               }
@@ -172,7 +174,7 @@
 
       <!-- After-Move Comment -->
       @if (node.comments && node.comments.length > 0) {
-        <div class="w-full block text-sm text-muted/80 leading-snug px-2 py-1 mb-1 mt-0.5 bg-subtle/30 rounded font-normal select-text">
+        <div class="inline-block text-xs md:text-sm text-muted/80 leading-snug px-1.5 py-0.5 mx-1 my-0.5 bg-subtle/30 rounded font-normal select-text align-baseline border border-border-base/30">
           {{ node.comments[0] }}
         </div>
       }

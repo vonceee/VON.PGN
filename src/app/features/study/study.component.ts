@@ -9,6 +9,7 @@ import {
   PLATFORM_ID,
   NgZone,
   input,
+  HostListener,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,6 +38,7 @@ import { StudyMetadataComponent } from './study-metadata/study-metadata.componen
 import { StudyMetadataTabComponent } from './study-metadata-tab/study-metadata-tab.component';
 import { EditMetadataDialogComponent } from './dialogs/edit-metadata-dialog/edit-metadata-dialog.component';
 import { DevLogger } from '../../core/utils/dev-logger';
+import { ShortcutsDialogComponent } from './dialogs/shortcuts-dialog/shortcuts-dialog.component';
 
 @Component({
   selector: 'app-study',
@@ -572,5 +574,86 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.onSaveMetadata(result);
       }
     });
+  }
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (!this.canEdit()) return;
+    
+    // Ignore if typing in any input/textarea/editable
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+
+    const node = this.currentNode();
+    if (!node) return;
+
+    const key = event.key;
+    
+    // 1. Handle Dialog opening (A or Enter)
+    if (key.toLowerCase() === 'a' || (key === 'Enter' && !event.shiftKey && !event.ctrlKey)) {
+      event.preventDefault();
+      this.onAnnotateMove(node);
+      return;
+    }
+
+    // 2. Handle Quick Evaluations
+    let glyphId: number | null = null;
+    
+    // Plain keys 1-8 for Move Evaluations
+    if (!event.shiftKey && !event.ctrlKey && !event.altKey) {
+      const moveEvals: Record<string, number> = { 
+        '1': 1,  // !
+        '2': 2,  // ?
+        '3': 3,  // !!
+        '4': 4,  // ??
+        '5': 5,  // !?
+        '6': 6,  // ?!
+        '7': 7,  // □
+        '8': 22  // ⊙
+      };
+      if (moveEvals[key]) glyphId = moveEvals[key];
+      else if (key === '0') glyphId = 0; // Clear all
+    } 
+    // Shift + 1-6 for Positional Evaluations
+    else if (event.shiftKey && !event.ctrlKey && !event.altKey) {
+       const posEvals: Record<string, number> = { 
+         '1': 10, // =
+         '2': 16, // ±
+         '3': 17, // ∓
+         '4': 18, // +-
+         '5': 19, // -+
+         '6': 13  // ∞
+       };
+       if (posEvals[key]) {
+         glyphId = posEvals[key];
+       }
+    }
+
+    if (glyphId !== null) {
+      event.preventDefault();
+      this.quickAnnotate(node, glyphId);
+    }
+  }
+
+  private quickAnnotate(node: MoveNode, glyphId: number) {
+    this.moveTree.update(tree => 
+      updateNodeInTree(tree, node.fen, node.ply, {
+        glyphs: glyphId === 0 ? [] : [glyphId]
+      })
+    );
+    
+    // Broadcast and save to backend
+    this.studyService.emitMove(
+      '', 
+      this.currentFen(), 
+      this.moveTree(), 
+      this.boardOrientation(), 
+      this.isSyncing()
+    ).subscribe();
+    
+    this.audioService.playNavigationSound(); // Subtle feedback
+  }
+
+  openShortcuts() {
+    this.dialog.open(ShortcutsDialogComponent);
   }
 }
