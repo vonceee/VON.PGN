@@ -11,6 +11,7 @@ import {
   ViewChild,
   AfterViewInit,
   inject,
+  input,
   PLATFORM_ID,
   HostListener,
   signal,
@@ -74,6 +75,23 @@ import { AudioService } from '../../../../core/services/audio.service';
             <line x1="21" y1="3" x2="3" y2="21"></line>
             <line x1="21" y1="12" x2="12" y2="21"></line>
           </svg>
+        </div>
+
+        <!-- Glyphs Layer -->
+        <div class="absolute inset-0 pointer-events-none z-20">
+          @for (g of glyphs(); track g.square + g.symbol) {
+            <div 
+              class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white dark:border-surface text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border shadow-xl transition-all duration-300 absolute"
+              [class.bg-[var(--color-annotation-good)]]="g.class === 'good' || g.class === 'brilliant'"
+              [class.bg-[var(--color-annotation-bad)]]="g.class === 'mistake' || g.class === 'blunder'"
+              [class.bg-[var(--color-annotation-interesting)]]="g.class === 'interesting' || g.class === 'dubious' || g.class === 'only-move' || g.class === 'zugzwang'"
+              [style]="getGlyphStyle(g.square)"
+            >
+              <span class="text-[14px] leading-none font-extrabold [text-shadow:_0_1px_2px_rgba(0,0,0,0.2)]">
+                {{ g.symbol }}
+              </span>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -205,6 +223,7 @@ import { AudioService } from '../../../../core/services/audio.service';
           opacity: 1;
         }
       }
+
     `,
   ],
   host: {
@@ -225,6 +244,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() isEditor: boolean = false;
   @Input() hideCoordinates: boolean = false;
   @Input() lastMove: Key[] | undefined = undefined;
+  glyphs = input<{ square: string; symbol: string; class: string }[]>([]);
 
   @Output() fenChange = new EventEmitter<string>();
   @Output() moveMade = new EventEmitter<{ move: Move; fen: string }>();
@@ -606,6 +626,26 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     if (this.cgApi) {
       this.shapeDrawn.emit(this.cgApi.state.drawable.shapes);
     }
+  }
+
+  getGlyphStyle(square: string) {
+    if (!square || square.length < 2) return {};
+    const file = square.charCodeAt(0) - 97; // a=0
+    const rank = parseInt(square[1]) - 1; // 1=0
+
+    let left, top;
+    if (this.orientation === 'white') {
+      left = (file + 1) * 12.5;
+      top = (7 - rank) * 12.5;
+    } else {
+      left = (7 - file + 1) * 12.5;
+      top = rank * 12.5;
+    }
+
+    return {
+      left: `${left}%`,
+      top: `${top}%`
+    };
   }
 
   resetBoard() {

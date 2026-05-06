@@ -31,6 +31,7 @@
                 (sizeChange)="boardSize.set($event)"
                 [syncedShapes]="mergedShapes()"
                 [lastMove]="lastMoveSquares()"
+                [glyphs]="activeGlyphs()"
               ></app-chess-board>
 
               <div class="hidden lg:block h-[var(--board-size)] transition-all duration-500 ease-in-out"

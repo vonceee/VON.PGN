@@ -10,9 +10,11 @@ import {
   NgZone,
   input,
   HostListener,
+  ChangeDetectionStrategy,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { StudyService } from '../../core/services/study.service';
 import { AudioService } from '../../core/services/audio.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -20,11 +22,11 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChessBoardComponent, EvalBarComponent } from '@shared/chess';
 import { MoveNotationComponent } from '@shared/chess';
 import { FormsModule } from '@angular/forms';
-import { Subscription, BehaviorSubject, fromEvent } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
-import { MoveNode } from '../../core/models/study.model';
+import { MoveNode, GLYPH_MAPPING } from '../../core/models/study.model';
 import { buildTreeFromMoves, updateNodeInTree, getPlyFromFen } from '../../core/utils/chess-tree.utils';
 import { EngineService } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
@@ -96,6 +98,7 @@ import { ShortcutsDialogComponent } from './dialogs/shortcuts-dialog/shortcuts-d
     }
   `],
   host: { class: 'absolute inset-0 overflow-hidden' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StudyComponent implements OnInit, OnDestroy {
   private studyService = inject(StudyService);
@@ -106,6 +109,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private audioService = inject(AudioService);
   private router = inject(Router);
   private dialog = inject(Dialog);
+  private destroyRef = inject(DestroyRef);
 
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
@@ -143,6 +147,13 @@ export class StudyComponent implements OnInit, OnDestroy {
   boardOrientation = signal<'white' | 'black'>('white');
   remoteShapes = signal<any[]>([]);
 
+  // Engine analysis input (declarative)
+  analysisInput = computed(() => {
+    const active = this.isEngineActive() && this.isEngineVisible() && this.activeTab() === 'notation';
+    // Include multiPvCount so that changing settings re-triggers analysis
+    return active ? { fen: this.currentFen(), active: true, multiPv: this.multiPvCount() } : null;
+  });
+
   mergedShapes = computed(() => [...this.remoteShapes(), ...this.engineArrows()]);
 
   initialPly = computed(() => {
@@ -154,6 +165,23 @@ export class StudyComponent implements OnInit, OnDestroy {
     const node = this.currentNode();
     if (!node || !node.uci || node.uci.length < 4) return undefined;
     return [node.uci.slice(0, 2), node.uci.slice(2, 4)] as any[];
+  });
+
+  activeGlyphs = computed(() => {
+    const node = this.currentNode();
+    if (!node || !node.glyphs || node.glyphs.length === 0 || !node.uci) return [];
+
+    const destSquare = node.uci.slice(2, 4);
+    // Only show move evaluations (!, ?, !!, ??, !?, ?!, □, ⊙) on the board
+    const boardGlyphIds = [1, 2, 3, 4, 5, 6, 7, 22];
+    
+    return node.glyphs
+      .filter(id => boardGlyphIds.includes(id))
+      .map(id => {
+        const g = GLYPH_MAPPING[id];
+        return g ? { square: destSquare, symbol: g.symbol, class: g.class } : null;
+      })
+      .filter((g): g is { square: string; symbol: string; class: string } => !!g);
   });
 
   isOwner = computed(() => {
@@ -177,10 +205,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   showDeleteModal = signal(false);
   isDeleting = signal(false);
   isActionInProgress = signal(false);
-
-  private subs = new Subscription();
   private lastChapterId: number | null = null;
-  private analysisTrigger$ = new BehaviorSubject<{ fen: string; active: boolean } | null>(null);
   private pvChess = new Chess();
   private lastLocalInteractionTime = 0;
 
@@ -192,17 +217,29 @@ export class StudyComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
-    this.analysisTrigger$
-      .pipe(takeUntilDestroyed(), debounceTime(150), filter((v): v is { fen: string; active: boolean } => !!v && v.active))
+    // Engine Analysis Side-Effect
+    toObservable(this.analysisInput)
+      .pipe(
+        takeUntilDestroyed(),
+        debounceTime(150),
+        filter((v): v is { fen: string; active: boolean; multiPv: number } => !!v && v.active)
+      )
       .subscribe(({ fen }) => this.engineService.startAnalysis(fen));
 
     effect(() => {
       const chapter = this.currentChapter();
-      if (chapter && this.lastChapterId !== chapter.id) {
+      if (!chapter) return;
+
+      // Always sync orientation with chapter preference when chapter updates (e.g. after edit)
+      const targetOrientation = chapter.orientation || 'white';
+      if (this.boardOrientation() !== targetOrientation) {
+        this.boardOrientation.set(targetOrientation);
+      }
+
+      if (this.lastChapterId !== chapter.id) {
         this.lastChapterId = chapter.id;
         this.currentNode.set(null);
         this.currentFen.set(chapter.current_fen);
-        this.boardOrientation.set(chapter.orientation || 'white');
         this.moveTree.set(buildTreeFromMoves(chapter.moves || [], chapter.initial_fen));
         if (!this.isSyncing() || this.canEdit()) this.goToLastMainlineNode();
       }
@@ -231,9 +268,7 @@ export class StudyComponent implements OnInit, OnDestroy {
           this.engineDepth.set(cached.depth || 0);
           this.engineArrows.set([{ orig: cached.bestMove.substring(0, 2), dest: cached.bestMove.substring(2, 4), brush: 'green' }]);
         }
-        this.analysisTrigger$.next({ fen, active: true });
       } else {
-        this.analysisTrigger$.next(null);
         this.engineService.stop();
         this.engineEval.set(null);
         this.enginePvLines.set([]);
@@ -289,7 +324,6 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   onMultiPvChange(count: number) {
     this.engineService.setMultiPv(count);
-    if (this.isEngineActive()) this.analysisTrigger$.next({ fen: this.currentFen(), active: true });
   }
 
   private syncToRemoteState() {
@@ -318,7 +352,9 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (remote.moves) this.moveTree.set(buildTreeFromMoves(remote.moves));
     if (remote.fen) {
       this.currentFen.set(remote.fen);
-      this.boardOrientation.set(remote.orientation || 'white');
+      if (remote.orientation) {
+        this.boardOrientation.set(remote.orientation);
+      }
       const node = this.findNodeRecursive(this.moveTree(), remote.fen);
       this.currentNode.set(node);
       this.currentPly.set(node?.ply || this.initialPly());
@@ -492,25 +528,30 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.subs.add(this.engineService.analysis$.subscribe(analysis => {
-        this.ngZone.run(() => {
-          if (analysis.fen !== this.currentFen()) return;
-          if (analysis.pvIndex === 0) {
-            this.engineEval.set(analysis.eval);
-            this.engineBestMove.set(analysis.bestMove);
-            this.engineDepth.set(analysis.depth);
-            this.engineNps.set(analysis.nps);
-            if (analysis.bestMove && analysis.bestMove !== '(none)') this.engineArrows.set([{ orig: analysis.bestMove.substring(0, 2), dest: analysis.bestMove.substring(2, 4), brush: 'green' }]);
-          }
-          this.enginePvLines.set(this.engineService.pvLines().map(line => ({ eval: line.eval, pv: this.formatPvToSan(line.pv, analysis.fen), pvIndex: line.pvIndex })));
+      this.engineService.analysis$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(analysis => {
+          this.ngZone.run(() => {
+            if (analysis.fen !== this.currentFen()) return;
+            if (analysis.pvIndex === 0) {
+              this.engineEval.set(analysis.eval);
+              this.engineBestMove.set(analysis.bestMove);
+              this.engineDepth.set(analysis.depth);
+              this.engineNps.set(analysis.nps);
+              if (analysis.bestMove && analysis.bestMove !== '(none)') this.engineArrows.set([{ orig: analysis.bestMove.substring(0, 2), dest: analysis.bestMove.substring(2, 4), brush: 'green' }]);
+            }
+            this.enginePvLines.set(this.engineService.pvLines().map(line => ({ eval: line.eval, pv: this.formatPvToSan(line.pv, analysis.fen), pvIndex: line.pvIndex })));
+          });
         });
-      }));
-      this.subs.add(this.studyService.onShapesDrawn$.subscribe(payload => {
-        this.ngZone.run(() => {
-          const myUid = this.authService.currentUser()?.uid || this.authService.currentUser()?.id;
-          if (String(payload.userId) !== String(myUid)) this.remoteShapes.set(payload.shapes || []);
+
+      this.studyService.onShapesDrawn$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(payload => {
+          this.ngZone.run(() => {
+            const myUid = this.authService.currentUser()?.uid || this.authService.currentUser()?.id;
+            if (String(payload.userId) !== String(myUid)) this.remoteShapes.set(payload.shapes || []);
+          });
         });
-      }));
     }
   }
 
@@ -526,7 +567,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     return sanMoves;
   }
 
-  ngOnDestroy() { this.studyService.disconnect(); this.subs.unsubscribe(); }
+  ngOnDestroy() { this.studyService.disconnect(); }
 
   onDeleteConfirmed() {
     if (!this.study()) return;
