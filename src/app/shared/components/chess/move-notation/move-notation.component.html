@@ -101,7 +101,7 @@
     @for (node of nodes; track node.fen; let i = $index; let $firstNode = $first) {
       <!-- Pre-Move Comment -->
       @if (node.preComments && node.preComments.length > 0) {
-        <span class="inline text-sm leading-snug mx-1 font-normal select-text align-baseline italic">
+        <span class="inline text-sm leading-snug mx-1  select-text align-baseline">
           {{ node.preComments[0] }}
         </span>
       }
@@ -155,7 +155,7 @@
 
       <!-- Variations as Inline Parentheses -->
       @if (node.variations && node.variations.length > 0) {
-        <span class="inline font-normal">
+        <span class="inline ">
           @for (variation of node.variations; track $index) {
             <span class="inline italic">
               <span class="text-muted/40 mx-1">(</span>
@@ -173,7 +173,7 @@
 
       <!-- After-Move Comment -->
       @if (node.comments && node.comments.length > 0) {
-        <span class="inline text-xs md:text-sm leading-snug mx-1 font-normal select-text align-baseline italic">
+        <span class="inline text-xs md:text-sm leading-snug mx-1  select-text align-baseline">
           {{ node.comments[0] }}
         </span>
       }
@@ -183,7 +183,7 @@
   <!-- Variation Selector -->
   @if (nextOptions().length > 1) {
     <div
-      class="flex-none p-3 bg-surface border-t border-border-base animate-[slide-up_0.2s_ease-out]"
+      class="flex-none p-3 bg-surface border-t border-border-base"
     >
       <div
         class="text-xs uppercase tracking-tightest font-semibold text-muted mb-2.5 px-0.5 flex items-center gap-2"
