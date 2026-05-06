@@ -87,9 +87,9 @@
   <!-- Scrollable Move List -->
   <div
     #scrollContainer
-    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base scroll-smooth font-medium"
+    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base scroll-smooth font-medium leading-relaxed"
   >
-    <div class="flex flex-wrap items-baseline gap-y-1.5 gap-x-1">
+    <div class="block">
       <ng-container
         *ngTemplateOutlet="renderNodes; context: { nodes: effectiveTree(), isMainline: true }"
       ></ng-container>
@@ -101,23 +101,23 @@
     @for (node of nodes; track node.fen; let i = $index; let $firstNode = $first) {
       <!-- Pre-Move Comment -->
       @if (node.preComments && node.preComments.length > 0) {
-        <div class="w-full block text-sm text-muted/80 leading-snug px-2 py-1 mb-1 mt-1 bg-accent/5 rounded font-normal select-text">
+        <span class="inline text-sm leading-snug mx-1 font-normal select-text align-baseline italic">
           {{ node.preComments[0] }}
-        </div>
+        </span>
       }
 
-      <div class="inline-flex items-baseline gap-x-0.5">
+      <span class="inline-block whitespace-nowrap mr-1">
         <!-- Move Number -->
         @if (node.ply % 2 !== 0) {
           <span
-            class="font-black tracking-tighter select-none text-muted mr-0.5 ml-0.5"
+            class="font-semibold tracking-tighter select-none text-muted mr-0.5 ml-0.5"
             [class.text-base]="isMainline"
             [class.text-sm]="!isMainline"
             >{{ (node.ply + 1) / 2 }}.</span
           >
         } @else if ($firstNode || (i > 0 && nodes[i-1].comments && nodes[i-1].comments.length > 0)) {
           <span
-            class="font-black tracking-tighter select-none text-muted mr-0.5 ml-0.5"
+            class="font-semibold tracking-tighter select-none text-muted mr-0.5 ml-0.5"
             [class.text-base]="isMainline"
             [class.text-sm]="!isMainline"
             >{{ node.ply / 2 }}...</span
@@ -130,11 +130,10 @@
           (contextmenu)="onContextMenu($event, node)"
           [class]="
             currentFen() === node.fen
-              ? 'active-move underline font-bold bg-cyan-400 text-slate-950'
+              ? 'active-move underline font-semibold bg-cyan-400 text-slate-950'
               : 'font-semibold text-content'
           "
-          [class.px-1]="isMainline"
-          [class.px-0.5]="!isMainline"
+          [class.px-1]="true"
           [class.py-0.5]="true"
           [class.text-sm]="!isMainline"
           class="text-left transition-all hover:bg-accent/10 hover:cursor-pointer select-none active-move-target"
@@ -145,38 +144,38 @@
             @for (glyphId of node.glyphs; track glyphId) {
               @if (getGlyph(glyphId); as glyph) {
                 <span 
-                  class="ml-0.5 font-black text-muted/80"
+                  class="ml-0.5 font-semibold text-muted/80"
                   [title]="glyph.name"
                 >{{ glyph.symbol }}</span>
               }
             }
           }
         </button>
+      </span>
 
-        <!-- Variations as Inline Parentheses -->
-        @if (node.variations && node.variations.length > 0) {
-          <span class="text-muted/60 font-normal contents">
-            @for (variation of node.variations; track $index) {
-              <span class="inline-flex flex-wrap items-baseline gap-x-0.5 mx-1 italic">
-                <span class="text-muted/40 mr-0.5">(</span>
-                <ng-container
-                  *ngTemplateOutlet="
-                    renderNodes;
-                    context: { nodes: variation, isMainline: false }
-                  "
-                ></ng-container>
-                <span class="text-muted/40 ml-0.5">)</span>
-              </span>
-            }
-          </span>
-        }
-      </div>
+      <!-- Variations as Inline Parentheses -->
+      @if (node.variations && node.variations.length > 0) {
+        <span class="inline font-normal">
+          @for (variation of node.variations; track $index) {
+            <span class="inline italic">
+              <span class="text-muted/40 mx-1">(</span>
+              <ng-container
+                *ngTemplateOutlet="
+                  renderNodes;
+                  context: { nodes: variation, isMainline: false }
+                "
+              ></ng-container>
+              <span class="text-muted/40 mx-1">)</span>
+            </span>
+          }
+        </span>
+      }
 
       <!-- After-Move Comment -->
       @if (node.comments && node.comments.length > 0) {
-        <div class="inline-block text-xs md:text-sm text-muted/80 leading-snug px-1.5 py-0.5 mx-1 my-0.5 bg-subtle/30 rounded font-normal select-text align-baseline border border-border-base/30">
+        <span class="inline text-xs md:text-sm leading-snug mx-1 font-normal select-text align-baseline italic">
           {{ node.comments[0] }}
-        </div>
+        </span>
       }
     }
   </ng-template>
@@ -187,7 +186,7 @@
       class="flex-none p-3 bg-surface border-t border-border-base animate-[slide-up_0.2s_ease-out]"
     >
       <div
-        class="text-xs uppercase tracking-tightest font-black text-muted mb-2.5 px-0.5 flex items-center gap-2"
+        class="text-xs uppercase tracking-tightest font-semibold text-muted mb-2.5 px-0.5 flex items-center gap-2"
       >
         <span class="w-1.5 h-1.5 bg-accent animate-pulse"></span>
         Choose continuation
@@ -201,9 +200,9 @@
                 ? 'bg-accent text-main shadow-lg shadow-accent/25 scale-[1.02]'
                 : 'bg-subtle text-content border border-border-base hover:border-accent/50'
             "
-            class="px-3.5 py-1.5 font-bold text-sm transition-all flex items-center gap-2.5 active:scale-95"
+            class="px-3.5 py-1.5 font-semibold text-sm transition-all flex items-center gap-2.5 active:scale-95"
           >
-            <span class="opacity-50 font-black text-xs tracking-tighter">{{
+            <span class="opacity-50 font-semibold text-xs tracking-tighter">{{
               option.ply % 2 !== 0 ? (option.ply + 1) / 2 : option.ply / 2 + '...'
             }}</span>
             {{ option.san }}
