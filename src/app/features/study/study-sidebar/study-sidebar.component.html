@@ -60,9 +60,17 @@
                   {{ chap.name }}
                 </span>
               </div>
-              @if (canEdit()) {
-                <button (click)="onEditChapter($event, chap)" class="text-xs cursor-pointer hover:underline shrink-0">Edit</button>
-              }
+
+              <div class="flex items-center gap-3 shrink-0 ml-2">
+                @if (chap.pgn_tags?.['Result'] && chap.pgn_tags?.['Result'] !== '*') {
+                  <span class="text-xs font-bold text-content opacity-70 tabular-nums select-none">
+                    {{ chap.pgn_tags?.['Result'] }}
+                  </span>
+                }
+                @if (canEdit()) {
+                  <button (click)="onEditChapter($event, chap)" class="text-xs cursor-pointer hover:underline">Edit</button>
+                }
+              </div>
             </button>
           }
         </div>

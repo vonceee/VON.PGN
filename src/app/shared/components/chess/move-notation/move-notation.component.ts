@@ -44,6 +44,7 @@ export class MoveNotationComponent {
   currentFen = input<string>('');
   currentPly = input<number>(0);
   initialPly = input<number>(0);
+  result = input<string | null | undefined>(null);
   showNavigation = input<boolean>(false);
 
   // Outputs

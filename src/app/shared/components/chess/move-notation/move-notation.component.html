@@ -93,6 +93,12 @@
       <ng-container
         *ngTemplateOutlet="renderNodes; context: { nodes: effectiveTree(), isMainline: true }"
       ></ng-container>
+
+      @if (result() && result() !== '*') {
+        <span class="inline text-sm font-bold text-muted mx-1 select-text align-baseline">
+          {{ '{' + result() + '}' }}
+        </span>
+      }
     </div>
   </div>
 

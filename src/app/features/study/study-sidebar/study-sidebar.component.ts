@@ -88,7 +88,7 @@ export class StudySidebarComponent {
             },
             error: (err) => {
               console.error('Import failed:', err);
-              this.toastService.show('Failed to import PGN.', 'error');
+              this.toastService.show(err.error?.message || 'Failed to import PGN.', 'error');
             }
           });
         } else {

@@ -114,6 +114,7 @@
                   [currentPly]="currentPly()"
                   [initialPly]="initialPly()"
                   [showNavigation]="true"
+                  [result]="currentChapter()?.pgn_tags?.['Result']"
                   (nodeClicked)="onNodeClicked($event)"
                   (navigate)="onNavigateToPly($event)"
                   (deleteFromHere)="onDeleteFromHere($event)"

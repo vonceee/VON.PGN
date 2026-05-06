@@ -108,7 +108,11 @@ function preprocessPgn(pgn: string): string {
   // Also handles cases with whitespace between them: "}   {"
   cleaned = cleaned.replace(/\}\s*\{/g, ' ');
 
-  // 3. Ensure a blank line between the last tag and the first move/comment
+  // 3. Fix missing spaces after move numbers: "1.d4" -> "1. d4", "1...Nf6" -> "1... Nf6"
+  // This helps the tokenizer separate move numbers from actual SAN moves.
+  cleaned = cleaned.replace(/(\d+\.{1,3})([^\s])/g, '$1 $2');
+
+  // 4. Ensure a blank line between the last tag and the first move/comment
   // PGN tags end with ] and the body starts with either { or a move like 1.
   if (cleaned.includes(']')) {
     const lastTagIndex = cleaned.lastIndexOf(']');
