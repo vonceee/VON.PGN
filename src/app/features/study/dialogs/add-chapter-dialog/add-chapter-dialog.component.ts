@@ -36,7 +36,7 @@ export interface AddChapterDialogResult {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Chapter Name -->
               <div class="space-y-2">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-muted ml-1">
+                <label class="text-sm font-semibold ml-1">
                   Chapter Name
                 </label>
                 <div class="relative group">
@@ -55,7 +55,7 @@ export interface AddChapterDialogResult {
               <!-- Orientation (Hidden for PGN) -->
               @if (activeTab() !== 'pgn') {
                 <div class="space-y-2 animate-in fade-in slide-in-from-right-4 duration-300">
-                  <label class="text-[10px] font-bold uppercase tracking-wider text-muted ml-1">
+                  <label class="text-sm font-semibold ml-1">
                     Orientation
                   </label>
                   <div class="relative">
@@ -90,7 +90,7 @@ export interface AddChapterDialogResult {
             </div>
 
             <!-- Tab Content Area -->
-            <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md border border-base rounded-2xl p-4 animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
+            <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md relative">
               @if (activeTab() === 'empty') {
                 <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4 animate-in zoom-in-95 duration-500">
                   <div class="space-y-1">
@@ -125,13 +125,10 @@ export interface AddChapterDialogResult {
                 <div class="space-y-4 py-2 animate-in slide-in-from-left-4 duration-500">
                   <div class="space-y-3">
                     <div class="flex justify-between items-center px-1">
-                      <h3 class="text-sm font-bold text-content uppercase tracking-wider">
-                        PGN Import
-                      </h3>
                       <button 
-                        type="button" 
+                        appButton
+                        variant="primary"
                         (click)="fileInput.click()" 
-                        class="px-5 py-1.5 bg-surface hover:bg-subtle text-content text-[11px] font-semibold rounded-full border border-base transition-all duration-300 flex items-center gap-2"
                         [disabled]="isReadingFiles()"
                       >
                         @if (isReadingFiles()) {
