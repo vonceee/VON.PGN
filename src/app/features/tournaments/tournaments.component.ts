@@ -8,13 +8,14 @@ import { ButtonComponent  } from '@shared/ui';
 import { LoadingComponent  } from '@shared/feedback';
 import { SectionHeadingComponent  } from '@shared/ui';
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 9;
 
 @Component({
   selector: 'app-tournaments',
   standalone: true,
   imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent, SectionHeadingComponent],
-  templateUrl: './tournaments.component.html'
+  templateUrl: './tournaments.component.html',
+  styleUrl: './tournaments.component.css'
 })
 export class TournamentsComponent implements OnInit {
   private tournamentService = inject(TournamentService);
@@ -32,8 +33,9 @@ export class TournamentsComponent implements OnInit {
   searchQuery = signal('');
   formatFilter = signal('');
   sortBy = signal('');
-  viewMode = signal<'grid' | 'list'>('list');
   currentPage = signal(1);
+  flippedCards = signal<Set<string>>(new Set());
+  selectedPoster = signal<string | null>(null);
 
   tournamentsWithStatus = computed(() => {
     const now = new Date();
@@ -168,9 +170,6 @@ export class TournamentsComponent implements OnInit {
     this.currentPage.set(1);
   }
 
-  setViewMode(mode: 'grid' | 'list') {
-    this.viewMode.set(mode);
-  }
 
   clearSearch() {
     this.searchQuery.set('');
@@ -204,6 +203,32 @@ export class TournamentsComponent implements OnInit {
     this.isTabDropdownOpen.update(v => !v);
   }
 
+  toggleFlip(id: string) {
+    this.flippedCards.update(set => {
+      const newSet = new Set(set);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  }
+
+  isFlipped(id: string): boolean {
+    return this.flippedCards().has(id);
+  }
+
+  openPoster(url: string) {
+    this.selectedPoster.set(url);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closePoster() {
+    this.selectedPoster.set(null);
+    document.body.style.overflow = '';
+  }
+
   formatDate(dateStr: string): string {
     return new Date(dateStr).toLocaleDateString('en-US', {
       month: 'short',
@@ -225,6 +250,28 @@ export class TournamentsComponent implements OnInit {
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 30) return `${diffDays}d ago`;
     return this.formatDate(dateStr);
+  }
+
+  formatPrizePool(prizePool: string): string {
+    if (!prizePool) return '0.00';
+    
+    // Extract currency symbol if present
+    const symbolMatch = prizePool.match(/^[^\d\s,.]+/);
+    const symbol = symbolMatch ? symbolMatch[0] : '';
+    
+    // Extract numeric part
+    const numericPart = prizePool.replace(/[^\d.]/g, '');
+    const amount = parseFloat(numericPart);
+    
+    if (isNaN(amount)) return prizePool;
+
+    // Format with commas and 2 decimals
+    const formattedAmount = amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    return `${symbol}${formattedAmount}`;
   }
 
   getTournamentThumbnail(tournament: Tournament): string | null {
