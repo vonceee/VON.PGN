@@ -371,25 +371,6 @@
   }
 </div>
 
-<!-- Minimal Organizer CTA -->
-<div class="mt-auto py-8 border-t border-border-base text-center w-full">
-  <p class="text-sm text-muted">
-    Are you a tournament organizer?
-    @if (authService.isAuthenticated()) {
-      <a
-        routerLink="/my-events/new"
-        class="text-accent hover:text-accent/80 font-bold ml-1 transition-colors"
-        >Create an event</a
-      >
-    } @else {
-      <a
-        routerLink="/register"
-        class="text-accent hover:text-accent/80 font-bold ml-1 transition-colors"
-        >Get started</a
-      >
-    }
-  </p>
-</div>
 
 <!-- Poster Lightbox Overlay -->
 @if (selectedPoster(); as url) {

@@ -363,7 +363,7 @@ export const routes: Routes = [
       },
       {
         path: 'my-events',
-        canActivate: [authGuard],
+        canActivate: [adminGuard],
         loadChildren: () =>
           import('./features/tournaments/my-tournaments/my-tournaments.routes').then(
             (m) => m.MY_TOURNAMENTS_ROUTES,
@@ -372,7 +372,7 @@ export const routes: Routes = [
       },
       {
         path: 'my-arena',
-        canActivate: [authGuard],
+        canActivate: [adminGuard],
         loadChildren: () =>
           import('./features/arena/my-arena/my-arena.routes').then((m) => m.MY_ARENA_ROUTES),
         title: 'Vonchess.net • My Arenas',

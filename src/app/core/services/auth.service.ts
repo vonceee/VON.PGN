@@ -40,6 +40,7 @@ export class AuthService {
 
   currentUser = signal<any | null>(null);
   isAuthenticated = computed(() => this.currentUser() !== null);
+  isAdmin = computed(() => this.currentUser()?.is_admin === true);
 
 
   unverifiedEmail = signal<string | null>(null);
