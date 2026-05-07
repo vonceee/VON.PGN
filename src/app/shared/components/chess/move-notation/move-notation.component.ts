@@ -14,7 +14,7 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ButtonComponent } from '@shared/ui';
 import { MoveNode, GLYPH_MAPPING } from '../../../../core/models/study.model';
-import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
+import { buildTreeFromMoves, findNodeContext } from '../../../../core/utils/chess-tree.utils';
 import { AudioService } from '../../../../core/services/audio.service';
 
 @Component({
@@ -121,7 +121,7 @@ export class MoveNotationComponent {
 
     // Try finding by FEN first (most accurate for trees)
     if (fen) {
-      const context = this.findNodeContext(tree, fen);
+      const context = findNodeContext(tree, fen);
       if (context.current) return context;
     }
 
@@ -129,7 +129,7 @@ export class MoveNotationComponent {
     // This is useful for flat move lists where FEN might not be perfectly synchronized
     const nodeByPly = this.findNodeByPlyMainline(tree, ply);
     if (nodeByPly) {
-      return this.findNodeContext(tree, nodeByPly.fen);
+      return findNodeContext(tree, nodeByPly.fen);
     }
 
     return { current: null, next: [], parent: null };
@@ -143,32 +143,6 @@ export class MoveNotationComponent {
   nextOptions = computed(() => this.navigationCtx().next);
 
   isLastMove = computed(() => this.nextOptions().length === 0);
-
-  private findNodeContext(
-    nodes: MoveNode[],
-    fen: string,
-    parent: MoveNode | null = null,
-  ): { current: MoveNode | null; next: MoveNode[]; parent: MoveNode | null } {
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      if (node.fen === fen) {
-        let next: MoveNode[] = [];
-        if (i + 1 < nodes.length) {
-          const nextNode = nodes[i + 1];
-          next = [nextNode, ...(nextNode.variations?.map((v) => v[0]) || [])];
-        }
-        return { current: node, next, parent: i > 0 ? nodes[i - 1] : parent };
-      }
-
-      if (node.variations) {
-        for (const variation of node.variations) {
-          const res = this.findNodeContext(variation, fen, node);
-          if (res.current) return res;
-        }
-      }
-    }
-    return { current: null, next: [], parent: null };
-  }
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {

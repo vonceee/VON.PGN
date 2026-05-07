@@ -27,7 +27,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
 import { MoveNode, GLYPH_MAPPING } from '../../core/models/study.model';
-import { buildTreeFromMoves, updateNodeInTree, getPlyFromFen } from '../../core/utils/chess-tree.utils';
+import { buildTreeFromMoves, updateNodeInTree, getPlyFromFen, findNodeContext } from '../../core/utils/chess-tree.utils';
 import { EngineService } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { AnnotateMoveDialogComponent } from './dialogs/annotate-move-dialog/annotate-move-dialog.component';
@@ -495,6 +495,48 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.engineArrows.set([]);
       this.audioService.playMoveSound(node.san);
       if (this.canEdit()) this.studyService.emitNavigation(node.fen, this.moveTree(), this.boardOrientation(), this.isSyncing());
+    }
+  }
+
+  onPrevMove() {
+    if (this.isSyncing() && !this.canEdit()) return;
+    
+    const context = findNodeContext(this.moveTree(), this.currentFen());
+    if (context.parent) {
+      this.onNodeClicked(context.parent);
+    } else if (this.currentNode()) {
+      // Go to start
+      this.lastLocalInteractionTime = Date.now();
+      this.updateCurrentPosition(null);
+      this.remoteShapes.set([]);
+      this.engineArrows.set([]);
+      this.audioService.playNavigationSound();
+      if (this.canEdit()) {
+        this.studyService.emitNavigation(
+          this.currentChapter()?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+          this.moveTree(),
+          this.boardOrientation(),
+          this.isSyncing()
+        );
+      }
+    }
+  }
+
+  onNextMove() {
+    if (this.isSyncing() && !this.canEdit()) return;
+
+    const tree = this.moveTree();
+    if (tree.length === 0) return;
+
+    if (!this.currentNode()) {
+      // Go to first move
+      this.onNodeClicked(tree[0]);
+      return;
+    }
+
+    const context = findNodeContext(tree, this.currentFen());
+    if (context.next.length > 0) {
+      this.onNodeClicked(context.next[0]);
     }
   }
 

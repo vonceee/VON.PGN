@@ -251,6 +251,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Output() sizeChange = new EventEmitter<number>();
   @Output() shapeDrawn = new EventEmitter<any[]>();
   @Output() preMoveCancelled = new EventEmitter<void>();
+  @Output() prevMove = new EventEmitter<void>();
+  @Output() nextMove = new EventEmitter<void>();
 
   // Sizing State
   boardSize: number = 400;
@@ -259,6 +261,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private readonly STORAGE_KEY = 'von-chess.board-size';
   private manualSize = signal<number | null>(null);
   public isResizing = signal(false);
+  private lastScrollTime = 0;
+  private readonly SCROLL_THROTTLE = 80;
 
   public get api(): Api { return this.cgApi; }
   
@@ -378,6 +382,25 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @HostListener('window:touchend')
   onMouseUp() {
     this.isResizing.set(false);
+  }
+
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent) {
+    // Only handle scroll navigation if we're not resizing and it's vertical scroll
+    if (this.isResizing() || Math.abs(event.deltaY) < 10) return;
+
+    const now = Date.now();
+    if (now - this.lastScrollTime < this.SCROLL_THROTTLE) return;
+    this.lastScrollTime = now;
+
+    if (event.deltaY > 0) {
+      this.nextMove.emit();
+    } else {
+      this.prevMove.emit();
+    }
+
+    // Prevent page scroll when navigating moves
+    event.preventDefault();
   }
 
   startResizing(event: MouseEvent | TouchEvent) {

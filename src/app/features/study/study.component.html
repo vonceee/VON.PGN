@@ -29,6 +29,8 @@
                 (moveMade)="onMoveMade($event)"
                 (shapeDrawn)="onShapeDrawn($event)"
                 (sizeChange)="boardSize.set($event)"
+                (prevMove)="onPrevMove()"
+                (nextMove)="onNextMove()"
                 [syncedShapes]="mergedShapes()"
                 [lastMove]="lastMoveSquares()"
                 [glyphs]="activeGlyphs()"

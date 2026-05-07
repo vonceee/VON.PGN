@@ -345,3 +345,35 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
   }
   return nodes;
 }
+
+/**
+ * Determine current navigation context (current node, next moves, and parent)
+ * within a MoveNode tree for a specific FEN.
+ */
+export function findNodeContext(
+  nodes: MoveNode[],
+  fen: string,
+  parent: MoveNode | null = null,
+): { current: MoveNode | null; next: MoveNode[]; parent: MoveNode | null } {
+  if (!fen || !nodes) return { current: null, next: [], parent: null };
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    if (node.fen === fen) {
+      let next: MoveNode[] = [];
+      if (i + 1 < nodes.length) {
+        const nextNode = nodes[i + 1];
+        next = [nextNode, ...(nextNode.variations?.map((v) => v[0]) || [])];
+      }
+      return { current: node, next, parent: i > 0 ? nodes[i - 1] : parent };
+    }
+
+    if (node.variations) {
+      for (const variation of node.variations) {
+        const res = findNodeContext(variation, fen, node);
+        if (res.current) return res;
+      }
+    }
+  }
+  return { current: null, next: [], parent: null };
+}
