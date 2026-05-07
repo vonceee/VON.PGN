@@ -122,71 +122,6 @@ import { AudioService } from '../../../../core/services/audio.service';
         overflow: visible;
       }
 
-      /* Coordinate Overrides */
-      .cg-wrap {
-        overflow: visible !important;
-      }
-
-      .cg-wrap coords {
-        color: #000 !important;
-        font-weight: 800 !important;
-        font-size: 12px !important;
-        font-family: var(--font-sans) !important;
-        pointer-events: none !important;
-        text-transform: uppercase !important;
-      }
-
-      .dark .cg-wrap coords {
-        color: #fff !important;
-      }
-
-      .cg-wrap coords.ranks {
-        left: -32px !important;
-        width: 32px !important;
-        display: flex !important;
-        flex-direction: column-reverse !important;
-        right: auto !important;
-      }
-
-      .cg-wrap.orientation-black coords.ranks {
-        flex-direction: column !important;
-      }
-
-      .cg-wrap coords.files {
-        bottom: -32px !important;
-        left: 0 !important;
-        height: 32px !important;
-        width: 100% !important;
-        display: flex !important;
-        flex-direction: row !important; /* Default for White: a..h -> a at left */
-        top: auto !important;
-      }
-
-      .cg-wrap.orientation-black coords.files {
-        flex-direction: row-reverse !important; /* For Black: a..h -> h at left */
-      }
-
-      .cg-wrap coords.ranks coord,
-      .cg-wrap coords.files coord {
-        color: inherit !important;
-        text-shadow: none !important;
-        background: none !important;
-        line-height: 1 !important;
-        position: static !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        flex: 1 !important;
-      }
-
-      .cg-wrap coords.ranks coord {
-        justify-content: center !important;
-      }
-
-      .cg-wrap coords.files coord {
-        align-items: center !important;
-      }
-
       .promotion-menu {
         transform: translateY(0);
         animation: promo-slide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -329,7 +264,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   }
 
   private updateBoardSize() {
-    const GUTTER = this.hideCoordinates ? 0 : 32;
+    const GUTTER = 0;
     // Determine the maximum square size that fits in the container (100% fit)
     const maxPossible = Math.min(this.containerSize.width, this.containerSize.height);
     

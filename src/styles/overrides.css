@@ -1,0 +1,38 @@
+/* 
+  Third-Party Overrides
+  Specific overrides for Chessground and other external libraries.
+*/
+
+/* --- Chess Board Coordinate Overrides --- */
+
+/* Increase left padding for rank numbers */
+.cg-wrap coords.ranks {
+  left: 8px !important;
+}
+
+/* Fix file letters alignment - integrated bottom-right */
+.cg-wrap coords.files {
+  left: -4px !important;
+  bottom: 2px !important;
+  width: 100% !important;
+}
+
+.cg-wrap coords.files coord {
+  text-align: right !important;
+  padding-right: 4px !important;
+}
+
+/* Adaptive Coloring for Coordinates */
+.orientation-white .ranks coord:nth-child(even),
+.orientation-white .files coord:nth-child(even),
+.orientation-black .ranks coord:nth-child(odd),
+.orientation-black .files coord:nth-child(odd) {
+  color: var(--color-board-coord-dark) !important;
+}
+
+.orientation-white .ranks coord:nth-child(odd),
+.orientation-white .files coord:nth-child(odd),
+.orientation-black .ranks coord:nth-child(even),
+.orientation-black .files coord:nth-child(even) {
+  color: var(--color-board-coord-light) !important;
+}

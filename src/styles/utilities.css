@@ -1,0 +1,16 @@
+/* 
+  Semantic Utilities
+  Context-aware utility classes for chess-specific annotations.
+*/
+
+.good, .brilliant {
+  color: var(--color-annotation-good) !important;
+}
+
+.mistake, .blunder {
+  color: var(--color-annotation-bad) !important;
+}
+
+.interesting, .dubious {
+  color: var(--color-annotation-interesting) !important;
+}
