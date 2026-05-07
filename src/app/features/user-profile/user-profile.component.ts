@@ -16,11 +16,12 @@ import { ChallengeService } from '../../core/services/challenge.service';
 import { ChallengeUserModalComponent } from '../play/challenge/challenge-user-modal.component';
 import { ChallengeSettings } from '../../core/models/game.model';
 import { UserHovercardDirective } from '@shared/directives';
+import { FlagIconComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent, DialogModule, UserHovercardDirective],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent, DialogModule, UserHovercardDirective, FlagIconComponent],
   templateUrl: './user-profile.component.html'
 })
 export class UserProfileComponent implements OnInit {

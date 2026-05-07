@@ -286,11 +286,14 @@
           (click)="toggleProfileDropdown()"
           class="flex items-center gap-2 group cursor-pointer focus:outline-none relative"
         >
-          <span
-            class="text-sm lg:text-base xl:text-lg font-bold group-hover:text-accent transition-colors"
-          >
-            {{ userService.currentUser()?.displayName || 'User' }}
-          </span>
+          <div class="flex items-center gap-1.5">
+            <app-flag-icon [countryCode]="userService.currentUser()?.country_code"></app-flag-icon>
+            <span
+              class="text-sm lg:text-base xl:text-lg font-bold group-hover:text-accent transition-colors"
+            >
+              {{ userService.currentUser()?.displayName || 'User' }}
+            </span>
+          </div>
           <app-notification-badge [count]="challengeService.incomingChallenges().length"></app-notification-badge>
         </button>
 

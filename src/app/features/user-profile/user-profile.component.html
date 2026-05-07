@@ -38,6 +38,7 @@
                       [userId]="profile.uid"
                       size="w-8 h-8"
                     ></app-user-status-indicator>
+                    <app-flag-icon [countryCode]="profile.country_code"></app-flag-icon>
                     {{ profile.displayName || profile.username }}
                   </h1>
                   <p class="text-sm mt-0.5 text-slate-500">{{ '@' + profile.username }}</p>

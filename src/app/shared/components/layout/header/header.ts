@@ -21,13 +21,13 @@ import {
   heroBars3,
 } from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
-import { ButtonComponent, LinkComponent, SectionHeadingComponent, NotificationBadgeComponent } from '@shared/ui';
+import { ButtonComponent, LinkComponent, SectionHeadingComponent, NotificationBadgeComponent, FlagIconComponent } from '@shared/ui';
 import { heroTrophy, heroBell } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent, LinkComponent, NotificationBadgeComponent],
+  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent, LinkComponent, NotificationBadgeComponent, FlagIconComponent],
   providers: [
     provideIcons({
       heroChevronDown,

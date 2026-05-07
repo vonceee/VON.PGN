@@ -2,11 +2,12 @@ import { Component, Input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserProfile } from '../../../core/models/user.model';
 import { ChessBoardComponent } from '../chess/chess-board/chess-board.component';
+import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
 
 @Component({
   selector: 'app-user-hovercard',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent],
+  imports: [CommonModule, ChessBoardComponent, FlagIconComponent],
   template: `
     <div class="ui-panel p-4 w-80 overflow-hidden animate-in fade-in zoom-in duration-200">
       @if (user()) {
@@ -17,8 +18,9 @@ import { ChessBoardComponent } from '../chess/chess-board/chess-board.component'
               <a 
                 [href]="'/user/' + user()!.username" 
                 target="_blank"
-                class="text-lg font-extrabold text-content truncate hover:text-accent transition-colors"
+                class="text-lg font-extrabold text-content truncate hover:text-accent transition-colors flex items-center gap-2"
               >
+                <app-flag-icon [countryCode]="user()!.country_code"></app-flag-icon>
                 {{ user()!.username }}
               </a>
               <div 

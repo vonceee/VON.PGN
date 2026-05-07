@@ -9,6 +9,7 @@ export interface UserProfile {
   verified_organizer: boolean;
   email_verified_at: string | null;
   createdAt: string;
+  country_code?: string;
 
   // Follow stats
   followers_count: number;
