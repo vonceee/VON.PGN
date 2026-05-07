@@ -5,7 +5,7 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 @import '@angular/cdk/overlay-prebuilt.css';
 
-:root {
+@theme {
   --font-sans:
     'Google Sans', 'Outfit', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';

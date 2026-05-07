@@ -39,6 +39,8 @@ export class StudySidebarComponent {
   isLargeScreen = input.required<boolean>();
   isSyncing = input.required<boolean>();
   canEdit = input.required<boolean>();
+  isTabMode = input<boolean>(false);
+  displayMode = input<'all' | 'chapters' | 'chat'>('all');
 
   // Signals from service
   study = this.studyService.currentStudy;

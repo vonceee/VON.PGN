@@ -1,98 +1,110 @@
 @if (study(); as s) {
-  <aside class="hidden lg:grid grid-rows-[auto_1fr_1fr] h-full overflow-hidden min-h-0 pt-4 gap-4">
-    <!-- Study Info Header -->
-    <div class="px-4">
-      <div class="flex flex-col">
-        <div class="flex items-center justify-between">
-          <h2
-            class="text-lg font-bold select-none line-clamp-2 whitespace-normal cursor-pointer hover:text-accent min-w-0 tracking-tight"
-            [title]="s.name"
+  <aside 
+    class="grid h-full overflow-hidden min-h-0 pt-4 gap-4"
+    [class.grid-rows-[auto_1fr_1fr]]="displayMode() === 'all'"
+    [class.grid-rows-[auto_1fr]]="displayMode() === 'chapters' && !isTabMode()"
+    [class.grid-rows-[1fr]]="displayMode() === 'chapters' && isTabMode()"
+    [class.grid-rows-[1fr]]="displayMode() === 'chat'"
+  >
+    @if (!isTabMode() && displayMode() !== 'chat') {
+      <!-- Study Info Header -->
+      <div class="px-4">
+        <div class="flex flex-col">
+          <div class="flex items-center justify-between">
+            <h2
+              class="text-lg font-bold select-none line-clamp-2 whitespace-normal cursor-pointer hover:text-accent min-w-0 tracking-tight"
+              [title]="s.name"
+            >
+              {{ s.name }}
+            </h2>
+          </div>
+          <div 
+            (click)="openViewers()"
+            class="flex items-center gap-1.5 mt-1.5 text-sm font-semibold text-muted cursor-pointer hover:underline"
           >
-            {{ s.name }}
-          </h2>
-        </div>
-        <div 
-          (click)="openViewers()"
-          class="flex items-center gap-1.5 mt-1.5 text-sm font-semibold text-muted cursor-pointer hover:underline"
-        >
-          <ng-icon name="heroEye" class="text-sm font-bold text-accent"></ng-icon>
-          <span>{{ viewerCount() }} viewer{{ viewerCount() === 1 ? '' : 's' }}</span>
+            <ng-icon name="heroEye" class="text-sm font-bold text-accent"></ng-icon>
+            <span>{{ viewerCount() }} viewer{{ viewerCount() === 1 ? '' : 's' }}</span>
+          </div>
         </div>
       </div>
-    </div>
+    }
 
-    <!-- Chapters Section -->
-    <div 
-      class="flex flex-col min-h-0 overflow-hidden ui-panel"
-      [class.pointer-events-none]="isSyncing() && !canEdit()"
-      [class.opacity-70]="isSyncing() && !canEdit()"
-    >
-      <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-        <div 
-          class="flex-1 flex flex-col gap-0.5"
-          cdkDropList
-          (cdkDropListDropped)="onDrop($event)"
-          [cdkDropListDisabled]="!canEdit()"
-        >
-          @for (chap of s.chapters; track chap.id; let idx = $index) {
-            <button
-              (click)="selectChapter(chap)"
-              cdkDrag
-              [cdkDragDisabled]="!canEdit()"
-              class="relative flex items-center justify-between py-2 px-4 cursor-pointer transition-all duration-200 group text-left
-              {{
-                currentChapter()?.id === chap.id
-                  ? 'bg-subtle'
-                  : 'hover:bg-surface'
-              }}"
-            >
-              <!-- Drag Placeholder -->
-              <div *cdkDragPlaceholder class="h-10 bg-subtle/50 border-2 border-dashed border-border-accent/30 rounded-lg mx-2 my-0.5"></div>
-
-              @if (currentChapter()?.id === chap.id) {
-                <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-accent"></div>
-              }
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="text-xs font-bold text-muted tabular-nums shrink-0 opacity-60 group-active:cursor-grabbing cursor-grab">
-                  {{ idx + 1 }}.
-                </span>
-                <span [class]="'text-sm font-medium truncate transition-colors ' + (currentChapter()?.id === chap.id ? 'text-accent' : 'text-content')">
-                  {{ chap.name }}
-                </span>
-              </div>
-
-              <div class="flex items-center gap-3 shrink-0 ml-2">
-                @if (chap.pgn_tags?.['Result'] && chap.pgn_tags?.['Result'] !== '*') {
-                  <span class="text-xs font-bold text-content opacity-70 tabular-nums select-none">
-                    {{ chap.pgn_tags?.['Result'] }}
-                  </span>
-                }
-                @if (canEdit()) {
-                  <button (click)="onEditChapter($event, chap)" class="text-xs cursor-pointer hover:underline">Edit</button>
-                }
-              </div>
-            </button>
-          }
-        </div>
-      </nav>
-
-      @if (canEdit()) {
-        <div class="p-3 border-t border-border-base bg-surface/50">
-          <button 
-            appButton 
-            variant="primary" 
-            (click)="createChapter()" 
-            class="w-full"
+    @if (displayMode() === 'all' || displayMode() === 'chapters') {
+      <!-- Chapters Section -->
+      <div 
+        class="flex flex-col min-h-0 overflow-hidden ui-panel"
+        [class.pointer-events-none]="isSyncing() && !canEdit()"
+        [class.opacity-70]="isSyncing() && !canEdit()"
+      >
+        <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 custom-scrollbar">
+          <div 
+            class="flex-1 flex flex-col gap-0.5"
+            cdkDropList
+            (cdkDropListDropped)="onDrop($event)"
+            [cdkDropListDisabled]="!canEdit()"
           >
-            + New Chapter
-          </button>
-        </div>
-      }
-    </div>
+            @for (chap of s.chapters; track chap.id; let idx = $index) {
+              <button
+                (click)="selectChapter(chap)"
+                cdkDrag
+                [cdkDragDisabled]="!canEdit()"
+                class="relative flex items-center justify-between py-2 px-4 cursor-pointer transition-all duration-200 group text-left
+                {{
+                  currentChapter()?.id === chap.id
+                    ? 'bg-subtle'
+                    : 'hover:bg-surface'
+                }}"
+              >
+                <!-- Drag Placeholder -->
+                <div *cdkDragPlaceholder class="h-10 bg-subtle/50 border-2 border-dashed border-border-accent/30 rounded-lg mx-2 my-0.5"></div>
+  
+                @if (currentChapter()?.id === chap.id) {
+                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-accent"></div>
+                }
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="text-xs font-bold text-muted tabular-nums shrink-0 opacity-60 group-active:cursor-grabbing cursor-grab">
+                    {{ idx + 1 }}.
+                  </span>
+                  <span [class]="'text-sm font-medium truncate transition-colors ' + (currentChapter()?.id === chap.id ? 'text-accent' : 'text-content')">
+                    {{ chap.name }}
+                  </span>
+                </div>
+  
+                <div class="flex items-center gap-3 shrink-0 ml-2">
+                  @if (chap.pgn_tags?.['Result'] && chap.pgn_tags?.['Result'] !== '*') {
+                    <span class="text-xs font-bold text-content opacity-70 tabular-nums select-none">
+                      {{ chap.pgn_tags?.['Result'] }}
+                    </span>
+                  }
+                  @if (canEdit()) {
+                    <button (click)="onEditChapter($event, chap)" class="text-xs cursor-pointer hover:underline">Edit</button>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        </nav>
+  
+        @if (canEdit()) {
+          <div class="p-3 border-t border-border-base bg-surface/50">
+            <button 
+              appButton 
+              variant="primary" 
+              (click)="createChapter()" 
+              class="w-full"
+            >
+              + New Chapter
+            </button>
+          </div>
+        }
+      </div>
+    }
 
-    <!-- Chat Section -->
-    <div class="flex flex-col min-h-0 overflow-hidden ui-panel">
-      <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
-    </div>
+    @if (displayMode() === 'all' || displayMode() === 'chat') {
+      <!-- Chat Section -->
+      <div class="flex flex-col min-h-0 overflow-hidden ui-panel">
+        <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
+      </div>
+    }
   </aside>
 }

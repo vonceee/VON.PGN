@@ -1,16 +1,18 @@
 <div class="absolute inset-0 overflow-hidden flex flex-col bg-main">
   @if (study(); as s) {
     <!-- Main Content Grid Wrapper -->
-    <div class="flex-1 w-full max-w-[1600px] mx-auto overflow-hidden p-4 lg:p-6 xl:p-8">
-      <div class="grid grid-cols-1 lg:grid-cols-[320px_1fr_400px] xl:grid-cols-[350px_1fr_440px] 2xl:grid-cols-[380px_1fr_480px] gap-4 lg:gap-6 h-full overflow-hidden">
+    <div class="flex-1 w-full max-w-[1700px] mx-auto overflow-hidden p-2 lg:p-4 xl:p-6">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_minmax(350px,450px)] xl:grid-cols-[minmax(260px,320px)_1fr_minmax(320px,420px)] 2xl:grid-cols-[minmax(300px,360px)_1fr_minmax(380px,480px)] gap-3 lg:gap-4 xl:gap-6 h-full overflow-hidden">
         
-        <!-- Left Column: Sidebar -->
-        <app-study-sidebar
-          class="h-full overflow-hidden"
-          [isLargeScreen]="isLargeScreen()"
-          [isSyncing]="isSyncing()"
-          [canEdit]="canEdit()"
-        ></app-study-sidebar>
+        <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
+        @if (isThreeColumn()) {
+          <app-study-sidebar
+            class="h-full overflow-hidden"
+            [isLargeScreen]="isLargeScreen()"
+            [isSyncing]="isSyncing()"
+            [canEdit]="canEdit()"
+          ></app-study-sidebar>
+        }
 
         <!-- Center Column: Board -->
         <div class="flex flex-col items-center justify-center overflow-hidden relative">
@@ -21,7 +23,7 @@
           }
 
           <div class="flex-1 w-full flex items-center justify-center min-h-0 overflow-hidden relative board-container-parent">
-            <div class="flex items-center justify-center gap-0 max-h-full w-full max-w-5xl mx-auto">
+            <div class="flex items-center justify-center gap-0 max-h-full w-full max-w-6xl mx-auto">
               <app-chess-board
                 [fen]="currentFen()"
                 [orientation]="boardOrientation()"
@@ -48,12 +50,30 @@
         <!-- Right Column: Notation & Info -->
         <div class="h-full flex flex-col gap-4 overflow-hidden">
           <!-- Sidebar Pills (Outside Panel) -->
-          <div class="flex items-center gap-2 px-1 shrink-0">
+          <div class="flex items-center gap-1.5 px-1 shrink-0 overflow-x-auto whitespace-nowrap scrollbar-hide flex-nowrap">
+            @if (!isThreeColumn()) {
+              <button
+                appButton
+                [variant]="activeTab() === 'chapters' ? 'primary' : 'outline'"
+                (click)="activeTab.set('chapters')"
+                class="capitalize !px-3.5 !py-1.5"
+              >
+                Chapters
+              </button>
+              <button
+                appButton
+                [variant]="activeTab() === 'chat' ? 'primary' : 'outline'"
+                (click)="activeTab.set('chat')"
+                class="capitalize !px-3.5 !py-1.5"
+              >
+                Chat
+              </button>
+            }
             <button
               appButton
               [variant]="activeTab() === 'notation' ? 'primary' : 'outline'"
               (click)="activeTab.set('notation')"
-              class="capitalize"
+              class="capitalize !px-3.5 !py-1.5"
             >
               Notation
             </button>
@@ -61,15 +81,15 @@
               appButton
               [variant]="activeTab() === 'info' ? 'primary' : 'outline'"
               (click)="activeTab.set('info')"
-              class="capitalize"
+              class="capitalize !px-3.5 !py-1.5"
             >
-              Study Info
+              Info
             </button>
             <button
               appButton
               [variant]="activeTab() === 'metadata' ? 'primary' : 'outline'"
               (click)="activeTab.set('metadata')"
-              class="capitalize"
+              class="capitalize !px-3.5 !py-1.5"
             >
               Metadata
             </button>
@@ -79,7 +99,7 @@
               variant="ghost"
               (click)="openShortcuts()"
               title="Keyboard Shortcuts"
-              class="!px-3 hover:!bg-accent/10 font-bold text-muted"
+              class="!px-3 hover:!bg-accent/10 font-bold text-muted sticky right-0 bg-main z-10"
             >
               ?
             </button>
@@ -136,6 +156,24 @@
                   [canEdit]="canEdit()"
                   (edit)="onEditMetadata()"
                 ></app-study-metadata-tab>
+              } @else if (activeTab() === 'chapters') {
+                <app-study-sidebar
+                  class="h-full overflow-hidden"
+                  [isLargeScreen]="isLargeScreen()"
+                  [isSyncing]="isSyncing()"
+                  [canEdit]="canEdit()"
+                  [isTabMode]="true"
+                  displayMode="chapters"
+                ></app-study-sidebar>
+              } @else if (activeTab() === 'chat') {
+                <app-study-sidebar
+                  class="h-full overflow-hidden"
+                  [isLargeScreen]="isLargeScreen()"
+                  [isSyncing]="isSyncing()"
+                  [canEdit]="canEdit()"
+                  [isTabMode]="true"
+                  displayMode="chat"
+                ></app-study-sidebar>
               }
             </div>
           </div>

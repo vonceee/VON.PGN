@@ -41,6 +41,7 @@ import { StudyMetadataTabComponent } from './study-metadata-tab/study-metadata-t
 import { EditMetadataDialogComponent } from './dialogs/edit-metadata-dialog/edit-metadata-dialog.component';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { ShortcutsDialogComponent } from './dialogs/shortcuts-dialog/shortcuts-dialog.component';
+import { LayoutService } from '../../core/services/layout.service';
 
 @Component({
   selector: 'app-study',
@@ -110,6 +111,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private dialog = inject(Dialog);
   private destroyRef = inject(DestroyRef);
+  private layoutService = inject(LayoutService);
 
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
@@ -201,7 +203,9 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   isSyncing = signal(true);
   isLargeScreen = signal(false);
-  activeTab = signal<'notation' | 'info' | 'metadata'>('notation');
+  isThreeColumn = signal(false);
+  isTwoColumn = signal(false);
+  activeTab = signal<'notation' | 'info' | 'metadata' | 'chapters' | 'chat'>('notation');
   showDeleteModal = signal(false);
   isDeleting = signal(false);
   isActionInProgress = signal(false);
@@ -295,10 +299,24 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
 
     if (isPlatformBrowser(this.platformId)) {
-      this.isLargeScreen.set(window.innerWidth >= 1024);
-      fromEvent(window, 'resize').pipe(takeUntilDestroyed()).subscribe(() => {
-        this.isLargeScreen.set(window.innerWidth >= 1024);
-      });
+      this.updateLayoutStates();
+      fromEvent(window, 'resize')
+        .pipe(takeUntilDestroyed(), debounceTime(100))
+        .subscribe(() => {
+          this.updateLayoutStates();
+        });
+    }
+  }
+
+  private updateLayoutStates() {
+    const width = window.innerWidth;
+    this.isLargeScreen.set(width >= 1024);
+    this.isThreeColumn.set(width >= 1280);
+    this.isTwoColumn.set(width >= 1024 && width < 1280);
+    
+    // If we move back to 3-column and were on a sidebar tab, move back to notation
+    if (this.isThreeColumn() && (this.activeTab() === 'chapters' || this.activeTab() === 'chat')) {
+      this.activeTab.set('notation');
     }
   }
 
@@ -569,6 +587,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.layoutService.setFluid(true);
     if (isPlatformBrowser(this.platformId)) {
       this.engineService.analysis$
         .pipe(takeUntilDestroyed(this.destroyRef))
@@ -609,7 +628,10 @@ export class StudyComponent implements OnInit, OnDestroy {
     return sanMoves;
   }
 
-  ngOnDestroy() { this.studyService.disconnect(); }
+  ngOnDestroy() { 
+    this.studyService.disconnect(); 
+    this.layoutService.setFluid(false);
+  }
 
   onDeleteConfirmed() {
     if (!this.study()) return;
