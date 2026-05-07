@@ -47,6 +47,7 @@ import { UserHovercardDirective } from '@shared/directives';
                     <span 
                       class="text-sm font-bold text-content group-hover:text-accent transition-colors"
                       [appUserHovercard]="user.username"
+                      [disableClick]="true"
                     >{{ user.username }}</span>
                     <span class="text-xs text-muted">{{ user.displayName || user.username }}</span>
                   </div>

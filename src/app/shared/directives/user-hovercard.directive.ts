@@ -2,10 +2,11 @@ import {
   Directive,
   ElementRef,
   HostListener,
-  Input,
   OnDestroy,
   inject,
   PLATFORM_ID,
+  input,
+  DestroyRef,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -13,7 +14,8 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { UserHovercardComponent } from '../components/user-hovercard/user-hovercard.component';
 import { UserService } from '../../core/services/user.service';
 import { Subject, timer, of } from 'rxjs';
-import { takeUntil, switchMap, filter, map } from 'rxjs/operators';
+import { takeUntil, switchMap, map } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserProfile } from '../../core/models/user.model';
 
 @Directive({
@@ -21,21 +23,22 @@ import { UserProfile } from '../../core/models/user.model';
   standalone: true,
 })
 export class UserHovercardDirective implements OnDestroy {
-  @Input('appUserHovercard') username!: string;
+  username = input.required<string>({ alias: 'appUserHovercard' });
+  disableClick = input(false);
 
   private overlay = inject(Overlay);
   private elementRef = inject(ElementRef);
   private userService = inject(UserService);
   private platformId = inject(PLATFORM_ID);
+  private destroyRef = inject(DestroyRef);
   private isBrowser = isPlatformBrowser(this.platformId);
   private overlayRef: OverlayRef | null = null;
-  private destroy$ = new Subject<void>();
   private visibility$ = new Subject<boolean>();
 
   constructor() {
     this.visibility$
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(),
         switchMap((visible) => 
           visible 
             ? timer(400).pipe(map(() => true)) 
@@ -63,8 +66,9 @@ export class UserHovercardDirective implements OnDestroy {
 
   @HostListener('click')
   onClick() {
-    if (this.username) {
-      window.open(`/user/${this.username}`, '_blank');
+    if (this.disableClick()) return;
+    if (this.username()) {
+      window.open(`/user/${this.username()}`, '_blank');
     }
   }
 
@@ -109,8 +113,8 @@ export class UserHovercardDirective implements OnDestroy {
     const componentRef = this.overlayRef.attach(portal);
 
     // Fetch user data
-    this.userService.getUserProfileByUsername(this.username)
-      .pipe(takeUntil(this.destroy$))
+    this.userService.getUserProfileByUsername(this.username())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (user: UserProfile) => {
           componentRef.instance.userData = user;
@@ -135,8 +139,6 @@ export class UserHovercardDirective implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
     if (this.overlayRef) {
       this.overlayRef.dispose();
     }
