@@ -1,4 +1,4 @@
-import { inject, Injectable, signal, effect, PLATFORM_ID } from '@angular/core';
+import { inject, Injectable, signal, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -7,22 +7,8 @@ import { isPlatformBrowser } from '@angular/common';
 export class ThemeService {
   private platformId = inject(PLATFORM_ID);
 
-  // Use a signal to hold the dark mode state
+  // Forced light mode state
   public isDarkMode = signal<boolean>(false);
-
-  // Effect to persist to local storage and update the DOM class when the signal changes
-  private themeEffect = effect(() => {
-    if (!isPlatformBrowser(this.platformId)) return;
-    
-    const dark = this.isDarkMode();
-    localStorage.setItem('theme', dark ? 'dark' : 'light');
-
-    if (dark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  });
 
   constructor() {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -30,18 +16,12 @@ export class ThemeService {
   }
 
   private initTheme(): void {
-    const savedTheme = localStorage.getItem('theme');
-    if (
-      savedTheme === 'dark' ||
-      (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      this.isDarkMode.set(true);
-    } else {
-      this.isDarkMode.set(false);
-    }
+    // Always ensure light mode on initialization
+    document.documentElement.classList.remove('dark');
+    localStorage.removeItem('theme');
   }
 
   public toggleTheme(): void {
-    this.isDarkMode.update((v) => !v);
+    // No-op to prevent theme switching
   }
 }

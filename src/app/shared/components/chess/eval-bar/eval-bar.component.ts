@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
       <div class="eval-bar-track bg-white">
         <!-- Black bar (the overlay) -->
         <div
-          class="eval-bar-fill bg-neutral-800 transition-all duration-700 ease-out"
+          class="eval-bar-fill bg-neutral-800   ease-out"
           [style.height]="mode() === 'vertical' ? (100 - fillPercentage()) + '%' : '100%'"
           [style.width]="mode() === 'horizontal' ? (100 - fillPercentage()) + '%' : '100%'"
         ></div>

@@ -8,14 +8,14 @@
       <button 
         (click)="setFilter('pending')" 
         [class.bg-amber-50.text-amber-600]="selectedFilter() === 'pending'"
-        class="px-3 py-1.5 text-xs font-semibold rounded transition-all"
+        class="px-3 py-1.5 text-xs font-semibold rounded "
       >
         Pending
       </button>
       <button 
         (click)="setFilter('approved')" 
         [class.bg-emerald-50.text-emerald-600]="selectedFilter() === 'approved'"
-        class="px-3 py-1.5 text-xs font-semibold rounded transition-all"
+        class="px-3 py-1.5 text-xs font-semibold rounded "
       >Approved</button>
     </div>
   </header>

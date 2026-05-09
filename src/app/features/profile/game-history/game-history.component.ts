@@ -23,7 +23,7 @@ import { LoadingComponent } from '@shared/feedback';
 
         <div class="flex flex-col">
           @for (game of games(); track game.id) {
-            <div class="flex flex-col md:flex-row md:items-start group py-8 px-2 md:px-6 hover:bg-white/[0.02] transition-all duration-300 border-b border-border-theme/50 last:border-0">
+            <div class="flex flex-col md:flex-row md:items-start group py-8 px-2 md:px-6 hover:bg-white/[0.02]   border-b border-border-theme/50 last:border-0">
               <!-- Left Column: Meta -->
               <div class="w-full md:w-48 mb-4 md:mb-0 shrink-0">
                 <div class="flex flex-col gap-0.5">

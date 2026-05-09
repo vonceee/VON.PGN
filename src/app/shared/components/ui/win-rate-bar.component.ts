@@ -8,21 +8,21 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="flex h-full w-full rounded-sm overflow-hidden text-xs font-bold text-white shadow-sm">
       <div 
-        class="bg-zinc-200 text-zinc-800 flex items-center justify-center transition-all duration-500" 
+        class="bg-zinc-200 text-zinc-800 flex items-center justify-center  " 
         [style.width.%]="stats().white"
         [title]="stats().white + '% White wins'"
       >
         <span class="truncate px-1" *ngIf="stats().white > 15">{{ stats().white }}%</span>
       </div>
       <div 
-        class="bg-zinc-500 flex items-center justify-center transition-all duration-500 border-x border-black/5" 
+        class="bg-zinc-500 flex items-center justify-center   border-x border-black/5" 
         [style.width.%]="stats().draws"
         [title]="stats().draws + '% Draws'"
       >
         <span class="truncate px-1" *ngIf="stats().draws > 15">{{ stats().draws }}%</span>
       </div>
       <div 
-        class="bg-zinc-800 flex items-center justify-center transition-all duration-500" 
+        class="bg-zinc-800 flex items-center justify-center  " 
         [style.width.%]="stats().black"
         [title]="stats().black + '% Black wins'"
       >

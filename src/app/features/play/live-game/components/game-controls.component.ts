@@ -36,7 +36,7 @@ import {
           } @else {
             <div class="flex items-center justify-center gap-2">
               @if (drawOfferFromOpponent()) {
-                <div class="flex items-center gap-1 animate-in slide-in-from-right-2 duration-200">
+                <div class="flex items-center gap-1 animate-in slide-in-from-right-2 ">
                   <button
                     appButton
                     variant="primary"
@@ -55,7 +55,7 @@ import {
                   </button>
                 </div>
               } @else if (iOfferedDraw()) {
-                <div class="flex items-center gap-1 animate-in slide-in-from-right-2 duration-200">
+                <div class="flex items-center gap-1 animate-in slide-in-from-right-2 ">
                   <button
                     appButton
                     variant="primary"
@@ -96,7 +96,7 @@ import {
                     <ng-icon name="heroFlag" class="text-xl"></ng-icon>
                   </button>
                 } @else {
-                  <div class="flex items-center gap-1 animate-in slide-in-from-right-2 duration-200">
+                  <div class="flex items-center gap-1 animate-in slide-in-from-right-2 ">
                     <button
                       appButton
                       variant="danger"

@@ -91,7 +91,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   styles: [`
     @reference "../../../../../styles.css";
     .metadata-input {
-      @apply w-full px-3 py-2 bg-subtle border border-border-base rounded-lg text-sm font-medium focus:ring-2 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted/50  transition-all;
+      @apply w-full px-3 py-2 bg-subtle border border-border-base rounded-lg text-sm font-medium focus:ring-2 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted/50  ;
     }
   `]
 })

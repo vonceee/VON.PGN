@@ -34,21 +34,6 @@
   --tracking-tightest: 0.15em;
 }
 
-.dark {
-  --color-main: hsl(240 10% 4%);
-  --color-surface: hsl(240 6% 7%);
-  --color-subtle: hsl(240 5% 10%);
-
-  --color-content: hsl(210 40% 98%);
-  --color-muted: hsl(215 32% 65%);
-  --color-accent: hsl(189 85% 53%);
-
-  --color-border-base: hsl(215 14% 23%);
-  
-  --color-board-coord-dark: #9ca3af;
-  --color-board-coord-light: #e5e7eb;
-}
-
 /* --- Modular Styles --- */
 @import './styles/base.css';
 @import './styles/components.css';

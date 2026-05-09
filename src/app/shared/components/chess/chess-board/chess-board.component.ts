@@ -47,7 +47,7 @@ import { AudioService } from '../../../../core/services/audio.service';
           <div class="absolute inset-0 z-40 bg-black/20" (click)="cancelPromotion()"></div>
 
           <div
-            class="absolute inset-0 z-50 flex items-center justify-center transition-all animate-in fade-in zoom-in duration-150"
+            class="absolute inset-0 z-50 flex items-center justify-center  animate-in fade-in zoom-in duration-150"
           >
             <div
               class="promotion-menu p-4 bg-surface border border-border-base rounded-2xl shadow-2xl flex gap-4"
@@ -56,7 +56,7 @@ import { AudioService } from '../../../../core/services/audio.service';
               @for (piece of promotionPieces; track piece.type) {
                 <button
                   (click)="selectPromotion(piece.type)"
-                  class="w-20 h-20 flex items-center justify-center rounded-xl bg-subtle hover:bg-surface border border-border-base transition-all active:scale-90"
+                  class="w-20 h-20 flex items-center justify-center rounded-xl bg-subtle hover:bg-surface border border-border-base  active:scale-90"
                 >
                   <span class="text-3xl font-black text-content uppercase">{{ piece.type }}</span>
                 </button>
@@ -81,7 +81,7 @@ import { AudioService } from '../../../../core/services/audio.service';
         <div class="absolute inset-0 pointer-events-none z-20">
           @for (g of glyphs(); track g.square + g.symbol) {
             <div 
-              class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white  text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border shadow-xl transition-all duration-300 absolute"
+              class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white  text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border shadow-xl   absolute"
               [class.bg-[var(--color-annotation-good)]]="g.class === 'good' || g.class === 'brilliant'"
               [class.bg-[var(--color-annotation-bad)]]="g.class === 'mistake' || g.class === 'blunder'"
               [class.bg-[var(--color-annotation-interesting)]]="g.class === 'interesting' || g.class === 'dubious' || g.class === 'only-move' || g.class === 'zugzwang'"

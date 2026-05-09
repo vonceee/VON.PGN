@@ -27,7 +27,7 @@ export interface AddChapterDialogResult {
     BoardEditorComponent,
   ],
   template: `
-    <div class="block w-[90vw] mx-auto transition-all duration-500 ease-in-out" [class.max-w-xl]="activeTab() !== 'editor'" [class.max-w-3xl]="activeTab() === 'editor'">
+    <div class="block w-[90vw] mx-auto   ease-in-out" [class.max-w-xl]="activeTab() !== 'editor'" [class.max-w-3xl]="activeTab() === 'editor'">
       <app-dialog-wrapper [title]="activeTab() === 'editor' ? 'Board Editor' : 'New Chapter'" (close)="dialogRef.close()">
         <!-- Body Content -->
         @if (activeTab() !== 'editor') {
@@ -45,16 +45,16 @@ export interface AddChapterDialogResult {
                     [ngModel]="name()"
                     (ngModelChange)="name.set($event)"
                     placeholder="e.g. Opening Analysis"
-                    class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted/50  transition-all duration-300"
+                    class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted/50   "
                     autofocus
                   />
-                  <div class="absolute inset-0 rounded-xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none transition-opacity duration-300"></div>
+                  <div class="absolute inset-0 rounded-xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none transition-opacity "></div>
                 </div>
               </div>
 
               <!-- Orientation (Hidden for PGN) -->
               @if (activeTab() !== 'pgn') {
-                <div class="space-y-2 animate-in fade-in slide-in-from-right-4 duration-300">
+                <div class="space-y-2 animate-in fade-in slide-in-from-right-4 ">
                   <label class="text-sm font-semibold ml-1">
                     Orientation
                   </label>
@@ -62,7 +62,7 @@ export interface AddChapterDialogResult {
                     <select
                       [ngModel]="orientation()"
                       (ngModelChange)="orientation.set($event)"
-                      class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none  transition-all duration-300 appearance-none cursor-pointer"
+                      class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none    appearance-none cursor-pointer"
                     >
                       <option value="white">White</option>
                       <option value="black">Black</option>
@@ -92,7 +92,7 @@ export interface AddChapterDialogResult {
             <!-- Tab Content Area -->
             <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md relative">
               @if (activeTab() === 'empty') {
-                <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4 animate-in zoom-in-95 duration-500">
+                <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4 animate-in zoom-in-95 ">
                   <div class="space-y-1">
                     <h3 class="text-sm font-bold text-content uppercase tracking-wider">Start Fresh</h3>
                     <p class="text-xs text-muted max-w-[200px] mx-auto leading-relaxed">
@@ -103,7 +103,7 @@ export interface AddChapterDialogResult {
               }
 
               @if (activeTab() === 'fen') {
-                <div class="space-y-4 py-4 animate-in slide-in-from-right-4 duration-500">
+                <div class="space-y-4 py-4 animate-in slide-in-from-right-4 ">
                   <div class="space-y-3">
                     <div class="flex items-center justify-between">
                       <h3 class="text-sm font-bold text-content uppercase tracking-wider ml-1">
@@ -115,14 +115,14 @@ export interface AddChapterDialogResult {
                       [ngModel]="fen()"
                       (ngModelChange)="fen.set($event)"
                       placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-                      class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none  transition-all duration-300"
+                      class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none   "
                     />
                   </div>
                 </div>
               }
 
               @if (activeTab() === 'pgn') {
-                <div class="space-y-4 py-2 animate-in slide-in-from-left-4 duration-500">
+                <div class="space-y-4 py-2 animate-in slide-in-from-left-4 ">
                   <div class="space-y-3">
                     <div class="flex justify-between items-center px-1">
                       <button 
@@ -154,7 +154,7 @@ export interface AddChapterDialogResult {
                         (ngModelChange)="pgn.set($event)"
                         rows="8"
                         placeholder="paste pgn here.."
-                        class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm outline-none  transition-all duration-300 resize-none custom-scrollbar"
+                        class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm outline-none    resize-none custom-scrollbar"
                       ></textarea>
                       
                       @if (fileSummary()) {
@@ -170,7 +170,7 @@ export interface AddChapterDialogResult {
           </div>
         } @else {
           <!-- Full-screen Editor View -->
-          <div class="animate-in fade-in zoom-in-95 duration-500">
+          <div class="animate-in fade-in zoom-in-95 ">
             <app-board-editor 
               #editor
               [fen]="fen()" 

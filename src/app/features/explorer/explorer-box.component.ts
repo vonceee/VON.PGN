@@ -23,7 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
   ],
   templateUrl: './explorer-box.component.html',
   host: {
-    'class': 'block z-50 relative transition-all duration-300 ease-in-out w-full'
+    'class': 'block z-50 relative   ease-in-out w-full'
   }
 })
 export class ExplorerBoxComponent {

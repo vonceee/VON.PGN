@@ -90,7 +90,7 @@
         <!-- Read Aloud + Navigation -->
         <div class="flex flex-wrap items-center gap-3">
           <button
-            class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-cyan-400 hover:cursor-pointer transition-colors duration-200"
+            class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-cyan-400 hover:cursor-pointer transition-colors "
             [class.text-cyan-400]="isSpeaking() && !isPaused()"
             (click)="toggleReadAloud()"
           >
@@ -128,7 +128,7 @@
           @if (availableVoices().length > 0) {
             <div class="relative flex items-center">
               <button
-                class="hover:text-cyan-400 hover:cursor-pointer transition-colors duration-200"
+                class="hover:text-cyan-400 hover:cursor-pointer transition-colors "
                 (click)="toggleSettings()"
                 title="Read Aloud Settings"
               >
@@ -227,7 +227,7 @@
         @for (block of lessonData.contentBlocks; track $index) {
           @if (block.type === 'text') {
             <div
-              class="group relative my-6 rounded-lg transition-all duration-300 border border-transparent"
+              class="group relative my-6 rounded-lg   border border-transparent"
               [class.bg-cyan-50]="activeBlockIndex() === $index"
               [class.]="activeBlockIndex() === $index"
               [class.!border-cyan-400]="activeBlockIndex() === $index"
@@ -333,7 +333,7 @@
             @for (course of suggestedCourses; track course.id) {
               <a
                 [routerLink]="['/learn', course.id]"
-                class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer bg-white "
+                class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400 hover:shadow-md  cursor-pointer bg-white "
               >
                 <h4 class="font-bold text-lg mb-2 group-hover:text-cyan-400">
                   {{ course.title }}

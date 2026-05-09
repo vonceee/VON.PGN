@@ -66,7 +66,7 @@
                   <div class="flex items-center gap-2 shrink-0">
                     <button
                       (click)="challengeUser()"
-                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer bg-accent text-white hover:bg-accent/90 border border-transparent shadow-sm"
+                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold  duration-150 cursor-pointer bg-accent text-white hover:bg-accent/90 border border-transparent shadow-sm"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +93,7 @@
                     <button
                       (click)="messageUser()"
                       [disabled]="isMessaging()"
-                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 /10 text-slate-700  hover:bg-slate-200  border border-slate-200 "
+                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold  duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 /10 text-slate-700  hover:bg-slate-200  border border-slate-200 "
                     >
                       @if (isMessaging()) {
                         <div
@@ -121,7 +121,7 @@
                     <button
                       (click)="toggleFollow()"
                       [disabled]="isFollowLoading()"
-                      class="group relative px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="group relative px-5 py-2 rounded-lg text-sm font-semibold  duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       [class.bg-cyan-500]="!isFollowing()"
                       [class.hover:bg-cyan-600]="!isFollowing()"
                       [class.text-white]="!isFollowing()"
@@ -190,7 +190,7 @@
         <!-- Ratings Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Bullet -->
-          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
             <span class="text-xs font-bold uppercase tracking-widest text-muted">Bullet</span>
             <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.bullet?.rating ?? 1500 }}
@@ -202,7 +202,7 @@
           </div>
 
           <!-- Blitz -->
-          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
             <span class="text-xs font-bold uppercase tracking-widest text-muted">Blitz</span>
             <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.blitz?.rating ?? 1500 }}
@@ -214,7 +214,7 @@
           </div>
 
           <!-- Rapid -->
-          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
             <span class="text-xs font-bold uppercase tracking-widest text-muted">Rapid</span>
             <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.rapid?.rating ?? 1500 }}
@@ -226,7 +226,7 @@
           </div>
 
           <!-- Tactics -->
-          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
             <span class="text-xs font-bold uppercase tracking-widest text-muted">Tactics</span>
             <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.progress.puzzleRating }}
@@ -258,7 +258,7 @@
                     @for (tournament of userTournaments(); track tournament.id) {
                       <a
                         [routerLink]="['/events', tournament.id]"
-                        class="flex flex-col p-4 rounded-xl bg-slate-50  border border-transparent hover:border-cyan-500/50 transition-all group"
+                        class="flex flex-col p-4 rounded-xl bg-slate-50  border border-transparent hover:border-cyan-500/50  group"
                       >
                         <div class="flex items-center justify-between mb-2">
                           <span
@@ -464,7 +464,7 @@
                   @if (isAuthenticated()) {
                     <button
                       (click)="toggleTabUserFollow(userItem)"
-                      class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer shrink-0"
+                      class="px-3 py-1.5 rounded-lg text-xs font-semibold  duration-150 cursor-pointer shrink-0"
                       [class.bg-cyan-500]="!userItem.is_following"
                       [class.text-white]="!userItem.is_following"
                       [class.hover:bg-cyan-600]="!userItem.is_following"

@@ -25,7 +25,7 @@ import { UserHovercardDirective } from '@shared/directives';
               [(ngModel)]="searchQuery"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Type username..."
-              class="w-full px-4 py-2 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted  transition-all"
+              class="w-full px-4 py-2 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted  "
               autofocus
             />
           </div>
@@ -40,7 +40,7 @@ import { UserHovercardDirective } from '@shared/directives';
               @for (user of results(); track user.uid) {
                 <button
                   (click)="selectUser(user)"
-                  class="w-full flex items-center p-3 px-4 rounded-xl hover:bg-surface transition-all text-left group"
+                  class="w-full flex items-center p-3 px-4 rounded-xl hover:bg-surface  text-left group"
                   [class.bg-accent/10]="selectedUser()?.uid === user.uid"
                 >
                   <div class="flex flex-col">

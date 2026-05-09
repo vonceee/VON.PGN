@@ -142,7 +142,7 @@ export interface ComputerSetupResult {
                         [class.border-cyan-500]="customMinutes() === min"
                         [class.bg-transparent]="customMinutes() !== min"
                         [class.border-border-theme]="customMinutes() !== min"
-                        class="h-8 text-xs font-bold border rounded-lg cursor-pointer transition-all hover:bg-cyan-500/10"
+                        class="h-8 text-xs font-bold border rounded-lg cursor-pointer  hover:bg-cyan-500/10"
                       >
                         {{ min }}
                       </button>
@@ -181,7 +181,7 @@ export interface ComputerSetupResult {
                         [class.border-cyan-500]="customIncrement() === inc"
                         [class.bg-transparent]="customIncrement() !== inc"
                         [class.border-border-theme]="customIncrement() !== inc"
-                        class="h-8 text-xs font-bold border rounded-lg cursor-pointer transition-all hover:bg-cyan-500/10"
+                        class="h-8 text-xs font-bold border rounded-lg cursor-pointer  hover:bg-cyan-500/10"
                       >
                         {{ inc }}
                       </button>

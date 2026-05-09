@@ -93,7 +93,7 @@ import { ToastService } from '../../../core/services/toast.service';
               <div formArrayName="playingExperience" class="space-y-2">
                 @for (ctrl of playingExperience.controls; track $index) {
                   <div class="flex gap-2">
-                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 font-medium" placeholder="Achievement or tournament win...">
+                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium" placeholder="Achievement or tournament win...">
                     <button type="button" (click)="removePlayingExp($index)" class="px-2 py-1 text-xs font-bold text-rose-500 hover:bg-rose-50 rounded border border-slate-200">
                       Delete
                     </button>
@@ -111,7 +111,7 @@ import { ToastService } from '../../../core/services/toast.service';
               <div formArrayName="teachingExperience" class="space-y-2">
                 @for (ctrl of teachingExperience.controls; track $index) {
                   <div class="flex gap-2">
-                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 font-medium" placeholder="Previous students or coaching roles...">
+                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium" placeholder="Previous students or coaching roles...">
                     <button type="button" (click)="removeTeachingExp($index)" class="px-2 py-1 text-xs font-bold text-rose-500 hover:bg-rose-50 rounded border border-slate-200">
                       Delete
                     </button>
@@ -159,7 +159,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">Coaching Type</label>
-              <select formControlName="coachingType" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 font-medium">
+              <select formControlName="coachingType" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
                 <option value="Online">Online</option>
                 <option value="Onsite">Onsite</option>
                 <option value="Online & Onsite">Online & Onsite</option>
@@ -168,7 +168,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">Availability</label>
-              <input type="text" formControlName="availability" placeholder="e.g. Mon-Fri, 10am - 6pm" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 font-medium">
+              <input type="text" formControlName="availability" placeholder="e.g. Mon-Fri, 10am - 6pm" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
             </div>
 
             <div class="flex items-center gap-3 p-4 bg-slate-50 rounded border border-slate-100">
@@ -184,19 +184,19 @@ import { ToastService } from '../../../core/services/toast.service';
             <div class="space-y-4">
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">Twitter/X</label>
-                <input type="text" formControlName="twitter" placeholder="username" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 font-medium">
+                <input type="text" formControlName="twitter" placeholder="username" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">Twitch</label>
-                <input type="text" formControlName="twitch" placeholder="channel" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 font-medium">
+                <input type="text" formControlName="twitch" placeholder="channel" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">YouTube</label>
-                <input type="text" formControlName="youtube" placeholder="channel url" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 font-medium">
+                <input type="text" formControlName="youtube" placeholder="channel url" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1 px-1">Lichess</label>
-                <input type="text" formControlName="lichess" placeholder="username" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-slate-900 font-medium">
+                <input type="text" formControlName="lichess" placeholder="username" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
               </div>
             </div>
           </div>

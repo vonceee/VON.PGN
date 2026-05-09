@@ -15,7 +15,7 @@ import { UserHovercardDirective } from '@shared/directives';
         <div class="space-y-4">
           <div class="max-h-[300px] overflow-y-auto custom-scrollbar space-y-0.5 pr-1">
             @for (viewer of data.viewers; track viewer) {
-              <div class="w-full flex items-center p-2.5 px-4 rounded-xl hover:bg-surface transition-all group">
+              <div class="w-full flex items-center p-2.5 px-4 rounded-xl hover:bg-surface  group">
                 <div class="flex flex-col">
                   <span 
                     class="text-sm font-bold text-content group-hover:text-accent transition-colors cursor-pointer"

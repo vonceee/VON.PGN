@@ -151,7 +151,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                     (moveMade)="onMoveMade($event)"
                   ></app-chess-board>
 
-                  <div class="hidden lg:block w-4 h-[var(--board-size)] transition-all duration-500 ease-in-out"
+                  <div class="hidden lg:block w-4 h-[var(--board-size)]   ease-in-out"
                        [class.opacity-0]="!isEngineActive()" [class.invisible]="!isEngineActive()">
                     <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="vertical"></app-eval-bar>
                   </div>
@@ -166,7 +166,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                 @for (tab of ['notation', 'analysis']; track tab) {
                   <button
                     (click)="activeTab.set(tab === 'notation' ? 'notation' : 'analysis')"
-                    class="flex-1 py-4 text-[10px] font-bold uppercase tracking-widest transition-all duration-300 relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-500 after:-translate-x-1/2 after:transition-all after:duration-300"
+                    class="flex-1 py-4 text-[10px] font-bold uppercase tracking-widest   relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-500 after:-translate-x-1/2 after: after:"
                     [class.text-cyan-400]="activeTab() === tab"
                     [class.opacity-40]="activeTab() !== tab"
                     [class.after:w-full]="activeTab() === tab"

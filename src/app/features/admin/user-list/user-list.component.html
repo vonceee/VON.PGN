@@ -13,13 +13,13 @@
           type="text" 
           [formControl]="searchControl"
           placeholder="Search by username, name or email..."
-          class="w-full pl-10 pr-4 py-2 bg-main border border-border-base rounded-lg text-sm outline-none focus:border-accent transition-all"
+          class="w-full pl-10 pr-4 py-2 bg-main border border-border-base rounded-lg text-sm outline-none focus:border-accent "
         >
       </div>
       
       <select 
         [formControl]="roleFilter"
-        class="px-4 py-2 bg-main border border-border-base rounded-lg text-sm outline-none focus:border-accent transition-all"
+        class="px-4 py-2 bg-main border border-border-base rounded-lg text-sm outline-none focus:border-accent "
       >
         <option value="">All Roles</option>
         <option value="admin">Admin</option>
@@ -112,19 +112,19 @@
                   <div class="flex items-center justify-end gap-2">
                     <button 
                       (click)="viewProfile(user.uid)"
-                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-subtle text-content transition-all"
+                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-subtle text-content "
                     >
                       Profile
                     </button>
                     <button 
                       (click)="editUser(user.uid)"
-                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-subtle text-content transition-all"
+                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-subtle text-content "
                     >
                       Edit
                     </button>
                     <button 
                       (click)="deleteUser(user)"
-                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-red-50 hover:text-red-600  transition-all"
+                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-red-50 hover:text-red-600  "
                     >
                       Delete
                     </button>

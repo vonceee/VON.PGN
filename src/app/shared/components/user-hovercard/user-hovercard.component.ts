@@ -9,7 +9,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
   standalone: true,
   imports: [CommonModule, ChessBoardComponent, FlagIconComponent],
   template: `
-    <div class="ui-panel p-4 w-80 overflow-hidden animate-in fade-in zoom-in duration-200">
+    <div class="ui-panel p-4 w-80 overflow-hidden animate-in fade-in zoom-in ">
       @if (user()) {
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">

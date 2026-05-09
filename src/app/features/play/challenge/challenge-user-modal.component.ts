@@ -66,7 +66,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
         </div>
 
         @if (showCustomForm()) {
-            <section class="space-y-10 animate-in fade-in slide-in-from-top-2 duration-300">
+            <section class="space-y-10 animate-in fade-in slide-in-from-top-2 ">
               <div class="flex justify-between items-center">
                 <h3 class="text-sm font-black italic">Custom Setup</h3>
                 <button

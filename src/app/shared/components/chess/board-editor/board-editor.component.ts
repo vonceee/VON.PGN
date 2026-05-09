@@ -17,7 +17,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
   providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark })],
   template: `
         <!-- 2-Column Compact Layout with Left-Side Pieces -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full animate-in fade-in zoom-in-95 duration-500">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full animate-in fade-in zoom-in-95 ">
           
           <!-- Column 1: Pieces + Board (8/12) -->
           <div class="lg:col-span-8 flex flex-row gap-6 items-start">
@@ -29,7 +29,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
                 <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
                   @for (role of pieceRoles; track role) {
                     <button 
-                      class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg transition-all border-2 group"
+                      class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
                       [class.bg-accent]="isToolSelected('black', role)"
                       [class.border-accent]="isToolSelected('black', role)"
                       [class.border-transparent]="!isToolSelected('black', role)"
@@ -47,7 +47,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
                 <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
                   @for (role of pieceRoles; track role) {
                     <button 
-                      class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg transition-all border-2 group"
+                      class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
                       [class.bg-accent]="isToolSelected('white', role)"
                       [class.border-accent]="isToolSelected('white', role)"
                       [class.border-transparent]="!isToolSelected('white', role)"

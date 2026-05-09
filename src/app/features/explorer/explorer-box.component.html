@@ -1,7 +1,7 @@
 <div class="flex flex-col w-full relative">
   <!-- Expanded Panel (Overlay) -->
   @if (!isCollapsed()) {
-    <div class="absolute bottom-[calc(100%+0.5rem)] left-0 right-0 h-[220px] z-[100] flex flex-col border border-border-base rounded-xl overflow-hidden bg-surface/95 backdrop-blur-xl animate-in slide-in-from-bottom-4 duration-300">
+    <div class="absolute bottom-[calc(100%+0.5rem)] left-0 right-0 h-[220px] z-[100] flex flex-col border border-border-base rounded-xl overflow-hidden bg-surface/95 backdrop-blur-xl animate-in slide-in-from-bottom-4 ">
       <!-- Header -->
       <div class="flex items-center justify-between px-3 h-10 border-b border-border-base bg-surface/80 backdrop-blur-md cursor-pointer"
            (click)="toggleCollapse()">
@@ -10,7 +10,7 @@
             <button 
               (click)="$event.stopPropagation(); setDb('masters')"
               [disabled]="isTablebase()"
-              class="text-xs font-semibold px-2 py-1 transition-all hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              class="text-xs font-semibold px-2 py-1  hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               [class.text-accent]="dbType() === 'masters'"
               [class.underline]="dbType() === 'masters'"
               [class.decoration-2]="dbType() === 'masters'"
@@ -20,7 +20,7 @@
             <button 
               (click)="$event.stopPropagation(); setDb('lichess')"
               [disabled]="isTablebase()"
-              class="text-xs font-semibold px-2 py-1 transition-all hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              class="text-xs font-semibold px-2 py-1  hover:underline cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               [class.text-accent]="dbType() === 'lichess'"
               [class.underline]="dbType() === 'lichess'"
               [class.decoration-2]="dbType() === 'lichess'"
@@ -46,7 +46,7 @@
         }
   
         @if (openingData; as d) {
-          <div class="p-2 animate-in fade-in duration-300">
+          <div class="p-2 animate-in fade-in ">
             <!-- Opening Title -->
             @if (d.opening) {
               <div class="px-2 pb-3 pt-1 border-b border-border-base/50 mb-3 rounded-sm">
@@ -115,7 +115,7 @@
         }
   
         @if (tablebaseData; as td) {
-          <div class="p-2 animate-in fade-in duration-300">
+          <div class="p-2 animate-in fade-in ">
             <div class="px-2 py-3 border-b border-border-base/50 mb-3 text-center">
               <div class="text-[10px] font-bold text-muted uppercase tracking-widest mb-1">Endgame Tablebase</div>
               <div class="text-xs font-bold text-accent">Syzygy 7-piece enabled</div>

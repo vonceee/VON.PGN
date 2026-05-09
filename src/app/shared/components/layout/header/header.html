@@ -1,5 +1,5 @@
 <header
-  class="sticky top-0 z-50 flex w-full items-center justify-between px-4 md:px-16 py-1.5 lg:py-2.5 bg-main border-b border-border-base transition-all duration-300"
+  class="sticky top-0 z-50 flex w-full items-center justify-between px-4 md:px-16 py-1.5 lg:py-2.5 bg-main border-b border-border-base  "
 >
   <a
     appLink
@@ -22,7 +22,7 @@
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 flex flex-col shadow-xl"
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col shadow-xl"
       >
         <a
           appLink
@@ -79,7 +79,7 @@
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 flex flex-col shadow-xl"
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col shadow-xl"
       >
         <a
           appLink
@@ -115,7 +115,7 @@
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 flex flex-col shadow-xl"
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col shadow-xl"
       >
         <a
           appLink
@@ -168,7 +168,7 @@
   <!-- Desktop/Tablet Search Bar -->
   <div class="relative ml-auto sm:ml-10 mr-4 hidden sm:block group/search" #searchContainer>
     <div
-      class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-surface/50 border border-border-base focus-within:border-accent/50 focus-within:bg-main/50 focus-within:ring-4 focus-within:ring-accent/5 transition-all duration-300"
+      class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-surface/50 border border-border-base focus-within:border-accent/50 focus-within:bg-main/50 focus-within:ring-4 focus-within:ring-accent/5  "
     >
       <input
         #searchInput
@@ -242,7 +242,7 @@
         >
           <span class="text-sm lg:text-base xl:text-lg  text-content group-hover:text-accent transition-colors">Alerts</span>
           @if (notificationService.unreadCount() > 0) {
-            <span class="px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center bg-accent text-white text-[10px]  rounded-full animate-in zoom-in duration-200">
+            <span class="px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center bg-accent text-white text-[10px]  rounded-full animate-in zoom-in ">
               {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
             </span>
           }
@@ -300,7 +300,7 @@
         <!-- Desktop Profile Dropdown -->
         <div
           [class.hidden]="!isProfileDropdownOpen()"
-          class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden origin-top-right transition-all"
+          class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden origin-top-right "
         >
           <!-- Navigation Links -->
           <div class="flex flex-col py-1">
@@ -374,20 +374,6 @@
                 Admin Panel
               </a>
             }
-            <div class="h-px w-full bg-border-base my-1"></div>
-
-            <!-- Theme Toggle -->
-            <button
-              (click)="themeService.toggleTheme()"
-              class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-content text-sm w-full text-left"
-            >
-              @if (themeService.isDarkMode()) {
-                <span>Light Mode</span>
-              } @else {
-                <span>Dark Mode</span>
-              }
-            </button>
-
             <!-- Network Status -->
             <div class="flex items-center justify-between px-4 py-2">
               <div class="flex items-center gap-3">
@@ -401,22 +387,22 @@
                 }
                 <div class="flex items-end gap-0.5 h-3.5">
                   <div
-                    class="w-1 rounded-sm transition-all duration-300"
+                    class="w-1 rounded-sm  "
                     [style.height]="getPingBarHeight(0)"
                     [style.backgroundColor]="getPingColor()"
                   ></div>
                   <div
-                    class="w-1 rounded-sm transition-all duration-300"
+                    class="w-1 rounded-sm  "
                     [style.height]="getPingBarHeight(1)"
                     [style.backgroundColor]="getPingColor()"
                   ></div>
                   <div
-                    class="w-1 rounded-sm transition-all duration-300"
+                    class="w-1 rounded-sm  "
                     [style.height]="getPingBarHeight(2)"
                     [style.backgroundColor]="getPingColor()"
                   ></div>
                   <div
-                    class="w-1 rounded-sm transition-all duration-300"
+                    class="w-1 rounded-sm  "
                     [style.height]="getPingBarHeight(3)"
                     [style.backgroundColor]="getPingColor()"
                   ></div>

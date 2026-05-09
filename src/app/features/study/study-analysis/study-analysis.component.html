@@ -13,7 +13,7 @@
     @if (isEngineError() && isEngineActive()) {
       <button
         (click)="onRetryEngine()"
-        class="flex items-center gap-1 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition-all"
+        class="flex items-center gap-1 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 "
         title="Retry Engine"
       >
         <span class="text-[10px] font-bold uppercase tracking-wider">Retry</span>
@@ -21,7 +21,7 @@
     }
 
     @if (isEngineActive()) {
-      <div class="flex items-center gap-2 animate-in fade-in duration-500">
+      <div class="flex items-center gap-2 animate-in fade-in ">
         @if (engineDepth() > 0) {
           <span class="text-xs font-medium select-none">
             depth = {{ engineDepth() }}
@@ -51,14 +51,14 @@
 
 <!-- Inline Engine Settings Panel -->
 @if (showEngineSettings() && isEngineActive()) {
-  <div class="px-4 py-3 border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 duration-300 flex flex-col gap-3">
+  <div class="px-4 py-3 border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1  flex flex-col gap-3">
     <div class="flex items-center justify-between">
       <span class="text-[10px] font-bold uppercase tracking-widest text-muted">Lines</span>
       <div class="flex gap-1">
         @for (n of [1,2,3]; track n) {
           <button
             (click)="onMultiPvChange(n)"
-            class="w-7 h-7 rounded-md text-[10px] font-black transition-all duration-200"
+            class="w-7 h-7 rounded-md text-[10px] font-black  "
             [class]="multiPvCount() === n
               ? 'bg-accent/20 text-accent border border-accent/30'
               : 'bg-subtle text-muted border border-transparent hover:bg-surface'"
@@ -73,7 +73,7 @@
 
 <!-- Multi-PV Lines -->
 @if (isEngineActive() && enginePvLines().length > 0) {
-  <div class="border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 duration-500">
+  <div class="border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 ">
     @for (line of enginePvLines(); track line.pvIndex) {
       <div class="flex items-start gap-2 px-4 py-1.5" 
         [class.border-t]="line.pvIndex > 0"

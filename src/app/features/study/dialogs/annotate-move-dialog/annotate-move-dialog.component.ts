@@ -40,7 +40,7 @@ export interface AnnotateMoveDialogResult {
                 <button
                   (click)="toggleGlyph(glyph.id)"
                   [title]="glyph.name"
-                  class="flex items-center justify-center aspect-square rounded-lg border transition-all duration-200 group relative"
+                  class="flex items-center justify-center aspect-square rounded-lg border   group relative"
                   [class.bg-accent]="isSelected(glyph.id)"
                   [class.text-main]="isSelected(glyph.id)"
                   [class.border-accent]="isSelected(glyph.id)"
@@ -70,10 +70,10 @@ export interface AnnotateMoveDialogResult {
                 (ngModelChange)="comment.set($event)"
                 placeholder="add your thoughts on this move.."
                 rows="4"
-                class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-2xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none  transition-all duration-300 resize-none custom-scrollbar"
+                class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-2xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none    resize-none custom-scrollbar"
                 autofocus
               ></textarea>
-              <div class="absolute inset-0 rounded-2xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none transition-opacity duration-300"></div>
+              <div class="absolute inset-0 rounded-2xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none transition-opacity "></div>
             </div>
           </div>
         </div>

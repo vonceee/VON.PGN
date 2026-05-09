@@ -20,7 +20,7 @@ footer {
 
 /* 
   Global Transitions
-  Enables smooth dark/light mode switching for key properties.
+  Enables smooth state transitions for key properties (hover, focus, etc).
 */
 *,
 *::before,

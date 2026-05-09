@@ -31,7 +31,7 @@ interface FeedbackForm {
       </button>
 
       @if (!isSubmitted()) {
-        <div class="space-y-8 animate-in fade-in duration-300">
+        <div class="space-y-8 animate-in fade-in ">
           <div>
             <h2 class="text-2xl font-semibold mb-2">Send feedback</h2>
           </div>
@@ -47,7 +47,7 @@ interface FeedbackForm {
                   [(ngModel)]="form.name"
                   name="name"
                   placeholder="Your name (optional)"
-                  class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500 transition-all"
+                  class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500 "
                 />
               </div>
 
@@ -60,7 +60,7 @@ interface FeedbackForm {
                   [(ngModel)]="form.email"
                   name="email"
                   placeholder="your@email.com (optional)"
-                  class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500 transition-all"
+                  class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500 "
                 />
               </div>
             </div>
@@ -72,7 +72,7 @@ interface FeedbackForm {
                 id="feedback-type"
                 [(ngModel)]="form.type"
                 name="type"
-                class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500 transition-all appearance-none cursor-pointer"
+                class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500  appearance-none cursor-pointer"
               >
                 @for (ft of feedbackTypes; track ft.value) {
                   <option [value]="ft.value" class="">{{ ft.label }}</option>
@@ -92,7 +92,7 @@ interface FeedbackForm {
                 rows="5"
                 placeholder="Describe your feedback, bug, or suggestion..."
                 required
-                class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500 transition-all resize-none"
+                class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500  resize-none"
               ></textarea>
             </div>
 
@@ -112,7 +112,7 @@ interface FeedbackForm {
       } @else {
         <!-- Success State -->
         <div
-          class="py-12 flex flex-col items-center justify-center text-center space-y-6 animate-in zoom-in-95 duration-500"
+          class="py-12 flex flex-col items-center justify-center text-center space-y-6 animate-in zoom-in-95 "
         >
           <div class="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center">
             <ng-icon name="heroCheckCircle" class="text-4xl text-cyan-500"></ng-icon>

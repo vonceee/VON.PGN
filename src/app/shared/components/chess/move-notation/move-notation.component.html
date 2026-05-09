@@ -142,7 +142,7 @@
           [class.px-1]="true"
           [class.py-0.5]="true"
           [class.text-sm]="!isMainline"
-          class="text-left transition-all hover:bg-accent/10 hover:cursor-pointer select-none active-move-target"
+          class="text-left  hover:bg-accent/10 hover:cursor-pointer select-none active-move-target"
         >
           {{ node.san }}
           <!-- Glyph Rendering -->
@@ -207,7 +207,7 @@
                 ? 'bg-accent text-main shadow-lg shadow-accent/25 scale-[1.02]'
                 : 'bg-subtle text-content border border-border-base hover:border-accent/50'
             "
-            class="px-3.5 py-1.5 font-semibold text-sm transition-all flex items-center gap-2.5 active:scale-95"
+            class="px-3.5 py-1.5 font-semibold text-sm  flex items-center gap-2.5 active:scale-95"
           >
             <span class="opacity-50 font-semibold text-xs tracking-tighter">{{
               option.ply % 2 !== 0 ? (option.ply + 1) / 2 : option.ply / 2 + '...'

@@ -109,7 +109,7 @@
         <!-- Ratings Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Bullet -->
-          <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent transition-all duration-400">
+          <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
             <span class="text-xs font-bold uppercase tracking-wider text-muted">Bullet</span>
             <div class="text-3xl font-extrabold flex items-baseline gap-1">
               {{ profile.ratings?.bullet?.rating ?? 1500 }}
@@ -120,7 +120,7 @@
             <span class="text-xs font-medium text-muted">{{ profile.ratings?.bullet?.games ?? 0 }} games</span>
           </div>
 
-          <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent transition-all duration-400">
+          <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
             <span class="text-xs font-bold uppercase tracking-wider text-muted">Blitz</span>
             <div class="text-3xl font-extrabold flex items-baseline gap-1">
               {{ profile.ratings?.blitz?.rating ?? 1500 }}
@@ -131,7 +131,7 @@
             <span class="text-xs font-medium text-muted">{{ profile.ratings?.blitz?.games ?? 0 }} games</span>
           </div>
 
-          <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent transition-all duration-400">
+          <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
             <span class="text-xs font-bold uppercase tracking-wider text-muted">Rapid</span>
             <div class="text-3xl font-extrabold flex items-baseline gap-1">
               {{ profile.ratings?.rapid?.rating ?? 1500 }}
@@ -142,7 +142,7 @@
             <span class="text-xs font-medium text-muted">{{ profile.ratings?.rapid?.games ?? 0 }} games</span>
           </div>
 
-          <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent transition-all duration-400">
+          <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
             <span class="text-xs font-bold uppercase tracking-wider text-muted">Tactics</span>
             <div class="text-3xl font-extrabold flex items-baseline gap-1">
               {{ profile.progress.puzzleRating }}
@@ -290,7 +290,7 @@
                         </div>
                         <button
                           (click)="toggleTabUserFollow(userItem)"
-                          class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer shrink-0"
+                          class="px-3 py-1.5 rounded-lg text-xs font-semibold  duration-150 cursor-pointer shrink-0"
                           [class.bg-cyan-500]="!userItem.is_following"
                           [class.text-white]="!userItem.is_following"
                           [class.hover:bg-cyan-600]="!userItem.is_following"

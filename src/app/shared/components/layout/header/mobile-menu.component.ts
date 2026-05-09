@@ -6,7 +6,7 @@ import { UserService } from '../../../../core/services/user.service';
 import { ChatService } from '../../../../core/services/chat.service';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroXMark, heroSun, heroMoon, heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
+import { heroXMark, heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   selector: 'app-mobile-menu',
   standalone: true,
   imports: [RouterLink, FormsModule, NgIcon],
-  providers: [provideIcons({ heroXMark, heroSun, heroMoon, heroMagnifyingGlass })],
+  providers: [provideIcons({ heroXMark, heroMagnifyingGlass })],
   template: `
     <div class="md:hidden fixed inset-0 z-40 bg-black/50" (click)="close.emit()"></div>
     <div
@@ -127,29 +127,12 @@ import { Router } from '@angular/router';
 
 
           <button
-            (click)="themeService.toggleTheme(); close.emit()"
-            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50  text-slate-900  font-semibold"
-          >
-            <ng-icon
-              [name]="themeService.isDarkMode() ? 'heroSun' : 'heroMoon'"
-              class="w-5 h-5"
-            ></ng-icon>
-            <span>{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
-          </button>
-
-          <button
             (click)="authService.logout(); close.emit()"
             class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-red-50  text-red-600  font-semibold"
           >
             Logout
           </button>
         } @else {
-          <button
-            (click)="themeService.toggleTheme(); close.emit()"
-            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50  text-slate-900  font-semibold"
-          >
-            <span>{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
-          </button>
           <a
             routerLink="/login"
             (click)="close.emit()"
