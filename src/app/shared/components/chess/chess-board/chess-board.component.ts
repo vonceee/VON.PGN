@@ -47,7 +47,7 @@ import { AudioService } from '../../../../core/services/audio.service';
           <div class="absolute inset-0 z-40 bg-black/20" (click)="cancelPromotion()"></div>
 
           <div
-            class="absolute inset-0 z-50 flex items-center justify-center  animate-in fade-in zoom-in "
+            class="absolute inset-0 z-50 flex items-center justify-center    zoom-in "
           >
             <div
               class="promotion-menu p-4 bg-surface border border-border-base rounded-2xl shadow-2xl flex gap-4"

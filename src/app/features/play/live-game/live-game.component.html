@@ -86,7 +86,7 @@
             <!-- Mobile Game Over Overlay -->
             @if ((g.status === 'completed' || g.status === 'aborted') && showMobileResult()) {
               <div
-                class="md:hidden absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/60 animate-in fade-in zoom-in "
+                class="md:hidden absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/60   zoom-in "
               >
                 <div
                   class="ui-panel p-6 text-center border-cyan-500/50 max-w-xs w-full relative"
@@ -181,7 +181,7 @@
 
           @if (g.status === 'active' && g.firstMoveCountdown !== undefined && g.firstMoveCountdown !== null && g.moves.length < 2) {
             <div
-              class="md:hidden w-full ui-panel p-4 text-center bg-slate-900/40 mt-4 animate-in slide-in-from-bottom-4 "
+              class="md:hidden w-full ui-panel p-4 text-center bg-slate-900/40 mt-4   "
             >
               <div class="text-2xl font-semibold">
                 {{ g.firstMoveCountdown }}s
@@ -210,7 +210,7 @@
 
             <div class="flex flex-col justify-center">
               @if (g.status === 'active' && g.firstMoveCountdown !== undefined && g.firstMoveCountdown !== null && g.moves.length < 2) {
-                <div class="ui-panel p-4 text-center animate-in fade-in zoom-in ">
+                <div class="ui-panel p-4 text-center   zoom-in ">
                   <div class="text-2xl font-semibold">
                     {{ g.firstMoveCountdown }}s
                   </div>

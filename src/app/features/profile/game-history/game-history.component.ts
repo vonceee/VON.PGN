@@ -31,7 +31,7 @@ import { LoadingComponent } from '@shared/feedback';
                     {{ getGameType(game.time_control) }}
                     <span class="text-xs   ml-1">{{ game.time_control }}</span>
                   </span>
-                  <span class="text-xs  text-slate-500 uppercase tracking-wider">
+                  <span class="text-xs  text-slate-500 uppercase ">
                     {{ game.created_at | date: 'MMM d, y' }}
                   </span>
                 </div>

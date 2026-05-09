@@ -16,12 +16,12 @@
         class="flex items-center gap-1 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 "
         title="Retry Engine"
       >
-        <span class="text-[10px] font-semibold uppercase tracking-wider">Retry</span>
+        <span class="text-[10px] font-semibold uppercase ">Retry</span>
       </button>
     }
 
     @if (isEngineActive()) {
-      <div class="flex items-center gap-2 animate-in fade-in ">
+      <div class="flex items-center gap-2   ">
         @if (engineDepth() > 0) {
           <span class="text-xs  select-none">
             depth = {{ engineDepth() }}
@@ -51,7 +51,7 @@
 
 <!-- Inline Engine Settings Panel -->
 @if (showEngineSettings() && isEngineActive()) {
-  <div class="px-4 py-3 border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1  flex flex-col gap-3">
+  <div class="px-4 py-3 border-b border-border-base bg-surface     flex flex-col gap-3">
     <div class="flex items-center justify-between">
       <span class="text-[10px] font-semibold uppercase  text-muted">Lines</span>
       <div class="flex gap-1">
@@ -73,7 +73,7 @@
 
 <!-- Multi-PV Lines -->
 @if (isEngineActive() && enginePvLines().length > 0) {
-  <div class="border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1 ">
+  <div class="border-b border-border-base bg-surface    ">
     @for (line of enginePvLines(); track line.pvIndex) {
       <div class="flex items-start gap-2 px-4 py-1.5" 
         [class.border-t]="line.pvIndex > 0"

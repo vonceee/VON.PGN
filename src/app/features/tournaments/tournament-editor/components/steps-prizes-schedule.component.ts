@@ -40,7 +40,7 @@ import { ButtonComponent  } from '@shared/ui';
 
           <div class="space-y-6">
             <div class="p-4 bg-white  rounded-lg border border-border-theme">
-              <label class="text-sm font-semibold block mb-4 text-cyan-600  uppercase tracking-wider">Main Prizes</label>
+              <label class="text-sm font-semibold block mb-4 text-cyan-600  uppercase ">Main Prizes</label>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-1.5">
                   <label class="block text-xs font-semibold text-slate-500 uppercase">1st Place</label>
@@ -114,7 +114,7 @@ import { ButtonComponent  } from '@shared/ui';
             </div>
 
             <div class="p-4 bg-white  rounded-lg border border-border-theme">
-              <label class="text-sm font-semibold block mb-4 text-purple-600  uppercase tracking-wider">Special Awards</label>
+              <label class="text-sm font-semibold block mb-4 text-purple-600  uppercase ">Special Awards</label>
               <div class="space-y-4">
                 @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
                 <div class="p-4 bg-slate-50 /30 rounded-lg border border-border-theme">

@@ -9,7 +9,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
   standalone: true,
   imports: [CommonModule, ChessBoardComponent, FlagIconComponent],
   template: `
-    <div class="ui-panel p-4 w-80 overflow-hidden animate-in fade-in zoom-in ">
+    <div class="ui-panel p-4 w-80 overflow-hidden   zoom-in ">
       @if (user()) {
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">
@@ -30,7 +30,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
                 [title]="user()!.is_online ? 'Online' : 'Offline'"
               ></div>
             </div>
-            <span class="text-xs text-muted  uppercase tracking-wider">
+            <span class="text-xs text-muted  uppercase ">
               {{ user()!.displayName || 'Chess Enthusiast' }}
             </span>
           </div>

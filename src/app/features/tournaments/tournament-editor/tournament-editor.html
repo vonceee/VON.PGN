@@ -236,8 +236,8 @@
   </form>
 
   @if (showReviewModal()) {
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in " (click)="closeReviewModal()">
-      <div class="ui-panel bg-main w-full max-w-4xl max-h-[90vh] flex flex-col relative animate-in slide-in-from-bottom-4 " (click)="$event.stopPropagation()">
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm   " (click)="closeReviewModal()">
+      <div class="ui-panel bg-main w-full max-w-4xl max-h-[90vh] flex flex-col relative   " (click)="$event.stopPropagation()">
         <button 
           class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500   z-10" 
           (click)="closeReviewModal()"

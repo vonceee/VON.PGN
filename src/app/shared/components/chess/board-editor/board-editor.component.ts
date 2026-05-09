@@ -17,7 +17,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
   providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark })],
   template: `
         <!-- 2-Column Compact Layout with Left-Side Pieces -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full animate-in fade-in zoom-in-95 ">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full   zoom-in-95 ">
           
           <!-- Column 1: Pieces + Board (8/12) -->
           <div class="lg:col-span-8 flex flex-row gap-6 items-start">

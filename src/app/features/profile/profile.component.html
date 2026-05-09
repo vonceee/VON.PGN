@@ -110,7 +110,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Bullet -->
           <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
-            <span class="text-xs font-semibold uppercase tracking-wider text-muted">Bullet</span>
+            <span class="text-xs font-semibold uppercase  text-muted">Bullet</span>
             <div class="text-3xl  flex items-baseline gap-1">
               {{ profile.ratings?.bullet?.rating ?? 1500 }}
               @if (profile.ratings?.bullet?.prov) {
@@ -121,7 +121,7 @@
           </div>
 
           <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
-            <span class="text-xs font-semibold uppercase tracking-wider text-muted">Blitz</span>
+            <span class="text-xs font-semibold uppercase  text-muted">Blitz</span>
             <div class="text-3xl  flex items-baseline gap-1">
               {{ profile.ratings?.blitz?.rating ?? 1500 }}
               @if (profile.ratings?.blitz?.prov) {
@@ -132,7 +132,7 @@
           </div>
 
           <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
-            <span class="text-xs font-semibold uppercase tracking-wider text-muted">Rapid</span>
+            <span class="text-xs font-semibold uppercase  text-muted">Rapid</span>
             <div class="text-3xl  flex items-baseline gap-1">
               {{ profile.ratings?.rapid?.rating ?? 1500 }}
               @if (profile.ratings?.rapid?.prov) {
@@ -143,7 +143,7 @@
           </div>
 
           <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
-            <span class="text-xs font-semibold uppercase tracking-wider text-muted">Tactics</span>
+            <span class="text-xs font-semibold uppercase  text-muted">Tactics</span>
             <div class="text-3xl  flex items-baseline gap-1">
               {{ profile.progress.puzzleRating }}
               @if (profile.progress.totalPuzzlesSolved < 10) {

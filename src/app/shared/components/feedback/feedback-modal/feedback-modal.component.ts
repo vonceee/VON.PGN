@@ -31,7 +31,7 @@ interface FeedbackForm {
       </button>
 
       @if (!isSubmitted()) {
-        <div class="space-y-8 animate-in fade-in ">
+        <div class="space-y-8   ">
           <div>
             <h2 class="text-2xl font-semibold mb-2">Send feedback</h2>
           </div>
@@ -112,7 +112,7 @@ interface FeedbackForm {
       } @else {
         <!-- Success State -->
         <div
-          class="py-12 flex flex-col items-center justify-center text-center space-y-6 animate-in zoom-in-95 "
+          class="py-12 flex flex-col items-center justify-center text-center space-y-6  zoom-in-95 "
         >
           <div class="w-20 h-20 rounded-full bg-cyan-500/10 flex items-center justify-center">
             <ng-icon name="heroCheckCircle" class="text-4xl text-cyan-500"></ng-icon>

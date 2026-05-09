@@ -24,7 +24,7 @@ export interface AnnotateMoveDialogResult {
           <!-- Glyphs Selection -->
           <div class="space-y-3">
             <div class="flex items-center justify-between ml-1">
-              <label class="text-[10px] font-semibold uppercase tracking-wider text-muted">
+              <label class="text-[10px] font-semibold uppercase  text-muted">
                 Move Evaluation (Glyphs)
               </label>
               <button 
@@ -61,7 +61,7 @@ export interface AnnotateMoveDialogResult {
 
           <!-- Comment Section -->
           <div class="space-y-3">
-            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted ml-1">
+            <label class="text-[10px] font-semibold uppercase  text-muted ml-1">
               Comment
             </label>
             <div class="relative group">

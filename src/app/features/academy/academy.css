@@ -1,4 +1,4 @@
-@keyframes fade-in {
+@keyframes  {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -9,8 +9,8 @@
   }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate- {
+  animation:  0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 :host {

@@ -54,7 +54,7 @@ export interface AddChapterDialogResult {
 
               <!-- Orientation (Hidden for PGN) -->
               @if (activeTab() !== 'pgn') {
-                <div class="space-y-2 animate-in fade-in slide-in-from-right-4 ">
+                <div class="space-y-2    ">
                   <label class="text-sm font-semibold ml-1">
                     Orientation
                   </label>
@@ -92,9 +92,9 @@ export interface AddChapterDialogResult {
             <!-- Tab Content Area -->
             <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md relative">
               @if (activeTab() === 'empty') {
-                <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4 animate-in zoom-in-95 ">
+                <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4  zoom-in-95 ">
                   <div class="space-y-1">
-                    <h3 class="text-sm font-semibold text-content uppercase tracking-wider">Start Fresh</h3>
+                    <h3 class="text-sm font-semibold text-content uppercase ">Start Fresh</h3>
                     <p class="text-xs text-muted max-w-[200px] mx-auto leading-relaxed">
                       create a new chapter starting from the standard initial position.
                     </p>
@@ -103,10 +103,10 @@ export interface AddChapterDialogResult {
               }
 
               @if (activeTab() === 'fen') {
-                <div class="space-y-4 py-4 animate-in slide-in-from-right-4 ">
+                <div class="space-y-4 py-4   ">
                   <div class="space-y-3">
                     <div class="flex items-center justify-between">
-                      <h3 class="text-sm font-semibold text-content uppercase tracking-wider ml-1">
+                      <h3 class="text-sm font-semibold text-content uppercase  ml-1">
                         Paste FEN
                       </h3>
                     </div>
@@ -122,7 +122,7 @@ export interface AddChapterDialogResult {
               }
 
               @if (activeTab() === 'pgn') {
-                <div class="space-y-4 py-2 animate-in slide-in-from-left-4 ">
+                <div class="space-y-4 py-2   ">
                   <div class="space-y-3">
                     <div class="flex justify-between items-center px-1">
                       <button 
@@ -158,7 +158,7 @@ export interface AddChapterDialogResult {
                       ></textarea>
                       
                       @if (fileSummary()) {
-                        <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-base rounded-lg text-[10px] text-accent font-semibold animate-in fade-in slide-in-from-bottom-2">
+                        <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-base rounded-lg text-[10px] text-accent font-semibold   slide-in-from-bottom-2">
                           {{ fileSummary() }}
                         </div>
                       }
@@ -170,7 +170,7 @@ export interface AddChapterDialogResult {
           </div>
         } @else {
           <!-- Full-screen Editor View -->
-          <div class="animate-in fade-in zoom-in-95 ">
+          <div class="  zoom-in-95 ">
             <app-board-editor 
               #editor
               [fen]="fen()" 

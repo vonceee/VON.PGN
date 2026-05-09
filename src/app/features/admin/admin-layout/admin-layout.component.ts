@@ -26,7 +26,7 @@ import { filter, map, startWith } from 'rxjs';
 
         <nav class="mt-4">
           <div class="px-4 mb-2">
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2">Main</p>
+            <p class="text-xs font-semibold text-slate-400 uppercase  px-2">Main</p>
           </div>
           <ul class="space-y-1 px-2">
             <li>
@@ -44,7 +44,7 @@ import { filter, map, startWith } from 'rxjs';
           </ul>
 
           <div class="px-4 mt-8 mb-2">
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2">Content</p>
+            <p class="text-xs font-semibold text-slate-400 uppercase  px-2">Content</p>
           </div>
           <ul class="space-y-1 px-2">
             <li>
@@ -56,7 +56,7 @@ import { filter, map, startWith } from 'rxjs';
           </ul>
 
           <div class="px-4 mt-8 mb-2">
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-2">Applications</p>
+            <p class="text-xs font-semibold text-slate-400 uppercase  px-2">Applications</p>
           </div>
           <ul class="space-y-1 px-2">
             <li>

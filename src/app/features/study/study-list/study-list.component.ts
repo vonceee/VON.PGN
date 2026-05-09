@@ -39,7 +39,7 @@ import { ToastService } from '../../../core/services/toast.service';
               </button>
 
               @if (isDropdownOpen()) {
-                <div class="absolute top-full right-0 mt-2 w-48 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 ">
+                <div class="absolute top-full right-0 mt-2 w-48 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden py-1    ">
                   <button 
                     (click)="setTab('all')"
                     class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold  hover:bg-subtle"

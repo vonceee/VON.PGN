@@ -6,7 +6,7 @@
     </div>
   } @else {
     <!-- ACTIVE GAME VIEW -->
-    <div class="flex-1 flex items-center justify-center overflow-hidden animate-in fade-in ">
+    <div class="flex-1 flex items-center justify-center overflow-hidden   ">
       <div
         class="w-full max-w-[1920px] mx-auto h-full flex flex-col items-center md:grid md:grid-cols-[300px_1fr_350px] xl:grid-cols-[340px_1fr_400px] gap-4 md:gap-8 md:items-stretch overflow-hidden"
       >
@@ -136,7 +136,7 @@
 
             <!-- Result Message in middle if finished -->
             @if (resultDetails(); as result) {
-              <div class="ui-panel p-6 text-center border-border-base bg-white/5 animate-in zoom-in " aria-live="polite">
+              <div class="ui-panel p-6 text-center border-border-base bg-white/5  zoom-in " aria-live="polite">
                 <div class="text-3xl  mb-2 er text-main">{{ result.score }}</div>
                 <div class="text-xs   uppercase font-semibold">
                   {{ result.label }}
