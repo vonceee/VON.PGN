@@ -38,7 +38,7 @@ import { Router } from '@angular/router';
         <div
           class="flex items-center bg-slate-100 /10 rounded-xl px-3 py-2 border border-transparent focus-within:border-cyan-500/50 "
         >
-          <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 text-slate-500 mr-2"></ng-icon>
+          <ng-icon name="heroMagnifyingGlass" class="w-4 h-4  mr-2"></ng-icon>
           <input
             type="text"
             placeholder="Search accounts..."
@@ -63,14 +63,14 @@ import { Router } from '@angular/router';
                 <span class="text-xs font-semibold text-slate-900  capitalize">{{
                   user.displayName
                 }}</span>
-                <span class="text-xs text-slate-500 ">{{
+                <span class="text-xs  ">{{
                   '@' + user.username
                 }}</span>
               </button>
             }
           </div>
         } @else if (searchQuery().length >= 2 && !isSearching()) {
-          <div class="mt-2 px-3 py-2 text-xs text-slate-500 italic">No players found</div>
+          <div class="mt-2 px-3 py-2 text-xs  italic">No players found</div>
         }
       </div>
 

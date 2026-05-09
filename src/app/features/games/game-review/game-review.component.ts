@@ -119,14 +119,14 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 
               <!-- Details Card -->
               <div class="p-5 border border-border-theme rounded-2xl bg-surface/5 ui-panel">
-                <h4 class="text-xs uppercase  text-slate-500 mb-4 ">Game Details</h4>
+                <h4 class="text-xs uppercase   mb-4 ">Game Details</h4>
                 <div class="space-y-4">
                   <div class="flex flex-col gap-1">
-                    <span class="text-xs text-slate-500 uppercase font-semibold">Played on</span>
+                    <span class="text-xs  uppercase font-semibold">Played on</span>
                     <span class="text-xs  text-slate-300">{{ g.created_at | date: 'mediumDate' }}</span>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <span class="text-xs text-slate-500 uppercase font-semibold">Category</span>
+                    <span class="text-xs  uppercase font-semibold">Category</span>
                     <span class="text-xs  text-slate-300">{{ g.time_control }}</span>
                   </div>
                 </div>

@@ -31,7 +31,7 @@ import { LoadingComponent } from '@shared/feedback';
                     {{ getGameType(game.time_control) }}
                     <span class="text-xs   ml-1">{{ game.time_control }}</span>
                   </span>
-                  <span class="text-xs  text-slate-500 uppercase ">
+                  <span class="text-xs   uppercase ">
                     {{ game.created_at | date: 'MMM d, y' }}
                   </span>
                 </div>
@@ -60,7 +60,7 @@ import { LoadingComponent } from '@shared/feedback';
                       <!-- Rating Change Tag -->
                       @if (getMyRatingChange(game) !== null) {
                         <div class="flex flex-col gap-1">
-                          <span class="text-xs font-semibold uppercase  text-slate-500">Rating</span>
+                          <span class="text-xs font-semibold uppercase  ">Rating</span>
                           <div class="flex items-center gap-2">
                             <span class="text-sm font-semibold" [class]="getMyRatingChange(game)! >= 0 ? 'text-green-500' : 'text-red-500'">
                               {{ getMyRatingChange(game)! > 0 ? '+' : '' }}{{ getMyRatingChange(game) }}
@@ -72,7 +72,7 @@ import { LoadingComponent } from '@shared/feedback';
 
                       <!-- Game Info (Placeholder for Accuracy/Performance if needed) -->
                       <div class="flex flex-col gap-1">
-                        <span class="text-xs font-semibold uppercase  text-slate-500">Status</span>
+                        <span class="text-xs font-semibold uppercase  ">Status</span>
                         <span class="text-xs font-semibold text-slate-300">
                           {{ game.termination || 'Standard game' }}
                         </span>
@@ -100,7 +100,7 @@ import { LoadingComponent } from '@shared/feedback';
         <!-- Pagination -->
         @if (totalPages() > 1) {
           <div class="mt-8 flex items-center justify-between px-6">
-            <span class="text-xs font-semibold uppercase  text-slate-500">
+            <span class="text-xs font-semibold uppercase  ">
               Page {{ currentPage() }} of {{ totalPages() }}
             </span>
             <div class="flex gap-2">
@@ -128,13 +128,13 @@ import { LoadingComponent } from '@shared/feedback';
       } @else {
         <div class="ui-panel border-dashed border-border-theme p-12 text-center flex flex-col items-center gap-4">
           <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-slate-500">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-6.75a1.125 1.125 0 0 0-1.125 1.125v3.375m9 0h-9M12 14.25a3 3 0 0 0-3-3V6.75a3 3 0 0 1 6 0v4.5a3 3 0 0 0-3 3Z" />
             </svg>
           </div>
           <div>
             <h3 class="text-base font-semibold mb-1">No games found</h3>
-            <p class="text-sm text-slate-500 mb-6">You haven't played any games yet. Start your journey today!</p>
+            <p class="text-sm  mb-6">You haven't played any games yet. Start your journey today!</p>
           </div>
           <a appButton variant="primary" routerLink="/play" class="px-8 shadow-lg shadow-cyan-500/20">Play Now</a>
         </div>

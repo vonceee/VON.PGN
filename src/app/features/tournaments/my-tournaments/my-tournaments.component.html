@@ -53,12 +53,12 @@
                 [class.bg-blue-500/10]="tournament.status === 'upcoming'"
                 [class.text-blue-500]="tournament.status === 'upcoming'"
                 [class.bg-slate-500/10]="tournament.status === 'past'"
-                [class.text-slate-500]="tournament.status === 'past'"
+                [class.]="tournament.status === 'past'"
               >
                 {{ tournament.status }}
               </span>
             </div>
-            <p class="text-sm text-slate-500 ">
+            <p class="text-sm  ">
               {{ formatDate(tournament.dates.start) }} - {{ formatDate(tournament.dates.end) }}
               @if (tournament.location) {
                 &middot; {{ tournament.location }}

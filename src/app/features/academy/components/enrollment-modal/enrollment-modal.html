@@ -14,7 +14,7 @@
     <!-- Success State -->
     <div *ngIf="isSuccess()" class="p-12 text-center">
       <h2 class="text-3xl  text-slate-900 mb-4">Enrollment Sent!</h2>
-      <p class="text-slate-500 text-lg mb-10">
+      <p class=" text-lg mb-10">
         we will contact you shortly to finalize your batch and schedule.
       </p>
       <button appButton (click)="close.emit()" variant="primary">Close</button>
@@ -32,7 +32,7 @@
           (click)="close.emit()"
           class="p-2 hover:bg-slate-100 rounded-full "
         >
-          <ng-icon name="heroXMark" class="w-6 h-6 text-slate-500"></ng-icon>
+          <ng-icon name="heroXMark" class="w-6 h-6 "></ng-icon>
         </button>
       </div>
 
@@ -125,7 +125,7 @@
             />
           </div>
           <div class="text-sm">
-            <label for="agreed_to_policy" class="text-slate-500 ">
+            <label for="agreed_to_policy" class=" ">
               I have read and agree to the
               <a
                 href="/privacy-policy"
@@ -156,7 +156,7 @@
           Submit Enrollment
         </button>
 
-        <p class="text-center text-xs text-slate-500 mt-2">
+        <p class="text-center text-xs  mt-2">
           By enrolling, you agree to be contacted for academy-related logistics.
         </p>
       </form>

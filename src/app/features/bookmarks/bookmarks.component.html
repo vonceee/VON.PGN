@@ -2,7 +2,7 @@
   <h1 class="text-2xl md:text-3xl font-semibold mb-6">Bookmarked Events</h1>
 
   @if (loading()) {
-    <div class="text-center py-12 text-slate-500 ">Loading bookmarks...</div>
+    <div class="text-center py-12  ">Loading bookmarks...</div>
   }
 
   @if (!loading() && tournaments().length === 0) {
@@ -21,7 +21,7 @@
           d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
         />
       </svg>
-      <p class="text-slate-500 text-lg font-semibold">No bookmarked events</p>
+      <p class=" text-lg font-semibold">No bookmarked events</p>
       <p class="text-slate-400 text-sm mt-1">Bookmark events to save them here for quick access.</p>
       <a
         routerLink="/events"

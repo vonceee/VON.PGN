@@ -77,7 +77,7 @@ export class AcademyEnrollmentsComponent implements OnInit {
       case 'confirmed': return 'bg-blue-500/10 text-blue-500';
       case 'paid': return 'bg-emerald-500/10 text-emerald-500';
       case 'cancelled': return 'bg-rose-500/10 text-rose-500';
-      default: return 'bg-slate-500/10 text-slate-500';
+      default: return 'bg-slate-500/10 ';
     }
   }
 }

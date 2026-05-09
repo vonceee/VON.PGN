@@ -18,7 +18,7 @@ import { ToastService } from '../../../core/services/toast.service';
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 class="text-3xl font-semibold  text-slate-900">Coach Profiles</h1>
-          <p class="text-slate-500 mt-1 ">Manage and curate public coach profiles on the platform.</p>
+          <p class=" mt-1 ">Manage and curate public coach profiles on the platform.</p>
         </div>
         <a routerLink="/admin/coach/new" class="px-6 py-3 rounded bg-slate-900 text-white font-semibold hover:bg-slate-800">
           <span>Add New Coach</span>
@@ -96,7 +96,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
                     <div class="flex flex-col items-center">
                       <h3 class="text-lg font-semibold text-slate-900">No coaches found</h3>
-                      <p class="text-slate-500 text-sm">Try adjusting your search or add a new coach profile.</p>
+                      <p class=" text-sm">Try adjusting your search or add a new coach profile.</p>
                     </div>
                   </td>
                 </tr>

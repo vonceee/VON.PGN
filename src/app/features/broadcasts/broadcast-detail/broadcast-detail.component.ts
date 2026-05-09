@@ -68,7 +68,7 @@ type TabType = 'details' | 'games';
         <div class="relative overflow-hidden">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <a routerLink="/broadcasts"
-              class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500  hover:text-cyan-400 mb-4 ">
+              class="inline-flex items-center gap-2 text-sm font-semibold   hover:text-cyan-400 mb-4 ">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                 class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -82,7 +82,7 @@ type TabType = 'details' | 'games';
                 <h1 class="text-3xl sm:text-4xl font-semibold  mb-4 line-clamp-2">{{ detail()?.name }}</h1>
 
                 <!-- Quick Info -->
-                <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 ">
+                <div class="flex flex-wrap items-center gap-4 text-sm  ">
                   @if (detail()?.info?.location) {
                     <div class="flex items-center gap-1">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,25 +222,25 @@ type TabType = 'details' | 'games';
                       <dl class="space-y-3">
                         @if (detail()?.tier) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase  text-slate-500 ">Tier</dt>
+                            <dt class="text-xs uppercase   ">Tier</dt>
                             <dd class="text-sm ">Tier {{ detail()?.tier }}</dd>
                           </div>
                         }
                         @if (detail()?.status) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase  text-slate-500 ">Status</dt>
+                            <dt class="text-xs uppercase   ">Status</dt>
                             <dd class="text-sm  capitalize">{{ detail()?.status }}</dd>
                           </div>
                         }
                         @if (detail()?.createdAt) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase  text-slate-500 ">Created</dt>
+                            <dt class="text-xs uppercase   ">Created</dt>
                             <dd class="text-sm ">{{ detail()?.createdAt | date:'medium' }}</dd>
                           </div>
                         }
                         @if (detail()?.url) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase  text-slate-500 ">Lichess URL</dt>
+                            <dt class="text-xs uppercase   ">Lichess URL</dt>
                             <dd class="text-sm">
                               <a [href]="detail()?.url" target="_blank" class="text-cyan-500 hover:text-cyan-400">View on Lichess →</a>
                             </dd>
@@ -248,7 +248,7 @@ type TabType = 'details' | 'games';
                         }
                         @if (detail()?.website) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase  text-slate-500 ">Website</dt>
+                            <dt class="text-xs uppercase   ">Website</dt>
                             <dd class="text-sm">
                               <a [href]="detail()?.website" target="_blank" class="text-cyan-500 hover:text-cyan-400">Visit →</a>
                             </dd>
@@ -267,13 +267,13 @@ type TabType = 'details' | 'games';
                       <dl class="space-y-3">
                         @if (detail()?.dates?.[0]) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase  text-slate-500 ">Start Date</dt>
+                            <dt class="text-xs uppercase   ">Start Date</dt>
                             <dd class="text-sm ">{{ detail()?.dates?.[0] | date:'mediumDate' }}</dd>
                           </div>
                         }
                         @if (detail()?.dates?.[1]) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase  text-slate-500 ">End Date</dt>
+                            <dt class="text-xs uppercase   ">End Date</dt>
                             <dd class="text-sm ">{{ detail()?.dates?.[1] | date:'mediumDate' }}</dd>
                           </div>
                         }
@@ -301,7 +301,7 @@ type TabType = 'details' | 'games';
                   </svg>
                 </div>
                 <h3 class="text-lg   mb-2">Games Coming Soon</h3>
-                <p class="text-sm text-slate-500 ">Round selection and game viewing will be available once the rounds data is fetched successfully.</p>
+                <p class="text-sm  ">Round selection and game viewing will be available once the rounds data is fetched successfully.</p>
               </div>
             }
           </div>

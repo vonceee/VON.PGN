@@ -130,7 +130,7 @@ import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@a
       }
 
       @if (hint) {
-        <p class="text-xs text-slate-500 mt-1.5">{{ hint }}</p>
+        <p class="text-xs  mt-1.5">{{ hint }}</p>
       }
     </div>
   `,

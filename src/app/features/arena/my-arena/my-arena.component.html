@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center mb-8">
     <div>
       <h1 class="text-3xl font-semibold">My Arenas</h1>
-      <p class="text-sm text-slate-500  mt-1">
+      <p class="text-sm   mt-1">
         Create and manage your online Arena lobbies
       </p>
     </div>
@@ -46,13 +46,13 @@
                 [class.bg-blue-500/10]="arena.status === 'upcoming'"
                 [class.text-blue-500]="arena.status === 'upcoming'"
                 [class.bg-slate-500/10]="arena.status === 'past'"
-                [class.text-slate-500]="arena.status === 'past'"
+                [class.]="arena.status === 'past'"
               >
                 {{ arena.status }}
               </span>
             </div>
             <div
-              class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-1 text-sm text-slate-500 "
+              class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-1 text-sm  "
             >
               <span
                 class="flex items-center gap-1.5  text-slate-700 "

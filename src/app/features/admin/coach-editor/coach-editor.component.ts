@@ -18,7 +18,7 @@ import { ToastService } from '../../../core/services/toast.service';
     <div class="coach-editor max-w-5xl mx-auto space-y-8">
       <!-- Top Bar -->
       <div class="flex items-center justify-between">
-        <button (click)="location.back()" class="text-slate-500 hover:text-slate-900 font-semibold">
+        <button (click)="location.back()" class=" hover:text-slate-900 font-semibold">
           <span>&larr; Back to List</span>
         </button>
         
@@ -36,7 +36,7 @@ import { ToastService } from '../../../core/services/toast.service';
         <h1 class="text-4xl font-semibold  text-slate-900">
           {{ isEditing() ? 'Edit Coach Profile' : 'Create Coach Profile' }}
         </h1>
-        <p class="text-slate-500 ">Fill in the details below to {{ isEditing() ? 'update' : 'create' }} a public coach profile.</p>
+        <p class=" ">Fill in the details below to {{ isEditing() ? 'update' : 'create' }} a public coach profile.</p>
       </div>
 
       <form [formGroup]="coachForm" (ngSubmit)="save()" class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">

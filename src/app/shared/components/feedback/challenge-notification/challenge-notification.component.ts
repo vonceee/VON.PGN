@@ -24,7 +24,7 @@ import { heroCheck, heroXMark, heroTrophy } from '@ng-icons/heroicons/outline';
               <h4 class="text-sm font-semibold text-slate-900  truncate">
                 {{ challenge.challenger.name }}
               </h4>
-              <p class="text-xs text-slate-500  mt-0.5">
+              <p class="text-xs   mt-0.5">
                 Challenged you to a <span class="font-semibold text-accent">{{ formatTime(challenge.settings.timeControl) }}</span> game.
               </p>
             </div>

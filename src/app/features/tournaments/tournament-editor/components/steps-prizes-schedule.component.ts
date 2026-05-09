@@ -43,7 +43,7 @@ import { ButtonComponent  } from '@shared/ui';
               <label class="text-sm font-semibold block mb-4 text-cyan-600  uppercase ">Main Prizes</label>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-1.5">
-                  <label class="block text-xs font-semibold text-slate-500 uppercase">1st Place</label>
+                  <label class="block text-xs font-semibold  uppercase">1st Place</label>
                   <input
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), 'champion')"
@@ -52,7 +52,7 @@ import { ButtonComponent  } from '@shared/ui';
                   />
                 </div>
                 <div class="space-y-1.5">
-                  <label class="block text-xs font-semibold text-slate-500 uppercase">2nd Place</label>
+                  <label class="block text-xs font-semibold  uppercase">2nd Place</label>
                   <input
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), '2nd_place')"
@@ -61,7 +61,7 @@ import { ButtonComponent  } from '@shared/ui';
                   />
                 </div>
                 <div class="space-y-1.5">
-                  <label class="block text-xs font-semibold text-slate-500 uppercase">3rd Place</label>
+                  <label class="block text-xs font-semibold  uppercase">3rd Place</label>
                   <input
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), '3rd_place')"
@@ -150,7 +150,7 @@ import { ButtonComponent  } from '@shared/ui';
                   } @else {
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div class="space-y-1">
-                      <label class="text-xs font-semibold text-slate-500 uppercase ml-1">1st</label>
+                      <label class="text-xs font-semibold  uppercase ml-1">1st</label>
                       <input 
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '1st')" 
@@ -159,7 +159,7 @@ import { ButtonComponent  } from '@shared/ui';
                       />
                     </div>
                     <div class="space-y-1">
-                      <label class="text-xs font-semibold text-slate-500 uppercase ml-1">2nd</label>
+                      <label class="text-xs font-semibold  uppercase ml-1">2nd</label>
                       <input 
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '2nd')" 
@@ -168,7 +168,7 @@ import { ButtonComponent  } from '@shared/ui';
                       />
                     </div>
                     <div class="space-y-1">
-                      <label class="text-xs font-semibold text-slate-500 uppercase ml-1">3rd</label>
+                      <label class="text-xs font-semibold  uppercase ml-1">3rd</label>
                       <input 
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '3rd')" 

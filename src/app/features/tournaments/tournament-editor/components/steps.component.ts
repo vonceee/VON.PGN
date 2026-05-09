@@ -94,7 +94,7 @@ export class StepBasicInfoComponent {
       ></app-form-field>
 
       <div class="space-y-1.5">
-        <label class="field-label block text-sm  text-slate-700 ">Google Maps Link <span class="text-slate-500 font-normal">(Optional)</span></label>
+        <label class="field-label block text-sm  text-slate-700 ">Google Maps Link <span class=" font-normal">(Optional)</span></label>
         <div class="flex gap-2">
           <input
             type="text"
@@ -119,7 +119,7 @@ export class StepBasicInfoComponent {
         @if (verificationStatus() === 'error') {
           <p class="text-xs text-red-500 mt-1.5">{{ mapsLinkError() }}</p>
         }
-        <p class="text-xs text-slate-500 mt-1.5">
+        <p class="text-xs  mt-1.5">
           Paste a Google Maps URL to verify the tournament location
         </p>
       </div>
