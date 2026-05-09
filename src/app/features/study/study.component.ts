@@ -210,6 +210,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   isDeleting = signal(false);
   isActionInProgress = signal(false);
   private lastChapterId: number | null = null;
+  private lastChapterOrientation: 'white' | 'black' | null = null;
   private pvChess = new Chess();
   private lastLocalInteractionTime = 0;
 
@@ -234,10 +235,12 @@ export class StudyComponent implements OnInit, OnDestroy {
       const chapter = this.currentChapter();
       if (!chapter) return;
 
-      // Always sync orientation with chapter preference when chapter updates (e.g. after edit)
       const targetOrientation = chapter.orientation || 'white';
-      if (this.boardOrientation() !== targetOrientation) {
+
+      // Sync orientation IF chapter changed OR chapter orientation setting changed
+      if (this.lastChapterId !== chapter.id || this.lastChapterOrientation !== targetOrientation) {
         this.boardOrientation.set(targetOrientation);
+        this.lastChapterOrientation = targetOrientation;
       }
 
       if (this.lastChapterId !== chapter.id) {
