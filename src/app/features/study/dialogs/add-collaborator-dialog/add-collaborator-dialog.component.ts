@@ -19,7 +19,7 @@ import { UserHovercardDirective } from '@shared/directives';
       <app-dialog-wrapper title="Add Collaborator" (close)="dialogRef.close()">
         <div class="space-y-4">
           <div class="space-y-1">
-            <label class="text-[10px] font-bold uppercase text-muted">Search User</label>
+            <label class="text-[10px] font-semibold uppercase text-muted">Search User</label>
             <input
               type="text"
               [(ngModel)]="searchQuery"
@@ -45,7 +45,7 @@ import { UserHovercardDirective } from '@shared/directives';
                 >
                   <div class="flex flex-col">
                     <span 
-                      class="text-sm font-bold text-content group-hover:text-accent "
+                      class="text-sm font-semibold text-content group-hover:text-accent "
                       [appUserHovercard]="user.username"
                       [disableClick]="true"
                     >{{ user.username }}</span>

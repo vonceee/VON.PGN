@@ -8,19 +8,19 @@
       <header class="text-left py-8 border-b border-white/10">
         @if (!isPast()) {
           <div
-            class="text-xs font-medium opacity-50 uppercase tracking-[0.2em] mb-2 flex items-center gap-3"
+            class="text-xs  opacity-50 uppercase tracking-[0.2em] mb-2 flex items-center gap-3"
           >
             <span class="w-2 h-2 rounded-full bg-cyan-500 "></span>
             {{ countdownLabel() }}
           </div>
-          <div class="text-7xl font-mono er tabular-nums mb-8">
+          <div class="text-7xl  er tabular-nums mb-8">
             {{ countdown() }}
           </div>
         } @else {
-          <div class="text-xs font-medium text-cyan-400 uppercase  mb-1">
+          <div class="text-xs  text-cyan-400 uppercase  mb-1">
             Tournament Finished
           </div>
-          <div class="text-4xl font-bold mb-8">
+          <div class="text-4xl font-semibold mb-8">
           Winner: <a [routerLink]="['/user', winner()]" [appUserHovercard]="winner()!" class="text-cyan-400 hover:underline  cursor-pointer">{{ winner() || 'Calculating...' }}</a>
           </div>
         }
@@ -46,15 +46,15 @@
 
       <!-- Leaderboard -->
       <div class="overflow-x-auto">
-        <div class="text-[10px] uppercase tracking-[0.3em] font-bold text-slate-500 mb-6">
+        <div class="text-[10px] uppercase tracking-[0.3em] font-semibold text-slate-500 mb-6">
           Leaderboard
         </div>
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="text-[10px] uppercase  opacity-30 border-b border-white/10">
-              <th class="py-4 font-bold w-12 text-center">#</th>
-              <th class="py-4 font-bold">Player</th>
-              <th class="py-4 font-bold text-right">Points</th>
+              <th class="py-4 font-semibold w-12 text-center">#</th>
+              <th class="py-4 font-semibold">Player</th>
+              <th class="py-4 font-semibold text-right">Points</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/5">
@@ -63,7 +63,7 @@
                 class="group hover:bg-white/[0.02] "
                 [class.bg-white/5]="player.userId === authService.currentUser()?.uid"
               >
-                <td class="py-6 font-mono text-sm opacity-30 text-center">
+                <td class="py-6  text-sm opacity-30 text-center">
                   {{ i + 1 }}
                 </td>
                 <td class="py-6">
@@ -71,7 +71,7 @@
                     <a 
                       [routerLink]="['/user', player.name]" 
                       [appUserHovercard]="player.name"
-                      class="font-bold text-lg hover:text-cyan-400  cursor-pointer"
+                      class="font-semibold text-lg hover:text-cyan-400  cursor-pointer"
                     >
                       {{ player.name }}
                     </a>
@@ -86,7 +86,7 @@
                     }
                   </div>
                 </td>
-                <td class="py-6 text-right font-mono text-2xl ">
+                <td class="py-6 text-right  text-2xl ">
                   {{ player.score }}
                 </td>
               </tr>

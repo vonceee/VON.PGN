@@ -32,7 +32,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
           <!-- Color Selection -->
           <section class="space-y-6">
-            <h3 class="text-sm font-bold ">Play As</h3>
+            <h3 class="text-sm font-semibold ">Play As</h3>
             <div class="grid grid-cols-3 gap-2">
               @for (color of colors; track color.id) {
                 <button
@@ -49,7 +49,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
 
           <!-- Time Control Selection (Compact) -->
           <section class="space-y-6">
-            <h3 class="text-sm font-bold ">Time Format</h3>
+            <h3 class="text-sm font-semibold ">Time Format</h3>
              <div class="grid grid-cols-3 gap-2">
               @for (tc of timeControls; track tc.value) {
                 <button
@@ -71,7 +71,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
                 <h3 class="text-sm  italic">Custom Setup</h3>
                 <button
                   (click)="showCustomForm.set(false)"
-                  class="text-sm font-bold underline cursor-pointer bg-transparent border-none"
+                  class="text-sm font-semibold underline cursor-pointer bg-transparent border-none"
                 >
                   Back to presets
                 </button>
@@ -80,7 +80,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
               <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div class="space-y-6">
                   <div class="flex justify-between items-center mb-2">
-                    <label class="text-sm font-bold">Minutes</label>
+                    <label class="text-sm font-semibold">Minutes</label>
                     <div class="flex items-center gap-3">
                       <button (click)="adjustMinutes(-1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">-</button>
                       <span class="text-xl  w-12 text-center">{{ customMinutes() }}</span>
@@ -91,7 +91,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
 
                 <div class="space-y-6">
                   <div class="flex justify-between items-center mb-2">
-                    <label class="text-sm font-bold">Increment</label>
+                    <label class="text-sm font-semibold">Increment</label>
                     <div class="flex items-center gap-3">
                       <button (click)="adjustIncrement(-1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">-</button>
                       <span class="text-xl  w-12 text-center">{{ customIncrement() }}</span>
@@ -107,7 +107,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
                     appButton
                     variant="outline"
                     (click)="showCustomForm.set(true)"
-                    class="text-xs font-bold italic"
+                    class="text-xs font-semibold italic"
                 >
                     Custom Time Control
                 </button>

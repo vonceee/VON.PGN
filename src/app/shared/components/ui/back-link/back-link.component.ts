@@ -14,7 +14,7 @@ import { heroArrowLeft } from '@ng-icons/heroicons/outline';
       <a
         appLink
         [routerLink]="link()"
-        class="group flex items-center gap-2 text-sm font-medium"
+        class="group flex items-center gap-2 text-sm "
       >
         <ng-icon
           name="heroArrowLeft"

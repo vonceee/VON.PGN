@@ -16,19 +16,19 @@
         class="flex items-center gap-1 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 "
         title="Retry Engine"
       >
-        <span class="text-[10px] font-bold uppercase tracking-wider">Retry</span>
+        <span class="text-[10px] font-semibold uppercase tracking-wider">Retry</span>
       </button>
     }
 
     @if (isEngineActive()) {
       <div class="flex items-center gap-2 animate-in fade-in ">
         @if (engineDepth() > 0) {
-          <span class="text-xs font-medium select-none">
+          <span class="text-xs  select-none">
             depth = {{ engineDepth() }}
           </span>
         }
         @if (formattedNps()) {
-          <span class="text-xs font-medium select-none hidden sm:inline">
+          <span class="text-xs  select-none hidden sm:inline">
             {{ formattedNps() }}
           </span>
         }
@@ -53,7 +53,7 @@
 @if (showEngineSettings() && isEngineActive()) {
   <div class="px-4 py-3 border-b border-border-base bg-surface animate-in fade-in slide-in-from-top-1  flex flex-col gap-3">
     <div class="flex items-center justify-between">
-      <span class="text-[10px] font-bold uppercase  text-muted">Lines</span>
+      <span class="text-[10px] font-semibold uppercase  text-muted">Lines</span>
       <div class="flex gap-1">
         @for (n of [1,2,3]; track n) {
           <button
@@ -78,7 +78,7 @@
       <div class="flex items-start gap-2 px-4 py-1.5" 
         [class.border-t]="line.pvIndex > 0"
         [class.border-border-base]="line.pvIndex > 0">
-        <span class="text-xs font-bold min-w-[36px] text-left shrink-0 mt-px text-content">
+        <span class="text-xs font-semibold min-w-[36px] text-left shrink-0 mt-px text-content">
           {{ line.eval }}
         </span>
         <div class="flex items-center gap-x-1.5 overflow-hidden min-w-0 flex-1 whitespace-nowrap">
@@ -91,7 +91,7 @@
               }
               <span [class]="$index === 0 && line.pvIndex === 0 
                 ? 'text-xs ' 
-                : 'text-xs font-medium cursor-default'">
+                : 'text-xs  cursor-default'">
                 {{ move }}
               </span>
             </div>

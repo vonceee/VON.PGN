@@ -95,7 +95,7 @@
         <div class="flex flex-col justify-between h-full">
           <div class="ui-panel p-3 flex flex-col gap-2">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs uppercase  font-bold text-slate-500"
+              <span class="text-xs uppercase  font-semibold text-slate-500"
                 >Black</span
               >
               @if (g?.turn === 'black' && g?.status === 'active') {
@@ -114,11 +114,11 @@
               <div
                 class="ui-panel p-4 text-center border-border-theme/50 bg-slate-800/20"
               >
-                <div class="text-xl font-bold " [class]="getResultClass(g?.result || null)">
+                <div class="text-xl font-semibold " [class]="getResultClass(g?.result || null)">
                   {{ formatResult(g?.result || null) }}
                 </div>
                 <div
-                  class="text-xs text-slate-400 mt-1 uppercase  font-bold "
+                  class="text-xs text-slate-400 mt-1 uppercase  font-semibold "
                 >
                   {{ formatTermination(g?.result || null, g?.termination || null) }}
                 </div>
@@ -134,7 +134,7 @@
 
           <div class="ui-panel p-3 flex flex-col gap-2">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs uppercase  font-bold text-slate-500"
+              <span class="text-xs uppercase  font-semibold text-slate-500"
                 >White</span
               >
               @if (g?.turn === 'white' && g?.status === 'active') {

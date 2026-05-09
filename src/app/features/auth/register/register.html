@@ -13,7 +13,7 @@
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <!-- Username Field -->
         <div class="space-y-1">
-          <label for="username" class="text-sm font-medium"> Username </label>
+          <label for="username" class="text-sm "> Username </label>
           <input
             id="username"
             type="text"
@@ -39,7 +39,7 @@
 
         <!-- Email Field -->
         <div class="space-y-1">
-          <label for="email" class="text-sm font-medium"> Email </label>
+          <label for="email" class="text-sm "> Email </label>
           <input
             id="email"
             type="email"
@@ -54,7 +54,7 @@
 
         <!-- Password Field -->
         <div class="space-y-1">
-          <label for="password" class="text-sm font-medium"> Password </label>
+          <label for="password" class="text-sm "> Password </label>
           <div class="relative">
             <input
               id="password"
@@ -107,7 +107,7 @@
             <div class="flex items-center justify-between text-xs mt-1 px-1">
               <span class="text-zinc-500">Strength:</span>
               <span
-                class="capitalize font-medium"
+                class="capitalize "
                 [class.text-red-500]="passwordStrength() === 'weak'"
                 [class.text-yellow-500]="passwordStrength() === 'medium'"
                 [class.text-green-500]="passwordStrength() === 'strong'"
@@ -123,7 +123,7 @@
 
         <!-- Confirm Password Field -->
         <div class="space-y-1">
-          <label for="password_confirmation" class="text-sm font-medium"> Confirm Password </label>
+          <label for="password_confirmation" class="text-sm "> Confirm Password </label>
           <div class="relative">
             <input
               id="password_confirmation"

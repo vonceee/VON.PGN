@@ -22,14 +22,14 @@
         </svg>
       </div>
 
-      <h2 class="text-lg font-bold text-center mb-2">Delete {{ itemType() }}</h2>
+      <h2 class="text-lg font-semibold text-center mb-2">Delete {{ itemType() }}</h2>
       <p class="text-sm text-slate-500  text-center mb-5">
         This action cannot be undone. To confirm, type the {{ itemType() }} name below:
       </p>
 
       <!-- Tournament name display -->
       <div class="bg-slate-50  rounded-lg px-4 py-2.5 mb-4 text-center">
-        <span class="font-bold text-sm">{{ itemName() }}</span>
+        <span class="font-semibold text-sm">{{ itemName() }}</span>
       </div>
 
       <!-- Input -->
@@ -56,14 +56,14 @@
     <div class="flex gap-3 px-6 pb-6">
       <button
         (click)="onCancel()"
-        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200   "
+        class="flex-1 px-4 py-2.5 rounded-lg  text-sm bg-slate-100 hover:bg-slate-200   "
       >
         Cancel
       </button>
       <button
         (click)="onConfirm()"
         [disabled]="!canDelete || loading()"
-        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-red-500 hover:bg-red-600 text-white disabled:opacity-50 disabled:cursor-not-allowed "
+        class="flex-1 px-4 py-2.5 rounded-lg  text-sm bg-red-500 hover:bg-red-600 text-white disabled:opacity-50 disabled:cursor-not-allowed "
       >
         {{ loading() ? 'Deleting...' : 'Delete' }}
       </button>

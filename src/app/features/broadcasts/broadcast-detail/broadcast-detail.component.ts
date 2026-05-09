@@ -54,7 +54,7 @@ type TabType = 'details' | 'games';
         <div class="flex items-center justify-center py-20">
           <div class="flex flex-col items-center gap-4">
             <div class="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-            <p class="text-sm font-medium">Loading broadcast details...</p>
+            <p class="text-sm ">Loading broadcast details...</p>
           </div>
         </div>
       } @else if (error()) {
@@ -79,7 +79,7 @@ type TabType = 'details' | 'games';
               <!-- Left: Title & Info -->
               <div class="flex-1">
                 <!-- Title -->
-                <h1 class="text-3xl sm:text-4xl font-bold  mb-4 line-clamp-2">{{ detail()?.name }}</h1>
+                <h1 class="text-3xl sm:text-4xl font-semibold  mb-4 line-clamp-2">{{ detail()?.name }}</h1>
 
                 <!-- Quick Info -->
                 <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 ">
@@ -150,7 +150,7 @@ type TabType = 'details' | 'games';
           <div class="flex flex-col sm:flex-row gap-4 items-start">
             <!-- Round Dropdown -->
             <div class="shrink-0">
-              <label class="block text-sm font-medium text-slate-700  mb-2">Round</label>
+              <label class="block text-sm  text-slate-700  mb-2">Round</label>
               <select 
                 class="w-full border border-border-theme rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:opacity-50 "
                 disabled
@@ -162,7 +162,7 @@ type TabType = 'details' | 'games';
             <!-- Category Dropdown -->
             @if (categories().length > 1) {
               <div class="shrink-0">
-                <label class="block text-sm font-medium text-slate-700  mb-2">Category</label>
+                <label class="block text-sm  text-slate-700  mb-2">Category</label>
                 <select 
                   (change)="onCategoryChange($event)"
                   class="border border-border-theme rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent  whitespace-nowrap"
@@ -187,7 +187,7 @@ type TabType = 'details' | 'games';
                 [class]="activeTab() === 'details' 
                   ? 'border-cyan-500 text-cyan-500' 
                   : 'border-transparent hover:border-slate-600'"
-                class="py-4 px-1 border-b-2 font-medium text-sm  text-slate-600 "
+                class="py-4 px-1 border-b-2  text-sm  text-slate-600 "
               >
                 Details
               </button>
@@ -196,7 +196,7 @@ type TabType = 'details' | 'games';
                 [class]="activeTab() === 'games' 
                   ? 'border-cyan-500 text-cyan-500' 
                   : 'border-transparent hover:border-slate-600'"
-                class="py-4 px-1 border-b-2 font-medium text-sm  text-slate-600 "
+                class="py-4 px-1 border-b-2  text-sm  text-slate-600 "
               >
                 Games
               </button>
@@ -300,7 +300,7 @@ type TabType = 'details' | 'games';
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                   </svg>
                 </div>
-                <h3 class="text-lg font-medium  mb-2">Games Coming Soon</h3>
+                <h3 class="text-lg   mb-2">Games Coming Soon</h3>
                 <p class="text-sm text-slate-500 ">Round selection and game viewing will be available once the rounds data is fetched successfully.</p>
               </div>
             }

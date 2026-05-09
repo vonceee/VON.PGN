@@ -40,7 +40,7 @@ export interface ComputerSetupResult {
           <!-- Level Selection -->
           <section class="space-y-6">
             <div class="flex items-center justify-between">
-              <h3 class="text-sm font-bold  truncate">Difficulty Level</h3>
+              <h3 class="text-sm font-semibold  truncate">Difficulty Level</h3>
             </div>
             <div class="grid grid-cols-4 gap-2">
               @for (lvl of levels; track lvl) {
@@ -48,7 +48,7 @@ export interface ComputerSetupResult {
                   appButton
                   [variant]="selectedLevel() === lvl ? 'primary' : 'outline'"
                   (click)="selectedLevel.set(lvl)"
-                  class="h-10 text-sm font-bold"
+                  class="h-10 text-sm font-semibold"
                 >
                   {{ lvl }}
                 </button>
@@ -58,7 +58,7 @@ export interface ComputerSetupResult {
 
           <!-- Color Selection -->
           <section class="space-y-6">
-            <h3 class="text-sm font-bold ">Play As</h3>
+            <h3 class="text-sm font-semibold ">Play As</h3>
             <div class="grid grid-cols-3 gap-2">
               @for (color of colors; track color.id) {
                 <button
@@ -76,7 +76,7 @@ export interface ComputerSetupResult {
 
         <!-- Time Control Selection -->
         <section class="space-y-6">
-          <h3 class="text-sm font-bold ">Time Format</h3>
+          <h3 class="text-sm font-semibold ">Time Format</h3>
           @if (!showCustomForm()) {
             <div class="grid grid-cols-3 md:grid-cols-6 gap-2">
               @for (tc of timeControls; track tc.value) {
@@ -95,7 +95,7 @@ export interface ComputerSetupResult {
                 (click)="showCustomForm.set(true)"
                 class="flex flex-col items-center justify-center"
               >
-                <span class="text-sm font-bold italic">Custom</span>
+                <span class="text-sm font-semibold italic">Custom</span>
               </button>
             </div>
           } @else {
@@ -104,7 +104,7 @@ export interface ComputerSetupResult {
                 <h3 class="text-sm  italic">Custom Setup</h3>
                 <button
                   (click)="showCustomForm.set(false)"
-                  class="text-sm font-bold underline cursor-pointer bg-transparent border-none"
+                  class="text-sm font-semibold underline cursor-pointer bg-transparent border-none"
                 >
                   Back to presets
                 </button>
@@ -114,7 +114,7 @@ export interface ComputerSetupResult {
                 <!-- Minutes Selection -->
                 <div class="space-y-6">
                   <div class="flex justify-between items-center mb-2">
-                    <label class="text-sm font-bold">Minutes</label>
+                    <label class="text-sm font-semibold">Minutes</label>
                     <div class="flex items-center gap-3">
                       <button
                         (click)="adjustMinutes(-1)"
@@ -142,7 +142,7 @@ export interface ComputerSetupResult {
                         [class.border-cyan-500]="customMinutes() === min"
                         [class.bg-transparent]="customMinutes() !== min"
                         [class.border-border-theme]="customMinutes() !== min"
-                        class="h-8 text-xs font-bold border rounded-lg cursor-pointer  hover:bg-cyan-500/10"
+                        class="h-8 text-xs font-semibold border rounded-lg cursor-pointer  hover:bg-cyan-500/10"
                       >
                         {{ min }}
                       </button>
@@ -153,7 +153,7 @@ export interface ComputerSetupResult {
                 <!-- Increment Selection -->
                 <div class="space-y-6">
                   <div class="flex justify-between items-center mb-2">
-                    <label class="text-sm font-bold">Increment</label>
+                    <label class="text-sm font-semibold">Increment</label>
                     <div class="flex items-center gap-3">
                       <button
                         (click)="adjustIncrement(-1)"
@@ -181,7 +181,7 @@ export interface ComputerSetupResult {
                         [class.border-cyan-500]="customIncrement() === inc"
                         [class.bg-transparent]="customIncrement() !== inc"
                         [class.border-border-theme]="customIncrement() !== inc"
-                        class="h-8 text-xs font-bold border rounded-lg cursor-pointer  hover:bg-cyan-500/10"
+                        class="h-8 text-xs font-semibold border rounded-lg cursor-pointer  hover:bg-cyan-500/10"
                       >
                         {{ inc }}
                       </button>

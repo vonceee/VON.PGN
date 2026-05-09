@@ -18,25 +18,25 @@ import { ToastService } from '../../../core/services/toast.service';
     <div class="coach-editor max-w-5xl mx-auto space-y-8">
       <!-- Top Bar -->
       <div class="flex items-center justify-between">
-        <button (click)="location.back()" class="text-slate-500 hover:text-slate-900 font-bold">
+        <button (click)="location.back()" class="text-slate-500 hover:text-slate-900 font-semibold">
           <span>&larr; Back to List</span>
         </button>
         
         <div class="flex items-center gap-3">
           @if (isEditing()) {
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-blue-100 text-blue-600 uppercase ">Editing Mode</span>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-600 uppercase ">Editing Mode</span>
           } @else {
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-600 uppercase ">New Profile</span>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-600 uppercase ">New Profile</span>
           }
         </div>
       </div>
 
       <!-- Header -->
       <div class="space-y-2">
-        <h1 class="text-4xl font-bold  text-slate-900">
+        <h1 class="text-4xl font-semibold  text-slate-900">
           {{ isEditing() ? 'Edit Coach Profile' : 'Create Coach Profile' }}
         </h1>
-        <p class="text-slate-500 font-medium">Fill in the details below to {{ isEditing() ? 'update' : 'create' }} a public coach profile.</p>
+        <p class="text-slate-500 ">Fill in the details below to {{ isEditing() ? 'update' : 'create' }} a public coach profile.</p>
       </div>
 
       <form [formGroup]="coachForm" (ngSubmit)="save()" class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">
@@ -44,57 +44,57 @@ import { ToastService } from '../../../core/services/toast.service';
         <div class="lg:col-span-2 space-y-8">
           <!-- Identity Section -->
           <div class="bg-white rounded border border-slate-200 p-8 space-y-6">
-            <h3 class="text-lg font-bold text-slate-900">
+            <h3 class="text-lg font-semibold text-slate-900">
               Basic Information
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Full Name</label>
-                <input type="text" formControlName="name" placeholder="e.g. Magnus Carlsen" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 font-medium">
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Full Name</label>
+                <input type="text" formControlName="name" placeholder="e.g. Magnus Carlsen" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 ">
               </div>
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Professional Title</label>
-                <input type="text" formControlName="title" placeholder="e.g. Grandmaster & World Champion" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 font-medium">
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Professional Title</label>
+                <input type="text" formControlName="title" placeholder="e.g. Grandmaster & World Champion" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 ">
               </div>
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">FIDE Rating</label>
-                <input type="number" formControlName="fideRating" placeholder="e.g. 2850" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 font-medium">
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">FIDE Rating</label>
+                <input type="number" formControlName="fideRating" placeholder="e.g. 2850" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 ">
               </div>
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Location</label>
-                <input type="text" formControlName="location" placeholder="e.g. Oslo, Norway" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 font-medium">
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Location</label>
+                <input type="text" formControlName="location" placeholder="e.g. Oslo, Norway" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 ">
               </div>
             </div>
 
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Short Catchphrase / Intro</label>
-              <input type="text" formControlName="shortInfo" placeholder="A brief one-liner for search results" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 font-medium">
+              <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Short Catchphrase / Intro</label>
+              <input type="text" formControlName="shortInfo" placeholder="A brief one-liner for search results" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 ">
             </div>
 
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Biography</label>
-              <textarea formControlName="bio" rows="6" placeholder="Tell the story of the coach..." class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 font-medium"></textarea>
+              <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Biography</label>
+              <textarea formControlName="bio" rows="6" placeholder="Tell the story of the coach..." class="px-4 py-3 bg-slate-50 border border-slate-200 rounded border border-slate-200 outline-none focus:border-blue-500 text-slate-900 "></textarea>
             </div>
           </div>
 
           <!-- Expertise & Experience -->
           <div class="bg-white rounded border border-slate-200 p-8 space-y-6">
-            <h3 class="text-lg font-bold text-slate-900">
+            <h3 class="text-lg font-semibold text-slate-900">
               Experience & Methods
             </h3>
 
             <!-- Playing Experience -->
             <div class="space-y-3">
               <div class="flex items-center justify-between">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Playing Experience</label>
-                <button type="button" (click)="addPlayingExp()" class="text-xs font-bold text-blue-500 hover:text-blue-600">+ Add Line</button>
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Playing Experience</label>
+                <button type="button" (click)="addPlayingExp()" class="text-xs font-semibold text-blue-500 hover:text-blue-600">+ Add Line</button>
               </div>
               <div formArrayName="playingExperience" class="space-y-2">
                 @for (ctrl of playingExperience.controls; track $index) {
                   <div class="flex gap-2">
-                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium" placeholder="Achievement or tournament win...">
-                    <button type="button" (click)="removePlayingExp($index)" class="px-2 py-1 text-xs font-bold text-rose-500 hover:bg-rose-50 rounded border border-slate-200">
+                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 " placeholder="Achievement or tournament win...">
+                    <button type="button" (click)="removePlayingExp($index)" class="px-2 py-1 text-xs font-semibold text-rose-500 hover:bg-rose-50 rounded border border-slate-200">
                       Delete
                     </button>
                   </div>
@@ -105,14 +105,14 @@ import { ToastService } from '../../../core/services/toast.service';
             <!-- Teaching Experience -->
             <div class="space-y-3 mt-6">
               <div class="flex items-center justify-between">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Teaching Experience</label>
-                <button type="button" (click)="addTeachingExp()" class="text-xs font-bold text-blue-500 hover:text-blue-600">+ Add Line</button>
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Teaching Experience</label>
+                <button type="button" (click)="addTeachingExp()" class="text-xs font-semibold text-blue-500 hover:text-blue-600">+ Add Line</button>
               </div>
               <div formArrayName="teachingExperience" class="space-y-2">
                 @for (ctrl of teachingExperience.controls; track $index) {
                   <div class="flex gap-2">
-                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium" placeholder="Previous students or coaching roles...">
-                    <button type="button" (click)="removeTeachingExp($index)" class="px-2 py-1 text-xs font-bold text-rose-500 hover:bg-rose-50 rounded border border-slate-200">
+                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 " placeholder="Previous students or coaching roles...">
+                    <button type="button" (click)="removeTeachingExp($index)" class="px-2 py-1 text-xs font-semibold text-rose-500 hover:bg-rose-50 rounded border border-slate-200">
                       Delete
                     </button>
                   </div>
@@ -126,10 +126,10 @@ import { ToastService } from '../../../core/services/toast.service';
         <div class="space-y-8">
           <!-- Availability & Logistics -->
           <div class="bg-white rounded border border-slate-200 p-8 space-y-6">
-            <h3 class="text-lg font-bold text-slate-900">Settings</h3>
+            <h3 class="text-lg font-semibold text-slate-900">Settings</h3>
             
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Profile Picture</label>
+              <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Profile Picture</label>
               
               <div 
                 (click)="fileInput.click()"
@@ -140,7 +140,7 @@ import { ToastService } from '../../../core/services/toast.service';
                 } @else {
                   <div class="flex flex-col items-center gap-3 text-slate-400">
                     <div class="text-center">
-                      <p class="text-xs font-bold uppercase ">Click to upload</p>
+                      <p class="text-xs font-semibold uppercase ">Click to upload</p>
                     </div>
                   </div>
                 }
@@ -158,8 +158,8 @@ import { ToastService } from '../../../core/services/toast.service';
             </div>
 
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Coaching Type</label>
-              <select formControlName="coachingType" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
+              <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Coaching Type</label>
+              <select formControlName="coachingType" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 ">
                 <option value="Online">Online</option>
                 <option value="Onsite">Onsite</option>
                 <option value="Online & Onsite">Online & Onsite</option>
@@ -167,42 +167,42 @@ import { ToastService } from '../../../core/services/toast.service';
             </div>
 
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Availability</label>
-              <input type="text" formControlName="availability" placeholder="e.g. Mon-Fri, 10am - 6pm" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
+              <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Availability</label>
+              <input type="text" formControlName="availability" placeholder="e.g. Mon-Fri, 10am - 6pm" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 ">
             </div>
 
             <div class="flex items-center gap-3 p-4 bg-slate-50 rounded border border-slate-100">
               <input type="checkbox" formControlName="isAcademyInstructor" id="isAcademy" class="w-5 h-5 rounded border-slate-300">
-              <label for="isAcademy" class="!mb-0 cursor-pointer font-bold text-slate-900">Academy Instructor</label>
+              <label for="isAcademy" class="!mb-0 cursor-pointer font-semibold text-slate-900">Academy Instructor</label>
             </div>
           </div>
 
           <!-- Social Media -->
           <div class="bg-white rounded border border-slate-200 p-8 space-y-6" formGroupName="socialMedia">
-            <h3 class="text-lg font-bold text-slate-900">Social Presence</h3>
+            <h3 class="text-lg font-semibold text-slate-900">Social Presence</h3>
             
             <div class="space-y-4">
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Twitter/X</label>
-                <input type="text" formControlName="twitter" placeholder="username" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Twitter/X</label>
+                <input type="text" formControlName="twitter" placeholder="username" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 ">
               </div>
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Twitch</label>
-                <input type="text" formControlName="twitch" placeholder="channel" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Twitch</label>
+                <input type="text" formControlName="twitch" placeholder="channel" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 ">
               </div>
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">YouTube</label>
-                <input type="text" formControlName="youtube" placeholder="channel url" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">YouTube</label>
+                <input type="text" formControlName="youtube" placeholder="channel url" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 ">
               </div>
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-bold text-slate-400 uppercase  mb-1 px-1">Lichess</label>
-                <input type="text" formControlName="lichess" placeholder="username" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 font-medium">
+                <label class="text-xs font-semibold text-slate-400 uppercase  mb-1 px-1">Lichess</label>
+                <input type="text" formControlName="lichess" placeholder="username" class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500  text-slate-900 ">
               </div>
             </div>
           </div>
 
           <!-- Save Button -->
-          <button type="submit" [disabled]="saving()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded py-4 flex items-center justify-center gap-3 disabled:opacity-50">
+          <button type="submit" [disabled]="saving()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded py-4 flex items-center justify-center gap-3 disabled:opacity-50">
             @if (saving()) {
               <span>Saving Changes...</span>
             } @else {

@@ -163,7 +163,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
         @if (data['categories']) {
         @for (cat of (data['categories'] | keyvalue); track cat.key) {
         <div class="mt-3 bg-slate-50 /50 rounded-lg p-4 border border-slate-200 ">
-          <h4 class="font-bold mb-2 capitalize">{{ cat.key.toString().replace('_', ' ') }}</h4>
+          <h4 class="font-semibold mb-2 capitalize">{{ cat.key.toString().replace('_', ' ') }}</h4>
           <table class="w-full text-sm">
             <tbody>
               @for (prize of (cat.value['prizes'] | keyvalue: comparePrizeKeys); track prize.key) {
@@ -191,7 +191,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
         @for (day of (data['schedule'] | keyvalue); track day.key) {
         <div class="mt-3 border border-border-theme rounded-lg overflow-hidden">
           <div class="bg-slate-50 /50 px-4 py-2 border-b border-border-theme">
-            <span class="text-xs font-bold text-cyan-500 uppercase">{{ day.key.toString().replace('_', ' ') }}</span>
+            <span class="text-xs font-semibold text-cyan-500 uppercase">{{ day.key.toString().replace('_', ' ') }}</span>
             <span class="text-sm text-slate-600  ml-2">{{ formatDate(day.value.date) }}</span>
           </div>
           <table class="w-full text-sm">

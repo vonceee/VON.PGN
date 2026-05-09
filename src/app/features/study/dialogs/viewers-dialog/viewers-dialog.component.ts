@@ -18,7 +18,7 @@ import { UserHovercardDirective } from '@shared/directives';
               <div class="w-full flex items-center p-2.5 px-4 rounded-xl hover:bg-surface  group">
                 <div class="flex flex-col">
                   <span 
-                    class="text-sm font-bold text-content group-hover:text-accent  cursor-pointer"
+                    class="text-sm font-semibold text-content group-hover:text-accent  cursor-pointer"
                     [appUserHovercard]="viewer"
                   >{{ viewer }}</span>
                 </div>

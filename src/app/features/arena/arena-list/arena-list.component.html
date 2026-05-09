@@ -109,7 +109,7 @@
       <div class="flex items-center border border-border-theme rounded-xl overflow-hidden">
         <button
           (click)="setViewMode('grid')"
-          class="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium "
+          class="flex items-center gap-1.5 px-3 py-2.5 text-sm  "
           [ngClass]="
             viewMode() === 'grid'
               ? 'bg-cyan-500 text-white'
@@ -130,7 +130,7 @@
         </button>
         <button
           (click)="setViewMode('list')"
-          class="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium  border-l border-border-theme"
+          class="flex items-center gap-1.5 px-3 py-2.5 text-sm   border-l border-border-theme"
           [ngClass]="
             viewMode() === 'list'
               ? 'bg-cyan-500 text-white'
@@ -189,7 +189,7 @@
                   >
                     {{ arena.status }}
                   </span>
-                  <span class="text-xs font-bold text-slate-500">
+                  <span class="text-xs font-semibold text-slate-500">
                     {{ arena.participantsCount }} players
                   </span>
                 </div>
@@ -241,7 +241,7 @@
                   <h3 class="text-base font-semibold truncate">{{ arena.name }}</h3>
                   @if (arena.status === 'ongoing') {
                     <span
-                      class="shrink-0 px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-400"
+                      class="shrink-0 px-2 py-0.5 text-xs  rounded-full bg-green-500/20 text-green-400"
                       >Ongoing</span
                     >
                   }
@@ -296,7 +296,7 @@
         <button
           (click)="prevPage()"
           [disabled]="currentPage() === 1"
-          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme  disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
+          class="px-3 py-2 text-sm  rounded-lg border border-border-theme  disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -318,7 +318,7 @@
           } @else {
             <button
               (click)="goToPage(page)"
-              class="min-w-[36px] px-3 py-2 text-sm font-medium rounded-lg border "
+              class="min-w-[36px] px-3 py-2 text-sm  rounded-lg border "
               [ngClass]="{
                 'bg-cyan-500 border-cyan-500 text-white': currentPage() === page,
                 'border-border-theme hover:bg-slate-100 ':
@@ -333,7 +333,7 @@
         <button
           (click)="nextPage()"
           [disabled]="currentPage() === totalPages()"
-          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme  disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
+          class="px-3 py-2 text-sm  rounded-lg border border-border-theme  disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -3,11 +3,11 @@
     <!-- Study Header -->
     <div class="flex items-center justify-between p-1">
       <div class="flex flex-col gap-1 min-w-0">
-        <h3 class="text-lg font-bold text-content   line-clamp-2 whitespace-normal">{{ s.name }}</h3>
+        <h3 class="text-lg font-semibold text-content   line-clamp-2 whitespace-normal">{{ s.name }}</h3>
         <div class="flex items-center gap-1.5">
           <span class="text-sm font-semibold text-accent/90 cursor-pointer hover:underline" [appUserHovercard]="s.owner.name">{{ s.owner.name }}</span>
           <span class="text-sm text-muted">•</span>
-          <span class="text-sm text-muted font-medium">Study Owner</span>
+          <span class="text-sm text-muted ">Study Owner</span>
         </div>
       </div>
       
@@ -24,10 +24,10 @@
     <!-- Sync Mode -->
     <div class="flex items-center justify-between p-4 rounded-2xl bg-subtle/50 border border-border-base/50">
       <div class="flex flex-col">
-        <span class="text-base font-bold text-content ">
+        <span class="text-base font-semibold text-content ">
           {{ isSyncing() ? (canEdit() ? 'Live Teaching' : 'Tutor Follow') : 'Self Exploration' }}
         </span>
-        <span class="text-[10px] text-muted font-medium tracking-wide uppercase">Synchronization</span>
+        <span class="text-[10px] text-muted  tracking-wide uppercase">Synchronization</span>
       </div>
       <mat-slide-toggle 
         [checked]="isSyncing()" 
@@ -37,7 +37,7 @@
     </div>
 
     <!-- Timestamps & Stats -->
-    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-xs font-medium text-muted">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 text-xs  text-muted">
       <div class="flex items-center gap-1">
         <span>Created {{ formatDate(s.created_at) }}</span>
       </div>
@@ -67,7 +67,7 @@
           <div class="flex items-center justify-between p-2.5 px-4 rounded-xl bg-subtle/30 border border-border-base/40 group hover:border-accent/20 ">
             <div class="flex flex-col">
               <span class="text-sm font-semibold text-content/90 cursor-pointer hover:underline" [appUserHovercard]="collab.username">{{ collab.username }}</span>
-              <span class="text-xs text-muted font-medium">{{ collab.can_edit ? 'Can Edit' : 'View Only' }}</span>
+              <span class="text-xs text-muted ">{{ collab.can_edit ? 'Can Edit' : 'View Only' }}</span>
             </div>
             
             @if (isOwner()) {

@@ -21,14 +21,14 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <div class="space-y-2">
               @for (item of moveShortcuts; track item.key) {
                 <div class="flex items-center justify-between py-1.5 border-b border-border-base/30 last:border-0 group">
-                  <span class="text-sm font-medium text-content/80 group-hover:text-content ">
+                  <span class="text-sm  text-content/80 group-hover:text-content ">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
                     @if (item.symbol) {
                       <span class="text-xs  text-muted/60 bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     }
-                    <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-[10px] font-bold text-accent">{{ item.key }}</kbd>
+                    <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-[10px] font-semibold text-accent">{{ item.key }}</kbd>
                   </div>
                 </div>
               }
@@ -44,15 +44,15 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <div class="space-y-2">
               @for (item of posShortcuts; track item.key) {
                 <div class="flex items-center justify-between py-1.5 border-b border-border-base/30 last:border-0 group">
-                  <span class="text-sm font-medium text-content/80 group-hover:text-content ">
+                  <span class="text-sm  text-content/80 group-hover:text-content ">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
                     <span class="text-xs  text-muted/60 bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     <div class="flex items-center gap-1">
-                      <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-[10px] font-bold text-muted">Shift</kbd>
+                      <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-[10px] font-semibold text-muted">Shift</kbd>
                       <span class="text-xs opacity-40">+</span>
-                      <kbd class="w-6 h-6 flex items-center justify-center bg-surface border border-border-base rounded shadow-sm text-[10px] font-bold text-accent">{{ item.key }}</kbd>
+                      <kbd class="w-6 h-6 flex items-center justify-center bg-surface border border-border-base rounded shadow-sm text-[10px] font-semibold text-accent">{{ item.key }}</kbd>
                     </div>
                   </div>
                 </div>
@@ -68,12 +68,12 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2">
               @for (item of otherShortcuts; track item.label) {
                 <div class="flex items-center justify-between py-1.5 group">
-                  <span class="text-sm font-medium text-content/80 group-hover:text-content ">
+                  <span class="text-sm  text-content/80 group-hover:text-content ">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-1">
                     @for (key of item.keys; track $index) {
-                       <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-[10px] font-bold text-muted">{{ key }}</kbd>
+                       <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-[10px] font-semibold text-muted">{{ key }}</kbd>
                        @if (!$last) { <span class="text-[10px] opacity-40 mx-0.5">/</span> }
                     }
                   </div>

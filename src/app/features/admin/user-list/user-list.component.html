@@ -31,7 +31,7 @@
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-subtle text-muted uppercase text-xs font-bold tracking-wider">
+          <tr class="bg-subtle text-muted uppercase text-xs font-semibold tracking-wider">
             <th class="px-6 py-4">User</th>
             <th class="px-6 py-4">Status</th>
             <th class="px-6 py-4">Ratings</th>
@@ -44,7 +44,7 @@
             <tr>
               <td colspan="5" class="px-6 py-20 text-center">
                 <div class="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <span class="text-sm text-muted font-medium">Loading users...</span>
+                <span class="text-sm text-muted ">Loading users...</span>
               </td>
             </tr>
           } @else if (users().length === 0) {
@@ -58,7 +58,7 @@
               <tr class="hover:bg-subtle  group">
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center text-muted font-bold overflow-hidden border border-border-base">
+                    <div class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center text-muted font-semibold overflow-hidden border border-border-base">
                       @if (user.avatar) {
                         <img [src]="user.avatar" class="w-full h-full object-cover">
                       } @else {
@@ -80,31 +80,31 @@
                   <div class="flex items-center gap-2">
                     @if (user.is_online) {
                       <span class="w-2 h-2 rounded-full bg-green-500 "></span>
-                      <span class="text-xs font-medium text-green-600 ">Online</span>
+                      <span class="text-xs  text-green-600 ">Online</span>
                     } @else {
                       <span class="w-2 h-2 rounded-full bg-muted/40"></span>
-                      <span class="text-xs font-medium text-muted">Offline</span>
+                      <span class="text-xs  text-muted">Offline</span>
                     }
                   </div>
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex flex-col gap-1">
                     <div class="flex items-center gap-2 text-xs">
-                      <span class="text-muted uppercase font-bold er">Bullet</span>
-                      <span class="text-content font-bold">{{ user.ratings.bullet }}</span>
+                      <span class="text-muted uppercase font-semibold er">Bullet</span>
+                      <span class="text-content font-semibold">{{ user.ratings.bullet }}</span>
                     </div>
                     <div class="flex items-center gap-2 text-xs">
-                      <span class="text-muted uppercase font-bold er">Blitz</span>
-                      <span class="text-content font-bold">{{ user.ratings.blitz }}</span>
+                      <span class="text-muted uppercase font-semibold er">Blitz</span>
+                      <span class="text-content font-semibold">{{ user.ratings.blitz }}</span>
                     </div>
                     <div class="flex items-center gap-2 text-xs">
-                      <span class="text-muted uppercase font-bold er">Rapid</span>
-                      <span class="text-content font-bold">{{ user.ratings.rapid }}</span>
+                      <span class="text-muted uppercase font-semibold er">Rapid</span>
+                      <span class="text-content font-semibold">{{ user.ratings.rapid }}</span>
                     </div>
                   </div>
                 </td>
                 <td class="px-6 py-4 text-sm">
-                  <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-subtle text-muted capitalize border border-border-base">
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-subtle text-muted capitalize border border-border-base">
                     {{ user.role }}
                   </span>
                 </td>
@@ -112,19 +112,19 @@
                   <div class="flex items-center justify-end gap-2">
                     <button 
                       (click)="viewProfile(user.uid)"
-                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-subtle text-content "
+                      class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border-base hover:bg-subtle text-content "
                     >
                       Profile
                     </button>
                     <button 
                       (click)="editUser(user.uid)"
-                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-subtle text-content "
+                      class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border-base hover:bg-subtle text-content "
                     >
                       Edit
                     </button>
                     <button 
                       (click)="deleteUser(user)"
-                      class="px-3 py-1.5 text-xs font-bold rounded-lg border border-border-base hover:bg-red-50 hover:text-red-600  "
+                      class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border-base hover:bg-red-50 hover:text-red-600  "
                     >
                       Delete
                     </button>
@@ -138,7 +138,7 @@
     </div>
 
     <div class="p-5 border-t border-border-base/50 bg-subtle/30 flex items-center justify-between">
-      <span class="text-xs text-muted font-medium">Showing {{ users().length }} users</span>
+      <span class="text-xs text-muted ">Showing {{ users().length }} users</span>
     </div>
   </div>
 </div>

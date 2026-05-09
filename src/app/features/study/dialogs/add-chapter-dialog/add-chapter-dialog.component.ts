@@ -94,7 +94,7 @@ export interface AddChapterDialogResult {
               @if (activeTab() === 'empty') {
                 <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4 animate-in zoom-in-95 ">
                   <div class="space-y-1">
-                    <h3 class="text-sm font-bold text-content uppercase tracking-wider">Start Fresh</h3>
+                    <h3 class="text-sm font-semibold text-content uppercase tracking-wider">Start Fresh</h3>
                     <p class="text-xs text-muted max-w-[200px] mx-auto leading-relaxed">
                       create a new chapter starting from the standard initial position.
                     </p>
@@ -106,7 +106,7 @@ export interface AddChapterDialogResult {
                 <div class="space-y-4 py-4 animate-in slide-in-from-right-4 ">
                   <div class="space-y-3">
                     <div class="flex items-center justify-between">
-                      <h3 class="text-sm font-bold text-content uppercase tracking-wider ml-1">
+                      <h3 class="text-sm font-semibold text-content uppercase tracking-wider ml-1">
                         Paste FEN
                       </h3>
                     </div>
@@ -158,7 +158,7 @@ export interface AddChapterDialogResult {
                       ></textarea>
                       
                       @if (fileSummary()) {
-                        <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-base rounded-lg text-[10px] text-accent font-bold animate-in fade-in slide-in-from-bottom-2">
+                        <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-base rounded-lg text-[10px] text-accent font-semibold animate-in fade-in slide-in-from-bottom-2">
                           {{ fileSummary() }}
                         </div>
                       }

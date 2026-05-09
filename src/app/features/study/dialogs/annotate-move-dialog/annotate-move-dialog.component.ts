@@ -24,7 +24,7 @@ export interface AnnotateMoveDialogResult {
           <!-- Glyphs Selection -->
           <div class="space-y-3">
             <div class="flex items-center justify-between ml-1">
-              <label class="text-[10px] font-bold uppercase tracking-wider text-muted">
+              <label class="text-[10px] font-semibold uppercase tracking-wider text-muted">
                 Move Evaluation (Glyphs)
               </label>
               <button 
@@ -48,10 +48,10 @@ export interface AnnotateMoveDialogResult {
                   [class.border-base]="!isSelected(glyph.id)"
                   [class.hover:border-accent/50]="!isSelected(glyph.id)"
                 >
-                  <span class="text-lg font-bold">{{ glyph.symbol }}</span>
+                  <span class="text-lg font-semibold">{{ glyph.symbol }}</span>
                   
                   <!-- Tooltip hint on hover -->
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-bold uppercase er whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none  z-10 shadow-xl">
+                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-semibold uppercase er whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none  z-10 shadow-xl">
                     {{ glyph.name }}
                   </div>
                 </button>
@@ -61,7 +61,7 @@ export interface AnnotateMoveDialogResult {
 
           <!-- Comment Section -->
           <div class="space-y-3">
-            <label class="text-[10px] font-bold uppercase tracking-wider text-muted ml-1">
+            <label class="text-[10px] font-semibold uppercase tracking-wider text-muted ml-1">
               Comment
             </label>
             <div class="relative group">

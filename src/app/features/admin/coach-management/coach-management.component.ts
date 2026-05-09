@@ -17,10 +17,10 @@ import { ToastService } from '../../../core/services/toast.service';
       <!-- Header Actions -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold  text-slate-900">Coach Profiles</h1>
-          <p class="text-slate-500 mt-1 font-medium">Manage and curate public coach profiles on the platform.</p>
+          <h1 class="text-3xl font-semibold  text-slate-900">Coach Profiles</h1>
+          <p class="text-slate-500 mt-1 ">Manage and curate public coach profiles on the platform.</p>
         </div>
-        <a routerLink="/admin/coach/new" class="px-6 py-3 rounded bg-slate-900 text-white font-bold hover:bg-slate-800">
+        <a routerLink="/admin/coach/new" class="px-6 py-3 rounded bg-slate-900 text-white font-semibold hover:bg-slate-800">
           <span>Add New Coach</span>
         </a>
       </div>
@@ -28,17 +28,17 @@ import { ToastService } from '../../../core/services/toast.service';
       <!-- Filters & Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="bg-white rounded border border-slate-200 p-6 flex flex-col justify-between">
-          <span class="text-xs font-bold text-slate-400 uppercase ">Total Coaches</span>
+          <span class="text-xs font-semibold text-slate-400 uppercase ">Total Coaches</span>
           <div class="flex items-end justify-between mt-2">
-            <span class="text-3xl font-bold text-slate-900">{{ coaches().length }}</span>
-            <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">+1 this month</span>
+            <span class="text-3xl font-semibold text-slate-900">{{ coaches().length }}</span>
+            <span class="text-xs font-semibold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">+1 this month</span>
           </div>
         </div>
         <div class="bg-white rounded border border-slate-200 p-6 flex flex-col justify-between">
-          <span class="text-xs font-bold text-slate-400 uppercase ">Academy Instructors</span>
+          <span class="text-xs font-semibold text-slate-400 uppercase ">Academy Instructors</span>
           <div class="flex items-end justify-between mt-2">
-            <span class="text-3xl font-bold text-slate-900">{{ academyInstructorsCount() }}</span>
-            <span class="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">Top Tier</span>
+            <span class="text-3xl font-semibold text-slate-900">{{ academyInstructorsCount() }}</span>
+            <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-1 rounded">Top Tier</span>
           </div>
         </div>
         <div class="md:col-span-2 bg-white rounded border border-slate-200 p-2 flex items-center">
@@ -59,8 +59,8 @@ import { ToastService } from '../../../core/services/toast.service';
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-100">
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase ">Coach</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase  text-right">Actions</th>
+                <th class="px-6 py-4 text-xs font-semibold text-slate-400 uppercase ">Coach</th>
+                <th class="px-6 py-4 text-xs font-semibold text-slate-400 uppercase  text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -69,22 +69,22 @@ import { ToastService } from '../../../core/services/toast.service';
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       @if (coach.title) {
-                        <span class="px-1.5 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded uppercase shrink-0">
+                        <span class="px-1.5 py-0.5 bg-red-600 text-white text-[10px] font-semibold rounded uppercase shrink-0">
                           {{ coach.title }}
                         </span>
                       }
-                      <span class="font-bold text-slate-900">{{ coach.name }}</span>
+                      <span class="font-semibold text-slate-900">{{ coach.name }}</span>
                       @if (coach.isAcademyInstructor) {
-                        <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">ACADEMY</span>
+                        <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">ACADEMY</span>
                       }
                     </div>
                   </td>
                   <td class="px-6 py-4 text-right">
                     <div class="flex items-center justify-end gap-4">
-                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-bold text-blue-600 hover:text-blue-700  uppercase ">
+                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-semibold text-blue-600 hover:text-blue-700  uppercase ">
                         Edit
                       </a>
-                      <button (click)="deleteCoach(coach)" class="text-xs font-bold text-rose-600 hover:underline  uppercase ">
+                      <button (click)="deleteCoach(coach)" class="text-xs font-semibold text-rose-600 hover:underline  uppercase ">
                         Delete
                       </button>
                     </div>
@@ -95,7 +95,7 @@ import { ToastService } from '../../../core/services/toast.service';
                   <td colspan="2" class="px-6 py-20 text-center">
 
                     <div class="flex flex-col items-center">
-                      <h3 class="text-lg font-bold text-slate-900">No coaches found</h3>
+                      <h3 class="text-lg font-semibold text-slate-900">No coaches found</h3>
                       <p class="text-slate-500 text-sm">Try adjusting your search or add a new coach profile.</p>
                     </div>
                   </td>

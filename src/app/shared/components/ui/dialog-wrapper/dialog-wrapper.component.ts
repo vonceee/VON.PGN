@@ -10,7 +10,7 @@ import { provideIcons } from '@ng-icons/core';
     <div class="ui-panel overflow-hidden flex flex-col w-full max-h-[90vh]">
       <!-- Header -->
       <div class="flex items-center justify-between p-4 bg-surface">
-        <h2 class="text-xl font-medium tracking-wide text-content">{{ title() }}</h2>
+        <h2 class="text-xl  tracking-wide text-content">{{ title() }}</h2>
       </div>
 
       <!-- Body -->

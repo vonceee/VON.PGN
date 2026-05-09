@@ -1,6 +1,6 @@
   <div class="mx-auto px-4 py-8 max-w-4xl">
     <div class="mb-8">
-      <h1 class="text-3xl font-bold mb-2">Submit Your Coach Profile</h1>
+      <h1 class="text-3xl font-semibold mb-2">Submit Your Coach Profile</h1>
       <p class="text-slate-600 ">
         Fill out this form to get your coaching profile listed on our platform. We'll review your information and approve qualified coaches for listing.
       </p>
@@ -13,7 +13,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-1">Full Name *</label>
+          <label class="block text-sm  mb-1">Full Name *</label>
           <input
             type="text"
             formControlName="name"
@@ -26,7 +26,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1">Chess Title</label>
+          <label class="block text-sm  mb-1">Chess Title</label>
           <select
             formControlName="title"
             class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
@@ -45,7 +45,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1">FIDE Rating *</label>
+          <label class="block text-sm  mb-1">FIDE Rating *</label>
           <input
             type="number"
             formControlName="fideRating"
@@ -58,7 +58,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1">
+          <label class="block text-sm  mb-1">
             Email Address *
             @if (applicationForm.get('email')?.disabled) {
               <span class="text-xs text-slate-500  ml-2">(from your account)</span>
@@ -78,7 +78,7 @@
       </div>
 
       <div class="mt-4">
-        <label class="block text-sm font-medium mb-1">Short Info *</label>
+        <label class="block text-sm  mb-1">Short Info *</label>
         <input
           type="text"
           formControlName="shortInfo"
@@ -95,7 +95,7 @@
     <div class="bg-white  rounded-xl border border-slate-200  p-6">
       <h2 class="text-xl font-semibold mb-4">Profile Picture</h2>
       <div>
-        <label class="block text-sm font-medium mb-1">Upload Profile Picture</label>
+        <label class="block text-sm  mb-1">Upload Profile Picture</label>
         <input
           type="file"
           accept="image/*"
@@ -114,7 +114,7 @@
       <h2 class="text-xl font-semibold mb-4">Experience</h2>
 
       <div class="mb-6">
-        <label class="block text-sm font-medium mb-2">Playing Experience</label>
+        <label class="block text-sm  mb-2">Playing Experience</label>
         <div formArrayName="playingExperience">
           <div *ngFor="let control of playingExperience.controls; let i = index" class="flex gap-2 mb-2">
             <input
@@ -130,7 +130,7 @@
       </div>
 
       <div class="mb-6">
-        <label class="block text-sm font-medium mb-2">Teaching Experience</label>
+        <label class="block text-sm  mb-2">Teaching Experience</label>
         <div formArrayName="teachingExperience">
           <div *ngFor="let control of teachingExperience.controls; let i = index" class="flex gap-2 mb-2">
             <input
@@ -146,7 +146,7 @@
       </div>
 
       <div class="mb-6">
-        <label class="block text-sm font-medium mb-2">Teaching Methods</label>
+        <label class="block text-sm  mb-2">Teaching Methods</label>
         <div formArrayName="teachingMethods">
           <div *ngFor="let control of teachingMethods.controls; let i = index" class="flex gap-2 mb-2">
             <input
@@ -163,7 +163,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-1">Coaching Type</label>
+          <label class="block text-sm  mb-1">Coaching Type</label>
           <select
             formControlName="coachingType"
             class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
@@ -175,7 +175,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium mb-1">Location</label>
+          <label class="block text-sm  mb-1">Location</label>
           <input
             type="text"
             formControlName="location"
@@ -186,7 +186,7 @@
       </div>
 
       <div class="mt-4">
-        <label class="block text-sm font-medium mb-1">Availability</label>
+        <label class="block text-sm  mb-1">Availability</label>
         <input
           type="text"
           formControlName="availability"
@@ -200,7 +200,7 @@
     <div class="bg-white  rounded-xl border border-slate-200  p-6">
       <h2 class="text-xl font-semibold mb-4">Biography</h2>
       <div>
-        <label class="block text-sm font-medium mb-1">Detailed Bio *</label>
+        <label class="block text-sm  mb-1">Detailed Bio *</label>
         <textarea
           formControlName="bio"
           rows="6"
@@ -218,7 +218,7 @@
       <h2 class="text-xl font-semibold mb-4">Social Media (Optional)</h2>
       <div formGroupName="socialMedia" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-1">Twitter</label>
+          <label class="block text-sm  mb-1">Twitter</label>
           <input
             type="url"
             formControlName="twitter"
@@ -227,7 +227,7 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">YouTube</label>
+          <label class="block text-sm  mb-1">YouTube</label>
           <input
             type="url"
             formControlName="youtube"
@@ -236,7 +236,7 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Twitch</label>
+          <label class="block text-sm  mb-1">Twitch</label>
           <input
             type="url"
             formControlName="twitch"
@@ -245,7 +245,7 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Instagram</label>
+          <label class="block text-sm  mb-1">Instagram</label>
           <input
             type="url"
             formControlName="instagram"
@@ -254,7 +254,7 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Facebook</label>
+          <label class="block text-sm  mb-1">Facebook</label>
           <input
             type="url"
             formControlName="facebook"
@@ -263,7 +263,7 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Chess.com</label>
+          <label class="block text-sm  mb-1">Chess.com</label>
           <input
             type="url"
             formControlName="chesscom"
@@ -272,7 +272,7 @@
           />
         </div>
         <div class="md:col-span-2">
-          <label class="block text-sm font-medium mb-1">Lichess</label>
+          <label class="block text-sm  mb-1">Lichess</label>
           <input
             type="url"
             formControlName="lichess"

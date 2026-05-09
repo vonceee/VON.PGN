@@ -4,7 +4,7 @@
     <div class="px-8 pt-8 pb-4">
       <app-back-link text="Back to Events" link="/events"></app-back-link>
 
-      <h1 class="text-3xl md:text-4xl font-bold text-slate-900  max-w-3xl">
+      <h1 class="text-3xl md:text-4xl font-semibold text-slate-900  max-w-3xl">
         {{ tournament.name }}
       </h1>
       @if (tournament.creator) {
@@ -170,7 +170,7 @@
 
           <section>
             <h2
-              class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+              class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +195,7 @@
 
           <section>
             <h2
-              class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+              class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +227,7 @@
           @if (mapUrl()) {
             <section>
               <h2
-                class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -268,7 +268,7 @@
 
           <section>
             <h2
-              class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+              class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -317,7 +317,7 @@
           @if (tournament.eligibility && tournament.eligibility.length > 0) {
             <section>
               <h2
-                class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -360,7 +360,7 @@
           @if (tournament.categories) {
             <section>
               <h2
-                class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -381,7 +381,7 @@
 
               @for (catKey of objectKeys(tournament.categories); track catKey) {
                 <div class="mb-6 last:mb-0">
-                  <h3 class="text-lg font-bold text-slate-900  mb-3 capitalize">
+                  <h3 class="text-lg font-semibold text-slate-900  mb-3 capitalize">
                     {{ formatCategoryName(catKey) }}
                   </h3>
 
@@ -443,7 +443,7 @@
                   <!-- Special Awards -->
                   @if (tournament.categories![catKey].specialAwards) {
                     <div class="ui-panel p-4">
-                      <h4 class="text-sm font-bold text-slate-900  mb-3">
+                      <h4 class="text-sm font-semibold text-slate-900  mb-3">
                         Special Awards
                       </h4>
                       <div class="space-y-2">
@@ -511,7 +511,7 @@
           } @else if (tournament.prizePool) {
             <section>
               <h2
-                class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -530,7 +530,7 @@
                 Prizes
               </h2>
               <div class="ui-panel p-5">
-                <div class="text-3xl font-bold text-slate-900 ">
+                <div class="text-3xl font-semibold text-slate-900 ">
                   {{ formatCurrency(tournament.prizePool) }}
                 </div>
                 <p class="text-sm text-slate-500  mt-1">Total Prize Pool</p>
@@ -541,7 +541,7 @@
         @if (tournament.schedule && objectKeys(tournament.schedule).length > 0) {
           <section>
             <h2
-              class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+              class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -564,7 +564,7 @@
                 @if (tournament.schedule![dayKey].events.length > 0) {
                   <div class="ui-panel overflow-hidden">
                     <div class="px-4 py-3 border-b border-border-theme flex items-center gap-3">
-                      <span class="text-xs font-bold text-cyan-500 uppercase">{{
+                      <span class="text-xs font-semibold text-cyan-500 uppercase">{{
                         formatDayLabel(dayKey)
                       }}</span>
                       <span class="text-sm text-slate-600 ">{{
@@ -599,7 +599,7 @@
           @if (tournament.status === 'past' && tournament.standings) {
             <section>
               <h2
-                class="text-xl font-bold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -671,7 +671,7 @@
                           </a>
                         </td>
                         <td
-                          class="px-4 py-3 text-right font-mono font-bold text-slate-900 "
+                          class="px-4 py-3 text-right  font-semibold text-slate-900 "
                         >
                           {{ entry.score }}
                         </td>
@@ -687,7 +687,7 @@
         <!-- Right Column -->
         <div class="space-y-6">
           <div class="ui-panel p-5">
-            <h3 class="font-bold text-slate-900  mb-3 flex items-center gap-2">
+            <h3 class="font-semibold text-slate-900  mb-3 flex items-center gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -742,7 +742,7 @@
                     class="flex items-center gap-2 mt-1 hover:text-cyan-400 "
                   >
                     <span
-                      class="w-7 h-7 rounded-full bg-cyan-500 flex items-center justify-center text-white text-xs font-bold shrink-0"
+                      class="w-7 h-7 rounded-full bg-cyan-500 flex items-center justify-center text-white text-xs font-semibold shrink-0"
                     >
                       {{ tournament.creator.name.charAt(0).toUpperCase() }}
                     </span>
@@ -756,7 +756,7 @@
           </div>
 
           <div class="ui-panel p-5">
-            <h3 class="font-bold text-slate-900  mb-3 flex items-center gap-2">
+            <h3 class="font-semibold text-slate-900  mb-3 flex items-center gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

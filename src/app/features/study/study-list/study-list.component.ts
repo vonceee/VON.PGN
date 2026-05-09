@@ -17,19 +17,19 @@ import { ToastService } from '../../../core/services/toast.service';
 @Component({
   selector: 'app-study-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent, DialogModule, BadgeComponent, NgIconComponent, LoadingComponent],
+  imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent, DialogModule, NgIconComponent, LoadingComponent],
   providers: [provideIcons({ heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash, heroChevronDown })],
   template: `
     <div class="px-4 md:px-16 py-8">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <app-section-heading text="Chess" highlight="Study" size="text-3xl font-bold mb-0"></app-section-heading>
+        <app-section-heading text="Chess" highlight="Study" size="text-3xl font-semibold mb-0"></app-section-heading>
 
         <div class="flex items-center gap-2">
             <!-- Dropdown -->
             <div class="relative" #dropdownContainer>
               <button 
                 (click)="isDropdownOpen.set(!isDropdownOpen())"
-                class="flex items-center justify-between gap-2 px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm font-bold text-content hover:bg-surface  min-w-[140px]"
+                class="flex items-center justify-between gap-2 px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm font-semibold text-content hover:bg-surface  min-w-[140px]"
               >
                 <div class="flex items-center gap-2">
                   <ng-icon [name]="activeTab() === 'all' ? 'heroGlobeAlt' : 'heroUser'"></ng-icon>
@@ -42,19 +42,17 @@ import { ToastService } from '../../../core/services/toast.service';
                 <div class="absolute top-full right-0 mt-2 w-48 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 ">
                   <button 
                     (click)="setTab('all')"
-                    class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold  hover:bg-subtle"
+                    class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold  hover:bg-subtle"
                     [class.text-accent]="activeTab() === 'all'"
                   >
-                    <ng-icon name="heroGlobeAlt"></ng-icon>
                     Public
                   </button>
                   @if (isLoggedIn()) {
                     <button 
                       (click)="setTab('my')"
-                      class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold  hover:bg-subtle"
+                      class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold  hover:bg-subtle"
                       [class.text-accent]="activeTab() === 'my'"
                     >
-                      <ng-icon name="heroUser"></ng-icon>
                       My Studies
                     </button>
                   }
@@ -83,18 +81,7 @@ import { ToastService } from '../../../core/services/toast.service';
                 <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
                   <div class="flex items-start justify-between gap-2 mb-2">
                     <div class="flex flex-col gap-1">
-                      <h2 class="text-base md:text-2xl font-bold">{{ study.name }}</h2>
-                      <div class="flex gap-2">
-                        @if (study.visibility === 'private') {
-                          <app-badge customClass="!bg-red-500/10 !text-red-500 !border-red-500/20 border">
-                            <ng-icon name="heroLockClosed" class="mr-1"></ng-icon> Private
-                          </app-badge>
-                        } @else if (study.visibility === 'unlisted') {
-                          <app-badge customClass="!bg-amber-500/10 !text-amber-500 !border-amber-500/20 border">
-                            <ng-icon name="heroEyeSlash" class="mr-1"></ng-icon> Unlisted
-                          </app-badge>
-                        }
-                      </div>
+                      <h2 class="text-base md:text-2xl font-semibold">{{ study.name }}</h2>
                     </div>
                     @if (study.updated_at) {
                       <span
@@ -108,49 +95,14 @@ import { ToastService } from '../../../core/services/toast.service';
 
                   <div class="space-y-2 text-sm mb-4">
                     <div class="flex items-center gap-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        class="w-4 h-4 shrink-0"
-                      >
-                        <path d="M10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
-                        <path
-                          fill-rule="evenodd"
-                          d="M.664 10.59a1.651 1.651 0 0 1 0-1.186A10.004 10.004 0 0 1 10 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0 1 10 17c-4.257 0-7.893-2.66-9.336-6.41ZM14 10a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
                       <span class="capitalize">{{ study.visibility }}</span>
                     </div>
 
                     <div class="flex items-center gap-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        class="w-4 h-4 shrink-0"
-                      >
-                        <path
-                          d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z"
-                        />
-                      </svg>
                       {{ study.chapters_count }} Chapters
                     </div>
 
                     <div class="flex items-center gap-2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        class="w-4 h-4 shrink-0"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
                       <span
                         >Created by <span class="font-semibold">{{ study.owner.name }}</span></span
                       >

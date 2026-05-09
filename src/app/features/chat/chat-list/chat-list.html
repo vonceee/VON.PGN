@@ -83,7 +83,7 @@
                 {{ getLastMessagePreview(conversation) }}
               </span>
               @if (conversation.unread_count > 0) {
-                <span class="shrink-0 min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-bold">
+                <span class="shrink-0 min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-cyan-500 text-white text-xs font-semibold">
                   {{ conversation.unread_count > 99 ? '99+' : conversation.unread_count }}
                 </span>
               }

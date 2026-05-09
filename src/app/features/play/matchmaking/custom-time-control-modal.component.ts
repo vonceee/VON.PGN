@@ -21,7 +21,7 @@ export interface CustomTimeControlResult {
       <div class="flex items-center justify-between">
         <div class="space-y-1">
           <h2 class="text-2xl  uppercase italic er">Custom Time Control</h2>
-          <p class="text-xs font-bold text-muted-foreground uppercase ">Setup your preferred format</p>
+          <p class="text-xs font-semibold text-muted-foreground uppercase ">Setup your preferred format</p>
         </div>
         <button
           (click)="dialogRef.close()"
@@ -39,14 +39,14 @@ export interface CustomTimeControlResult {
             <div class="flex items-center gap-4">
               <button
                 (click)="adjustMinutes(-1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
+                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-semibold"
               >
                 -
               </button>
               <span class="text-3xl  min-w-[3rem] text-center italic">{{ customMinutes() }}</span>
               <button
                 (click)="adjustMinutes(1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
+                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-semibold"
               >
                 +
               </button>
@@ -74,14 +74,14 @@ export interface CustomTimeControlResult {
             <div class="flex items-center gap-4">
               <button
                 (click)="adjustIncrement(-1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
+                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-semibold"
               >
                 -
               </button>
               <span class="text-3xl  min-w-[3rem] text-center italic">{{ customIncrement() }}</span>
               <button
                 (click)="adjustIncrement(1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
+                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-semibold"
               >
                 +
               </button>

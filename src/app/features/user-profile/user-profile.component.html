@@ -33,7 +33,7 @@
             <div class="flex-1 w-full">
               <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <h1 class="text-2xl font-bold  flex items-center gap-3">
+                  <h1 class="text-2xl font-semibold  flex items-center gap-3">
                     <app-user-status-indicator
                       [userId]="profile.uid"
                       size="w-8 h-8"
@@ -158,14 +158,14 @@
                   (click)="openFollowModal('followers')"
                   class="hover:text-cyan-500  cursor-pointer"
                 >
-                  <span class="font-bold">{{ formattedFollowersCount() }}</span>
+                  <span class="font-semibold">{{ formattedFollowersCount() }}</span>
                   <span class="ml-1">Followers</span>
                 </button>
                 <button
                   (click)="openFollowModal('following')"
                   class="hover:text-cyan-500  cursor-pointer"
                 >
-                  <span class="font-bold">{{ formattedFollowingCount() }}</span>
+                  <span class="font-semibold">{{ formattedFollowingCount() }}</span>
                   <span class="ml-1">Following</span>
                 </button>
               </div>
@@ -191,50 +191,50 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Bullet -->
           <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
-            <span class="text-xs font-bold uppercase  text-muted">Bullet</span>
+            <span class="text-xs font-semibold uppercase  text-muted">Bullet</span>
             <div class="text-3xl  text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.bullet?.rating ?? 1500 }}
               @if (profile.ratings?.bullet?.prov) {
                 <span class="text-xl text-accent font-semibold">?</span>
               }
             </div>
-            <span class="text-xs font-medium text-muted mt-2 block">{{ profile.ratings?.bullet?.games ?? 0 }} games</span>
+            <span class="text-xs  text-muted mt-2 block">{{ profile.ratings?.bullet?.games ?? 0 }} games</span>
           </div>
 
           <!-- Blitz -->
           <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
-            <span class="text-xs font-bold uppercase  text-muted">Blitz</span>
+            <span class="text-xs font-semibold uppercase  text-muted">Blitz</span>
             <div class="text-3xl  text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.blitz?.rating ?? 1500 }}
               @if (profile.ratings?.blitz?.prov) {
                 <span class="text-xl text-accent font-semibold">?</span>
               }
             </div>
-            <span class="text-xs font-medium text-muted mt-2 block">{{ profile.ratings?.blitz?.games ?? 0 }} games</span>
+            <span class="text-xs  text-muted mt-2 block">{{ profile.ratings?.blitz?.games ?? 0 }} games</span>
           </div>
 
           <!-- Rapid -->
           <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
-            <span class="text-xs font-bold uppercase  text-muted">Rapid</span>
+            <span class="text-xs font-semibold uppercase  text-muted">Rapid</span>
             <div class="text-3xl  text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.rapid?.rating ?? 1500 }}
               @if (profile.ratings?.rapid?.prov) {
                 <span class="text-xl text-accent font-semibold">?</span>
               }
             </div>
-            <span class="text-xs font-medium text-muted mt-2 block">{{ profile.ratings?.rapid?.games ?? 0 }} games</span>
+            <span class="text-xs  text-muted mt-2 block">{{ profile.ratings?.rapid?.games ?? 0 }} games</span>
           </div>
 
           <!-- Tactics -->
           <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
-            <span class="text-xs font-bold uppercase  text-muted">Tactics</span>
+            <span class="text-xs font-semibold uppercase  text-muted">Tactics</span>
             <div class="text-3xl  text-content flex items-baseline gap-1 mt-2">
               {{ profile.progress.puzzleRating }}
               @if (profile.progress.totalPuzzlesSolved < 10) {
                 <span class="text-xl text-accent font-semibold">?</span>
               }
             </div>
-            <span class="text-xs font-medium text-muted mt-2 block">{{ profile.progress.totalPuzzlesSolved }} puzzles</span>
+            <span class="text-xs  text-muted mt-2 block">{{ profile.progress.totalPuzzlesSolved }} puzzles</span>
           </div>
         </div>
 
@@ -262,7 +262,7 @@
                       >
                         <div class="flex items-center justify-between mb-2">
                           <span
-                            class="text-xs font-bold px-2 py-0.5 rounded bg-cyan-100  text-cyan-600  capitalize"
+                            class="text-xs font-semibold px-2 py-0.5 rounded bg-cyan-100  text-cyan-600  capitalize"
                           >
                             {{ tournament.timeControl }}
                           </span>
@@ -271,7 +271,7 @@
                           </span>
                         </div>
                         <h4
-                          class="font-bold text-slate-900  group-hover:text-cyan-500  line-clamp-1"
+                          class="font-semibold text-slate-900  group-hover:text-cyan-500  line-clamp-1"
                         >
                           {{ tournament.name }}
                         </h4>

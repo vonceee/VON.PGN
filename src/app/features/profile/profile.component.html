@@ -7,7 +7,7 @@
           <div class="p-8 flex flex-col lg:flex-row gap-8 items-start">
             <!-- Left Side: Identity -->
             <div class="flex-1 w-full">
-              <h1 class="text-2xl font-bold  flex items-center gap-3">
+              <h1 class="text-2xl font-semibold  flex items-center gap-3">
                 <app-flag-icon [countryCode]="profile.country_code"></app-flag-icon>
                 {{ profile.displayName || profile.username }}
               </h1>
@@ -37,14 +37,14 @@
                   (click)="openFollowModal('followers')"
                   class="hover:text-cyan-500  cursor-pointer"
                 >
-                  <span class="font-bold">{{ formattedFollowersCount() }}</span>
+                  <span class="font-semibold">{{ formattedFollowersCount() }}</span>
                   <span class="ml-1">Followers</span>
                 </button>
                 <button
                   (click)="openFollowModal('following')"
                   class="hover:text-cyan-500  cursor-pointer"
                 >
-                  <span class="font-bold">{{ formattedFollowingCount() }}</span>
+                  <span class="font-semibold">{{ formattedFollowingCount() }}</span>
                   <span class="ml-1">Following</span>
                 </button>
               </div>
@@ -110,47 +110,47 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Bullet -->
           <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
-            <span class="text-xs font-bold uppercase tracking-wider text-muted">Bullet</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-muted">Bullet</span>
             <div class="text-3xl  flex items-baseline gap-1">
               {{ profile.ratings?.bullet?.rating ?? 1500 }}
               @if (profile.ratings?.bullet?.prov) {
                 <span class="text-xl font-semibold">?</span>
               }
             </div>
-            <span class="text-xs font-medium text-muted">{{ profile.ratings?.bullet?.games ?? 0 }} games</span>
+            <span class="text-xs  text-muted">{{ profile.ratings?.bullet?.games ?? 0 }} games</span>
           </div>
 
           <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
-            <span class="text-xs font-bold uppercase tracking-wider text-muted">Blitz</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-muted">Blitz</span>
             <div class="text-3xl  flex items-baseline gap-1">
               {{ profile.ratings?.blitz?.rating ?? 1500 }}
               @if (profile.ratings?.blitz?.prov) {
                 <span class="text-xl font-semibold">?</span>
               }
             </div>
-            <span class="text-xs font-medium text-muted">{{ profile.ratings?.blitz?.games ?? 0 }} games</span>
+            <span class="text-xs  text-muted">{{ profile.ratings?.blitz?.games ?? 0 }} games</span>
           </div>
 
           <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
-            <span class="text-xs font-bold uppercase tracking-wider text-muted">Rapid</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-muted">Rapid</span>
             <div class="text-3xl  flex items-baseline gap-1">
               {{ profile.ratings?.rapid?.rating ?? 1500 }}
               @if (profile.ratings?.rapid?.prov) {
                 <span class="text-xl font-semibold">?</span>
               }
             </div>
-            <span class="text-xs font-medium text-muted">{{ profile.ratings?.rapid?.games ?? 0 }} games</span>
+            <span class="text-xs  text-muted">{{ profile.ratings?.rapid?.games ?? 0 }} games</span>
           </div>
 
           <div class="ui-panel rounded-xl p-6 flex flex-col gap-2 hover:border-accent  ">
-            <span class="text-xs font-bold uppercase tracking-wider text-muted">Tactics</span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-muted">Tactics</span>
             <div class="text-3xl  flex items-baseline gap-1">
               {{ profile.progress.puzzleRating }}
               @if (profile.progress.totalPuzzlesSolved < 10) {
                 <span class="text-xl font-semibold">?</span>
               }
             </div>
-            <span class="text-xs font-medium text-muted">{{ profile.progress.totalPuzzlesSolved }} puzzles</span>
+            <span class="text-xs  text-muted">{{ profile.progress.totalPuzzlesSolved }} puzzles</span>
           </div>
         </div>
 

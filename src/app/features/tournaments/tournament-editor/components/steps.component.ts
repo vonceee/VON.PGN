@@ -70,7 +70,7 @@ export class StepBasicInfoComponent {
                 [ngModelOptions]="{ standalone: true }"
                 class="w-4 h-4 text-cyan-400 bg-slate-800 border-slate-600 rounded focus:ring-cyan-400 focus:ring-2"
               />
-              <span class="text-sm font-medium">1-day tournament</span>
+              <span class="text-sm ">1-day tournament</span>
             </label>
           </div>
         </div>
@@ -94,7 +94,7 @@ export class StepBasicInfoComponent {
       ></app-form-field>
 
       <div class="space-y-1.5">
-        <label class="field-label block text-sm font-medium text-slate-700 ">Google Maps Link <span class="text-slate-500 font-normal">(Optional)</span></label>
+        <label class="field-label block text-sm  text-slate-700 ">Google Maps Link <span class="text-slate-500 font-normal">(Optional)</span></label>
         <div class="flex gap-2">
           <input
             type="text"

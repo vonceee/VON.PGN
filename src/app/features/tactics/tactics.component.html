@@ -27,14 +27,14 @@
             @if (currentUser()) {
               <div class="flex items-center justify-between">
                 <div class="flex flex-col">
-                  <span class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-1"
+                  <span class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-1"
                     >Rating</span
                   >
                   <div class="flex items-center gap-2">
                     <span class="text-2xl ">{{ userRating() }}</span>
                     @if (status() !== 'playing' && ratingChange() !== null) {
                       <span
-                        class="text-sm font-bold"
+                        class="text-sm font-semibold"
                         [class.text-green-500]="(ratingChange() || 0) > 0"
                         [class.text-red-500]="(ratingChange() || 0) < 0"
                       >
@@ -44,7 +44,7 @@
                   </div>
                 </div>
                 <div class="flex flex-col items-end">
-                  <span class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-1"
+                  <span class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-1"
                     >Streak</span
                   >
                   <div class="flex items-center gap-2">
@@ -62,7 +62,7 @@
             } @else {
               <div class="flex items-center gap-4">
                 <div>
-                  <p class="font-bold text-mdxaxamp">Guest Mode</p>
+                  <p class="font-semibold text-mdxaxamp">Guest Mode</p>
                   <p class="text-sm uppercase tracking-widers">
                     Sign in to save progress
                   </p>
@@ -78,7 +78,7 @@
                   [class.bg-white]="userColor() === 'white'"
                   [class.bg-slate-950]="userColor() === 'black'"
                 ></div>
-                <p class="text-xs uppercase  font-bold">
+                <p class="text-xs uppercase  font-semibold">
                   {{ userColor() }} to play
                 </p>
               </div>
@@ -135,7 +135,7 @@
                   <div
                     class="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"
                   ></div>
-                  <span class="text-xs uppercase  font-bold opacity-40"
+                  <span class="text-xs uppercase  font-semibold opacity-40"
                     >Loading History</span
                   >
                 </div>
@@ -150,7 +150,7 @@
                 ></app-move-notation>
               } @else {
                 <div class="p-6 flex flex-col items-center justify-center gap-2 text-slate-500">
-                  <span class="text-xs uppercase  font-bold opacity-40"
+                  <span class="text-xs uppercase  font-semibold opacity-40"
                     >No Game History</span
                   >
                 </div>

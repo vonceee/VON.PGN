@@ -3,7 +3,7 @@
   <!-- Sidebar Navigation -->
   <aside class="w-full md:w-64 lg:w-72 shrink-0 border-r border-slate-200  md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto px-6 py-8 bg-white ">
     <div class="mb-8">
-      <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500  mb-4 px-3">Documentation</h2>
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500  mb-4 px-3">Documentation</h2>
       <nav class="space-y-1">
         <button 
           *ngFor="let section of sections"
@@ -14,7 +14,7 @@
           [class.]="activeSection === section.id"
           [class.text-slate-600]="activeSection !== section.id"
           [class.]="activeSection !== section.id"
-          class="w-full text-left px-3 py-2.5 text-sm font-medium rounded-lg  hover:bg-slate-100 "
+          class="w-full text-left px-3 py-2.5 text-sm  rounded-lg  hover:bg-slate-100 "
         >
           {{ section.title }}
         </button>
@@ -32,7 +32,7 @@
 
       <div class="space-y-24">
         <section *ngFor="let section of sections" [id]="section.id" class="scroll-mt-32">
-          <h2 class="text-3xl font-bold mb-6 text-slate-900  border-b border-slate-200  pb-4">
+          <h2 class="text-3xl font-semibold mb-6 text-slate-900  border-b border-slate-200  pb-4">
             {{ section.title }}
           </h2>
           <div class="prose prose-slate  max-w-none text-slate-600 ">

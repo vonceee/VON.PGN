@@ -18,7 +18,7 @@ import { ButtonComponent  } from '@shared/ui';
         @for (cat of categoriesArray.controls; track $index; let ci = $index) {
         <div class="p-6 bg-slate-50 /50 rounded-xl border border-border-theme">
           <div class="flex justify-between items-center mb-6">
-            <h3 class="font-bold text-lg text-slate-800 ">Category {{ ci + 1 }}</h3>
+            <h3 class="font-semibold text-lg text-slate-800 ">Category {{ ci + 1 }}</h3>
             <button
               appButton
               variant="danger"
@@ -40,7 +40,7 @@ import { ButtonComponent  } from '@shared/ui';
 
           <div class="space-y-6">
             <div class="p-4 bg-white  rounded-lg border border-border-theme">
-              <label class="text-sm font-bold block mb-4 text-cyan-600  uppercase tracking-wider">Main Prizes</label>
+              <label class="text-sm font-semibold block mb-4 text-cyan-600  uppercase tracking-wider">Main Prizes</label>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-1.5">
                   <label class="block text-xs font-semibold text-slate-500 uppercase">1st Place</label>
@@ -114,7 +114,7 @@ import { ButtonComponent  } from '@shared/ui';
             </div>
 
             <div class="p-4 bg-white  rounded-lg border border-border-theme">
-              <label class="text-sm font-bold block mb-4 text-purple-600  uppercase tracking-wider">Special Awards</label>
+              <label class="text-sm font-semibold block mb-4 text-purple-600  uppercase tracking-wider">Special Awards</label>
               <div class="space-y-4">
                 @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
                 <div class="p-4 bg-slate-50 /30 rounded-lg border border-border-theme">
@@ -150,7 +150,7 @@ import { ButtonComponent  } from '@shared/ui';
                   } @else {
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div class="space-y-1">
-                      <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">1st</label>
+                      <label class="text-[10px] font-semibold text-slate-500 uppercase ml-1">1st</label>
                       <input 
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '1st')" 
@@ -159,7 +159,7 @@ import { ButtonComponent  } from '@shared/ui';
                       />
                     </div>
                     <div class="space-y-1">
-                      <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">2nd</label>
+                      <label class="text-[10px] font-semibold text-slate-500 uppercase ml-1">2nd</label>
                       <input 
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '2nd')" 
@@ -168,7 +168,7 @@ import { ButtonComponent  } from '@shared/ui';
                       />
                     </div>
                     <div class="space-y-1">
-                      <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">3rd</label>
+                      <label class="text-[10px] font-semibold text-slate-500 uppercase ml-1">3rd</label>
                       <input 
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '3rd')" 
@@ -245,7 +245,7 @@ export class StepPrizesComponent implements OnInit {
         @for (day of scheduleDaysArray.controls; track $index; let di = $index) {
         <div class="p-6 bg-white  rounded-xl border border-border-theme shadow-sm">
           <div class="flex justify-between items-center mb-6">
-            <span class="bg-cyan-100  text-cyan-700  px-3 py-1 rounded-full text-xs font-bold uppercase ">Day {{ di + 1 }} Schedule</span>
+            <span class="bg-cyan-100  text-cyan-700  px-3 py-1 rounded-full text-xs font-semibold uppercase ">Day {{ di + 1 }} Schedule</span>
             <div class="flex gap-2">
               <button
                 appButton

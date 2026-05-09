@@ -30,12 +30,12 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
                 [title]="user()!.is_online ? 'Online' : 'Offline'"
               ></div>
             </div>
-            <span class="text-xs text-muted font-medium uppercase tracking-wider">
+            <span class="text-xs text-muted  uppercase tracking-wider">
               {{ user()!.displayName || 'Chess Enthusiast' }}
             </span>
           </div>
           @if (user()!.verified_organizer) {
-            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-bold uppercase ">
+            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase ">
               Verified
             </div>
           }
@@ -45,7 +45,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         <div class="grid grid-cols-3 gap-2 mb-4">
           @for (type of ratingTypes; track type.id) {
             <div class="flex flex-col items-center p-2 rounded-xl bg-subtle/50 border border-border-base/50">
-              <span class="text-xs text-muted font-bold uppercase  mb-1">
+              <span class="text-xs text-muted font-semibold uppercase  mb-1">
                 {{ type.label }}
               </span>
               <span class="text-sm  text-content">
@@ -56,7 +56,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         </div>
 
         <!-- Stats -->
-        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-bold uppercase  text-muted">
+        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-semibold uppercase  text-muted">
           <div class="flex items-center gap-1.5">
             <span>{{ user()!.followers_count }} Followers</span>
           </div>
@@ -69,7 +69,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         @if (user()!.active_game; as game) {
           <div class="mt-4 pt-4 border-t border-border-base/50">
             <div class="flex items-center justify-between mb-2 px-1">
-              <span class="text-xs font-bold uppercase  text-accent">Playing Now</span>
+              <span class="text-xs font-semibold uppercase  text-accent">Playing Now</span>
               <span class="text-xs text-muted">{{ game.time_control }}</span>
             </div>
             
@@ -83,7 +83,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
               
               <!-- Opponent Overlay -->
               <div class="absolute bottom-0 left-0 right-0 p-2 bg-main/80 backdrop-blur-md border-t border-border-base/50 flex items-center justify-between">
-                <span class="text-xs font-bold text-content truncate max-w-[120px]">
+                <span class="text-xs font-semibold text-content truncate max-w-[120px]">
                   vs {{ game.white_player.id === user()!.uid ? game.black_player.name : game.white_player.name }}
                 </span>
                 <div class="flex items-center gap-1">

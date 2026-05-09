@@ -87,7 +87,7 @@
   <!-- Scrollable Move List -->
   <div
     #scrollContainer
-    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base scroll-smooth font-medium leading-relaxed"
+    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base scroll-smooth  leading-relaxed"
   >
     <div class="block">
       <ng-container
@@ -95,7 +95,7 @@
       ></ng-container>
 
       @if (result() && result() !== '*') {
-        <span class="inline text-sm font-bold text-muted mx-1 select-text align-baseline">
+        <span class="inline text-sm font-semibold text-muted mx-1 select-text align-baseline">
           {{ '{' + result() + '}' }}
         </span>
       }
@@ -150,7 +150,7 @@
             @for (glyphId of node.glyphs; track glyphId) {
               @if (getGlyph(glyphId); as glyph) {
                 <span 
-                  class="ml-0.5 font-bold"
+                  class="ml-0.5 font-semibold"
                   [class]="glyph.class"
                   [title]="glyph.name"
                 >{{ glyph.symbol }}</span>

@@ -59,7 +59,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                     <span class="text-cyan-400">•</span>
                     <span>Review</span>
                   </div>
-                  <div class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono  uppercase ">
+                  <div class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]   uppercase ">
                     {{ g.time_control }}
                   </div>
                 </div>
@@ -70,12 +70,12 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                   <div class="flex items-center justify-between p-3 rounded-xl bg-black/20 border border-white/5">
                     <div class="flex items-center gap-3 overflow-hidden">
                       <div class="w-3 h-3 rounded-full shrink-0 border border-slate-500 bg-slate-950"></div>
-                      <span class="truncate font-bold text-sm">{{ g.black_player.name }}</span>
+                      <span class="truncate font-semibold text-sm">{{ g.black_player.name }}</span>
                     </div>
-                    <div class="flex items-center gap-2 font-mono text-[11px] shrink-0">
+                    <div class="flex items-center gap-2  text-xs shrink-0">
                       <span class="opacity-40">({{ g.black_elo }})</span>
                       @if (g.black_rating_change !== null) {
-                        <span class="font-bold" [class]="g.black_rating_change >= 0 ? 'text-green-400' : 'text-red-400'">
+                        <span class="font-semibold" [class]="g.black_rating_change >= 0 ? 'text-green-400' : 'text-red-400'">
                           {{ g.black_rating_change > 0 ? '+' : '' }}{{ g.black_rating_change }}
                         </span>
                       }
@@ -86,12 +86,12 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                   <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                     <div class="flex items-center gap-3 overflow-hidden">
                       <div class="w-3 h-3 rounded-full shrink-0 border border-slate-500 bg-white"></div>
-                      <span class="truncate font-bold text-sm">{{ g.white_player.name }}</span>
+                      <span class="truncate font-semibold text-sm">{{ g.white_player.name }}</span>
                     </div>
-                    <div class="flex items-center gap-2 font-mono text-[11px] shrink-0">
+                    <div class="flex items-center gap-2  text-xs shrink-0">
                       <span class="opacity-40">({{ g.white_elo }})</span>
                       @if (g.white_rating_change !== null) {
-                        <span class="font-bold" [class]="g.white_rating_change >= 0 ? 'text-green-400' : 'text-red-400'">
+                        <span class="font-semibold" [class]="g.white_rating_change >= 0 ? 'text-green-400' : 'text-red-400'">
                           {{ g.white_rating_change > 0 ? '+' : '' }}{{ g.white_rating_change }}
                         </span>
                       }
@@ -104,7 +104,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                   <div class="text-lg  " [class]="getResultClass(g)">
                     {{ g.result }}
                   </div>
-                  <div class="text-[10px] uppercase font-bold opacity-30  mt-0.5">
+                  <div class="text-[10px] uppercase font-semibold opacity-30  mt-0.5">
                     {{ g.termination }}
                   </div>
                 </div>
@@ -122,12 +122,12 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                 <h4 class="text-[10px] uppercase  text-slate-500 mb-4 ">Game Details</h4>
                 <div class="space-y-4">
                   <div class="flex flex-col gap-1">
-                    <span class="text-[10px] text-slate-500 uppercase font-bold">Played on</span>
-                    <span class="text-xs font-mono text-slate-300">{{ g.created_at | date: 'mediumDate' }}</span>
+                    <span class="text-[10px] text-slate-500 uppercase font-semibold">Played on</span>
+                    <span class="text-xs  text-slate-300">{{ g.created_at | date: 'mediumDate' }}</span>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <span class="text-[10px] text-slate-500 uppercase font-bold">Category</span>
-                    <span class="text-xs font-mono text-slate-300">{{ g.time_control }}</span>
+                    <span class="text-[10px] text-slate-500 uppercase font-semibold">Category</span>
+                    <span class="text-xs  text-slate-300">{{ g.time_control }}</span>
                   </div>
                 </div>
               </div>
@@ -166,7 +166,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                 @for (tab of ['notation', 'analysis']; track tab) {
                   <button
                     (click)="activeTab.set(tab === 'notation' ? 'notation' : 'analysis')"
-                    class="flex-1 py-4 text-[10px] font-bold uppercase    relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-500 after:-translate-x-1/2 after: after:"
+                    class="flex-1 py-4 text-[10px] font-semibold uppercase    relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-500 after:-translate-x-1/2 after: after:"
                     [class.text-cyan-400]="activeTab() === tab"
                     [class.opacity-40]="activeTab() !== tab"
                     [class.after:w-full]="activeTab() === tab"

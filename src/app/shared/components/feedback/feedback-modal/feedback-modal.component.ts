@@ -40,7 +40,7 @@ interface FeedbackForm {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <!-- Name -->
               <div class="space-y-2">
-                <label for="feedback-name" class="text-sm font-bold opacity-70">Name</label>
+                <label for="feedback-name" class="text-sm font-semibold opacity-70">Name</label>
                 <input
                   id="feedback-name"
                   type="text"
@@ -53,7 +53,7 @@ interface FeedbackForm {
 
               <!-- Email -->
               <div class="space-y-2">
-                <label for="feedback-email" class="text-sm font-bold opacity-70">Email</label>
+                <label for="feedback-email" class="text-sm font-semibold opacity-70">Email</label>
                 <input
                   id="feedback-email"
                   type="email"
@@ -67,7 +67,7 @@ interface FeedbackForm {
 
             <!-- Feedback Type -->
             <div class="space-y-2">
-              <label for="feedback-type" class="text-sm font-bold opacity-70">Feedback Type</label>
+              <label for="feedback-type" class="text-sm font-semibold opacity-70">Feedback Type</label>
               <select
                 id="feedback-type"
                 [(ngModel)]="form.type"
@@ -82,7 +82,7 @@ interface FeedbackForm {
 
             <!-- Message -->
             <div class="space-y-2">
-              <label for="feedback-message" class="text-sm font-bold opacity-70">
+              <label for="feedback-message" class="text-sm font-semibold opacity-70">
                 Message <span class="text-red-500">*</span>
               </label>
               <textarea
@@ -102,7 +102,7 @@ interface FeedbackForm {
                 variant="primary"
                 type="submit"
                 [disabled]="!form.message.trim() || isSubmitting()"
-                class="w-full h-12 text-sm font-bold"
+                class="w-full h-12 text-sm font-semibold"
               >
                 {{ isSubmitting() ? 'Sending...' : 'Submit Feedback' }}
               </button>
