@@ -93,7 +93,7 @@
                     <button
                       (click)="messageUser()"
                       [disabled]="isMessaging()"
-                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold   cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 /10 text-slate-700  hover:bg-slate-200  border border-slate-200 "
+                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold   cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 /10 text-slate-700  hover:bg-slate-200  border border-border-base "
                     >
                       @if (isMessaging()) {
                         <div
@@ -132,7 +132,7 @@
                       [class.hover:bg-red-50]="isFollowing()"
                       [class.]="isFollowing()"
                       [class.border]="isFollowing()"
-                      [class.border-slate-200]="isFollowing()"
+                      [class.border-border-base]="isFollowing()"
                       [class.]="isFollowing()"
                       [class.hover:border-red-200]="isFollowing()"
                       [class.]="isFollowing()"
@@ -321,7 +321,7 @@
       (click)="closeFollowModal()"
     >
       <div
-        class="bg-white  rounded-2xl w-full max-w-lg mx-4 border border-slate-200  max-h-[80vh] flex flex-col"
+        class="bg-white  rounded-2xl w-full max-w-lg mx-4 border border-border-base  max-h-[80vh] flex flex-col"
         (click)="$event.stopPropagation()"
       >
         <!-- Modal Header -->
@@ -372,7 +372,7 @@
         <!-- Search -->
         <div class="px-5 pt-4 pb-0">
           <div
-            class="flex items-center bg-slate-100  border border-slate-200  rounded-lg px-3 py-2 focus-within:border-cyan-500/60 "
+            class="flex items-center bg-slate-100  border border-border-base  rounded-lg px-3 py-2 focus-within:border-cyan-500/60 "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -442,7 +442,7 @@
                     [appUserHovercard]="userItem.username"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-slate-300  text-sm font-semibold text-slate-700  uppercase shrink-0"
+                    class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-border-base  text-sm font-semibold text-slate-700  uppercase shrink-0"
                   >
                     {{ userItem.displayName.charAt(0) || 'U' }}
                   </a>
@@ -475,7 +475,7 @@
                       [class.hover:bg-red-50]="userItem.is_following"
                       [class.]="userItem.is_following"
                       [class.border]="userItem.is_following"
-                      [class.border-slate-200]="userItem.is_following"
+                      [class.border-border-base]="userItem.is_following"
                       [class.]="userItem.is_following"
                       [class.hover:text-red-500]="userItem.is_following"
                       [class.hover:border-red-200]="userItem.is_following"

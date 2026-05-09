@@ -8,7 +8,7 @@
 
   <form [formGroup]="applicationForm" (ngSubmit)="onSubmit()" class="space-y-8">
     <!-- Basic Information -->
-    <div class="bg-white  rounded-xl border border-slate-200  p-6">
+    <div class="bg-white  rounded-xl border border-border-base  p-6">
       <h2 class="text-xl font-semibold mb-4">Basic Information</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -17,7 +17,7 @@
           <input
             type="text"
             formControlName="name"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="Enter your full name"
           />
           <div *ngIf="(applicationForm.get('name')?.invalid && applicationForm.get('name')?.touched) || getFieldError('name')" class="text-red-500 text-sm mt-1">
@@ -29,7 +29,7 @@
           <label class="block text-sm  mb-1">Chess Title</label>
           <select
             formControlName="title"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
           >
             <option value="">No Title</option>
             <option value="GM">Grandmaster (GM)</option>
@@ -49,7 +49,7 @@
           <input
             type="number"
             formControlName="fideRating"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="Enter your FIDE rating"
           />
           <div *ngIf="applicationForm.get('fideRating')?.invalid && applicationForm.get('fideRating')?.touched" class="text-red-500 text-sm mt-1">
@@ -67,7 +67,7 @@
           <input
             type="email"
             formControlName="email"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white  disabled:bg-slate-100 disabled: disabled:text-slate-500 disabled:"
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white  disabled:bg-slate-100 disabled: disabled:text-slate-500 disabled:"
             placeholder="your.email@example.com"
             [attr.disabled]="applicationForm.get('email')?.disabled ? '' : null"
           />
@@ -82,7 +82,7 @@
         <input
           type="text"
           formControlName="shortInfo"
-          class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+          class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
           placeholder="Brief description of your coaching approach"
         />
         <div *ngIf="applicationForm.get('shortInfo')?.invalid && applicationForm.get('shortInfo')?.touched" class="text-red-500 text-sm mt-1">
@@ -92,7 +92,7 @@
     </div>
 
     <!-- Profile Picture -->
-    <div class="bg-white  rounded-xl border border-slate-200  p-6">
+    <div class="bg-white  rounded-xl border border-border-base  p-6">
       <h2 class="text-xl font-semibold mb-4">Profile Picture</h2>
       <div>
         <label class="block text-sm  mb-1">Upload Profile Picture</label>
@@ -100,7 +100,7 @@
           type="file"
           accept="image/*"
           (change)="onFileChange($event)"
-          class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+          class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
         />
         <p class="text-sm text-slate-500 mt-1">Supported formats: JPG, PNG, GIF. Max size: 5MB</p>
         <div *ngIf="fileError" class="text-red-500 text-sm mt-1">
@@ -110,7 +110,7 @@
     </div>
 
     <!-- Experience -->
-    <div class="bg-white  rounded-xl border border-slate-200  p-6">
+    <div class="bg-white  rounded-xl border border-border-base  p-6">
       <h2 class="text-xl font-semibold mb-4">Experience</h2>
 
       <div class="mb-6">
@@ -120,7 +120,7 @@
             <input
               type="text"
               [formControlName]="i"
-              class="flex-1 px-3 py-2 border border-slate-300  rounded-lg bg-white "
+              class="flex-1 px-3 py-2 border border-border-base  rounded-lg bg-white "
               placeholder="e.g., Peak FIDE rating 2400"
             />
             <button type="button" (click)="removePlayingExperience(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
@@ -136,7 +136,7 @@
             <input
               type="text"
               [formControlName]="i"
-              class="flex-1 px-3 py-2 border border-slate-300  rounded-lg bg-white "
+              class="flex-1 px-3 py-2 border border-border-base  rounded-lg bg-white "
               placeholder="e.g., FIDE Trainer certification"
             />
             <button type="button" (click)="removeTeachingExperience(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
@@ -152,7 +152,7 @@
             <input
               type="text"
               [formControlName]="i"
-              class="flex-1 px-3 py-2 border border-slate-300  rounded-lg bg-white "
+              class="flex-1 px-3 py-2 border border-border-base  rounded-lg bg-white "
               placeholder="e.g., Interactive analysis"
             />
             <button type="button" (click)="removeTeachingMethod(i)" class="px-3 py-2 text-red-500 hover:bg-red-50 rounded">×</button>
@@ -166,7 +166,7 @@
           <label class="block text-sm  mb-1">Coaching Type</label>
           <select
             formControlName="coachingType"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
           >
             <option value="Online">Online</option>
             <option value="Onsite">On-site</option>
@@ -179,7 +179,7 @@
           <input
             type="text"
             formControlName="location"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="City, Country"
           />
         </div>
@@ -190,21 +190,21 @@
         <input
           type="text"
           formControlName="availability"
-          class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+          class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
           placeholder="e.g., Weekends and evenings"
         />
       </div>
     </div>
 
     <!-- Bio -->
-    <div class="bg-white  rounded-xl border border-slate-200  p-6">
+    <div class="bg-white  rounded-xl border border-border-base  p-6">
       <h2 class="text-xl font-semibold mb-4">Biography</h2>
       <div>
         <label class="block text-sm  mb-1">Detailed Bio *</label>
         <textarea
           formControlName="bio"
           rows="6"
-          class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+          class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
           placeholder="Tell us about yourself, your chess journey, and what makes you a great coach..."
         ></textarea>
         <div *ngIf="applicationForm.get('bio')?.invalid && applicationForm.get('bio')?.touched" class="text-red-500 text-sm mt-1">
@@ -214,7 +214,7 @@
     </div>
 
     <!-- Social Media -->
-    <div class="bg-white  rounded-xl border border-slate-200  p-6">
+    <div class="bg-white  rounded-xl border border-border-base  p-6">
       <h2 class="text-xl font-semibold mb-4">Social Media (Optional)</h2>
       <div formGroupName="socialMedia" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -222,7 +222,7 @@
           <input
             type="url"
             formControlName="twitter"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="https://twitter.com/username"
           />
         </div>
@@ -231,7 +231,7 @@
           <input
             type="url"
             formControlName="youtube"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="https://youtube.com/@channel"
           />
         </div>
@@ -240,7 +240,7 @@
           <input
             type="url"
             formControlName="twitch"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="https://twitch.tv/username"
           />
         </div>
@@ -249,7 +249,7 @@
           <input
             type="url"
             formControlName="instagram"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="https://instagram.com/username"
           />
         </div>
@@ -258,7 +258,7 @@
           <input
             type="url"
             formControlName="facebook"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="https://facebook.com/username"
           />
         </div>
@@ -267,7 +267,7 @@
           <input
             type="url"
             formControlName="chesscom"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="https://chess.com/member/username"
           />
         </div>
@@ -276,7 +276,7 @@
           <input
             type="url"
             formControlName="lichess"
-            class="w-full px-3 py-2 border border-slate-300  rounded-lg bg-white "
+            class="w-full px-3 py-2 border border-border-base  rounded-lg bg-white "
             placeholder="https://lichess.org/@/username"
           />
         </div>

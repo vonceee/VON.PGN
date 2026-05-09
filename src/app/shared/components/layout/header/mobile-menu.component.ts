@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
     >
       <!-- Mobile Menu Header -->
       <div
-        class="flex items-center justify-between px-4 py-3 border-b border-slate-200 "
+        class="flex items-center justify-between px-4 py-3 border-b border-border-base "
       >
         <span class="font-semibold text-lg">Menu</span>
         <button
@@ -34,7 +34,7 @@ import { Router } from '@angular/router';
       </div>
 
       <!-- Mobile Search -->
-      <div class="px-4 py-3 border-b border-slate-200 ">
+      <div class="px-4 py-3 border-b border-border-base ">
         <div
           class="flex items-center bg-slate-100 /10 rounded-xl px-3 py-2 border border-transparent focus-within:border-cyan-500/50 "
         >
@@ -96,7 +96,7 @@ import { Router } from '@angular/router';
       </div>
 
       <!-- Mobile Auth Section -->
-      <div class="border-t border-slate-200  py-2">
+      <div class="border-t border-border-base  py-2">
 
         @if (authService.isAuthenticated()) {
           <a
@@ -136,7 +136,7 @@ import { Router } from '@angular/router';
           <a
             routerLink="/login"
             (click)="close.emit()"
-            class="flex items-center justify-center gap-2 mx-4 mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700  border border-slate-300  hover:border-cyan-500/60 hover:text-cyan-600 "
+            class="flex items-center justify-center gap-2 mx-4 mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700  border border-border-base  hover:border-cyan-500/60 hover:text-cyan-600 "
           >
             Log in
           </a>

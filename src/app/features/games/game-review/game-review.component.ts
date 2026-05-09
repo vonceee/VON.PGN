@@ -69,7 +69,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                   <!-- Black Player -->
                   <div class="flex items-center justify-between p-3 rounded-xl bg-black/20 border border-white/5">
                     <div class="flex items-center gap-3 overflow-hidden">
-                      <div class="w-3 h-3 rounded-full shrink-0 border border-slate-500 bg-slate-950"></div>
+                      <div class="w-3 h-3 rounded-full shrink-0 border border-border-base bg-slate-950"></div>
                       <span class="truncate font-semibold text-sm">{{ g.black_player.name }}</span>
                     </div>
                     <div class="flex items-center gap-2  text-xs shrink-0">
@@ -85,7 +85,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                   <!-- White Player -->
                   <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
                     <div class="flex items-center gap-3 overflow-hidden">
-                      <div class="w-3 h-3 rounded-full shrink-0 border border-slate-500 bg-white"></div>
+                      <div class="w-3 h-3 rounded-full shrink-0 border border-border-base bg-white"></div>
                       <span class="truncate font-semibold text-sm">{{ g.white_player.name }}</span>
                     </div>
                     <div class="flex items-center gap-2  text-xs shrink-0">

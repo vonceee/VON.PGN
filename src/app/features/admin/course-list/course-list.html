@@ -14,11 +14,11 @@
   } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (course of courses(); track course.id) {
-        <div class="bg-white rounded border border-slate-200 overflow-hidden">
+        <div class="bg-white rounded border border-border-base overflow-hidden">
           <div class="h-32 bg-slate-50 relative flex items-center justify-center">
             <div class="text-slate-300 font-semibold">COURSE</div>
             <div class="absolute top-4 right-4">
-              <span class="px-2 py-1 rounded bg-white text-[10px] font-semibold text-slate-600 border border-slate-200">
+              <span class="px-2 py-1 rounded bg-white text-[10px] font-semibold text-slate-600 border border-border-base">
                 {{ course.chapters?.length || 0 }} CHAPTERS
               </span>
             </div>
@@ -29,7 +29,7 @@
               {{ course.description || 'No description provided for this course yet.' }}
             </p>
             
-            <div class="flex items-center gap-2 pt-4 border-t border-slate-50">
+            <div class="flex items-center gap-2 pt-4 border-t border-border-base">
               <a [routerLink]="['/admin/course', course.id]" class="flex-1 text-center py-2 text-xs font-semibold bg-slate-100 hover:bg-blue-600 hover:text-white rounded">
                 Edit
               </a>
@@ -40,7 +40,7 @@
           </div>
         </div>
       } @empty {
-        <div class="col-span-full p-20 flex flex-col items-center justify-center text-center bg-white border border-slate-200 rounded">
+        <div class="col-span-full p-20 flex flex-col items-center justify-center text-center bg-white border border-border-base rounded">
           <h2 class="text-xl font-semibold text-slate-900 mb-2">No courses found</h2>
           <p class="text-slate-500 max-w-sm mb-8">Start by creating your first course to build your academy.</p>
           <a routerLink="/admin/course/new" class="px-8 py-3 bg-blue-600 text-white rounded font-semibold">Create First Course</a>

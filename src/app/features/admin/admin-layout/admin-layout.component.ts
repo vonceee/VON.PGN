@@ -15,7 +15,7 @@ import { filter, map, startWith } from 'rxjs';
     <div class="flex min-h-screen bg-subtle text-content">
       <!-- Sidebar -->
       <aside class="w-80 bg-main text-content fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-border-base">
-        <div class="p-8 border-b border-slate-100">
+        <div class="p-8 border-b border-border-base">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-slate-900 rounded flex items-center justify-center text-white font-semibold">
               V

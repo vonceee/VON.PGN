@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-slate-50  text-slate-900  flex flex-col md:flex-row pt-16">
   
   <!-- Sidebar Navigation -->
-  <aside class="w-full md:w-64 lg:w-72 shrink-0 border-r border-slate-200  md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto px-6 py-8 bg-white ">
+  <aside class="w-full md:w-64 lg:w-72 shrink-0 border-r border-border-base  md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto px-6 py-8 bg-white ">
     <div class="mb-8">
       <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500  mb-4 px-3">Documentation</h2>
       <nav class="space-y-1">
@@ -32,14 +32,14 @@
 
       <div class="space-y-24">
         <section *ngFor="let section of sections" [id]="section.id" class="scroll-mt-32">
-          <h2 class="text-3xl font-semibold mb-6 text-slate-900  border-b border-slate-200  pb-4">
+          <h2 class="text-3xl font-semibold mb-6 text-slate-900  border-b border-border-base  pb-4">
             {{ section.title }}
           </h2>
           <div class="prose prose-slate  max-w-none text-slate-600 ">
             <p class="text-lg leading-relaxed">{{ section.content }}</p>
             
             <!-- Placeholder for future content blocks -->
-            <div class="mt-8 p-6 rounded-2xl bg-white  border border-slate-200  shadow-sm  hover:shadow-md">
+            <div class="mt-8 p-6 rounded-2xl bg-white  border border-border-base  shadow-sm  hover:shadow-md">
               <div class="flex items-center gap-4 mb-3">
                 <div class="w-10 h-10 rounded-full bg-cyan-100  flex items-center justify-center flex-shrink-0">
                   <svg class="w-5 h-5 text-cyan-600 " fill="none" viewBox="0 0 24 24" stroke="currentColor">

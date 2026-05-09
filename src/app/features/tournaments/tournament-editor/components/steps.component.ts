@@ -68,7 +68,7 @@ export class StepBasicInfoComponent {
                 [ngModel]="isOneDayTournament()"
                 (ngModelChange)="toggleOneDayTournament()"
                 [ngModelOptions]="{ standalone: true }"
-                class="w-4 h-4 text-cyan-400 bg-slate-800 border-slate-600 rounded focus:ring-cyan-400 focus:ring-2"
+                class="w-4 h-4 text-cyan-400 bg-slate-800 border-border-base rounded focus:ring-cyan-400 focus:ring-2"
               />
               <span class="text-sm ">1-day tournament</span>
             </label>

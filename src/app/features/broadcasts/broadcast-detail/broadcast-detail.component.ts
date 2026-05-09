@@ -186,7 +186,7 @@ type TabType = 'details' | 'games';
                 (click)="activeTab.set('details')"
                 [class]="activeTab() === 'details' 
                   ? 'border-cyan-500 text-cyan-500' 
-                  : 'border-transparent hover:border-slate-600'"
+                  : 'border-transparent hover:border-border-base'"
                 class="py-4 px-1 border-b-2  text-sm  text-slate-600 "
               >
                 Details
@@ -195,7 +195,7 @@ type TabType = 'details' | 'games';
                 (click)="activeTab.set('games')"
                 [class]="activeTab() === 'games' 
                   ? 'border-cyan-500 text-cyan-500' 
-                  : 'border-transparent hover:border-slate-600'"
+                  : 'border-transparent hover:border-border-base'"
                 class="py-4 px-1 border-b-2  text-sm  text-slate-600 "
               >
                 Games

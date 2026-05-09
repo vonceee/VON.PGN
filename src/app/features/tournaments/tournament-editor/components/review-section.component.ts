@@ -162,7 +162,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
         </div>
         @if (data['categories']) {
         @for (cat of (data['categories'] | keyvalue); track cat.key) {
-        <div class="mt-3 bg-slate-50 /50 rounded-lg p-4 border border-slate-200 ">
+        <div class="mt-3 bg-slate-50 /50 rounded-lg p-4 border border-border-base ">
           <h4 class="font-semibold mb-2 capitalize">{{ cat.key.toString().replace('_', ' ') }}</h4>
           <table class="w-full text-sm">
             <tbody>

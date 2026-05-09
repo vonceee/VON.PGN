@@ -27,21 +27,21 @@ import { ToastService } from '../../../core/services/toast.service';
 
       <!-- Filters & Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-white rounded border border-slate-200 p-6 flex flex-col justify-between">
+        <div class="bg-white rounded border border-border-base p-6 flex flex-col justify-between">
           <span class="text-xs font-semibold text-slate-400 uppercase ">Total Coaches</span>
           <div class="flex items-end justify-between mt-2">
             <span class="text-3xl font-semibold text-slate-900">{{ coaches().length }}</span>
             <span class="text-xs font-semibold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">+1 this month</span>
           </div>
         </div>
-        <div class="bg-white rounded border border-slate-200 p-6 flex flex-col justify-between">
+        <div class="bg-white rounded border border-border-base p-6 flex flex-col justify-between">
           <span class="text-xs font-semibold text-slate-400 uppercase ">Academy Instructors</span>
           <div class="flex items-end justify-between mt-2">
             <span class="text-3xl font-semibold text-slate-900">{{ academyInstructorsCount() }}</span>
             <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-1 rounded">Top Tier</span>
           </div>
         </div>
-        <div class="md:col-span-2 bg-white rounded border border-slate-200 p-2 flex items-center">
+        <div class="md:col-span-2 bg-white rounded border border-border-base p-2 flex items-center">
           <div class="flex-1 flex items-center px-4">
             <input 
               type="text" 
@@ -54,11 +54,11 @@ import { ToastService } from '../../../core/services/toast.service';
       </div>
 
       <!-- Coaches List -->
-      <div class="bg-white rounded border border-slate-200 overflow-hidden">
+      <div class="bg-white rounded border border-border-base overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="border-b border-slate-100">
+              <tr class="border-b border-border-base">
                 <th class="px-6 py-4 text-xs font-semibold text-slate-400 uppercase ">Coach</th>
                 <th class="px-6 py-4 text-xs font-semibold text-slate-400 uppercase  text-right">Actions</th>
               </tr>

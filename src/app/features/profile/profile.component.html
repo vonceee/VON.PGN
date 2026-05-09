@@ -70,7 +70,7 @@
                       placeholder="Write something about yourself..."
                       rows="3"
                       maxlength="500"
-                      class="w-full bg-slate-50  border border-slate-200  rounded-xl px-4 py-3 text-sm text-slate-900  placeholder-slate-400  outline-none focus:border-cyan-500/60 resize-none "
+                      class="w-full bg-slate-50  border border-border-base  rounded-xl px-4 py-3 text-sm text-slate-900  placeholder-slate-400  outline-none focus:border-cyan-500/60 resize-none "
                     ></textarea>
                     <div class="flex items-center justify-between">
                       <span class="text-[10px] text-slate-400 uppercase er"
@@ -269,7 +269,7 @@
                           [appUserHovercard]="userItem.username"
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-slate-300  text-sm font-semibold text-slate-700  uppercase shrink-0"
+                          class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-border-base  text-sm font-semibold text-slate-700  uppercase shrink-0"
                         >
                           {{ userItem.displayName.charAt(0) || 'U' }}
                         </a>
@@ -301,7 +301,7 @@
                           [class.hover:bg-red-50]="userItem.is_following"
                           [class.]="userItem.is_following"
                           [class.border]="userItem.is_following"
-                          [class.border-slate-200]="userItem.is_following"
+                          [class.border-border-base]="userItem.is_following"
                           [class.]="userItem.is_following"
                           [class.hover:text-red-500]="userItem.is_following"
                           [class.hover:border-red-200]="userItem.is_following"

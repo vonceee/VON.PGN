@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
         [class.text-cyan-400]="isOnline()"
         [class.border-cyan-500]="isOnline()"
         [class.text-slate-500]="!isOnline()"
-        [class.border-slate-500]="!isOnline()"
+        [class.border-border-base]="!isOnline()"
       >
         {{ isOnline() ? 'Online' : 'Offline' }}
       </div>

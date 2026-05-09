@@ -103,7 +103,7 @@
           </button>
           @if (shareMenuOpen()) {
             <div
-              class="absolute top-full left-0 mt-2 bg-white  rounded-xl shadow-lg border border-slate-200  py-2 min-w-[160px] z-10"
+              class="absolute top-full left-0 mt-2 bg-white  rounded-xl shadow-lg border border-border-base  py-2 min-w-[160px] z-10"
             >
               <button
                 (click)="copyLink()"
@@ -732,7 +732,7 @@
                 </div>
               }
               @if (tournament.creator) {
-                <div class="pt-3 border-t border-slate-200 ">
+                <div class="pt-3 border-t border-border-base ">
                   <span class="text-slate-500 ">Created by</span>
                   <a
                     [routerLink]="['/user', tournament.creator.name]"
