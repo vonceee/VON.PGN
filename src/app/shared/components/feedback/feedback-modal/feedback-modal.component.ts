@@ -119,7 +119,7 @@ interface FeedbackForm {
           </div>
           <div>
             <h2 class="text-2xl font-semibold mb-2">Thank you!</h2>
-            <p class="text-sm opacity-60 max-w-xs mx-auto">
+            <p class="text-sm  max-w-xs mx-auto">
               Your feedback has been received. We appreciate you taking the time to help us improve.
             </p>
           </div>

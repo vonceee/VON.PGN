@@ -191,7 +191,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Bullet -->
           <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
-            <span class="text-xs font-bold uppercase tracking-widest text-muted">Bullet</span>
+            <span class="text-xs font-bold uppercase  text-muted">Bullet</span>
             <div class="text-3xl  text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.bullet?.rating ?? 1500 }}
               @if (profile.ratings?.bullet?.prov) {
@@ -203,7 +203,7 @@
 
           <!-- Blitz -->
           <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
-            <span class="text-xs font-bold uppercase tracking-widest text-muted">Blitz</span>
+            <span class="text-xs font-bold uppercase  text-muted">Blitz</span>
             <div class="text-3xl  text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.blitz?.rating ?? 1500 }}
               @if (profile.ratings?.blitz?.prov) {
@@ -215,7 +215,7 @@
 
           <!-- Rapid -->
           <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
-            <span class="text-xs font-bold uppercase tracking-widest text-muted">Rapid</span>
+            <span class="text-xs font-bold uppercase  text-muted">Rapid</span>
             <div class="text-3xl  text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.rapid?.rating ?? 1500 }}
               @if (profile.ratings?.rapid?.prov) {
@@ -227,7 +227,7 @@
 
           <!-- Tactics -->
           <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main  hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
-            <span class="text-xs font-bold uppercase tracking-widest text-muted">Tactics</span>
+            <span class="text-xs font-bold uppercase  text-muted">Tactics</span>
             <div class="text-3xl  text-content flex items-baseline gap-1 mt-2">
               {{ profile.progress.puzzleRating }}
               @if (profile.progress.totalPuzzlesSolved < 10) {
@@ -246,7 +246,7 @@
             @if (tournamentsLoading() || userTournaments().length > 0) {
               <div class="rounded-2xl border border-border-theme p-5">
                 <h3
-                  class="text-xs font-semibold uppercase tracking-widest mb-4 flex items-center gap-2"
+                  class="text-xs font-semibold uppercase  mb-4 flex items-center gap-2"
                 >
                   Tournaments Posted
                 </h3>
@@ -329,7 +329,7 @@
           <div class="flex items-center gap-4">
             <button
               (click)="activeTab.set('followers'); loadTabUsers()"
-              class="text-xs font-semibold uppercase tracking-widest pb-1 border-b-2  cursor-pointer"
+              class="text-xs font-semibold uppercase  pb-1 border-b-2  cursor-pointer"
               [class.border-cyan-500]="activeTab() === 'followers'"
               [class.text-slate-900]="activeTab() === 'followers'"
               [class.]="activeTab() === 'followers'"
@@ -341,7 +341,7 @@
             </button>
             <button
               (click)="activeTab.set('following'); loadTabUsers()"
-              class="text-xs font-semibold uppercase tracking-widest pb-1 border-b-2  cursor-pointer"
+              class="text-xs font-semibold uppercase  pb-1 border-b-2  cursor-pointer"
               [class.border-cyan-500]="activeTab() === 'following'"
               [class.text-slate-900]="activeTab() === 'following'"
               [class.]="activeTab() === 'following'"

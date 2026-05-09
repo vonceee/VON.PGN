@@ -14,7 +14,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <!-- Move Annotations -->
           <div class="space-y-4">
-            <h3 class="text-xs  uppercase tracking-widest text-accent flex items-center gap-2">
+            <h3 class="text-xs  uppercase  text-accent flex items-center gap-2">
               <span class="w-2 h-2 bg-accent rounded-full"></span>
               Move Evaluations
             </h3>
@@ -37,7 +37,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
 
           <!-- Positional Annotations -->
           <div class="space-y-4">
-            <h3 class="text-xs  uppercase tracking-widest text-accent flex items-center gap-2">
+            <h3 class="text-xs  uppercase  text-accent flex items-center gap-2">
               <span class="w-2 h-2 bg-accent rounded-full"></span>
               Positional Markers
             </h3>
@@ -62,7 +62,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
 
           <!-- Navigation & Others -->
           <div class="space-y-4 md:col-span-2 pt-4 border-t border-border-base">
-            <h3 class="text-xs  uppercase tracking-widest text-muted flex items-center gap-2">
+            <h3 class="text-xs  uppercase  text-muted flex items-center gap-2">
               General & Navigation
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2">

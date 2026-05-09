@@ -21,7 +21,7 @@ export interface CustomTimeControlResult {
       <div class="flex items-center justify-between">
         <div class="space-y-1">
           <h2 class="text-2xl  uppercase italic er">Custom Time Control</h2>
-          <p class="text-xs font-bold text-muted-foreground uppercase tracking-widest">Setup your preferred format</p>
+          <p class="text-xs font-bold text-muted-foreground uppercase ">Setup your preferred format</p>
         </div>
         <button
           (click)="dialogRef.close()"
@@ -35,7 +35,7 @@ export interface CustomTimeControlResult {
         <!-- Minutes Selection -->
         <section class="space-y-6">
           <div class="flex justify-between items-center">
-            <h3 class="text-sm  uppercase tracking-widest text-muted-foreground">Minutes</h3>
+            <h3 class="text-sm  uppercase  text-muted-foreground">Minutes</h3>
             <div class="flex items-center gap-4">
               <button
                 (click)="adjustMinutes(-1)"
@@ -70,7 +70,7 @@ export interface CustomTimeControlResult {
         <!-- Increment Selection -->
         <section class="space-y-6">
           <div class="flex justify-between items-center">
-            <h3 class="text-sm  uppercase tracking-widest text-muted-foreground">Increment</h3>
+            <h3 class="text-sm  uppercase  text-muted-foreground">Increment</h3>
             <div class="flex items-center gap-4">
               <button
                 (click)="adjustIncrement(-1)"
@@ -107,7 +107,7 @@ export interface CustomTimeControlResult {
         <button
           appButton
           variant="primary"
-          class="w-full py-6 text-lg  uppercase tracking-widest italic group"
+          class="w-full py-6 text-lg  uppercase  italic group"
           (click)="confirm()"
         >
           Find Opponent

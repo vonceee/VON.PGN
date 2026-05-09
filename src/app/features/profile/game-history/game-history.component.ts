@@ -17,8 +17,8 @@ import { LoadingComponent } from '@shared/feedback';
       } @else if (games().length > 0) {
         <!-- Table Header -->
         <div class="hidden md:flex items-center px-6 py-3 border-b border-border-theme opacity-40">
-          <div class="w-48 text-xs font-bold uppercase tracking-widest">Version / Date</div>
-          <div class="flex-1 text-xs font-bold uppercase tracking-widest ml-4">Game Details</div>
+          <div class="w-48 text-xs font-bold uppercase ">Version / Date</div>
+          <div class="flex-1 text-xs font-bold uppercase  ml-4">Game Details</div>
         </div>
 
         <div class="flex flex-col">
@@ -29,7 +29,7 @@ import { LoadingComponent } from '@shared/feedback';
                 <div class="flex flex-col gap-0.5">
                   <span class="text-sm font-bold  text-white/90">
                     {{ getGameType(game.time_control) }}
-                    <span class="text-xs font-medium opacity-60 ml-1">{{ game.time_control }}</span>
+                    <span class="text-xs font-medium  ml-1">{{ game.time_control }}</span>
                   </span>
                   <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">
                     {{ game.created_at | date: 'MMM d, y' }}
@@ -50,7 +50,7 @@ import { LoadingComponent } from '@shared/feedback';
                       <a [routerLink]="['/user', getOpponent(game).name]" class="text-white hover:text-cyan-400 ">
                         {{ getOpponent(game).name }}
                       </a>
-                      <span class="text-xs opacity-60 ml-1">({{ getOpponentRating(game) }})</span>
+                      <span class="text-xs  ml-1">({{ getOpponentRating(game) }})</span>
                     </p>
                   </div>
 
@@ -60,7 +60,7 @@ import { LoadingComponent } from '@shared/feedback';
                       <!-- Rating Change Tag -->
                       @if (getMyRatingChange(game) !== null) {
                         <div class="flex flex-col gap-1">
-                          <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Rating</span>
+                          <span class="text-[10px] font-bold uppercase  text-slate-500">Rating</span>
                           <div class="flex items-center gap-2">
                             <span class="text-sm font-bold" [class]="getMyRatingChange(game)! >= 0 ? 'text-green-500' : 'text-red-500'">
                               {{ getMyRatingChange(game)! > 0 ? '+' : '' }}{{ getMyRatingChange(game) }}
@@ -72,7 +72,7 @@ import { LoadingComponent } from '@shared/feedback';
 
                       <!-- Game Info (Placeholder for Accuracy/Performance if needed) -->
                       <div class="flex flex-col gap-1">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Status</span>
+                        <span class="text-[10px] font-bold uppercase  text-slate-500">Status</span>
                         <span class="text-xs font-semibold text-slate-300">
                           {{ game.termination || 'Standard game' }}
                         </span>
@@ -100,7 +100,7 @@ import { LoadingComponent } from '@shared/feedback';
         <!-- Pagination -->
         @if (totalPages() > 1) {
           <div class="mt-8 flex items-center justify-between px-6">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span class="text-[10px] font-bold uppercase  text-slate-500">
               Page {{ currentPage() }} of {{ totalPages() }}
             </span>
             <div class="flex gap-2">

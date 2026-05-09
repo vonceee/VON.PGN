@@ -108,7 +108,7 @@ import { filter, map, startWith } from 'rxjs';
               </div>
               <div class="hidden sm:block text-left">
                 <div class="text-sm font-bold text-content leading-none mb-1">{{ user()?.name }}</div>
-                <div class="text-xs font-bold text-muted uppercase tracking-widest leading-none">Super Admin</div>
+                <div class="text-xs font-bold text-muted uppercase  leading-none">Super Admin</div>
               </div>
               
             </div>

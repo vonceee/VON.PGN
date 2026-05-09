@@ -67,7 +67,7 @@
                     <span class="text-lg lg:text-xl  er">{{
                       tc.label
                     }}</span>
-                    <span class="text-xs  uppercase tracking-widest opacity-60">{{
+                    <span class="text-xs  uppercase  ">{{
                       tc.category
                     }}</span>
                   </button>
@@ -84,7 +84,7 @@
             variant="primary"
             (click)="openCustomTimeControl()"
             [disabled]="gameService.isSearching()"
-            class="w-full !rounded-xl"
+            class="w-full"
           >
             Custom Time Control
           </button>
@@ -94,7 +94,7 @@
             variant="primary"
             (click)="playWithComputer()"
             [disabled]="gameService.isSearching()"
-            class="w-full !rounded-xl"
+            class="w-full"
           >
             Play with Computer
           </button>

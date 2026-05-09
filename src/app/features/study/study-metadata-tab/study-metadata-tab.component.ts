@@ -22,7 +22,7 @@ import { StudyChapter } from '../../../core/models/study.model';
         @if (hasTags()) {
           <div class="grid grid-cols-[100px_1fr] gap-y-4 gap-x-4">
             @for (item of displayItems(); track item.key) {
-              <div class="text-[10px]  uppercase tracking-widest text-muted/60 flex items-center">
+              <div class="text-[10px]  uppercase  text-muted/60 flex items-center">
                 {{ item.label }}
               </div>
               <div class="text-sm font-semibold text-content">

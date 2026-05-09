@@ -28,14 +28,14 @@ import { ToastService } from '../../../core/services/toast.service';
       <!-- Filters & Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="bg-white rounded border border-slate-200 p-6 flex flex-col justify-between">
-          <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Coaches</span>
+          <span class="text-xs font-bold text-slate-400 uppercase ">Total Coaches</span>
           <div class="flex items-end justify-between mt-2">
             <span class="text-3xl font-bold text-slate-900">{{ coaches().length }}</span>
             <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">+1 this month</span>
           </div>
         </div>
         <div class="bg-white rounded border border-slate-200 p-6 flex flex-col justify-between">
-          <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Academy Instructors</span>
+          <span class="text-xs font-bold text-slate-400 uppercase ">Academy Instructors</span>
           <div class="flex items-end justify-between mt-2">
             <span class="text-3xl font-bold text-slate-900">{{ academyInstructorsCount() }}</span>
             <span class="text-xs font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">Top Tier</span>
@@ -59,8 +59,8 @@ import { ToastService } from '../../../core/services/toast.service';
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-100">
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Coach</th>
-                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase ">Coach</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase  text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -81,10 +81,10 @@ import { ToastService } from '../../../core/services/toast.service';
                   </td>
                   <td class="px-6 py-4 text-right">
                     <div class="flex items-center justify-end gap-4">
-                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-bold text-blue-600 hover:text-blue-700  uppercase tracking-widest">
+                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-bold text-blue-600 hover:text-blue-700  uppercase ">
                         Edit
                       </a>
-                      <button (click)="deleteCoach(coach)" class="text-xs font-bold text-rose-600 hover:underline  uppercase tracking-widest">
+                      <button (click)="deleteCoach(coach)" class="text-xs font-bold text-rose-600 hover:underline  uppercase ">
                         Delete
                       </button>
                     </div>

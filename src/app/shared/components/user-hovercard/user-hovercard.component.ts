@@ -35,7 +35,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
             </span>
           </div>
           @if (user()!.verified_organizer) {
-            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-bold uppercase tracking-widest">
+            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-bold uppercase ">
               Verified
             </div>
           }
@@ -45,7 +45,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         <div class="grid grid-cols-3 gap-2 mb-4">
           @for (type of ratingTypes; track type.id) {
             <div class="flex flex-col items-center p-2 rounded-xl bg-subtle/50 border border-border-base/50">
-              <span class="text-xs text-muted font-bold uppercase tracking-widest mb-1">
+              <span class="text-xs text-muted font-bold uppercase  mb-1">
                 {{ type.label }}
               </span>
               <span class="text-sm  text-content">
@@ -56,7 +56,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         </div>
 
         <!-- Stats -->
-        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-bold uppercase tracking-widest text-muted">
+        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-bold uppercase  text-muted">
           <div class="flex items-center gap-1.5">
             <span>{{ user()!.followers_count }} Followers</span>
           </div>
@@ -69,7 +69,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         @if (user()!.active_game; as game) {
           <div class="mt-4 pt-4 border-t border-border-base/50">
             <div class="flex items-center justify-between mb-2 px-1">
-              <span class="text-xs font-bold uppercase tracking-widest text-accent">Playing Now</span>
+              <span class="text-xs font-bold uppercase  text-accent">Playing Now</span>
               <span class="text-xs text-muted">{{ game.time_control }}</span>
             </div>
             
