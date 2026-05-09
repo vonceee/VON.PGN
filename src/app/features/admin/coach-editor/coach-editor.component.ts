@@ -154,7 +154,7 @@ import { ToastService } from '../../../core/services/toast.service';
                 >
               </div>
               
-              <p class="text-[10px] text-slate-400 mt-2 px-1">Professional portraits work best for coach profiles.</p>
+              <p class="text-xs text-slate-400 mt-2 px-1">Professional portraits work best for coach profiles.</p>
             </div>
 
             <div class="flex flex-col gap-1.5">

@@ -69,13 +69,13 @@ import { ToastService } from '../../../core/services/toast.service';
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       @if (coach.title) {
-                        <span class="px-1.5 py-0.5 bg-red-600 text-white text-[10px] font-semibold rounded uppercase shrink-0">
+                        <span class="px-1.5 py-0.5 bg-red-600 text-white text-xs font-semibold rounded uppercase shrink-0">
                           {{ coach.title }}
                         </span>
                       }
                       <span class="font-semibold text-slate-900">{{ coach.name }}</span>
                       @if (coach.isAcademyInstructor) {
-                        <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">ACADEMY</span>
+                        <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">ACADEMY</span>
                       }
                     </div>
                   </td>

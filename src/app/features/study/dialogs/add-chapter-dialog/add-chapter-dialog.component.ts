@@ -158,7 +158,7 @@ export interface AddChapterDialogResult {
                       ></textarea>
                       
                       @if (fileSummary()) {
-                        <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-base rounded-lg text-[10px] text-accent font-semibold   slide-in-from-bottom-2">
+                        <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-base rounded-lg text-xs text-accent font-semibold   slide-in-from-bottom-2">
                           {{ fileSummary() }}
                         </div>
                       }

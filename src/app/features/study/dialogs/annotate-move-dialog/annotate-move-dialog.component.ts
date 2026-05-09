@@ -24,12 +24,12 @@ export interface AnnotateMoveDialogResult {
           <!-- Glyphs Selection -->
           <div class="space-y-3">
             <div class="flex items-center justify-between ml-1">
-              <label class="text-[10px] font-semibold uppercase  text-muted">
+              <label class="text-xs font-semibold uppercase  text-muted">
                 Move Evaluation (Glyphs)
               </label>
               <button 
                 (click)="openShortcuts()" 
-                class="text-[10px]  text-accent hover:underline px-2 py-1"
+                class="text-xs  text-accent hover:underline px-2 py-1"
                 title="View Keyboard Shortcuts"
               >
                 SHORTCUTS?
@@ -61,7 +61,7 @@ export interface AnnotateMoveDialogResult {
 
           <!-- Comment Section -->
           <div class="space-y-3">
-            <label class="text-[10px] font-semibold uppercase  text-muted ml-1">
+            <label class="text-xs font-semibold uppercase  text-muted ml-1">
               Comment
             </label>
             <div class="relative group">

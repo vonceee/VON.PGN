@@ -59,7 +59,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                     <span class="text-cyan-400">•</span>
                     <span>Review</span>
                   </div>
-                  <div class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]   uppercase ">
+                  <div class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-xs   uppercase ">
                     {{ g.time_control }}
                   </div>
                 </div>
@@ -104,7 +104,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                   <div class="text-lg  " [class]="getResultClass(g)">
                     {{ g.result }}
                   </div>
-                  <div class="text-[10px] uppercase font-semibold opacity-30  mt-0.5">
+                  <div class="text-xs uppercase font-semibold opacity-30  mt-0.5">
                     {{ g.termination }}
                   </div>
                 </div>
@@ -119,14 +119,14 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 
               <!-- Details Card -->
               <div class="p-5 border border-border-theme rounded-2xl bg-surface/5 ui-panel">
-                <h4 class="text-[10px] uppercase  text-slate-500 mb-4 ">Game Details</h4>
+                <h4 class="text-xs uppercase  text-slate-500 mb-4 ">Game Details</h4>
                 <div class="space-y-4">
                   <div class="flex flex-col gap-1">
-                    <span class="text-[10px] text-slate-500 uppercase font-semibold">Played on</span>
+                    <span class="text-xs text-slate-500 uppercase font-semibold">Played on</span>
                     <span class="text-xs  text-slate-300">{{ g.created_at | date: 'mediumDate' }}</span>
                   </div>
                   <div class="flex flex-col gap-1">
-                    <span class="text-[10px] text-slate-500 uppercase font-semibold">Category</span>
+                    <span class="text-xs text-slate-500 uppercase font-semibold">Category</span>
                     <span class="text-xs  text-slate-300">{{ g.time_control }}</span>
                   </div>
                 </div>
@@ -166,7 +166,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                 @for (tab of ['notation', 'analysis']; track tab) {
                   <button
                     (click)="activeTab.set(tab === 'notation' ? 'notation' : 'analysis')"
-                    class="flex-1 py-4 text-[10px] font-semibold uppercase    relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-500 after:-translate-x-1/2 after: after:"
+                    class="flex-1 py-4 text-xs font-semibold uppercase    relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-500 after:-translate-x-1/2 after: after:"
                     [class.text-cyan-400]="activeTab() === tab"
                     [class.opacity-40]="activeTab() !== tab"
                     [class.after:w-full]="activeTab() === tab"

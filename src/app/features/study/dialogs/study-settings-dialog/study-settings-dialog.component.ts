@@ -47,7 +47,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <option value="everyone">Everyone</option>
             <option value="owner">Only me</option>
           </select>
-          <p class="text-[10px] text-muted">Controls who can see the engine toggle and evaluation bar.</p>
+          <p class="text-xs text-muted">Controls who can see the engine toggle and evaluation bar.</p>
         </div>
       </div>
 

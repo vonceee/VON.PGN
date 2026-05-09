@@ -46,12 +46,12 @@
 
       <!-- Leaderboard -->
       <div class="overflow-x-auto">
-        <div class="text-[10px] uppercase  font-semibold text-slate-500 mb-6">
+        <div class="text-xs uppercase  font-semibold text-slate-500 mb-6">
           Leaderboard
         </div>
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="text-[10px] uppercase  opacity-30 border-b border-white/10">
+            <tr class="text-xs uppercase  opacity-30 border-b border-white/10">
               <th class="py-4 font-semibold w-12 text-center">#</th>
               <th class="py-4 font-semibold">Player</th>
               <th class="py-4 font-semibold text-right">Points</th>
@@ -80,7 +80,7 @@
                         >🔥 x{{ player.streak }}</span
                       >
                     } @else if (player.streak > 0) {
-                      <span class="text-[10px] opacity-40 uppercase er"
+                      <span class="text-xs opacity-40 uppercase er"
                         >x{{ player.streak }}</span
                       >
                     }
@@ -113,7 +113,7 @@
         <div class="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
           @if (g) {
             <span
-              class="text-[10px] bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded-full border border-cyan-500/20"
+              class="text-xs bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded-full border border-cyan-500/20"
               >LIVE</span
             >
           }

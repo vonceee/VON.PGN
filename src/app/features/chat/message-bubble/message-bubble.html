@@ -1,12 +1,12 @@
 <div [class]="'flex ' + (isOwnMessage ? 'justify-end' : 'justify-start') + ' mb-1.5'">
   @if (!isOwnMessage) {
     <div class="flex flex-col items-start max-w-[75%]">
-      <span class="text-[10px] text-slate-400  mb-0.5">{{ message().sender.name }}</span>
+      <span class="text-xs text-slate-400  mb-0.5">{{ message().sender.name }}</span>
       <div class="bg-slate-100  rounded-2xl rounded-bl-md px-3.5 py-2">
         <p class="text-sm text-slate-900  whitespace-pre-wrap wrap-break-word">{{ message().body }}</p>
       </div>
       <div class="flex items-center gap-1.5 mt-0.5 px-1">
-        <span class="text-[10px] text-slate-400 ">{{ formattedTime }}</span>
+        <span class="text-xs text-slate-400 ">{{ formattedTime }}</span>
       </div>
     </div>
   } @else {
@@ -15,7 +15,7 @@
         <p class="text-sm text-white whitespace-pre-wrap wrap-break-word">{{ message().body }}</p>
       </div>
       <div class="flex items-center gap-1.5 mt-0.5 px-1">
-        <span class="text-[10px] text-slate-400 ">{{ formattedTime }}</span>
+        <span class="text-xs text-slate-400 ">{{ formattedTime }}</span>
         @if (!isPending) {
           @switch (statusIcon) {
             @case ('sent') {

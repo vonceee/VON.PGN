@@ -60,7 +60,7 @@ import { LoadingComponent } from '@shared/feedback';
                       <!-- Rating Change Tag -->
                       @if (getMyRatingChange(game) !== null) {
                         <div class="flex flex-col gap-1">
-                          <span class="text-[10px] font-semibold uppercase  text-slate-500">Rating</span>
+                          <span class="text-xs font-semibold uppercase  text-slate-500">Rating</span>
                           <div class="flex items-center gap-2">
                             <span class="text-sm font-semibold" [class]="getMyRatingChange(game)! >= 0 ? 'text-green-500' : 'text-red-500'">
                               {{ getMyRatingChange(game)! > 0 ? '+' : '' }}{{ getMyRatingChange(game) }}
@@ -72,7 +72,7 @@ import { LoadingComponent } from '@shared/feedback';
 
                       <!-- Game Info (Placeholder for Accuracy/Performance if needed) -->
                       <div class="flex flex-col gap-1">
-                        <span class="text-[10px] font-semibold uppercase  text-slate-500">Status</span>
+                        <span class="text-xs font-semibold uppercase  text-slate-500">Status</span>
                         <span class="text-xs font-semibold text-slate-300">
                           {{ game.termination || 'Standard game' }}
                         </span>
@@ -100,7 +100,7 @@ import { LoadingComponent } from '@shared/feedback';
         <!-- Pagination -->
         @if (totalPages() > 1) {
           <div class="mt-8 flex items-center justify-between px-6">
-            <span class="text-[10px] font-semibold uppercase  text-slate-500">
+            <span class="text-xs font-semibold uppercase  text-slate-500">
               Page {{ currentPage() }} of {{ totalPages() }}
             </span>
             <div class="flex gap-2">
