@@ -18,7 +18,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
               <a 
                 [href]="'/user/' + user()!.username" 
                 target="_blank"
-                class="text-lg font-extrabold text-content truncate hover:text-accent  flex items-center gap-2"
+                class="text-lg  text-content truncate hover:text-accent  flex items-center gap-2"
               >
                 <app-flag-icon [countryCode]="user()!.country_code"></app-flag-icon>
                 {{ user()!.username }}
@@ -48,7 +48,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
               <span class="text-xs text-muted font-bold uppercase tracking-widest mb-1">
                 {{ type.label }}
               </span>
-              <span class="text-sm font-black text-content">
+              <span class="text-sm  text-content">
                 {{ user()!.ratings?.[type.id]?.rating || 1500 }}
               </span>
             </div>
@@ -87,15 +87,15 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
                   vs {{ game.white_player.id === user()!.uid ? game.black_player.name : game.white_player.name }}
                 </span>
                 <div class="flex items-center gap-1">
-                  <div class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></div>
-                  <span class="text-xs font-black uppercase text-accent">Live</span>
+                  <div class="w-1.5 h-1.5 rounded-full bg-accent "></div>
+                  <span class="text-xs  uppercase text-accent">Live</span>
                 </div>
               </div>
             </div>
           </div>
         }
       } @else {
-        <div class="flex flex-col gap-3 animate-pulse">
+        <div class="flex flex-col gap-3 ">
           <div class="h-6 w-32 bg-subtle rounded-md"></div>
           <div class="grid grid-cols-3 gap-2">
             <div class="h-12 bg-subtle rounded-xl"></div>

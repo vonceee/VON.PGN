@@ -29,7 +29,7 @@ export interface AnnotateMoveDialogResult {
               </label>
               <button 
                 (click)="openShortcuts()" 
-                class="text-[10px] font-black text-accent hover:underline px-2 py-1"
+                class="text-[10px]  text-accent hover:underline px-2 py-1"
                 title="View Keyboard Shortcuts"
               >
                 SHORTCUTS?
@@ -51,7 +51,7 @@ export interface AnnotateMoveDialogResult {
                   <span class="text-lg font-bold">{{ glyph.symbol }}</span>
                   
                   <!-- Tooltip hint on hover -->
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-bold uppercase tracking-tighter whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none  z-10 shadow-xl">
+                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-bold uppercase er whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none  z-10 shadow-xl">
                     {{ glyph.name }}
                   </div>
                 </button>

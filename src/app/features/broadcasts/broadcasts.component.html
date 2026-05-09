@@ -17,7 +17,7 @@
 
   <!-- Loading State -->
   @if (loading()) {
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 animate-pulse px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6  px-8">
       @for (i of [1, 2, 3, 4, 5, 6]; track i) {
         <div class="border border-border-theme rounded-2xl overflow-hidden flex flex-col h-[285px]">
           <div class="p-4 md:p-5 pt-3 flex flex-col flex-1">
@@ -101,7 +101,7 @@
             <div class="mt-auto flex items-center justify-between gap-2">
               @if (broadcast.status === 'ongoing') {
                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
-                  <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span>
+                  <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5 "></span>
                   Live
                 </span>
               } @else if (broadcast.status === 'finished') {

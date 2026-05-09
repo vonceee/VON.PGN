@@ -25,7 +25,7 @@ export interface EditChapterDialogData {
     <app-dialog-wrapper title="Edit chapter" (close)="dialogRef.close()">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="space-y-2">
-          <label class="text-xs font-black uppercase tracking-widest text-muted">Name</label>
+          <label class="text-xs  uppercase tracking-widest text-muted">Name</label>
           <input
             type="text"
             [(ngModel)]="name"
@@ -37,7 +37,7 @@ export interface EditChapterDialogData {
         </div>
 
         <div class="space-y-2">
-          <label class="text-xs font-black uppercase tracking-widest text-muted">Orientation</label>
+          <label class="text-xs  uppercase tracking-widest text-muted">Orientation</label>
           <select
             [(ngModel)]="orientation"
             class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none   cursor-pointer"

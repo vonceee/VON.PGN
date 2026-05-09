@@ -17,7 +17,7 @@ import { ToastService } from '../../../core/services/toast.service';
       <!-- Header Actions -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-bold tracking-tight text-slate-900">Coach Profiles</h1>
+          <h1 class="text-3xl font-bold  text-slate-900">Coach Profiles</h1>
           <p class="text-slate-500 mt-1 font-medium">Manage and curate public coach profiles on the platform.</p>
         </div>
         <a routerLink="/admin/coach/new" class="px-6 py-3 rounded bg-slate-900 text-white font-bold hover:bg-slate-800">

@@ -31,7 +31,7 @@
                     >Rating</span
                   >
                   <div class="flex items-center gap-2">
-                    <span class="text-2xl font-black">{{ userRating() }}</span>
+                    <span class="text-2xl ">{{ userRating() }}</span>
                     @if (status() !== 'playing' && ratingChange() !== null) {
                       <span
                         class="text-sm font-bold"
@@ -55,7 +55,7 @@
                         clip-rule="evenodd"
                       />
                     </svg>
-                    <span class="text-2xl font-black text-orange-400">{{ userStreak() }}</span>
+                    <span class="text-2xl  text-orange-400">{{ userStreak() }}</span>
                   </div>
                 </div>
               </div>

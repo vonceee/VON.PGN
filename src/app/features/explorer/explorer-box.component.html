@@ -51,8 +51,8 @@
             @if (d.opening) {
               <div class="px-2 pb-3 pt-1 border-b border-border-base/50 mb-3 rounded-sm">
                 <div class="flex items-baseline gap-2">
-                  <span class="text-[11px] font-black text-accent uppercase tracking-wider">{{ d.opening.eco }}</span>
-                  <span class="text-sm font-bold text-content leading-tight">{{ d.opening.name }}</span>
+                  <span class="text-[11px]  text-accent uppercase tracking-wider">{{ d.opening.eco }}</span>
+                  <span class="text-sm font-bold text-content ">{{ d.opening.name }}</span>
                 </div>
               </div>
             }
@@ -69,7 +69,7 @@
               <tbody>
                 @for (move of d.moves; track move.uci) {
                   <tr class="hover:bg-accent/5 cursor-pointer group  border-b border-border-base/10 last:border-0">
-                    <td class="py-2 px-2 font-black text-content">{{ move.san }}</td>
+                    <td class="py-2 px-2  text-content">{{ move.san }}</td>
                     <td class="py-2 px-2 text-right text-muted font-medium">
                       {{ formatTotal(move.white + move.draws + move.black) }}
                     </td>
@@ -132,7 +132,7 @@
               <tbody>
                 @for (move of td.moves; track move.uci) {
                   <tr class="hover:bg-accent/5 cursor-pointer group  border-b border-border-base/10 last:border-0">
-                    <td class="py-2 px-2 font-black text-content">{{ move.san }}</td>
+                    <td class="py-2 px-2  text-content">{{ move.san }}</td>
                     <td class="py-2 px-2 text-right text-muted font-medium">
                       @if (move.dtz !== undefined) { 
                         <span class="mr-2">DTZ {{ move.dtz }}</span>

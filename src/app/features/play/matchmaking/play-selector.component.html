@@ -22,7 +22,7 @@
       } @else if (activeGameId()) {
         <div class="flex items-center justify-between w-full">
           <div class="flex items-center gap-3">
-            <div class="h-2 w-2 rounded-full bg-cyan-500 animate-pulse"></div>
+            <div class="h-2 w-2 rounded-full bg-cyan-500 "></div>
             <span class="font-medium text-md text-cyan-500">Active Game Found</span>
           </div>
           <button
@@ -52,7 +52,7 @@
                   <div
                     class="flex flex-col items-center justify-center border-2 border-cyan-500 bg-cyan-500/10 rounded-xl relative overflow-hidden py-4 lg:py-6"
                   >
-                    <div class="absolute inset-0 bg-cyan-500/10 animate-pulse"></div>
+                    <div class="absolute inset-0 bg-cyan-500/10 "></div>
                     <div
                       class="h-6 w-6 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin"
                     ></div>
@@ -64,10 +64,10 @@
                     [disabled]="gameService.isSearching()"
                     class="flex-col !h-auto !py-4 lg:!py-5 w-full !rounded-xl"
                   >
-                    <span class="text-lg lg:text-xl font-black tracking-tighter">{{
+                    <span class="text-lg lg:text-xl  er">{{
                       tc.label
                     }}</span>
-                    <span class="text-xs font-extrabold uppercase tracking-widest opacity-60">{{
+                    <span class="text-xs  uppercase tracking-widest opacity-60">{{
                       tc.category
                     }}</span>
                   </button>

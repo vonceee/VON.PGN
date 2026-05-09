@@ -65,7 +65,7 @@ export interface ComputerSetupResult {
                   appButton
                   [variant]="selectedColor() === color.id ? 'primary' : 'outline'"
                   (click)="selectedColor.set(color.id)"
-                  class="py-4 text-sm font-black"
+                  class="py-4 text-sm "
                 >
                   {{ color.label }}
                 </button>
@@ -86,7 +86,7 @@ export interface ComputerSetupResult {
                   (click)="selectedTimeControl.set(tc)"
                   class="flex flex-col items-center justify-center"
                 >
-                  <span class="text-sm font-black">{{ tc.label }}</span>
+                  <span class="text-sm ">{{ tc.label }}</span>
                 </button>
               }
               <button
@@ -101,7 +101,7 @@ export interface ComputerSetupResult {
           } @else {
             <div class="space-y-10">
               <div class="flex justify-between items-center">
-                <h3 class="text-sm font-black italic">Custom Setup</h3>
+                <h3 class="text-sm  italic">Custom Setup</h3>
                 <button
                   (click)="showCustomForm.set(false)"
                   class="text-sm font-bold underline cursor-pointer bg-transparent border-none"
@@ -122,7 +122,7 @@ export interface ComputerSetupResult {
                       >
                         -
                       </button>
-                      <span class="text-xl font-black  w-12 text-center">{{
+                      <span class="text-xl   w-12 text-center">{{
                         customMinutes()
                       }}</span>
                       <button
@@ -161,7 +161,7 @@ export interface ComputerSetupResult {
                       >
                         -
                       </button>
-                      <span class="text-xl font-black  w-12 text-center">{{
+                      <span class="text-xl   w-12 text-center">{{
                         customIncrement()
                       }}</span>
                       <button

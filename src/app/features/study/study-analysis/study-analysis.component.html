@@ -58,7 +58,7 @@
         @for (n of [1,2,3]; track n) {
           <button
             (click)="onMultiPvChange(n)"
-            class="w-7 h-7 rounded-md text-[10px] font-black  "
+            class="w-7 h-7 rounded-md text-[10px]   "
             [class]="multiPvCount() === n
               ? 'bg-accent/20 text-accent border border-accent/30'
               : 'bg-subtle text-muted border border-transparent hover:bg-surface'"
@@ -85,12 +85,12 @@
           @for (move of line.pv.slice(0, 10); track $index) {
             <div class="flex items-center gap-0.5">
               @if ($index === 0 || (currentPly() + $index) % 2 === 0) {
-                <span class="text-xs font-black select-none">
+                <span class="text-xs  select-none">
                   {{ (currentPly() + $index) / 2 + 1 | number:'1.0-0' }}{{ ($index === 0 && currentPly() % 2 !== 0) ? '...' : '.' }}
                 </span>
               }
               <span [class]="$index === 0 && line.pvIndex === 0 
-                ? 'text-xs font-black' 
+                ? 'text-xs ' 
                 : 'text-xs font-medium cursor-default'">
                 {{ move }}
               </span>

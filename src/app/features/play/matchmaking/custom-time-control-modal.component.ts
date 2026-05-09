@@ -20,7 +20,7 @@ export interface CustomTimeControlResult {
     <div class="ui-panel w-full max-w-2xl p-8 font-sans space-y-10 relative">
       <div class="flex items-center justify-between">
         <div class="space-y-1">
-          <h2 class="text-2xl font-black uppercase italic tracking-tighter">Custom Time Control</h2>
+          <h2 class="text-2xl  uppercase italic er">Custom Time Control</h2>
           <p class="text-xs font-bold text-muted-foreground uppercase tracking-widest">Setup your preferred format</p>
         </div>
         <button
@@ -35,7 +35,7 @@ export interface CustomTimeControlResult {
         <!-- Minutes Selection -->
         <section class="space-y-6">
           <div class="flex justify-between items-center">
-            <h3 class="text-sm font-black uppercase tracking-widest text-muted-foreground">Minutes</h3>
+            <h3 class="text-sm  uppercase tracking-widest text-muted-foreground">Minutes</h3>
             <div class="flex items-center gap-4">
               <button
                 (click)="adjustMinutes(-1)"
@@ -43,7 +43,7 @@ export interface CustomTimeControlResult {
               >
                 -
               </button>
-              <span class="text-3xl font-black min-w-[3rem] text-center italic">{{ customMinutes() }}</span>
+              <span class="text-3xl  min-w-[3rem] text-center italic">{{ customMinutes() }}</span>
               <button
                 (click)="adjustMinutes(1)"
                 class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
@@ -59,7 +59,7 @@ export interface CustomTimeControlResult {
                 appButton
                 [variant]="customMinutes() === min ? 'primary' : 'outline'"
                 (click)="customMinutes.set(min)"
-                class="h-10 text-xs font-black"
+                class="h-10 text-xs "
               >
                 {{ min }}
               </button>
@@ -70,7 +70,7 @@ export interface CustomTimeControlResult {
         <!-- Increment Selection -->
         <section class="space-y-6">
           <div class="flex justify-between items-center">
-            <h3 class="text-sm font-black uppercase tracking-widest text-muted-foreground">Increment</h3>
+            <h3 class="text-sm  uppercase tracking-widest text-muted-foreground">Increment</h3>
             <div class="flex items-center gap-4">
               <button
                 (click)="adjustIncrement(-1)"
@@ -78,7 +78,7 @@ export interface CustomTimeControlResult {
               >
                 -
               </button>
-              <span class="text-3xl font-black min-w-[3rem] text-center italic">{{ customIncrement() }}</span>
+              <span class="text-3xl  min-w-[3rem] text-center italic">{{ customIncrement() }}</span>
               <button
                 (click)="adjustIncrement(1)"
                 class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
@@ -94,7 +94,7 @@ export interface CustomTimeControlResult {
                 appButton
                 [variant]="customIncrement() === inc ? 'primary' : 'outline'"
                 (click)="customIncrement.set(inc)"
-                class="h-10 text-xs font-black"
+                class="h-10 text-xs "
               >
                 {{ inc }}
               </button>
@@ -107,7 +107,7 @@ export interface CustomTimeControlResult {
         <button
           appButton
           variant="primary"
-          class="w-full py-6 text-lg font-black uppercase tracking-widest italic group"
+          class="w-full py-6 text-lg  uppercase tracking-widest italic group"
           (click)="confirm()"
         >
           Find Opponent

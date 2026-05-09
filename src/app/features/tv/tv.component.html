@@ -27,7 +27,7 @@
 
           <div class="p-4 border-t border-border-theme bg-slate-900/30">
             <div
-              class="text-xs uppercase font-black text-slate-500 text-center tracking-widest opacity-50"
+              class="text-xs uppercase  text-slate-500 text-center tracking-widest opacity-50"
             >
               TV Spectator Mode
             </div>
@@ -99,7 +99,7 @@
                 >Black</span
               >
               @if (g?.turn === 'black' && g?.status === 'active') {
-                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-full bg-cyan-400 "></span>
               }
             </div>
             <app-chess-clock
@@ -114,7 +114,7 @@
               <div
                 class="ui-panel p-4 text-center border-border-theme/50 bg-slate-800/20"
               >
-                <div class="text-xl font-bold tracking-tight" [class]="getResultClass(g?.result || null)">
+                <div class="text-xl font-bold " [class]="getResultClass(g?.result || null)">
                   {{ formatResult(g?.result || null) }}
                 </div>
                 <div
@@ -125,7 +125,7 @@
               </div>
             } @else {
               <div class="text-center">
-                <div class="text-xs uppercase font-black text-cyan-400/40 tracking-[0.2em]">
+                <div class="text-xs uppercase  text-cyan-400/40 tracking-[0.2em]">
                   {{ g ? 'Live Match' : 'Waiting' }}
                 </div>
               </div>
@@ -138,7 +138,7 @@
                 >White</span
               >
               @if (g?.turn === 'white' && g?.status === 'active') {
-                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-full bg-cyan-400 "></span>
               }
             </div>
             <app-chess-clock

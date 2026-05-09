@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="flex items-center shrink-0" [title]="isOnline() ? 'Online' : 'Offline'">
       <div
-        class="px-1.5 py-0.5 rounded border text-xs font-black uppercase"
+        class="px-1.5 py-0.5 rounded border text-xs  uppercase"
         [class.text-cyan-400]="isOnline()"
         [class.border-cyan-500]="isOnline()"
         [class.text-slate-500]="!isOnline()"

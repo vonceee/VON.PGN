@@ -55,7 +55,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
             <div class="h-full overflow-hidden flex flex-col gap-4">
               <div class="p-6 border border-border-theme rounded-2xl bg-surface/5 ui-panel flex flex-col gap-6">
                 <div class="flex items-center justify-between">
-                  <div class="text-xl font-black flex items-center gap-2 opacity-80 uppercase tracking-tighter">
+                  <div class="text-xl  flex items-center gap-2 opacity-80 uppercase er">
                     <span class="text-cyan-400">•</span>
                     <span>Review</span>
                   </div>
@@ -101,7 +101,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 
                 <!-- Result -->
                 <div class="pt-4 border-t border-white/5 text-center">
-                  <div class="text-lg font-black tracking-tight" [class]="getResultClass(g)">
+                  <div class="text-lg  " [class]="getResultClass(g)">
                     {{ g.result }}
                   </div>
                   <div class="text-[10px] uppercase font-bold opacity-30 tracking-widest mt-0.5">
@@ -119,7 +119,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 
               <!-- Details Card -->
               <div class="p-5 border border-border-theme rounded-2xl bg-surface/5 ui-panel">
-                <h4 class="text-[10px] uppercase font-black text-slate-500 mb-4 tracking-widest">Game Details</h4>
+                <h4 class="text-[10px] uppercase  text-slate-500 mb-4 tracking-widest">Game Details</h4>
                 <div class="space-y-4">
                   <div class="flex flex-col gap-1">
                     <span class="text-[10px] text-slate-500 uppercase font-bold">Played on</span>

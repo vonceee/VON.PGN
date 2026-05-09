@@ -99,7 +99,7 @@
                     <ng-icon name="heroXMark" class="text-xl"></ng-icon>
                   </button>
                   <div
-                    class="text-3xl tracking-tighter mb-1"
+                    class="text-3xl er mb-1"
                     [class]="g.status === 'aborted' ? '' : getResultClass(g.result)"
                   >
                     {{ g.status === 'aborted' ? '½-½' : g.result || '½-½' }}
@@ -126,7 +126,7 @@
                         </button>
                       } @else if (myRematchOffered()) {
                         <div
-                          class="text-xs uppercase font-black text-slate-500 py-3 animate-pulse bg-slate-400/5 rounded border border-border-base"
+                          class="text-xs uppercase  text-slate-500 py-3  bg-slate-400/5 rounded border border-border-base"
                         >
                           Waiting for opponent...
                         </div>
@@ -250,7 +250,7 @@
                         </button>
                       } @else if (myRematchOffered()) {
                         <div
-                          class="text-xs uppercase font-black text-slate-500 text-center py-3 animate-pulse bg-slate-400/5 rounded border border-border-base"
+                          class="text-xs uppercase  text-slate-500 text-center py-3  bg-slate-400/5 rounded border border-border-base"
                         >
                           Waiting for opponent...
                         </div>
@@ -293,7 +293,7 @@
                     <div class="text-sm uppercase font-bold text-red-400 opacity-60 mb-1">
                       Opponent Disconnected
                     </div>
-                    <div class="text-2xl font-black font-mono text-red-400 tracking-tighter">
+                    <div class="text-2xl  font-mono text-red-400 er">
                       {{ opponentAwayCountdown() }}s
                     </div>
                   </div>

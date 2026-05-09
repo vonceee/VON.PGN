@@ -92,7 +92,7 @@ import { filter, map, startWith } from 'rxjs';
         <!-- Header -->
         <header class="sticky top-0 right-0 w-full z-40 bg-main border-b border-border-base px-8 h-20 flex items-center justify-between">
           <div class="flex items-center gap-8">
-            <h2 class="text-lg font-bold text-content tracking-tight">{{ pageTitle() }}</h2>
+            <h2 class="text-lg font-bold text-content ">{{ pageTitle() }}</h2>
           </div>
 
           <div class="flex items-center gap-4">

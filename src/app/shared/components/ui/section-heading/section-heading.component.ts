@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <h2 [class]="size()" class="leading-tight font-normal">
+    <h2 [class]="size()" class=" font-normal">
       {{ text() }} <span class="text-cyan-400">{{ highlight() }}</span>
     </h2>
   `,

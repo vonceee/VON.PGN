@@ -15,48 +15,48 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         <!-- Form Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="md:col-span-3 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">Tournament / Event</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">Tournament / Event</label>
             <input type="text" [(ngModel)]="tags['Event']" class="metadata-input" placeholder="e.g. World Chess Championship" />
           </div>
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">Date</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">Date</label>
             <input type="text" [(ngModel)]="tags['Date']" class="metadata-input" placeholder="YYYY.MM.DD" />
           </div>
           
           <!-- White Player -->
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">White Title</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">White Title</label>
             <input type="text" [(ngModel)]="tags['WhiteTitle']" class="metadata-input" placeholder="GM" />
           </div>
           <div class="md:col-span-2 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">White Player</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">White Player</label>
             <input type="text" [(ngModel)]="tags['White']" class="metadata-input" placeholder="Full Name" />
           </div>
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">White Elo</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">White Elo</label>
             <input type="text" [(ngModel)]="tags['WhiteElo']" class="metadata-input" placeholder="Rating" />
           </div>
 
           <!-- Black Player -->
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">Black Title</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">Black Title</label>
             <input type="text" [(ngModel)]="tags['BlackTitle']" class="metadata-input" placeholder="GM" />
           </div>
           <div class="md:col-span-2 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">Black Player</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">Black Player</label>
             <input type="text" [(ngModel)]="tags['Black']" class="metadata-input" placeholder="Full Name" />
           </div>
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">Black Elo</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">Black Elo</label>
             <input type="text" [(ngModel)]="tags['BlackElo']" class="metadata-input" placeholder="Rating" />
           </div>
 
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">Round</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">Round</label>
             <input type="text" [(ngModel)]="tags['Round']" class="metadata-input" placeholder="e.g. 1.1" />
           </div>
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">Result</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">Result</label>
             <select [(ngModel)]="tags['Result']" class="metadata-input cursor-pointer">
               <option value="*">* (Ongoing/Unknown)</option>
               <option value="1-0">1-0 (White Wins)</option>
@@ -65,11 +65,11 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             </select>
           </div>
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">ECO Code</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">ECO Code</label>
             <input type="text" [(ngModel)]="tags['ECO']" class="metadata-input" placeholder="e.g. E15" />
           </div>
           <div class="md:col-span-1 space-y-1">
-            <label class="text-[10px] font-black text-muted uppercase tracking-widest">Site</label>
+            <label class="text-[10px]  text-muted uppercase tracking-widest">Site</label>
             <input type="text" [(ngModel)]="tags['Site']" class="metadata-input" placeholder="e.g. London, ENG" />
           </div>
         </div>

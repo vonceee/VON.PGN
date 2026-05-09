@@ -39,7 +39,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
                   appButton
                   [variant]="selectedColor() === color.id ? 'primary' : 'outline'"
                   (click)="selectedColor.set(color.id)"
-                  class="py-4 text-sm font-black"
+                  class="py-4 text-sm "
                 >
                   {{ color.label }}
                 </button>
@@ -58,7 +58,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
                   (click)="selectedTimeControl.set(tc)"
                   class="flex flex-col items-center justify-center h-10"
                 >
-                  <span class="text-xs font-black">{{ tc.label }}</span>
+                  <span class="text-xs ">{{ tc.label }}</span>
                 </button>
               }
             </div>
@@ -68,7 +68,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
         @if (showCustomForm()) {
             <section class="space-y-10 animate-in fade-in slide-in-from-top-2 ">
               <div class="flex justify-between items-center">
-                <h3 class="text-sm font-black italic">Custom Setup</h3>
+                <h3 class="text-sm  italic">Custom Setup</h3>
                 <button
                   (click)="showCustomForm.set(false)"
                   class="text-sm font-bold underline cursor-pointer bg-transparent border-none"
@@ -83,7 +83,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
                     <label class="text-sm font-bold">Minutes</label>
                     <div class="flex items-center gap-3">
                       <button (click)="adjustMinutes(-1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">-</button>
-                      <span class="text-xl font-black w-12 text-center">{{ customMinutes() }}</span>
+                      <span class="text-xl  w-12 text-center">{{ customMinutes() }}</span>
                       <button (click)="adjustMinutes(1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">+</button>
                     </div>
                   </div>
@@ -94,7 +94,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
                     <label class="text-sm font-bold">Increment</label>
                     <div class="flex items-center gap-3">
                       <button (click)="adjustIncrement(-1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">-</button>
-                      <span class="text-xl font-black w-12 text-center">{{ customIncrement() }}</span>
+                      <span class="text-xl  w-12 text-center">{{ customIncrement() }}</span>
                       <button (click)="adjustIncrement(1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">+</button>
                     </div>
                   </div>

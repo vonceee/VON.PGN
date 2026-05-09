@@ -27,7 +27,7 @@ import { LoadingComponent } from '@shared/feedback';
               <!-- Left Column: Meta -->
               <div class="w-full md:w-48 mb-4 md:mb-0 shrink-0">
                 <div class="flex flex-col gap-0.5">
-                  <span class="text-sm font-bold tracking-tight text-white/90">
+                  <span class="text-sm font-bold  text-white/90">
                     {{ getGameType(game.time_control) }}
                     <span class="text-xs font-medium opacity-60 ml-1">{{ game.time_control }}</span>
                   </span>
@@ -42,7 +42,7 @@ import { LoadingComponent } from '@shared/feedback';
                 <div class="flex flex-col gap-4">
                   <!-- Result Title -->
                   <div class="flex flex-col gap-1">
-                    <h3 class="text-lg font-bold tracking-tight" [class]="getResultClass(game)">
+                    <h3 class="text-lg font-bold " [class]="getResultClass(game)">
                       {{ getResultText(game) }}
                     </h3>
                     <p class="text-sm text-slate-400 font-medium">
