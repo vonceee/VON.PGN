@@ -11,7 +11,7 @@
     </div>
   } @else {
     <div class="flex flex-col items-end max-w-[75%]">
-      <div [class]="'rounded-2xl rounded-br-md px-3.5 py-2 ' + (isPending ? 'bg-cyan-400/60 ' : 'bg-cyan-500')">
+      <div [class]="'rounded-2xl rounded-br-md px-3.5 py-2 ' + (isPending ? 'bg-accent/60 ' : 'bg-accent')">
         <p class="text-sm text-white whitespace-pre-wrap wrap-break-word">{{ message().body }}</p>
       </div>
       <div class="flex items-center gap-1.5 mt-0.5 px-1">

@@ -40,7 +40,7 @@
               >
                 <!-- Active Line Indicator -->
                 @if (activeLessonId === lesson.id) {
-                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-cyan-400"></div>
+                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-accent"></div>
                 }
 
                 <span class="text-sm ml-2">{{ lesson.title }}</span>
@@ -48,7 +48,7 @@
                 <div class="flex items-center gap-2">
                   <!-- Completed Indicator -->
                   @if (lesson.isCompleted) {
-                    <div class="w-1.5 h-1.5 rounded-full bg-cyan-500 "></div>
+                    <div class="w-1.5 h-1.5 rounded-full bg-accent "></div>
                   }
                 </div>
               </li>

@@ -188,7 +188,7 @@
               </svg>
               About This Event
             </h2>
-            <p class="text-slate-600  leading-relaxed">
+            <p class="text-slate-600  ">
               {{ tournament.description }}
             </p>
           </section>
@@ -214,7 +214,7 @@
               How To Join
             </h2>
             @if (tournament.registrationInstructions) {
-              <div class="text-slate-600  leading-relaxed whitespace-pre-line">
+              <div class="text-slate-600   whitespace-pre-line">
                 {{ tournament.registrationInstructions }}
               </div>
             } @else {
@@ -395,7 +395,7 @@
                           <li
                             class="flex items-center gap-2 text-sm text-slate-600 "
                           >
-                            <span class="w-1 h-1 rounded-full bg-cyan-500"></span>
+                            <span class="w-1 h-1 rounded-full bg-accent"></span>
                             {{ req }}
                           </li>
                         }
@@ -453,7 +453,7 @@
                         ) {
                           <div class="flex items-start gap-2 text-sm">
                             <span
-                              class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"
+                              class="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0"
                             ></span>
                             @if (
                               isSpecialAwardNested(
@@ -742,7 +742,7 @@
                     class="flex items-center gap-2 mt-1 hover:text-cyan-400 "
                   >
                     <span
-                      class="w-7 h-7 rounded-full bg-cyan-500 flex items-center justify-center text-white text-xs font-semibold shrink-0"
+                      class="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-white text-xs font-semibold shrink-0"
                     >
                       {{ tournament.creator.name.charAt(0).toUpperCase() }}
                     </span>
@@ -827,7 +827,7 @@
         <div class="flex items-start gap-3">
           <div>
             <p class="text-md font-semibold text-slate-900  mb-1">Disclaimer</p>
-            <p class="text-sm text-slate-500  leading-relaxed">
+            <p class="text-sm text-slate-500  ">
               vonchess serves only as an information display for chess events. We are not
               responsible for any payment transactions, or registration processes. All financial
               transactions and registrations are handled directly by the event poster/organizer.

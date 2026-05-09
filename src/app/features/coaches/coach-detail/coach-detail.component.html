@@ -114,7 +114,7 @@
                     </svg>
                     About Me
                 </h2>
-                <p class="leading-relaxed">{{ coach()!.bio }}</p>
+                <p class="">{{ coach()!.bio }}</p>
             </section>
 
             <section>
@@ -129,7 +129,7 @@
                 <ul class="space-y-3">
                     @for (exp of coach()!.playingExperience; track exp) {
                     <li class="flex items-start gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 shrink-0"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0"></span>
                         {{ exp }}
                     </li>
                     }
@@ -148,7 +148,7 @@
                 <ul class="space-y-3">
                     @for (exp of coach()!.teachingExperience; track exp) {
                     <li class="flex items-start gap-3">
-                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 shrink-0"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-accent mt-2 shrink-0"></span>
                         {{ exp }}
                     </li>
                     }

@@ -10,7 +10,7 @@
           <div
             class="text-xs  opacity-50 uppercase  mb-2 flex items-center gap-3"
           >
-            <span class="w-2 h-2 rounded-full bg-cyan-500 "></span>
+            <span class="w-2 h-2 rounded-full bg-accent "></span>
             {{ countdownLabel() }}
           </div>
           <div class="text-7xl  er tabular-nums mb-8">
@@ -34,7 +34,7 @@
               class="inline-block"
             >
               @if (isWaiting()) {
-                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-2 inline-block"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-accent mr-2 inline-block"></span>
                 Searching for match...
               } @else {
                 Join the Arena
@@ -76,7 +76,7 @@
                       {{ player.name }}
                     </a>
                     @if (player.streak >= 2) {
-                      <span class="text-orange-500 text-xs animate-bounce"
+                      <span class="text-orange-500 text-xs "
                         >🔥 x{{ player.streak }}</span
                       >
                     } @else if (player.streak > 0) {
@@ -113,7 +113,7 @@
         <div class="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
           @if (g) {
             <span
-              class="text-xs bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded-full border border-cyan-500/20"
+              class="text-xs bg-accent/10 text-cyan-400 px-2 py-1 rounded-full border border-cyan-500/20"
               >LIVE</span
             >
           }

@@ -58,7 +58,7 @@
       </div>
 
       <div
-        class="mt-6 text-lg leading-relaxed lowercase"
+        class="mt-6 text-lg  lowercase"
         [innerHTML]="courseData.description"
       ></div>
 
@@ -228,7 +228,7 @@
           @if (block.type === 'text') {
             <div
               class="group relative my-6 rounded-lg   border border-transparent"
-              [class.bg-cyan-50]="activeBlockIndex() === $index"
+              [class.bg-accent]="activeBlockIndex() === $index"
               [class.]="activeBlockIndex() === $index"
               [class.!border-cyan-400]="activeBlockIndex() === $index"
               [class.shadow-sm]="activeBlockIndex() === $index"

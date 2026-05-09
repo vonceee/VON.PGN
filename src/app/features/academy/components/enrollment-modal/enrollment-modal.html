@@ -90,7 +90,7 @@
               type="button"
               *ngFor="let level of ['Beginner', 'Casual', 'Advanced Beginner', 'Intermediate']"
               (click)="enrollmentForm.patchValue({ chess_level: level })"
-              [class.bg-cyan-500]="enrollmentForm.value.chess_level === level"
+              [class.bg-accent]="enrollmentForm.value.chess_level === level"
               [class.text-white]="enrollmentForm.value.chess_level === level"
               [class.bg-slate-50]="enrollmentForm.value.chess_level !== level"
               [class.]="enrollmentForm.value.chess_level !== level"

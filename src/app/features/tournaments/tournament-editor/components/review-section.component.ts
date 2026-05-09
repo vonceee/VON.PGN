@@ -144,7 +144,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
         <ul class="space-y-1 mt-2">
           @for (req of data['eligibility']; track req) {
           <li class="text-sm flex items-start gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0"></span>
             {{ req }}
           </li>
           }

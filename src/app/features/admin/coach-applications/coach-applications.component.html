@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="mt-4 pt-4 border-t border-border-base">
-            <p class="text-sm text-slate-600 line-clamp-2 leading-relaxed">
+            <p class="text-sm text-slate-600 line-clamp-2 ">
               {{ app.shortInfo }}
             </p>
           </div>
@@ -121,7 +121,7 @@
             <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
             Professional Summary
           </label>
-          <p class="text-sm text-slate-600 leading-relaxed">{{ app.bio }}</p>
+          <p class="text-sm text-slate-600 ">{{ app.bio }}</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-border-base">
@@ -176,7 +176,7 @@
     <div class="w-full max-w-sm bg-white rounded p-8 shadow-2xl">
 
       <h2 class="text-xl font-semibold text-center text-slate-900 mb-2">Are you sure?</h2>
-      <p class="text-slate-500 text-center text-sm mb-8 leading-relaxed">This action will permanently delete the coach application from the database. This cannot be undone.</p>
+      <p class="text-slate-500 text-center text-sm mb-8 ">This action will permanently delete the coach application from the database. This cannot be undone.</p>
       <div class="flex gap-3">
         <button (click)="cancelDelete()" class="flex-1 px-4 py-3 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded">Cancel</button>
         <button (click)="confirmDelete()" class="flex-1 px-4 py-3 text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded">Delete</button>

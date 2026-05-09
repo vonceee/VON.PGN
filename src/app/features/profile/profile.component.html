@@ -97,7 +97,7 @@
                     </div>
                   </div>
                 } @else if (user()?.bio) {
-                  <p class="text-sm text-slate-600  leading-relaxed">
+                  <p class="text-sm text-slate-600  ">
                     {{ user()?.bio }}
                   </p>
                 }
@@ -291,9 +291,9 @@
                         <button
                           (click)="toggleTabUserFollow(userItem)"
                           class="px-3 py-1.5 rounded-lg text-xs font-semibold   cursor-pointer shrink-0"
-                          [class.bg-cyan-500]="!userItem.is_following"
+                          [class.bg-accent]="!userItem.is_following"
                           [class.text-white]="!userItem.is_following"
-                          [class.hover:bg-cyan-600]="!userItem.is_following"
+                          [class.hover:bg-accent]="!userItem.is_following"
                           [class.bg-slate-100]="userItem.is_following"
                           [class./10]="userItem.is_following"
                           [class.text-slate-700]="userItem.is_following"
@@ -348,7 +348,7 @@
             <!-- Get Verified Card (only for non-verified organizers) -->
             @if (!profile.verified_organizer && showVerifiedFeature()) {
               <div
-                class="rounded-2xl border border-dashed border-cyan-500/30 bg-cyan-50/50  p-5"
+                class="rounded-2xl border border-dashed border-cyan-500/30 bg-accent/50  p-5"
               >
                 <div class="flex items-center gap-2 mb-3">
                   <svg
@@ -409,7 +409,7 @@
                 <button
                   (click)="upgradeToVerified()"
                   [disabled]="isUpgrading()"
-                  class="w-full py-2 rounded-lg text-sm font-semibold bg-cyan-500 text-white hover:bg-cyan-600  cursor-pointer disabled:opacity-50"
+                  class="w-full py-2 rounded-lg text-sm font-semibold bg-accent text-white hover:bg-accent  cursor-pointer disabled:opacity-50"
                 >
                   @if (isUpgrading()) {
                     <span class="flex items-center justify-center gap-2">

@@ -166,7 +166,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                 @for (tab of ['notation', 'analysis']; track tab) {
                   <button
                     (click)="activeTab.set(tab === 'notation' ? 'notation' : 'analysis')"
-                    class="flex-1 py-4 text-xs font-semibold uppercase    relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-cyan-500 after:-translate-x-1/2 after: after:"
+                    class="flex-1 py-4 text-xs font-semibold uppercase    relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after: after:"
                     [class.text-cyan-400]="activeTab() === tab"
                     [class.opacity-40]="activeTab() !== tab"
                     [class.after:w-full]="activeTab() === tab"

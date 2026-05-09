@@ -25,7 +25,7 @@
           </div>
           <div class="p-6">
             <h3 class="text-lg font-semibold text-slate-900 mb-2 line-clamp-1">{{ course.title }}</h3>
-            <p class="text-xs text-slate-500 line-clamp-2 mb-6 leading-relaxed">
+            <p class="text-xs text-slate-500 line-clamp-2 mb-6 ">
               {{ course.description || 'No description provided for this course yet.' }}
             </p>
             
@@ -56,7 +56,7 @@
     <div class="w-full max-w-sm bg-white rounded p-8 shadow-2xl">
 
       <h2 class="text-xl font-semibold text-center text-slate-900 mb-2">Delete Course?</h2>
-      <p class="text-slate-500 text-center text-sm mb-8 leading-relaxed">This will permanently delete the course and all associated chapters and lessons. This action cannot be undone.</p>
+      <p class="text-slate-500 text-center text-sm mb-8 ">This will permanently delete the course and all associated chapters and lessons. This action cannot be undone.</p>
       <div class="flex gap-3">
         <button (click)="cancelDeleteCourse()" class="flex-1 px-4 py-3 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded ">Cancel</button>
         <button (click)="confirmDeleteCourse()" class="flex-1 px-4 py-3 text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white rounded ">Delete</button>

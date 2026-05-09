@@ -1,4 +1,4 @@
-<div class="h-screen flex flex-col lg:flex-row selection:bg-cyan-400/30 overflow-hidden">
+<div class="h-screen flex flex-col lg:flex-row selection:bg-accent/30 overflow-hidden">
   <!-- Left Column: Form Section -->
   <div class="flex-1 flex flex-col justify-center px-6 py-8 lg:px-20 xl:px-32 overflow-y-auto lg:overflow-y-hidden">
     <div class="mx-auto w-full text-center">
@@ -18,7 +18,7 @@
       </h1>
 
       @if (!isEditingEmail) {
-      <p class="text-zinc-500  mb-8 leading-relaxed">
+      <p class="text-zinc-500  mb-8 ">
         we've sent a link to
         <span class="font-semibold text-zinc-900 ">{{
           unverifiedEmail() || 'your email address'
@@ -51,7 +51,7 @@
       </div>
       }
 
-      <p class="mt-12 text-sm leading-relaxed">
+      <p class="mt-12 text-sm ">
         Didn't receive the email? Check your spam folder or
         <button (click)="resendEmail()" [disabled]="isResending"
           class="hover:text-zinc-900  underline underline-offset-2 bg-transparent border-none cursor-pointer text-inherit text-sm p-0">
@@ -77,7 +77,7 @@
         <h2 class="text-4xl xl:text-5xl   leading-[1.1]">
           MASTER THE GAME OF <span class="text-cyan-400">CHESS.</span>
         </h2>
-        <p class="mt-4 text-zinc-400  leading-relaxed">
+        <p class="mt-4 text-zinc-400  ">
           PLAY AND LEARN ON vonchess — THE ULTIMATE <br class="hidden xl:block" />
           PLATFORM FOR PLAYERS WHO AIM FOR THE <span class="text-cyan-400">TOP.</span>
         </p>
@@ -88,7 +88,7 @@
       <div class="flex items-center gap-2 text-cyan-400 mb-2 font-semibold text-sm">
         Support our mission
       </div>
-      <p class="text-zinc-400 text-xs leading-relaxed max-w-md">
+      <p class="text-zinc-400 text-xs  max-w-md">
         If you like the website, consider supporting us. Your donations help us keep the servers
         running and the puzzles fresh!
       </p>

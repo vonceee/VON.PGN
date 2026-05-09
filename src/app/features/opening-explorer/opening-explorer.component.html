@@ -43,7 +43,7 @@
           </thead>
           <tbody>
             @for (move of data.moves; track move.san) {
-              <tr class="border-b border-border-theme hover:bg-cyan-400 cursor-pointer">
+              <tr class="border-b border-border-theme hover:bg-accent cursor-pointer">
                 <td class="py-2 font-semibold">{{ move.san }}</td>
                 <td class="py-2 text-sm">{{ move.white + move.draws + move.black | number }}</td>
                 <td class="py-2">
@@ -97,14 +97,14 @@
         </svg>
       </div>
       <h2 class="text-3xl font-semibold mb-4">Login Required</h2>
-      <p class="text-slate-400 text-lg leading-relaxed mb-10">
+      <p class="text-slate-400 text-lg  mb-10">
         You must be logged in to unlock the world-class master games database and opening explorer.
         Connect deeply with the chess community!
       </p>
       <div class="flex gap-4 w-full justify-center text-sm md:text-base">
         <a
           routerLink="/login"
-          class="px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold rounded-xl "
+          class="px-8 py-3 bg-accent hover:bg-accent  font-semibold rounded-xl "
         >
           Login
         </a>

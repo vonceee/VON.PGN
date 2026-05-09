@@ -95,7 +95,7 @@ export interface AddChapterDialogResult {
                 <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4  zoom-in-95 ">
                   <div class="space-y-1">
                     <h3 class="text-sm font-semibold text-content uppercase ">Start Fresh</h3>
-                    <p class="text-xs text-muted max-w-[200px] mx-auto leading-relaxed">
+                    <p class="text-xs text-muted max-w-[200px] mx-auto ">
                       create a new chapter starting from the standard initial position.
                     </p>
                   </div>

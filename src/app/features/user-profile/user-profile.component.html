@@ -122,8 +122,8 @@
                       (click)="toggleFollow()"
                       [disabled]="isFollowLoading()"
                       class="group relative px-5 py-2 rounded-lg text-sm font-semibold   cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                      [class.bg-cyan-500]="!isFollowing()"
-                      [class.hover:bg-cyan-600]="!isFollowing()"
+                      [class.bg-accent]="!isFollowing()"
+                      [class.hover:bg-accent]="!isFollowing()"
                       [class.text-white]="!isFollowing()"
                       [class.bg-slate-100]="isFollowing()"
                       [class./10]="isFollowing()"
@@ -178,7 +178,7 @@
               <!-- About Me -->
               @if (profile.bio) {
                 <div class="mt-4 w-full lg:max-w-md">
-                  <p class="text-sm leading-relaxed">
+                  <p class="text-sm ">
                     {{ profile.bio }}
                   </p>
                 </div>
@@ -262,7 +262,7 @@
                       >
                         <div class="flex items-center justify-between mb-2">
                           <span
-                            class="text-xs font-semibold px-2 py-0.5 rounded bg-cyan-100  text-cyan-600  capitalize"
+                            class="text-xs font-semibold px-2 py-0.5 rounded bg-accent  text-cyan-600  capitalize"
                           >
                             {{ tournament.timeControl }}
                           </span>
@@ -465,9 +465,9 @@
                     <button
                       (click)="toggleTabUserFollow(userItem)"
                       class="px-3 py-1.5 rounded-lg text-xs font-semibold   cursor-pointer shrink-0"
-                      [class.bg-cyan-500]="!userItem.is_following"
+                      [class.bg-accent]="!userItem.is_following"
                       [class.text-white]="!userItem.is_following"
-                      [class.hover:bg-cyan-600]="!userItem.is_following"
+                      [class.hover:bg-accent]="!userItem.is_following"
                       [class.bg-slate-100]="userItem.is_following"
                       [class./10]="userItem.is_following"
                       [class.text-slate-700]="userItem.is_following"

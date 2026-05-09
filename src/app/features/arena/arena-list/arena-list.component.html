@@ -112,7 +112,7 @@
           class="flex items-center gap-1.5 px-3 py-2.5 text-sm  "
           [ngClass]="
             viewMode() === 'grid'
-              ? 'bg-cyan-500 text-white'
+              ? 'bg-accent text-white'
               : 'bg-white  text-slate-600  hover:bg-slate-50 '
           "
         >
@@ -133,7 +133,7 @@
           class="flex items-center gap-1.5 px-3 py-2.5 text-sm   border-l border-border-theme"
           [ngClass]="
             viewMode() === 'list'
-              ? 'bg-cyan-500 text-white'
+              ? 'bg-accent text-white'
               : 'bg-white  text-slate-600  hover:bg-slate-50 '
           "
         >
@@ -183,7 +183,7 @@
                     class="text-xs  uppercase  px-2 py-1 rounded"
                     [ngClass]="{
                       'bg-green-500/10 text-green-500': arena.status === 'ongoing',
-                      'bg-cyan-500/10 text-cyan-500': arena.status === 'upcoming',
+                      'bg-accent/10 text-cyan-500': arena.status === 'upcoming',
                       'bg-slate-500/10 text-slate-500': arena.status === 'past',
                     }"
                   >
@@ -320,7 +320,7 @@
               (click)="goToPage(page)"
               class="min-w-[36px] px-3 py-2 text-sm  rounded-lg border "
               [ngClass]="{
-                'bg-cyan-500 border-cyan-500 text-white': currentPage() === page,
+                'bg-accent border-cyan-500 text-white': currentPage() === page,
                 'border-border-theme hover:bg-slate-100 ':
                   currentPage() !== page,
               }"

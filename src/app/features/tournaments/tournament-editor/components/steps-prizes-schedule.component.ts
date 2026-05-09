@@ -245,7 +245,7 @@ export class StepPrizesComponent implements OnInit {
         @for (day of scheduleDaysArray.controls; track $index; let di = $index) {
         <div class="p-6 bg-white  rounded-xl border border-border-theme shadow-sm">
           <div class="flex justify-between items-center mb-6">
-            <span class="bg-cyan-100  text-cyan-700  px-3 py-1 rounded-full text-xs font-semibold uppercase ">Day {{ di + 1 }} Schedule</span>
+            <span class="bg-accent  text-cyan-700  px-3 py-1 rounded-full text-xs font-semibold uppercase ">Day {{ di + 1 }} Schedule</span>
             <div class="flex gap-2">
               <button
                 appButton

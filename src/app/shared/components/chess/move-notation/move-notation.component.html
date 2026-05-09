@@ -87,7 +87,7 @@
   <!-- Scrollable Move List -->
   <div
     #scrollContainer
-    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base scroll-smooth  leading-relaxed"
+    class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base"
   >
     <div class="block">
       <ng-container
@@ -107,7 +107,7 @@
     @for (node of nodes; track node.fen; let i = $index; let $firstNode = $first) {
       <!-- Pre-Move Comment -->
       @if (node.preComments && node.preComments.length > 0) {
-        <span class="inline text-sm leading-snug mx-1  select-text align-baseline">
+        <span class="inline text-sm  mx-1  select-text align-baseline">
           {{ node.preComments[0] }}
         </span>
       }
@@ -136,7 +136,7 @@
           (contextmenu)="onContextMenu($event, node)"
           [class]="
             currentFen() === node.fen
-              ? 'active-move underline font-semibold bg-cyan-400 text-slate-950'
+              ? 'active-move underline font-semibold bg-accent'
               : 'font-semibold text-content'
           "
           [class.px-1]="true"
@@ -180,7 +180,7 @@
 
       <!-- After-Move Comment -->
       @if (node.comments && node.comments.length > 0) {
-        <span class="inline text-xs md:text-sm leading-snug mx-1  select-text align-baseline">
+        <span class="inline text-xs md:text-sm  mx-1  select-text align-baseline">
           {{ node.comments[0] }}
         </span>
       }

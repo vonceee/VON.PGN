@@ -75,7 +75,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         </div>
 
         <div class="p-3 bg-accent/5 border border-accent/10 rounded-xl">
-          <p class="text-xs text-content/70 leading-relaxed italic">
+          <p class="text-xs text-content/70  italic">
             PGN metadata follows standard chess headers.
           </p>
         </div>
