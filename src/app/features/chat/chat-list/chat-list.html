@@ -3,7 +3,7 @@
   <div class="px-4 py-3">
     <!-- Search -->
     <div class="relative" #searchContainer>
-      <div class="flex items-center bg-slate-100  border border-slate-200  rounded-lg px-3 py-2 focus-within:border-cyan-500/60 transition-colors">
+      <div class="flex items-center bg-slate-100  border border-slate-200  rounded-lg px-3 py-2 focus-within:border-cyan-500/60 ">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
           class="w-4 h-4 text-slate-400  shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -67,7 +67,7 @@
       @for (conversation of filteredConversations(); track conversation.id) {
         <button
           (click)="selectConversation(conversation)"
-          [class]="'w-full flex items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-slate-50  ' + (isActive(conversation) ? 'bg-slate-100 /10' : '')">
+          [class]="'w-full flex items-center gap-2 px-4 py-3 text-left  hover:bg-slate-50  ' + (isActive(conversation) ? 'bg-slate-100 /10' : '')">
           <!-- Content -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-2">

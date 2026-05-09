@@ -24,7 +24,7 @@
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            class="w-5 h-5 text-slate-400 transition-transform ml-2"
+            class="w-5 h-5 text-slate-400  ml-2"
             [class.rotate-180]="isTabDropdownOpen()"
           >
             <path
@@ -41,14 +41,14 @@
           >
             <button
               (click)="setTab('upcoming')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }"
             >
               <span>Upcoming</span>
             </button>
             <button
               (click)="setTab('ongoing')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }"
             >
               <span class="flex items-center gap-2">
@@ -58,7 +58,7 @@
             </button>
             <button
               (click)="setTab('past')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }"
             >
               <span>Past</span>
@@ -109,7 +109,7 @@
       <div class="flex items-center border border-border-theme rounded-xl overflow-hidden">
         <button
           (click)="setViewMode('grid')"
-          class="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium transition-colors"
+          class="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium "
           [ngClass]="
             viewMode() === 'grid'
               ? 'bg-cyan-500 text-white'
@@ -130,7 +130,7 @@
         </button>
         <button
           (click)="setViewMode('list')"
-          class="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium transition-colors border-l border-border-theme"
+          class="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium  border-l border-border-theme"
           [ngClass]="
             viewMode() === 'list'
               ? 'bg-cyan-500 text-white'
@@ -234,7 +234,7 @@
         <div class="flex flex-col gap-3 px-4">
           @for (arena of paginatedArenas(); track arena.id) {
             <div
-              class="ui-panel rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-4 transition-colors"
+              class="ui-panel rounded-xl p-3 flex flex-col sm:flex-row sm:items-center gap-4 "
             >
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
@@ -296,7 +296,7 @@
         <button
           (click)="prevPage()"
           [disabled]="currentPage() === 1"
-          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
+          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme  disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -318,7 +318,7 @@
           } @else {
             <button
               (click)="goToPage(page)"
-              class="min-w-[36px] px-3 py-2 text-sm font-medium rounded-lg border transition-colors"
+              class="min-w-[36px] px-3 py-2 text-sm font-medium rounded-lg border "
               [ngClass]="{
                 'bg-cyan-500 border-cyan-500 text-white': currentPage() === page,
                 'border-border-theme hover:bg-slate-100 ':
@@ -333,7 +333,7 @@
         <button
           (click)="nextPage()"
           [disabled]="currentPage() === totalPages()"
-          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
+          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme  disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

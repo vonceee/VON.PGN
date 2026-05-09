@@ -65,7 +65,7 @@ import { ToastService } from '../../../core/services/toast.service';
             </thead>
             <tbody class="divide-y divide-slate-50">
               @for (coach of filteredCoaches(); track coach.id) {
-                <tr class="hover:bg-slate-50/50 transition-colors group">
+                <tr class="hover:bg-slate-50/50  group">
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       @if (coach.title) {
@@ -81,10 +81,10 @@ import { ToastService } from '../../../core/services/toast.service';
                   </td>
                   <td class="px-6 py-4 text-right">
                     <div class="flex items-center justify-end gap-4">
-                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors uppercase tracking-widest">
+                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-bold text-blue-600 hover:text-blue-700  uppercase tracking-widest">
                         Edit
                       </a>
-                      <button (click)="deleteCoach(coach)" class="text-xs font-bold text-rose-600 hover:underline transition-colors uppercase tracking-widest">
+                      <button (click)="deleteCoach(coach)" class="text-xs font-bold text-rose-600 hover:underline  uppercase tracking-widest">
                         Delete
                       </button>
                     </div>

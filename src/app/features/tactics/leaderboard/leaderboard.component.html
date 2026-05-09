@@ -34,12 +34,12 @@
             </h3>
             <div class="flex flex-col gap-2">
               @for (entry of leaderboard()?.bullet_rating?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  transition-colors">
+                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  ">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 transition-colors">
+                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 ">
                       {{ entry.username }}
                     </a>
                   </div>
@@ -58,12 +58,12 @@
             </h3>
             <div class="flex flex-col gap-2">
               @for (entry of leaderboard()?.blitz_rating?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  transition-colors">
+                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  ">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 transition-colors">
+                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 ">
                       {{ entry.username }}
                     </a>
                   </div>
@@ -82,12 +82,12 @@
             </h3>
             <div class="flex flex-col gap-2">
               @for (entry of leaderboard()?.rapid_rating?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  transition-colors">
+                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  ">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 transition-colors">
+                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 ">
                       {{ entry.username }}
                     </a>
                   </div>
@@ -106,12 +106,12 @@
             </h3>
             <div class="flex flex-col gap-2">
               @for (entry of leaderboard()?.tactics_rating?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  transition-colors">
+                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  ">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 transition-colors">
+                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 ">
                       {{ entry.username }}
                     </a>
                   </div>
@@ -130,12 +130,12 @@
             </h3>
             <div class="flex flex-col gap-2">
               @for (entry of leaderboard()?.streak?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  transition-colors">
+                <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50  ">
                   <div class="w-6 text-center text-sm font-bold text-slate-500">
                     #{{ entry.rank }}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 transition-colors">
+                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold text-slate-900  truncate hover:text-cyan-400 ">
                       {{ entry.username }}
                     </a>
                   </div>

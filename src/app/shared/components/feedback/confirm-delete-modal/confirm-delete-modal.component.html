@@ -39,7 +39,7 @@
         (ngModelChange)="typedName.set($event)"
         [ngModelOptions]="{ standalone: true }"
         [placeholder]="'Type ' + itemType() + ' name to confirm'"
-        class="w-full p-3 border rounded-lg focus:outline-none transition-colors text-sm"
+        class="w-full p-3 border rounded-lg focus:outline-none  text-sm"
         [class]="
           canDelete
             ? 'border-red-500 focus:border-red-500'
@@ -56,14 +56,14 @@
     <div class="flex gap-3 px-6 pb-6">
       <button
         (click)="onCancel()"
-        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200   transition-colors"
+        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200   "
       >
         Cancel
       </button>
       <button
         (click)="onConfirm()"
         [disabled]="!canDelete || loading()"
-        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-red-500 hover:bg-red-600 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-red-500 hover:bg-red-600 text-white disabled:opacity-50 disabled:cursor-not-allowed "
       >
         {{ loading() ? 'Deleting...' : 'Delete' }}
       </button>

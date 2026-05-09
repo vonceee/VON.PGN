@@ -48,7 +48,7 @@ export interface AddChapterDialogResult {
                     class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted/50   "
                     autofocus
                   />
-                  <div class="absolute inset-0 rounded-xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none transition-opacity "></div>
+                  <div class="absolute inset-0 rounded-xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none  "></div>
                 </div>
               </div>
 
@@ -198,7 +198,7 @@ export interface AddChapterDialogResult {
             </button>
           } @else {
             <button appButton variant="outline" (click)="activeTab.set('empty')" class="flex items-center gap-2 group">
-              <svg class="w-4 h-4 fill-current transition-transform group-hover:-translate-x-1" viewBox="0 0 20 20"><path d="M11.707 5.293a1 1 0 010 1.414L8.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/></svg>
+              <svg class="w-4 h-4 fill-current  group-hover:-translate-x-1" viewBox="0 0 20 20"><path d="M11.707 5.293a1 1 0 010 1.414L8.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/></svg>
               Back
             </button>
 

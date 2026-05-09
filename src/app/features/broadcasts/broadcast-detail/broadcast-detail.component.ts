@@ -68,7 +68,7 @@ type TabType = 'details' | 'games';
         <div class="relative overflow-hidden">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <a routerLink="/broadcasts"
-              class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500  hover:text-cyan-400 mb-4 transition-colors">
+              class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500  hover:text-cyan-400 mb-4 ">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                 class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -187,7 +187,7 @@ type TabType = 'details' | 'games';
                 [class]="activeTab() === 'details' 
                   ? 'border-cyan-500 text-cyan-500' 
                   : 'border-transparent hover:border-slate-600'"
-                class="py-4 px-1 border-b-2 font-medium text-sm transition-colors text-slate-600 "
+                class="py-4 px-1 border-b-2 font-medium text-sm  text-slate-600 "
               >
                 Details
               </button>
@@ -196,7 +196,7 @@ type TabType = 'details' | 'games';
                 [class]="activeTab() === 'games' 
                   ? 'border-cyan-500 text-cyan-500' 
                   : 'border-transparent hover:border-slate-600'"
-                class="py-4 px-1 border-b-2 font-medium text-sm transition-colors text-slate-600 "
+                class="py-4 px-1 border-b-2 font-medium text-sm  text-slate-600 "
               >
                 Games
               </button>

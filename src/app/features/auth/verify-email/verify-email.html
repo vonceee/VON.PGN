@@ -37,11 +37,11 @@
             class="flex-1 px-3 py-2 bg-white  border border-zinc-200  rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400  "
             placeholder="Enter new email" (keyup.enter)="updateEmail()" />
           <button (click)="updateEmail()" [disabled]="isUpdatingEmail || !newEmailInput"
-            class="px-4 py-2 bg-black hover:bg-zinc-800   text-white  rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors">
+            class="px-4 py-2 bg-black hover:bg-zinc-800   text-white  rounded-lg text-sm font-semibold disabled:opacity-50 ">
             {{ isUpdatingEmail ? 'Saving...' : 'Save' }}
           </button>
           <button (click)="cancelEditEmail()" [disabled]="isUpdatingEmail"
-            class="px-4 py-2 bg-zinc-200 hover:bg-zinc-300   text-zinc-900  rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors">
+            class="px-4 py-2 bg-zinc-200 hover:bg-zinc-300   text-zinc-900  rounded-lg text-sm font-semibold disabled:opacity-50 ">
             Cancel
           </button>
         </div>

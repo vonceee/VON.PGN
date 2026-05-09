@@ -26,7 +26,7 @@
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            class="w-5 h-5 text-slate-400 transition-transform ml-2"
+            class="w-5 h-5 text-slate-400  ml-2"
             [class.rotate-180]="isTabDropdownOpen()"
           >
             <path
@@ -43,14 +43,14 @@
           >
             <button
               (click)="setTab('upcoming')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }"
             >
               <span>Upcoming</span>
             </button>
             <button
               (click)="setTab('ongoing')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }"
             >
               <span class="flex items-center gap-2">
@@ -60,7 +60,7 @@
             </button>
             <button
               (click)="setTab('past')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }"
             >
               <span>Past</span>
@@ -261,7 +261,7 @@
                   />
                   
                   <!-- Overlay Controls -->
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity  flex flex-col justify-end p-6">
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100   flex flex-col justify-end p-6">
                     <h3 class="text-white font-bold text-lg mb-4">{{ tournament.name }}</h3>
                     <div class="flex gap-3">
                       <button 
@@ -286,7 +286,7 @@
                   <!-- Quick Close Button (Top Right) -->
                   <button 
                     (click)="toggleFlip(tournament.id)"
-                    class="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 transition-colors z-10"
+                    class="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80  z-10"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -314,7 +314,7 @@
       <button
         (click)="prevPage()"
         [disabled]="currentPage() === 1"
-        class="px-3 py-2 text-sm font-medium rounded-lg border border-border-base transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-subtle"
+        class="px-3 py-2 text-sm font-medium rounded-lg border border-border-base  disabled:opacity-40 disabled:cursor-not-allowed hover:bg-subtle"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -351,7 +351,7 @@
       <button
         (click)="nextPage()"
         [disabled]="currentPage() === totalPages()"
-        class="px-3 py-2 text-sm font-medium rounded-lg border border-border-base transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-subtle"
+        class="px-3 py-2 text-sm font-medium rounded-lg border border-border-base  disabled:opacity-40 disabled:cursor-not-allowed hover:bg-subtle"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

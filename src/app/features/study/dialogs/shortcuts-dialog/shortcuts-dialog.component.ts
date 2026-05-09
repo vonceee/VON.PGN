@@ -21,7 +21,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <div class="space-y-2">
               @for (item of moveShortcuts; track item.key) {
                 <div class="flex items-center justify-between py-1.5 border-b border-border-base/30 last:border-0 group">
-                  <span class="text-sm font-medium text-content/80 group-hover:text-content transition-colors">
+                  <span class="text-sm font-medium text-content/80 group-hover:text-content ">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
@@ -44,7 +44,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <div class="space-y-2">
               @for (item of posShortcuts; track item.key) {
                 <div class="flex items-center justify-between py-1.5 border-b border-border-base/30 last:border-0 group">
-                  <span class="text-sm font-medium text-content/80 group-hover:text-content transition-colors">
+                  <span class="text-sm font-medium text-content/80 group-hover:text-content ">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
@@ -68,7 +68,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2">
               @for (item of otherShortcuts; track item.label) {
                 <div class="flex items-center justify-between py-1.5 group">
-                  <span class="text-sm font-medium text-content/80 group-hover:text-content transition-colors">
+                  <span class="text-sm font-medium text-content/80 group-hover:text-content ">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-1">

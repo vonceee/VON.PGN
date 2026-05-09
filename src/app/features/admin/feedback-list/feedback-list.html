@@ -7,14 +7,14 @@
   </div>
 
   <div class="flex gap-2 mb-4">
-    <button class="px-3.5 py-2 border border-slate-300 bg-white rounded text-sm cursor-pointer hover:bg-slate-50 transition-colors" [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'all'" (click)="setFilter('all')">All</button>
-    <button class="px-3.5 py-2 border border-slate-300 bg-white rounded text-sm cursor-pointer hover:bg-slate-50 transition-colors" [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'bug'" (click)="setFilter('bug')">Bug Reports</button>
-    <button class="px-3.5 py-2 border border-slate-300 bg-white rounded text-sm cursor-pointer hover:bg-slate-50 transition-colors" [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'suggestion'" (click)="setFilter('suggestion')">Suggestions</button>
-    <button class="px-3.5 py-2 border border-slate-300 bg-white rounded text-sm cursor-pointer hover:bg-slate-50 transition-colors" [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'general'" (click)="setFilter('general')">General</button>
+    <button class="px-3.5 py-2 border border-slate-300 bg-white rounded text-sm cursor-pointer hover:bg-slate-50 " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'all'" (click)="setFilter('all')">All</button>
+    <button class="px-3.5 py-2 border border-slate-300 bg-white rounded text-sm cursor-pointer hover:bg-slate-50 " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'bug'" (click)="setFilter('bug')">Bug Reports</button>
+    <button class="px-3.5 py-2 border border-slate-300 bg-white rounded text-sm cursor-pointer hover:bg-slate-50 " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'suggestion'" (click)="setFilter('suggestion')">Suggestions</button>
+    <button class="px-3.5 py-2 border border-slate-300 bg-white rounded text-sm cursor-pointer hover:bg-slate-50 " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'general'" (click)="setFilter('general')">General</button>
   </div>
 
   <ul class="list-none p-0 m-0" *ngIf="filteredItems().length > 0">
-    <li class="flex justify-between items-center p-4 border border-slate-200 bg-white mb-2 hover:bg-slate-50/50 transition-colors" *ngFor="let item of filteredItems()" (click)="openFeedback(item)" style="cursor: pointer;">
+    <li class="flex justify-between items-center p-4 border border-slate-200 bg-white mb-2 hover:bg-slate-50/50 " *ngFor="let item of filteredItems()" (click)="openFeedback(item)" style="cursor: pointer;">
       <div class="flex-1">
         <div class="flex items-center gap-2 mb-2">
           <span class="inline-block px-2 py-1 text-[11px] font-semibold rounded uppercase" 
@@ -58,8 +58,8 @@
         <div style="background: #f5f5f5; padding: 12px; white-space: pre-wrap;">{{ item.message }}</div>
       </div>
       <div class="flex gap-3 p-4 px-5 border-t border-slate-200">
-        <button (click)="closeFeedback()" class="inline-block px-4 py-2 rounded text-sm font-medium transition-colors bg-slate-100 text-slate-800 hover:bg-slate-200">Close</button>
-        <button (click)="requestDelete(item.id)" class="inline-block px-4 py-2 rounded text-sm font-medium transition-colors bg-red-600 text-white hover:bg-red-700">Delete</button>
+        <button (click)="closeFeedback()" class="inline-block px-4 py-2 rounded text-sm font-medium  bg-slate-100 text-slate-800 hover:bg-slate-200">Close</button>
+        <button (click)="requestDelete(item.id)" class="inline-block px-4 py-2 rounded text-sm font-medium  bg-red-600 text-white hover:bg-red-700">Delete</button>
       </div>
     </div>
   </div>
@@ -77,8 +77,8 @@
         <p>Are you sure you want to delete this feedback?</p>
       </div>
       <div class="flex gap-3 p-4 px-5 border-t border-slate-200">
-        <button (click)="cancelDelete()" class="inline-block px-4 py-2 rounded text-sm font-medium transition-colors bg-slate-100 text-slate-800 hover:bg-slate-200">Cancel</button>
-        <button (click)="confirmDelete()" class="inline-block px-4 py-2 rounded text-sm font-medium transition-colors bg-red-600 text-white hover:bg-red-700">Delete</button>
+        <button (click)="cancelDelete()" class="inline-block px-4 py-2 rounded text-sm font-medium  bg-slate-100 text-slate-800 hover:bg-slate-200">Cancel</button>
+        <button (click)="confirmDelete()" class="inline-block px-4 py-2 rounded text-sm font-medium  bg-red-600 text-white hover:bg-red-700">Delete</button>
       </div>
     </div>
   </div>

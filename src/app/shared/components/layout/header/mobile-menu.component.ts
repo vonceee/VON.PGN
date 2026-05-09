@@ -36,7 +36,7 @@ import { Router } from '@angular/router';
       <!-- Mobile Search -->
       <div class="px-4 py-3 border-b border-slate-200 ">
         <div
-          class="flex items-center bg-slate-100 /10 rounded-xl px-3 py-2 border border-transparent focus-within:border-cyan-500/50 transition-colors"
+          class="flex items-center bg-slate-100 /10 rounded-xl px-3 py-2 border border-transparent focus-within:border-cyan-500/50 "
         >
           <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 text-slate-500 mr-2"></ng-icon>
           <input
@@ -58,7 +58,7 @@ import { Router } from '@angular/router';
             @for (user of searchResults(); track user.uid) {
               <button
                 (click)="viewUserProfile(user)"
-                class="w-full flex flex-col px-3 py-2 rounded-lg hover:bg-slate-50  text-left transition-colors"
+                class="w-full flex flex-col px-3 py-2 rounded-lg hover:bg-slate-50  text-left "
               >
                 <span class="text-xs font-semibold text-slate-900  capitalize">{{
                   user.displayName
@@ -84,10 +84,10 @@ import { Router } from '@angular/router';
             <a
               [routerLink]="link.path"
               (click)="close.emit()"
-              class="px-4 py-3 hover:bg-slate-50  font-semibold transition-colors flex items-center justify-between group"
+              class="px-4 py-3 hover:bg-slate-50  font-semibold  flex items-center justify-between group"
             >
               <span class="text-slate-900 ">{{ link.label }}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-slate-300  group-hover:text-cyan-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-slate-300  group-hover:text-cyan-500 ">
                 <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
               </svg>
             </a>

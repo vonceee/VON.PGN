@@ -30,13 +30,13 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin" routerLinkActive="bg-blue-50 text-blue-600" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2 transition-colors font-medium">
+              <a routerLink="/admin" routerLinkActive="bg-blue-50 text-blue-600" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2  font-medium">
                 
                 <span>Dashboard</span>
               </a>
             </li>
             <li>
-              <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2 transition-colors font-medium">
+              <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2  font-medium">
                 
                 <span>Users</span>
               </a>
@@ -48,7 +48,7 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin/courses" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2 transition-colors font-medium">
+              <a routerLink="/admin/courses" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2  font-medium">
                 
                 <span>Courses</span>
               </a>
@@ -60,25 +60,25 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin/coaches" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2 transition-colors font-medium">
+              <a routerLink="/admin/coaches" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2  font-medium">
                 
                 <span>Coach Profiles</span>
               </a>
             </li>
             <li>
-              <a routerLink="/admin/coach-applications" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2 transition-colors font-medium">
+              <a routerLink="/admin/coach-applications" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2  font-medium">
                 
                 <span>Applications</span>
               </a>
             </li>
             <li>
-              <a routerLink="/admin/academy-enrollments" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2 transition-colors font-medium">
+              <a routerLink="/admin/academy-enrollments" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2  font-medium">
                 
                 <span>Enrollments</span>
               </a>
             </li>
             <li>
-              <a routerLink="/admin/feedback" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2 transition-colors font-medium">
+              <a routerLink="/admin/feedback" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-blue-600 mx-2  font-medium">
                 
                 <span>Feedback</span>
               </a>

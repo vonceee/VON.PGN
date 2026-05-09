@@ -36,7 +36,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
                       (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
                       (click)="selectTool({color: 'black', role})"
                     >
-                      <div [class]="getPieceClass('black', role)" class="w-8 h-8 pointer-events-none transition-transform group-hover:scale-110"></div>
+                      <div [class]="getPieceClass('black', role)" class="w-8 h-8 pointer-events-none  group-hover:scale-110"></div>
                     </button>
                   }
                 </div>
@@ -54,7 +54,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
                       (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
                       (click)="selectTool({color: 'white', role})"
                     >
-                      <div [class]="getPieceClass('white', role)" class="w-8 h-8 pointer-events-none transition-transform group-hover:scale-110"></div>
+                      <div [class]="getPieceClass('white', role)" class="w-8 h-8 pointer-events-none  group-hover:scale-110"></div>
                     </button>
                   }
                 </div>

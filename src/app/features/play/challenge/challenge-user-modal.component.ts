@@ -22,7 +22,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
         </h2>
         <button
           (click)="dialogRef.close()"
-          class="cursor-pointer p-2 hover:bg-black/5  rounded-full transition-colors flex items-center justify-center"
+          class="cursor-pointer p-2 hover:bg-black/5  rounded-full  flex items-center justify-center"
         >
           <ng-icon name="heroXMark" class="text-xl"></ng-icon>
         </button>

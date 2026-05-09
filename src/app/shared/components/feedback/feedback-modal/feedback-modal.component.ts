@@ -25,7 +25,7 @@ interface FeedbackForm {
     >
       <button
         (click)="dialogRef.close()"
-        class="absolute top-6 right-6 cursor-pointer p-2 hover:bg-black/5  rounded-full transition-colors flex items-center justify-center border-none bg-transparent"
+        class="absolute top-6 right-6 cursor-pointer p-2 hover:bg-black/5  rounded-full  flex items-center justify-center border-none bg-transparent"
       >
         <ng-icon name="heroXMark" class="text-xl"></ng-icon>
       </button>

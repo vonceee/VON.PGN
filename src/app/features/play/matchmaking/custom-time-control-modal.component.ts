@@ -25,7 +25,7 @@ export interface CustomTimeControlResult {
         </div>
         <button
           (click)="dialogRef.close()"
-          class="cursor-pointer p-2 hover:bg-black/5  rounded-full transition-colors flex items-center justify-center"
+          class="cursor-pointer p-2 hover:bg-black/5  rounded-full  flex items-center justify-center"
         >
           <ng-icon name="heroXMark" class="text-xl"></ng-icon>
         </button>
@@ -39,14 +39,14 @@ export interface CustomTimeControlResult {
             <div class="flex items-center gap-4">
               <button
                 (click)="adjustMinutes(-1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10 transition-colors cursor-pointer text-xl font-bold"
+                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
               >
                 -
               </button>
               <span class="text-3xl font-black min-w-[3rem] text-center italic">{{ customMinutes() }}</span>
               <button
                 (click)="adjustMinutes(1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10 transition-colors cursor-pointer text-xl font-bold"
+                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
               >
                 +
               </button>
@@ -74,14 +74,14 @@ export interface CustomTimeControlResult {
             <div class="flex items-center gap-4">
               <button
                 (click)="adjustIncrement(-1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10 transition-colors cursor-pointer text-xl font-bold"
+                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
               >
                 -
               </button>
               <span class="text-3xl font-black min-w-[3rem] text-center italic">{{ customIncrement() }}</span>
               <button
                 (click)="adjustIncrement(1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10 transition-colors cursor-pointer text-xl font-bold"
+                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-bold"
               >
                 +
               </button>
@@ -111,7 +111,7 @@ export interface CustomTimeControlResult {
           (click)="confirm()"
         >
           Find Opponent
-          <ng-icon name="heroArrowRight" class="ml-2 transition-transform group-hover:translate-x-1"></ng-icon>
+          <ng-icon name="heroArrowRight" class="ml-2  group-hover:translate-x-1"></ng-icon>
         </button>
       </div>
     </div>

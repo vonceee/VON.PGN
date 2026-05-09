@@ -102,7 +102,7 @@ export class StepBasicInfoComponent {
             (ngModelChange)="mapsLink.set($event)"
             [ngModelOptions]="{ standalone: true }"
             placeholder="Paste Google Maps URL to verify location"
-            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors"
+            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 "
           />
           <button
             appButton

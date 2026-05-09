@@ -18,7 +18,7 @@ import { heroArrowLeft } from '@ng-icons/heroicons/outline';
       >
         <ng-icon
           name="heroArrowLeft"
-          class="w-4 h-4 transition-transform group-hover:-translate-x-1"
+          class="w-4 h-4  group-hover:-translate-x-1"
         ></ng-icon>
         {{ text() }}
       </a>

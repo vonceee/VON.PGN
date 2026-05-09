@@ -51,7 +51,7 @@ export interface AnnotateMoveDialogResult {
                   <span class="text-lg font-bold">{{ glyph.symbol }}</span>
                   
                   <!-- Tooltip hint on hover -->
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-bold uppercase tracking-tighter whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 shadow-xl">
+                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-bold uppercase tracking-tighter whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none  z-10 shadow-xl">
                     {{ glyph.name }}
                   </div>
                 </button>
@@ -73,7 +73,7 @@ export interface AnnotateMoveDialogResult {
                 class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-2xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none    resize-none custom-scrollbar"
                 autofocus
               ></textarea>
-              <div class="absolute inset-0 rounded-2xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none transition-opacity "></div>
+              <div class="absolute inset-0 rounded-2xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none  "></div>
             </div>
           </div>
         </div>

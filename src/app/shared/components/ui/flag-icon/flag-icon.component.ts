@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
         [src]="flagUrl()"
         [alt]="code()"
         [title]="countryName()"
-        class="inline-block h-3.5 w-auto max-w-[20px] rounded-[2px] shadow-sm align-baseline opacity-90 hover:opacity-100 transition-opacity"
+        class="inline-block h-3.5 w-auto max-w-[20px] rounded-[2px] shadow-sm align-baseline opacity-90 hover:opacity-100 "
         loading="lazy"
       />
     }

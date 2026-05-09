@@ -60,7 +60,7 @@
           <tbody class="divide-y divide-white/5">
             @for (player of leaderboard(); track player.userId; let i = $index) {
               <tr
-                class="group hover:bg-white/[0.02] transition-colors"
+                class="group hover:bg-white/[0.02] "
                 [class.bg-white/5]="player.userId === authService.currentUser()?.uid"
               >
                 <td class="py-6 font-mono text-sm opacity-30 text-center">
@@ -71,7 +71,7 @@
                     <a 
                       [routerLink]="['/user', player.name]" 
                       [appUserHovercard]="player.name"
-                      class="font-bold text-lg hover:text-cyan-400 transition-colors cursor-pointer"
+                      class="font-bold text-lg hover:text-cyan-400  cursor-pointer"
                     >
                       {{ player.name }}
                     </a>

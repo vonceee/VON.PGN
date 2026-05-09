@@ -35,14 +35,14 @@ import { ToastService } from '../../../core/services/toast.service';
                   <ng-icon [name]="activeTab() === 'all' ? 'heroGlobeAlt' : 'heroUser'"></ng-icon>
                   {{ activeTab() === 'all' ? 'Public' : 'My Studies' }}
                 </div>
-                <ng-icon name="heroChevronDown" [class.rotate-180]="isDropdownOpen()" class="transition-transform "></ng-icon>
+                <ng-icon name="heroChevronDown" [class.rotate-180]="isDropdownOpen()" class=" "></ng-icon>
               </button>
 
               @if (isDropdownOpen()) {
                 <div class="absolute top-full right-0 mt-2 w-48 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 ">
                   <button 
                     (click)="setTab('all')"
-                    class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors hover:bg-subtle"
+                    class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold  hover:bg-subtle"
                     [class.text-accent]="activeTab() === 'all'"
                   >
                     <ng-icon name="heroGlobeAlt"></ng-icon>
@@ -51,7 +51,7 @@ import { ToastService } from '../../../core/services/toast.service';
                   @if (isLoggedIn()) {
                     <button 
                       (click)="setTab('my')"
-                      class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold transition-colors hover:bg-subtle"
+                      class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold  hover:bg-subtle"
                       [class.text-accent]="activeTab() === 'my'"
                     >
                       <ng-icon name="heroUser"></ng-icon>

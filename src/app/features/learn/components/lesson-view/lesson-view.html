@@ -90,7 +90,7 @@
         <!-- Read Aloud + Navigation -->
         <div class="flex flex-wrap items-center gap-3">
           <button
-            class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-cyan-400 hover:cursor-pointer transition-colors "
+            class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-cyan-400 hover:cursor-pointer  "
             [class.text-cyan-400]="isSpeaking() && !isPaused()"
             (click)="toggleReadAloud()"
           >
@@ -128,7 +128,7 @@
           @if (availableVoices().length > 0) {
             <div class="relative flex items-center">
               <button
-                class="hover:text-cyan-400 hover:cursor-pointer transition-colors "
+                class="hover:text-cyan-400 hover:cursor-pointer  "
                 (click)="toggleSettings()"
                 title="Read Aloud Settings"
               >
@@ -201,7 +201,7 @@
               viewBox="0 0 24 24"
               stroke-width="2.5"
               stroke="currentColor"
-              class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1"
+              class="w-3.5 h-3.5  group-hover:-translate-x-1"
             >
               <path
                 stroke-linecap="round"
@@ -302,7 +302,7 @@
             viewBox="0 0 24 24"
             stroke-width="2.5"
             stroke="currentColor"
-            class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1"
+            class="w-3.5 h-3.5  group-hover:-translate-x-1"
           >
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
           </svg>

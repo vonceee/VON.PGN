@@ -18,7 +18,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
               <a 
                 [href]="'/user/' + user()!.username" 
                 target="_blank"
-                class="text-lg font-extrabold text-content truncate hover:text-accent transition-colors flex items-center gap-2"
+                class="text-lg font-extrabold text-content truncate hover:text-accent  flex items-center gap-2"
               >
                 <app-flag-icon [countryCode]="user()!.country_code"></app-flag-icon>
                 {{ user()!.username }}

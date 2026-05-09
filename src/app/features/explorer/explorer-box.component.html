@@ -68,7 +68,7 @@
               </thead>
               <tbody>
                 @for (move of d.moves; track move.uci) {
-                  <tr class="hover:bg-accent/5 cursor-pointer group transition-colors border-b border-border-base/10 last:border-0">
+                  <tr class="hover:bg-accent/5 cursor-pointer group  border-b border-border-base/10 last:border-0">
                     <td class="py-2 px-2 font-black text-content">{{ move.san }}</td>
                     <td class="py-2 px-2 text-right text-muted font-medium">
                       {{ formatTotal(move.white + move.draws + move.black) }}
@@ -131,7 +131,7 @@
               </thead>
               <tbody>
                 @for (move of td.moves; track move.uci) {
-                  <tr class="hover:bg-accent/5 cursor-pointer group transition-colors border-b border-border-base/10 last:border-0">
+                  <tr class="hover:bg-accent/5 cursor-pointer group  border-b border-border-base/10 last:border-0">
                     <td class="py-2 px-2 font-black text-content">{{ move.san }}</td>
                     <td class="py-2 px-2 text-right text-muted font-medium">
                       @if (move.dtz !== undefined) { 

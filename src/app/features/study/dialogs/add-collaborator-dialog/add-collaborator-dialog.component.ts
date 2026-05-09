@@ -45,7 +45,7 @@ import { UserHovercardDirective } from '@shared/directives';
                 >
                   <div class="flex flex-col">
                     <span 
-                      class="text-sm font-bold text-content group-hover:text-accent transition-colors"
+                      class="text-sm font-bold text-content group-hover:text-accent "
                       [appUserHovercard]="user.username"
                       [disableClick]="true"
                     >{{ user.username }}</span>

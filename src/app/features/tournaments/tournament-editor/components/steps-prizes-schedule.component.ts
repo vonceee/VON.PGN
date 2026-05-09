@@ -34,7 +34,7 @@ import { ButtonComponent  } from '@shared/ui';
               type="text" 
               [formControl]="getControl(categoryGroup(ci), 'name')" 
               placeholder="e.g. Open, Under 14"
-              class="w-full p-3 border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 transition-colors" 
+              class="w-full p-3 border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 " 
             />
           </div>
 
@@ -48,7 +48,7 @@ import { ButtonComponent  } from '@shared/ui';
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), 'champion')"
                     placeholder="P50,000 + trophy"
-                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 "
                   />
                 </div>
                 <div class="space-y-1.5">
@@ -57,7 +57,7 @@ import { ButtonComponent  } from '@shared/ui';
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), '2nd_place')"
                     placeholder="Prize value"
-                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 "
                   />
                 </div>
                 <div class="space-y-1.5">
@@ -66,7 +66,7 @@ import { ButtonComponent  } from '@shared/ui';
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), '3rd_place')"
                     placeholder="Prize value"
-                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                    class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 "
                   />
                 </div>
               </div>
@@ -81,7 +81,7 @@ import { ButtonComponent  } from '@shared/ui';
                         type="text"
                         [formControl]="getControl(extraPrizeGroup(ci, ei), 'label')"
                         placeholder="Place name (e.g. 4th - 10th)"
-                        class="flex-1 p-2 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                        class="flex-1 p-2 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 "
                       />
                       <button
                         appButton
@@ -95,7 +95,7 @@ import { ButtonComponent  } from '@shared/ui';
                         type="text" 
                         [formControl]="getControl(extraPrizeGroup(ci, ei), 'value')" 
                         placeholder="Prize value"
-                        class="w-full p-2 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors" 
+                        class="w-full p-2 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 " 
                       />
                   </div>
                 </div>
@@ -123,11 +123,11 @@ import { ButtonComponent  } from '@shared/ui';
                          type="text"
                          [formControl]="getControl(specialAwardGroup(ci, ai), 'name')"
                          placeholder="e.g. Top Senior"
-                         class="flex-1 p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors"
+                         class="flex-1 p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 "
                        />
                       <select 
                         [formControl]="getControl(specialAwardGroup(ci, ai), 'type')"
-                        class="p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 bg-white  transition-colors"
+                        class="p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 bg-white  "
                       >
                       <option value="simple">Simple</option>
                       <option value="nested">1st/2nd/3rd Style</option>
@@ -145,7 +145,7 @@ import { ButtonComponent  } from '@shared/ui';
                       type="text" 
                       [formControl]="getControl(specialAwardGroup(ci, ai), 'value')" 
                       placeholder="Prize value"
-                      class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 transition-colors" 
+                      class="w-full p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 " 
                     />
                   } @else {
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -155,7 +155,7 @@ import { ButtonComponent  } from '@shared/ui';
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '1st')" 
                         placeholder="1st prize"
-                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 " 
                       />
                     </div>
                     <div class="space-y-1">
@@ -164,7 +164,7 @@ import { ButtonComponent  } from '@shared/ui';
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '2nd')" 
                         placeholder="2nd prize"
-                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 " 
                       />
                     </div>
                     <div class="space-y-1">
@@ -173,7 +173,7 @@ import { ButtonComponent  } from '@shared/ui';
                         type="text" 
                         [formControl]="getControl(specialAwardGroup(ci, ai), '3rd')" 
                         placeholder="3rd prize"
-                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 transition-colors" 
+                        class="w-full p-2 text-sm border border-border-theme rounded focus:outline-none focus:border-cyan-400 " 
                       />
                     </div>
                   </div>
@@ -270,19 +270,19 @@ export class StepPrizesComponent implements OnInit {
                 type="text" 
                 [formControl]="getControl(scheduleEventGroup(di, ei), 'name')"
                 placeholder="e.g. Onsite Registration"
-                class="flex-1 p-3 text-sm border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 transition-colors" 
+                class="flex-1 p-3 text-sm border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 " 
               />
               <input 
                 type="text" 
                 [formControl]="getControl(scheduleEventGroup(di, ei), 'time')"
                 placeholder="Time (e.g. 9:00 AM - 11:00 AM)"
-                class="w-48 p-3 text-sm border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 transition-colors" 
+                class="w-48 p-3 text-sm border border-border-theme rounded-lg focus:outline-none focus:border-cyan-400 " 
               />
               <button
                 appButton
                 variant="danger"
                 (click)="removeScheduleEvent.emit({di, ei})"
-                class="opacity-50 group-hover:opacity-100 transition-opacity"
+                class="opacity-50 group-hover:opacity-100 "
               >
                 ✕
               </button>

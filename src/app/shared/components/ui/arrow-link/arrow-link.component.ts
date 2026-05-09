@@ -11,12 +11,12 @@ import { heroArrowRight } from '@ng-icons/heroicons/outline';
   template: `
     <a
       [routerLink]="link()"
-      class="inline-flex items-center gap-2 font-bold hover:text-cyan-400 transition-colors group"
+      class="inline-flex items-center gap-2 font-bold hover:text-cyan-400  group"
     >
       {{ text() }}
       <ng-icon
         name="heroArrowRight"
-        class="w-4 h-4 transition-transform group-hover:translate-x-1"
+        class="w-4 h-4  group-hover:translate-x-1"
       ></ng-icon>
     </a>
   `,
