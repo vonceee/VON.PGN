@@ -151,7 +151,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                     (moveMade)="onMoveMade($event)"
                   ></app-chess-board>
 
-                  <div class="hidden lg:block h-[var(--board-size)] transition-all duration-500 ease-in-out"
+                  <div class="hidden lg:block w-4 h-[var(--board-size)] transition-all duration-500 ease-in-out"
                        [class.opacity-0]="!isEngineActive()" [class.invisible]="!isEngineActive()">
                     <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="vertical"></app-eval-bar>
                   </div>

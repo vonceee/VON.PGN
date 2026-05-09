@@ -111,8 +111,6 @@ import { AudioService } from '../../../../core/services/audio.service';
       .board-container-wrapper {
         width: 100%;
         aspect-ratio: 1 / 1;
-        padding-left: var(--board-gutter, 32px);
-        padding-bottom: var(--board-gutter, 32px);
         box-sizing: border-box;
       }
       .board-container {
@@ -162,7 +160,7 @@ import { AudioService } from '../../../../core/services/audio.service';
     `,
   ],
   host: {
-    class: 'block w-full h-full'
+    class: 'block w-fit h-full'
   },
 })
 export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
@@ -276,7 +274,6 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
     // Direct DOM update for performance
     this.el.nativeElement.style.setProperty('--board-size', `${totalSize}px`);
-    this.el.nativeElement.style.setProperty('--board-gutter', `${GUTTER}px`);
 
     const boardSize = totalSize - GUTTER;
     if (this.boardSize !== boardSize) {

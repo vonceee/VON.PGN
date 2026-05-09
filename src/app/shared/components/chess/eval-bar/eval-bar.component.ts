@@ -39,7 +39,7 @@ import { CommonModule } from '@angular/common';
     :host {
       display: block;
       height: 100%;
-      width: 100%;
+      width: fit-content;
     }
 
     .eval-bar-container {
