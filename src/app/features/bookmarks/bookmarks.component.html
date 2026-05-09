@@ -2,7 +2,7 @@
   <h1 class="text-2xl md:text-3xl font-bold mb-6">Bookmarked Events</h1>
 
   @if (loading()) {
-    <div class="text-center py-12 text-slate-500 dark:text-slate-400">Loading bookmarks...</div>
+    <div class="text-center py-12 text-slate-500 ">Loading bookmarks...</div>
   }
 
   @if (!loading() && tournaments().length === 0) {

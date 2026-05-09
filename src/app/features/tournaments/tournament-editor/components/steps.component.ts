@@ -94,7 +94,7 @@ export class StepBasicInfoComponent {
       ></app-form-field>
 
       <div class="space-y-1.5">
-        <label class="field-label block text-sm font-medium text-slate-700 dark:text-slate-300">Google Maps Link <span class="text-slate-500 font-normal">(Optional)</span></label>
+        <label class="field-label block text-sm font-medium text-slate-700 ">Google Maps Link <span class="text-slate-500 font-normal">(Optional)</span></label>
         <div class="flex gap-2">
           <input
             type="text"

@@ -93,7 +93,7 @@
                     <button
                       (click)="messageUser()"
                       [disabled]="isMessaging()"
-                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/15 border border-slate-200 dark:border-white/10"
+                      class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-slate-100 /10 text-slate-700  hover:bg-slate-200  border border-slate-200 "
                     >
                       @if (isMessaging()) {
                         <div
@@ -126,16 +126,16 @@
                       [class.hover:bg-cyan-600]="!isFollowing()"
                       [class.text-white]="!isFollowing()"
                       [class.bg-slate-100]="isFollowing()"
-                      [class.dark:bg-white/10]="isFollowing()"
+                      [class./10]="isFollowing()"
                       [class.text-slate-700]="isFollowing()"
-                      [class.dark:text-slate-300]="isFollowing()"
+                      [class.]="isFollowing()"
                       [class.hover:bg-red-50]="isFollowing()"
-                      [class.dark:hover:bg-red-900/20]="isFollowing()"
+                      [class.]="isFollowing()"
                       [class.border]="isFollowing()"
                       [class.border-slate-200]="isFollowing()"
-                      [class.dark:border-white/10]="isFollowing()"
+                      [class.]="isFollowing()"
                       [class.hover:border-red-200]="isFollowing()"
-                      [class.dark:hover:border-red-800]="isFollowing()"
+                      [class.]="isFollowing()"
                     >
                       @if (isFollowLoading()) {
                         <div
@@ -190,7 +190,7 @@
         <!-- Ratings Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- Bullet -->
-          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg dark:bg-white/[0.03] dark:backdrop-blur-md">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
             <span class="text-xs font-bold uppercase tracking-widest text-muted">Bullet</span>
             <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.bullet?.rating ?? 1500 }}
@@ -202,7 +202,7 @@
           </div>
 
           <!-- Blitz -->
-          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg dark:bg-white/[0.03] dark:backdrop-blur-md">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
             <span class="text-xs font-bold uppercase tracking-widest text-muted">Blitz</span>
             <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.blitz?.rating ?? 1500 }}
@@ -214,7 +214,7 @@
           </div>
 
           <!-- Rapid -->
-          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg dark:bg-white/[0.03] dark:backdrop-blur-md">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
             <span class="text-xs font-bold uppercase tracking-widest text-muted">Rapid</span>
             <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.ratings?.rapid?.rating ?? 1500 }}
@@ -226,7 +226,7 @@
           </div>
 
           <!-- Tactics -->
-          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg dark:bg-white/[0.03] dark:backdrop-blur-md">
+          <div class="relative overflow-hidden border border-border-base rounded-2xl p-6 bg-main transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-lg  ">
             <span class="text-xs font-bold uppercase tracking-widest text-muted">Tactics</span>
             <div class="text-3xl font-extrabold text-content flex items-baseline gap-1 mt-2">
               {{ profile.progress.puzzleRating }}
@@ -258,11 +258,11 @@
                     @for (tournament of userTournaments(); track tournament.id) {
                       <a
                         [routerLink]="['/events', tournament.id]"
-                        class="flex flex-col p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-transparent hover:border-cyan-500/50 transition-all group"
+                        class="flex flex-col p-4 rounded-xl bg-slate-50  border border-transparent hover:border-cyan-500/50 transition-all group"
                       >
                         <div class="flex items-center justify-between mb-2">
                           <span
-                            class="text-xs font-bold px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 capitalize"
+                            class="text-xs font-bold px-2 py-0.5 rounded bg-cyan-100  text-cyan-600  capitalize"
                           >
                             {{ tournament.timeControl }}
                           </span>
@@ -271,7 +271,7 @@
                           </span>
                         </div>
                         <h4
-                          class="font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors line-clamp-1"
+                          class="font-bold text-slate-900  group-hover:text-cyan-500 transition-colors line-clamp-1"
                         >
                           {{ tournament.name }}
                         </h4>
@@ -321,7 +321,7 @@
       (click)="closeFollowModal()"
     >
       <div
-        class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg mx-4 border border-slate-200 dark:border-slate-700 max-h-[80vh] flex flex-col"
+        class="bg-white  rounded-2xl w-full max-w-lg mx-4 border border-slate-200  max-h-[80vh] flex flex-col"
         (click)="$event.stopPropagation()"
       >
         <!-- Modal Header -->
@@ -332,7 +332,7 @@
               class="text-xs font-semibold uppercase tracking-widest pb-1 border-b-2 transition-colors cursor-pointer"
               [class.border-cyan-500]="activeTab() === 'followers'"
               [class.text-slate-900]="activeTab() === 'followers'"
-              [class.dark:text-white]="activeTab() === 'followers'"
+              [class.]="activeTab() === 'followers'"
               [class.border-transparent]="activeTab() !== 'followers'"
               [class.text-slate-400]="activeTab() !== 'followers'"
               [class.hover:text-slate-600]="activeTab() !== 'followers'"
@@ -344,7 +344,7 @@
               class="text-xs font-semibold uppercase tracking-widest pb-1 border-b-2 transition-colors cursor-pointer"
               [class.border-cyan-500]="activeTab() === 'following'"
               [class.text-slate-900]="activeTab() === 'following'"
-              [class.dark:text-white]="activeTab() === 'following'"
+              [class.]="activeTab() === 'following'"
               [class.border-transparent]="activeTab() !== 'following'"
               [class.text-slate-400]="activeTab() !== 'following'"
               [class.hover:text-slate-600]="activeTab() !== 'following'"
@@ -354,7 +354,7 @@
           </div>
           <button
             (click)="closeFollowModal()"
-            class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
+            class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600  hover:bg-slate-100  transition-colors cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -372,7 +372,7 @@
         <!-- Search -->
         <div class="px-5 pt-4 pb-0">
           <div
-            class="flex items-center bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 focus-within:border-cyan-500/60 transition-colors"
+            class="flex items-center bg-slate-100  border border-slate-200  rounded-lg px-3 py-2 focus-within:border-cyan-500/60 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -380,7 +380,7 @@
               viewBox="0 0 24 24"
               stroke-width="2"
               stroke="currentColor"
-              class="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0"
+              class="w-4 h-4 text-slate-400  shrink-0"
             >
               <path
                 stroke-linecap="round"
@@ -393,7 +393,7 @@
               [value]="tabSearchQuery()"
               (input)="onTabSearch($event)"
               [placeholder]="'Search ' + activeTab() + '...'"
-              class="ml-2 bg-transparent outline-none text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 w-full"
+              class="ml-2 bg-transparent outline-none text-sm text-slate-900  placeholder-slate-400  w-full"
             />
           </div>
         </div>
@@ -412,7 +412,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="1"
                 stroke="currentColor"
-                class="w-10 h-10 text-slate-300 dark:text-slate-600"
+                class="w-10 h-10 text-slate-300 "
               >
                 <path
                   stroke-linecap="round"
@@ -434,7 +434,7 @@
             <div class="flex flex-col gap-1">
               @for (userItem of tabUsers(); track userItem.uid) {
                 <div
-                  class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group"
+                  class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50  transition-colors group"
                 >
                   <a
                     (click)="closeFollowModal()"
@@ -442,7 +442,7 @@
                     [appUserHovercard]="userItem.username"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center border border-slate-300 dark:border-white/10 text-sm font-semibold text-slate-700 dark:text-white uppercase shrink-0"
+                    class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-slate-300  text-sm font-semibold text-slate-700  uppercase shrink-0"
                   >
                     {{ userItem.displayName.charAt(0) || 'U' }}
                   </a>
@@ -453,11 +453,11 @@
                       [appUserHovercard]="userItem.username"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="text-sm font-semibold text-slate-900 dark:text-white truncate block hover:text-cyan-500 transition-colors"
+                      class="text-sm font-semibold text-slate-900  truncate block hover:text-cyan-500 transition-colors"
                     >
                       {{ userItem.displayName }}
                     </a>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 truncate">{{
+                    <span class="text-xs text-slate-500  truncate">{{
                       '@' + userItem.username
                     }}</span>
                   </div>
@@ -469,17 +469,17 @@
                       [class.text-white]="!userItem.is_following"
                       [class.hover:bg-cyan-600]="!userItem.is_following"
                       [class.bg-slate-100]="userItem.is_following"
-                      [class.dark:bg-white/10]="userItem.is_following"
+                      [class./10]="userItem.is_following"
                       [class.text-slate-700]="userItem.is_following"
-                      [class.dark:text-slate-300]="userItem.is_following"
+                      [class.]="userItem.is_following"
                       [class.hover:bg-red-50]="userItem.is_following"
-                      [class.dark:hover:bg-red-900/20]="userItem.is_following"
+                      [class.]="userItem.is_following"
                       [class.border]="userItem.is_following"
                       [class.border-slate-200]="userItem.is_following"
-                      [class.dark:border-white/10]="userItem.is_following"
+                      [class.]="userItem.is_following"
                       [class.hover:text-red-500]="userItem.is_following"
                       [class.hover:border-red-200]="userItem.is_following"
-                      [class.dark:hover:border-red-800]="userItem.is_following"
+                      [class.]="userItem.is_following"
                     >
                       @if (userItem.is_following) {
                         <span>Following</span>

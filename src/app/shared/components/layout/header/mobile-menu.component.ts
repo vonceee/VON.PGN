@@ -18,25 +18,25 @@ import { Router } from '@angular/router';
   template: `
     <div class="md:hidden fixed inset-0 z-40 bg-black/50" (click)="close.emit()"></div>
     <div
-      class="md:hidden fixed top-0 right-0 z-50 w-72 h-full bg-white dark:bg-black  flex flex-col overflow-y-auto"
+      class="md:hidden fixed top-0 right-0 z-50 w-72 h-full bg-white   flex flex-col overflow-y-auto"
     >
       <!-- Mobile Menu Header -->
       <div
-        class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800"
+        class="flex items-center justify-between px-4 py-3 border-b border-slate-200 "
       >
         <span class="font-semibold text-lg">Menu</span>
         <button
           (click)="close.emit()"
-          class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10"
+          class="p-2 rounded-lg hover:bg-slate-200 "
         >
           <ng-icon name="heroXMark" class="w-5 h-5"></ng-icon>
         </button>
       </div>
 
       <!-- Mobile Search -->
-      <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+      <div class="px-4 py-3 border-b border-slate-200 ">
         <div
-          class="flex items-center bg-slate-100 dark:bg-white/10 rounded-xl px-3 py-2 border border-transparent focus-within:border-cyan-500/50 transition-colors"
+          class="flex items-center bg-slate-100 /10 rounded-xl px-3 py-2 border border-transparent focus-within:border-cyan-500/50 transition-colors"
         >
           <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 text-slate-500 mr-2"></ng-icon>
           <input
@@ -44,7 +44,7 @@ import { Router } from '@angular/router';
             placeholder="Search accounts..."
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
-            class="bg-transparent outline-none flex-1 text-sm text-slate-900 dark:text-white"
+            class="bg-transparent outline-none flex-1 text-sm text-slate-900 "
           />
           @if (isSearching()) {
             <div
@@ -58,12 +58,12 @@ import { Router } from '@angular/router';
             @for (user of searchResults(); track user.uid) {
               <button
                 (click)="viewUserProfile(user)"
-                class="w-full flex flex-col px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-white/5 text-left transition-colors"
+                class="w-full flex flex-col px-3 py-2 rounded-lg hover:bg-slate-50  text-left transition-colors"
               >
-                <span class="text-xs font-semibold text-slate-900 dark:text-white capitalize">{{
+                <span class="text-xs font-semibold text-slate-900  capitalize">{{
                   user.displayName
                 }}</span>
-                <span class="text-xs text-slate-500 dark:text-slate-400">{{
+                <span class="text-xs text-slate-500 ">{{
                   '@' + user.username
                 }}</span>
               </button>
@@ -78,16 +78,16 @@ import { Router } from '@angular/router';
       <div class="flex flex-col py-2">
         @for (group of linkGroups; track group.title) {
           <div class="px-4 py-2 mt-2">
-            <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{{ group.title }}</span>
+            <span class="text-xs font-semibold text-slate-400  uppercase tracking-widest">{{ group.title }}</span>
           </div>
           @for (link of group.links; track link.path) {
             <a
               [routerLink]="link.path"
               (click)="close.emit()"
-              class="px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold transition-colors flex items-center justify-between group"
+              class="px-4 py-3 hover:bg-slate-50  font-semibold transition-colors flex items-center justify-between group"
             >
-              <span class="text-slate-900 dark:text-white">{{ link.label }}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-slate-300 dark:text-slate-700 group-hover:text-cyan-500 transition-colors">
+              <span class="text-slate-900 ">{{ link.label }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-slate-300  group-hover:text-cyan-500 transition-colors">
                 <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
               </svg>
             </a>
@@ -96,13 +96,13 @@ import { Router } from '@angular/router';
       </div>
 
       <!-- Mobile Auth Section -->
-      <div class="border-t border-slate-200 dark:border-slate-800 py-2">
+      <div class="border-t border-slate-200  py-2">
 
         @if (authService.isAuthenticated()) {
           <a
             routerLink="/profile"
             (click)="close.emit()"
-            class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5"
+            class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 "
           >
             <span class="font-semibold">Profile</span>
           </a>
@@ -112,7 +112,7 @@ import { Router } from '@angular/router';
             <a
               [routerLink]="link.path"
               (click)="close.emit()"
-              class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold"
+              class="flex items-center gap-3 px-4 py-3 hover:bg-slate-50  font-semibold"
             >
               {{ link.label }}
               @if (link.label === 'Messages' && chatService.totalUnreadCount() > 0) {
@@ -128,7 +128,7 @@ import { Router } from '@angular/router';
 
           <button
             (click)="themeService.toggleTheme(); close.emit()"
-            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
+            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50  text-slate-900  font-semibold"
           >
             <ng-icon
               [name]="themeService.isDarkMode() ? 'heroSun' : 'heroMoon'"
@@ -139,21 +139,21 @@ import { Router } from '@angular/router';
 
           <button
             (click)="authService.logout(); close.emit()"
-            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 font-semibold"
+            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-red-50  text-red-600  font-semibold"
           >
             Logout
           </button>
         } @else {
           <button
             (click)="themeService.toggleTheme(); close.emit()"
-            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-900 dark:text-white font-semibold"
+            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-slate-50  text-slate-900  font-semibold"
           >
             <span>{{ themeService.isDarkMode() ? 'Light Mode' : 'Dark Mode' }}</span>
           </button>
           <a
             routerLink="/login"
             (click)="close.emit()"
-            class="flex items-center justify-center gap-2 mx-4 mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/15 hover:border-cyan-500/60 hover:text-cyan-600 dark:hover:text-cyan-400"
+            class="flex items-center justify-center gap-2 mx-4 mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700  border border-slate-300  hover:border-cyan-500/60 hover:text-cyan-600 "
           >
             Log in
           </a>

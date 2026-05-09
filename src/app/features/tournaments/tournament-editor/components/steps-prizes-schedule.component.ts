@@ -16,9 +16,9 @@ import { ButtonComponent  } from '@shared/ui';
       
       <div class="space-y-8">
         @for (cat of categoriesArray.controls; track $index; let ci = $index) {
-        <div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-border-theme">
+        <div class="p-6 bg-slate-50 /50 rounded-xl border border-border-theme">
           <div class="flex justify-between items-center mb-6">
-            <h3 class="font-bold text-lg text-slate-800 dark:text-slate-200">Category {{ ci + 1 }}</h3>
+            <h3 class="font-bold text-lg text-slate-800 ">Category {{ ci + 1 }}</h3>
             <button
               appButton
               variant="danger"
@@ -29,7 +29,7 @@ import { ButtonComponent  } from '@shared/ui';
           </div>
 
           <div class="space-y-4 mb-8">
-            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Category Name</label>
+            <label class="block text-sm font-semibold text-slate-700 ">Category Name</label>
             <input 
               type="text" 
               [formControl]="getControl(categoryGroup(ci), 'name')" 
@@ -39,8 +39,8 @@ import { ButtonComponent  } from '@shared/ui';
           </div>
 
           <div class="space-y-6">
-            <div class="p-4 bg-white dark:bg-slate-800 rounded-lg border border-border-theme">
-              <label class="text-sm font-bold block mb-4 text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Main Prizes</label>
+            <div class="p-4 bg-white  rounded-lg border border-border-theme">
+              <label class="text-sm font-bold block mb-4 text-cyan-600  uppercase tracking-wider">Main Prizes</label>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-1.5">
                   <label class="block text-xs font-semibold text-slate-500 uppercase">1st Place</label>
@@ -74,7 +74,7 @@ import { ButtonComponent  } from '@shared/ui';
               @if (getCategoryExtraPrizes(ci).length > 0) {
               <div class="space-y-4 mt-6 pt-6 border-t border-dashed border-border-theme">
                 @for (ep of getCategoryExtraPrizes(ci).controls; track $index; let ei = $index) {
-                <div class="flex gap-4 items-start bg-slate-50 dark:bg-slate-900/30 p-3 rounded-lg">
+                <div class="flex gap-4 items-start bg-slate-50 /30 p-3 rounded-lg">
                   <div class="flex-1 space-y-2">
                     <div class="flex gap-2 items-center">
                       <input
@@ -113,11 +113,11 @@ import { ButtonComponent  } from '@shared/ui';
               </div>
             </div>
 
-            <div class="p-4 bg-white dark:bg-slate-800 rounded-lg border border-border-theme">
-              <label class="text-sm font-bold block mb-4 text-purple-600 dark:text-purple-400 uppercase tracking-wider">Special Awards</label>
+            <div class="p-4 bg-white  rounded-lg border border-border-theme">
+              <label class="text-sm font-bold block mb-4 text-purple-600  uppercase tracking-wider">Special Awards</label>
               <div class="space-y-4">
                 @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
-                <div class="p-4 bg-slate-50 dark:bg-slate-900/30 rounded-lg border border-border-theme">
+                <div class="p-4 bg-slate-50 /30 rounded-lg border border-border-theme">
                   <div class="flex gap-3 items-center mb-3">
                        <input
                          type="text"
@@ -127,7 +127,7 @@ import { ButtonComponent  } from '@shared/ui';
                        />
                       <select 
                         [formControl]="getControl(specialAwardGroup(ci, ai), 'type')"
-                        class="p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 bg-white dark:bg-slate-900 transition-colors"
+                        class="p-2.5 text-sm border border-border-theme rounded-md focus:outline-none focus:border-cyan-400 bg-white  transition-colors"
                       >
                       <option value="simple">Simple</option>
                       <option value="nested">1st/2nd/3rd Style</option>
@@ -238,14 +238,14 @@ export class StepPrizesComponent implements OnInit {
   template: `
     <div class="space-y-6">
       @if (scheduleDaysArray.length === 0) {
-      <p class="text-slate-400 text-sm py-8 text-center bg-slate-50 dark:bg-slate-950/50 rounded-xl border-2 border-dashed border-border-theme">No schedule days added yet.</p>
+      <p class="text-slate-400 text-sm py-8 text-center bg-slate-50  rounded-xl border-2 border-dashed border-border-theme">No schedule days added yet.</p>
       }
       
       <div class="space-y-6">
         @for (day of scheduleDaysArray.controls; track $index; let di = $index) {
-        <div class="p-6 bg-white dark:bg-slate-900 rounded-xl border border-border-theme shadow-sm">
+        <div class="p-6 bg-white  rounded-xl border border-border-theme shadow-sm">
           <div class="flex justify-between items-center mb-6">
-            <span class="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight">Day {{ di + 1 }} Schedule</span>
+            <span class="bg-cyan-100  text-cyan-700  px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight">Day {{ di + 1 }} Schedule</span>
             <div class="flex gap-2">
               <button
                 appButton

@@ -12,7 +12,7 @@
       <div class="relative" #tabDropdownContainer>
         <button
           (click)="toggleTabDropdown()"
-          class="flex items-center justify-between px-4 py-2.5 bg-white dark:bg-black border border-border-theme rounded-xl text-sm font-semibold text-slate-900 dark:text-white whitespace-nowrap"
+          class="flex items-center justify-between px-4 py-2.5 bg-white  border border-border-theme rounded-xl text-sm font-semibold text-slate-900  whitespace-nowrap"
         >
           <span class="flex items-center gap-2">
             @if (activeTab() === 'ongoing') {
@@ -37,18 +37,18 @@
 
         @if (isTabDropdownOpen()) {
           <div
-            class="absolute top-full left-0 mt-1 bg-white dark:bg-black border border-border-theme rounded-xl shadow-lg z-20 overflow-hidden"
+            class="absolute top-full left-0 mt-1 bg-white  border border-border-theme rounded-xl shadow-lg z-20 overflow-hidden"
           >
             <button
               (click)="setTab('upcoming')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  transition-colors"
               [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }"
             >
               <span>Upcoming</span>
             </button>
             <button
               (click)="setTab('ongoing')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  transition-colors"
               [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }"
             >
               <span class="flex items-center gap-2">
@@ -58,7 +58,7 @@
             </button>
             <button
               (click)="setTab('past')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  transition-colors"
               [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }"
             >
               <span>Past</span>
@@ -85,12 +85,12 @@
           [value]="searchQuery()"
           (input)="onSearchInput($event)"
           placeholder="Search arenas..."
-          class="w-full pl-9 pr-9 py-2.5 bg-white dark:bg-black border border-border-theme rounded-xl text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400"
+          class="w-full pl-9 pr-9 py-2.5 bg-white  border border-border-theme rounded-xl text-sm text-slate-900  placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400"
         />
         @if (searchQuery()) {
           <button
             (click)="clearSearch()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +113,7 @@
           [ngClass]="
             viewMode() === 'grid'
               ? 'bg-cyan-500 text-white'
-              : 'bg-white dark:bg-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5'
+              : 'bg-white  text-slate-600  hover:bg-slate-50 '
           "
         >
           <svg
@@ -134,7 +134,7 @@
           [ngClass]="
             viewMode() === 'list'
               ? 'bg-cyan-500 text-white'
-              : 'bg-white dark:bg-black text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5'
+              : 'bg-white  text-slate-600  hover:bg-slate-50 '
           "
         >
           <svg
@@ -296,7 +296,7 @@
         <button
           (click)="prevPage()"
           [disabled]="currentPage() === 1"
-          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-white/5"
+          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -321,7 +321,7 @@
               class="min-w-[36px] px-3 py-2 text-sm font-medium rounded-lg border transition-colors"
               [ngClass]="{
                 'bg-cyan-500 border-cyan-500 text-white': currentPage() === page,
-                'border-border-theme hover:bg-slate-100 dark:hover:bg-white/5':
+                'border-border-theme hover:bg-slate-100 ':
                   currentPage() !== page,
               }"
             >
@@ -333,7 +333,7 @@
         <button
           (click)="nextPage()"
           [disabled]="currentPage() === totalPages()"
-          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 dark:hover:bg-white/5"
+          class="px-3 py-2 text-sm font-medium rounded-lg border border-border-theme transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-100 "
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

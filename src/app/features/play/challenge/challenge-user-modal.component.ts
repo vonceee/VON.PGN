@@ -22,7 +22,7 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
         </h2>
         <button
           (click)="dialogRef.close()"
-          class="cursor-pointer p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors flex items-center justify-center"
+          class="cursor-pointer p-2 hover:bg-black/5  rounded-full transition-colors flex items-center justify-center"
         >
           <ng-icon name="heroXMark" class="text-xl"></ng-icon>
         </button>
@@ -82,9 +82,9 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
                   <div class="flex justify-between items-center mb-2">
                     <label class="text-sm font-bold">Minutes</label>
                     <div class="flex items-center gap-3">
-                      <button (click)="adjustMinutes(-1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">-</button>
+                      <button (click)="adjustMinutes(-1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">-</button>
                       <span class="text-xl font-black w-12 text-center">{{ customMinutes() }}</span>
-                      <button (click)="adjustMinutes(1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">+</button>
+                      <button (click)="adjustMinutes(1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">+</button>
                     </div>
                   </div>
                 </div>
@@ -93,9 +93,9 @@ import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
                   <div class="flex justify-between items-center mb-2">
                     <label class="text-sm font-bold">Increment</label>
                     <div class="flex items-center gap-3">
-                      <button (click)="adjustIncrement(-1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">-</button>
+                      <button (click)="adjustIncrement(-1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">-</button>
                       <span class="text-xl font-black w-12 text-center">{{ customIncrement() }}</span>
-                      <button (click)="adjustIncrement(1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer">+</button>
+                      <button (click)="adjustIncrement(1)" class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer">+</button>
                     </div>
                   </div>
                 </div>

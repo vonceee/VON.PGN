@@ -25,7 +25,7 @@ interface FeedbackForm {
     >
       <button
         (click)="dialogRef.close()"
-        class="absolute top-6 right-6 cursor-pointer p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors flex items-center justify-center border-none bg-transparent"
+        class="absolute top-6 right-6 cursor-pointer p-2 hover:bg-black/5  rounded-full transition-colors flex items-center justify-center border-none bg-transparent"
       >
         <ng-icon name="heroXMark" class="text-xl"></ng-icon>
       </button>
@@ -75,7 +75,7 @@ interface FeedbackForm {
                 class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500 transition-all appearance-none cursor-pointer"
               >
                 @for (ft of feedbackTypes; track ft.value) {
-                  <option [value]="ft.value" class="dark:bg-black">{{ ft.label }}</option>
+                  <option [value]="ft.value" class="">{{ ft.label }}</option>
                 }
               </select>
             </div>

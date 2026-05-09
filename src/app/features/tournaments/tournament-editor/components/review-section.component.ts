@@ -11,7 +11,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
     <div class="step-content">
       <app-section-heading text="Review &" highlight="Submit" size="text-3xl mb-1"></app-section-heading>
 
-      <p class="text-sm text-slate-600 dark:text-slate-400 mb-8">Review all information before submitting. Click any section header to go back and edit.</p>
+      <p class="text-sm text-slate-600  mb-8">Review all information before submitting. Click any section header to go back and edit.</p>
 
       <!-- Basic Info -->
       <div class="review-section">
@@ -128,7 +128,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
           <span class="review-edit">Edit</span>
         </div>
         @if (data['registrationInstructions']) {
-        <p class="text-sm text-slate-600 dark:text-slate-300 mt-2 whitespace-pre-line">{{ data['registrationInstructions'] }}</p>
+        <p class="text-sm text-slate-600  mt-2 whitespace-pre-line">{{ data['registrationInstructions'] }}</p>
         } @else {
         <p class="text-sm text-slate-400 mt-2">No registration instructions specified.</p>
         }
@@ -162,14 +162,14 @@ import { SectionHeadingComponent  } from '@shared/ui';
         </div>
         @if (data['categories']) {
         @for (cat of (data['categories'] | keyvalue); track cat.key) {
-        <div class="mt-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+        <div class="mt-3 bg-slate-50 /50 rounded-lg p-4 border border-slate-200 ">
           <h4 class="font-bold mb-2 capitalize">{{ cat.key.toString().replace('_', ' ') }}</h4>
           <table class="w-full text-sm">
             <tbody>
               @for (prize of (cat.value['prizes'] | keyvalue: comparePrizeKeys); track prize.key) {
               <tr class="border-t border-border-theme first:border-0">
                 <td class="py-1.5 font-semibold capitalize">{{ prize.key.replace('_', ' ') }}</td>
-                <td class="py-1.5 text-right text-slate-600 dark:text-slate-400">{{ prize.value }}</td>
+                <td class="py-1.5 text-right text-slate-600 ">{{ prize.value }}</td>
               </tr>
               }
             </tbody>
@@ -190,16 +190,16 @@ import { SectionHeadingComponent  } from '@shared/ui';
         @if (data['schedule']) {
         @for (day of (data['schedule'] | keyvalue); track day.key) {
         <div class="mt-3 border border-border-theme rounded-lg overflow-hidden">
-          <div class="bg-slate-50 dark:bg-slate-800/50 px-4 py-2 border-b border-border-theme">
+          <div class="bg-slate-50 /50 px-4 py-2 border-b border-border-theme">
             <span class="text-xs font-bold text-cyan-500 uppercase">{{ day.key.toString().replace('_', ' ') }}</span>
-            <span class="text-sm text-slate-600 dark:text-slate-400 ml-2">{{ formatDate(day.value.date) }}</span>
+            <span class="text-sm text-slate-600  ml-2">{{ formatDate(day.value.date) }}</span>
           </div>
           <table class="w-full text-sm">
             <tbody>
               @for (event of day.value.events; track event.name) {
               <tr class="border-t border-border-theme first:border-0">
                 <td class="px-4 py-1.5 font-semibold">{{ event.name }}</td>
-                <td class="px-4 py-1.5 text-right text-slate-600 dark:text-slate-400">{{ event.time }}</td>
+                <td class="px-4 py-1.5 text-right text-slate-600 ">{{ event.time }}</td>
               </tr>
               }
             </tbody>

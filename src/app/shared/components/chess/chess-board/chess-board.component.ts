@@ -81,7 +81,7 @@ import { AudioService } from '../../../../core/services/audio.service';
         <div class="absolute inset-0 pointer-events-none z-20">
           @for (g of glyphs(); track g.square + g.symbol) {
             <div 
-              class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white dark:border-surface text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border shadow-xl transition-all duration-300 absolute"
+              class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white  text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border shadow-xl transition-all duration-300 absolute"
               [class.bg-[var(--color-annotation-good)]]="g.class === 'good' || g.class === 'brilliant'"
               [class.bg-[var(--color-annotation-bad)]]="g.class === 'mistake' || g.class === 'blunder'"
               [class.bg-[var(--color-annotation-interesting)]]="g.class === 'interesting' || g.class === 'dubious' || g.class === 'only-move' || g.class === 'zugzwang'"

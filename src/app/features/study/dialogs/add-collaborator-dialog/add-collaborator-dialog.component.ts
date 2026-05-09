@@ -25,7 +25,7 @@ import { UserHovercardDirective } from '@shared/directives';
               [(ngModel)]="searchQuery"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Type username..."
-              class="w-full px-4 py-2 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted dark:text-content transition-all"
+              class="w-full px-4 py-2 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted  transition-all"
               autofocus
             />
           </div>

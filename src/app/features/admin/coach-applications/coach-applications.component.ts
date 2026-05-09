@@ -136,10 +136,10 @@ export class CoachApplicationsComponent implements OnInit {
 
   getStatusClass(status: string) {
     switch (status) {
-      case 'pending': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400';
-      case 'approved': return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400';
-      case 'rejected': return 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400';
-      default: return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400';
+      case 'pending': return 'bg-amber-100 text-amber-700  ';
+      case 'approved': return 'bg-emerald-100 text-emerald-700';
+      case 'rejected': return 'bg-rose-100 text-rose-700';
+      default: return 'bg-slate-100 text-slate-700';
     }
   }
 }

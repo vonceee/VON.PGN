@@ -25,7 +25,7 @@ export interface CustomTimeControlResult {
         </div>
         <button
           (click)="dialogRef.close()"
-          class="cursor-pointer p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors flex items-center justify-center"
+          class="cursor-pointer p-2 hover:bg-black/5  rounded-full transition-colors flex items-center justify-center"
         >
           <ng-icon name="heroXMark" class="text-xl"></ng-icon>
         </button>

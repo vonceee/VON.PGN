@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center mb-8">
     <div>
       <h1 class="text-3xl font-bold">My Arenas</h1>
-      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
+      <p class="text-sm text-slate-500  mt-1">
         Create and manage your online Arena lobbies
       </p>
     </div>
@@ -30,12 +30,12 @@
     <div class="flex flex-col gap-4">
       @for (arena of arenas(); track arena.id) {
         <div
-          class="group bg-white dark:bg-slate-800/40 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center border border-slate-200/60 dark:border-slate-700/50 shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all duration-300"
+          class="group bg-white  rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center border border-slate-200/60  shadow-sm hover:shadow-md hover:border-cyan-500/30 transition-all duration-300"
         >
           <div class="flex flex-col mb-4 md:mb-0">
             <div class="flex items-center gap-3 mb-1">
               <h3
-                class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors"
+                class="text-xl font-bold text-slate-900  group-hover:text-cyan-500 transition-colors"
               >
                 {{ arena.name }}
               </h3>
@@ -52,10 +52,10 @@
               </span>
             </div>
             <div
-              class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-1 text-sm text-slate-500 dark:text-slate-400"
+              class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-1 text-sm text-slate-500 "
             >
               <span
-                class="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300"
+                class="flex items-center gap-1.5 font-medium text-slate-700 "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

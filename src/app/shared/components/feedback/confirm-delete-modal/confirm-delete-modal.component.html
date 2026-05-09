@@ -1,6 +1,6 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="onCancel()">
   <div
-    class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-md mx-4 border border-slate-200 dark:border-slate-700"
+    class="bg-white  rounded-2xl w-full max-w-md mx-4 border border-slate-200 "
     (click)="$event.stopPropagation()"
   >
     <div class="p-6">
@@ -23,12 +23,12 @@
       </div>
 
       <h2 class="text-lg font-bold text-center mb-2">Delete {{ itemType() }}</h2>
-      <p class="text-sm text-slate-500 dark:text-slate-400 text-center mb-5">
+      <p class="text-sm text-slate-500  text-center mb-5">
         This action cannot be undone. To confirm, type the {{ itemType() }} name below:
       </p>
 
       <!-- Tournament name display -->
-      <div class="bg-slate-50 dark:bg-slate-800 rounded-lg px-4 py-2.5 mb-4 text-center">
+      <div class="bg-slate-50  rounded-lg px-4 py-2.5 mb-4 text-center">
         <span class="font-bold text-sm">{{ itemName() }}</span>
       </div>
 
@@ -56,7 +56,7 @@
     <div class="flex gap-3 px-6 pb-6">
       <button
         (click)="onCancel()"
-        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors"
+        class="flex-1 px-4 py-2.5 rounded-lg font-medium text-sm bg-slate-100 hover:bg-slate-200   transition-colors"
       >
         Cancel
       </button>

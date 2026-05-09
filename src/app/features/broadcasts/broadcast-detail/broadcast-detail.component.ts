@@ -68,7 +68,7 @@ type TabType = 'details' | 'games';
         <div class="relative overflow-hidden">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <a routerLink="/broadcasts"
-              class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-cyan-400 mb-4 transition-colors">
+              class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500  hover:text-cyan-400 mb-4 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                 class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -82,7 +82,7 @@ type TabType = 'details' | 'games';
                 <h1 class="text-3xl sm:text-4xl font-bold  mb-4 line-clamp-2">{{ detail()?.name }}</h1>
 
                 <!-- Quick Info -->
-                <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+                <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 ">
                   @if (detail()?.info?.location) {
                     <div class="flex items-center gap-1">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,7 +150,7 @@ type TabType = 'details' | 'games';
           <div class="flex flex-col sm:flex-row gap-4 items-start">
             <!-- Round Dropdown -->
             <div class="shrink-0">
-              <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Round</label>
+              <label class="block text-sm font-medium text-slate-700  mb-2">Round</label>
               <select 
                 class="w-full border border-border-theme rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:opacity-50 "
                 disabled
@@ -162,7 +162,7 @@ type TabType = 'details' | 'games';
             <!-- Category Dropdown -->
             @if (categories().length > 1) {
               <div class="shrink-0">
-                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Category</label>
+                <label class="block text-sm font-medium text-slate-700  mb-2">Category</label>
                 <select 
                   (change)="onCategoryChange($event)"
                   class="border border-border-theme rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent  whitespace-nowrap"
@@ -187,7 +187,7 @@ type TabType = 'details' | 'games';
                 [class]="activeTab() === 'details' 
                   ? 'border-cyan-500 text-cyan-500' 
                   : 'border-transparent hover:border-slate-600'"
-                class="py-4 px-1 border-b-2 font-medium text-sm transition-colors text-slate-600 dark:text-slate-400"
+                class="py-4 px-1 border-b-2 font-medium text-sm transition-colors text-slate-600 "
               >
                 Details
               </button>
@@ -196,7 +196,7 @@ type TabType = 'details' | 'games';
                 [class]="activeTab() === 'games' 
                   ? 'border-cyan-500 text-cyan-500' 
                   : 'border-transparent hover:border-slate-600'"
-                class="py-4 px-1 border-b-2 font-medium text-sm transition-colors text-slate-600 dark:text-slate-400"
+                class="py-4 px-1 border-b-2 font-medium text-sm transition-colors text-slate-600 "
               >
                 Games
               </button>
@@ -222,25 +222,25 @@ type TabType = 'details' | 'games';
                       <dl class="space-y-3">
                         @if (detail()?.tier) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Tier</dt>
+                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Tier</dt>
                             <dd class="text-sm ">Tier {{ detail()?.tier }}</dd>
                           </div>
                         }
                         @if (detail()?.status) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Status</dt>
+                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Status</dt>
                             <dd class="text-sm  capitalize">{{ detail()?.status }}</dd>
                           </div>
                         }
                         @if (detail()?.createdAt) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Created</dt>
+                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Created</dt>
                             <dd class="text-sm ">{{ detail()?.createdAt | date:'medium' }}</dd>
                           </div>
                         }
                         @if (detail()?.url) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Lichess URL</dt>
+                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Lichess URL</dt>
                             <dd class="text-sm">
                               <a [href]="detail()?.url" target="_blank" class="text-cyan-500 hover:text-cyan-400">View on Lichess →</a>
                             </dd>
@@ -248,7 +248,7 @@ type TabType = 'details' | 'games';
                         }
                         @if (detail()?.website) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Website</dt>
+                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Website</dt>
                             <dd class="text-sm">
                               <a [href]="detail()?.website" target="_blank" class="text-cyan-500 hover:text-cyan-400">Visit →</a>
                             </dd>
@@ -267,13 +267,13 @@ type TabType = 'details' | 'games';
                       <dl class="space-y-3">
                         @if (detail()?.dates?.[0]) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Start Date</dt>
+                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Start Date</dt>
                             <dd class="text-sm ">{{ detail()?.dates?.[0] | date:'mediumDate' }}</dd>
                           </div>
                         }
                         @if (detail()?.dates?.[1]) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">End Date</dt>
+                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">End Date</dt>
                             <dd class="text-sm ">{{ detail()?.dates?.[1] | date:'mediumDate' }}</dd>
                           </div>
                         }
@@ -295,13 +295,13 @@ type TabType = 'details' | 'games';
               </div>
             } @else if (activeTab() === 'games') {
               <div class="text-center py-12">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100  mb-4">
                   <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                   </svg>
                 </div>
                 <h3 class="text-lg font-medium  mb-2">Games Coming Soon</h3>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Round selection and game viewing will be available once the rounds data is fetched successfully.</p>
+                <p class="text-sm text-slate-500 ">Round selection and game viewing will be available once the rounds data is fetched successfully.</p>
               </div>
             }
           </div>

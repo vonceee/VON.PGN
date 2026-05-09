@@ -1,30 +1,30 @@
 <div [class]="'flex ' + (isOwnMessage ? 'justify-end' : 'justify-start') + ' mb-1.5'">
   @if (!isOwnMessage) {
     <div class="flex flex-col items-start max-w-[75%]">
-      <span class="text-[10px] text-slate-400 dark:text-slate-500 mb-0.5">{{ message().sender.name }}</span>
-      <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-bl-md px-3.5 py-2">
-        <p class="text-sm text-slate-900 dark:text-white whitespace-pre-wrap wrap-break-word">{{ message().body }}</p>
+      <span class="text-[10px] text-slate-400  mb-0.5">{{ message().sender.name }}</span>
+      <div class="bg-slate-100  rounded-2xl rounded-bl-md px-3.5 py-2">
+        <p class="text-sm text-slate-900  whitespace-pre-wrap wrap-break-word">{{ message().body }}</p>
       </div>
       <div class="flex items-center gap-1.5 mt-0.5 px-1">
-        <span class="text-[10px] text-slate-400 dark:text-slate-500">{{ formattedTime }}</span>
+        <span class="text-[10px] text-slate-400 ">{{ formattedTime }}</span>
       </div>
     </div>
   } @else {
     <div class="flex flex-col items-end max-w-[75%]">
-      <div [class]="'rounded-2xl rounded-br-md px-3.5 py-2 ' + (isPending ? 'bg-cyan-400/60 dark:bg-cyan-600/60' : 'bg-cyan-500')">
+      <div [class]="'rounded-2xl rounded-br-md px-3.5 py-2 ' + (isPending ? 'bg-cyan-400/60 ' : 'bg-cyan-500')">
         <p class="text-sm text-white whitespace-pre-wrap wrap-break-word">{{ message().body }}</p>
       </div>
       <div class="flex items-center gap-1.5 mt-0.5 px-1">
-        <span class="text-[10px] text-slate-400 dark:text-slate-500">{{ formattedTime }}</span>
+        <span class="text-[10px] text-slate-400 ">{{ formattedTime }}</span>
         @if (!isPending) {
           @switch (statusIcon) {
             @case ('sent') {
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 text-slate-400 ">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
               </svg>
             }
             @case ('delivered') {
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 text-slate-400 ">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="m9 12.75 6 6 9-13.5" />
               </svg>

@@ -32,15 +32,15 @@
       <div class="mt-4 flex flex-col gap-4 text-sm">
         <div class="flex flex-wrap items-center gap-3">
           <span
-            class="inline-flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-800/70 px-3 py-1.5 text-slate-700 dark:text-slate-200"
+            class="inline-flex items-center gap-2 rounded-full bg-slate-100 /70 px-3 py-1.5 text-slate-700 "
           >
-            <span class="font-semibold text-slate-900 dark:text-white">Estimated time:</span>
+            <span class="font-semibold text-slate-900 ">Estimated time:</span>
             <span>{{ estimatedTime }}</span>
           </span>
           <span
-            class="inline-flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-800/70 px-3 py-1.5 text-slate-700 dark:text-slate-200"
+            class="inline-flex items-center gap-2 rounded-full bg-slate-100 /70 px-3 py-1.5 text-slate-700 "
           >
-            <span class="font-semibold text-slate-900 dark:text-white">Difficulty:</span>
+            <span class="font-semibold text-slate-900 ">Difficulty:</span>
             <span>{{ difficulty }}</span>
           </span>
         </div>
@@ -48,7 +48,7 @@
           <div class="flex flex-wrap gap-2">
             @for (prereq of prerequisites; track prereq) {
               <span
-                class="inline-flex items-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950/50 px-3 py-1 text-sm text-slate-700 dark:text-slate-200"
+                class="inline-flex items-center rounded-full border border-slate-200  bg-white  px-3 py-1 text-sm text-slate-700 "
               >
                 {{ prereq }}
               </span>
@@ -150,7 +150,7 @@
 
               @if (isSettingsOpen()) {
                 <div
-                  class="absolute right-0 sm:left-auto mt-2 w-56 bg-white dark:bg-black border border-border-theme rounded-lg shadow-xl z-50 p-4 flex flex-col gap-4"
+                  class="absolute right-0 sm:left-auto mt-2 w-56 bg-white  border border-border-theme rounded-lg shadow-xl z-50 p-4 flex flex-col gap-4"
                   [style.top]="'100%'"
                 >
                   <div class="flex flex-col gap-2">
@@ -229,7 +229,7 @@
             <div
               class="group relative my-6 rounded-lg transition-all duration-300 border border-transparent"
               [class.bg-cyan-50]="activeBlockIndex() === $index"
-              [class.dark:bg-cyan-950/30]="activeBlockIndex() === $index"
+              [class.]="activeBlockIndex() === $index"
               [class.!border-cyan-400]="activeBlockIndex() === $index"
               [class.shadow-sm]="activeBlockIndex() === $index"
               [class.px-4]="activeBlockIndex() === $index"
@@ -280,7 +280,7 @@
               </button>
 
               <article
-                class="prose prose-slate dark:prose-invert max-w-none pr-32"
+                class="prose prose-slate  max-w-none pr-32"
                 [innerHTML]="block.content"
               ></article>
             </div>
@@ -326,14 +326,14 @@
 
       @if (isLastLesson) {
         <div
-          class="mt-8 mb-8 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-border-theme"
+          class="mt-8 mb-8 bg-slate-50 /50 p-6 rounded-2xl border border-border-theme"
         >
           <h3 class="text-xl font-bold mb-6">What to learn next?</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @for (course of suggestedCourses; track course.id) {
               <a
                 [routerLink]="['/learn', course.id]"
-                class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer bg-white dark:bg-black"
+                class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400 hover:shadow-md transition-all cursor-pointer bg-white "
               >
                 <h4 class="font-bold text-lg mb-2 group-hover:text-cyan-400">
                   {{ course.title }}

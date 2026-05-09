@@ -222,7 +222,7 @@
         </div>
       } @else if (searchQuery().length >= 2 && !isSearching()) {
         <div
-          class="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-black rounded-xl border border-border-theme py-2 z-50"
+          class="absolute right-0 top-full mt-2 w-64 bg-white  rounded-xl border border-border-theme py-2 z-50"
         >
           <div class="px-4 py-3 text-sm text-center">player not found</div>
         </div>
@@ -429,7 +429,7 @@
             <!-- Logout -->
             <button
               (click)="logout()"
-              class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400 text-sm "
+              class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50  text-red-600  text-sm "
             >
               Logout
             </button>
@@ -443,7 +443,7 @@
     <!-- Mobile Hamburger Button -->
     <button
       (click)="toggleMobileMenu()"
-      class="md:hidden p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10"
+      class="md:hidden p-2 rounded-lg hover:bg-slate-200 "
       aria-label="Toggle Menu"
     >
       @if (isMobileMenuOpen()) {

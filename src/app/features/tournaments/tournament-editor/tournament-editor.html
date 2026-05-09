@@ -28,7 +28,7 @@
           [class]="
             activeSection() === section.id
               ? 'bg-cyan-400'
-              : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+              : 'hover:bg-slate-100 '
           "
           class="flex items-center px-4 py-3 rounded-md text-sm font-semibold text-left border-none cursor-pointer"
         >
@@ -239,7 +239,7 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" (click)="closeReviewModal()">
       <div class="ui-panel bg-main w-full max-w-4xl max-h-[90vh] flex flex-col relative animate-in slide-in-from-bottom-4 duration-300" (click)="$event.stopPropagation()">
         <button 
-          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30 transition-all z-10" 
+          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500  transition-all z-10" 
           (click)="closeReviewModal()"
         >
           <svg

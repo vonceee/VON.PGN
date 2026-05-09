@@ -29,7 +29,7 @@ export interface ComputerSetupResult {
         <h2 class="text-2xl font-semibold">Play with computer</h2>
         <button
           (click)="dialogRef.close()"
-          class="cursor-pointer p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors flex items-center justify-center"
+          class="cursor-pointer p-2 hover:bg-black/5  rounded-full transition-colors flex items-center justify-center"
         >
           <ng-icon name="heroXMark" class="text-xl"></ng-icon>
         </button>
@@ -118,7 +118,7 @@ export interface ComputerSetupResult {
                     <div class="flex items-center gap-3">
                       <button
                         (click)="adjustMinutes(-1)"
-                        class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"
+                        class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer"
                       >
                         -
                       </button>
@@ -127,7 +127,7 @@ export interface ComputerSetupResult {
                       }}</span>
                       <button
                         (click)="adjustMinutes(1)"
-                        class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"
+                        class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer"
                       >
                         +
                       </button>
@@ -157,7 +157,7 @@ export interface ComputerSetupResult {
                     <div class="flex items-center gap-3">
                       <button
                         (click)="adjustIncrement(-1)"
-                        class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"
+                        class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer"
                       >
                         -
                       </button>
@@ -166,7 +166,7 @@ export interface ComputerSetupResult {
                       }}</span>
                       <button
                         (click)="adjustIncrement(1)"
-                        class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"
+                        class="w-8 h-8 flex items-center justify-center border border-border-theme rounded-lg hover:bg-black/5  cursor-pointer"
                       >
                         +
                       </button>

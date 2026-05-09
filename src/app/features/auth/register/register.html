@@ -1,4 +1,4 @@
-<div class="h-screen flex flex-col lg:flex-row selection:bg-cyan-400/30 overflow-hidden bg-white/40 dark:bg-[#0a0a0c]/60 backdrop-blur-sm">
+<div class="h-screen flex flex-col lg:flex-row selection:bg-cyan-400/30 overflow-hidden bg-white/40  backdrop-blur-sm">
   <!-- Left Column: Form Section -->
   <div class="lg:basis-2/5 flex flex-col px-6 overflow-y-auto h-full">
     <div class="mx-auto my-auto w-full xl:max-w-md py-8">
@@ -19,7 +19,7 @@
             type="text"
             formControlName="username"
             placeholder="Yunah"
-            class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white transition-all"
+            class="w-full px-4 py-2.5 bg-zinc-50 /50 border border-zinc-200  rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400   transition-all"
           />
           @if (usernameError()) {
             <p class="text-xs text-red-500 mt-1 px-1">{{ usernameError() }}</p>
@@ -45,7 +45,7 @@
             type="email"
             formControlName="email"
             placeholder="hello@email.com"
-            class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white transition-all"
+            class="w-full px-4 py-2.5 bg-zinc-50 /50 border border-zinc-200  rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400   transition-all"
           />
           @if (emailError()) {
             <p class="text-xs text-red-500 mt-1 px-1">{{ emailError() }}</p>
@@ -61,12 +61,12 @@
               [type]="showPassword() ? 'text' : 'password'"
               formControlName="password"
               placeholder="••••••••"
-              class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-10 transition-all"
+              class="w-full px-4 py-2.5 bg-zinc-50 /50 border border-zinc-200  rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400   pr-10 transition-all"
             />
             <button
               type="button"
               (click)="showPassword.set(!showPassword())"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus:outline-none"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600  transition-colors focus:outline-none"
             >
               @if (showPassword()) {
                 <svg
@@ -130,12 +130,12 @@
               [type]="showConfirmPassword() ? 'text' : 'password'"
               formControlName="password_confirmation"
               placeholder="••••••••"
-              class="w-full px-4 py-2.5 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800 rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 dark:text-white pr-10 transition-all"
+              class="w-full px-4 py-2.5 bg-zinc-50 /50 border border-zinc-200  rounded-lg text-sm lg:text-base focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400   pr-10 transition-all"
             />
             <button
               type="button"
               (click)="showConfirmPassword.set(!showConfirmPassword())"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors focus:outline-none"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600  transition-colors focus:outline-none"
             >
               @if (showConfirmPassword()) {
                 <svg
@@ -216,7 +216,7 @@
           href="/terms-of-service"
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
+          class="hover:text-zinc-900  underline underline-offset-2"
           >Terms of Service</a
         >
         and
@@ -224,7 +224,7 @@
           href="/privacy-policy"
           target="_blank"
           rel="noopener noreferrer"
-          class="hover:text-zinc-900 dark:hover:text-white underline underline-offset-2"
+          class="hover:text-zinc-900  underline underline-offset-2"
           >Privacy Policy</a
         >
       </p>
@@ -233,11 +233,11 @@
 
   <!-- Right Column: Branding Section -->
   <div
-    class="hidden lg:flex lg:basis-3/5 bg-[#0a0a0c] dark:bg-white p-10 flex-col relative overflow-hidden"
+    class="hidden lg:flex lg:basis-3/5 bg-[#0a0a0c]  p-10 flex-col relative overflow-hidden"
   >
     <div>
       <app-typewriter-text
-        size="text-3xl md:text-5xl text-white dark:text-black"
+        size="text-3xl md:text-5xl text-white "
         text="free online chess, play, learn, and stay updated with chess news & events in the Philippines."
       ></app-typewriter-text>
     </div>
