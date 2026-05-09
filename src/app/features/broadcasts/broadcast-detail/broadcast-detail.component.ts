@@ -222,25 +222,25 @@ type TabType = 'details' | 'games';
                       <dl class="space-y-3">
                         @if (detail()?.tier) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Tier</dt>
+                            <dt class="text-xs uppercase  text-slate-500 ">Tier</dt>
                             <dd class="text-sm ">Tier {{ detail()?.tier }}</dd>
                           </div>
                         }
                         @if (detail()?.status) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Status</dt>
+                            <dt class="text-xs uppercase  text-slate-500 ">Status</dt>
                             <dd class="text-sm  capitalize">{{ detail()?.status }}</dd>
                           </div>
                         }
                         @if (detail()?.createdAt) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Created</dt>
+                            <dt class="text-xs uppercase  text-slate-500 ">Created</dt>
                             <dd class="text-sm ">{{ detail()?.createdAt | date:'medium' }}</dd>
                           </div>
                         }
                         @if (detail()?.url) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Lichess URL</dt>
+                            <dt class="text-xs uppercase  text-slate-500 ">Lichess URL</dt>
                             <dd class="text-sm">
                               <a [href]="detail()?.url" target="_blank" class="text-cyan-500 hover:text-cyan-400">View on Lichess →</a>
                             </dd>
@@ -248,7 +248,7 @@ type TabType = 'details' | 'games';
                         }
                         @if (detail()?.website) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Website</dt>
+                            <dt class="text-xs uppercase  text-slate-500 ">Website</dt>
                             <dd class="text-sm">
                               <a [href]="detail()?.website" target="_blank" class="text-cyan-500 hover:text-cyan-400">Visit →</a>
                             </dd>
@@ -267,13 +267,13 @@ type TabType = 'details' | 'games';
                       <dl class="space-y-3">
                         @if (detail()?.dates?.[0]) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">Start Date</dt>
+                            <dt class="text-xs uppercase  text-slate-500 ">Start Date</dt>
                             <dd class="text-sm ">{{ detail()?.dates?.[0] | date:'mediumDate' }}</dd>
                           </div>
                         }
                         @if (detail()?.dates?.[1]) {
                           <div class="flex justify-between">
-                            <dt class="text-xs uppercase tracking-wide text-slate-500 ">End Date</dt>
+                            <dt class="text-xs uppercase  text-slate-500 ">End Date</dt>
                             <dd class="text-sm ">{{ detail()?.dates?.[1] | date:'mediumDate' }}</dd>
                           </div>
                         }
