@@ -228,7 +228,7 @@
                   <app-loading></app-loading>
                 } @else if (tabUsers().length === 0) {
                   <div
-                    class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border-theme text-slate-400"
+                    class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border  border-border-theme text-slate-400"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -348,7 +348,7 @@
             <!-- Get Verified Card (only for non-verified organizers) -->
             @if (!profile.verified_organizer && showVerifiedFeature()) {
               <div
-                class="rounded-2xl border border-dashed border-cyan-500/30 bg-accent/50  p-5"
+                class="rounded-2xl border  border-cyan-500/30 bg-accent/50  p-5"
               >
                 <div class="flex items-center gap-2 mb-3">
                   <svg

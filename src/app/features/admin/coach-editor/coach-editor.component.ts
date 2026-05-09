@@ -133,7 +133,7 @@ import { ToastService } from '../../../core/services/toast.service';
               
               <div 
                 (click)="fileInput.click()"
-                class="relative group cursor-pointer aspect-square rounded border-2 border-dashed border-border-base hover:border-blue-500 overflow-hidden flex flex-col items-center justify-center bg-slate-50"
+                class="relative group cursor-pointer aspect-square rounded border-2  border-border-base hover:border-blue-500 overflow-hidden flex flex-col items-center justify-center bg-slate-50"
               >
                 @if (imagePreview()) {
                   <img [src]="imagePreview()" class="absolute inset-0 w-full h-full object-cover">

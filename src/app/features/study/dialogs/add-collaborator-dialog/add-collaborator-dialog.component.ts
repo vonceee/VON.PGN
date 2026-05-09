@@ -19,13 +19,12 @@ import { UserHovercardDirective } from '@shared/directives';
       <app-dialog-wrapper title="Add Collaborator" (close)="dialogRef.close()">
         <div class="space-y-4">
           <div class="space-y-1">
-            <label class="text-xs font-semibold uppercase text-muted">Search User</label>
             <input
               type="text"
               [(ngModel)]="searchQuery"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Type username..."
-              class="w-full px-4 py-2 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted  "
+              class="w-full px-4 py-2 bg-subtle rounded-xl text-sm outline-none placeholder:text-muted  "
               autofocus
             />
           </div>
@@ -41,7 +40,7 @@ import { UserHovercardDirective } from '@shared/directives';
                 <button
                   (click)="selectUser(user)"
                   class="w-full flex items-center p-3 px-4 rounded-xl hover:bg-surface  text-left group"
-                  [class.bg-accent/10]="selectedUser()?.uid === user.uid"
+                  [class.bg-accent]="selectedUser()?.uid === user.uid"
                 >
                   <div class="flex flex-col">
                     <span 
@@ -57,10 +56,6 @@ import { UserHovercardDirective } from '@shared/directives';
               <div class="flex flex-col items-center justify-center py-8 text-muted">
                 <span class="text-sm italic">No users found matching "{{ searchQuery() }}"</span>
               </div>
-            } @else {
-              <div class="flex flex-col items-center justify-center py-8 text-muted">
-                <span class="text-xs text-center px-8">Start typing to search for users to invite as collaborators.</span>
-              </div>
             }
           </div>
         </div>
@@ -73,7 +68,7 @@ import { UserHovercardDirective } from '@shared/directives';
             (click)="onSubmit()" 
             [disabled]="!selectedUser()"
           >
-            Add Collaborator
+            Add collaborator
           </button>
         </div>
       </app-dialog-wrapper>

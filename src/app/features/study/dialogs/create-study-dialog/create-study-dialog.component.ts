@@ -20,7 +20,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             [(ngModel)]="name"
             maxlength="100"
             placeholder="e.g. My Openings Analysis"
-            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted  "
+            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm    outline-none placeholder:text-muted  "
             autofocus
           />
         </div>
@@ -30,7 +30,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
           <label class="text-sm font-semibold text-content">Visibility</label>
           <select
             [(ngModel)]="visibility"
-            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none  "
+            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm    outline-none  "
           >
             <option value="public">Public (Everyone can see)</option>
             <option value="unlisted">Unlisted (Hidden from search)</option>

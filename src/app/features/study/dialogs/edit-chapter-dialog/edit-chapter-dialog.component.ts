@@ -30,7 +30,7 @@ export interface EditChapterDialogData {
             type="text"
             [(ngModel)]="name"
             placeholder="Chapter Name"
-            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted  "
+            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm    outline-none placeholder:text-muted  "
             autofocus
             (keyup.enter)="onSave()"
           />
@@ -40,7 +40,7 @@ export interface EditChapterDialogData {
           <label class="text-xs  uppercase  text-muted">Orientation</label>
           <select
             [(ngModel)]="orientation"
-            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none   cursor-pointer"
+            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-xl text-sm    outline-none   cursor-pointer"
           >
             <option value="white">White</option>
             <option value="black">Black</option>

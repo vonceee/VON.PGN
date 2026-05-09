@@ -75,7 +75,7 @@ interface FeedbackForm {
                 class="w-full px-4 py-3 bg-transparent border border-border-theme rounded-xl text-sm focus:outline-none focus:border-cyan-500  appearance-none cursor-pointer"
               >
                 @for (ft of feedbackTypes; track ft.value) {
-                  <option [value]="ft.value" class="">{{ ft.label }}</option>
+                  <option [value]="ft.value">{{ ft.label }}</option>
                 }
               </select>
             </div>

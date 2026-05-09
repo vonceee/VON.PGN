@@ -126,17 +126,12 @@ import { LoadingComponent } from '@shared/feedback';
           </div>
         }
       } @else {
-        <div class="ui-panel border-dashed border-border-theme p-12 text-center flex flex-col items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 ">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-6.75a1.125 1.125 0 0 0-1.125 1.125v3.375m9 0h-9M12 14.25a3 3 0 0 0-3-3V6.75a3 3 0 0 1 6 0v4.5a3 3 0 0 0-3 3Z" />
-            </svg>
-          </div>
+        <div class="ui-panel  border-border-theme p-12 text-center flex flex-col items-center gap-4">
           <div>
             <h3 class="text-base font-semibold mb-1">No games found</h3>
             <p class="text-sm  mb-6">You haven't played any games yet. Start your journey today!</p>
           </div>
-          <a appButton variant="primary" routerLink="/play" class="px-8 shadow-lg shadow-cyan-500/20">Play Now</a>
+          <a appButton variant="primary" routerLink="/play" class="px-8 shadow-lg ">Play Now</a>
         </div>
       }
     </div>

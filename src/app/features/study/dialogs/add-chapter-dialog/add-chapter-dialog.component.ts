@@ -45,7 +45,7 @@ export interface AddChapterDialogResult {
                     [ngModel]="name()"
                     (ngModelChange)="name.set($event)"
                     placeholder="e.g. Opening Analysis"
-                    class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted/50   "
+                    class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm    outline-none placeholder:text-muted/50   "
                     autofocus
                   />
                   <div class="absolute inset-0 rounded-xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none  "></div>
@@ -62,7 +62,7 @@ export interface AddChapterDialogResult {
                     <select
                       [ngModel]="orientation()"
                       (ngModelChange)="orientation.set($event)"
-                      class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none    appearance-none cursor-pointer"
+                      class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm    outline-none    appearance-none cursor-pointer"
                     >
                       <option value="white">White</option>
                       <option value="black">Black</option>
@@ -115,7 +115,7 @@ export interface AddChapterDialogResult {
                       [ngModel]="fen()"
                       (ngModelChange)="fen.set($event)"
                       placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-                      class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm focus:ring-4 focus:ring-accent/10 focus:border-accent outline-none   "
+                      class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm    outline-none   "
                     />
                   </div>
                 </div>

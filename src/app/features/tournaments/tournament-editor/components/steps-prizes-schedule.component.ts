@@ -72,7 +72,7 @@ import { ButtonComponent  } from '@shared/ui';
               </div>
 
               @if (getCategoryExtraPrizes(ci).length > 0) {
-              <div class="space-y-4 mt-6 pt-6 border-t border-dashed border-border-theme">
+              <div class="space-y-4 mt-6 pt-6 border-t  border-border-theme">
                 @for (ep of getCategoryExtraPrizes(ci).controls; track $index; let ei = $index) {
                 <div class="flex gap-4 items-start bg-slate-50 /30 p-3 rounded-lg">
                   <div class="flex-1 space-y-2">
@@ -238,7 +238,7 @@ export class StepPrizesComponent implements OnInit {
   template: `
     <div class="space-y-6">
       @if (scheduleDaysArray.length === 0) {
-      <p class="text-slate-400 text-sm py-8 text-center bg-slate-50  rounded-xl border-2 border-dashed border-border-theme">No schedule days added yet.</p>
+      <p class="text-slate-400 text-sm py-8 text-center bg-slate-50  rounded-xl border-2  border-border-theme">No schedule days added yet.</p>
       }
       
       <div class="space-y-6">

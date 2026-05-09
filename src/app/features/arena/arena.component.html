@@ -51,7 +51,7 @@
         </div>
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="text-xs uppercase  opacity-30 border-b border-white/10">
+            <tr class="text-xs uppercase   border-b border-white/10">
               <th class="py-4 font-semibold w-12 text-center">#</th>
               <th class="py-4 font-semibold">Player</th>
               <th class="py-4 font-semibold text-right">Points</th>
@@ -63,7 +63,7 @@
                 class="group hover:bg-white/[0.02] "
                 [class.bg-white/5]="player.userId === authService.currentUser()?.uid"
               >
-                <td class="py-6  text-sm opacity-30 text-center">
+                <td class="py-6  text-sm  text-center">
                   {{ i + 1 }}
                 </td>
                 <td class="py-6">
@@ -96,7 +96,7 @@
 
         @if (leaderboard().length === 0) {
           <div
-            class="py-32 text-center opacity-20 text-sm italic border border-dashed border-white/10 rounded-2xl"
+            class="py-32 text-center opacity-20 text-sm italic border  border-white/10 rounded-2xl"
           >
             Arena Waiting for Participants
           </div>

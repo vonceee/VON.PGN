@@ -104,7 +104,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                   <div class="text-lg  " [class]="getResultClass(g)">
                     {{ g.result }}
                   </div>
-                  <div class="text-xs uppercase font-semibold opacity-30  mt-0.5">
+                  <div class="text-xs uppercase font-semibold   mt-0.5">
                     {{ g.termination }}
                   </div>
                 </div>
