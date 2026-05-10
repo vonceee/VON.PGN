@@ -112,7 +112,7 @@ interface FeedbackForm {
       } @else {
         <!-- Success State -->
         <div
-          class="py-12 flex flex-col items-center justify-center text-center space-y-6  zoom-in-95 "
+          class="py-12 flex flex-col items-center justify-center text-center space-y-6"
         >
           <div class="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
             <ng-icon name="heroCheckCircle" class="text-4xl text-cyan-500"></ng-icon>

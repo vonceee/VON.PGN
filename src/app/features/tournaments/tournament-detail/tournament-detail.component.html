@@ -706,26 +706,26 @@
             </h3>
             <div class="space-y-3 text-sm">
               <div>
-                <span class=" ">Dates</span>
+                <span>Dates</span>
                 <p class="font-semibold  ">
                   {{ formatDate(tournament.dates.start) }} – {{ formatDate(tournament.dates.end) }}
                 </p>
               </div>
               <div>
-                <span class=" ">Location</span>
+                <span>Location</span>
                 <p class="font-semibold  ">
                   {{ tournament.location }}
                 </p>
               </div>
               <div>
-                <span class=" ">Entry Fee</span>
+                <span>Entry Fee</span>
                 <p class="font-semibold  ">
                   {{ formatCurrency(tournament.entryFee) }}
                 </p>
               </div>
               @if (tournament.status === 'upcoming' && tournament.registrationDeadline) {
                 <div>
-                  <span class=" ">Registration Deadline</span>
+                  <span>Registration Deadline</span>
                   <p class="font-semibold  ">
                     {{ formatDate(tournament.registrationDeadline) }}
                   </p>
@@ -733,7 +733,7 @@
               }
               @if (tournament.creator) {
                 <div class="pt-3 border-t border-border-base ">
-                  <span class=" ">Created by</span>
+                  <span>Created by</span>
                   <a
                     [routerLink]="['/user', tournament.creator.name]"
                     [appUserHovercard]="tournament.creator.name"

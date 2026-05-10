@@ -36,7 +36,7 @@ import { ToastService } from '../../../core/services/toast.service';
         <h1 class="text-4xl font-semibold  ">
           {{ isEditing() ? 'Edit Coach Profile' : 'Create Coach Profile' }}
         </h1>
-        <p class=" ">Fill in the details below to {{ isEditing() ? 'update' : 'create' }} a public coach profile.</p>
+        <p>Fill in the details below to {{ isEditing() ? 'update' : 'create' }} a public coach profile.</p>
       </div>
 
       <form [formGroup]="coachForm" (ngSubmit)="save()" class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-20">

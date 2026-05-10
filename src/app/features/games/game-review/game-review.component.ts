@@ -43,7 +43,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
         <div class="flex-1 flex items-center justify-center">
           <div class="text-center">
             <div class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="">Loading game archive...</p>
+            <p>Loading game archive...</p>
           </div>
         </div>
       } @else if (game(); as g) {
@@ -73,7 +73,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                       <span class="truncate font-semibold text-sm">{{ g.black_player.name }}</span>
                     </div>
                     <div class="flex items-center gap-2  text-xs shrink-0">
-                      <span class="">({{ g.black_elo }})</span>
+                      <span>({{ g.black_elo }})</span>
                       @if (g.black_rating_change !== null) {
                         <span class="font-semibold" [class]="g.black_rating_change >= 0 ? 'text-green-400' : 'text-red-400'">
                           {{ g.black_rating_change > 0 ? '+' : '' }}{{ g.black_rating_change }}
@@ -89,7 +89,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
                       <span class="truncate font-semibold text-sm">{{ g.white_player.name }}</span>
                     </div>
                     <div class="flex items-center gap-2  text-xs shrink-0">
-                      <span class="">({{ g.white_elo }})</span>
+                      <span>({{ g.white_elo }})</span>
                       @if (g.white_rating_change !== null) {
                         <span class="font-semibold" [class]="g.white_rating_change >= 0 ? 'text-green-400' : 'text-red-400'">
                           {{ g.white_rating_change > 0 ? '+' : '' }}{{ g.white_rating_change }}

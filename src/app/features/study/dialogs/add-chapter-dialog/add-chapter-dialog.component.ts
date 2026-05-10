@@ -92,7 +92,7 @@ export interface AddChapterDialogResult {
             <!-- Tab Content Area -->
             <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md relative">
               @if (activeTab() === 'empty') {
-                <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4  zoom-in-95 ">
+                <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4">
                   <div class="space-y-1">
                     <h3 class="text-sm font-semibold text-content uppercase ">Start Fresh</h3>
                     <p class="text-xs text-muted max-w-[200px] mx-auto ">
@@ -170,7 +170,7 @@ export interface AddChapterDialogResult {
           </div>
         } @else {
           <!-- Full-screen Editor View -->
-          <div class="  zoom-in-95 ">
+          <div>
             <app-board-editor 
               #editor
               [fen]="fen()" 

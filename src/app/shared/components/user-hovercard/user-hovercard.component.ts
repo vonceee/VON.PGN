@@ -30,12 +30,12 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
                 [title]="user()!.is_online ? 'Online' : 'Offline'"
               ></div>
             </div>
-            <span class="text-xs text-muted  uppercase ">
+            <span class="text-xs   capitalize ">
               {{ user()!.displayName || 'Chess Enthusiast' }}
             </span>
           </div>
           @if (user()!.verified_organizer) {
-            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-semibold uppercase ">
+            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-semibold capitalize ">
               Verified
             </div>
           }
@@ -44,8 +44,8 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         <!-- Ratings Grid -->
         <div class="grid grid-cols-3 gap-2 mb-4">
           @for (type of ratingTypes; track type.id) {
-            <div class="flex flex-col items-center p-2 rounded-xl bg-subtle/50 border border-border-base/50">
-              <span class="text-xs text-muted font-semibold uppercase  mb-1">
+            <div class="flex flex-col items-center p-2 rounded-xl bg-subtle/50 border border-border-base">
+              <span class="text-xs  font-semibold capitalize  mb-1">
                 {{ type.label }}
               </span>
               <span class="text-sm  text-content">
@@ -56,7 +56,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         </div>
 
         <!-- Stats -->
-        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-semibold uppercase  text-muted">
+        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-semibold capitalize ">
           <div class="flex items-center gap-1.5">
             <span>{{ user()!.followers_count }} Followers</span>
           </div>
@@ -69,8 +69,8 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         @if (user()!.active_game; as game) {
           <div class="mt-4 pt-4 border-t border-border-base/50">
             <div class="flex items-center justify-between mb-2 px-1">
-              <span class="text-xs font-semibold uppercase  text-accent">Playing Now</span>
-              <span class="text-xs text-muted">{{ game.time_control }}</span>
+              <span class="text-xs font-semibold capitalize text-accent">Playing Now</span>
+              <span class="text-xs ">{{ game.time_control }}</span>
             </div>
             
             <div class="relative rounded-xl overflow-hidden border border-border-base/50 aspect-square w-full board-container-parent">
@@ -88,7 +88,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
                 </span>
                 <div class="flex items-center gap-1">
                   <div class="w-1.5 h-1.5 rounded-full bg-accent "></div>
-                  <span class="text-xs  uppercase text-accent">Live</span>
+                  <span class="text-xs  capitalize text-accent">Live</span>
                 </div>
               </div>
             </div>
