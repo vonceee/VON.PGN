@@ -23,10 +23,6 @@ import { UserHovercardDirective } from '@shared/directives';
                   >{{ viewer }}</span>
                 </div>
               </div>
-            } @empty {
-              <div class="flex flex-col items-center justify-center py-12 text-muted">
-                <span class="text-sm italic ">No active viewers found</span>
-              </div>
             }
           </div>
         </div>

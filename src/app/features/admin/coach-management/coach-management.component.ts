@@ -90,16 +90,6 @@ import { ToastService } from '../../../core/services/toast.service';
                     </div>
                   </td>
                 </tr>
-              } @empty {
-                <tr>
-                  <td colspan="2" class="px-6 py-20 text-center">
-
-                    <div class="flex flex-col items-center">
-                      <h3 class="text-lg font-semibold text-slate-900">No coaches found</h3>
-                      <p class=" text-sm">Try adjusting your search or add a new coach profile.</p>
-                    </div>
-                  </td>
-                </tr>
               }
             </tbody>
           </table>

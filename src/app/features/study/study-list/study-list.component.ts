@@ -117,10 +117,6 @@ import { ToastService } from '../../../core/services/toast.service';
                   </div>
                 </div>
               </div>
-            } @empty {
-              <div class="col-span-full py-20 text-center ">
-                No studies found.
-              </div>
             }
           </div>
         }

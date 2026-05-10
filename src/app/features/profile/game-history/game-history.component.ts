@@ -16,9 +16,9 @@ import { LoadingComponent } from '@shared/feedback';
         <app-loading></app-loading>
       } @else if (games().length > 0) {
         <!-- Table Header -->
-        <div class="hidden md:flex items-center px-6 py-3 border-b border-border-theme ">
-          <div class="w-48 text-xs font-semibold uppercase ">Version / Date</div>
-          <div class="flex-1 text-xs font-semibold uppercase  ml-4">Game Details</div>
+        <div class="hidden md:flex items-center px-6 py-3 border-b border-border-theme">
+          <div class="w-48 text-xs font-semibold capitalize">Version / Date</div>
+          <div class="flex-1 text-xs font-semibold capitalize ml-4">Game Details</div>
         </div>
 
         <div class="flex flex-col">
@@ -27,11 +27,11 @@ import { LoadingComponent } from '@shared/feedback';
               <!-- Left Column: Meta -->
               <div class="w-full md:w-48 mb-4 md:mb-0 shrink-0">
                 <div class="flex flex-col gap-0.5">
-                  <span class="text-sm font-semibold  text-white/90">
+                  <span class="text-sm font-semibold">
                     {{ getGameType(game.time_control) }}
-                    <span class="text-xs   ml-1">{{ game.time_control }}</span>
+                    <span class="text-xs ml-1">{{ game.time_control }}</span>
                   </span>
-                  <span class="text-xs   uppercase ">
+                  <span class="text-xs capitalize">
                     {{ game.created_at | date: 'MMM d, y' }}
                   </span>
                 </div>
@@ -60,7 +60,7 @@ import { LoadingComponent } from '@shared/feedback';
                       <!-- Rating Change Tag -->
                       @if (getMyRatingChange(game) !== null) {
                         <div class="flex flex-col gap-1">
-                          <span class="text-xs font-semibold uppercase  ">Rating</span>
+                          <span class="text-xs font-semibold capitalize  ">Rating</span>
                           <div class="flex items-center gap-2">
                             <span class="text-sm font-semibold" [class]="getMyRatingChange(game)! >= 0 ? 'text-green-500' : 'text-red-500'">
                               {{ getMyRatingChange(game)! > 0 ? '+' : '' }}{{ getMyRatingChange(game) }}
@@ -72,7 +72,7 @@ import { LoadingComponent } from '@shared/feedback';
 
                       <!-- Game Info (Placeholder for Accuracy/Performance if needed) -->
                       <div class="flex flex-col gap-1">
-                        <span class="text-xs font-semibold uppercase  ">Status</span>
+                        <span class="text-xs font-semibold capitalize  ">Status</span>
                         <span class="text-xs font-semibold text-slate-300">
                           {{ game.termination || 'Standard game' }}
                         </span>
@@ -100,7 +100,7 @@ import { LoadingComponent } from '@shared/feedback';
         <!-- Pagination -->
         @if (totalPages() > 1) {
           <div class="mt-8 flex items-center justify-between px-6">
-            <span class="text-xs font-semibold uppercase  ">
+            <span class="text-xs font-semibold capitalize  ">
               Page {{ currentPage() }} of {{ totalPages() }}
             </span>
             <div class="flex gap-2">
