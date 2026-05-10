@@ -59,7 +59,7 @@
         <button
           (click)="toggleBookmark()"
           [disabled]="!authService.isAuthenticated()"
-          class="flex items-center gap-1.5 hover:text-cyan-400  disabled:opacity-40 disabled:cursor-not-allowed"
+          class="flex items-center gap-1.5 hover:text-cyan-400  disabled: disabled:cursor-not-allowed"
           [class.text-cyan-500]="isBookmarked()"
           [class.font-semibold]="isBookmarked()"
         >

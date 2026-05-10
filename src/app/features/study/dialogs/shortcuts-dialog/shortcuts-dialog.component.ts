@@ -51,7 +51,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
                     <span class="text-xs  text-muted/60 bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     <div class="flex items-center gap-1">
                       <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-xs font-semibold text-muted">Shift</kbd>
-                      <span class="text-xs opacity-40">+</span>
+                      <span class="text-xs ">+</span>
                       <kbd class="w-6 h-6 flex items-center justify-center bg-surface border border-border-base rounded shadow-sm text-xs font-semibold text-accent">{{ item.key }}</kbd>
                     </div>
                   </div>
@@ -74,7 +74,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
                   <div class="flex items-center gap-1">
                     @for (key of item.keys; track $index) {
                        <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-xs font-semibold text-muted">{{ key }}</kbd>
-                       @if (!$last) { <span class="text-xs opacity-40 mx-0.5">/</span> }
+                       @if (!$last) { <span class="text-xs  mx-0.5">/</span> }
                     }
                   </div>
                 </div>

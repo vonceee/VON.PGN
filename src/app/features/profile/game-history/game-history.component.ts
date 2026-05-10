@@ -16,7 +16,7 @@ import { LoadingComponent } from '@shared/feedback';
         <app-loading></app-loading>
       } @else if (games().length > 0) {
         <!-- Table Header -->
-        <div class="hidden md:flex items-center px-6 py-3 border-b border-border-theme opacity-40">
+        <div class="hidden md:flex items-center px-6 py-3 border-b border-border-theme ">
           <div class="w-48 text-xs font-semibold uppercase ">Version / Date</div>
           <div class="flex-1 text-xs font-semibold uppercase  ml-4">Game Details</div>
         </div>
