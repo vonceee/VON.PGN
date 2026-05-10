@@ -5,7 +5,7 @@
     <div class="relative" #searchContainer>
       <div class="flex items-center bg-slate-100  border border-border-base  rounded-lg px-3 py-2 focus-within:border-cyan-500/60 ">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-          class="w-4 h-4 text-slate-400  shrink-0">
+          class="w-4 h-4   shrink-0">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>
@@ -18,7 +18,7 @@
           class="ml-2 bg-transparent outline-none text-sm text-slate-900  placeholder-slate-400  w-full"
         />
         @if (searchQuery()) {
-          <button (click)="clearSearch()" class="shrink-0 text-slate-400 hover:text-slate-600 ">
+          <button (click)="clearSearch()" class="shrink-0  hover:text-slate-600 ">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
@@ -60,7 +60,7 @@
           <p class="text-sm  ">No conversations found</p>
         } @else {
           <p class="text-sm  ">No conversations yet</p>
-          <p class="text-xs text-slate-400  mt-1">Start a new chat from a user's profile</p>
+          <p class="text-xs   mt-1">Start a new chat from a user's profile</p>
         }
       </div>
     } @else {
@@ -74,7 +74,7 @@
               <span class="text-sm font-semibold text-slate-900  truncate">
                 {{ conversation.other_user?.name || 'Unknown' }}
               </span>
-              <span class="text-xs text-slate-400  shrink-0">
+              <span class="text-xs   shrink-0">
                 {{ getTimestamp(conversation) }}
               </span>
             </div>

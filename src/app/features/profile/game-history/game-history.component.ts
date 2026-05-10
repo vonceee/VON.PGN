@@ -45,7 +45,7 @@ import { LoadingComponent } from '@shared/feedback';
                     <h3 class="text-lg font-semibold " [class]="getResultClass(game)">
                       {{ getResultText(game) }}
                     </h3>
-                    <p class="text-sm text-slate-400 ">
+                    <p class="text-sm  ">
                       against 
                       <a [routerLink]="['/user', getOpponent(game).name]" class="text-white hover:text-cyan-400 ">
                         {{ getOpponent(game).name }}
@@ -65,15 +65,15 @@ import { LoadingComponent } from '@shared/feedback';
                             <span class="text-sm font-semibold" [class]="getMyRatingChange(game)! >= 0 ? 'text-green-500' : 'text-red-500'">
                               {{ getMyRatingChange(game)! > 0 ? '+' : '' }}{{ getMyRatingChange(game) }}
                             </span>
-                            <span class="text-xs text-slate-400">({{ getMyNewRating(game) }})</span>
+                            <span class="text-xs ">({{ getMyNewRating(game) }})</span>
                           </div>
                         </div>
                       }
 
                       <!-- Game Info (Placeholder for Accuracy/Performance if needed) -->
                       <div class="flex flex-col gap-1">
-                        <span class="text-xs font-semibold capitalize  ">Status</span>
-                        <span class="text-xs font-semibold text-slate-300">
+                        <span class="text-xs font-semibold capitalize">Status</span>
+                        <span class="text-xs font-semibold">
                           {{ game.termination || 'Standard game' }}
                         </span>
                       </div>
@@ -125,14 +125,6 @@ import { LoadingComponent } from '@shared/feedback';
             </div>
           </div>
         }
-      } @else {
-        <div class="ui-panel  border-border-theme p-12 text-center flex flex-col items-center gap-4">
-          <div>
-            <h3 class="text-base font-semibold mb-1">No games found</h3>
-            <p class="text-sm  mb-6">You haven't played any games yet. Start your journey today!</p>
-          </div>
-          <a appButton variant="primary" routerLink="/play" class="px-8 shadow-lg ">Play Now</a>
-        </div>
       }
     </div>
   `,
@@ -204,7 +196,7 @@ export class GameHistoryComponent implements OnInit {
   }
 
   getResultClass(game: any): string {
-    if (game.result === '1/2-1/2') return 'text-slate-400';
+    if (game.result === '1/2-1/2') return '';
 
     const isMeWhite = this.isMe(game.white_player_id);
     const iWon = (game.result === '1-0' && isMeWhite) || (game.result === '0-1' && !isMeWhite);

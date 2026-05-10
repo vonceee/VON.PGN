@@ -51,7 +51,7 @@ export interface AnnotateMoveDialogResult {
                   <span class="text-lg font-semibold">{{ glyph.symbol }}</span>
                   
                   <!-- Tooltip hint on hover -->
-                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-semibold uppercase er whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none  z-10 shadow-xl">
+                  <div class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-surface border border-border-base rounded text-[9px] font-semibold uppercase er whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none  z-10 ">
                     {{ glyph.name }}
                   </div>
                 </button>

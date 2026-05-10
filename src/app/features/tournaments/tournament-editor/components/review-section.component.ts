@@ -130,7 +130,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
         @if (data['registrationInstructions']) {
         <p class="text-sm text-slate-600  mt-2 whitespace-pre-line">{{ data['registrationInstructions'] }}</p>
         } @else {
-        <p class="text-sm text-slate-400 mt-2">No registration instructions specified.</p>
+        <p class="text-sm  mt-2">No registration instructions specified.</p>
         }
       </div>
 
@@ -150,7 +150,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
           }
         </ul>
         } @else {
-        <p class="text-sm text-slate-400 mt-2">No eligibility requirements specified.</p>
+        <p class="text-sm  mt-2">No eligibility requirements specified.</p>
         }
       </div>
 
@@ -177,7 +177,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
         </div>
         }
         } @else {
-        <p class="text-sm text-slate-400 mt-2">No prize categories specified.</p>
+        <p class="text-sm  mt-2">No prize categories specified.</p>
         }
       </div>
 
@@ -207,7 +207,7 @@ import { SectionHeadingComponent  } from '@shared/ui';
         </div>
         }
         } @else {
-        <p class="text-sm text-slate-400 mt-2">No schedule specified.</p>
+        <p class="text-sm  mt-2">No schedule specified.</p>
         }
       </div>
     </div>

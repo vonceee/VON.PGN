@@ -286,7 +286,7 @@ export class LiveGameComponent implements OnInit, OnDestroy {
   }
 
   getResultClass(result: string | null): string {
-    return result === '1/2-1/2' ? 'text-slate-400' : '';
+    return result === '1/2-1/2' ? '' : '';
   }
 
   ngOnInit(): void {

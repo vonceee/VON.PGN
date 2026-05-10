@@ -21,7 +21,7 @@
   </header>
 
   @if (loading()) {
-    <div class="p-12 flex flex-col items-center justify-center text-slate-400 bg-white border border-border-base rounded">
+    <div class="p-12 flex flex-col items-center justify-center  bg-white border border-border-base rounded">
       <p class="text-sm ">Loading applications...</p>
     </div>
   } @else {
@@ -57,7 +57,7 @@
               </div>
             </div>
             <div class="flex flex-col items-end gap-2 shrink-0">
-              <span class="text-xs  text-slate-400 uppercase">{{ formatDate(app.submittedAt) }}</span>
+              <span class="text-xs   uppercase">{{ formatDate(app.submittedAt) }}</span>
             </div>
           </div>
           <div class="mt-4 pt-4 border-t border-border-base">
@@ -74,7 +74,7 @@
 <!-- Application Detail Modal -->
 @if (selectedApplication(); as app) {
   <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" (click)="closeApplication()">
-    <div class="w-full max-w-2xl bg-white rounded shadow-2xl overflow-hidden" (click)="$event.stopPropagation()">
+    <div class="w-full max-w-2xl bg-white rounded  overflow-hidden" (click)="$event.stopPropagation()">
       <div class="p-6 border-b border-border-base flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
@@ -93,11 +93,11 @@
       <div class="p-8 max-h-[70vh] overflow-y-auto space-y-8">
         <div class="grid grid-cols-2 gap-6">
           <div class="space-y-1">
-            <label class="text-xs font-semibold text-slate-400 uppercase ">FIDE Rating</label>
+            <label class="text-xs font-semibold  uppercase ">FIDE Rating</label>
             <div class="text-lg font-semibold text-blue-600">{{ app.fideRating }}</div>
           </div>
           <div class="space-y-1 text-right">
-            <label class="text-xs font-semibold text-slate-400 uppercase ">Status</label>
+            <label class="text-xs font-semibold  uppercase ">Status</label>
             <div>
               <span class="px-2 py-1 rounded-full text-xs font-semibold" 
                 [ngClass]="{
@@ -125,11 +125,11 @@
             <label class="text-xs font-semibold text-slate-900">Coaching Details</label>
             <div class="space-y-2">
               <div class="flex items-center justify-between text-xs">
-                <span class="text-slate-400">Specialization</span>
+                <span class="">Specialization</span>
                 <span class="text-slate-700">{{ app.coachingType }}</span>
               </div>
               <div class="flex items-center justify-between text-xs">
-                <span class="text-slate-400">Location</span>
+                <span class="">Location</span>
                 <span class="text-slate-700">{{ app.location || 'Global/Remote' }}</span>
               </div>
             </div>
@@ -143,7 +143,7 @@
                 @if (app.socialMedia.youtube) { <span class="px-2 py-1 bg-slate-100 rounded text-xs text-slate-600">YouTube</span> }
               </div>
             } @else {
-              <span class="text-xs italic text-slate-400">No social media links provided</span>
+              <span class="text-xs italic ">No social media links provided</span>
             }
           </div>
         </div>
@@ -169,7 +169,7 @@
 <!-- Delete Confirmation Modal -->
 @if (deleteTarget()) {
   <div class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-    <div class="w-full max-w-sm bg-white rounded p-8 shadow-2xl">
+    <div class="w-full max-w-sm bg-white rounded p-8 ">
 
       <h2 class="text-xl font-semibold text-center text-slate-900 mb-2">Are you sure?</h2>
       <p class=" text-center text-sm mb-8 ">This action will permanently delete the coach application from the database. This cannot be undone.</p>

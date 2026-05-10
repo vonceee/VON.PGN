@@ -28,14 +28,14 @@ import { ToastService } from '../../../core/services/toast.service';
       <!-- Filters & Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="bg-white rounded border border-border-base p-6 flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-400 uppercase ">Total Coaches</span>
+          <span class="text-xs font-semibold  uppercase ">Total Coaches</span>
           <div class="flex items-end justify-between mt-2">
             <span class="text-3xl font-semibold text-slate-900">{{ coaches().length }}</span>
             <span class="text-xs font-semibold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">+1 this month</span>
           </div>
         </div>
         <div class="bg-white rounded border border-border-base p-6 flex flex-col justify-between">
-          <span class="text-xs font-semibold text-slate-400 uppercase ">Academy Instructors</span>
+          <span class="text-xs font-semibold  uppercase ">Academy Instructors</span>
           <div class="flex items-end justify-between mt-2">
             <span class="text-3xl font-semibold text-slate-900">{{ academyInstructorsCount() }}</span>
             <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-1 rounded">Top Tier</span>
@@ -47,7 +47,7 @@ import { ToastService } from '../../../core/services/toast.service';
               type="text" 
               placeholder="Search coaches by name, title, or location..." 
               (input)="searchTerm.set($any($event.target).value)"
-              class="w-full bg-transparent border-none outline-none px-4 py-3 text-slate-900 placeholder:text-slate-400"
+              class="w-full bg-transparent border-none outline-none px-4 py-3 text-slate-900 placeholder:"
             >
           </div>
         </div>
@@ -59,8 +59,8 @@ import { ToastService } from '../../../core/services/toast.service';
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-border-base">
-                <th class="px-6 py-4 text-xs font-semibold text-slate-400 uppercase ">Coach</th>
-                <th class="px-6 py-4 text-xs font-semibold text-slate-400 uppercase  text-right">Actions</th>
+                <th class="px-6 py-4 text-xs font-semibold  uppercase ">Coach</th>
+                <th class="px-6 py-4 text-xs font-semibold  uppercase  text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">

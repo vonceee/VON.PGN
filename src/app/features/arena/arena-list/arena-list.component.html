@@ -24,7 +24,7 @@
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            class="w-5 h-5 text-slate-400  ml-2"
+            class="w-5 h-5   ml-2"
             [class.rotate-180]="isTabDropdownOpen()"
           >
             <path
@@ -72,7 +72,7 @@
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4  pointer-events-none"
         >
           <path
             fill-rule="evenodd"
@@ -85,12 +85,12 @@
           [value]="searchQuery()"
           (input)="onSearchInput($event)"
           placeholder="Search arenas..."
-          class="w-full pl-9 pr-9 py-2.5 bg-white  border border-border-theme rounded-xl text-sm text-slate-900  placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400"
+          class="w-full pl-9 pr-9 py-2.5 bg-white  border border-border-theme rounded-xl text-sm text-slate-900  placeholder: focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400"
         />
         @if (searchQuery()) {
           <button
             (click)="clearSearch()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 "
+            class="absolute right-3 top-1/2 -translate-y-1/2  hover:text-slate-600 "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -314,7 +314,7 @@
 
         @for (page of pages(); track page === '...' ? $index : page) {
           @if (page === '...') {
-            <span class="px-3 py-2 text-sm text-slate-400">...</span>
+            <span class="px-3 py-2 text-sm ">...</span>
           } @else {
             <button
               (click)="goToPage(page)"

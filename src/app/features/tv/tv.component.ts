@@ -181,7 +181,7 @@ export class TvComponent implements OnInit, OnDestroy {
   }
 
   getResultClass(result: string | null): string {
-    if (result === '1/2-1/2') return 'text-slate-400';
+    if (result === '1/2-1/2') return '';
     return result === '1-0' ? 'text-green-500' : 'text-red-500';
   }
 

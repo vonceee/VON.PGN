@@ -73,7 +73,7 @@
                       class="w-full bg-slate-50  border border-border-base  rounded-xl px-4 py-3 text-sm text-slate-900  placeholder-slate-400  outline-none focus:border-cyan-500/60 resize-none "
                     ></textarea>
                     <div class="flex items-center justify-between">
-                      <span class="text-xs text-slate-400 uppercase er"
+                      <span class="text-xs  uppercase er"
                         >{{ bioDraft().length }}/500</span
                       >
                       <div class="flex items-center gap-2">
@@ -174,7 +174,7 @@
                     [class.text-slate-900]="activeTab() === 'followers'"
                     [class.]="activeTab() === 'followers'"
                     [class.border-transparent]="activeTab() !== 'followers'"
-                    [class.text-slate-400]="activeTab() !== 'followers'"
+                    [class.]="activeTab() !== 'followers'"
                     [class.hover:text-slate-600]="activeTab() !== 'followers'"
                   >
                     Followers
@@ -186,7 +186,7 @@
                     [class.text-slate-900]="activeTab() === 'following'"
                     [class.]="activeTab() === 'following'"
                     [class.border-transparent]="activeTab() !== 'following'"
-                    [class.text-slate-400]="activeTab() !== 'following'"
+                    [class.]="activeTab() !== 'following'"
                     [class.hover:text-slate-600]="activeTab() !== 'following'"
                   >
                     Following
@@ -228,7 +228,7 @@
                   <app-loading></app-loading>
                 } @else if (tabUsers().length === 0) {
                   <div
-                    class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border  border-border-theme text-slate-400"
+                    class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border  border-border-theme "
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

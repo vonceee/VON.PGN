@@ -22,7 +22,7 @@
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col shadow-xl"
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col "
       >
         <a
           appLink
@@ -79,7 +79,7 @@
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col shadow-xl"
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col "
       >
         <a
           appLink
@@ -115,7 +115,7 @@
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col shadow-xl"
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col "
       >
         <a
           appLink
@@ -249,7 +249,7 @@
         </button>
 
         @if (isNotificationsOpen()) {
-          <div class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden flex flex-col">
+          <div class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl  z-50 overflow-hidden flex flex-col">
             <div class="px-4 py-3 border-b border-border-base flex items-center justify-between">
               <span class=" text-sm">Notifications</span>
               @if (notificationService.unreadCount() > 0) {
@@ -300,7 +300,7 @@
         <!-- Desktop Profile Dropdown -->
         <div
           [class.hidden]="!isProfileDropdownOpen()"
-          class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden origin-top-right "
+          class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl  z-50 overflow-hidden origin-top-right "
         >
           <!-- Navigation Links -->
           <div class="flex flex-col py-1">

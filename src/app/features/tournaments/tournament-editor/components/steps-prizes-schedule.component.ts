@@ -11,7 +11,7 @@ import { ButtonComponent  } from '@shared/ui';
     <div class="space-y-6">
       
       @if (categoriesArray.length === 0) {
-      <p class="text-slate-400 text-sm py-4 text-center">No prize categories added.</p>
+      <p class=" text-sm py-4 text-center">No prize categories added.</p>
       }
       
       <div class="space-y-8">
@@ -238,7 +238,7 @@ export class StepPrizesComponent implements OnInit {
   template: `
     <div class="space-y-6">
       @if (scheduleDaysArray.length === 0) {
-      <p class="text-slate-400 text-sm py-8 text-center bg-slate-50  rounded-xl border-2  border-border-theme">No schedule days added yet.</p>
+      <p class=" text-sm py-8 text-center bg-slate-50  rounded-xl border-2  border-border-theme">No schedule days added yet.</p>
       }
       
       <div class="space-y-6">

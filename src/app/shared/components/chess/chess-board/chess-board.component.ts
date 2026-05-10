@@ -50,7 +50,7 @@ import { AudioService } from '../../../../core/services/audio.service';
             class="absolute inset-0 z-50 flex items-center justify-center    zoom-in "
           >
             <div
-              class="promotion-menu p-4 bg-surface border border-border-base rounded-2xl shadow-2xl flex gap-4"
+              class="promotion-menu p-4 bg-surface border border-border-base rounded-2xl  flex gap-4"
               (click)="$event.stopPropagation()"
             >
               @for (piece of promotionPieces; track piece.type) {
@@ -81,7 +81,7 @@ import { AudioService } from '../../../../core/services/audio.service';
         <div class="absolute inset-0 pointer-events-none z-20">
           @for (g of glyphs(); track g.square + g.symbol) {
             <div 
-              class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white  text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border shadow-xl   absolute"
+              class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white  text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border    absolute"
               [class.bg-[var(--color-annotation-good)]]="g.class === 'good' || g.class === 'brilliant'"
               [class.bg-[var(--color-annotation-bad)]]="g.class === 'mistake' || g.class === 'blunder'"
               [class.bg-[var(--color-annotation-interesting)]]="g.class === 'interesting' || g.class === 'dubious' || g.class === 'only-move' || g.class === 'zugzwang'"

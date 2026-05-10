@@ -6,23 +6,22 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { CreateStudyDialogComponent } from '../dialogs/create-study-dialog/create-study-dialog.component';
 import { FormsModule } from '@angular/forms';
-import { SectionHeadingComponent, BadgeComponent } from '@shared/ui';
+import { SectionHeadingComponent } from '@shared/ui';
 import { ButtonComponent } from '@shared/ui';
 import { LoadingComponent } from '@shared/feedback';
 import { effect } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash, heroChevronDown } from '@ng-icons/heroicons/outline';
-import { ToastService } from '../../../core/services/toast.service';
+import { heroChevronDown } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-study-list',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent, DialogModule, NgIconComponent, LoadingComponent],
-  providers: [provideIcons({ heroGlobeAlt, heroUser, heroLockClosed, heroEyeSlash, heroChevronDown })],
+  providers: [provideIcons({ heroChevronDown })],
   template: `
     <div class="px-4 md:px-16 py-8">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <app-section-heading text="Chess" highlight="Study" size="text-3xl font-semibold mb-0"></app-section-heading>
+        <app-section-heading text="Chess" highlight="Study" size="text-3xl mb-0"></app-section-heading>
 
         <div class="flex items-center gap-2">
             <!-- Dropdown -->
@@ -32,14 +31,13 @@ import { ToastService } from '../../../core/services/toast.service';
                 class="flex items-center justify-between gap-2 px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm font-semibold text-content hover:bg-surface  min-w-[140px]"
               >
                 <div class="flex items-center gap-2">
-                  <ng-icon [name]="activeTab() === 'all' ? 'heroGlobeAlt' : 'heroUser'"></ng-icon>
                   {{ activeTab() === 'all' ? 'Public' : 'My Studies' }}
                 </div>
-                <ng-icon name="heroChevronDown" [class.rotate-180]="isDropdownOpen()" class=" "></ng-icon>
+                <ng-icon name="heroChevronDown" [class.rotate-180]="isDropdownOpen()"></ng-icon>
               </button>
 
               @if (isDropdownOpen()) {
-                <div class="absolute top-full right-0 mt-2 w-48 bg-main border border-border-base rounded-xl shadow-xl z-50 overflow-hidden py-1    ">
+                <div class="absolute top-full right-0 mt-2 w-48 bg-main border border-border-base rounded-xl z-50 overflow-hidden py-1">
                   <button 
                     (click)="setTab('all')"
                     class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold  hover:bg-subtle"
@@ -85,7 +83,7 @@ import { ToastService } from '../../../core/services/toast.service';
                     </div>
                     @if (study.updated_at) {
                       <span
-                        class="text-xs text-slate-400 whitespace-nowrap shrink-0 mt-1"
+                        class="text-xs whitespace-nowrap shrink-0 mt-1"
                         [title]="formatDate(study.updated_at)"
                       >
                         {{ formatRelativeTime(study.updated_at) }}
@@ -111,7 +109,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
                   <!-- Bottom Row -->
                   <div class="mt-auto flex items-center justify-end">
-                    <a appButton variant="outline" [routerLink]="'/study/' + study.id">
+                    <a appButton variant="primary" [routerLink]="'/study/' + study.id">
                       View Study
                     </a>
                   </div>
@@ -130,7 +128,6 @@ export class StudyListComponent implements OnInit {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private dialog = inject(Dialog);
-  private toastService = inject(ToastService);
   
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
   

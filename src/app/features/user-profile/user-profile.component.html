@@ -5,7 +5,7 @@
     </div>
   } @else if (error()) {
     <div class="flex-1 flex items-center justify-center">
-      <div class="flex flex-col items-center gap-3 text-slate-400">
+      <div class="flex flex-col items-center gap-3 ">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -266,7 +266,7 @@
                           >
                             {{ tournament.timeControl }}
                           </span>
-                          <span class="text-xs text-slate-400">
+                          <span class="text-xs ">
                             {{ formatDate(tournament.dates.start) }}
                           </span>
                         </div>
@@ -334,7 +334,7 @@
               [class.text-slate-900]="activeTab() === 'followers'"
               [class.]="activeTab() === 'followers'"
               [class.border-transparent]="activeTab() !== 'followers'"
-              [class.text-slate-400]="activeTab() !== 'followers'"
+              [class.]="activeTab() !== 'followers'"
               [class.hover:text-slate-600]="activeTab() !== 'followers'"
             >
               Followers
@@ -346,7 +346,7 @@
               [class.text-slate-900]="activeTab() === 'following'"
               [class.]="activeTab() === 'following'"
               [class.border-transparent]="activeTab() !== 'following'"
-              [class.text-slate-400]="activeTab() !== 'following'"
+              [class.]="activeTab() !== 'following'"
               [class.hover:text-slate-600]="activeTab() !== 'following'"
             >
               Following
@@ -354,7 +354,7 @@
           </div>
           <button
             (click)="closeFollowModal()"
-            class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600  hover:bg-slate-100   cursor-pointer"
+            class="p-1.5 rounded-lg  hover:text-slate-600  hover:bg-slate-100   cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -380,7 +380,7 @@
               viewBox="0 0 24 24"
               stroke-width="2"
               stroke="currentColor"
-              class="w-4 h-4 text-slate-400  shrink-0"
+              class="w-4 h-4   shrink-0"
             >
               <path
                 stroke-linecap="round"
@@ -404,7 +404,7 @@
             <app-loading></app-loading>
           } @else if (tabUsers().length === 0) {
             <div
-              class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border  border-border-theme text-slate-400"
+              class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border  border-border-theme "
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

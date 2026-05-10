@@ -78,7 +78,7 @@ import { Router } from '@angular/router';
       <div class="flex flex-col py-2">
         @for (group of linkGroups; track group.title) {
           <div class="px-4 py-2 mt-2">
-            <span class="text-xs font-semibold text-slate-400  uppercase ">{{ group.title }}</span>
+            <span class="text-xs font-semibold   uppercase ">{{ group.title }}</span>
           </div>
           @for (link of group.links; track link.path) {
             <a

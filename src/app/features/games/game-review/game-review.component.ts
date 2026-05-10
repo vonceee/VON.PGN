@@ -43,7 +43,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
         <div class="flex-1 flex items-center justify-center">
           <div class="text-center">
             <div class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="text-slate-400">Loading game archive...</p>
+            <p class="">Loading game archive...</p>
           </div>
         </div>
       } @else if (game(); as g) {
@@ -539,7 +539,7 @@ export class GameReviewComponent implements OnInit, OnDestroy {
   }
 
   getResultClass(game: any): string {
-    if (game.result === '1/2-1/2') return 'text-slate-400';
+    if (game.result === '1/2-1/2') return '';
     const myUid = this.authService.currentUser()?.uid;
     const isMeWhite = String(game.white_player_id) === String(myUid);
     const iWon = (game.result === '1-0' && isMeWhite) || (game.result === '0-1' && !isMeWhite);
