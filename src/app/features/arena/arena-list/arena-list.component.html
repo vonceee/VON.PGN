@@ -12,7 +12,7 @@
       <div class="relative" #tabDropdownContainer>
         <button
           (click)="toggleTabDropdown()"
-          class="flex items-center justify-between px-4 py-2.5 bg-white  border border-border-theme rounded-xl text-sm font-semibold text-slate-900  whitespace-nowrap"
+          class="flex items-center justify-between px-4 py-2.5 bg-white  border border-border-theme rounded-xl text-sm font-semibold   whitespace-nowrap"
         >
           <span class="flex items-center gap-2">
             @if (activeTab() === 'ongoing') {
@@ -41,14 +41,14 @@
           >
             <button
               (click)="setTab('upcoming')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  "
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold   "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }"
             >
               <span>Upcoming</span>
             </button>
             <button
               (click)="setTab('ongoing')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  "
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold   "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }"
             >
               <span class="flex items-center gap-2">
@@ -58,7 +58,7 @@
             </button>
             <button
               (click)="setTab('past')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-slate-50  "
+              class="w-full flex items-center px-4 py-3 text-sm font-semibold   "
               [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }"
             >
               <span>Past</span>
@@ -85,7 +85,7 @@
           [value]="searchQuery()"
           (input)="onSearchInput($event)"
           placeholder="Search arenas..."
-          class="w-full pl-9 pr-9 py-2.5 bg-white  border border-border-theme rounded-xl text-sm text-slate-900  placeholder: focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400"
+          class="w-full pl-9 pr-9 py-2.5 bg-white  border border-border-theme rounded-xl text-sm   placeholder: focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400"
         />
         @if (searchQuery()) {
           <button
@@ -113,7 +113,7 @@
           [ngClass]="
             viewMode() === 'grid'
               ? 'bg-accent text-white'
-              : 'bg-white  text-slate-600  hover:bg-slate-50 '
+              : 'bg-white  text-slate-600   '
           "
         >
           <svg
@@ -134,7 +134,7 @@
           [ngClass]="
             viewMode() === 'list'
               ? 'bg-accent text-white'
-              : 'bg-white  text-slate-600  hover:bg-slate-50 '
+              : 'bg-white  text-slate-600   '
           "
         >
           <svg

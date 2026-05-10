@@ -17,7 +17,7 @@ import { ToastService } from '../../../core/services/toast.service';
       <!-- Header Actions -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 class="text-3xl font-semibold  text-slate-900">Coach Profiles</h1>
+          <h1 class="text-3xl font-semibold  ">Coach Profiles</h1>
           <p class=" mt-1 ">Manage and curate public coach profiles on the platform.</p>
         </div>
         <a routerLink="/admin/coach/new" class="px-6 py-3 rounded bg-slate-900 text-white font-semibold hover:bg-slate-800">
@@ -30,14 +30,14 @@ import { ToastService } from '../../../core/services/toast.service';
         <div class="bg-white rounded border border-border-base p-6 flex flex-col justify-between">
           <span class="text-xs font-semibold  uppercase ">Total Coaches</span>
           <div class="flex items-end justify-between mt-2">
-            <span class="text-3xl font-semibold text-slate-900">{{ coaches().length }}</span>
+            <span class="text-3xl font-semibold ">{{ coaches().length }}</span>
             <span class="text-xs font-semibold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">+1 this month</span>
           </div>
         </div>
         <div class="bg-white rounded border border-border-base p-6 flex flex-col justify-between">
           <span class="text-xs font-semibold  uppercase ">Academy Instructors</span>
           <div class="flex items-end justify-between mt-2">
-            <span class="text-3xl font-semibold text-slate-900">{{ academyInstructorsCount() }}</span>
+            <span class="text-3xl font-semibold ">{{ academyInstructorsCount() }}</span>
             <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-1 rounded">Top Tier</span>
           </div>
         </div>
@@ -47,7 +47,7 @@ import { ToastService } from '../../../core/services/toast.service';
               type="text" 
               placeholder="Search coaches by name, title, or location..." 
               (input)="searchTerm.set($any($event.target).value)"
-              class="w-full bg-transparent border-none outline-none px-4 py-3 text-slate-900 placeholder:"
+              class="w-full bg-transparent border-none outline-none px-4 py-3  placeholder:"
             >
           </div>
         </div>
@@ -65,7 +65,7 @@ import { ToastService } from '../../../core/services/toast.service';
             </thead>
             <tbody class="divide-y divide-slate-50">
               @for (coach of filteredCoaches(); track coach.id) {
-                <tr class="hover:bg-slate-50/50  group">
+                <tr class="/50  group">
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       @if (coach.title) {
@@ -73,7 +73,7 @@ import { ToastService } from '../../../core/services/toast.service';
                           {{ coach.title }}
                         </span>
                       }
-                      <span class="font-semibold text-slate-900">{{ coach.name }}</span>
+                      <span class="font-semibold ">{{ coach.name }}</span>
                       @if (coach.isAcademyInstructor) {
                         <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">ACADEMY</span>
                       }

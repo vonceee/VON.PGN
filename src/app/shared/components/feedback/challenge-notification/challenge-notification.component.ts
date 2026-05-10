@@ -21,7 +21,7 @@ import { heroCheck, heroXMark, heroTrophy } from '@ng-icons/heroicons/outline';
               <ng-icon name="heroTrophy" class="text-accent text-xl"></ng-icon>
             </div>
             <div class="flex-1 min-w-0">
-              <h4 class="text-sm font-semibold text-slate-900  truncate">
+              <h4 class="text-sm font-semibold   truncate">
                 {{ challenge.challenger.name }}
               </h4>
               <p class="text-xs   mt-0.5">

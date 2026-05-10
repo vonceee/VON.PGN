@@ -54,7 +54,7 @@
         <tbody class="divide-y divide-slate-100">
           <tr
             *ngFor="let item of enrollments()"
-            class="hover:bg-slate-50"
+            class=""
           >
             <td class="px-6 py-6">
               <div class="flex items-center gap-4">
@@ -64,7 +64,7 @@
                   {{ item.full_name[0] }}
                 </div>
                 <div>
-                  <div class="font-semibold text-slate-900">{{ item.full_name }}</div>
+                  <div class="font-semibold ">{{ item.full_name }}</div>
                   <div class="text-xs ">{{ item.email }}</div>
                   <div class="text-xs ">{{ item.contact_number }}</div>
                 </div>

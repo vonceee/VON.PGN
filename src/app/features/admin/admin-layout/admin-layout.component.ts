@@ -20,7 +20,7 @@ import { filter, map, startWith } from 'rxjs';
             <div class="w-10 h-10 bg-slate-900 rounded flex items-center justify-center text-white font-semibold">
               V
             </div>
-            <h1 class="text-xl font-semibold text-slate-900">Admin</h1>
+            <h1 class="text-xl font-semibold ">Admin</h1>
           </div>
         </div>
 

@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-slate-50  text-slate-900  flex flex-col md:flex-row pt-16">
+<div class="min-h-screen bg-slate-50    flex flex-col md:flex-row pt-16">
   
   <!-- Sidebar Navigation -->
   <aside class="w-full md:w-64 lg:w-72 shrink-0 border-r border-border-base  md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto px-6 py-8 bg-white ">
@@ -26,13 +26,13 @@
   <main class="flex-1 px-6 py-12 md:px-12 lg:px-24">
     <div class="max-w-3xl mx-auto">
       <div class="mb-16">
-        <h1 class="text-4xl md:text-5xl   mb-4 text-slate-900 ">vondocs</h1>
+        <h1 class="text-4xl md:text-5xl   mb-4  ">vondocs</h1>
         <p class="text-lg md:text-xl text-slate-600 ">Everything you need to know to get the most out of vonchess.</p>
       </div>
 
       <div class="space-y-24">
         <section *ngFor="let section of sections" [id]="section.id" class="scroll-mt-32">
-          <h2 class="text-3xl font-semibold mb-6 text-slate-900  border-b border-border-base  pb-4">
+          <h2 class="text-3xl font-semibold mb-6   border-b border-border-base  pb-4">
             {{ section.title }}
           </h2>
           <div class="prose prose-slate  max-w-none text-slate-600 ">
@@ -46,7 +46,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-slate-900  m-0">Content Under Construction</h3>
+                <h3 class="text-xl font-semibold   m-0">Content Under Construction</h3>
               </div>
               <p class="text-sm md:text-base   md:ml-14">
                 We are currently expanding our documentation. Stay tuned for a comprehensive guide on {{ section.title | lowercase }}.

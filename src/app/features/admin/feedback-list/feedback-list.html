@@ -1,20 +1,20 @@
 <div class="max-w-[1200px]">
   <div class="flex justify-between items-center mb-6 pb-4 border-b border-border-base">
     <div>
-      <h1 class="text-2xl font-semibold text-slate-900">Feedback</h1>
+      <h1 class="text-2xl font-semibold ">Feedback</h1>
       <p class="text-sm  mt-1" *ngIf="unreadCount() > 0">{{ unreadCount() }} unread</p>
     </div>
   </div>
 
   <div class="flex gap-2 mb-4">
-    <button class="px-3.5 py-2 border border-border-base bg-white rounded text-sm cursor-pointer hover:bg-slate-50 " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'all'" (click)="setFilter('all')">All</button>
-    <button class="px-3.5 py-2 border border-border-base bg-white rounded text-sm cursor-pointer hover:bg-slate-50 " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'bug'" (click)="setFilter('bug')">Bug Reports</button>
-    <button class="px-3.5 py-2 border border-border-base bg-white rounded text-sm cursor-pointer hover:bg-slate-50 " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'suggestion'" (click)="setFilter('suggestion')">Suggestions</button>
-    <button class="px-3.5 py-2 border border-border-base bg-white rounded text-sm cursor-pointer hover:bg-slate-50 " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'general'" (click)="setFilter('general')">General</button>
+    <button class="px-3.5 py-2 border border-border-base bg-white rounded text-sm cursor-pointer  " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'all'" (click)="setFilter('all')">All</button>
+    <button class="px-3.5 py-2 border border-border-base bg-white rounded text-sm cursor-pointer  " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'bug'" (click)="setFilter('bug')">Bug Reports</button>
+    <button class="px-3.5 py-2 border border-border-base bg-white rounded text-sm cursor-pointer  " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'suggestion'" (click)="setFilter('suggestion')">Suggestions</button>
+    <button class="px-3.5 py-2 border border-border-base bg-white rounded text-sm cursor-pointer  " [class.bg-blue-600.text-white.border-blue-600]="selectedFilter() === 'general'" (click)="setFilter('general')">General</button>
   </div>
 
   <ul class="list-none p-0 m-0" *ngIf="filteredItems().length > 0">
-    <li class="flex justify-between items-center p-4 border border-border-base bg-white mb-2 hover:bg-slate-50/50 " *ngFor="let item of filteredItems()" (click)="openFeedback(item)" style="cursor: pointer;">
+    <li class="flex justify-between items-center p-4 border border-border-base bg-white mb-2 /50 " *ngFor="let item of filteredItems()" (click)="openFeedback(item)" style="cursor: pointer;">
       <div class="flex-1">
         <div class="flex items-center gap-2 mb-2">
           <span class="inline-block px-2 py-1 text-xs font-semibold rounded uppercase" 
@@ -25,7 +25,7 @@
             }">{{ typeLabels[item.type] }}</span>
           <span class="text-xs ">{{ formatDate(item.createdAt) }}</span>
         </div>
-        <div class="font-semibold mb-1 text-slate-900" [style.font-weight]="!item.read ? '700' : '400'">{{ item.message }}</div>
+        <div class="font-semibold mb-1 " [style.font-weight]="!item.read ? '700' : '400'">{{ item.message }}</div>
         <div class="text-xs ">{{ item.name || 'Anonymous' }}<span *ngIf="item.email"> - {{ item.email }}</span></div>
       </div>
     </li>

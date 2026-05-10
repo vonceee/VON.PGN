@@ -138,7 +138,7 @@ export interface ComputerSetupResult {
                       <button
                         (click)="customMinutes.set(min)"
                         [class.bg-accent]="customMinutes() === min"
-                        [class.text-slate-900]="customMinutes() === min"
+                        [class.]="customMinutes() === min"
                         [class.border-cyan-500]="customMinutes() === min"
                         [class.bg-transparent]="customMinutes() !== min"
                         [class.border-border-theme]="customMinutes() !== min"
@@ -177,7 +177,7 @@ export interface ComputerSetupResult {
                       <button
                         (click)="customIncrement.set(inc)"
                         [class.bg-accent]="customIncrement() === inc"
-                        [class.text-slate-900]="customIncrement() === inc"
+                        [class.]="customIncrement() === inc"
                         [class.border-cyan-500]="customIncrement() === inc"
                         [class.bg-transparent]="customIncrement() !== inc"
                         [class.border-border-theme]="customIncrement() !== inc"

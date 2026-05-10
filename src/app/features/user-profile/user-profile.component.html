@@ -271,7 +271,7 @@
                           </span>
                         </div>
                         <h4
-                          class="font-semibold text-slate-900  group-hover:text-cyan-500  line-clamp-1"
+                          class="font-semibold   group-hover:text-cyan-500  line-clamp-1"
                         >
                           {{ tournament.name }}
                         </h4>
@@ -331,7 +331,7 @@
               (click)="activeTab.set('followers'); loadTabUsers()"
               class="text-xs font-semibold uppercase  pb-1 border-b-2  cursor-pointer"
               [class.border-cyan-500]="activeTab() === 'followers'"
-              [class.text-slate-900]="activeTab() === 'followers'"
+              [class.]="activeTab() === 'followers'"
               [class.]="activeTab() === 'followers'"
               [class.border-transparent]="activeTab() !== 'followers'"
               [class.]="activeTab() !== 'followers'"
@@ -343,7 +343,7 @@
               (click)="activeTab.set('following'); loadTabUsers()"
               class="text-xs font-semibold uppercase  pb-1 border-b-2  cursor-pointer"
               [class.border-cyan-500]="activeTab() === 'following'"
-              [class.text-slate-900]="activeTab() === 'following'"
+              [class.]="activeTab() === 'following'"
               [class.]="activeTab() === 'following'"
               [class.border-transparent]="activeTab() !== 'following'"
               [class.]="activeTab() !== 'following'"
@@ -393,7 +393,7 @@
               [value]="tabSearchQuery()"
               (input)="onTabSearch($event)"
               [placeholder]="'Search ' + activeTab() + '...'"
-              class="ml-2 bg-transparent outline-none text-sm text-slate-900  placeholder-slate-400  w-full"
+              class="ml-2 bg-transparent outline-none text-sm   placeholder-slate-400  w-full"
             />
           </div>
         </div>
@@ -434,7 +434,7 @@
             <div class="flex flex-col gap-1">
               @for (userItem of tabUsers(); track userItem.uid) {
                 <div
-                  class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50   group"
+                  class="flex items-center gap-3 p-3 rounded-xl    group"
                 >
                   <a
                     (click)="closeFollowModal()"
@@ -453,7 +453,7 @@
                       [appUserHovercard]="userItem.username"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="text-sm font-semibold text-slate-900  truncate block hover:text-cyan-500 "
+                      class="text-sm font-semibold   truncate block hover:text-cyan-500 "
                     >
                       {{ userItem.displayName }}
                     </a>

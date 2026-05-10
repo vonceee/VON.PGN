@@ -18,7 +18,7 @@ import { ToastService } from '../../../core/services/toast.service';
     <div class="coach-editor max-w-5xl mx-auto space-y-8">
       <!-- Top Bar -->
       <div class="flex items-center justify-between">
-        <button (click)="location.back()" class=" hover:text-slate-900 font-semibold">
+        <button (click)="location.back()" class=" hover: font-semibold">
           <span>&larr; Back to List</span>
         </button>
         
@@ -33,7 +33,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
       <!-- Header -->
       <div class="space-y-2">
-        <h1 class="text-4xl font-semibold  text-slate-900">
+        <h1 class="text-4xl font-semibold  ">
           {{ isEditing() ? 'Edit Coach Profile' : 'Create Coach Profile' }}
         </h1>
         <p class=" ">Fill in the details below to {{ isEditing() ? 'update' : 'create' }} a public coach profile.</p>
@@ -44,43 +44,43 @@ import { ToastService } from '../../../core/services/toast.service';
         <div class="lg:col-span-2 space-y-8">
           <!-- Identity Section -->
           <div class="bg-white rounded border border-border-base p-8 space-y-6">
-            <h3 class="text-lg font-semibold text-slate-900">
+            <h3 class="text-lg font-semibold ">
               Basic Information
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">Full Name</label>
-                <input type="text" formControlName="name" placeholder="e.g. Magnus Carlsen" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none  text-slate-900 ">
+                <input type="text" formControlName="name" placeholder="e.g. Magnus Carlsen" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none   ">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">Professional Title</label>
-                <input type="text" formControlName="title" placeholder="e.g. Grandmaster & World Champion" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none  text-slate-900 ">
+                <input type="text" formControlName="title" placeholder="e.g. Grandmaster & World Champion" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none   ">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">FIDE Rating</label>
-                <input type="number" formControlName="fideRating" placeholder="e.g. 2850" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none  text-slate-900 ">
+                <input type="number" formControlName="fideRating" placeholder="e.g. 2850" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none   ">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">Location</label>
-                <input type="text" formControlName="location" placeholder="e.g. Oslo, Norway" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none  text-slate-900 ">
+                <input type="text" formControlName="location" placeholder="e.g. Oslo, Norway" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none   ">
               </div>
             </div>
 
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-semibold  uppercase  mb-1 px-1">Short Catchphrase / Intro</label>
-              <input type="text" formControlName="shortInfo" placeholder="A brief one-liner for search results" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none  text-slate-900 ">
+              <input type="text" formControlName="shortInfo" placeholder="A brief one-liner for search results" class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none   ">
             </div>
 
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-semibold  uppercase  mb-1 px-1">Biography</label>
-              <textarea formControlName="bio" rows="6" placeholder="Tell the story of the coach..." class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none  text-slate-900 "></textarea>
+              <textarea formControlName="bio" rows="6" placeholder="Tell the story of the coach..." class="px-4 py-3 bg-slate-50 border border-border-base rounded border border-border-base outline-none   "></textarea>
             </div>
           </div>
 
           <!-- Expertise & Experience -->
           <div class="bg-white rounded border border-border-base p-8 space-y-6">
-            <h3 class="text-lg font-semibold text-slate-900">
+            <h3 class="text-lg font-semibold ">
               Experience & Methods
             </h3>
 
@@ -93,7 +93,7 @@ import { ToastService } from '../../../core/services/toast.service';
               <div formArrayName="playingExperience" class="space-y-2">
                 @for (ctrl of playingExperience.controls; track $index) {
                   <div class="flex gap-2">
-                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20   text-slate-900 " placeholder="Achievement or tournament win...">
+                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20    " placeholder="Achievement or tournament win...">
                     <button type="button" (click)="removePlayingExp($index)" class="px-2 py-1 text-xs font-semibold text-rose-500 hover:bg-rose-50 rounded border border-border-base">
                       Delete
                     </button>
@@ -111,7 +111,7 @@ import { ToastService } from '../../../core/services/toast.service';
               <div formArrayName="teachingExperience" class="space-y-2">
                 @for (ctrl of teachingExperience.controls; track $index) {
                   <div class="flex gap-2">
-                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20   text-slate-900 " placeholder="Previous students or coaching roles...">
+                    <input type="text" [formControlName]="$index" class="flex-1 px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20    " placeholder="Previous students or coaching roles...">
                     <button type="button" (click)="removeTeachingExp($index)" class="px-2 py-1 text-xs font-semibold text-rose-500 hover:bg-rose-50 rounded border border-border-base">
                       Delete
                     </button>
@@ -126,7 +126,7 @@ import { ToastService } from '../../../core/services/toast.service';
         <div class="space-y-8">
           <!-- Availability & Logistics -->
           <div class="bg-white rounded border border-border-base p-8 space-y-6">
-            <h3 class="text-lg font-semibold text-slate-900">Settings</h3>
+            <h3 class="text-lg font-semibold ">Settings</h3>
             
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-semibold  uppercase  mb-1 px-1">Profile Picture</label>
@@ -159,7 +159,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-semibold  uppercase  mb-1 px-1">Coaching Type</label>
-              <select formControlName="coachingType" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20   text-slate-900 ">
+              <select formControlName="coachingType" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20    ">
                 <option value="Online">Online</option>
                 <option value="Onsite">Onsite</option>
                 <option value="Online & Onsite">Online & Onsite</option>
@@ -168,35 +168,35 @@ import { ToastService } from '../../../core/services/toast.service';
 
             <div class="flex flex-col gap-1.5">
               <label class="text-xs font-semibold  uppercase  mb-1 px-1">Availability</label>
-              <input type="text" formControlName="availability" placeholder="e.g. Mon-Fri, 10am - 6pm" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20   text-slate-900 ">
+              <input type="text" formControlName="availability" placeholder="e.g. Mon-Fri, 10am - 6pm" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20    ">
             </div>
 
             <div class="flex items-center gap-3 p-4 bg-slate-50 rounded border border-border-base">
               <input type="checkbox" formControlName="isAcademyInstructor" id="isAcademy" class="w-5 h-5 rounded border-border-base">
-              <label for="isAcademy" class="!mb-0 cursor-pointer font-semibold text-slate-900">Academy Instructor</label>
+              <label for="isAcademy" class="!mb-0 cursor-pointer font-semibold ">Academy Instructor</label>
             </div>
           </div>
 
           <!-- Social Media -->
           <div class="bg-white rounded border border-border-base p-8 space-y-6" formGroupName="socialMedia">
-            <h3 class="text-lg font-semibold text-slate-900">Social Presence</h3>
+            <h3 class="text-lg font-semibold ">Social Presence</h3>
             
             <div class="space-y-4">
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">Twitter/X</label>
-                <input type="text" formControlName="twitter" placeholder="username" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20   text-slate-900 ">
+                <input type="text" formControlName="twitter" placeholder="username" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20    ">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">Twitch</label>
-                <input type="text" formControlName="twitch" placeholder="channel" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20   text-slate-900 ">
+                <input type="text" formControlName="twitch" placeholder="channel" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20    ">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">YouTube</label>
-                <input type="text" formControlName="youtube" placeholder="channel url" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20   text-slate-900 ">
+                <input type="text" formControlName="youtube" placeholder="channel url" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20    ">
               </div>
               <div class="flex flex-col gap-1.5">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">Lichess</label>
-                <input type="text" formControlName="lichess" placeholder="username" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20   text-slate-900 ">
+                <input type="text" formControlName="lichess" placeholder="username" class="px-4 py-3 bg-slate-50 border border-border-base rounded-2xl outline-none focus:ring-2 focus:ring-blue-500/20    ">
               </div>
             </div>
           </div>

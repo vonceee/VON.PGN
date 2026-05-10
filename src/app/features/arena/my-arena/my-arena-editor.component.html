@@ -19,7 +19,7 @@
               (click)="selectTimeControl(tc.value)"
               [attr.aria-pressed]="arenaForm.get('timeControl')?.value === tc.value"
               [class.bg-accent]="arenaForm.get('timeControl')?.value === tc.value"
-              [class.text-slate-900]="arenaForm.get('timeControl')?.value === tc.value"
+              [class.]="arenaForm.get('timeControl')?.value === tc.value"
               [class.border-cyan-500]="arenaForm.get('timeControl')?.value === tc.value"
               [class.bg-white/0.03]="arenaForm.get('timeControl')?.value !== tc.value"
               [class.border-border-theme]="arenaForm.get('timeControl')?.value !== tc.value"

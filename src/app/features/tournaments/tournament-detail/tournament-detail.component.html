@@ -4,7 +4,7 @@
     <div class="px-8 pt-8 pb-4">
       <app-back-link text="Back to Events" link="/events"></app-back-link>
 
-      <h1 class="text-3xl md:text-4xl font-semibold text-slate-900  max-w-3xl">
+      <h1 class="text-3xl md:text-4xl font-semibold   max-w-3xl">
         {{ tournament.name }}
       </h1>
       @if (tournament.creator) {
@@ -170,7 +170,7 @@
 
           <section>
             <h2
-              class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+              class="text-xl font-semibold   mb-4 flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +195,7 @@
 
           <section>
             <h2
-              class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+              class="text-xl font-semibold   mb-4 flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +227,7 @@
           @if (mapUrl()) {
             <section>
               <h2
-                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold   mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -268,7 +268,7 @@
 
           <section>
             <h2
-              class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+              class="text-xl font-semibold   mb-4 flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -290,7 +290,7 @@
               <div class="flex items-start gap-3 text-slate-600 ">
                 <div>
                   <span class="text-sm  ">Format</span>
-                  <p class="font-semibold text-slate-900 ">
+                  <p class="font-semibold  ">
                     {{ tournament.format }}
                   </p>
                 </div>
@@ -298,7 +298,7 @@
               <div class="flex items-start gap-3 text-slate-600 ">
                 <div>
                   <span class="text-sm  ">Time Control</span>
-                  <p class="font-semibold text-slate-900 ">
+                  <p class="font-semibold  ">
                     {{ tournament.timeControl }}
                   </p>
                 </div>
@@ -306,7 +306,7 @@
               <div class="flex items-start gap-3 text-slate-600 ">
                 <div>
                   <span class="text-sm  ">Rounds</span>
-                  <p class="font-semibold text-slate-900 ">
+                  <p class="font-semibold  ">
                     {{ tournament.rounds }}
                   </p>
                 </div>
@@ -317,7 +317,7 @@
           @if (tournament.eligibility && tournament.eligibility.length > 0) {
             <section>
               <h2
-                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold   mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -360,7 +360,7 @@
           @if (tournament.categories) {
             <section>
               <h2
-                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold   mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -381,7 +381,7 @@
 
               @for (catKey of objectKeys(tournament.categories); track catKey) {
                 <div class="mb-6 last:mb-0">
-                  <h3 class="text-lg font-semibold text-slate-900  mb-3 capitalize">
+                  <h3 class="text-lg font-semibold   mb-3 capitalize">
                     {{ formatCategoryName(catKey) }}
                   </h3>
 
@@ -427,7 +427,7 @@
                         ) {
                           @if (tournament.categories![catKey].prizes[prizeKey]) {
                             <tr class="border-t border-border-theme">
-                              <td class="px-4 py-2.5 font-semibold text-slate-900 ">
+                              <td class="px-4 py-2.5 font-semibold  ">
                                 {{ formatPrizeKey(prizeKey) }}
                               </td>
                               <td class="px-4 py-2.5 text-right text-slate-600 ">
@@ -443,7 +443,7 @@
                   <!-- Special Awards -->
                   @if (tournament.categories![catKey].specialAwards) {
                     <div class="ui-panel p-4">
-                      <h4 class="text-sm font-semibold text-slate-900  mb-3">
+                      <h4 class="text-sm font-semibold   mb-3">
                         Special Awards
                       </h4>
                       <div class="space-y-2">
@@ -461,7 +461,7 @@
                               )
                             ) {
                               <div class="flex-1">
-                                <span class="font-semibold text-slate-900 ">{{
+                                <span class="font-semibold  ">{{
                                   awardKey
                                 }}</span>
                                 @if (
@@ -490,7 +490,7 @@
                               </div>
                             } @else {
                               <div>
-                                <span class="font-semibold text-slate-900 "
+                                <span class="font-semibold  "
                                   >{{ awardKey }}:</span
                                 >
                                 <span class="text-slate-600  ml-1">{{
@@ -511,7 +511,7 @@
           } @else if (tournament.prizePool) {
             <section>
               <h2
-                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold   mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -530,7 +530,7 @@
                 Prizes
               </h2>
               <div class="ui-panel p-5">
-                <div class="text-3xl font-semibold text-slate-900 ">
+                <div class="text-3xl font-semibold  ">
                   {{ formatCurrency(tournament.prizePool) }}
                 </div>
                 <p class="text-sm   mt-1">Total Prize Pool</p>
@@ -541,7 +541,7 @@
         @if (tournament.schedule && objectKeys(tournament.schedule).length > 0) {
           <section>
             <h2
-              class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+              class="text-xl font-semibold   mb-4 flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -579,7 +579,7 @@
                           let i = $index
                         ) {
                           <tr [ngClass]="{ 'border-t border-border-theme': i > 0 }">
-                            <td class="px-4 py-2.5 font-semibold text-slate-900 ">
+                            <td class="px-4 py-2.5 font-semibold  ">
                               {{ event.name }}
                             </td>
                             <td class="px-4 py-2.5 text-right text-slate-600 ">
@@ -599,7 +599,7 @@
           @if (tournament.status === 'past' && tournament.standings) {
             <section>
               <h2
-                class="text-xl font-semibold text-slate-900  mb-4 flex items-center gap-2"
+                class="text-xl font-semibold   mb-4 flex items-center gap-2"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -660,18 +660,18 @@
                                 />
                               </svg>
                             }
-                            <span class="font-semibold text-slate-900 ">{{
+                            <span class="font-semibold  ">{{
                               entry.rank
                             }}</span>
                           </span>
                         </td>
-                        <td class="px-4 py-3 text-slate-900  font-semibold">
+                        <td class="px-4 py-3   font-semibold">
                           <a [routerLink]="['/user', entry.player]" [appUserHovercard]="entry.player" class="hover:text-cyan-400 ">
                             {{ entry.player }}
                           </a>
                         </td>
                         <td
-                          class="px-4 py-3 text-right  font-semibold text-slate-900 "
+                          class="px-4 py-3 text-right  font-semibold  "
                         >
                           {{ entry.score }}
                         </td>
@@ -687,7 +687,7 @@
         <!-- Right Column -->
         <div class="space-y-6">
           <div class="ui-panel p-5">
-            <h3 class="font-semibold text-slate-900  mb-3 flex items-center gap-2">
+            <h3 class="font-semibold   mb-3 flex items-center gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -707,26 +707,26 @@
             <div class="space-y-3 text-sm">
               <div>
                 <span class=" ">Dates</span>
-                <p class="font-semibold text-slate-900 ">
+                <p class="font-semibold  ">
                   {{ formatDate(tournament.dates.start) }} – {{ formatDate(tournament.dates.end) }}
                 </p>
               </div>
               <div>
                 <span class=" ">Location</span>
-                <p class="font-semibold text-slate-900 ">
+                <p class="font-semibold  ">
                   {{ tournament.location }}
                 </p>
               </div>
               <div>
                 <span class=" ">Entry Fee</span>
-                <p class="font-semibold text-slate-900 ">
+                <p class="font-semibold  ">
                   {{ formatCurrency(tournament.entryFee) }}
                 </p>
               </div>
               @if (tournament.status === 'upcoming' && tournament.registrationDeadline) {
                 <div>
                   <span class=" ">Registration Deadline</span>
-                  <p class="font-semibold text-slate-900 ">
+                  <p class="font-semibold  ">
                     {{ formatDate(tournament.registrationDeadline) }}
                   </p>
                 </div>
@@ -746,7 +746,7 @@
                     >
                       {{ tournament.creator.name.charAt(0).toUpperCase() }}
                     </span>
-                    <span class="font-semibold text-slate-900 ">{{
+                    <span class="font-semibold  ">{{
                       tournament.creator.name
                     }}</span>
                   </a>
@@ -756,7 +756,7 @@
           </div>
 
           <div class="ui-panel p-5">
-            <h3 class="font-semibold text-slate-900  mb-3 flex items-center gap-2">
+            <h3 class="font-semibold   mb-3 flex items-center gap-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -774,7 +774,7 @@
               Organizer
             </h3>
             <div class="space-y-2 text-sm">
-              <p class="font-semibold text-slate-900 ">{{ tournament.organizer }}</p>
+              <p class="font-semibold  ">{{ tournament.organizer }}</p>
               <div class="flex items-center gap-1 text-slate-600 ">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -826,7 +826,7 @@
       <div class="ui-panel p-5">
         <div class="flex items-start gap-3">
           <div>
-            <p class="text-md font-semibold text-slate-900  mb-1">Disclaimer</p>
+            <p class="text-md font-semibold   mb-1">Disclaimer</p>
             <p class="text-sm   ">
               vonchess serves only as an information display for chess events. We are not
               responsible for any payment transactions, or registration processes. All financial

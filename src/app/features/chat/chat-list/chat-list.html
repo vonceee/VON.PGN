@@ -15,7 +15,7 @@
           placeholder="Search conversations..."
           [value]="searchQuery()"
           (input)="onSearchInput($event)"
-          class="ml-2 bg-transparent outline-none text-sm text-slate-900  placeholder-slate-400  w-full"
+          class="ml-2 bg-transparent outline-none text-sm   placeholder-slate-400  w-full"
         />
         @if (searchQuery()) {
           <button (click)="clearSearch()" class="shrink-0  hover:text-slate-600 ">
@@ -67,11 +67,11 @@
       @for (conversation of filteredConversations(); track conversation.id) {
         <button
           (click)="selectConversation(conversation)"
-          [class]="'w-full flex items-center gap-2 px-4 py-3 text-left  hover:bg-slate-50  ' + (isActive(conversation) ? 'bg-slate-100 /10' : '')">
+          [class]="'w-full flex items-center gap-2 px-4 py-3 text-left    ' + (isActive(conversation) ? 'bg-slate-100 /10' : '')">
           <!-- Content -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-2">
-              <span class="text-sm font-semibold text-slate-900  truncate">
+              <span class="text-sm font-semibold   truncate">
                 {{ conversation.other_user?.name || 'Unknown' }}
               </span>
               <span class="text-xs   shrink-0">

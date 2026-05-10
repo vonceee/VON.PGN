@@ -1,7 +1,7 @@
 <div class="max-w-[1200px]">
   <div class="flex justify-between items-center mb-6 pb-4 border-b border-border-base">
     <div>
-      <h1 class="text-2xl font-semibold text-slate-900">{{ chapterId() ? 'Edit Chapter' : 'New Chapter' }}</h1>
+      <h1 class="text-2xl font-semibold ">{{ chapterId() ? 'Edit Chapter' : 'New Chapter' }}</h1>
     </div>
     <button [disabled]="saving() || chapterForm.invalid" (click)="saveChapter()" class="inline-block px-4 py-2 rounded-md text-sm   bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50">
       {{ saving() ? 'Saving...' : 'Save Chapter' }}
@@ -15,7 +15,7 @@
   <div *ngIf="!loading()">
     <div class="bg-white border border-border-base rounded-lg p-5 mb-4">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-border-base">
-        <h2 class="text-base font-semibold text-slate-900 m-0">Chapter Details</h2>
+        <h2 class="text-base font-semibold  m-0">Chapter Details</h2>
       </div>
       <form [formGroup]="chapterForm" (ngSubmit)="saveChapter()">
         <div class="mb-4">
@@ -32,12 +32,12 @@
 
     <div class="bg-white border border-border-base rounded-lg p-5 mb-4 mt-6" *ngIf="chapterId()">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-border-base">
-        <h2 class="text-base font-semibold text-slate-900 m-0">Lessons</h2>
+        <h2 class="text-base font-semibold  m-0">Lessons</h2>
         <a [routerLink]="['/admin/chapter', chapterId(), 'lesson', 'new']" class="inline-block px-3 py-1.5 rounded-md text-xs   bg-blue-600 text-white hover:bg-blue-700">+ Add Lesson</a>
       </div>
 
       <ul class="list-none p-0 m-0" *ngIf="chapter()?.lessons?.length">
-        <li class="flex justify-between items-center p-4 border border-border-base bg-white mb-2 hover:bg-slate-50/50" *ngFor="let lesson of chapter()?.lessons">
+        <li class="flex justify-between items-center p-4 border border-border-base bg-white mb-2 /50" *ngFor="let lesson of chapter()?.lessons">
           <div class="flex-1">
             <div class="font-semibold mb-1">#{{ lesson.order }} {{ lesson.title }}</div>
           </div>
