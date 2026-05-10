@@ -9,7 +9,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
   standalone: true,
   imports: [CommonModule, ChessBoardComponent, FlagIconComponent],
   template: `
-    <div class="ui-panel p-4 w-80 overflow-hidden   zoom-in ">
+    <div class="ui-panel p-4 w-80 overflow-hidden zoom-in">
       @if (user()) {
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">
@@ -56,7 +56,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         </div>
 
         <!-- Stats -->
-        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-semibold capitalize ">
+        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-semibold capitalize">
           <div class="flex items-center gap-1.5">
             <span>{{ user()!.followers_count }} Followers</span>
           </div>
