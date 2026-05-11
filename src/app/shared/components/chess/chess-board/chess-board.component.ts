@@ -34,7 +34,7 @@ import { AudioService } from '../../../../core/services/audio.service';
   schemas: [NO_ERRORS_SCHEMA],
   encapsulation: ViewEncapsulation.None,
   template: `
-    <div class="board-resize-wrapper">
+    <div class="board-resize-wrapper" [class.fluid]="fluid">
       <div class="board-container-wrapper relative">
         <div #boardEl class="board-container">
           <div class="absolute inset-0 flex items-center justify-center text-muted opacity-20 pointer-events-none">
@@ -110,6 +110,10 @@ import { AudioService } from '../../../../core/services/audio.service';
         height: var(--board-size, auto);
         cursor: default;
       }
+      .board-resize-wrapper.fluid {
+        width: 100%;
+        height: auto;
+      }
       .board-container-wrapper {
         width: 100%;
         aspect-ratio: 1 / 1;
@@ -162,7 +166,9 @@ import { AudioService } from '../../../../core/services/audio.service';
     `,
   ],
   host: {
-    class: 'block w-fit h-full'
+    '[class.w-full]': 'fluid || !manualSize()',
+    '[class.w-fit]': '!fluid && manualSize()',
+    'class': 'block h-full'
   },
 })
 export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
@@ -179,6 +185,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() isEditor: boolean = false;
   @Input() hideCoordinates: boolean = false;
   @Input() resizable: boolean = true;
+  @Input() fluid: boolean = false;
   @Input() lastMove: Key[] | undefined = undefined;
   glyphs = input<{ square: string; symbol: string; class: string }[]>([]);
 
@@ -195,7 +202,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private containerSize: { width: number; height: number } = { width: 800, height: 800 };
   private resizeObserver: ResizeObserver | null = null;
   private readonly STORAGE_KEY = 'von-chess.board-size';
-  private manualSize = signal<number | null>(null);
+  public manualSize = signal<number | null>(null);
   public isResizing = signal(false);
   private lastScrollTime = 0;
   private readonly SCROLL_THROTTLE = 80;
@@ -254,8 +261,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
         this.containerSize = { 
-          width: Math.max(0, width - 8), 
-          height: Math.max(0, height - 8) 
+          width: Math.max(0, width), 
+          height: Math.max(0, height) 
         };
         this.updateBoardSize();
       }
@@ -276,7 +283,11 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     const totalSize = Math.max(this.minSize + GUTTER, Math.min(this.maxSize, targetSize, maxPossible));
 
     // Direct DOM update for performance
-    this.el.nativeElement.style.setProperty('--board-size', `${totalSize}px`);
+    if (!this.fluid) {
+      this.el.nativeElement.style.setProperty('--board-size', `${totalSize}px`);
+    } else {
+      this.el.nativeElement.style.removeProperty('--board-size');
+    }
 
     const boardSize = totalSize - GUTTER;
     if (this.boardSize !== boardSize) {

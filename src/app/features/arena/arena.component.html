@@ -145,8 +145,8 @@
   <!-- Column 3: Watch & Top Games (Right) -->
   <div class="md:col-span-3 space-y-6 w-full lg:sticky lg:top-8">
     <!-- Live Game Board -->
-    <div class="bg-main border-2 border-accent/20 rounded-2xl overflow-hidden shadow-md">
-      <div class="bg-main">
+    <div class="overflow-hidden flex flex-col">
+      <div class="flex-1">
         @if (game(); as g) {
           <div class="flex items-center justify-between">
             <app-game-info
@@ -161,16 +161,15 @@
             />
           </div>
 
-          <div class="flex justify-center -mx-6 py-4 bg-subtle">
-            <app-chess-board
-              [fen]="displayFen()"
-              [orientation]="'white'"
-              [interactive]="false"
-              [configOverride]="cgConfig()"
-              [hideCoordinates]="true"
-              [resizable]="false"
-            ></app-chess-board>
-          </div>
+          <app-chess-board
+            [fen]="displayFen()"
+            [orientation]="'white'"
+            [interactive]="false"
+            [configOverride]="cgConfig()"
+            [hideCoordinates]="true"
+            [resizable]="false"
+            [fluid]="true"
+          ></app-chess-board>
 
           <div class="flex items-center justify-between">
             <app-game-info
@@ -185,15 +184,14 @@
             />
           </div>
         } @else {
-          <div class="flex justify-center">
-            <app-chess-board
-              [fen]="STARTING_FEN"
-              [orientation]="'white'"
-              [interactive]="false"
-              [hideCoordinates]="true"
-              [resizable]="false"
-            ></app-chess-board>
-          </div>
+          <app-chess-board
+            [fen]="STARTING_FEN"
+            [orientation]="'white'"
+            [interactive]="false"
+            [hideCoordinates]="true"
+            [resizable]="false"
+            [fluid]="true"
+          ></app-chess-board>
         }
       </div>
     </div>
