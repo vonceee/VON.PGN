@@ -33,7 +33,12 @@ import { Config } from 'chessground/config';
     RouterLink,
   ],
   templateUrl: './arena.component.html',
-  styleUrl: './arena.component.css',
+  styles: [`
+    :host {
+      display: block;
+      width: 100%;
+    }
+  `]
 })
 export class ArenaComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
@@ -88,6 +93,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
       viewOnly: true,
       movable: { color: undefined, dests: new Map() },
       check: this.chess.inCheck() ? (this.chess.turn() === 'w' ? 'white' : 'black') : undefined,
+      coordinates: false,
     } as Config;
   });
 

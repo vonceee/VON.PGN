@@ -7,6 +7,8 @@ import { Tournament } from '../../../core/models/tournament.model';
 import { ConfirmDeleteModalComponent  } from '@shared/feedback';
 import { ButtonComponent  } from '@shared/ui';
 import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
+import { Dialog } from '@angular/cdk/dialog';
+import { CreateArenaDialogComponent } from '../dialogs/create-arena-dialog/create-arena-dialog.component';
 
 @Component({
   selector: 'app-my-arena',
@@ -17,6 +19,7 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
 export class MyArenaComponent implements OnInit {
   private tournamentService = inject(TournamentService);
   private toastService = inject(ToastService);
+  private dialog = inject(Dialog);
 
   allTournaments = signal<Tournament[]>([]);
   arenas = computed(() => this.allTournaments().filter((t) => t.format === 'Arena'));
@@ -40,6 +43,19 @@ export class MyArenaComponent implements OnInit {
         this.toastService.show('Failed to load arenas', 'error');
         this.loading.set(false);
       },
+    });
+  }
+
+  openCreateDialog() {
+    const dialogRef = this.dialog.open<boolean>(CreateArenaDialogComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+    });
+
+    dialogRef.closed.subscribe((result) => {
+      if (result) {
+        this.loadTournaments();
+      }
     });
   }
 

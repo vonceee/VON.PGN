@@ -66,16 +66,18 @@ import { AudioService } from '../../../../core/services/audio.service';
         }
 
         <!-- Resize Handle -->
-        <div
-          class="board-resize-handle"
-          (mousedown)="startResizing($event)"
-          (touchstart)="startResizing($event)"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="21" y1="3" x2="3" y2="21"></line>
-            <line x1="21" y1="12" x2="12" y2="21"></line>
-          </svg>
-        </div>
+        @if (resizable) {
+          <div
+            class="board-resize-handle"
+            (mousedown)="startResizing($event)"
+            (touchstart)="startResizing($event)"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="21" y1="3" x2="3" y2="21"></line>
+              <line x1="21" y1="12" x2="12" y2="21"></line>
+            </svg>
+          </div>
+        }
 
         <!-- Glyphs Layer -->
         <div class="absolute inset-0 pointer-events-none z-20">
@@ -176,6 +178,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() preMoveEnabled: boolean = true;
   @Input() isEditor: boolean = false;
   @Input() hideCoordinates: boolean = false;
+  @Input() resizable: boolean = true;
   @Input() lastMove: Key[] | undefined = undefined;
   glyphs = input<{ square: string; symbol: string; class: string }[]>([]);
 

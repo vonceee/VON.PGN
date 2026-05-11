@@ -6,7 +6,7 @@
         Create and manage your online Arena lobbies
       </p>
     </div>
-    <a appButton variant="primary" routerLink="/my-arena/new">+ New Arena</a>
+    <button appButton variant="primary" (click)="openCreateDialog()">+ New Arena</button>
   </div>
 
   @if (loading()) {
