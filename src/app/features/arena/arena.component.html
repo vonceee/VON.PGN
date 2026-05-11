@@ -36,31 +36,8 @@
     </div>
 
     <!-- Chat Panel -->
-    <div class="bg-main border border-border-base rounded-2xl flex flex-col h-[500px] overflow-hidden ">
-      <div class="flex-1 overflow-y-auto p-4 space-y-4">
-        <div class="text-sm">
-          <span class=" text-accent">system:</span>
-          <span class="text-content ml-2">Welcome to the arena! Good luck everyone.</span>
-        </div>
-        <div class="text-sm">
-          <span class=" text-content hover:underline cursor-pointer">Magnus:</span>
-          <span class="text-content ml-2">gl hf</span>
-        </div>
-        <div class="text-sm">
-          <span class=" text-content hover:underline cursor-pointer">Hikaru:</span>
-          <span class="text-content ml-2">let's go!</span>
-        </div>
-        <div class="text-xs text-muted italic text-center py-4">
-          Chat history is loading...
-        </div>
-      </div>
-      <div class="p-4 bg-subtle border-t border-border-base">
-        <input 
-          type="text" 
-          placeholder="Say something..." 
-          class="w-full bg-main border border-border-base rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
-        >
-      </div>
+    <div class="bg-main border border-border-base rounded-2xl flex flex-col h-[500px] overflow-hidden">
+      <app-arena-chat [arenaId]="arenaId() || ''" />
     </div>
   </div>
 

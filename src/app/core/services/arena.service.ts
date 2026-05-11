@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Arena } from '../models/arena.model';
 import { environment } from '../../../environments/environment';
-import { Observable, map, tap, catchError, of } from 'rxjs';
+import { Observable, Subject, map, tap, catchError, of } from 'rxjs';
 import { Injectable, inject, signal } from '@angular/core';
 import { GameService } from './game.service';
 import { AuthService } from './auth.service';
@@ -49,6 +49,9 @@ export class ArenaService {
 
   private timerInterval: any;
   private serverTimeOffset = 0;
+
+  private chatMessageSubject = new Subject<any>();
+  onChatMessage$ = this.chatMessageSubject.asObservable();
 
   constructor() {
     this.syncServerTime();
@@ -100,6 +103,11 @@ export class ArenaService {
     socket.off('pairing_stopped');
     socket.off('arena_game_matched');
     socket.off('arena_ended');
+    socket.off('arena_chat_message');
+
+    socket.on('arena_chat_message', (payload: any) => {
+      this.chatMessageSubject.next(payload);
+    });
 
     socket.on('arena_joined', (data: any) => {
       console.log('[ArenaService] arena_joined received:', data);
@@ -194,6 +202,19 @@ export class ArenaService {
       this.activeArena.set(null);
       this.stopCountdown();
     }
+  }
+
+  getArenaMessages(arenaId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/arenas/${arenaId}/messages`);
+  }
+
+  sendArenaChatMessage(arenaId: string, text: string): void {
+    const socket = this.gameService.socket();
+    if (socket) {
+      socket.emit('arena_send_chat', { arenaId, text });
+    }
+    // Also persist to DB
+    this.http.post(`${this.apiUrl}/arenas/${arenaId}/messages`, { body: text }).subscribe();
   }
 
   private startCountdown(startTime: number, endTime: number) {

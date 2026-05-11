@@ -19,6 +19,7 @@ import { UserHovercardDirective } from '@shared/directives';
 import { ChessBoardComponent, ChessClockComponent } from '@shared/chess';
 import { Chess } from 'chess.js';
 import { Config } from 'chessground/config';
+import { ArenaChatComponent } from './arena-chat/arena-chat.component';
 
 @Component({
   selector: 'app-arena',
@@ -31,6 +32,7 @@ import { Config } from 'chessground/config';
     GameInfoComponent,
     UserHovercardDirective,
     RouterLink,
+    ArenaChatComponent,
   ],
   templateUrl: './arena.component.html',
   styles: [`
