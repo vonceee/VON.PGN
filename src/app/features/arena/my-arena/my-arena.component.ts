@@ -6,11 +6,12 @@ import { ToastService } from '../../../core/services/toast.service';
 import { Tournament } from '../../../core/models/tournament.model';
 import { ConfirmDeleteModalComponent  } from '@shared/feedback';
 import { ButtonComponent  } from '@shared/ui';
+import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
 
 @Component({
   selector: 'app-my-arena',
   standalone: true,
-  imports: [CommonModule, ConfirmDeleteModalComponent, ButtonComponent, RouterLink],
+  imports: [CommonModule, ConfirmDeleteModalComponent, ButtonComponent, RouterLink, LoadingComponent],
   templateUrl: './my-arena.component.html',
 })
 export class MyArenaComponent implements OnInit {

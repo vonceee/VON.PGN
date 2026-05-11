@@ -8,7 +8,7 @@ import { ButtonComponent  } from '@shared/ui';
 import { LoadingComponent  } from '@shared/feedback';
 import { SectionHeadingComponent  } from '@shared/ui';
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 9;
 
 @Component({
   selector: 'app-arena-list',
@@ -37,8 +37,9 @@ export class ArenaListComponent implements OnInit {
   activeTab = signal<ArenaStatus>('upcoming');
   isTabDropdownOpen = signal(false);
   searchQuery = signal('');
-  viewMode = signal<'grid' | 'list'>('list');
   currentPage = signal(1);
+  flippedCards = signal<Set<string>>(new Set());
+  selectedPoster = signal<string | null>(null);
 
   arenaWithCalculatedStatus = computed(() => {
     // Current statuses are managed by fetchArenas but we ensure we filter correctly if needed
@@ -119,10 +120,6 @@ export class ArenaListComponent implements OnInit {
     this.currentPage.set(1);
   }
 
-  setViewMode(mode: 'grid' | 'list') {
-    this.viewMode.set(mode);
-  }
-
   clearSearch() {
     this.searchQuery.set('');
     this.currentPage.set(1);
@@ -132,6 +129,38 @@ export class ArenaListComponent implements OnInit {
     this.activeTab.set(tab);
     this.isTabDropdownOpen.set(false);
     this.currentPage.set(1);
+  }
+
+  toggleFlip(id: string) {
+    this.flippedCards.update(set => {
+      const newSet = new Set(set);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  }
+
+  isFlipped(id: string): boolean {
+    return this.flippedCards().has(id);
+  }
+
+  openPoster(url: string) {
+    this.selectedPoster.set(url);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closePoster() {
+    this.selectedPoster.set(null);
+    document.body.style.overflow = '';
+  }
+
+  getArenaThumbnail(arena: Arena): string | null {
+    // Current model doesn't have posters, but we'll check for a future field
+    // or return null for now.
+    return (arena as any).poster_settings?.customPosterUrl || null;
   }
 
   goToPage(page: number | '...') {
