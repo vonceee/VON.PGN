@@ -10,7 +10,9 @@ import { UserHovercardDirective } from '@shared/directives';
   imports: [UserStatusIndicatorComponent, RouterLink, UserHovercardDirective],
   template: `
     <div class="flex items-center gap-2 overflow-hidden">
-      <app-user-status-indicator [userId]="player().id"></app-user-status-indicator>
+      @if (showStatus()) {
+        <app-user-status-indicator [userId]="player().id"></app-user-status-indicator>
+      }
       <div class="flex items-baseline gap-1.5 overflow-hidden">
         @if (player().name) {
           <a
@@ -43,4 +45,5 @@ export class GameInfoComponent {
   player = input.required<GamePlayer>();
   color = input.required<'white' | 'black'>();
   ratingChange = input<number | null>(null);
+  showStatus = input<boolean>(true);
 }

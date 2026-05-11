@@ -74,6 +74,10 @@ export class ArenaComponent implements OnInit, OnDestroy {
     return this.leaderboard().findIndex((p) => p.userId === userId) + 1;
   });
 
+  topThree = computed(() => {
+    return this.leaderboard().slice(0, 3);
+  });
+
   isPast = computed(() => {
     return this.arenaData()?.status === 'past';
   });

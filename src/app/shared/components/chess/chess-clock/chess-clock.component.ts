@@ -10,7 +10,7 @@ import {
   inject,
   PLATFORM_ID,
 } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AudioService } from '../../../../core/services/audio.service';
 
 @Component({
@@ -19,21 +19,33 @@ import { AudioService } from '../../../../core/services/audio.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="text-5xl font-semibold tabular-nums text-center"
+      class="font-semibold tabular-nums text-center"
       [class.text-red-500]="displayTime() < 20000"
       [class.text-cyan-400]="isActive() && displayTime() >= 20000"
+      [ngClass]="sizeClasses()"
     >
       {{ displayString() }}
     </div>
   `,
+  imports: [CommonModule]
 })
 export class ChessClockComponent implements OnDestroy {
+  size = input<'sm' | 'md' | 'lg' | 'xl'>('xl');
   serverTimeMs = input<number>(0);
   serverTimestamp = input<string | null>(null);
   isActive = input<boolean>(false);
   expired = output<void>();
   displayTime = signal<number>(0);
   displayString = computed(() => this.formatTime(this.displayTime()));
+  sizeClasses = computed(() => {
+    switch (this.size()) {
+      case 'sm': return 'text-sm';
+      case 'md': return 'text-lg md:text-xl';
+      case 'lg': return 'text-3xl';
+      case 'xl':
+      default: return 'text-5xl';
+    }
+  });
 
   private rafId: number | null = null;
   private running = false;
