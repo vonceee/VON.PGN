@@ -7,6 +7,7 @@ import { Arena, ArenaStatus } from '../../../core/models/arena.model';
 import { ButtonComponent  } from '@shared/ui';
 import { LoadingComponent  } from '@shared/feedback';
 import { SectionHeadingComponent  } from '@shared/ui';
+import { ArenaTimelineComponent } from '../arena-timeline/arena-timeline.component';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -20,6 +21,7 @@ const ITEMS_PER_PAGE = 9;
     LoadingComponent,
     SectionHeadingComponent,
     TitleCasePipe,
+    ArenaTimelineComponent,
   ],
   templateUrl: './arena-list.component.html',
   styleUrls: ['./arena-list.component.css'],

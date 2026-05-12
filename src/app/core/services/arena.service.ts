@@ -24,6 +24,8 @@ export interface ArenaTopGame {
 
 export interface ArenaState {
   arenaId: string;
+  name?: string;
+  timeControl?: string;
   leaderboard: ArenaParticipant[];
   startTime: number;
   endTime: number;
@@ -76,7 +78,7 @@ export class ArenaService {
       const serverTime = new Date(res.timestamp).getTime();
       const localTime = Date.now();
       this.serverTimeOffset = serverTime - localTime;
-      console.log('[ArenaService] Microservice time sync offset:', this.serverTimeOffset);
+      console.debug('[ArenaService] Microservice time sync offset:', this.serverTimeOffset);
     });
   }
 
@@ -129,6 +131,8 @@ export class ArenaService {
       console.log('[ArenaService] arena_joined received:', data);
       this.activeArena.set({
         arenaId: data.arenaId,
+        name: data.name,
+        timeControl: data.timeControl,
         leaderboard: [],
         startTime: data.startTime,
         endTime: data.endTime,

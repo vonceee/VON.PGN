@@ -14,8 +14,6 @@ import { ArenaService, ArenaParticipant } from '../../core/services/arena.servic
 import { AuthService } from '../../core/services/auth.service';
 import { GameService } from '../../core/services/game.service';
 import { ButtonComponent } from '@shared/ui';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroEye } from '@ng-icons/heroicons/outline';
 import { DialogModule } from '@angular/cdk/dialog';
 import { GameInfoComponent } from '../play/live-game/components/game-info.component';
 import { UserHovercardDirective } from '@shared/directives';
@@ -38,10 +36,8 @@ import { ViewersDialogComponent } from '../study/dialogs/viewers-dialog/viewers-
     UserHovercardDirective,
     RouterLink,
     ArenaChatComponent,
-    NgIconComponent,
     DialogModule,
   ],
-  providers: [provideIcons({ heroEye })],
   templateUrl: './arena.component.html',
   host: { class: 'absolute inset-0 overflow-hidden bg-background' },
 })
@@ -159,7 +155,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
                 this.selectedGameId.set(null);
             }
         }
-    }, { allowSignalWrites: true });
+    });
 
     // Sync chess instance and display when game state updates
     effect(() => {

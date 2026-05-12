@@ -70,7 +70,7 @@ export class ArenaChatComponent implements OnInit {
       } else {
         this.messages.set([]);
       }
-    }, { allowSignalWrites: true });
+    });
 
     // Auto-scroll when messages change
     effect(() => {

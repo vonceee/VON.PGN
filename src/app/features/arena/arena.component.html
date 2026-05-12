@@ -9,10 +9,10 @@
         <div class="flex items-start gap-4">
           <div>
             <div class="text-lg text-content font-semibold">
-              {{ arenaData()?.arenaId || 'Arena' }}
+              {{ arenaData()?.name || 'Arena' }}
             </div>
             <div class="text-sm text-muted">
-              3+0 • Rated • Arena
+              {{ arenaData()?.timeControl || '3+0' }} • Rated • Arena
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 shrink-0">
           <div>
             <h1 class="text-2xl tracking-tight mb-1 text-content font-bold">
-              {{ arenaData()?.arenaId || 'Hourly Rapid Arena' }}
+              {{ arenaData()?.name || 'Hourly Arena' }}
             </h1>
             <div class="flex items-center gap-3 text-xs text-muted uppercase">
               <span>{{ leaderboard().length }} Participants</span>
