@@ -14,12 +14,17 @@ import { ArenaService, ArenaParticipant } from '../../core/services/arena.servic
 import { AuthService } from '../../core/services/auth.service';
 import { GameService } from '../../core/services/game.service';
 import { ButtonComponent } from '@shared/ui';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroEye } from '@ng-icons/heroicons/outline';
+import { DialogModule } from '@angular/cdk/dialog';
 import { GameInfoComponent } from '../play/live-game/components/game-info.component';
 import { UserHovercardDirective } from '@shared/directives';
 import { ChessBoardComponent, ChessClockComponent } from '@shared/chess';
 import { Chess } from 'chess.js';
 import { Config } from 'chessground/config';
 import { ArenaChatComponent } from './arena-chat/arena-chat.component';
+import { Dialog } from '@angular/cdk/dialog';
+import { ViewersDialogComponent } from '../study/dialogs/viewers-dialog/viewers-dialog.component';
 
 @Component({
   selector: 'app-arena',
@@ -33,7 +38,10 @@ import { ArenaChatComponent } from './arena-chat/arena-chat.component';
     UserHovercardDirective,
     RouterLink,
     ArenaChatComponent,
+    NgIconComponent,
+    DialogModule,
   ],
+  providers: [provideIcons({ heroEye })],
   templateUrl: './arena.component.html',
   styles: [`
     :host {
@@ -49,6 +57,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
   public arenaService = inject(ArenaService);
   public authService = inject(AuthService);
   private gameService = inject(GameService);
+  private dialog = inject(Dialog);
 
   readonly STARTING_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   readonly placeholderPlayer = { id: 0, name: '...' };
@@ -70,6 +79,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
   isWaiting = this.arenaService.isWaiting;
   countdown = this.arenaService.countdown;
   countdownLabel = this.arenaService.countdownLabel;
+  viewerCount = this.arenaService.viewerCount;
 
   // Pagination
   currentPage = signal(1);
@@ -264,5 +274,14 @@ export class ArenaComponent implements OnInit, OnDestroy {
     if (this.currentPage() > 1) {
       this.currentPage.update(p => p - 1);
     }
+  }
+
+  openViewers() {
+    this.dialog.open(ViewersDialogComponent, {
+      data: {
+        viewers: this.arenaService.viewerNames(),
+        count: this.arenaService.viewerCount()
+      }
+    });
   }
 }

@@ -11,7 +11,7 @@ import { UserHovercardDirective } from '@shared/directives';
   imports: [CommonModule, DialogWrapperComponent, ButtonComponent, UserHovercardDirective],
   template: `
     <div class="block max-w-sm w-[90vw] mx-auto">
-      <app-dialog-wrapper title="Study viewers" (close)="dialogRef.close()">
+      <app-dialog-wrapper title="Players in the lobby" (close)="dialogRef.close()">
         <div class="space-y-4">
           <div class="max-h-[300px] overflow-y-auto custom-scrollbar space-y-0.5 pr-1">
             @for (viewer of data.viewers; track viewer) {

@@ -53,6 +53,8 @@ export class ArenaService {
   countdownLabel = signal<string>('Starting in');
   topGameId = signal<string | null>(null);
   topGames = signal<ArenaTopGame[]>([]);
+  viewerCount = signal(0);
+  viewerNames = signal<string[]>([]);
 
   private timerInterval: any;
   private serverTimeOffset = 0;
@@ -114,6 +116,13 @@ export class ArenaService {
 
     socket.on('arena_chat_message', (payload: any) => {
       this.chatMessageSubject.next(payload);
+    });
+
+    socket.on('viewer_list_update', (payload: { arenaId: string | number; viewers: string[]; count: number }) => {
+      if (String(payload.arenaId) === String(arenaId)) {
+        this.viewerNames.set(payload.viewers || []);
+        this.viewerCount.set(payload.count || 0);
+      }
     });
 
     socket.on('arena_joined', (data: any) => {
@@ -209,6 +218,8 @@ export class ArenaService {
       socket.emit('leave_arena', arena.arenaId);
       this.activeArena.set(null);
       this.stopCountdown();
+      this.viewerCount.set(0);
+      this.viewerNames.set([]);
     }
   }
 

@@ -11,6 +11,12 @@
           <div class="text-sm text-muted">
             3+0 • Rated • Arena
           </div>
+          <div 
+            (click)="openViewers()"
+            class="flex items-center gap-1.5 mt-2 text-sm font-semibold text-muted cursor-pointer hover:underline"
+          >
+            <span>{{ viewerCount() }}  in lobby</span>
+          </div>
         </div>
       </div>
 
