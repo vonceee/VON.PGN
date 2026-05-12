@@ -43,12 +43,7 @@ import { ViewersDialogComponent } from '../study/dialogs/viewers-dialog/viewers-
   ],
   providers: [provideIcons({ heroEye })],
   templateUrl: './arena.component.html',
-  styles: [`
-    :host {
-      display: block;
-      width: 100%;
-    }
-  `]
+  host: { class: 'absolute inset-0 overflow-hidden bg-background' },
 })
 export class ArenaComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
