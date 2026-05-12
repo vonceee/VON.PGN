@@ -5,7 +5,7 @@
     <!-- Column 1: Arena Info & Chat (Left) -->
     <div class="md:col-span-3 flex flex-col h-full gap-3 min-h-0">
       <!-- Info Panel -->
-      <div class="bg-main border border-border-base rounded-2xl p-4 space-y-4 shrink-0">
+      <div class="ui-panel p-4 space-y-4 shrink-0">
         <div class="flex items-start gap-4">
           <div>
             <div class="text-lg text-content font-semibold">
@@ -39,7 +39,7 @@
       </div>
 
       <!-- Chat Panel -->
-      <div class="bg-main border border-border-base rounded-2xl flex flex-col flex-1 min-h-0 overflow-hidden">
+      <div class="ui-panel flex flex-col flex-1 min-h-0">
         <app-arena-chat [arenaId]="arenaId() || ''" />
       </div>
 
@@ -54,7 +54,7 @@
 
     <!-- Column 2: Leaderboard (Middle) -->
     <div class="md:col-span-6 lg:col-span-6 flex flex-col h-full min-h-0">
-      <div class="bg-main border border-border-base rounded-2xl p-5 lg:p-6 flex flex-col h-full min-h-0">
+      <div class="ui-panel p-5 lg:p-6 flex flex-col h-full min-h-0">
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 shrink-0">
           <div>
@@ -278,10 +278,11 @@
           @let isActive = selectedGameId() === game.gameId || (!selectedGameId() && game.gameId === arenaService.topGameId());
           <div 
             (click)="selectGame(game.gameId)"
-            class="p-2.5 bg-main rounded-xl border transition-all cursor-pointer group relative overflow-hidden shrink-0"
-            [class]="isActive 
-              ? 'border-accent bg-accent/[0.02] shadow-sm' 
-              : 'border-border-base hover:bg-subtle'"
+            class="ui-panel p-2.5 transition-all cursor-pointer group relative shrink-0"
+            [class.border-accent]="isActive"
+            [class.bg-accent/[0.02]]="isActive"
+            [class.shadow-sm]="isActive"
+            [class.hover:bg-subtle]="!isActive"
           >
             <!-- Active Indicator Bar -->
             @if (isActive) {

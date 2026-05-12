@@ -82,6 +82,13 @@ export class ArenaListComponent implements OnInit {
     return this.filteredArenas().slice(start, start + ITEMS_PER_PAGE);
   });
 
+  recentlyCompletedArenas = computed(() => {
+    return this.arenaWithCalculatedStatus()
+      .filter((t) => t.status === 'past')
+      .sort((a, b) => new Date(b.end_date).getTime() - new Date(a.end_date).getTime())
+      .slice(0, 4);
+  });
+
   pages = computed(() => {
     const total = this.totalPages();
     const current = Math.min(this.currentPage(), total);

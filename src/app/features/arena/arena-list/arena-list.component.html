@@ -17,7 +17,7 @@
       <div class="relative" #tabDropdownContainer>
         <button
           (click)="toggleTabDropdown()"
-          class="flex items-center justify-between px-4 py-2.5 bg-main border border-border-base rounded-xl text-sm font-semibold text-content whitespace-nowrap"
+          class="ui-panel flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-content whitespace-nowrap"
         >
           <span class="flex items-center gap-2">
             @if (activeTab() === 'ongoing') {
@@ -42,7 +42,7 @@
 
         @if (isTabDropdownOpen()) {
           <div
-            class="absolute top-full left-0 mt-1 bg-main border border-border-base rounded-xl shadow-lg z-20 overflow-hidden"
+            class="ui-panel absolute top-full left-0 mt-1 shadow-lg z-20"
           >
             <button
               (click)="setTab('upcoming')"
@@ -90,7 +90,7 @@
           [value]="searchQuery()"
           (input)="onSearchInput($event)"
           placeholder="Search arenas..."
-          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50"
+          class="ui-panel block w-full pl-9 pr-9 py-2.5 text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50"
         />
         @if (searchQuery()) {
           <button
@@ -343,6 +343,59 @@
           />
         </svg>
       </button>
+    </div>
+  }
+
+  <!-- Recently Completed Section -->
+  @if (!loading() && activeTab() !== 'past' && recentlyCompletedArenas().length > 0) {
+    <div class="mt-16 mb-12 px-8 md:px-16">
+      <div class="mb-6">
+        <app-section-heading
+          text="Recently"
+          highlight="Completed"
+          size="text-2xl"
+        ></app-section-heading>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        @for (arena of recentlyCompletedArenas(); track arena.id) {
+          <a 
+            [routerLink]="['/events', arena.id, 'arena']"
+            class="ui-panel p-4 flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-lg group"
+          >
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-muted px-2 py-0.5 bg-subtle rounded">
+                {{ arena.timeControl }}
+              </span>
+              <span class="text-[10px] font-medium text-muted">
+                {{ formatRelativeTime(arena.end_date) }}
+              </span>
+            </div>
+            
+            <h3 class="text-sm font-semibold text-content line-clamp-1 mb-3 group-hover:text-accent transition-colors">
+              {{ arena.name }}
+            </h3>
+
+            @if (arena.winner) {
+              <div class="mt-auto flex items-center gap-2 pt-3 border-t border-border-base/50">
+                <div class="w-6 h-6 rounded-full bg-yellow-500/10 flex items-center justify-center shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-yellow-500">
+                    <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="min-w-0">
+                  <p class="text-[10px] text-muted leading-tight">Winner</p>
+                  <p class="text-xs font-bold text-content truncate">{{ arena.winner }}</p>
+                </div>
+              </div>
+            } @else {
+              <div class="mt-auto pt-3 border-t border-border-base/50">
+                <span class="text-xs text-muted">View Results</span>
+              </div>
+            }
+          </a>
+        }
+      </div>
     </div>
   }
 </div>
