@@ -25,13 +25,15 @@
               [variant]="isWaiting() ? 'outline' : 'primary'"
               class="w-full"
             >
-              @if (isWaiting()) {
+              @if (!isParticipating()) {
+                JOIN ARENA
+              } @else if (isWaiting()) {
                 <span class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                  LEAVE ARENA
+                  PAUSE
                 </span>
               } @else {
-                JOIN ARENA
+                RESUME ARENA
               }
             </button>
           </div>

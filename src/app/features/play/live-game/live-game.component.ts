@@ -653,6 +653,14 @@ export class LiveGameComponent implements OnInit, OnDestroy {
     }
   }
 
+  pauseArena(): void {
+    const g = this.game();
+    if (g?.arena_id) {
+      this.gameService.clearGame();
+      this.router.navigate(['/events', g.arena_id, 'arena']);
+    }
+  }
+
   confirmExit(): void {
     this.showExitConfirm.set(false);
     this.gameService.clearGame();

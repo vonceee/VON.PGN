@@ -91,6 +91,11 @@ export class ArenaComponent implements OnInit, OnDestroy {
     return this.leaderboard().findIndex((p) => p.userId === userId) + 1;
   });
 
+  isParticipating = computed(() => {
+    const userId = this.authService.currentUser()?.uid;
+    return userId ? this.leaderboard().some(p => p.userId === userId) : false;
+  });
+
   topThree = computed(() => {
     return this.leaderboard().slice(0, 3);
   });
@@ -183,18 +188,14 @@ export class ArenaComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   private connectAndJoin() {
-    const user = this.authService.currentUser();
-    if (user && this.arenaId()) {
+    if (this.arenaId()) {
       // Ensure socket is connected
       this.gameService.connectSocket();
 
       // Delay slightly to ensure socket is ready
       setTimeout(() => {
-        this.arenaService.joinArena(
-          this.arenaId()!,
-          user.username || 'Player',
-          1500, // TODO: Get actual rating
-        );
+        // Initially join as a spectator (empty name/rating)
+        this.arenaService.joinArena(this.arenaId()!, '', 0);
       }, 500);
     }
   }
@@ -233,10 +234,26 @@ export class ArenaComponent implements OnInit, OnDestroy {
   }
 
   toggleJoin() {
-    if (this.isWaiting()) {
-      this.arenaService.stopPairing();
+    const user = this.authService.currentUser();
+    if (!user) {
+        // Ideally show a toast or login dialog
+        return;
+    }
+
+    if (!this.isParticipating()) {
+      // Join the tournament as a participant
+      this.arenaService.joinArena(
+        this.arenaId()!,
+        user.username || 'Player',
+        1500 // TODO: Get actual rating
+      );
     } else {
-      this.arenaService.startPairing();
+      // Toggle pairing status
+      if (this.isWaiting()) {
+        this.arenaService.stopPairing();
+      } else {
+        this.arenaService.startPairing();
+      }
     }
   }
 

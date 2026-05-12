@@ -98,7 +98,7 @@ import { Chess } from 'chess.js';
                       <div class="text-xs font-bold text-content truncate max-w-[300px]">
                         {{ getOpeningName(game) }}
                       </div>
-                      <div class="text-[10px] text-muted font-mono truncate max-w-[300px]">
+                      <div class="text-xs text-muted  truncate max-w-[300px]">
                         {{ getMoveSequence(game) }}
                       </div>
                     </div>

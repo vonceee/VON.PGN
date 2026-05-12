@@ -116,9 +116,14 @@
 
                   <div class="flex flex-col gap-2 mt-4">
                     @if (g.arena_id) {
-                      <button appButton variant="primary" (click)="backToArena()">
-                        Return to Arena
-                      </button>
+                      <div class="flex flex-col gap-2">
+                        <button appButton variant="primary" (click)="backToArena()">
+                          Next Game
+                        </button>
+                        <button appButton variant="outline" (click)="pauseArena()">
+                          Pause
+                        </button>
+                      </div>
                     } @else {
                       @if (!myRematchOffered() && !rematchOfferFrom()) {
                         <button appButton variant="primary" (click)="offerRematch()">
@@ -240,9 +245,14 @@
 
                   <div class="flex flex-col gap-2 mt-6">
                     @if (g.arena_id) {
-                      <button appButton variant="primary" (click)="backToArena()">
-                        Return to Arena
-                      </button>
+                      <div class="flex flex-col gap-2">
+                        <button appButton variant="primary" (click)="backToArena()">
+                          Next Game
+                        </button>
+                        <button appButton variant="outline" (click)="pauseArena()">
+                          Pause
+                        </button>
+                      </div>
                     } @else {
                       @if (!myRematchOffered() && !rematchOfferFrom()) {
                         <button appButton variant="primary" (click)="offerRematch()">
