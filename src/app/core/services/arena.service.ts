@@ -16,6 +16,12 @@ export interface ArenaParticipant {
   isWaiting: boolean;
 }
 
+export interface ArenaTopGame {
+  gameId: string;
+  white: { name: string; rating: number; rank: number };
+  black: { name: string; rating: number; rank: number };
+}
+
 export interface ArenaState {
   arenaId: string;
   leaderboard: ArenaParticipant[];
@@ -46,6 +52,7 @@ export class ArenaService {
   countdown = signal<string>('00:00:00');
   countdownLabel = signal<string>('Starting in');
   topGameId = signal<string | null>(null);
+  topGames = signal<ArenaTopGame[]>([]);
 
   private timerInterval: any;
   private serverTimeOffset = 0;
@@ -138,6 +145,7 @@ export class ArenaService {
     socket.on('arena_leaderboard_update', (data: any) => {
       this.leaderboard.set(data.leaderboard);
       this.topGameId.set(data.topGameId || null);
+      this.topGames.set(data.topGames || []);
       // Update our own isWaiting status based on leaderboard if needed
       const me = data.leaderboard.find((p: any) => p.userId === this.getUserId());
       if (me) {

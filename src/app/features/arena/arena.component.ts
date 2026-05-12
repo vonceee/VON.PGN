@@ -54,6 +54,7 @@ export class ArenaComponent implements OnInit, OnDestroy {
   readonly placeholderPlayer = { id: 0, name: '...' };
 
   arenaId = signal<string | null>(null);
+  selectedGameId = signal<string | null>(null);
 
   // Official arena data from Laravel
   arenaData = this.arenaService.activeArena;
@@ -69,6 +70,19 @@ export class ArenaComponent implements OnInit, OnDestroy {
   isWaiting = this.arenaService.isWaiting;
   countdown = this.arenaService.countdown;
   countdownLabel = this.arenaService.countdownLabel;
+
+  // Pagination
+  currentPage = signal(1);
+  pageSize = signal(10);
+
+  paginatedLeaderboard = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return this.leaderboard().slice(start, start + this.pageSize());
+  });
+
+  totalPages = computed(() => {
+    return Math.ceil(this.leaderboard().length / this.pageSize()) || 1;
+  });
 
   myRank = computed(() => {
     const userId = this.authService.currentUser()?.uid;
@@ -104,29 +118,43 @@ export class ArenaComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
-    // Watch for top game changes
+    // Watch for top game changes or manual selection
     effect(() => {
-      const topGameId = this.arenaService.topGameId();
-      if (topGameId) {
+      const targetId = this.selectedGameId() || this.arenaService.topGameId();
+      
+      if (targetId) {
         const currentId = this.gameService.gameState()?.id;
-        if (currentId !== topGameId) {
-          this.gameService.loadGame(topGameId);
+        if (currentId !== targetId) {
+          console.log(`[Arena] Loading game ${targetId} (Manual: ${!!this.selectedGameId()})`);
+          this.gameService.loadGame(targetId);
           this.currentPly.set(0);
-
-          // Retry once after 2 seconds if load failed (handles Laravel/DB race conditions)
+          
+          // Retry once after 2 seconds if load failed
           setTimeout(() => {
             const current = this.gameService.gameState();
-            if (this.arenaService.topGameId() === topGameId && (!current || current.id !== topGameId)) {
-                console.log(`[Arena] Retrying load for game ${topGameId}...`);
-                this.gameService.loadGame(topGameId);
+            const activeTarget = this.selectedGameId() || this.arenaService.topGameId();
+            if (activeTarget === targetId && (!current || current.id !== targetId)) {
+                console.log(`[Arena] Retrying load for game ${targetId}...`);
+                this.gameService.loadGame(targetId);
             }
           }, 2000);
         }
       } else {
-        // Clear if no top game
         this.gameService.clearGame(false);
       }
     });
+
+    // Cleanup: If manually selected game is no longer active, reset to top game
+    effect(() => {
+        const selectedId = this.selectedGameId();
+        if (selectedId) {
+            const stillActive = this.arenaService.topGames().some(g => g.gameId === selectedId);
+            if (!stillActive) {
+                console.log(`[Arena] Selected game ${selectedId} ended, returning to top board.`);
+                this.selectedGameId.set(null);
+            }
+        }
+    }, { allowSignalWrites: true });
 
     // Sync chess instance and display when game state updates
     effect(() => {
@@ -211,9 +239,30 @@ export class ArenaComponent implements OnInit, OnDestroy {
     }
   }
 
+  selectGame(gameId: string) {
+    if (this.selectedGameId() === gameId) {
+      // Toggle off if clicking the same game
+      this.selectedGameId.set(null);
+    } else {
+      this.selectedGameId.set(gameId);
+    }
+  }
+
   getFireLevel(streak: number): number {
     if (streak >= 4) return 2;
     if (streak >= 2) return 1;
     return 0;
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
+    }
   }
 }

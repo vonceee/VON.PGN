@@ -47,7 +47,7 @@ import { LoadingComponent } from '@shared/feedback';
                     </h3>
                     <p class="text-sm  ">
                       against 
-                      <a [routerLink]="['/user', getOpponent(game).name]" class="text-white hover:text-cyan-400 ">
+                      <a [routerLink]="['/user', getOpponent(game).name]" class="hover:text-cyan-400 ">
                         {{ getOpponent(game).name }}
                       </a>
                       <span class="text-xs  ml-1">({{ getOpponentRating(game) }})</span>

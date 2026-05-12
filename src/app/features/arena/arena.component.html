@@ -93,7 +93,7 @@
           @if (topThree()[0]; as p1) {
             <div class="flex flex-col items-center flex-1 max-w-[200px]">
               <div class="w-full bg-accent/[0.03] border-x border-t border-accent/20 rounded-t-3xl h-56 flex flex-col items-center justify-center p-6 relative">
-                <div class="absolute -top-4 bg-accent text-white px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.2em] uppercase shadow-lg shadow-accent/20">
+                <div class="absolute -top-4 bg-accent text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.2em] uppercase shadow-lg shadow-accent/20">
                   Winner
                 </div>
                 <div class="text-6xl font-black text-accent/20 mb-3 italic">1</div>
@@ -119,54 +119,79 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="text-[10px] uppercase   text-muted border-b border-border-base">
-              <th class="py-4 w-12 text-center">#</th>
-              <th class="py-4">Player</th>
-              <th class="py-4 text-right">Points</th>
+            <tr class="text-xs uppercase text-muted border-b border-border-base">
+              <th class="py-3 w-12 text-center">#</th>
+              <th class="py-3">Player</th>
+              <th class="py-3 text-right">Points</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border-base">
-            @for (player of leaderboard(); track player.userId; let i = $index) {
+            @for (player of paginatedLeaderboard(); track player.userId; let i = $index) {
               <tr
                 class="group transition-colors hover:bg-subtle"
                 [class.bg-accent/5]="player.userId === authService.currentUser()?.uid"
               >
-                <td class="py-6 text-center  text-muted">
-                  {{ i + 1 }}
+                <td class="py-3 text-center text-muted">
+                  {{ (currentPage() - 1) * pageSize() + i + 1 }}
                 </td>
-                <td class="py-6">
-                  <div class="flex items-center gap-4">
+                <td class="py-3">
+                  <div class="flex items-center gap-3">
                     <a 
                       [routerLink]="['/user', player.name]" 
                       [appUserHovercard]="player.name"
-                      class=" text-xl text-content hover:text-accent transition-colors"
+                      class="text-base font-semibold text-content hover:text-accent transition-colors"
                     >
                       {{ player.name }}
                     </a>
-                    <span class="text-xs  text-muted">{{ player.rating }}</span>
+                    <span class="text-[10px] text-muted">{{ player.rating }}</span>
                     @if (player.streak >= 2) {
-                      <span class="text-orange-500  text-xs">
+                      <span class="text-orange-500 text-[10px]">
                         🔥 {{ player.streak }}
                       </span>
                     }
                   </div>
                 </td>
-                <td class="py-6 text-right  text-3xl tabular-nums text-content">
+                <td class="py-3 text-right text-xl tabular-nums text-content">
                   {{ player.score }}
-                </td>
-              </tr>
-            }
-            @if (leaderboard().length === 0) {
-              <tr>
-                <td colspan="3" class="py-32 text-center">
-                  <div class="text-muted text-sm italic">
-                    Arena Waiting for Participants
-                  </div>
                 </td>
               </tr>
             }
           </tbody>
         </table>
+
+        <!-- Pagination Footer -->
+        @if (leaderboard().length > pageSize()) {
+          <div class="flex items-center justify-between mt-6 px-2">
+            <div class="text-[10px] uppercase font-bold tracking-widest text-muted">
+              {{ leaderboard().length }} Participants
+            </div>
+            <div class="flex items-center gap-4">
+              <button 
+                appButton 
+                variant="outline" 
+                size="sm" 
+                (click)="prevPage()" 
+                [disabled]="currentPage() === 1"
+                class="!px-3 !py-1 text-[10px]"
+              >
+                PREV
+              </button>
+              <span class="text-[10px] font-bold text-content">
+                PAGE {{ currentPage() }} / {{ totalPages() }}
+              </span>
+              <button 
+                appButton 
+                variant="outline" 
+                size="sm" 
+                (click)="nextPage()" 
+                [disabled]="currentPage() === totalPages()"
+                class="!px-3 !py-1 text-[10px]"
+              >
+                NEXT
+              </button>
+            </div>
+          </div>
+        }
       </div>
     </div>
   </div>
@@ -232,38 +257,54 @@
     </div>
 
     <!-- Top Games List -->
-    <div class="bg-main border border-border-base rounded-2xl p-6 ">
-      <div class="flex items-center justify-between border-b border-border-base pb-4 mb-4">
-        <h2 class="text-xs  uppercase  text-muted">Top Games</h2>
-        <span class="text-[10px]  text-muted opacity-50">4 boards</span>
-      </div>
-      
-      <div class="space-y-3">
-        <div class="p-3 rounded-xl border border-border-base bg-subtle hover:bg-accent/5 transition-colors cursor-pointer group">
-          <div class="flex flex-col gap-1">
-            <div class="flex items-center justify-between">
-              <span class="text-sm  text-content group-hover:text-accent">Magnus (2850)</span>
-              <span class="text-[10px]  text-accent">Watching</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm  text-content">Hikaru (2820)</span>
-              <span class="text-[10px] text-muted">Board 1</span>
-            </div>
-          </div>
-        </div>
+    <div class="space-y-1">
+      @for (game of arenaService.topGames(); track game.gameId; let i = $index) {
+        @let isActive = selectedGameId() === game.gameId || (!selectedGameId() && game.gameId === arenaService.topGameId());
+        <div 
+          (click)="selectGame(game.gameId)"
+          class="p-4 bg-main rounded-xl border transition-all cursor-pointer group relative overflow-hidden"
+          [class]="isActive 
+            ? 'border-accent bg-accent/[0.02] shadow-sm' 
+            : 'border-border-base hover:bg-subtle'"
+        >
+          <!-- Active Indicator Bar -->
+          @if (isActive) {
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
+          }
 
-        <div class="p-3 rounded-xl border border-border-base hover:bg-subtle transition-colors cursor-pointer">
-          <div class="flex flex-col gap-1">
-            <div class="flex items-center justify-between">
-              <span class="text-sm  text-content">AliReza (2790)</span>
+          <div class="flex flex-col gap-2">
+            <!-- Top Row (White) -->
+            <div class="flex items-center justify-between gap-4">
+              <span 
+                class="text-sm font-semibold truncate"
+                [class]="isActive ? 'text-accent' : 'text-content'"
+              >
+                {{ game.white.name }}
+              </span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-xs font-medium text-muted tabular-nums">{{ game.white.rating }}</span>
+                <span class="text-xs font-bold text-muted/30">#{{ game.white.rank }}</span>
+              </div>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm  text-content">IanNepo (2780)</span>
-              <span class="text-[10px] text-muted">Board 2</span>
+
+            <!-- Bottom Row (Black) -->
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="px-1.5 py-0.5 rounded bg-muted/10 text-xs font-bold text-muted/60">
+                  #{{ game.black.rank }}
+                </div>
+                <span class="text-xs font-medium text-muted tabular-nums">{{ game.black.rating }}</span>
+              </div>
+              <span 
+                class="text-sm font-semibold truncate text-right"
+                [class]="isActive ? 'text-accent' : 'text-content'"
+              >
+                {{ game.black.name }}
+              </span>
             </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </div>
