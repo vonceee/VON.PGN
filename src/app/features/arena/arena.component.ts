@@ -23,6 +23,7 @@ import { Config } from 'chessground/config';
 import { ArenaChatComponent } from './arena-chat/arena-chat.component';
 import { Dialog } from '@angular/cdk/dialog';
 import { ViewersDialogComponent } from '../study/dialogs/viewers-dialog/viewers-dialog.component';
+import { ParticipantDetailsDialogComponent } from './dialogs/participant-details-dialog/participant-details-dialog.component';
 
 @Component({
   selector: 'app-arena',
@@ -290,6 +291,13 @@ export class ArenaComponent implements OnInit, OnDestroy {
         viewers: this.arenaService.viewerNames(),
         count: this.arenaService.viewerCount()
       }
+    });
+  }
+
+  openParticipantDetails(player: ArenaParticipant, index: number) {
+    const rank = (this.currentPage() - 1) * this.pageSize() + index + 1;
+    this.dialog.open(ParticipantDetailsDialogComponent, {
+      data: { player, rank }
     });
   }
 }

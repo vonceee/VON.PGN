@@ -137,13 +137,15 @@
               <tr class="text-xs uppercase text-muted border-b border-border-base">
                 <th class="py-3 w-12 text-center">#</th>
                 <th class="py-3">Player</th>
+                <th class="py-3 text-right hidden sm:table-cell pr-8">Games</th>
                 <th class="py-3 text-right">Points</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-border-base">
               @for (player of paginatedLeaderboard(); track player.userId; let i = $index) {
                 <tr
-                  class="group transition-colors hover:bg-subtle"
+                  (click)="openParticipantDetails(player, i)"
+                  class="group transition-colors hover:bg-subtle cursor-pointer"
                   [class.bg-accent/5]="player.userId === authService.currentUser()?.uid"
                 >
                   <td class="py-3 text-center text-muted">
@@ -151,17 +153,32 @@
                   </td>
                   <td class="py-3">
                     <div class="flex items-center gap-3">
-                      <a 
-                        [routerLink]="['/user', player.name]" 
-                        [appUserHovercard]="player.name"
-                        class="text-base font-semibold text-content hover:text-accent transition-colors"
-                      >
-                        {{ player.name }}
-                      </a>
-                      <span class="text-[10px] text-muted">{{ player.rating }}</span>
-                      @if (player.streak >= 2) {
-                        <span class="text-orange-500 text-[10px]">
-                          🔥 {{ player.streak }}
+                      <div class="flex flex-col">
+                        <div class="flex items-center gap-2">
+                          <span class="text-base font-semibold text-content group-hover:text-accent transition-colors">
+                            {{ player.name }}
+                          </span>
+                          <span class="text-[10px] text-muted">{{ player.rating }}</span>
+                          @if (player.streak >= 2) {
+                            <span class="text-orange-500 text-[10px]">
+                              🔥 {{ player.streak }}
+                            </span>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="py-3 text-right hidden sm:table-cell pr-8">
+                    <div class="flex items-center justify-end gap-1 overflow-hidden max-w-[150px]">
+                      @for (game of player.games; track game.gameId) {
+                        <span 
+                          class="text-[10px] font-bold"
+                          [class.text-green-500]="game.result === 'win'"
+                          [class.text-orange-500]="game.result === 'draw'"
+                          [class.text-muted]="game.result === 'loss'"
+                          [class.text-accent]="game.points > 2"
+                        >
+                          {{ game.points }}
                         </span>
                       }
                     </div>

@@ -7,12 +7,24 @@ import { Injectable, inject, signal } from '@angular/core';
 import { GameService } from './game.service';
 import { AuthService } from './auth.service';
 
+export interface ArenaGameRecord {
+  gameId: string;
+  opponentName: string;
+  opponentRating: number;
+  result: 'win' | 'draw' | 'loss';
+  points: number;
+  color: 'white' | 'black';
+  timestamp: number;
+}
+
 export interface ArenaParticipant {
   userId: string;
   name: string;
   score: number;
   streak: number;
   rating: number;
+  performance?: number;
+  games?: ArenaGameRecord[];
   isWaiting: boolean;
 }
 
