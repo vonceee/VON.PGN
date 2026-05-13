@@ -115,11 +115,12 @@ export class ShortcutsDialogComponent {
   ];
 
   otherShortcuts = [
+    { label: 'Flip Board', keys: ['F'] },
     { label: 'Open Annotation Dialog', keys: ['A', 'Enter'] },
     { label: 'Next Move', keys: ['→'] },
     { label: 'Previous Move', keys: ['←'] },
     { label: 'Start of Game', keys: ['Home'] },
     { label: 'End of Game', keys: ['End'] },
-    { label: 'Toggle Engine', keys: ['L'] }, // Assuming L based on common patterns, but I'll check
+    { label: 'Toggle Engine', keys: ['L'] },
   ];
 }

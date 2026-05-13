@@ -685,25 +685,43 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (!this.canEdit()) return;
-    
     // Ignore if typing in any input/textarea/editable
     const target = event.target as HTMLElement;
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
 
+    const key = event.key;
+    const keyLower = key.toLowerCase();
+
+    // --- 1. Global Study Shortcuts (Available to everyone) ---
+
+    // Flip Board
+    if (keyLower === 'f') {
+      event.preventDefault();
+      this.flipBoard();
+      return;
+    }
+
+    // Toggle Engine
+    if (keyLower === 'l' && this.isEngineVisible()) {
+      event.preventDefault();
+      this.toggleEngine();
+      return;
+    }
+
+    // --- 2. Editor Shortcuts (Require canEdit permissions) ---
+    if (!this.canEdit()) return;
+
     const node = this.currentNode();
     if (!node) return;
-
-    const key = event.key;
     
-    // 1. Handle Dialog opening (A or Enter)
-    if (key.toLowerCase() === 'a' || (key === 'Enter' && !event.shiftKey && !event.ctrlKey)) {
+    // Handle Dialog opening (A or Enter)
+    if (keyLower === 'a' || (key === 'Enter' && !event.shiftKey && !event.ctrlKey)) {
       event.preventDefault();
       this.onAnnotateMove(node);
       return;
     }
 
-    // 2. Handle Quick Evaluations
+    // Handle Quick Evaluations
     let glyphId: number | null = null;
     
     // Plain keys 1-8 for Move Evaluations
