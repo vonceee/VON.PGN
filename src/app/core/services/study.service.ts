@@ -226,8 +226,7 @@ export class StudyService {
     });
 
     this.socket.on('study_synced', (state: StudySyncedPayload) => {
-      DevLogger.log('[Study] Synced state received');
-      // Only sync if we haven't interacted recently
+      DevLogger.log(`[Study] Synced state received for study ${state.chapterId || 'unknown'}`);
       this.lastRemoteState.set({
         chapterId: state.chapterId,
         fen: state.fen,
@@ -240,12 +239,14 @@ export class StudyService {
       // Ignore own move broadcasts to prevent 'back and forth' stuttering
       if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
         DevLogger.log('[Study] Ignoring own move broadcast:', payload.clientGeneratedId);
-        // Optional: keep it for a bit longer to be safe, then cleanup is handled by emitMove's timeout
         return;
       }
 
+      DevLogger.log(`[Study] Move received for chapter ${payload.chapterId}, FEN: ${payload.fen}`);
+
       this.lastRemoteState.update(s => ({ 
         ...s, 
+        chapterId: payload.chapterId, // CRITICAL: Update chapterId so component knows which context this move belongs to
         fen: payload.fen, 
         moves: payload.moves,
         orientation: payload.orientation
@@ -263,6 +264,8 @@ export class StudyService {
         DevLogger.log('[Study] Ignoring own chapter change broadcast:', payload.clientGeneratedId);
         return;
       }
+
+      DevLogger.log(`[Study] Chapter changed to ${payload.chapterId}`);
 
       this.lastRemoteState.set({ 
         chapterId: payload.chapterId, 
