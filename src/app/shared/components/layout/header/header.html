@@ -241,9 +241,9 @@
           aria-label="Notifications"
         >
           <span class="text-sm lg:text-base xl:text-lg  text-content group-hover:text-accent ">Alerts</span>
-          @if (notificationService.unreadCount() > 0) {
+          @if (notificationService.unreadCount() + challengeService.incomingChallenges().length > 0) {
             <span class="px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center bg-accent text-white text-xs  rounded-full  zoom-in ">
-              {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
+              {{ (notificationService.unreadCount() + challengeService.incomingChallenges().length) > 9 ? '9+' : (notificationService.unreadCount() + challengeService.incomingChallenges().length) }}
             </span>
           }
         </button>
@@ -258,9 +258,41 @@
             </div>
 
             <div class="max-h-96 overflow-y-auto">
+              <!-- Challenges -->
+              @for (challenge of challengeService.incomingChallenges(); track challenge.id) {
+                <div class="px-4 py-3 bg-accent/5 border-b border-border-base">
+                  <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                      <ng-icon name="heroTrophy" class="text-accent text-lg"></ng-icon>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm">
+                        <span class="font-semibold">{{ challenge.challenger.name }}</span> challenged you to a 
+                        <span class="text-accent font-medium">{{ formatTime(challenge.settings.timeControl) }}</span> game
+                      </p>
+                      <div class="mt-2 flex gap-2">
+                        <button 
+                          (click)="challengeService.acceptChallenge(challenge.id); isNotificationsOpen.set(false)"
+                          class="px-3 py-1 bg-accent text-white text-xs rounded hover:bg-accent/90 transition-colors"
+                        >
+                          Accept
+                        </button>
+                        <button 
+                          (click)="challengeService.declineChallenge(challenge.id)"
+                          class="px-3 py-1 bg-subtle text-content text-xs rounded hover:bg-border-base transition-colors"
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <!-- Notifications -->
               @if (notificationService.isLoading() && notificationService.notifications().length === 0) {
                 <div class="px-4 py-8 text-center text-muted text-sm italic">Loading...</div>
-              } @else if (notificationService.notifications().length === 0) {
+              } @else if (notificationService.notifications().length === 0 && challengeService.incomingChallenges().length === 0) {
                 <div class="px-4 py-8 text-center text-muted text-sm italic">No notifications yet</div>
               } @else {
                 @for (n of notificationService.notifications(); track n.id) {
@@ -294,7 +326,6 @@
               {{ userService.currentUser()?.displayName || 'User' }}
             </span>
           </div>
-          <app-notification-badge [count]="challengeService.incomingChallenges().length"></app-notification-badge>
         </button>
 
         <!-- Desktop Profile Dropdown -->

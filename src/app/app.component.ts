@@ -1,13 +1,13 @@
 import { Component, signal, inject, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ToastComponent, ChallengeNotificationComponent } from '@shared/feedback';
+import { ToastComponent } from '@shared/feedback';
 import { AuthService } from './core/services/auth.service';
 import { GameService } from './core/services/game.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToastComponent, ChallengeNotificationComponent],
+  imports: [RouterOutlet, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.css',
 })

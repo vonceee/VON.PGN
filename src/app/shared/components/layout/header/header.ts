@@ -232,5 +232,12 @@ export class Header implements OnInit, OnDestroy {
     };
     return heights[strength][index];
   }
+
+  formatTime(timeControl: string): string {
+    if (!timeControl) return '';
+    const [base, inc] = timeControl.split('+');
+    const mins = Math.floor(parseInt(base) / 60);
+    return `${mins}+${inc}`;
+  }
 }
 
