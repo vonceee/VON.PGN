@@ -4,7 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { LessonService } from '../../core/services/lesson.service';
-import { FooterComponent } from '@shared/layout';
+
 import { TypewriterTextComponent, ButtonComponent, SectionHeadingComponent, ArrowLinkComponent } from '@shared/ui';
 import { FeedbackButtonComponent } from '@shared/feedback';
 
@@ -15,7 +15,6 @@ import { FeedbackButtonComponent } from '@shared/feedback';
     CommonModule,
     RouterModule,
     FormsModule,
-    FooterComponent,
     TypewriterTextComponent,
     FeedbackButtonComponent,
     SectionHeadingComponent,

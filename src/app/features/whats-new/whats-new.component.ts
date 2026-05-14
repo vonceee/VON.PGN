@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FooterComponent  } from '@shared/layout';
+
 
 interface ChangelogEntry {
   date: string;
@@ -19,7 +19,7 @@ interface ChangelogRelease {
 @Component({
   selector: 'app-whats-new',
   standalone: true,
-  imports: [CommonModule, RouterModule, FooterComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './whats-new.component.html',
 })
 export class WhatsNewComponent {

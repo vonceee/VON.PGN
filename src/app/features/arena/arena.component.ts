@@ -9,14 +9,14 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ArenaService, ArenaParticipant } from '../../core/services/arena.service';
 import { AuthService } from '../../core/services/auth.service';
 import { GameService } from '../../core/services/game.service';
 import { ButtonComponent } from '@shared/ui';
 import { DialogModule } from '@angular/cdk/dialog';
 import { GameInfoComponent } from '../play/live-game/components/game-info.component';
-import { UserHovercardDirective } from '@shared/directives';
+
 import { ChessBoardComponent, ChessClockComponent } from '@shared/chess';
 import { Chess } from 'chess.js';
 import { Config } from 'chessground/config';
@@ -34,8 +34,6 @@ import { ParticipantDetailsDialogComponent } from './dialogs/participant-details
     ChessBoardComponent,
     ChessClockComponent,
     GameInfoComponent,
-    UserHovercardDirective,
-    RouterLink,
     ArenaChatComponent,
     DialogModule,
   ],

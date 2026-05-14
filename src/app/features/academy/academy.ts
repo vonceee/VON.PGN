@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FooterComponent  } from '@shared/layout';
+
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   heroCalendar,
@@ -20,7 +20,7 @@ import { AcademyEnrollmentModalComponent } from './components/enrollment-modal/e
 @Component({
   selector: 'app-academy',
   standalone: true,
-  imports: [CommonModule, RouterModule, FooterComponent, NgIcon, AcademyEnrollmentModalComponent, ButtonComponent, SectionHeadingComponent, TypewriterTextComponent],
+  imports: [CommonModule, RouterModule, NgIcon, AcademyEnrollmentModalComponent, ButtonComponent, SectionHeadingComponent, TypewriterTextComponent],
   providers: [
     provideIcons({
       heroCalendar,

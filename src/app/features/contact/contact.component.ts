@@ -2,12 +2,12 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FooterComponent  } from '@shared/layout';
+
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, FooterComponent],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './contact.component.html',
 })
 export class ContactComponent {
