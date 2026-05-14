@@ -111,6 +111,7 @@ export class GameService implements OnDestroy {
   seekGame(timeControl: string, allowBot: boolean = false): void {
     this.isSearching.set(true);
     this.searchTimeControl.set(timeControl);
+    this.connectSocket();
 
     // Clear any existing bot timeout if we are starting a fresh search
     if (!allowBot && this.botMatchTimeout) {
@@ -390,6 +391,7 @@ export class GameService implements OnDestroy {
   // ── Seeks API (for seek-board component) ────────────────────────
 
   joinSeek(seekId: number): void {
+    this.connectSocket();
     this.http
       .post<{ matched: boolean; game_id?: string; message: string; game?: GameState }>(
         `${this.apiUrl}/seeks/${seekId}/join`,
