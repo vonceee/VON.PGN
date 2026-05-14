@@ -1,23 +1,27 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Header } from '@shared/layout';
+import { Component, inject, signal } from '@angular/core';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { Header, FooterComponent } from '@shared/layout';
 import { LayoutService } from '../../../../core/services/layout.service';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, Header, CommonModule],
+  imports: [RouterOutlet, Header, FooterComponent, CommonModule],
   template: `
     <div class="h-screen w-full flex flex-col">
       <app-header class="w-full shrink-0 z-50"></app-header>
       <main class="flex-1 overflow-y-auto w-full custom-scrollbar relative">
-        <div 
-          class="w-full h-full flex flex-col mx-auto"
-          [class.max-w-7xl]="!layoutService.isFluid()"
-          [class.max-w-[1800px]]="layoutService.isFluid()"
-        >
-          <router-outlet></router-outlet>
+        <div class="flex flex-col min-h-full">
+          <div 
+            class="w-full flex-1 mx-auto"
+            [class.max-w-7xl]="!layoutService.isFluid()"
+            [class.max-w-[1800px]]="layoutService.isFluid()"
+          >
+            <router-outlet></router-outlet>
+          </div>
+          <app-footer *ngIf="showFooter()" class="w-full shrink-0"></app-footer>
         </div>
       </main>
     </div>
@@ -34,4 +38,16 @@ import { CommonModule } from '@angular/common';
 })
 export class MainLayoutComponent {
   public layoutService = inject(LayoutService);
+  private router = inject(Router);
+  public showFooter = signal(true);
+
+  constructor() {
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      // Hide footer on play and arena pages to maintain game focus
+      const url = event.urlAfterRedirects;
+      this.showFooter.set(!url.includes('/play/') && !url.includes('/arena'));
+    });
+  }
 }
