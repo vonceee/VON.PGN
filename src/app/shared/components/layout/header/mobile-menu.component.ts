@@ -215,8 +215,6 @@ export class MobileMenuComponent {
       links: [
         { path: '/study', label: 'Study' },
         { path: '/roadmap', label: 'Roadmap' },
-        { path: '/academy', label: 'Academy' },
-        { path: '/coaches', label: 'Coaches' },
       ],
     },
     {
@@ -227,10 +225,21 @@ export class MobileMenuComponent {
         { path: '/broadcasts', label: 'Broadcasts' },
       ],
     },
+    {
+      title: 'Community',
+      links: [
+        { path: '/fide/players', label: 'Players' },
+        { path: '/fide/federations', label: 'Federations' },
+        { path: '/coaches', label: 'Coaches' },
+        { path: '/academy', label: 'Academy' },
+        { path: '/legends', label: 'Legends' },
+      ],
+    },
   ];
 
   authLinks = [
     { path: '/my-progress', label: 'My Progress' },
+    { path: '/legends', label: 'My Legends' },
     { path: '/games/history', label: 'Game History' },
     { path: '/chat', label: 'Messages' },
     { path: '/my-events', label: 'My Tournaments' },

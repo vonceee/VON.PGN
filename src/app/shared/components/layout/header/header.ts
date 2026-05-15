@@ -24,7 +24,8 @@ import { MobileMenuComponent } from './mobile-menu.component';
 import { BackgroundSettings } from './background-settings';
 import { SideDrawerComponent } from '../../ui/side-drawer/side-drawer.component';
 import { ButtonComponent, LinkComponent, SectionHeadingComponent, FlagIconComponent } from '@shared/ui';
-import { heroTrophy, heroBell } from '@ng-icons/heroicons/outline';
+import { heroTrophy, heroBell, heroCircleStack } from '@ng-icons/heroicons/outline';
+import { GachaService } from '../../../../core/services/gacha';
 
 @Component({
   selector: 'app-header',
@@ -40,6 +41,7 @@ import { heroTrophy, heroBell } from '@ng-icons/heroicons/outline';
       heroBars3,
       heroTrophy,
       heroBell,
+      heroCircleStack,
     }),
   ],
   templateUrl: './header.html',
@@ -55,6 +57,7 @@ export class Header implements OnInit, OnDestroy {
   chatService = inject(ChatService);
   challengeService = inject(ChallengeService);
   notificationService = inject(NotificationService);
+  gachaService = inject(GachaService);
   private router = inject(Router);
 
 
@@ -116,6 +119,11 @@ export class Header implements OnInit, OnDestroy {
     if (this.authService.isAuthenticated()) {
       this.chatService.loadUnreadCount();
       this.notificationService.getUnreadCount().subscribe();
+      
+      const user = this.userService.currentUser();
+      if (user) {
+        this.gachaService.loadPacks(user.daily_packs_available || 0);
+      }
     }
   }
 

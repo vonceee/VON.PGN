@@ -150,18 +150,54 @@
       </div>
     </div>
 
-    <!-- Arena Dropdown -->
+    <!-- Community Dropdown -->
+    <div class="group relative">
+      <a
+        appLink
+        routerLink="/fide/players"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg   after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
+      >
+        Community
+      </a>
+      <div
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col "
+      >
+        <a
+          appLink
+          routerLink="/fide/players"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
+        >
+          <span class="text-sm text-content group-hover/item:text-accent">Players</span>
+        </a>
+        <a
+          appLink
+          routerLink="/fide/federations"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
+        >
+          <span class="text-sm text-content group-hover/item:text-accent">Federations</span>
+        </a>
+        <a
+          appLink
+          routerLink="/coaches"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
+        >
+          <span class="text-sm text-content group-hover/item:text-accent">Coaches</span>
+        </a>
+        <a
+          appLink
+          routerLink="/academy"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
+        >
+          <span class="text-sm text-content group-hover/item:text-accent">Academy</span>
+        </a>
+      </div>
+    </div>
+
     <a
       appLink
-      routerLink="/coaches"
-      class="text-sm lg:text-base xl:text-lg  mt-0.5 text-content"
-      >Coaches</a
-    >
-    <a
-      appLink
-      routerLink="/academy"
-      class="text-sm lg:text-base xl:text-lg  mt-0.5 text-content"
-      >Academy</a
+      routerLink="/legends"
+      class="text-sm lg:text-base xl:text-lg  mt-0.5 text-content font-bold text-accent"
+      >Legends</a
     >
   </div>
 
@@ -312,6 +348,12 @@
           </div>
         }
       </div>
+
+      <!-- Daily Packs -->
+      <a routerLink="/legends" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-subtle group transition-colors">
+        <ng-icon name="heroCircleStack" class="text-accent text-lg"></ng-icon>
+        <span class="text-sm font-bold text-content group-hover:text-accent">{{ gachaService.dailyPacks() }}/10</span>
+      </a>
 
       <div class="relative hidden md:block" #profileContainer>
         <button

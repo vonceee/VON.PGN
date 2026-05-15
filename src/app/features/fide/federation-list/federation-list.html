@@ -1,0 +1,42 @@
+<div class="fide-container p-6 md:p-12 max-w-7xl mx-auto">
+  <header class="mb-12">
+    <h1 class="text-4xl font-black text-content mb-2 tracking-tight">FIDE FEDERATIONS</h1>
+    <p class="text-muted">Global distribution of FIDE-rated chess players.</p>
+  </header>
+
+  <div class="mb-8 relative">
+    <ng-icon name="heroMagnifyingGlass" class="absolute left-4 top-1/2 -translate-y-1/2 text-muted"></ng-icon>
+    <input 
+      type="text" 
+      [ngModel]="searchQuery()" 
+      (ngModelChange)="onSearch($event)"
+      placeholder="Search countries or codes (e.g. USA, NOR)..."
+      class="w-full bg-surface border border-border-base rounded-2xl py-4 pl-12 pr-6 focus:ring-2 focus:ring-accent outline-none transition-all"
+    >
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    @for (fed of filteredFederations(); track fed.code) {
+      <a 
+        [routerLink]="['/fide/players']" 
+        [queryParams]="{ fed: fed.code }"
+        class="fed-card flex items-center gap-4 p-4 bg-surface border border-border-base rounded-xl hover:border-accent hover:shadow-md transition-all group"
+      >
+        <div class="flag-container w-12 h-8 overflow-hidden rounded shadow-sm border border-border-base bg-subtle">
+          <img [src]="getFlagUrl(fed.alpha2)" [alt]="fed.name" class="w-full h-full object-cover">
+        </div>
+        
+        <div class="flex-1 overflow-hidden">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-bold text-content truncate group-hover:text-accent transition-colors">{{ fed.name }}</span>
+            <span class="text-xs font-black text-muted opacity-50">{{ fed.code }}</span>
+          </div>
+          <div class="flex items-center gap-1.5 mt-0.5 text-xs text-muted">
+            <ng-icon name="heroUsers" class="text-sm"></ng-icon>
+            <span>{{ fed.player_count | number }} players</span>
+          </div>
+        </div>
+      </a>
+    }
+  </div>
+</div>

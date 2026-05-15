@@ -10,6 +10,7 @@ export interface UserProfile {
   email_verified_at: string | null;
   createdAt: string;
   country_code?: string;
+  daily_packs_available: number;
 
   // Follow stats
   followers_count: number;
