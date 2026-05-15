@@ -43,11 +43,10 @@
         <app-back-link size="sm" text="Back to Dashboard" (click)="location.back()"></app-back-link>
 
         <div class="flex items-center justify-between w-full">
-          <app-section-heading
-            [text]="tournamentId() ? 'Update' : 'Create New'"
-            highlight="Tournament"
-            size="text-3xl"
-          ></app-section-heading>
+          <header class="flex-1">
+            <h1 class="text-3xl md:text-4xl mb-1">{{ tournamentId() ? 'Update tournament' : 'Create new tournament' }}</h1>
+            <p class="text-muted text-lg">Fill in the details below to publish your chess event.</p>
+          </header>
 
           <div class="header-actions">
             @if (!useCustomPoster) {
@@ -73,11 +72,7 @@
 
       <!-- Basic Info -->
       <section id="sec-basic" class="p-8 scroll-mt-6 ui-panel">
-        <app-section-heading
-          text="Basic Information"
-          highlight="."
-          size="text-2xl mb-3"
-        ></app-section-heading>
+        <h2 class="text-2xl mb-3">Basic information</h2>
         <app-step-basic-info
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -86,11 +81,7 @@
 
       <!-- Dates & Location -->
       <section id="sec-dates" class="p-8 scroll-mt-6 ui-panel">
-        <app-section-heading
-          text="Dates & Location"
-          highlight="."
-          size="text-2xl mb-3"
-        ></app-section-heading>
+        <h2 class="text-2xl mb-3">Dates & location</h2>
         <app-step-dates-location
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -104,11 +95,7 @@
 
       <!-- Format & Rules -->
       <section id="sec-format" class="p-8 scroll-mt-6 ui-panel">
-        <app-section-heading
-          text="Format & Rules"
-          highlight="."
-          size="text-2xl mb-3"
-        ></app-section-heading>
+        <h2 class="text-2xl mb-3">Format & rules</h2>
         <app-step-format-rules
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -117,11 +104,7 @@
 
       <!-- Organizer -->
       <section id="sec-organizer" class="p-8 scroll-mt-6 ui-panel">
-        <app-section-heading
-          text="Organizer Information"
-          highlight="."
-          size="text-2xl mb-3"
-        ></app-section-heading>
+        <h2 class="text-2xl mb-3">Organizer information</h2>
         <app-step-organizer
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -130,11 +113,7 @@
 
       <!-- Registration -->
       <section id="sec-registration" class="p-8 scroll-mt-6 ui-panel">
-        <app-section-heading
-          text="Registration Details"
-          highlight="."
-          size="text-2xl mb-3"
-        ></app-section-heading>
+        <h2 class="text-2xl mb-3">Registration details</h2>
         <app-step-registration
           [form]="tournamentForm"
           [getError]="getError.bind(this)"
@@ -143,11 +122,7 @@
 
       <!-- Eligibility -->
       <section id="sec-eligibility" class="p-8 scroll-mt-6 ui-panel">
-        <app-section-heading
-          text="Player Eligibility"
-          highlight="."
-          size="text-2xl mb-3"
-        ></app-section-heading>
+        <h2 class="text-2xl mb-3">Player eligibility</h2>
         <app-step-eligibility
           [eligibilityArray]="eligibilityArray"
           (addItem)="addEligibilityItem()"
@@ -157,11 +132,7 @@
 
       <!-- Prizes -->
       <section id="sec-prizes" class="p-8 scroll-mt-6 ui-panel">
-        <app-section-heading
-          text="Prizes & Categories"
-          highlight="."
-          size="text-2xl mb-3"
-        ></app-section-heading>
+        <h2 class="text-2xl mb-3">Prizes & categories</h2>
         <app-step-prizes
           [categoriesArray]="categoriesArray"
           (addCategory)="addCategory()"
@@ -175,11 +146,7 @@
 
       <!-- Schedule -->
       <section id="sec-schedule" class="p-8 scroll-mt-6 ui-panel">
-        <app-section-heading
-          text="Event Schedule"
-          highlight="."
-          size="text-2xl mb-3"
-        ></app-section-heading>
+        <h2 class="text-2xl mb-3">Event schedule</h2>
         <app-step-schedule
           [scheduleDaysArray]="scheduleDaysArray"
           (addScheduleDay)="addScheduleDay()"

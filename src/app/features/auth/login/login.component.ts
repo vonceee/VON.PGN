@@ -2,7 +2,6 @@ import { Component, inject, DestroyRef, signal, computed } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { SectionHeadingComponent  } from '@shared/ui';
 import { TypewriterTextComponent  } from '@shared/ui';
 import { BackLinkComponent  } from '@shared/ui';
 import { ButtonComponent  } from '@shared/ui';
@@ -13,7 +12,7 @@ const LOCKOUT_DURATION_MS = 60_000;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, SectionHeadingComponent, TypewriterTextComponent, BackLinkComponent, ButtonComponent],
+  imports: [ReactiveFormsModule, RouterLink, TypewriterTextComponent, BackLinkComponent, ButtonComponent],
   templateUrl: './login.html',
 })
 export class LoginComponent {
@@ -49,8 +48,6 @@ export class LoginComponent {
     return Math.max(0, Math.ceil((until - now) / 1000));
   });
 
-
-
   private startLockoutTimer() {
     if (this.lockoutTimer) clearInterval(this.lockoutTimer);
     this.currentTime.set(Date.now());
@@ -62,8 +59,6 @@ export class LoginComponent {
       }
     }, 1000);
   }
-
-
 
   private clearLockout() {
     if (this.lockoutTimer) {

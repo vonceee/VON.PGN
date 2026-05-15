@@ -23,7 +23,7 @@ import {
 import { MobileMenuComponent } from './mobile-menu.component';
 import { BackgroundSettings } from './background-settings';
 import { SideDrawerComponent } from '../../ui/side-drawer/side-drawer.component';
-import { ButtonComponent, LinkComponent, SectionHeadingComponent, FlagIconComponent } from '@shared/ui';
+import { ButtonComponent, LinkComponent, FlagIconComponent } from '@shared/ui';
 import { heroTrophy, heroBell, heroCircleStack } from '@ng-icons/heroicons/outline';
 import { GachaService } from '../../../../core/services/gacha';
 

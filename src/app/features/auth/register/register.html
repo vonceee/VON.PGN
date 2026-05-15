@@ -4,12 +4,10 @@
     <div class="mx-auto my-auto w-full xl:max-w-md py-8">
       <app-back-link text="Back to Home"></app-back-link>
 
-      <app-section-heading
-        text="Sign up for"
-        highlight="vonchess"
-        size="text-3xl md:text-5xl mb-4 md:mb-6"
-      ></app-section-heading>
-
+      <header class="mb-8">
+        <h1 class="text-4xl md:text-5xl mb-2">Sign up for vonchess</h1>
+      </header>
+      
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <!-- Username Field -->
         <div class="space-y-1">

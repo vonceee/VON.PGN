@@ -2,14 +2,14 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FideService, FidePlayer } from '../../../core/services/fide';
-import { NgIcon, provideIcons } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
 import { heroTrophy, heroUserGroup, heroGlobeAlt } from '@ng-icons/heroicons/outline';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-top-ranking',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgIcon],
+  imports: [CommonModule, RouterModule],
   providers: [provideIcons({ heroTrophy, heroUserGroup, heroGlobeAlt })],
   templateUrl: './top-ranking.html',
   styleUrls: ['./top-ranking.css']

@@ -8,12 +8,10 @@ import { AcademyService } from '../../../../core/services/academy.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { animate, style, transition, trigger } from '@angular/animations';
 
-import { SectionHeadingComponent  } from '@shared/ui';
-
 @Component({
   selector: 'app-academy-enrollment-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgIcon, ButtonComponent, SectionHeadingComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgIcon, ButtonComponent],
   providers: [provideIcons({ heroXMark })],
   templateUrl: './enrollment-modal.html',
   styles: [`

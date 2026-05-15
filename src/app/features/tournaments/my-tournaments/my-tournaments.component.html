@@ -1,14 +1,13 @@
 <div class="mx-auto px-8 py-10">
-  <div class="flex justify-between items-center mb-8">
-    <div>
-      <app-section-heading
-        text="My"
-        highlight="Tournaments"
-        size="text-3xl md:text-5xl mb-4 md:mb-6"
-      ></app-section-heading>
+  <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div class="flex-1">
+      <h1 class="text-4xl md:text-5xl mb-2">My events</h1>
+      <p class="text-muted text-lg">Manage your upcoming, ongoing, and completed chess events.</p>
     </div>
-    <a appButton variant="outline" routerLink="/my-events/new">+ New Event</a>
-  </div>
+    <div class="flex items-center gap-4">
+      <a appButton variant="outline" routerLink="/my-events/new">+ New Event</a>
+    </div>
+  </header>
 
   @if (loading()) {
     <app-loading></app-loading>

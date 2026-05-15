@@ -6,7 +6,6 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { CreateStudyDialogComponent } from '../dialogs/create-study-dialog/create-study-dialog.component';
 import { FormsModule } from '@angular/forms';
-import { SectionHeadingComponent } from '@shared/ui';
 import { ButtonComponent } from '@shared/ui';
 import { LoadingComponent } from '@shared/feedback';
 import { effect } from '@angular/core';
@@ -16,12 +15,15 @@ import { heroChevronDown } from '@ng-icons/heroicons/outline';
 @Component({
   selector: 'app-study-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, SectionHeadingComponent, ButtonComponent, DialogModule, NgIconComponent, LoadingComponent],
+  imports: [CommonModule, RouterModule, FormsModule, ButtonComponent, DialogModule, NgIconComponent, LoadingComponent],
   providers: [provideIcons({ heroChevronDown })],
   template: `
     <div class="px-4 md:px-16 py-8">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <app-section-heading text="Chess" highlight="Study" size="text-3xl mb-0"></app-section-heading>
+      <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="flex-1">
+          <h1 class="text-4xl md:text-5xl mb-2">Study</h1>
+          <p class="text-muted text-lg">Collaborate and analyze chess games with others.</p>
+        </div>
 
         <div class="flex items-center gap-2">
             <!-- Dropdown -->
@@ -62,7 +64,7 @@ import { heroChevronDown } from '@ng-icons/heroicons/outline';
              <button appButton variant="primary" (click)="createNewStudy()">Create New Study</button>
            }
          </div>
-       </div>
+      </header>
  
        <div class="relative min-h-[400px]">
          @if (isLoading()) {

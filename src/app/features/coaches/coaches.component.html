@@ -1,6 +1,11 @@
 <div class="flex-1 flex flex-col">
   <div class="mx-auto px-4 md:p-8 w-full flex-1">
-    <app-section-heading text="Find a" highlight="Coach" size="text-3xl mb-4" />
+    <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div class="flex-1">
+        <h1 class="text-4xl md:text-5xl mb-2">Coaches</h1>
+        <p class="text-muted text-lg">Learn from the best. Connect with professional chess coaches to accelerate your growth.</p>
+      </div>
+    </header>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (coach of coaches(); track coach.id) {
         <div

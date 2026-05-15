@@ -17,8 +17,8 @@ import { heroSparkles, heroUserGroup, heroCircleStack } from '@ng-icons/heroicon
       <!-- Header Section -->
       <header class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
         <div>
-          <h1 class="text-4xl font-black text-content mb-2">CHESS LEGENDS</h1>
-          <p class="text-muted">Collect the greatest masters in the history of the game.</p>
+          <h1 class="text-4xl md:text-5xl mb-2">Chess legends</h1>
+          <p class="text-muted text-lg">Collect the greatest masters in the history of the game.</p>
         </div>
         
         <div class="flex items-center gap-4 bg-surface px-6 py-3 rounded-2xl border border-border-base shadow-sm">

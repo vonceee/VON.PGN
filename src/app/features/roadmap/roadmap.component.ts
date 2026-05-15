@@ -2,15 +2,13 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LessonService } from '../../core/services/lesson.service';
-import { Course } from '../../core/models/course.model';
 import { ServerMaintenanceComponent  } from '@shared/feedback';
-import { SectionHeadingComponent  } from '@shared/ui';
 import { LoadingComponent  } from '@shared/feedback';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, RouterModule, ServerMaintenanceComponent, SectionHeadingComponent, LoadingComponent],
+  imports: [CommonModule, RouterModule, ServerMaintenanceComponent, LoadingComponent],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css',
 })

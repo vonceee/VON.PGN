@@ -4,7 +4,7 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, Validati
 import { RouterLink, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { SectionHeadingComponent, TypewriterTextComponent, BackLinkComponent, ButtonComponent } from '@shared/ui';
+import { TypewriterTextComponent, BackLinkComponent, ButtonComponent } from '@shared/ui';
 
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -20,7 +20,7 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, SectionHeadingComponent, TypewriterTextComponent, BackLinkComponent, ButtonComponent],
+  imports: [ReactiveFormsModule, RouterLink, TypewriterTextComponent, BackLinkComponent, ButtonComponent],
   templateUrl: './register.html',
 })
 export class RegisterComponent {

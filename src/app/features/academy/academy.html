@@ -1,30 +1,12 @@
 <div class="min-h-full w-full flex flex-col selection:bg-accent/30">
   <!-- Hero Section -->
   <section class="relative pt-24 pb-16 md:pt-40 md:pb-32 px-6 overflow-hidden">
-    <div class="absolute inset-0 z-0">
-      <div
-        class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-accent/10 blur-[120px] rounded-full"
-      ></div>
-      <div
-        class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full"
-      ></div>
-    </div>
-
-    <div class="relative z-10 max-w-7xl mx-auto text-center">
-      <app-section-heading
-        text="Vonchess"
-        highlight="Academy"
-        size="text-5xl md:text-8xl mb-6 md:mb-10"
-      ></app-section-heading>
-      <div class="mb-10 max-w-3xl mx-auto">
-        <span class="text-lg md:text-xl ">
-          <app-typewriter-text
-            size="text-xl md:text-2xl"
-            text="vonchess Online: From Beginner to Intermediate."
-          ></app-typewriter-text>
-        </span>
-      </div>
-      <div class="flex flex-wrap justify-center gap-4">
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <header class="mb-10">
+        <h1 class="text-5xl md:text-8xl mb-4">Academy</h1>
+        <p class="text-muted text-xl md:text-2xl max-w-2xl">Learn chess from the best. A comprehensive journey from beginner to intermediate mastery.</p>
+      </header>
+      <div class="flex flex-wrap gap-4">
         <button appButton (click)="openEnrollment()" variant="primary">Enroll Now</button>
         <button appButton (click)="scrollToOverview()" variant="ghost">Learn More</button>
       </div>
@@ -34,13 +16,10 @@
   <!-- Program Details -->
   <section id="academy-overview" class="py-20 px-6 bg-slate-50">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16">
-        <app-section-heading
-          text="The"
-          highlight="Program Overview"
-          size="text-3xl md:text-5xl mb-4"
-        ></app-section-heading>
-      </div>
+      <header class="mb-12">
+        <h2 class="text-3xl md:text-5xl mb-2">The program overview</h2>
+        <p class="text-muted text-lg">A structured approach to mastering the game.</p>
+      </header>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- Duration -->
@@ -94,13 +73,10 @@
   <!-- Curriculum Section -->
   <section class="py-24 px-6">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-20">
-        <app-section-heading
-          text="The"
-          highlight="Curriculum"
-          size="text-3xl md:text-5xl mb-4 md:mb-6"
-        ></app-section-heading>
-      </div>
+      <header class="mb-12">
+        <h2 class="text-3xl md:text-5xl mb-2">The curriculum</h2>
+        <p class="text-muted text-lg">A step-by-step guide from mechanics to advanced fundamentals.</p>
+      </header>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- Phase 1 -->
@@ -197,13 +173,10 @@
   <!-- Academy Gallery -->
   <section class="py-24 px-6 relative overflow-hidden">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-16">
-        <app-section-heading
-          text="Gallery"
-          highlight=""
-          size="text-3xl md:text-5xl mb-4 md:mb-6"
-        ></app-section-heading>
-      </div>
+      <header class="mb-12">
+        <h2 class="text-3xl md:text-5xl mb-2">Gallery</h2>
+        <p class="text-muted text-lg">Glimpses of our interactive training sessions and community.</p>
+      </header>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div class="ui-panel overflow-hidden rounded-3xl aspect-[4/3] group">
@@ -235,11 +208,10 @@
   <section class="py-24 px-6 bg-slate-50 relative overflow-hidden">
     <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
       <div class="w-full lg:w-1/2">
-        <app-section-heading
-          text="Class Structure &"
-          highlight="Logistics"
-          size="text-3xl md:text-5xl mb-4 md:mb-6"
-        ></app-section-heading>
+        <header class="mb-8">
+          <h2 class="text-3xl md:text-5xl mb-2">Class structure & logistics</h2>
+          <p class="text-muted text-lg">Everything you need to know about how we conduct our sessions.</p>
+        </header>
         <div class="space-y-6">
           <div class="flex items-start gap-4">
             <ng-icon name="heroCheck" class="w-6 h-6 text-cyan-500 mt-1"></ng-icon>
@@ -312,14 +284,12 @@
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section class="py-24 px-6 text-center">
+  <section class="py-24 px-6">
     <div class="max-w-4xl mx-auto">
-      <app-section-heading
-        text="Start Your Winning"
-        highlight="Journey Today."
-        size="text-3xl md:text-5xl mb-4 md:mb-6"
-      ></app-section-heading>
+      <header class="mb-8">
+        <h2 class="text-3xl md:text-5xl mb-2">Start your winning journey today.</h2>
+        <p class="text-muted text-lg">Limited slots available for our next batch. Secure your spot now.</p>
+      </header>
       <p class="text-xl  mb-12">
         Limited to 10 students per batch to ensure quality coaching.
       </p>

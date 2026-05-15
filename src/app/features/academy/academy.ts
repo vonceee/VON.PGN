@@ -13,14 +13,12 @@ import {
   heroAcademicCap,
 } from '@ng-icons/heroicons/outline';
 import { ButtonComponent  } from '@shared/ui';
-import { SectionHeadingComponent  } from '@shared/ui';
-import { TypewriterTextComponent  } from '@shared/ui';
 import { AcademyEnrollmentModalComponent } from './components/enrollment-modal/enrollment-modal';
 
 @Component({
   selector: 'app-academy',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgIcon, AcademyEnrollmentModalComponent, ButtonComponent, SectionHeadingComponent, TypewriterTextComponent],
+  imports: [CommonModule, RouterModule, NgIcon, AcademyEnrollmentModalComponent, ButtonComponent],
   providers: [
     provideIcons({
       heroCalendar,

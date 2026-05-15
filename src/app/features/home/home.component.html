@@ -3,20 +3,10 @@
   <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="relative z-10 mx-auto">
       <div class="text-left">
-        <app-section-heading
-          text="Vonchess"
-          highlight="Academy."
-          size="text-4xl md:text-6xl mb-2"
-        ></app-section-heading>
-        <p class="text-lg md:text-md mb-4 max-w-xl ">
-          complete beginner-to-intermediate training for kids. <br />
-          <br />
-        </p>
-
-        <p class="text-lg md:text-2xl mb-8 max-w-xl ">
-          we offer structured lessons, expert guidance, and a clear path to becoming a competitive
-          player.
-        </p>
+        <header class="mb-12">
+          <h2 class="text-3xl md:text-5xl mb-2">Vonchess academy</h2>
+          <p class="text-muted text-lg max-w-xl">Complete beginner-to-intermediate training for kids and aspiring players.</p>
+        </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
           <div class="flex items-start gap-3">
@@ -38,15 +28,10 @@
   <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <app-section-heading
-          text="Compete in"
-          highlight="Events."
-          size="text-3xl md:text-5xl mb-4 md:mb-6"
-        ></app-section-heading>
-        <app-typewriter-text
-          size="text-lg md:text-4xl mb-6 md:mb-10"
-          text="discover chess events across the Philippines, browse competitions posted by the community, with detailed information, and find the right event to test your skills."
-        ></app-typewriter-text>
+        <header class="mb-8">
+          <h2 class="text-3xl md:text-5xl mb-2">Compete in events</h2>
+          <p class="text-muted text-lg max-w-2xl">Discover chess events across the Philippines and test your skills in community competitions.</p>
+        </header>
         <app-arrow-link link="/events" text="Browse Events"></app-arrow-link>
       </div>
     </div>
@@ -124,15 +109,10 @@
   <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="max-w-4xl flex flex-col md:flex-row justify-between gap-8 md:gap-16">
       <div class="text-left">
-        <app-section-heading
-          text="Explore"
-          highlight="Openings."
-          size="text-3xl md:text-5xl mb-4 md:mb-6"
-        ></app-section-heading>
-        <app-typewriter-text
-          size="text-lg md:text-4xl mb-6 md:mb-10"
-          text="learn the theory behind the most popular chess openings and start your games with a clear advantage."
-        ></app-typewriter-text>
+        <header class="mb-8">
+          <h2 class="text-3xl md:text-5xl mb-2">Explore openings</h2>
+          <p class="text-muted text-lg max-w-2xl">Learn the theory behind the most popular chess openings and start your games with a clear advantage.</p>
+        </header>
 
         <div class="space-y-3 mb-6 md:mb-10">
           <div
@@ -172,15 +152,10 @@
       class="w-full flex flex-col md:flex-row-reverse items-center justify-between gap-8 md:gap-16"
     >
       <div class="md:w-1/2 text-left md:pl-8 lg:pl-16">
-        <app-section-heading
-          text="Train your"
-          highlight="Tactics."
-          size="text-3xl md:text-5xl mb-4 md:mb-6"
-        ></app-section-heading>
-        <app-typewriter-text
-          size="text-lg md:text-4xl mb-6 md:mb-10"
-          text="train your pattern recognition with thousands of puzzles curated for your level."
-        ></app-typewriter-text>
+        <header class="mb-8">
+          <h2 class="text-3xl md:text-5xl mb-2">Train your tactics</h2>
+          <p class="text-muted text-lg max-w-2xl">Train your pattern recognition with thousands of puzzles curated for your level.</p>
+        </header>
         <app-arrow-link link="/tactics" text="Start Training"></app-arrow-link>
       </div>
     </div>
@@ -190,15 +165,10 @@
   <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <app-section-heading
-          text="Read our"
-          highlight="Courses."
-          size="text-3xl md:text-5xl mb-4 md:mb-6"
-        ></app-section-heading>
-        <app-typewriter-text
-          size="text-lg md:text-4xl mb-6 md:mb-10"
-          text="learn from handcrafted courses for players of all levels."
-        ></app-typewriter-text>
+        <header class="mb-8">
+          <h2 class="text-3xl md:text-5xl mb-2">Read our courses</h2>
+          <p class="text-muted text-lg max-w-2xl">Learn from handcrafted courses for players of all levels.</p>
+        </header>
 
         @if (isLoading()) {
           <div class=" space-y-4">
@@ -243,15 +213,10 @@
   <section class="w-full py-12 md:py-24 px-6 md:px-16 relative overflow-hidden">
     <div class="w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-16">
       <div class="w-full text-left">
-        <app-section-heading
-          text="Find Your"
-          highlight="Coach."
-          size="text-3xl md:text-5xl mb-4 md:mb-6"
-        ></app-section-heading>
-        <app-typewriter-text
-          size="text-lg md:text-4xl mb-6 md:mb-10"
-          text="accelerate your progress with personalized 1-on-1 lessons from titled players and experienced trainers."
-        ></app-typewriter-text>
+        <header class="mb-8">
+          <h2 class="text-3xl md:text-5xl mb-2">Find your coach</h2>
+          <p class="text-muted text-lg max-w-2xl">Accelerate your progress with personalized 1-on-1 lessons from titled players and trainers.</p>
+        </header>
         <app-arrow-link link="/coaches" text="Browse Coaches"></app-arrow-link>
       </div>
     </div>

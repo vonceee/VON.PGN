@@ -6,14 +6,13 @@ import { AuthService } from '../../core/services/auth.service';
 import { Tournament, TournamentStatus } from '../../core/models/tournament.model';
 import { ButtonComponent  } from '@shared/ui';
 import { LoadingComponent  } from '@shared/feedback';
-import { SectionHeadingComponent  } from '@shared/ui';
 
 const ITEMS_PER_PAGE = 9;
 
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent, SectionHeadingComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent],
   templateUrl: './tournaments.component.html',
   styleUrl: './tournaments.component.css'
 })

@@ -8,12 +8,10 @@ import { AuthService } from '../../core/services/auth.service';
 import { ButtonComponent  } from '@shared/ui';
 import { environment } from '../../../environments/environment';
 
-import { SectionHeadingComponent  } from '@shared/ui';
-
 @Component({
   selector: 'app-coaches',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent, SectionHeadingComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent],
   templateUrl: './coaches.component.html'
 })
 export class CoachesComponent {

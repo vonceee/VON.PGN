@@ -1,4 +1,10 @@
 <div class="h-full w-full overflow-hidden flex flex-col bg-main p-8">
+  <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-0">
+    <div class="flex-1">
+      <h1 class="text-4xl md:text-5xl mb-2">Tactics</h1>
+      <p class="text-muted text-lg">Sharpen your skills with daily puzzles.</p>
+    </div>
+  </header>
   @if (isLoading()) {
     <app-loading></app-loading>
   } @else {

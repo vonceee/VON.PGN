@@ -6,7 +6,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { LessonService } from '../../core/services/lesson.service';
 import { PresenceService } from '../../core/services/presence.service';
 
-import { TypewriterTextComponent, ButtonComponent, SectionHeadingComponent, ArrowLinkComponent } from '@shared/ui';
+import { ButtonComponent, ArrowLinkComponent } from '@shared/ui';
 import { FeedbackButtonComponent } from '@shared/feedback';
 
 @Component({
@@ -16,9 +16,7 @@ import { FeedbackButtonComponent } from '@shared/feedback';
     CommonModule,
     RouterModule,
     FormsModule,
-    TypewriterTextComponent,
     FeedbackButtonComponent,
-    SectionHeadingComponent,
     ButtonComponent,
     ArrowLinkComponent,
   ],
