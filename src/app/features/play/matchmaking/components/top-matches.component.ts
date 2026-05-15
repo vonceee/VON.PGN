@@ -92,7 +92,7 @@ import { Config } from 'chessground/config';
 
       <!-- Top Games List -->
       <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0 space-y-1 pr-1">
-        <h3 class="text-[10px] uppercase font-bold tracking-widest text-muted px-2 mb-2">Top Ongoing Matches</h3>
+        <h3 class="text-[10px] uppercase font-bold text-muted px-2 mb-2">Top Ongoing Matches</h3>
         @for (match of presenceService.topGames(); track match.gameId) {
           @let isActive = selectedGameId() === match.gameId || (!selectedGameId() && match.gameId === presenceService.topGameId());
           <div 

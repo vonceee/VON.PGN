@@ -1,7 +1,7 @@
 <div class="fide-ranking-container p-6 md:p-12 max-w-7xl mx-auto">
   <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
-      <h1 id="fide-database-title" class="text-4xl font-black text-content mb-2 tracking-tight">FIDE PLAYER DATABASE</h1>
+      <h1 id="fide-database-title" class="text-4xl font-black text-content mb-2">FIDE PLAYER DATABASE</h1>
       <p class="text-muted">Explore and search the official world chess player registry.</p>
     </div>
 
@@ -40,7 +40,7 @@
           role="tab"
           [attr.aria-selected]="activeType() === 'standard'"
           aria-label="View Classical World Ranking"
-          class="flex-1 px-8 py-5 text-sm font-black uppercase tracking-widest transition-all relative"
+          class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
           [class.active-tab]="activeType() === 'standard'"
           [class.text-muted]="activeType() !== 'standard'"
         >
@@ -52,7 +52,7 @@
           role="tab"
           [attr.aria-selected]="activeType() === 'rapid'"
           aria-label="View Rapid World Ranking"
-          class="flex-1 px-8 py-5 text-sm font-black uppercase tracking-widest transition-all relative"
+          class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
           [class.active-tab]="activeType() === 'rapid'"
           [class.text-muted]="activeType() !== 'rapid'"
         >
@@ -64,7 +64,7 @@
           role="tab"
           [attr.aria-selected]="activeType() === 'blitz'"
           aria-label="View Blitz World Ranking"
-          class="flex-1 px-8 py-5 text-sm font-black uppercase tracking-widest transition-all relative"
+          class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
           [class.active-tab]="activeType() === 'blitz'"
           [class.text-muted]="activeType() !== 'blitz'"
         >
@@ -73,7 +73,7 @@
       </div>
     } @else {
       <div class="px-8 py-4 bg-subtle/30 border-b border-border-base">
-        <span class="text-xs font-black text-accent uppercase tracking-widest">Search Results for "{{ searchQuery() }}"</span>
+        <span class="text-xs font-black text-accent uppercase">Search Results for "{{ searchQuery() }}"</span>
       </div>
     }
 
@@ -81,11 +81,11 @@
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="bg-subtle/10 border-b border-border-base">
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase tracking-[0.2em] w-16">Rank</th>
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase tracking-[0.2em]">Player Details</th>
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase tracking-[0.2em] text-center">Classical</th>
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase tracking-[0.2em] text-center">Rapid</th>
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase tracking-[0.2em] text-center">Blitz</th>
+            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase w-16">Rank</th>
+            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase">Player Details</th>
+            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase text-center">Classical</th>
+            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase text-center">Rapid</th>
+            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase text-center">Blitz</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-border-base">
@@ -94,7 +94,7 @@
               <!-- Rank Column -->
               <td class="px-8 py-5">
                 <span 
-                  class="text-lg font-black tracking-tighter"
+                  class="text-lg font-blacker"
                   [class.text-accent]="i < 3 && !searchQuery()"
                   [class.text-muted]="i >= 3 || searchQuery()"
                 >
@@ -119,13 +119,13 @@
                   <div class="flex flex-col gap-0.5">
                     <div class="flex items-center gap-2">
                       <span class="text-accent font-black text-xs">{{ player.title || 'GM' }}</span>
-                      <span class="text-content font-bold text-base tracking-tight group-hover:text-accent transition-colors">
+                      <span class="text-content font-bold text-base group-hover:text-accent transition-colors">
                         {{ player.name }}
                       </span>
                     </div>
                     <div class="flex items-center gap-2">
                       <img [src]="getFlagUrl(player.federation?.alpha2)" class="w-4 h-2.5 rounded-xs shadow-xs border border-border-base">
-                      <span class="text-[10px] font-black text-muted uppercase tracking-wider">{{ player.federation?.name }}</span>
+                      <span class="text-[10px] font-black text-muted uppercase">{{ player.federation?.name }}</span>
                     </div>
                   </div>
                 </div>
@@ -156,7 +156,7 @@
                 <td colspan="5" class="px-8 py-24 text-center">
                   <div class="flex flex-col items-center gap-4">
                     <div class="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-[10px] font-black text-muted uppercase tracking-widest">Querying FIDE Registry</span>
+                    <span class="text-[10px] font-black text-muted uppercase">Querying FIDE Registry</span>
                   </div>
                 </td>
               </tr>
@@ -175,14 +175,14 @@
     <!-- Pagination (Only if searching) -->
     @if (searchQuery() && totalPages() > 1) {
       <div class="px-8 py-6 bg-subtle/10 border-t border-border-base flex items-center justify-between">
-        <span class="text-xs font-black text-muted uppercase tracking-widest">Page {{ currentPage() }} of {{ totalPages() }}</span>
+        <span class="text-xs font-black text-muted uppercase">Page {{ currentPage() }} of {{ totalPages() }}</span>
         <div class="flex gap-2">
           <button 
             id="fide-page-prev"
             [disabled]="currentPage() === 1"
             (click)="setPage(currentPage() - 1)"
             aria-label="Previous page"
-            class="px-4 py-2 rounded-xl border border-border-base bg-main text-xs font-black uppercase tracking-widest disabled:opacity-30 hover:border-accent transition-colors"
+            class="px-4 py-2 rounded-xl border border-border-base bg-main text-xs font-black uppercase disabled:opacity-30 hover:border-accent transition-colors"
           >
             Prev
           </button>
@@ -191,7 +191,7 @@
             [disabled]="currentPage() === totalPages()"
             (click)="setPage(currentPage() + 1)"
             aria-label="Next page"
-            class="px-4 py-2 rounded-xl border border-border-base bg-main text-xs font-black uppercase tracking-widest disabled:opacity-30 hover:border-accent transition-colors"
+            class="px-4 py-2 rounded-xl border border-border-base bg-main text-xs font-black uppercase disabled:opacity-30 hover:border-accent transition-colors"
           >
             Next
           </button>

@@ -51,7 +51,7 @@ import { Chess } from 'chess.js';
                 <div>
                   <!-- Header: Meta -->
                   <div class="flex items-center gap-3 text-xs text-muted mb-4">
-                    <span class="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+                    <span class="flex items-center gap-1.5 font-bold uppercase">
                       {{ getGameType(game.time_control) }} • {{ formatTimeControl(game.time_control) }}
                     </span>
                     <span>•</span>
@@ -130,7 +130,7 @@ import { Chess } from 'chess.js';
               variant="outline"
               [loading]="isLoadingMore()"
               (click)="loadNextPage()"
-              class="px-12 py-3 rounded-xl border-border-base hover:border-accent/50 text-xs font-bold uppercase tracking-widest transition-all"
+              class="px-12 py-3 rounded-xl border-border-base hover:border-accent/50 text-xs font-bold uppercase transition-all"
             >
               View More Games
             </button>

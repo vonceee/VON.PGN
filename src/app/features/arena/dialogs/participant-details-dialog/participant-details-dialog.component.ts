@@ -43,7 +43,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
 
         <!-- Games List -->
         <div class="space-y-3">
-          <label class="text-xs font-semibold text-muted uppercase tracking-wider">Tournament Games</label>
+          <label class="text-xs font-semibold text-muted uppercase">Tournament Games</label>
           <div class="max-h-[300px] overflow-y-auto custom-scrollbar pr-2 space-y-1">
             @for (game of player.games?.slice()?.reverse(); track game.gameId; let i = $index) {
               <div class="flex items-center justify-between p-3 bg-subtle border border-border-base rounded-lg group hover:border-accent/30 transition-all">
@@ -84,7 +84,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
       @apply flex flex-col p-3 bg-subtle border border-border-base rounded-xl;
     }
     .stat-label {
-      @apply text-[10px] font-bold text-muted uppercase tracking-tight mb-1;
+      @apply text-[10px] font-bold text-muted uppercase mb-1;
     }
     .stat-value {
       @apply text-lg font-bold text-content tabular-nums;

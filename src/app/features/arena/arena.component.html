@@ -60,7 +60,7 @@
         <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 shrink-0">
           <div>
-            <h1 class="text-2xl tracking-tight mb-1 text-content font-bold">
+            <h1 class="text-2xl mb-1 text-content font-bold">
               {{ arenaData()?.name || 'Hourly Arena' }}
             </h1>
             <div class="flex items-center gap-3 text-xs text-muted uppercase">
@@ -72,17 +72,17 @@
 
           <div class="text-right">
             @if (isPast()) {
-              <div class="text-[10px] uppercase text-accent font-bold tracking-widest mb-0.5">
+              <div class="text-[10px] uppercase text-accent font-bold mb-0.5">
                 Tournament Finished
               </div>
-              <div class="text-2xl tabular-nums tracking-tighter text-content font-bold">
+              <div class="text-2xl tabular-numser text-content font-bold">
                 Final Results
               </div>
             } @else {
               <div class="text-[10px] uppercase text-muted mb-0.5">
                 {{ countdownLabel() }}
               </div>
-              <div class="text-3xl tabular-nums tracking-tighter text-accent font-black">
+              <div class="text-3xl tabular-numser text-accent font-black">
                 {{ countdown() }}
               </div>
             }
@@ -107,7 +107,7 @@
             @if (topThree()[0]; as p1) {
               <div class="flex flex-col items-center flex-1 max-w-[180px]">
                 <div class="w-full bg-accent/[0.03] border-x border-t border-accent/20 rounded-t-3xl h-36 flex flex-col items-center justify-center p-4 relative">
-                  <div class="absolute -top-3 bg-accent text-white px-3 py-1 rounded-full text-[9px] font-bold tracking-[0.2em] uppercase shadow-lg shadow-accent/20">
+                  <div class="absolute -top-3 bg-accent text-white px-3 py-1 rounded-full text-[9px] font-bold uppercase shadow-lg shadow-accent/20">
                     Winner
                   </div>
                   <div class="text-4xl font-black text-accent/20 mb-2 italic">1</div>
@@ -194,7 +194,7 @@
           <!-- Pagination Footer -->
           @if (leaderboard().length > pageSize()) {
             <div class="flex items-center justify-between mt-6 px-2">
-              <div class="text-[10px] uppercase font-bold tracking-widest text-muted">
+              <div class="text-[10px] uppercase font-bold text-muted">
                 {{ leaderboard().length }} Participants
               </div>
               <div class="flex items-center gap-4">

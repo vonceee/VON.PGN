@@ -17,14 +17,14 @@ import { heroSparkles, heroUserGroup, heroCircleStack } from '@ng-icons/heroicon
       <!-- Header Section -->
       <header class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
         <div>
-          <h1 class="text-4xl font-black text-content mb-2 tracking-tight">CHESS LEGENDS</h1>
+          <h1 class="text-4xl font-black text-content mb-2">CHESS LEGENDS</h1>
           <p class="text-muted">Collect the greatest masters in the history of the game.</p>
         </div>
         
         <div class="flex items-center gap-4 bg-surface px-6 py-3 rounded-2xl border border-border-base shadow-sm">
           <ng-icon name="heroCircleStack" class="text-2xl text-accent"></ng-icon>
           <div class="flex flex-col">
-            <span class="text-xs text-muted font-bold uppercase tracking-wider">Daily Packs</span>
+            <span class="text-xs text-muted font-bold uppercase">Daily Packs</span>
             <span class="text-xl font-black text-content">{{ gachaService.dailyPacks() }}/10</span>
           </div>
         </div>
