@@ -24,6 +24,8 @@ export class PresenceService {
   // Global Site Stats
   nbPlayers = signal<number>(0);
   nbGames = signal<number>(0);
+  topGames = signal<any[]>([]);
+  topGameId = signal<string | null>(null);
 
   constructor() {
     // Sync with socket events from GameService
@@ -37,10 +39,11 @@ export class PresenceService {
             this.updateLocalPresence(data.userId, data.online);
           });
 
-          socket.off('site_stats');
-          socket.on('site_stats', (data: { nbPlayers: number, nbGames: number }) => {
+          socket.on('site_stats', (data: { nbPlayers: number, nbGames: number, topGames?: any[], topGameId?: string }) => {
             this.nbPlayers.set(data.nbPlayers);
             this.nbGames.set(data.nbGames);
+            if (data.topGames) this.topGames.set(data.topGames);
+            if (data.topGameId) this.topGameId.set(data.topGameId);
           });
         }
       });

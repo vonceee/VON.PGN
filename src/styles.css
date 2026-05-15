@@ -11,9 +11,9 @@
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   /* Semantic Tokens */
-  --color-main: hsl(0 0% 100%);
-  --color-surface: hsl(210 20% 98%);
-  --color-subtle: hsl(220 14% 96%);
+  --color-main: hsl(210 20% 98%);
+  --color-surface: hsl(210 16% 96%);
+  --color-subtle: hsl(210 14% 94%);
 
   --color-content: hsl(222 47% 11%);
   --color-muted: hsl(215 16% 47%);

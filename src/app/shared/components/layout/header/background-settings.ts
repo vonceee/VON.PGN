@@ -101,7 +101,7 @@ const PRESET_BACKGROUNDS = [
             [class.ring-2]="currentTheme() === 'light'"
             class="flex items-center justify-center gap-2 px-4 py-3 text-sm bg-subtle hover:bg-border-base rounded-xl transition-all ring-accent font-medium"
           >
-            <div class="w-3 h-3 rounded-full bg-white border border-border-base"></div>
+            <div class="w-3 h-3 rounded-full bg-[hsl(210,20%,98%)] border border-border-base"></div>
             Light
           </button>
           <button 

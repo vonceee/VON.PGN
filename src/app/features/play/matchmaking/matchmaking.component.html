@@ -5,16 +5,21 @@
   </div>
 
   <!-- Desktop Layout -->
-  <div class="hidden lg:flex items-start justify-center flex-1 w-full p-4 lg:p-8">
-    <div class="grid w-full max-w-7xl grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mx-auto items-stretch">
-      <!-- Left panel: Play Selection -->
-      <div class="w-full">
+  <div class="hidden lg:flex items-start flex-1 w-full p-4 lg:py-8 lg:px-0">
+    <div class="grid w-full grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-stretch">
+      <!-- Left panel: Lobby/Seek board -->
+      <div class="w-full lg:col-span-3">
+        <app-seek-board (seekClicked)="onSeekClicked($event)" class="block" />
+      </div>
+
+      <!-- Middle panel: Play Selection (Wider) -->
+      <div class="w-full lg:col-span-6">
         <app-play-selector />
       </div>
 
-      <!-- Right panel: Lobby/Seek board -->
-      <div class="w-full">
-        <app-seek-board (seekClicked)="onSeekClicked($event)" class="block" />
+      <!-- Right panel: Top Matches Feed -->
+      <div class="w-full lg:col-span-3">
+        <app-top-matches />
       </div>
     </div>
   </div>
