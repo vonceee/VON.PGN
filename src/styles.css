@@ -39,3 +39,19 @@
 @import './styles/components.css';
 @import './styles/utilities.css';
 @import './styles/overrides.css';
+
+/* Custom Background Support */
+.theme-transparent {
+  --color-main: hsla(0, 0%, 100%, 0.7);
+  --color-surface: hsla(210, 20%, 98%, 0.6);
+  --color-subtle: hsla(220, 14%, 96%, 0.5);
+  --color-border-base: hsla(220, 13%, 91%, 0.4);
+}
+
+.theme-transparent body {
+  background-color: transparent !important;
+}
+
+.theme-transparent main {
+  backdrop-filter: blur(8px);
+}

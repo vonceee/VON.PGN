@@ -167,4 +167,16 @@ export class UserService {
       .put<{ data: UserProfile }>(`${environment.apiUrl}/profile/bio`, { bio })
       .pipe(map((res) => res.data));
   }
+
+  updatePreferences(preferences: any) {
+    return this.http
+      .put<{ data: UserProfile }>(`${environment.apiUrl}/profile/preferences`, preferences)
+      .pipe(
+        tap((response) => {
+          this.currentUser.set(response.data);
+          this.cacheProfile(response.data);
+        }),
+        map((res) => res.data)
+      );
+  }
 }

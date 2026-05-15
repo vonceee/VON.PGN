@@ -21,13 +21,15 @@ import {
   heroBars3,
 } from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
+import { BackgroundSettings } from './background-settings';
+import { SideDrawerComponent } from '../../ui/side-drawer/side-drawer.component';
 import { ButtonComponent, LinkComponent, SectionHeadingComponent, FlagIconComponent } from '@shared/ui';
 import { heroTrophy, heroBell } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent, LinkComponent, FlagIconComponent],
+  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent, BackgroundSettings, SideDrawerComponent, LinkComponent, FlagIconComponent],
   providers: [
     provideIcons({
       heroChevronDown,
@@ -67,6 +69,7 @@ export class Header implements OnInit, OnDestroy {
   isSearchOpen = signal(false);
   isSearching = signal(false);
   isNotificationsOpen = signal(false);
+  isBackgroundOpen = signal(false);
 
   toggleNotifications() {
     this.isNotificationsOpen.update(v => !v);
@@ -169,6 +172,15 @@ export class Header implements OnInit, OnDestroy {
     if (this.isProfileDropdownOpen()) {
       this.measurePing();
     }
+  }
+
+  openBackgroundDrawer() {
+    this.isProfileDropdownOpen.set(false);
+    this.isBackgroundOpen.set(true);
+  }
+
+  closeBackgroundDrawer() {
+    this.isBackgroundOpen.set(false);
   }
 
   toggleMobileMenu() {

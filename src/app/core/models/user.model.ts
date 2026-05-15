@@ -59,9 +59,10 @@ export interface LiveChessRating {
 }
 
 export interface UserPreferences {
-  theme: 'dark' | 'light' | 'system';
+  theme: 'dark' | 'light' | 'transparent' | 'system';
   boardStyle: string;
   pieceStyle: string;
+  backgroundImage?: string;
   soundEnabled: boolean;
   soundTheme: string;
 }
