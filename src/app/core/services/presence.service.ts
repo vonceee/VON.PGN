@@ -21,6 +21,10 @@ export class PresenceService {
   private presenceMap = signal<Map<string, boolean>>(new Map());
   private pendingFetches = new Set<string>();
 
+  // Global Site Stats
+  nbPlayers = signal<number>(0);
+  nbGames = signal<number>(0);
+
   constructor() {
     // Sync with socket events from GameService
     effect(() => {
@@ -31,6 +35,12 @@ export class PresenceService {
           socket.off('presence_update');
           socket.on('presence_update', (data: PresenceUpdate) => {
             this.updateLocalPresence(data.userId, data.online);
+          });
+
+          socket.off('site_stats');
+          socket.on('site_stats', (data: { nbPlayers: number, nbGames: number }) => {
+            this.nbPlayers.set(data.nbPlayers);
+            this.nbGames.set(data.nbGames);
           });
         }
       });
@@ -90,5 +100,25 @@ export class PresenceService {
       next.set(userId, online);
       return next;
     });
+  }
+
+  /**
+   * Subscribe to global site statistics (players online, games in play)
+   */
+  subscribeToSiteStats(): void {
+    const socket = this.gameService.socket();
+    if (socket) {
+      socket.emit('subscribe_site_stats');
+    }
+  }
+
+  /**
+   * Unsubscribe from global site statistics
+   */
+  unsubscribeFromSiteStats(): void {
+    const socket = this.gameService.socket();
+    if (socket) {
+      socket.emit('unsubscribe_site_stats');
+    }
   }
 }

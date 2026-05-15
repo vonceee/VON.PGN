@@ -1,8 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../../../core/services/game.service';
+import { PresenceService } from '../../../core/services/presence.service';
 import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.model';
 import { ButtonComponent } from '@shared/ui';
 import { Dialog } from '@angular/cdk/dialog';
@@ -25,6 +26,7 @@ import { CustomTimeControlModalComponent } from './custom-time-control-modal.com
 })
 export class PlaySelectorComponent {
   gameService = inject(GameService);
+  presenceService = inject(PresenceService);
   private router = inject(Router);
   private dialog = inject(Dialog);
 

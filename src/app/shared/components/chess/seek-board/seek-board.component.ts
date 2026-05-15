@@ -1,6 +1,7 @@
-import { Component, inject, input, OnInit, output } from '@angular/core';
+import { Component, inject, input, output, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameService } from '../../../../core/services/game.service';
+import { PresenceService } from '../../../../core/services/presence.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { GameSeek, TIME_CONTROLS } from '../../../../core/models/game.model';
 
@@ -18,8 +19,9 @@ import { GameSeek, TIME_CONTROLS } from '../../../../core/models/game.model';
     `,
   ],
 })
-export class SeekBoardComponent implements OnInit {
+export class SeekBoardComponent implements OnInit, OnDestroy {
   private gameService = inject(GameService);
+  presenceService = inject(PresenceService);
   private authService = inject(AuthService);
 
   showAll = input(true);
@@ -35,6 +37,11 @@ export class SeekBoardComponent implements OnInit {
 
   ngOnInit(): void {
     this.gameService.subscribeToSeeksChannel();
+    this.presenceService.subscribeToSiteStats();
+  }
+
+  ngOnDestroy(): void {
+    this.presenceService.unsubscribeFromSiteStats();
   }
 
   get visibleSeeks(): GameSeek[] {

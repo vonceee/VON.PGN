@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { LessonService } from '../../core/services/lesson.service';
+import { PresenceService } from '../../core/services/presence.service';
 
 import { TypewriterTextComponent, ButtonComponent, SectionHeadingComponent, ArrowLinkComponent } from '@shared/ui';
 import { FeedbackButtonComponent } from '@shared/feedback';
@@ -24,10 +25,11 @@ import { FeedbackButtonComponent } from '@shared/feedback';
   providers: [],
   templateUrl: './home.component.html',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   private lessonService = inject(LessonService);
   private router = inject(Router);
   authService = inject(AuthService);
+  presenceService = inject(PresenceService);
 
   popularOpenings = [
     {
@@ -61,6 +63,7 @@ export class HomeComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.presenceService.subscribeToSiteStats();
     this.lessonService.loadAllCourses().subscribe({
       next: () => {
         this.isLoading.set(false);
@@ -69,6 +72,10 @@ export class HomeComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  ngOnDestroy() {
+    this.presenceService.unsubscribeFromSiteStats();
   }
 
   navigateToCourse(slug: string) {

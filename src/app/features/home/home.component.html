@@ -107,6 +107,16 @@
         class="hover:text-cyan-400 underline text-base md:text-xl font-semibold mt-4"
         >Not sure where to begin?</a
       >
+
+      <!-- Site Stats Overlay -->
+      <div class="mt-12 flex flex-col items-center gap-2 text-white drop-shadow-md">
+        <div class="text-xl md:text-2xl font-bold">
+          {{ presenceService.nbPlayers() | number }} <span class="font-normal opacity-90 ml-1">players</span>
+        </div>
+        <div class="text-xl md:text-2xl font-bold">
+          {{ presenceService.nbGames() | number }} <span class="font-normal opacity-90 ml-1">games in play</span>
+        </div>
+      </div>
     </div>
   </section>
 
