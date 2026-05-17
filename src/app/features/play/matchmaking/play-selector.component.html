@@ -1,104 +1,86 @@
-<div class="ui-panel flex flex-col rounded-xl overflow-hidden">
+<div class="flex flex-col overflow-hidden">
   <div class="flex flex-col min-h-0">
-    <!-- Header -->
-    <div class="mb-2 h-14 flex items-center shrink-0 px-4 pt-2">
-      @if (gameService.isSearching()) {
-        <div class="flex items-center justify-between w-full">
-          <div class="flex items-center gap-3">
-            <div
-              class="h-3 w-3 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"
-            ></div>
-            <span class=" text-md">Searching...</span>
-          </div>
-          <button
-            appButton
-            variant="outline"
-            (click)="cancelSearch()"
-            class="text-xs"
-          >
-            Cancel
-          </button>
-        </div>
-      } @else if (activeGameId()) {
-        <div class="flex items-center justify-between w-full">
-          <div class="flex items-center gap-3">
-            <div class="h-2 w-2 rounded-full bg-accent "></div>
-            <span class=" text-md text-cyan-500">Active Game Found</span>
-          </div>
-          <button
-            appButton
-            variant="outline"
-            (click)="rejoinGame()"
-            class="text-xs"
-          >
-            Rejoin
-          </button>
-        </div>
-      }
-    </div>
+    <!-- Grid Container -->
 
     <!-- Content -->
     <div
-      class="flex flex-col   items-center justify-center p-4 lg:p-6"
-      [class.opacity-50]="gameService.isSearching()"
-    >
-      <div class="w-full max-w-[640px] flex flex-col gap-6">
-        <!-- Time Control Grid -->
-        <div class="grid gap-3 lg:gap-4">
-          @for (category of categories; track category.key) {
-            <div class="grid grid-cols-3 gap-3 lg:gap-4">
-              @for (tc of category.controls; track tc.value) {
-                @if (gameService.isSearching() && gameService.searchTimeControl() === tc.value) {
-                  <div
-                    class="flex flex-col items-center justify-center border-2 border-cyan-500 bg-accent/10 rounded-xl relative overflow-hidden py-4 lg:py-6"
-                  >
-                    <div class="absolute inset-0 bg-accent/10 "></div>
-                    <div
-                      class="h-6 w-6 rounded-full border-[3px] border-cyan-500/30 border-t-cyan-500 animate-spin"
-                    ></div>
-                  </div>
-                } @else {
-                  <button
-                    appButton
-                    (click)="seekGame(tc)"
-                    [disabled]="gameService.isSearching()"
-                    class="flex-col !h-auto !py-4 lg:!py-5 w-full !rounded-xl"
-                  >
-                    <span class="text-lg lg:text-xl">{{
-                      tc.label
-                    }}</span>
-                    <span class="text-sm capitalize">{{
-                      tc.category
-                    }}</span>
-                  </button>
-                }
-              }
+      class="flex flex-col items-center justify-center lg:px-4">
+      <div class="w-full flex flex-col gap-4">
+        @if (activeGameId()) {
+          <!-- Rejoin Game View -->
+          <div class="flex flex-col items-center text-center py-10 px-6 border border-border-base bg-subtle rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h3 class="text-xl font-medium text-content mb-1">Active game detected</h3>
+            <p class="text-muted text-base mb-6 max-w-[280px]">You have an ongoing game that needs attention.</p>
+            
+            <button
+              appButton
+              variant="primary"
+              class="w-full max-w-[200px] py-3 rounded-xl"
+              (click)="rejoinGame()"
+            >
+              Rejoin game
+            </button>
+          </div>
+        } @else {
+          <!-- Time Control Grid -->
+          <div class="space-y-6">
+            @for (category of categories; track category.key) {
+              <div class="space-y-3">
+                <h3 class="text-sm font-medium text-muted px-1">
+                  {{ category.label }}
+                </h3>
+                <div class="grid grid-cols-3 gap-3 lg:gap-4">
+                  @for (tc of category.controls; track tc.value) {
+                    @if (gameService.isSearching() && gameService.searchTimeControl() === tc.value) {
+                      <button
+                        appButton
+                        (click)="cancelSearch()"
+                        class="!bg-rose-500/5 !border-rose-500/30 !text-rose-600 hover:underline"
+                      >
+                      <span class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin shrink-0"></span>
+                        <span class="text-lg lg:text-xl">Cancel</span>
+                      </button>
+                    } @else {
+                      <button
+                        appButton
+                        (click)="seekGame(tc)"
+                        [disabled]="gameService.isSearching()"
+                      >
+                        <span class="text-lg lg:text-xl font-medium">{{ tc.label }}</span>
+                      </button>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Bottom Actions -->
+          <div class="shrink-0 space-y-3 pt-2">
+            <h3 class="text-sm font-medium text-muted px-1">
+              Custom
+            </h3>
+            <div class="grid grid-cols-2 gap-3 lg:gap-4">
+              <button
+                appButton
+                (click)="openCustomTimeControl()"
+                [disabled]="gameService.isSearching()"
+                class="w-full h-full px-2 py-3"
+              >
+                <span class="text-base lg:text-lg font-medium text-center leading-tight">Custom time control</span>
+              </button>
+
+              <button
+                appButton
+                (click)="playWithComputer()"
+                [disabled]="gameService.isSearching()"
+                class="w-full h-full px-2 py-3"
+              >
+                <span class="text-base lg:text-lg font-medium text-center leading-tight">Play with computer</span>
+              </button>
             </div>
-          }
-        </div>
-
-        <!-- Bottom Actions -->
-        <div class="shrink-0 space-y-3">
-          <button
-            appButton
-            variant="primary"
-            (click)="openCustomTimeControl()"
-            [disabled]="gameService.isSearching()"
-            class="w-full"
-          >
-            Custom Time Control
-          </button>
-
-          <button
-            appButton
-            variant="primary"
-            (click)="playWithComputer()"
-            [disabled]="gameService.isSearching()"
-            class="w-full"
-          >
-            Play with Computer
-          </button>
-        </div>
+          </div>
+        }
       </div>
     </div>
 

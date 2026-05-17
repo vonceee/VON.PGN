@@ -1,7 +1,7 @@
-<section class="min-h-full w-full bg-main flex flex-col">
-  <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 p-6 md:p-12 pb-0 max-w-7xl">
+<section class="mb-20 min-h-full w-full bg-main flex flex-col">
+  <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 p-4">
     <div class="flex-1">
-      <h1 class="text-4xl md:text-5xl mb-2">Play</h1>
+      <h1 class="text-4xl md:text-5xl mb-2 font-medium">Play</h1>
       <p class="text-muted text-lg">Find a match and play live chess.</p>
     </div>
   </header>
@@ -11,8 +11,8 @@
   </div>
 
   <!-- Desktop Layout -->
-  <div class="hidden lg:flex items-start flex-1 w-full p-4 lg:py-8 lg:px-0">
-    <div class="grid w-full grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-stretch">
+  <div class="hidden lg:flex items-start flex-1 p-4">
+    <div class="grid w-full grid-cols-1 lg:grid-cols-12 items-stretch gap-4">
       <!-- Left panel: Lobby/Seek board -->
       <div class="w-full lg:col-span-3">
         <app-seek-board (seekClicked)="onSeekClicked($event)" class="block" />

@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -9,11 +9,14 @@ import { ButtonComponent } from '@shared/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ComputerSetupModalComponent } from '../computer/computer-setup-modal.component';
 import { CustomTimeControlModalComponent } from './custom-time-control-modal.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroInformationCircle } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-play-selector',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, ButtonComponent],
+  providers: [provideIcons({ heroInformationCircle })],
   templateUrl: './play-selector.component.html',
   styles: [
     `
@@ -29,11 +32,17 @@ export class PlaySelectorComponent {
   presenceService = inject(PresenceService);
   private router = inject(Router);
   private dialog = inject(Dialog);
+  private statusDialogRef: any = null;
+
+  constructor() {}
+
+
 
   openCustomTimeControl(): void {
     const dialogRef = this.dialog.open(CustomTimeControlModalComponent, {
+      width: '450px',
       maxWidth: '95vw',
-      backdropClass: ['bg-slate-950/80'],
+      backdropClass: ['bg-black/5'],
     });
 
     dialogRef.closed.subscribe((result: any) => {
@@ -46,8 +55,9 @@ export class PlaySelectorComponent {
 
   playWithComputer(): void {
     const dialogRef = this.dialog.open(ComputerSetupModalComponent, {
+      width: '450px',
       maxWidth: '95vw',
-      backdropClass: ['bg-slate-950/80'],
+      backdropClass: ['bg-black/5'],
     });
 
     dialogRef.closed.subscribe((result: any) => {
@@ -75,12 +85,12 @@ export class PlaySelectorComponent {
   ];
 
   activeGameId = () => {
-    const g = this.gameService.gameState();
+    const g = this.gameService.myActiveGame();
     return g && g.status === 'active' ? g.id : null;
   };
 
   seekGame(tc: TimeControlOption): void {
-    const g = this.gameService.gameState();
+    const g = this.gameService.myActiveGame();
     if (g && g.status === 'active') {
       this.rejoinGame();
       return;
@@ -96,7 +106,7 @@ export class PlaySelectorComponent {
   }
 
   rejoinGame(): void {
-    const gameId = this.gameService.gameState()?.id;
+    const gameId = this.gameService.myActiveGame()?.id;
     if (gameId) {
       this.router.navigate(['/play', gameId]);
     }

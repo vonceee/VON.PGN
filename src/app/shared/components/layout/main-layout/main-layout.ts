@@ -45,9 +45,18 @@ export class MainLayoutComponent {
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
-      // Hide footer on play and arena pages to maintain game focus
-      const url = event.urlAfterRedirects;
-      this.showFooter.set(!url.includes('/play/') && !url.includes('/arena'));
+      // Hide footer on interactive/full-screen focus pages to prevent layout conflicts
+      const url = event.urlAfterRedirects.split('?')[0];
+
+      const isPlay = url.includes('/play/');
+      const isPlayComputer = url.includes('/play-computer');
+      const isArena = url.includes('/arena');
+      const isTactics = url === '/tactics' || url === '/tactics/';
+      const isStudy = url.includes('/study/');
+      const isReview = url.includes('/games/') && url.includes('/review');
+
+      const hideFooter = isPlay || isPlayComputer || isArena || isTactics || isStudy || isReview;
+      this.showFooter.set(!hideFooter);
     });
   }
 }

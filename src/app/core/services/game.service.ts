@@ -31,6 +31,7 @@ export class GameService implements OnDestroy {
   private pollInterval: ReturnType<typeof setInterval> | null = null;
 
   gameState = signal<GameState | null>(null);
+  myActiveGame = signal<GameState | null>(null);
   isSearching = signal(false);
   isConnected = signal(false);
   isLoading = signal(false);
@@ -99,10 +100,13 @@ export class GameService implements OnDestroy {
         this.isLoading.set(false);
         if (res.game) {
           this.isServiceMaintenance.set(false);
-          this.gameState.set(res.game);
+          const gameWithDefaults = this.applyGameDefaults(res.game);
+          this.myActiveGame.set(gameWithDefaults);
+          this.gameState.set(gameWithDefaults);
           this.connectSocket();
           this.subscribeToGame(res.game.id);
         } else {
+          this.myActiveGame.set(null);
           this.gameState.set(null);
         }
       });
@@ -148,6 +152,7 @@ export class GameService implements OnDestroy {
           if (res.game) {
             // Instant load
             const gameWithDefaults = this.applyGameDefaults(res.game);
+            this.myActiveGame.set(gameWithDefaults);
             this.gameState.set(gameWithDefaults);
             this.connectSocket();
             this.subscribeToGame(res.game_id);
@@ -164,6 +169,7 @@ export class GameService implements OnDestroy {
             this.botMatchTimeout = null;
           }
           this.audioService.playMatchFound();
+          this.myActiveGame.set(res.existing_game);
           this.gameState.set(res.existing_game);
           this.connectSocket();
           this.subscribeToGame(res.existing_game.id);
@@ -373,6 +379,7 @@ export class GameService implements OnDestroy {
   clearGame(navigateToPlay: boolean = true): void {
     this.stopHeartbeat();
     this.gameState.set(null);
+    this.myActiveGame.set(null);
     if (this.socket()) {
       const s = this.socket();
       s?.off('move_made');
@@ -411,6 +418,7 @@ export class GameService implements OnDestroy {
           this.audioService.playMatchFound();
           if (res.game) {
             const gameWithDefaults = this.applyGameDefaults(res.game);
+            this.myActiveGame.set(gameWithDefaults);
             this.gameState.set(gameWithDefaults);
             this.connectSocket();
             this.subscribeToGame(res.game_id);
@@ -421,6 +429,7 @@ export class GameService implements OnDestroy {
           }
         } else if (res.game) {
           this.audioService.playMatchFound();
+          this.myActiveGame.set(res.game);
           this.gameState.set(res.game);
           this.connectSocket();
           this.subscribeToGame(res.game.id);
@@ -623,6 +632,14 @@ export class GameService implements OnDestroy {
         };
       });
 
+      this.myActiveGame.update((state) => {
+        if (!state || state.id !== gameId) return state;
+        return {
+          ...state,
+          status: 'completed',
+        };
+      });
+
       this.stopHeartbeat();
         this.gameEnded$.next({
           game_id: gameId,
@@ -755,6 +772,7 @@ export class GameService implements OnDestroy {
         this.isLoading.set(false);
         if (res.game) {
           this.isServiceMaintenance.set(false);
+          this.myActiveGame.set(res.game);
           this.gameState.set(res.game);
           this.connectSocket();
           this.subscribeToGame(gameId);
@@ -850,7 +868,11 @@ export class GameService implements OnDestroy {
             }
             this.isSearching.set(false);
             this.audioService.playMatchFound();
-            this.gameState.set(res.game);
+            
+            const gameWithDefaults = this.applyGameDefaults(res.game);
+            this.myActiveGame.set(gameWithDefaults);
+            this.gameState.set(gameWithDefaults);
+            
             this.connectSocket();
             this.subscribeToGame(res.game.id);
             this.startHeartbeat();

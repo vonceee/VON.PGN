@@ -1,4 +1,4 @@
-<div class="ui-panel overflow-hidden h-full flex flex-col" [ngClass]="compact() ? 'rounded-lg' : 'rounded-xl'">
+<div class="ui-panel overflow-hidden h-full flex flex-col">
   <div class="flex flex-col flex-1 overflow-y-auto">
     @for (seek of visibleSeeks; track seek.id) {
       <div
@@ -90,7 +90,7 @@
   <div class="px-4 py-3 border-t border-border-base bg-black/5 flex flex-col gap-0.5 shrink-0">
     <div class="flex items-center gap-2 text-xs text-text-muted">
       <span class="font-bold text-text-main">{{ presenceService.nbPlayers() | number }}</span>
-      <span>players</span>
+      <span>players online</span>
     </div>
     <div class="flex items-center gap-2 text-xs text-text-muted">
       <span class="font-bold text-text-main">{{ presenceService.nbGames() | number }}</span>

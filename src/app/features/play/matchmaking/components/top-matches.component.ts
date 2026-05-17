@@ -30,7 +30,7 @@ import { Config } from 'chessground/config';
         <div class="flex-1">
           @if (game(); as g) {
             <!-- Top Player (Black) -->
-            <div class="flex items-center justify-between gap-4 mb-2">
+            <div class="flex items-center justify-between gap-4 mb-1">
               <app-game-info
                 [player]="g.black_player || placeholderPlayer"
                 [color]="'black'"
@@ -60,7 +60,7 @@ import { Config } from 'chessground/config';
             </div>
 
             <!-- Bottom Player (White) -->
-            <div class="flex items-center justify-between gap-4 mt-2">
+            <div class="flex items-center justify-between gap-4 mt-1">
               <app-game-info
                 [player]="g.white_player || placeholderPlayer"
                 [color]="'white'"
@@ -92,7 +92,6 @@ import { Config } from 'chessground/config';
 
       <!-- Top Games List -->
       <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0 space-y-1 pr-1">
-        <h3 class="text-[10px] uppercase font-bold text-muted px-2 mb-2">Top Ongoing Matches</h3>
         @for (match of presenceService.topGames(); track match.gameId) {
           @let isActive = selectedGameId() === match.gameId || (!selectedGameId() && match.gameId === presenceService.topGameId());
           <div 
