@@ -2,7 +2,8 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { map, filter, take } from 'rxjs/operators';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, map, take } from 'rxjs';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -17,21 +18,18 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   // If initAuth() hasn't finished yet, wait for it before deciding.
   if (!authService.isInitialized()) {
-    // Poll until isInitialized flips to true (initAuth runs at most once
-    // during app bootstrap, so this resolves almost immediately).
-    return new Promise<boolean>((resolve) => {
-      const check = setInterval(() => {
-        if (authService.isInitialized()) {
-          clearInterval(check);
-          if (authService.isAuthenticated()) {
-            resolve(true);
-          } else {
-            router.navigate(['/login']);
-            resolve(false);
-          }
+    return toObservable(authService.isInitialized).pipe(
+      filter((init) => init),
+      take(1),
+      map(() => {
+        if (authService.isAuthenticated()) {
+          return true;
+        } else {
+          router.navigate(['/login']);
+          return false;
         }
-      }, 50);
-    });
+      })
+    );
   }
 
   if (authService.isAuthenticated()) {

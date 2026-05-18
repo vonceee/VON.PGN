@@ -1,5 +1,5 @@
-import { Component, OnInit, signal, inject, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TacticsService, WoodpeckerSession } from '../../../../core/services/tactics.service';
 import { LoadingComponent } from '@shared/feedback';
@@ -19,7 +19,6 @@ import { ButtonComponent } from '@shared/ui';
 })
 export class WoodpeckerDashboardComponent implements OnInit {
   private tacticsService = inject(TacticsService);
-  private platformId = inject(PLATFORM_ID);
 
   sessions = signal<WoodpeckerSession[]>([]);
   isLoading = signal<boolean>(true);
@@ -30,7 +29,6 @@ export class WoodpeckerDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!isPlatformBrowser(this.platformId)) return;
     this.loadSessions();
   }
 

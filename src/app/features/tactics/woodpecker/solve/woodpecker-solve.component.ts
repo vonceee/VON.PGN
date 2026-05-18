@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ChangeDetectionStrategy, PLATFORM_ID, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TacticsService, Puzzle, WoodpeckerSession, WoodpeckerCycle } from '../../../../core/services/tactics.service';
@@ -26,6 +26,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private ngZone = inject(NgZone);
   private chess = new Chess();
   protected Math = Math;
 
@@ -62,7 +63,6 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   isFinished = computed(() => this.session()?.status === 'completed');
 
   ngOnInit() {
-    if (!isPlatformBrowser(this.platformId)) return;
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
@@ -138,10 +138,12 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   startTimer() {
     if (!isPlatformBrowser(this.platformId)) return;
     this.stopTimer();
-    this.timerInterval = setInterval(() => {
-      this.cycleTimeElapsed.update(t => t + 1);
-      this.puzzleTimeElapsed.update(t => t + 1);
-    }, 1000);
+    this.ngZone.runOutsideAngular(() => {
+      this.timerInterval = setInterval(() => {
+        this.cycleTimeElapsed.update(t => t + 1);
+        this.puzzleTimeElapsed.update(t => t + 1);
+      }, 1000);
+    });
   }
 
   stopTimer() {

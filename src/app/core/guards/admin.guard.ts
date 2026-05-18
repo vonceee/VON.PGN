@@ -2,6 +2,8 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, map, take } from 'rxjs';
 
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
@@ -16,20 +18,19 @@ export const adminGuard: CanActivateFn = (route, state) => {
 
   // Wait for initAuth() to finish before checking admin status.
   if (!authService.isInitialized()) {
-    return new Promise<boolean>((resolve) => {
-      const check = setInterval(() => {
-        if (authService.isInitialized()) {
-          clearInterval(check);
-          const user = authService.currentUser();
-          if (user && user.is_admin) {
-            resolve(true);
-          } else {
-            router.navigate(['/']);
-            resolve(false);
-          }
+    return toObservable(authService.isInitialized).pipe(
+      filter((init) => init),
+      take(1),
+      map(() => {
+        const user = authService.currentUser();
+        if (user && user.is_admin) {
+          return true;
+        } else {
+          router.navigate(['/']);
+          return false;
         }
-      }, 50);
-    });
+      })
+    );
   }
 
   const user = authService.currentUser();

@@ -25,15 +25,16 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   private refreshInterval$?: Subscription;
 
   ngOnInit() {
-    if (!isPlatformBrowser(this.platformId)) return;
     this.loadLeaderboard();
-    this.ngZone.runOutsideAngular(() => {
-      this.refreshInterval$ = interval(1800000).subscribe(() => {
-        this.ngZone.run(() => {
-          this.loadLeaderboard();
+    if (isPlatformBrowser(this.platformId)) {
+      this.ngZone.runOutsideAngular(() => {
+        this.refreshInterval$ = interval(1800000).subscribe(() => {
+          this.ngZone.run(() => {
+            this.loadLeaderboard();
+          });
         });
       });
-    });
+    }
   }
 
   ngOnDestroy() {

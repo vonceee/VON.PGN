@@ -49,6 +49,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private layoutService = inject(LayoutService);
   private chess = new Chess();
+  private gameStartFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
   activeTheme = signal<string | null>(null);
 
@@ -101,8 +102,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    if (!isPlatformBrowser(this.platformId)) return;
-
     this.layoutService.setFluid(true);
     this.onResize();
     if (this.currentUser()) {
@@ -214,7 +213,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
           this.pgnMoves.set(mergedMoves);
 
           // Sync internal chess state and currentFen with the FINAL merged moves
-          this.chess.load('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+          this.chess.load(this.gameStartFen);
           try {
             mergedMoves.forEach(m => {
               try {
@@ -415,32 +414,56 @@ export class TacticsComponent implements OnInit, OnDestroy {
   }
 
   private parsePgn(pgn: string) {
-    const moves: string[] = [];
-    
-    const jsonMatch = pgn.match(/\{.*"moves"\s*:\s*"([^"]*)"/);
-    if (jsonMatch && jsonMatch[1]) {
-      const movesStr = jsonMatch[1];
-      const moveParts = movesStr.split(' ');
-      for (const part of moveParts) {
-        if (part && part.trim() && !part.match(/^\d+\.*$/)) {
-          if (part.length >= 2 && part.length <= 10) {
-            moves.push(part);
+    let realPgn = pgn;
+    try {
+      const parsed = JSON.parse(pgn);
+      if (parsed && parsed.pgn) {
+        realPgn = parsed.pgn;
+      }
+    } catch (e) {
+      // Not a JSON string, keep raw pgn
+    }
+
+    // Strip comments (like Lichess [%clk ...] or [%eval ...]) that can choke the strict peg.js parser in chess.js
+    const cleanPgn = realPgn.replace(/\{[^{}]*\}/g, '').replace(/\{[^{}]*\}/g, '');
+
+    const fenMatch = cleanPgn.match(/\[FEN\s+"([^"]+)"\]/i);
+    this.gameStartFen = fenMatch ? fenMatch[1] : 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+    try {
+      const tempChess = new Chess();
+      tempChess.loadPgn(cleanPgn);
+      const moves = tempChess.history();
+      this.pgnMoves.set(moves);
+    } catch (e) {
+      DevLogger.warn('[Tactics] Robust PGN parsing failed, falling back to manual regex:', e);
+      const moves: string[] = [];
+      
+      const jsonMatch = realPgn.match(/\{.*"moves"\s*:\s*"([^"]*)"/);
+      if (jsonMatch && jsonMatch[1]) {
+        const movesStr = jsonMatch[1];
+        const moveParts = movesStr.split(' ');
+        for (const part of moveParts) {
+          if (part && part.trim() && !part.match(/^\d+\.*$/)) {
+            if (part.length >= 2 && part.length <= 10) {
+              moves.push(part);
+            }
           }
         }
+        this.pgnMoves.set(moves);
+        return;
       }
+      
+      const moveRegex = /\d+\.\s*([KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBNP])?[+#?=!]*)\s*([KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBNP])?[+#?=!]*)?/g;
+      
+      let match;
+      while ((match = moveRegex.exec(realPgn)) !== null) {
+        if (match[1] && match[1] !== 'e.p.' && match[1] !== 'ep') moves.push(match[1]);
+        if (match[2] && match[2] !== 'e.p.' && match[2] !== 'ep') moves.push(match[2]);
+      }
+      
       this.pgnMoves.set(moves);
-      return;
     }
-    
-    const moveRegex = /\d+\.\s*([KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBNP])?[+#?=!]*)\s*([KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBNP])?[+#?=!]*)?/g;
-    
-    let match;
-    while ((match = moveRegex.exec(pgn)) !== null) {
-      if (match[1] && match[1] !== 'e.p.' && match[1] !== 'ep') moves.push(match[1]);
-      if (match[2] && match[2] !== 'e.p.' && match[2] !== 'ep') moves.push(match[2]);
-    }
-    
-    this.pgnMoves.set(moves);
   }
 
   goToMove(ply: number) {
@@ -458,7 +481,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.currentPly.set(ply);
 
     // Update internal chess state and FEN
-    this.chess.load('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    this.chess.load(this.gameStartFen);
     const moves = this.pgnMoves();
     try {
       for (let i = 0; i < ply; i++) {
