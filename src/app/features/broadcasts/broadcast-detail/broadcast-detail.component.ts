@@ -58,7 +58,7 @@ type TabType = 'details' | 'games';
           </div>
         </div>
       } @else if (error()) {
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8">
           <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
             <p class="text-sm text-red-400">{{ error() }}</p>
           </div>
@@ -66,7 +66,7 @@ type TabType = 'details' | 'games';
       } @else if (detail()) {
         <!-- Hero Section -->
         <div class="relative overflow-hidden">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div class="mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <a routerLink="/broadcasts"
               class="inline-flex items-center gap-2 text-sm font-semibold   hover:text-cyan-400 mb-4 ">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -146,7 +146,7 @@ type TabType = 'details' | 'games';
         </div>
 
         <!-- Controls Row -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div class="flex flex-col sm:flex-row gap-4 items-start">
             <!-- Round Dropdown -->
             <div class="shrink-0">
@@ -179,7 +179,7 @@ type TabType = 'details' | 'games';
         </div>
 
         <!-- Tabs -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto px-4 sm:px-6 lg:px-8">
           <div class="border-b border-border-theme">
             <nav class="-mb-px flex gap-8">
               <button

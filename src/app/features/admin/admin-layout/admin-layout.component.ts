@@ -116,7 +116,7 @@ import { filter, map, startWith } from 'rxjs';
         </header>
 
         <main class="flex-1 p-8 lg:p-12 bg-subtle">
-          <div class="max-w-7xl mx-auto w-full h-full">
+          <div class="mx-auto w-full h-full">
             <router-outlet></router-outlet>
           </div>
         </main>

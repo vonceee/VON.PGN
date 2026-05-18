@@ -15,9 +15,8 @@ import { filter } from 'rxjs/operators';
       <main class="flex-1 overflow-y-auto w-full custom-scrollbar relative">
         <div class="flex flex-col min-h-full">
           <div 
-            class="w-full flex-1 mx-auto"
-            [class.max-w-7xl]="!layoutService.isFluid()"
-            [class.max-w-[1800px]]="layoutService.isFluid()"
+            class="w-full flex-1 mx-auto relative"
+            [ngClass]="layoutService.isFluid() ? 'max-w-[1800px]' : 'max-w-8xl'"
           >
             <router-outlet></router-outlet>
           </div>
@@ -45,13 +44,12 @@ export class MainLayoutComponent {
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
-      // Hide footer on interactive/full-screen focus pages to prevent layout conflicts
       const url = event.urlAfterRedirects.split('?')[0];
 
       const isPlay = url.includes('/play/');
       const isPlayComputer = url.includes('/play-computer');
       const isArena = url.includes('/arena');
-      const isTactics = url === '/tactics' || url === '/tactics/';
+      const isTactics = url === '/tactics' || url === '/tactics/' || url.includes('/tactics/practice/');
       const isStudy = url.includes('/study/');
       const isReview = url.includes('/games/') && url.includes('/review');
 

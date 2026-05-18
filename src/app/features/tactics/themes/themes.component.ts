@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { TacticsService } from '../../../core/services/tactics.service';
 import { PUZZLE_THEMES_HIERARCHY, PuzzleThemeCategory, PuzzleThemeDef } from './puzzle-themes.config';
+import { LoadingComponent } from '@shared/feedback';
 
 @Component({
   selector: 'app-puzzle-themes',
@@ -11,8 +12,8 @@ import { PUZZLE_THEMES_HIERARCHY, PuzzleThemeCategory, PuzzleThemeDef } from './
   imports: [
     CommonModule,
     RouterLink,
-    RouterLinkActive,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    LoadingComponent
   ],
   templateUrl: './themes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush

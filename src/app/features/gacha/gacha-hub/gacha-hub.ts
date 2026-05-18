@@ -13,7 +13,7 @@ import { heroSparkles, heroUserGroup, heroCircleStack } from '@ng-icons/heroicon
     provideIcons({ heroSparkles, heroUserGroup, heroCircleStack })
   ],
   template: `
-    <div class="gacha-container p-6 md:p-12 max-w-7xl mx-auto">
+    <div class="gacha-container p-6 md:p-12 mx-auto">
       <!-- Header Section -->
       <header class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
         <div>

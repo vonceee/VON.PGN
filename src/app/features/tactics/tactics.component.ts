@@ -2,6 +2,7 @@ import {
   Component,
   ViewChild,
   OnInit,
+  OnDestroy,
   inject,
   signal,
   computed,
@@ -22,6 +23,7 @@ import { LoadingComponent  } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
+import { LayoutService } from '../../core/services/layout.service';
 
 @Component({
   selector: 'app-tactics',
@@ -40,12 +42,13 @@ import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
     class: 'absolute inset-0 overflow-hidden',
   },
 })
-export class TacticsComponent implements OnInit {
+export class TacticsComponent implements OnInit, OnDestroy {
   private tacticsService = inject(TacticsService);
   private gameService = inject(GameService);
   private userService = inject(UserService);
   private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
+  private layoutService = inject(LayoutService);
   private chess = new Chess();
 
   activeTheme = signal<string | null>(null);
@@ -99,6 +102,7 @@ export class TacticsComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.layoutService.setFluid(true);
     this.onResize();
     if (this.currentUser()) {
       setTimeout(() => {
@@ -113,6 +117,10 @@ export class TacticsComponent implements OnInit {
       this.activeTheme.set(theme);
       this.loadNextPuzzle();
     });
+  }
+
+  ngOnDestroy() {
+    this.layoutService.setFluid(false);
   }
 
 
