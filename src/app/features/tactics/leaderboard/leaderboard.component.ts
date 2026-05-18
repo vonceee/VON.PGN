@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, OnDestroy, signal, PLATFORM_ID, NgZone } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { TacticsService, LeaderboardResponse } from '../../../core/services/tactics.service';
@@ -16,6 +16,8 @@ import { UserHovercardDirective } from '@shared/directives';
 export class LeaderboardComponent implements OnInit, OnDestroy {
   private tacticsService = inject(TacticsService);
   authService = inject(AuthService);
+  private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
 
   leaderboard = signal<LeaderboardResponse | null>(null);
   isLoading = signal(true);
@@ -23,8 +25,15 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
   private refreshInterval$?: Subscription;
 
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.loadLeaderboard();
-    this.refreshInterval$ = interval(1800000).subscribe(() => this.loadLeaderboard());
+    this.ngZone.runOutsideAngular(() => {
+      this.refreshInterval$ = interval(1800000).subscribe(() => {
+        this.ngZone.run(() => {
+          this.loadLeaderboard();
+        });
+      });
+    });
   }
 
   ngOnDestroy() {

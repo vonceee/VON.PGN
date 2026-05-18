@@ -1,5 +1,5 @@
-import { Component, OnInit, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, computed, inject, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { TacticsService } from '../../../core/services/tactics.service';
@@ -20,6 +20,7 @@ import { LoadingComponent } from '@shared/feedback';
 })
 export class PuzzleThemesComponent implements OnInit {
   private tacticsService = inject(TacticsService);
+  private platformId = inject(PLATFORM_ID);
 
   isLoading = signal<boolean>(true);
   themeCounts = signal<Record<string, number>>({});
@@ -44,6 +45,8 @@ export class PuzzleThemesComponent implements OnInit {
   });
 
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     // Sync search input with signal
     this.searchControl.valueChanges.subscribe(val => {
       this.searchQuery.set(val ?? '');

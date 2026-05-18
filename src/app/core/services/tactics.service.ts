@@ -88,4 +88,110 @@ export class TacticsService {
   getLeaderboard(): Observable<LeaderboardResponse> {
     return this.http.get<LeaderboardResponse>(`${this.apiUrl}/tactics/leaderboard`);
   }
+
+  // Woodpecker Method APIs
+  getWoodpeckerSessions(): Observable<{ data: WoodpeckerSession[] }> {
+    return this.http.get<{ data: WoodpeckerSession[] }>(`${this.apiUrl}/tactics/woodpecker`);
+  }
+
+  createWoodpeckerSession(config: {
+    name: string;
+    total_puzzles: number;
+    theme?: string;
+    rating_min?: number;
+    rating_max?: number;
+  }): Observable<{ success: boolean; session: WoodpeckerSession; cycle: WoodpeckerCycle }> {
+    return this.http.post<{ success: boolean; session: WoodpeckerSession; cycle: WoodpeckerCycle }>(
+      `${this.apiUrl}/tactics/woodpecker`,
+      config
+    );
+  }
+
+  getWoodpeckerSession(id: number): Observable<{
+    session: WoodpeckerSession;
+    current_cycle: WoodpeckerCycle | null;
+    current_puzzle: Puzzle | null;
+  }> {
+    return this.http.get<{
+      session: WoodpeckerSession;
+      current_cycle: WoodpeckerCycle | null;
+      current_puzzle: Puzzle | null;
+    }>(`${this.apiUrl}/tactics/woodpecker/${id}`);
+  }
+
+  submitWoodpeckerSolve(
+    id: number,
+    success: boolean,
+    timeSpentSeconds: number,
+    moves?: string
+  ): Observable<WoodpeckerSolveResponse> {
+    return this.http.post<WoodpeckerSolveResponse>(`${this.apiUrl}/tactics/woodpecker/${id}/solve`, {
+      success,
+      time_spent_seconds: timeSpentSeconds,
+      moves: moves ?? '',
+    }).pipe(
+      tap(() => {
+        if (this.userService.currentUser()) {
+          this.userService.loadMyProfile().subscribe();
+        }
+      })
+    );
+  }
+
+  abandonWoodpeckerSession(id: number): Observable<{ success: boolean; session: WoodpeckerSession }> {
+    return this.http.post<{ success: boolean; session: WoodpeckerSession }>(
+      `${this.apiUrl}/tactics/woodpecker/${id}/abandon`,
+      {}
+    );
+  }
+}
+
+// Woodpecker interfaces
+export interface WoodpeckerSession {
+  id: number;
+  user_id: number;
+  name: string;
+  puzzle_ids: number[];
+  total_puzzles: number;
+  rating_min: number | null;
+  rating_max: number | null;
+  theme: string | null;
+  current_cycle_number: number;
+  status: 'active' | 'completed' | 'abandoned';
+  created_at: string;
+  updated_at: string;
+  cycles: WoodpeckerCycle[];
+}
+
+export interface WoodpeckerCycle {
+  id: number;
+  woodpecker_session_id: number;
+  cycle_number: number;
+  status: 'in_progress' | 'completed';
+  current_puzzle_index: number;
+  start_time: string;
+  end_time: string | null;
+  total_solved: number;
+  total_correct: number;
+  total_time_seconds: number;
+  attempts: WoodpeckerAttempt[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WoodpeckerAttempt {
+  puzzle_id: number;
+  correct: boolean;
+  time_spent: number;
+  moves: string;
+  solved_at: string;
+}
+
+export interface WoodpeckerSolveResponse {
+  success: boolean;
+  cycle_completed: boolean;
+  credits_rewarded: number;
+  session: WoodpeckerSession;
+  current_cycle: WoodpeckerCycle | null;
+  current_puzzle: Puzzle | null;
 }

@@ -12,7 +12,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
@@ -31,7 +31,6 @@ import { LayoutService } from '../../core/services/layout.service';
   imports: [
     CommonModule,
     RouterLink,
-    RouterLinkActive,
     TacticsBoardComponent,
     LoadingComponent,
     ButtonComponent,
@@ -102,6 +101,8 @@ export class TacticsComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.layoutService.setFluid(true);
     this.onResize();
     if (this.currentUser()) {
