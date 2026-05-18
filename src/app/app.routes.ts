@@ -273,6 +273,22 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'tactics/practice/:theme',
+        loadComponent: () =>
+          import('./features/tactics/tactics.component').then((m) => m.TacticsComponent),
+        title: 'Vonchess.net • Tactics',
+        data: { description: 'Sharpen your chess skills with daily tactical puzzles on vonchess.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'tactics/themes',
+        loadComponent: () =>
+          import('./features/tactics/themes/themes.component').then((m) => m.PuzzleThemesComponent),
+        title: 'Vonchess.net • Puzzle Themes',
+        data: { description: 'Practice specific tactical motifs and checkmate patterns.' },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'tactics/leaderboard',
         loadComponent: () =>
           import('./features/tactics/leaderboard/leaderboard.component').then(

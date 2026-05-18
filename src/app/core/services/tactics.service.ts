@@ -60,8 +60,16 @@ export class TacticsService {
   private userService = inject(UserService);
   private apiUrl = environment.apiUrl;
 
-  getDailyPuzzle(): Observable<{ data: Puzzle }> {
-    return this.http.get<{ data: Puzzle }>(`${this.apiUrl}/tactics/next`);
+  getDailyPuzzle(theme?: string): Observable<{ data: Puzzle }> {
+    let url = `${this.apiUrl}/tactics/next`;
+    if (theme) {
+      url += `?theme=${theme}`;
+    }
+    return this.http.get<{ data: Puzzle }>(url);
+  }
+
+  getThemeCounts(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(`${this.apiUrl}/tactics/themes`);
   }
 
   solvePuzzle(puzzleId: number, success: boolean): Observable<SolveResponse> {

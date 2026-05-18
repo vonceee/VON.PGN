@@ -11,6 +11,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
@@ -20,11 +21,15 @@ import { TacticsBoardComponent  } from '@shared/chess';
 import { LoadingComponent  } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
 import { DevLogger } from '../../core/utils/dev-logger';
+import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
 
 @Component({
   selector: 'app-tactics',
   standalone: true,
   imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
     TacticsBoardComponent,
     LoadingComponent,
     ButtonComponent,
@@ -39,8 +44,23 @@ export class TacticsComponent implements OnInit {
   private tacticsService = inject(TacticsService);
   private gameService = inject(GameService);
   private userService = inject(UserService);
+  private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
   private chess = new Chess();
+
+  activeTheme = signal<string | null>(null);
+
+  activeThemeName = computed(() => {
+    const key = this.activeTheme();
+    if (!key) return null;
+    if (key === 'mix') return 'Recommended Mix';
+    
+    for (const category of PUZZLE_THEMES_HIERARCHY) {
+      const found = category.themes.find(t => t.key === key);
+      if (found) return found.name;
+    }
+    return key;
+  });
 
   constructor() {}
 
@@ -87,7 +107,12 @@ export class TacticsComponent implements OnInit {
         });
       });
     }
-    this.loadNextPuzzle();
+    
+    this.route.paramMap.subscribe(params => {
+      const theme = params.get('theme');
+      this.activeTheme.set(theme);
+      this.loadNextPuzzle();
+    });
   }
 
 
@@ -110,7 +135,7 @@ export class TacticsComponent implements OnInit {
     this.pgnMoves.set([]);
     this.currentPly.set(0);
 
-    this.tacticsService.getDailyPuzzle().subscribe({
+    this.tacticsService.getDailyPuzzle(this.activeTheme() ?? undefined).subscribe({
       next: (res: { data: Puzzle }) => {
         // Synchronize internal chess state and FEN before triggering board init
         try {

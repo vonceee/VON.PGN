@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { TacticsService, LeaderboardResponse } from '../../../core/services/tactics.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,7 +10,7 @@ import { UserHovercardDirective } from '@shared/directives';
 @Component({
   selector: 'app-leaderboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, UserHovercardDirective],
+  imports: [CommonModule, RouterLink, RouterLinkActive, UserHovercardDirective],
   templateUrl: './leaderboard.component.html',
 })
 export class LeaderboardComponent implements OnInit, OnDestroy {
