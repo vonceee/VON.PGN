@@ -299,6 +299,39 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'tactics/woodpecker',
+        loadComponent: () =>
+          import('./features/tactics/woodpecker/dashboard/woodpecker-dashboard.component').then(
+            (m) => m.WoodpeckerDashboardComponent,
+          ),
+        canActivate: [authGuard],
+        title: 'Vonchess.net • Woodpecker Method',
+        data: { description: 'Train your tactical vision using the Woodpecker spaced repetition method.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'tactics/woodpecker/setup',
+        loadComponent: () =>
+          import('./features/tactics/woodpecker/setup/woodpecker-setup.component').then(
+            (m) => m.WoodpeckerSetupComponent,
+          ),
+        canActivate: [authGuard],
+        title: 'Vonchess.net • Woodpecker Setup',
+        data: { description: 'Configure a new Woodpecker spaced repetition chess training session.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'tactics/woodpecker/solve/:id',
+        loadComponent: () =>
+          import('./features/tactics/woodpecker/solve/woodpecker-solve.component').then(
+            (m) => m.WoodpeckerSolveComponent,
+          ),
+        canActivate: [authGuard],
+        title: 'Vonchess.net • Woodpecker Solve',
+        data: { description: 'Solve tactical puzzles in your active Woodpecker training session.' },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'explorer',
         loadComponent: () =>
           import('./features/opening-explorer/opening-explorer.component').then(
