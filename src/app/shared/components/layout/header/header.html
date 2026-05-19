@@ -4,7 +4,7 @@
   <a
     appLink
     routerLink="/home"
-    class="text-lg lg:text-xl flex items-center gap-2 shrink-0 group "
+    class="text-lg text-muted font-medium tracking-tighter flex items-center gap-2 shrink-0 group "
   >
     vonchess
   </a>
@@ -16,13 +16,13 @@
       <a
         appLink
         routerLink="/play"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg   after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
       >
         Play
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col "
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col"
       >
         <a
           appLink
@@ -73,13 +73,13 @@
       <a
         appLink
         routerLink="/study"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg   after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
       >
         Learn
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col "
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col "
       >
         <a
           appLink
@@ -109,7 +109,7 @@
       <a
         appLink
         routerLink="/events"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg   after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
       >
         Tournaments
 
@@ -155,7 +155,7 @@
       <a
         appLink
         routerLink="/fide/players"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base xl:text-lg   after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
       >
         Community
       </a>
@@ -192,13 +192,6 @@
         </a>
       </div>
     </div>
-
-    <a
-      appLink
-      routerLink="/legends"
-      class="text-sm lg:text-base xl:text-lg  mt-0.5 text-content font-bold text-accent"
-      >Legends</a
-    >
   </div>
 
   <!-- Desktop/Tablet Search Bar -->
@@ -209,7 +202,7 @@
       <input
         #searchInput
         type="text"
-        placeholder="Search players..."
+        placeholder="search players..."
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         (focus)="isSearchOpen.set(true)"
@@ -273,12 +266,24 @@
       <div class="relative hidden md:block">
         <button
           (click)="toggleNotifications()"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-subtle  relative group"
+          class="flex items-center gap-1.5 px-3 py-1.5 cursor-pointer relative group"
           aria-label="Notifications"
         >
-          <span class="text-sm lg:text-base xl:text-lg  text-content group-hover:text-accent ">Alerts</span>
+          <svg
+            class="w-4.5 h-4.5 text-muted"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            />
+          </svg>
           @if (notificationService.unreadCount() + challengeService.incomingChallenges().length > 0) {
-            <span class="px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center bg-accent text-white text-xs  rounded-full  zoom-in ">
+            <span class="px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center bg-rose text-white text-xs  rounded-full">
               {{ (notificationService.unreadCount() + challengeService.incomingChallenges().length) > 9 ? '9+' : (notificationService.unreadCount() + challengeService.incomingChallenges().length) }}
             </span>
           }
@@ -349,21 +354,14 @@
         }
       </div>
 
-      <!-- Daily Packs -->
-      <a routerLink="/legends" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-subtle group transition-colors">
-        <ng-icon name="heroCircleStack" class="text-accent text-lg"></ng-icon>
-        <span class="text-sm font-bold text-content group-hover:text-accent">{{ gachaService.dailyPacks() }}/10</span>
-      </a>
-
       <div class="relative hidden md:block" #profileContainer>
         <button
           (click)="toggleProfileDropdown()"
           class="flex items-center gap-2 group cursor-pointer focus:outline-none relative"
         >
           <div class="flex items-center gap-1.5">
-            <app-flag-icon [countryCode]="userService.currentUser()?.country_code"></app-flag-icon>
             <span
-              class="text-sm lg:text-base xl:text-lg  group-hover:text-accent "
+              class="text-sm lg:text-base text-muted font-medium hover:underline cursor-pointer"
             >
               {{ userService.currentUser()?.displayName || 'User' }}
             </span>
