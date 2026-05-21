@@ -89,17 +89,186 @@
     #scrollContainer
     class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base"
   >
-    <div class="block">
-      <ng-container
-        *ngTemplateOutlet="renderNodes; context: { nodes: effectiveTree(), isMainline: true }"
-      ></ng-container>
+    @if (layout() === 'grid') {
+      <div class="flex flex-col gap-1 w-full">
+        @for (turn of mainlineTurns(); track turn.moveNumber) {
+          <!-- Turn Row Container -->
+          <div class="flex flex-col border-b border-border-base/30 last:border-0 pb-1 mb-1">
+            <!-- Main Move Pair Row -->
+            <div class="grid grid-cols-[3rem_1fr_1fr] gap-4 items-center py-1.5 px-2 rounded-lg hover:bg-subtle/50 transition-colors">
+              <!-- Move Number -->
+              <span class="text-xs font-semibold text-muted select-none text-right pr-2">
+                {{ turn.moveNumber }}.
+              </span>
 
-      @if (result() && result() !== '*') {
-        <span class="inline text-sm font-semibold text-muted mx-1 select-text align-baseline">
-          {{ '{' + result() + '}' }}
-        </span>
-      }
-    </div>
+              <!-- White Move Column -->
+              <div class="flex items-center">
+                @if (turn.white; as node) {
+                  <button
+                    (click)="onMoveClick(node)"
+                    (contextmenu)="onContextMenu($event, node)"
+                    [class]="
+                      currentFen() === node.fen
+                        ? 'active-move underline bg-accent/20 text-accent font-semibold px-2 py-1 rounded-md'
+                        : 'text-content hover:bg-accent/10 px-2 py-1 rounded-md transition-colors'
+                    "
+                    class="text-left font-medium hover:cursor-pointer select-none active-move-target"
+                  >
+                    {{ node.san }}
+                    @if (node.glyphs && node.glyphs.length > 0) {
+                      @for (glyphId of node.glyphs; track glyphId) {
+                        @if (getGlyph(glyphId); as glyph) {
+                          <span 
+                            class="ml-1 font-semibold"
+                            [class]="glyph.class"
+                            [title]="glyph.name"
+                          >{{ glyph.symbol }}</span>
+                        }
+                      }
+                    }
+                  </button>
+                } @else {
+                  <span class="text-muted/30 select-none px-2">—</span>
+                }
+              </div>
+
+              <!-- Black Move Column -->
+              <div class="flex items-center">
+                @if (turn.black; as node) {
+                  <button
+                    (click)="onMoveClick(node)"
+                    (contextmenu)="onContextMenu($event, node)"
+                    [class]="
+                      currentFen() === node.fen
+                        ? 'active-move underline bg-accent/20 text-accent font-semibold px-2 py-1 rounded-md'
+                        : 'text-content hover:bg-accent/10 px-2 py-1 rounded-md transition-colors'
+                    "
+                    class="text-left font-medium hover:cursor-pointer select-none active-move-target"
+                  >
+                    {{ node.san }}
+                    @if (node.glyphs && node.glyphs.length > 0) {
+                      @for (glyphId of node.glyphs; track glyphId) {
+                        @if (getGlyph(glyphId); as glyph) {
+                          <span 
+                            class="ml-1 font-semibold"
+                            [class]="glyph.class"
+                            [title]="glyph.name"
+                          >{{ glyph.symbol }}</span>
+                        }
+                      }
+                    }
+                  </button>
+                } @else {
+                  <span class="text-muted/30 select-none px-2">—</span>
+                }
+              </div>
+            </div>
+
+            <!-- Variations & Comments below the move row (Full Width) -->
+            <!-- White Move Details -->
+            @if (turn.white; as node) {
+              @if ((node.preComments && node.preComments.length > 0) || 
+                   (node.comments && node.comments.length > 0) || 
+                   (node.variations && node.variations.length > 0)) {
+                <div class="pl-12 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 rounded-lg mx-2 my-0.5 border-l-2 border-slate-200">
+                  <!-- Pre-Move Comment -->
+                  @if (node.preComments && node.preComments.length > 0) {
+                    <div class="text-xs text-muted italic my-0.5">
+                      {{ node.preComments[0] }}
+                    </div>
+                  }
+
+                  <!-- Variations -->
+                  @if (node.variations && node.variations.length > 0) {
+                    <div class="text-xs text-muted/80 leading-relaxed py-0.5">
+                      @for (variation of node.variations; track $index) {
+                        <div class="pl-2 border-l border-slate-200/50 py-0.5">
+                          <span class="text-muted/55 font-semibold mr-1">(var)</span>
+                          <ng-container
+                            *ngTemplateOutlet="renderNodes; context: { nodes: variation, isMainline: false }"
+                          ></ng-container>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <!-- After-Move Comment -->
+                  @if (node.comments && node.comments.length > 0) {
+                    <div class="text-xs text-content/90 font-sans my-0.5">
+                      {{ node.comments[0] }}
+                    </div>
+                  }
+                </div>
+              }
+            }
+
+            <!-- Black Move Details -->
+            @if (turn.black; as node) {
+              @if ((node.preComments && node.preComments.length > 0) || 
+                   (node.comments && node.comments.length > 0) || 
+                   (node.variations && node.variations.length > 0)) {
+                <div class="pl-12 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 rounded-lg mx-2 my-0.5 border-l-2 border-slate-200">
+                  <!-- Pre-Move Comment -->
+                  @if (node.preComments && node.preComments.length > 0) {
+                    <div class="text-xs text-muted italic my-0.5">
+                      {{ node.preComments[0] }}
+                    </div>
+                  }
+
+                  <!-- Variations -->
+                  @if (node.variations && node.variations.length > 0) {
+                    <div class="text-xs text-muted/80 leading-relaxed py-0.5">
+                      @for (variation of node.variations; track $index) {
+                        <div class="pl-2 border-l border-slate-200/50 py-0.5">
+                          <span class="text-muted/55 font-semibold mr-1">(var)</span>
+                          <ng-container
+                            *ngTemplateOutlet="renderNodes; context: { nodes: variation, isMainline: false }"
+                          ></ng-container>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <!-- After-Move Comment -->
+                  @if (node.comments && node.comments.length > 0) {
+                    <div class="text-xs text-content/90 font-sans my-0.5">
+                      {{ node.comments[0] }}
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        }
+
+        @if (result() && result() !== '*') {
+          <div class="text-center py-2 border-t border-border-base/50 mt-2">
+            <span class="text-sm font-semibold text-muted select-text">
+              {{ result() }}
+            </span>
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Old Inline Flow -->
+      <div class="flex flex-col h-full w-full">
+        <div class="flex flex-wrap items-baseline gap-y-1">
+          <ng-container
+            *ngTemplateOutlet="
+              renderNodes;
+              context: { nodes: effectiveTree(), isMainline: true }
+            "
+          ></ng-container>
+        </div>
+        @if (result() && result() !== '*') {
+          <div class="text-center py-2 border-t border-border-base/50 mt-2">
+            <span class="text-sm font-semibold text-muted select-text">
+              {{ result() }}
+            </span>
+          </div>
+        }
+      </div>
+    }
   </div>
 
   <!-- Recursive Template for Moves -->

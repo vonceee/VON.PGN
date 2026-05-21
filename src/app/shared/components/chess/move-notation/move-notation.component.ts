@@ -41,6 +41,8 @@ export class MoveNotationComponent {
   // Legacy Flat Moves (Used by everything else)
   moves = input<string[]>([]);
 
+  layout = input<'grid' | 'inline'>('inline');
+
   currentFen = input<string>('');
   currentPly = input<number>(0);
   initialPly = input<number>(0);
@@ -101,6 +103,37 @@ export class MoveNotationComponent {
       return buildTreeFromMoves(flatMoves);
     }
     return [];
+  });
+
+  mainlineTurns = computed(() => {
+    const tree = this.effectiveTree();
+    if (tree.length === 0) return [];
+
+    const turns: {
+      moveNumber: number;
+      white?: MoveNode;
+      black?: MoveNode;
+    }[] = [];
+
+    tree.forEach((node) => {
+      const isWhite = node.ply % 2 !== 0;
+      const moveNumber = isWhite ? (node.ply + 1) / 2 : node.ply / 2;
+
+      let turn = turns.find((t) => t.moveNumber === moveNumber);
+      if (!turn) {
+        turn = { moveNumber };
+        turns.push(turn);
+      }
+
+      if (isWhite) {
+        turn.white = node;
+      } else {
+        turn.black = node;
+      }
+    });
+
+    turns.sort((a, b) => a.moveNumber - b.moveNumber);
+    return turns;
   });
 
   // Determine current navigation context (successors and parent)

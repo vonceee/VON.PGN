@@ -39,6 +39,22 @@ export interface UserLeaderboardStats {
   in_top: boolean;
 }
 
+export interface PuzzleAttempt {
+  id: number;
+  user_id: number;
+  puzzle_id: number;
+  success: boolean;
+  rating_change: number;
+  user_rating_after: number;
+  created_at: string;
+  puzzle?: {
+    id: number;
+    lichess_puzzle_id: string;
+    rating: number;
+    themes: string;
+  };
+}
+
 export interface LeaderboardResponse {
   tactics_rating: LeaderboardEntry[];
   streak: LeaderboardEntry[];
@@ -60,12 +76,23 @@ export class TacticsService {
   private userService = inject(UserService);
   private apiUrl = environment.apiUrl;
 
-  getDailyPuzzle(theme?: string): Observable<{ data: Puzzle }> {
+  getDailyPuzzle(theme?: string, puzzleId?: number): Observable<{ data: Puzzle }> {
     let url = `${this.apiUrl}/tactics/next`;
+    const params: string[] = [];
     if (theme) {
-      url += `?theme=${theme}`;
+      params.push(`theme=${theme}`);
+    }
+    if (puzzleId) {
+      params.push(`puzzle_id=${puzzleId}`);
+    }
+    if (params.length > 0) {
+      url += `?${params.join('&')}`;
     }
     return this.http.get<{ data: Puzzle }>(url);
+  }
+
+  getPuzzleHistory(): Observable<{ data: PuzzleAttempt[] }> {
+    return this.http.get<{ data: PuzzleAttempt[] }>(`${this.apiUrl}/tactics/history`);
   }
 
   getThemeCounts(): Observable<Record<string, number>> {

@@ -8,30 +8,93 @@
     <div
       class="grid grid-cols-1 lg:grid-cols-[1fr_minmax(350px,450px)] xl:grid-cols-[minmax(260px,320px)_1fr_minmax(320px,420px)] 2xl:grid-cols-[minmax(300px,360px)_1fr_minmax(380px,480px)] gap-3 lg:gap-4 xl:gap-6 h-full overflow-hidden">
       <!-- Side Navigation Menu -->
-      <aside class="hidden md:flex flex-col h-full overflow-hidden min-h-0 gap-4">
-        <div class="flex flex-col p-3 gap-1">
-          <a routerLink="/tactics" class="flex items-center gap-3 px-4 py-3 font-medium hover:underline">
-            <svg class="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <aside class="hidden md:flex flex-col h-full overflow-hidden min-h-0 gap-6 w-full max-w-[360px] shrink-0">
+        <!-- Sidebar Navigation Card -->
+        <div class="ui-panel bg-main p-4 flex flex-col gap-1 shrink-0">
+          <div class="px-4 py-2 border-b border-border-base/50 mb-2">
+            <h2 class="text-xs font-bold text-muted uppercase">Tactics Training</h2>
+          </div>
+
+          <!-- Casual Puzzle Link -->
+          <a routerLink="/tactics" routerLinkActive="bg-accent/10 text-accent font-semibold"
+            [routerLinkActiveOptions]="{exact: true}"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-content hover:bg-subtle hover:text-content transition-all duration-200">
+            <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
             <span>Casual Puzzle</span>
           </a>
-          <a routerLink="/tactics/themes" class="flex items-center gap-3 px-4 py-3 font-medium hover:underline">
-            <svg class="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+          <!-- Puzzle Themes Link -->
+          <a routerLink="/tactics/themes" routerLinkActive="bg-accent/10 text-accent font-semibold"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-content hover:bg-subtle hover:text-content transition-all duration-200">
+            <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
             </svg>
             <span>Puzzle Themes</span>
           </a>
-          <a routerLink="/tactics/woodpecker" class="flex items-center gap-3 px-4 py-3 font-medium hover:underline"
-            routerLinkActive="font-semibold text-accent">
-            <svg class="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+          <!-- Woodpecker Method Link -->
+          <a routerLink="/tactics/woodpecker" routerLinkActive="bg-accent/10 text-accent font-semibold"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-content hover:bg-subtle hover:text-content transition-all duration-200">
+            <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span>Woodpecker Method</span>
           </a>
+
+          <!-- Leaderboard Link -->
+          <a routerLink="/tactics/leaderboard" routerLinkActive="bg-accent/10 text-accent font-semibold"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-content hover:bg-subtle hover:text-content transition-all duration-200">
+            <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+            </svg>
+            <span>Leaderboard</span>
+          </a>
         </div>
+
+        <!-- Extra Info Card / Daily Goal Card -->
+        <div class="ui-panel bg-main p-5 flex flex-col gap-3 shrink-0">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold text-content text-sm">Your Daily Progress</h3>
+            <span class="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full">ACTIVE</span>
+          </div>
+          <p class="text-xs text-muted leading-relaxed">
+            Solve 5 puzzles daily to sharpen your tactical vision and maintain your training streak!
+          </p>
+          <div class="flex flex-col gap-1.5 mt-1">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-muted">Daily Goal</span>
+              <span class="text-content">{{ userStreak() > 0 ? 'Completed' : '0 / 5' }}</span>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full bg-subtle h-2 rounded-full overflow-hidden">
+              <div class="bg-accent h-full rounded-full transition-all duration-500"
+                [style.width]="userStreak() > 0 ? '100%' : '20%'"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Puzzle History Card -->
+        @if (currentUser() && puzzleHistory().length > 0) {
+        <div class="flex flex-wrap gap-2 px-4 py-2 shrink-0">
+          @for (attempt of puzzleHistory(); track attempt.id) {
+          <button (click)="selectHistoryPuzzle(attempt.puzzle_id)"
+                  [class.bg-green-100]="attempt.rating_change >= 0" 
+                  [class.text-green-700]="attempt.rating_change >= 0"
+                  [class.bg-red-100]="attempt.rating_change < 0" 
+                  [class.text-red-700]="attempt.rating_change < 0"
+                  [class.ring-2]="currentPuzzle()?.id === attempt.puzzle_id"
+                  [class.ring-accent]="currentPuzzle()?.id === attempt.puzzle_id"
+                  class="px-2.5 py-1 rounded-xl text-xs font-bold transition-all duration-200 hover:opacity-85 shadow-sm active:scale-95 shrink-0">
+            {{ attempt.rating_change >= 0 ? '+' : '' }}{{ attempt.rating_change }}
+          </button>
+          }
+        </div>
+        }
       </aside>
       <!-- Board Column -->
       <div class="board-container-parent flex-1 flex items-center justify-center p-4 min-h-0 min-w-0">
@@ -109,7 +172,7 @@
               <app-loading></app-loading>
             </div>
             } @else if (pgnMoves().length > 0) {
-            <app-move-notation class="flex-1" [moves]="pgnMoves()" [currentFen]="currentFen()"
+            <app-move-notation class="flex-1" layout="grid" [moves]="pgnMoves()" [currentFen]="currentFen()"
               [currentPly]="currentPly()" [showNavigation]="true" (navigate)="goToMove($event)"></app-move-notation>
             } @else {
             <div class="p-6 flex flex-col items-center justify-center gap-2 ">

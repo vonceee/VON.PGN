@@ -12,8 +12,8 @@ import {
   HostListener,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TacticsService, Puzzle, SolveResponse } from '../../core/services/tactics.service';
+import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
+import { TacticsService, Puzzle, SolveResponse, PuzzleAttempt } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
 import { Chess, Move } from 'chess.js';
@@ -31,6 +31,7 @@ import { LayoutService } from '../../core/services/layout.service';
   imports: [
     CommonModule,
     RouterLink,
+    RouterLinkActive,
     TacticsBoardComponent,
     LoadingComponent,
     ButtonComponent,
@@ -68,6 +69,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
   constructor() {}
 
   currentUser = this.userService.currentUser;
+  puzzleHistory = signal<PuzzleAttempt[]>([]);
 
   @ViewChild(TacticsBoardComponent) boardComponent!: TacticsBoardComponent;
 
@@ -84,6 +86,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
   userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
   retryMode = signal(false);
   exploreMode = signal(false);
+  isReviewMode = signal(false);
   isLoadingPgn = signal(false);
   pgnMoves = signal<string[]>([]);
   basePgnMoves = signal<string[]>([]);
@@ -105,6 +108,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.layoutService.setFluid(true);
     this.onResize();
     if (this.currentUser()) {
+      this.loadHistory();
       setTimeout(() => {
         this.userService.loadMyProfile().subscribe(() => {
           this.newStreak.set(this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
@@ -131,7 +135,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.isMobile.set(mobile);
   }
 
-  loadNextPuzzle() {
+  loadNextPuzzle(puzzleId?: number) {
     this.status.set('playing');
     this.ratingChange.set(null);
     this.isLoading.set(true);
@@ -139,11 +143,12 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.hasRevealedSolution.set(false);
     this.retryMode.set(false);
     this.exploreMode.set(false);
+    this.isReviewMode.set(!!puzzleId);
     this.isLoadingPgn.set(true);
     this.pgnMoves.set([]);
     this.currentPly.set(0);
 
-    this.tacticsService.getDailyPuzzle(this.activeTheme() ?? undefined).subscribe({
+    this.tacticsService.getDailyPuzzle(this.activeTheme() ?? undefined, puzzleId).subscribe({
       next: (res: { data: Puzzle }) => {
         // Synchronize internal chess state and FEN before triggering board init
         try {
@@ -162,6 +167,23 @@ export class TacticsComponent implements OnInit, OnDestroy {
         this.hasError.set(true);
       }
     });
+  }
+
+  loadHistory() {
+    if (this.currentUser()) {
+      this.tacticsService.getPuzzleHistory().subscribe({
+        next: (res) => {
+          this.puzzleHistory.set(res.data);
+        },
+        error: (err) => {
+          DevLogger.error('[Tactics] Failed to load puzzle history:', err);
+        }
+      });
+    }
+  }
+
+  selectHistoryPuzzle(puzzleId: number) {
+    this.loadNextPuzzle(puzzleId);
   }
 
   private loadGameWithPuzzle(puzzle: Puzzle) {
@@ -284,6 +306,11 @@ export class TacticsComponent implements OnInit, OnDestroy {
       if (this.retryMode()) {
         this.retryMode.set(false);
         this.exploreMode.set(true);
+      } else if (this.isReviewMode()) {
+        this.ratingChange.set(0);
+        this.newRating.set(this.userRating());
+        this.newStreak.set(this.userStreak());
+        this.exploreMode.set(true);
       } else {
         this.tacticsService.solvePuzzle(pId, true).subscribe({
           next: (res: SolveResponse) => {
@@ -291,6 +318,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
             this.newRating.set(res.new_rating);
             this.newStreak.set(res.new_streak);
             this.userService.loadMyProfile().subscribe();
+            this.loadHistory();
             this.exploreMode.set(true);
           },
           error: (err) => {
@@ -308,22 +336,29 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.status.set('failed');
 
     if (this.currentUser()) {
-      this.newStreak.set(0);
+      if (this.isReviewMode()) {
+        this.ratingChange.set(0);
+        this.newRating.set(this.userRating());
+        this.newStreak.set(this.userStreak());
+      } else {
+        this.newStreak.set(0);
 
-      const pId = this.currentPuzzle()?.id;
-      if (!pId) return;
+        const pId = this.currentPuzzle()?.id;
+        if (!pId) return;
 
-      this.tacticsService.solvePuzzle(pId, false).subscribe({
-        next: (res: any) => {
-          this.ratingChange.set(res.rating_change);
-          this.newRating.set(res.new_rating);
-          this.newStreak.set(res.new_streak);
-          this.userService.loadMyProfile().subscribe();
-        },
-        error: (err) => {
-          DevLogger.error('[Tactics] Failed to submit puzzle failure:', err);
-        }
-      });
+        this.tacticsService.solvePuzzle(pId, false).subscribe({
+          next: (res: any) => {
+            this.ratingChange.set(res.rating_change);
+            this.newRating.set(res.new_rating);
+            this.newStreak.set(res.new_streak);
+            this.userService.loadMyProfile().subscribe();
+            this.loadHistory();
+          },
+          error: (err) => {
+            DevLogger.error('[Tactics] Failed to submit puzzle failure:', err);
+          }
+        });
+      }
     }
   }
 
@@ -331,24 +366,32 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.status.set('failed');
 
     if (this.currentUser()) {
-      this.newStreak.set(0);
+      if (this.isReviewMode()) {
+        this.ratingChange.set(0);
+        this.newRating.set(this.userRating());
+        this.newStreak.set(this.userStreak());
+        this.resetToInitialPuzzleState();
+      } else {
+        this.newStreak.set(0);
 
-      const pId = this.currentPuzzle()?.id;
-      if (!pId) return;
+        const pId = this.currentPuzzle()?.id;
+        if (!pId) return;
 
-      this.tacticsService.solvePuzzle(pId, false).subscribe({
-        next: (res: SolveResponse) => {
-          this.ratingChange.set(res.rating_change);
-          this.newRating.set(res.new_rating);
-          this.newStreak.set(res.new_streak);
-          this.userService.loadMyProfile().subscribe();
-          this.resetToInitialPuzzleState();
-        },
-        error: (err) => {
-          DevLogger.error('[Tactics] Failed to submit wrong move:', err);
-          this.resetToInitialPuzzleState();
-        }
-      });
+        this.tacticsService.solvePuzzle(pId, false).subscribe({
+          next: (res: SolveResponse) => {
+            this.ratingChange.set(res.rating_change);
+            this.newRating.set(res.new_rating);
+            this.newStreak.set(res.new_streak);
+            this.userService.loadMyProfile().subscribe();
+            this.loadHistory();
+            this.resetToInitialPuzzleState();
+          },
+          error: (err) => {
+            DevLogger.error('[Tactics] Failed to submit wrong move:', err);
+            this.resetToInitialPuzzleState();
+          }
+        });
+      }
     } else {
       this.resetToInitialPuzzleState();
     }

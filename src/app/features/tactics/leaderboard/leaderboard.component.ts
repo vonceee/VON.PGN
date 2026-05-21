@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, OnDestroy, signal, PLATFORM_ID, NgZone } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed, PLATFORM_ID, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { TacticsService, LeaderboardResponse } from '../../../core/services/tactics.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { UserService } from '../../../core/services/user.service';
 import { TypewriterTextComponent  } from '@shared/ui';
 import { UserHovercardDirective } from '@shared/directives';
 
@@ -16,8 +17,11 @@ import { UserHovercardDirective } from '@shared/directives';
 export class LeaderboardComponent implements OnInit, OnDestroy {
   private tacticsService = inject(TacticsService);
   authService = inject(AuthService);
+  private userService = inject(UserService);
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
+
+  userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
 
   leaderboard = signal<LeaderboardResponse | null>(null);
   isLoading = signal(true);

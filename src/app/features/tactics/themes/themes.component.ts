@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { TacticsService } from '../../../core/services/tactics.service';
+import { UserService } from '../../../core/services/user.service';
 import { PUZZLE_THEMES_HIERARCHY, PuzzleThemeCategory, PuzzleThemeDef } from './puzzle-themes.config';
 import { LoadingComponent } from '@shared/feedback';
 
@@ -12,6 +13,7 @@ import { LoadingComponent } from '@shared/feedback';
   imports: [
     CommonModule,
     RouterLink,
+    RouterLinkActive,
     ReactiveFormsModule,
     LoadingComponent
   ],
@@ -20,6 +22,9 @@ import { LoadingComponent } from '@shared/feedback';
 })
 export class PuzzleThemesComponent implements OnInit {
   private tacticsService = inject(TacticsService);
+  private userService = inject(UserService);
+
+  userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
 
   isLoading = signal<boolean>(true);
   themeCounts = signal<Record<string, number>>({});
