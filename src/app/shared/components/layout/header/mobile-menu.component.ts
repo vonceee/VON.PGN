@@ -205,7 +205,7 @@ export class MobileMenuComponent {
       links: [
         { path: '/play', label: 'Play' },
         { path: '/tactics', label: 'Tactics' },
-        { path: '/tactics/leaderboard', label: 'Rankings' },
+        { path: '/tactics/leaderboard', label: 'Leaderboard' },
         { path: '/tv', label: 'Watch' },
         { path: '/explorer', label: 'Opening Explorer' },
       ],

@@ -12,7 +12,7 @@ import {
   HostListener,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TacticsService, Puzzle, SolveResponse, PuzzleAttempt } from '../../core/services/tactics.service';
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
@@ -30,8 +30,6 @@ import { LayoutService } from '../../core/services/layout.service';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-    RouterLinkActive,
     TacticsBoardComponent,
     LoadingComponent,
     ButtonComponent,

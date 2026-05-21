@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, signal, computed, PLATFORM_ID, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { TacticsService, LeaderboardResponse } from '../../../core/services/tactics.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -11,7 +11,7 @@ import { UserHovercardDirective } from '@shared/directives';
 @Component({
   selector: 'app-leaderboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, UserHovercardDirective],
+  imports: [CommonModule, RouterLink, UserHovercardDirective],
   templateUrl: './leaderboard.component.html',
 })
 export class LeaderboardComponent implements OnInit, OnDestroy {

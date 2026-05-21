@@ -267,8 +267,16 @@ export const routes: Routes = [
       {
         path: 'tactics',
         loadComponent: () =>
+          import('./features/tactics/selection/tactics-selection.component').then((m) => m.TacticsSelectionComponent),
+        title: 'Vonchess.net • Tactics training',
+        data: { description: 'Choose your tactics training mode on vonchess.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'tactics/play',
+        loadComponent: () =>
           import('./features/tactics/tactics.component').then((m) => m.TacticsComponent),
-        title: 'Vonchess.net • Tactics',
+        title: 'Vonchess.net • Casual puzzles',
         data: { description: 'Sharpen your chess skills with daily tactical puzzles on vonchess.' },
         resolve: { seo: seoResolver },
       },
@@ -276,8 +284,8 @@ export const routes: Routes = [
         path: 'tactics/practice/:theme',
         loadComponent: () =>
           import('./features/tactics/tactics.component').then((m) => m.TacticsComponent),
-        title: 'Vonchess.net • Tactics',
-        data: { description: 'Sharpen your chess skills with daily tactical puzzles on vonchess.' },
+        title: 'Vonchess.net • Themed puzzles',
+        data: { description: 'Sharpen your chess skills with daily themed tactical puzzles on vonchess.' },
         resolve: { seo: seoResolver },
       },
       {

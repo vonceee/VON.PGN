@@ -23,14 +23,13 @@ import {
 import { MobileMenuComponent } from './mobile-menu.component';
 import { BackgroundSettings } from './background-settings';
 import { SideDrawerComponent } from '../../ui/side-drawer/side-drawer.component';
-import { ButtonComponent, LinkComponent, FlagIconComponent } from '@shared/ui';
 import { heroTrophy, heroBell, heroCircleStack } from '@ng-icons/heroicons/outline';
 import { GachaService } from '../../../../core/services/gacha';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent, BackgroundSettings, SideDrawerComponent, LinkComponent, FlagIconComponent],
+  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent, BackgroundSettings, SideDrawerComponent],
   providers: [
     provideIcons({
       heroChevronDown,

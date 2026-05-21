@@ -16,7 +16,7 @@ import { filter } from 'rxjs/operators';
         <div class="flex flex-col min-h-full">
           <div 
             class="w-full flex-1 mx-auto relative"
-            [ngClass]="layoutService.isFluid() ? 'max-w-[1800px]' : 'max-w-8xl'"
+            [ngClass]="layoutService.isFluid() ? 'max-w-[1800px]' : 'max-w-7xl'"
           >
             <router-outlet></router-outlet>
           </div>
@@ -49,7 +49,7 @@ export class MainLayoutComponent {
       const isPlay = url === '/play' || url === '/play/' || url.includes('/play/');
       const isPlayComputer = url.includes('/play-computer');
       const isArena = url.includes('/arena');
-      const isTactics = url === '/tactics' || url === '/tactics/' || url.includes('/tactics/practice/');
+      const isTactics = url.startsWith('/tactics/');
       const isStudy = url.includes('/study/');
       const isReview = url.includes('/games/') && url.includes('/review');
 

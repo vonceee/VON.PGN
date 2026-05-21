@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { TacticsService } from '../../../core/services/tactics.service';
 import { UserService } from '../../../core/services/user.service';
@@ -13,7 +13,6 @@ import { LoadingComponent } from '@shared/feedback';
   imports: [
     CommonModule,
     RouterLink,
-    RouterLinkActive,
     ReactiveFormsModule,
     LoadingComponent
   ],

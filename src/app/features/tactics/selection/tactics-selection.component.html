@@ -1,0 +1,206 @@
+<div class="w-full p-6 lg:p-8 xl:p-12 flex flex-col">
+  <div class="mx-auto w-full flex flex-col justify-start">
+
+    <!-- Standardized Premium Page Header -->
+    <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 shrink-0">
+      <div class="flex-1">
+        <h1 class="text-4xl md:text-5xl mb-2 font-light text-content">Tactics training</h1>
+        <p class="text-muted text-lg">Select your training mode and sharpen your tactical vision.</p>
+      </div>
+    </header>
+
+    <!-- Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mb-12">
+
+      <!-- Card 1: Casual Puzzles -->
+      <div class="bg-subtle rounded-4xl p-8 flex flex-col h-full">
+        <!-- Top Pill Badge -->
+        <span class="text-xs font-semibold self-start mb-6">
+          Generally Available
+        </span>
+
+        <!-- Card Title & Subtitle -->
+        <h2 class="text-2xl lg:text-3xl text-content font-light mb-1">Casual puzzles</h2>
+        <span class="text-sm text-muted font-normal">
+          Rating: {{ currentUser() ? userRating() + ' Elo' : 'Unrated' }}
+        </span>
+
+        <!-- Description -->
+        <p class="text-muted text-md leading-relaxed mt-4 mb-8 flex-grow">
+          Improve your board vision with unlimited puzzles matched to your current playing level. Keep track of your
+          solved history in real-time.
+        </p>
+
+        <!-- CTA Button -->
+        <a routerLink="/tactics/play"
+          class="w-full py-3 bg-slate-950 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0">
+          Play now
+        </a>
+
+        <!-- Divider -->
+        <div class="border-t border-border-base my-8 shrink-0"></div>
+
+        <!-- Plan includes -->
+        <div class="flex flex-col">
+          <ul class="flex flex-col gap-3.5 text-sm text-muted">
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Unlimited puzzle training</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Live Elo rating adjustments</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Detailed solved history tracking</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Interactive moves review board</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Card 2: Puzzle Themes -->
+      <div class="bg-subtle rounded-4xl p-8 flex flex-col h-full">
+        <!-- Top Pill Badge -->
+        <span class="text-xs font-semibold self-start mb-6">
+          Targeted Motifs
+        </span>
+
+        <!-- Card Title & Subtitle -->
+        <h2 class="text-2xl lg:text-3xl text-content font-light mb-1">Puzzle themes</h2>
+        <span class="text-sm text-muted font-normal">
+          Over 40+ motifs available
+        </span>
+
+        <!-- Description -->
+        <p class="text-muted text-md leading-relaxed mt-4 mb-8 flex-grow">
+          Target specific areas of your play. Train forks, pins, skewers, checkmate patterns, endgame motifs, or defense
+          mechanics in isolation.
+        </p>
+
+        <!-- CTA Button -->
+        <a routerLink="/tactics/themes"
+          class="w-full py-3 bg-slate-950 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0">
+          Browse themes
+        </a>
+
+        <!-- Divider -->
+        <div class="border-t border-border-base my-8 shrink-0"></div>
+
+        <!-- Plan includes -->
+        <div class="flex flex-col">
+          <ul class="flex flex-col gap-3.5 text-sm text-muted">
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Motif specific tactical training</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Mate in 1, 2, 3 and complex checkmates</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Instant theme counters & puzzle volume</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Customized difficulty filtering</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Card 3: Woodpecker Method -->
+      <div class="bg-subtle rounded-4xl p-8 flex flex-col h-full">
+        <!-- Top Pill Badge -->
+        <span class="text-xs font-semibold self-start mb-6">
+          Spaced Repetition
+        </span>
+
+        <!-- Card Title & Subtitle -->
+        <h2 class="text-2xl lg:text-3xl text-content font-light mb-1">Woodpecker method</h2>
+        <span class="text-sm text-muted font-normal">
+          Subconscious pattern burning
+        </span>
+
+        <!-- Description -->
+        <p class="text-muted text-md leading-relaxed mt-4 mb-8 flex-grow">
+          Train with GM-recommended cycles. Lock in a puzzle set and solve it repeatedly over four cycles, halving the
+          time target each cycle.
+        </p>
+
+        <!-- CTA Button -->
+        <a routerLink="/tactics/woodpecker"
+          class="w-full py-3 bg-slate-950 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0">
+          Start training
+        </a>
+
+        <!-- Divider -->
+        <div class="border-t border-border-base my-8 shrink-0"></div>
+
+        <!-- Plan includes -->
+        <div class="flex flex-col">
+          <ul class="flex flex-col gap-3.5 text-sm text-muted">
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Spaced repetition puzzle sets</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>4-cycle training repetition progress</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Time-target halving goals solver</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Improved pattern recognition</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
