@@ -1,0 +1,79 @@
+<div class="ui-panel w-full max-w-2xl p-8 font-sans space-y-8 relative">
+  <div class="flex items-center justify-between">
+    <h2 class="text-2xl text-content">Play with computer</h2>
+  </div>
+
+  <div class="space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Level Selection -->
+      <section class="space-y-4">
+        <h3 class="text-sm font-medium text-muted">Difficulty level</h3>
+        <div class="grid grid-cols-4 gap-2">
+          @for (lvl of levels; track lvl) {
+          <button (click)="selectedLevel.set(lvl)"
+            class="h-10 text-sm font-semibold hover:underline cursor-pointer focus:outline-none transition-colors text-center"
+            [class.underline]="selectedLevel() === lvl" [class.text-accent]="selectedLevel() === lvl"
+            [class.text-content]="selectedLevel() !== lvl">
+            {{ lvl }}
+          </button>
+          }
+        </div>
+      </section>
+
+      <!-- Color Selection -->
+      <section class="space-y-4">
+        <h3 class="text-sm font-medium text-muted">Play as</h3>
+        <div class="grid grid-cols-3 gap-2">
+          @for (color of colors; track color.id) {
+          <button (click)="selectedColor.set(color.id)"
+            class="py-4 text-sm font-semibold hover:underline cursor-pointer focus:outline-none transition-colors text-center"
+            [class.underline]="selectedColor() === color.id" [class.text-accent]="selectedColor() === color.id"
+            [class.text-content]="selectedColor() !== color.id">
+            {{ color.label }}
+          </button>
+          }
+        </div>
+      </section>
+    </div>
+
+    <!-- Time Control Selection -->
+    <section class="space-y-4">
+      <h3 class="text-sm font-medium text-muted">Time format</h3>
+      <div class="relative w-full md:w-64">
+        <button (click)="isDropdownOpen.update(v => !v)"
+          class="w-full py-3 pl-2 pr-8 text-left text-content font-medium cursor-pointer text-base border-b-2 border-border-base flex items-center justify-between focus:outline-none">
+          <span>{{ selectedTimeControl()?.label }}</span>
+          <svg class="fill-current h-4 w-4 text-muted transition-transform duration-200"
+            [class.rotate-180]="isDropdownOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+          </svg>
+        </button>
+
+        @if (isDropdownOpen()) {
+        <div
+          class="absolute bottom-full left-0 w-full min-w-48 bg-main border border-border-base rounded-xl py-2 mb-2 z-50 flex flex-col shadow-lg max-h-48 overflow-y-auto">
+          <button (click)="selectedTimeControl.set(null); isDropdownOpen.set(false)"
+            class="w-full px-4 py-2.5 hover:bg-subtle flex items-center text-left group/item cursor-pointer focus:outline-none">
+            <span class="text-sm text-content group-hover/item:text-accent font-medium">Casual</span>
+          </button>
+          @for (tc of timeControls; track tc.value) {
+          <button (click)="selectedTimeControl.set(tc); isDropdownOpen.set(false)"
+            class="w-full px-4 py-2.5 hover:bg-subtle flex items-center text-left group/item cursor-pointer focus:outline-none">
+            <span class="text-sm text-content group-hover/item:text-accent font-medium">{{ tc.label }}</span>
+          </button>
+          }
+        </div>
+        }
+      </div>
+    </section>
+
+    <div class="pt-4 flex gap-4 w-full">
+      <button appButton (click)="dialogRef.close()" class="flex-1">
+        <span>Cancel</span>
+      </button>
+      <button appButton variant="primary" class="flex-1" (click)="start()">
+        <span>Start challenge</span>
+      </button>
+    </div>
+  </div>
+</div>

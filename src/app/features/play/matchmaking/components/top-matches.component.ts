@@ -5,6 +5,7 @@ import {
   signal,
   computed,
   effect,
+  input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PresenceService } from '../../../../core/services/presence.service';
@@ -91,54 +92,58 @@ import { Config } from 'chessground/config';
       </div>
 
       <!-- Top Games List -->
-      <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0 space-y-1 pr-1">
-        @for (match of presenceService.topGames(); track match.gameId) {
-          @let isActive = selectedGameId() === match.gameId || (!selectedGameId() && match.gameId === presenceService.topGameId());
-          <div 
-            (click)="selectGame(match.gameId)"
-            class="ui-panel p-2.5 transition-all cursor-pointer group relative shrink-0"
-            [class.border-accent]="isActive"
-            [class.bg-accent/[0.02]]="isActive"
-            [class.shadow-sm]="isActive"
-            [class.hover:bg-subtle]="!isActive"
-          >
-            <!-- Active Indicator Bar -->
-            @if (isActive) {
-              <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
-            }
+      @if (!hideList()) {
+        <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0 space-y-1 pr-1">
+          @for (match of presenceService.topGames(); track match.gameId) {
+            @let isActive = selectedGameId() === match.gameId || (!selectedGameId() && match.gameId === presenceService.topGameId());
+            <div 
+              (click)="selectGame(match.gameId)"
+              class="ui-panel p-2.5 transition-all cursor-pointer group relative shrink-0"
+              [class.border-accent]="isActive"
+              [class.bg-accent/[0.02]]="isActive"
+              [class.shadow-sm]="isActive"
+              [class.hover:bg-subtle]="!isActive"
+            >
+              <!-- Active Indicator Bar -->
+              @if (isActive) {
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
+              }
 
-            <div class="flex flex-col gap-2">
-              <!-- Top Row (White) -->
-              <div class="flex items-center justify-between gap-4">
-                <span 
-                  class="text-sm font-semibold truncate"
-                  [class]="isActive ? 'text-accent' : 'text-content'"
-                >
-                  {{ match.white.name }}
-                </span>
-                <span class="text-xs font-medium text-muted tabular-nums">{{ match.white.rating }}</span>
-              </div>
+              <div class="flex flex-col gap-2">
+                <!-- Top Row (White) -->
+                <div class="flex items-center justify-between gap-4">
+                  <span 
+                    class="text-sm font-semibold truncate"
+                    [class]="isActive ? 'text-accent' : 'text-content'"
+                  >
+                    {{ match.white.name }}
+                  </span>
+                  <span class="text-xs font-medium text-muted tabular-nums">{{ match.white.rating }}</span>
+                </div>
 
-              <!-- Bottom Row (Black) -->
-              <div class="flex items-center justify-between gap-4">
-                <span class="text-xs font-medium text-muted tabular-nums">{{ match.black.rating }}</span>
-                <span 
-                  class="text-sm font-semibold truncate text-right"
-                  [class]="isActive ? 'text-accent' : 'text-content'"
-                >
-                  {{ match.black.name }}
-                </span>
+                <!-- Bottom Row (Black) -->
+                <div class="flex items-center justify-between gap-4">
+                  <span class="text-xs font-medium text-muted tabular-nums">{{ match.black.rating }}</span>
+                  <span 
+                    class="text-sm font-semibold truncate text-right"
+                    [class]="isActive ? 'text-accent' : 'text-content'"
+                  >
+                    {{ match.black.name }}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        }
-      </div>
+          }
+        </div>
+      }
     </div>
   `,
 })
 export class TopMatchesComponent implements OnInit {
   public presenceService = inject(PresenceService);
   private gameService = inject(GameService);
+
+  hideList = input<boolean>(false);
 
   readonly STARTING_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   readonly placeholderPlayer = { id: 0, name: '...' };

@@ -2,9 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
-import { ButtonComponent, LinkComponent } from '@shared/ui';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroXMark, heroArrowRight } from '@ng-icons/heroicons/outline';
+import { ButtonComponent } from '@shared/ui';
 
 export interface CustomTimeControlResult {
   minutes: number;
@@ -14,104 +12,56 @@ export interface CustomTimeControlResult {
 @Component({
   selector: 'app-custom-time-control-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, NgIcon],
-  providers: [provideIcons({ heroXMark, heroArrowRight })],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
-    <div class="ui-panel w-full max-w-2xl p-8 font-sans space-y-10 relative">
+    <div class="ui-panel w-full max-w-xl p-8 font-sans space-y-8 relative">
       <div class="flex items-center justify-between">
-        <div class="space-y-1">
-          <h2 class="text-2xl  uppercase italic er">Custom Time Control</h2>
-          <p class="text-xs font-semibold text-muted-foreground uppercase ">Setup your preferred format</p>
-        </div>
-        <button
-          (click)="dialogRef.close()"
-          class="cursor-pointer p-2 hover:bg-black/5  rounded-full  flex items-center justify-center"
-        >
-          <ng-icon name="heroXMark" class="text-xl"></ng-icon>
-        </button>
+        <h2 class="text-2xl text-content">Custom time control</h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Minutes Selection -->
-        <section class="space-y-6">
-          <div class="flex justify-between items-center">
-            <h3 class="text-sm  uppercase  text-muted-foreground">Minutes</h3>
-            <div class="flex items-center gap-4">
-              <button
-                (click)="adjustMinutes(-1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-semibold"
-              >
-                -
-              </button>
-              <span class="text-3xl  min-w-[3rem] text-center italic">{{ customMinutes() }}</span>
-              <button
-                (click)="adjustMinutes(1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-semibold"
-              >
-                +
-              </button>
-            </div>
-          </div>
-          
-          <div class="grid grid-cols-4 gap-2">
-            @for (min of minutePresets; track min) {
-              <button
-                appButton
-                [variant]="customMinutes() === min ? 'primary' : 'outline'"
-                (click)="customMinutes.set(min)"
-                class="h-10 text-xs "
-              >
-                {{ min }}
-              </button>
-            }
-          </div>
+        <section class="space-y-3">
+          <label class="text-sm font-medium text-muted">Minutes</label>
+          <input
+            type="number"
+            min="1"
+            max="180"
+            [ngModel]="customMinutes()"
+            (ngModelChange)="customMinutes.set($event)"
+            class="w-full py-2 bg-transparent border-b-2 border-border-base outline-none focus:border-accent text-center text-2xl font-medium text-content transition-colors"
+          />
         </section>
 
         <!-- Increment Selection -->
-        <section class="space-y-6">
-          <div class="flex justify-between items-center">
-            <h3 class="text-sm  uppercase  text-muted-foreground">Increment</h3>
-            <div class="flex items-center gap-4">
-              <button
-                (click)="adjustIncrement(-1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-semibold"
-              >
-                -
-              </button>
-              <span class="text-3xl  min-w-[3rem] text-center italic">{{ customIncrement() }}</span>
-              <button
-                (click)="adjustIncrement(1)"
-                class="w-10 h-10 flex items-center justify-center border border-border-base rounded-xl hover:bg-accent/10  cursor-pointer text-xl font-semibold"
-              >
-                +
-              </button>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-4 gap-2">
-            @for (inc of incrementPresets; track inc) {
-              <button
-                appButton
-                [variant]="customIncrement() === inc ? 'primary' : 'outline'"
-                (click)="customIncrement.set(inc)"
-                class="h-10 text-xs "
-              >
-                {{ inc }}
-              </button>
-            }
-          </div>
+        <section class="space-y-3">
+          <label class="text-sm font-medium text-muted">Increment</label>
+          <input
+            type="number"
+            min="0"
+            max="60"
+            [ngModel]="customIncrement()"
+            (ngModelChange)="customIncrement.set($event)"
+            class="w-full py-2 bg-transparent border-b-2 border-border-base outline-none focus:border-accent text-center text-2xl font-medium text-content transition-colors"
+          />
         </section>
       </div>
 
-      <div class="pt-4">
+      <div class="pt-4 flex gap-4 w-full">
+        <button
+          appButton
+          (click)="dialogRef.close()"
+          class="flex-1"
+        >
+          <span>Cancel</span>
+        </button>
         <button
           appButton
           variant="primary"
-          class="w-full py-6 text-lg  uppercase  italic group"
+          class="flex-1"
           (click)="confirm()"
         >
-          Find Opponent
-          <ng-icon name="heroArrowRight" class="ml-2  group-hover:translate-x-1"></ng-icon>
+          <span>Find opponent</span>
         </button>
       </div>
     </div>
@@ -125,26 +75,13 @@ export interface CustomTimeControlResult {
 export class CustomTimeControlModalComponent {
   dialogRef = inject(DialogRef<CustomTimeControlResult>);
 
-  minutePresets = [1, 3, 5, 10, 15, 30, 60, 90];
-  incrementPresets = [0, 1, 2, 3, 5, 10, 15, 30];
-
   customMinutes = signal(10);
   customIncrement = signal(0);
 
-  adjustMinutes(delta: number) {
-    const newVal = Math.max(1, Math.min(180, this.customMinutes() + delta));
-    this.customMinutes.set(newVal);
-  }
-
-  adjustIncrement(delta: number) {
-    const newVal = Math.max(0, Math.min(60, this.customIncrement() + delta));
-    this.customIncrement.set(newVal);
-  }
-
   confirm() {
     this.dialogRef.close({
-      minutes: this.customMinutes(),
-      increment: this.customIncrement()
+      minutes: Number(this.customMinutes()),
+      increment: Number(this.customIncrement())
     });
   }
 }

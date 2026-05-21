@@ -46,7 +46,7 @@ export class MainLayoutComponent {
     ).subscribe((event) => {
       const url = event.urlAfterRedirects.split('?')[0];
 
-      const isPlay = url.includes('/play/');
+      const isPlay = url === '/play' || url === '/play/' || url.includes('/play/');
       const isPlayComputer = url.includes('/play-computer');
       const isArena = url.includes('/arena');
       const isTactics = url === '/tactics' || url === '/tactics/' || url.includes('/tactics/practice/');

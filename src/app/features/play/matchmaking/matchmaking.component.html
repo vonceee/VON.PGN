@@ -1,32 +1,92 @@
-<section class="mb-20 min-h-full w-full bg-main flex flex-col">
-  <header class="flex flex-col md:flex-row md:items-end justify-between gap-6 p-4">
-    <div class="flex-1">
-      <h1 class="text-4xl md:text-5xl mb-2 font-medium">Play</h1>
-      <p class="text-muted text-lg">Find a match and play live chess.</p>
+<section class="h-auto lg:h-[calc(100vh-64px)] w-full bg-main flex flex-col justify-center p-4 md:p-6 lg:p-8">
+  <div
+    class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full max-w-5xl mx-auto my-auto py-6 lg:py-0">
+
+    <!-- Left Column: Top Game Spectator Board -->
+    <div class="lg:col-span-7 w-full flex flex-col justify-center">
+      @defer {
+      <app-top-matches [hideList]="true"></app-top-matches>
+      }
     </div>
-  </header>
-  <!-- Mobile Layout -->
-  <div class="lg:hidden flex flex-col p-4 pb-12">
-    <app-play-selector class="block w-full" />
-  </div>
 
-  <!-- Desktop Layout -->
-  <div class="hidden lg:flex items-start flex-1 p-4">
-    <div class="grid w-full grid-cols-1 lg:grid-cols-12 items-stretch gap-4">
-      <!-- Left panel: Lobby/Seek board -->
-      <div class="w-full lg:col-span-3">
-        <app-seek-board (seekClicked)="onSeekClicked($event)" class="block" />
+    <!-- Right Column: Interactive Quick Play Controls -->
+    <div class="lg:col-span-5 flex flex-col gap-6 w-full justify-center">
+      <div class="bg-subtle rounded-3xl p-8 flex flex-col gap-6">
+
+        <!-- Play Options / Game State Container -->
+        <div class="flex flex-col gap-4">
+          <div class="flex items-center gap-3">
+
+            <!-- Play / Cancel / Rejoin Button -->
+            @if (gameService.isSearching()) {
+            <button appButton class="flex-1" (click)="cancelSearch()">
+              <span
+                class="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin shrink-0"></span>
+              <span>Cancel search..</span>
+            </button>
+            } @else if (activeGameId()) {
+            <button appButton variant="primary" class="flex-1" (click)="rejoinGame()">
+              <span>Rejoin Game</span>
+            </button>
+            } @else {
+            <button appButton variant="primary" class="flex-1" (click)="startPlay()">
+              <span>Find a match</span>
+            </button>
+            }
+
+            <!-- Time Control Dropdown Selector -->
+            <div #dropdownContainer class="relative shrink-0 w-36">
+              <button [disabled]="gameService.isSearching()" (click)="isDropdownOpen.update(v => !v)"
+                class="w-full py-3 pl-2 pr-8 text-left text-content font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-base border-b-2 border-border-base flex items-center justify-between focus:outline-none">
+                <span>{{ getSelectedTimeControlLabel() }}</span>
+                <svg class="fill-current h-4 w-4 text-muted transition-transform duration-200"
+                  [class.rotate-180]="isDropdownOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </button>
+
+              @if (isDropdownOpen()) {
+              <div
+                class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 z-50 flex flex-col shadow-lg max-h-64 overflow-y-auto">
+                @for (tc of timeControls; track tc.value) {
+                <button (click)="selectedTimeControlValue.set(tc.value); isDropdownOpen.set(false)"
+                  class="w-full px-4 py-2.5 hover:bg-subtle flex items-center text-left group/item cursor-pointer focus:outline-none">
+                  <span class="text-sm text-content group-hover/item:text-accent font-medium">{{ tc.label }}</span>
+                </button>
+                }
+              </div>
+              }
+            </div>
+
+          </div>
+
+          <!-- Secondary Actions -->
+          <div class="flex gap-4 mt-2 px-1 text-sm text-muted">
+            <button [disabled]="gameService.isSearching()" (click)="openCustomTimeControl()"
+              class="hover:underline font-medium cursor-pointer disabled:cursor-not-allowed">
+              Custom time control
+            </button>
+            <span class="text-muted">|</span>
+            <button [disabled]="gameService.isSearching()" (click)="playWithComputer()"
+              class="hover:underline font-medium cursor-pointer disabled:cursor-not-allowed">
+              Play with computer
+            </button>
+          </div>
+
+        </div>
+
       </div>
 
-      <!-- Middle panel: Play Selection (Wider) -->
-      <div class="w-full lg:col-span-6">
-        <app-play-selector />
-      </div>
-
-      <!-- Right panel: Top Matches Feed -->
-      <div class="w-full lg:col-span-3">
-        <app-top-matches />
+      <!-- Real-Time Site Stats -->
+      <div class="flex flex-col gap-1 text-sm text-muted px-2 mt-1">
+        <div>
+          <span class="font-semibold text-content">{{ presenceService.nbPlayers() }}</span> players online
+        </div>
+        <div>
+          <span class="font-semibold text-content">{{ presenceService.nbGames() }}</span> games in play
+        </div>
       </div>
     </div>
+
   </div>
 </section>

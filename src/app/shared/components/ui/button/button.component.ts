@@ -29,7 +29,7 @@ export class ButtonComponent {
   }
 
   variantClasses = computed(() => {
-    const base = `group flex items-center justify-center gap-2 border px-5 py-2.5 text-sm    cursor-pointer`;
+    const base = `group flex items-center justify-center gap-2 border px-5 py-2.5 text-md font-medium cursor-pointer`;
 
     switch (this.variant()) {
       case 'primary':
