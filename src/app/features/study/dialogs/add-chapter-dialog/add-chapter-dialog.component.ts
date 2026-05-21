@@ -20,10 +20,10 @@ export interface AddChapterDialogResult {
   selector: 'app-add-chapter-dialog',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    DialogWrapperComponent, 
-    ButtonComponent, 
+    CommonModule,
+    FormsModule,
+    DialogWrapperComponent,
+    ButtonComponent,
     BoardEditorComponent,
   ],
   template: `
@@ -45,7 +45,7 @@ export interface AddChapterDialogResult {
                     [ngModel]="name()"
                     (ngModelChange)="name.set($event)"
                     placeholder="e.g. Opening Analysis"
-                    class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm    outline-none placeholder:text-muted/50   "
+                    class="w-full px-4 py-2.5 bg-subtle/50 border border-base rounded-xl text-sm    outline-none placeholder:text-muted/50   "
                     autofocus
                   />
                   <div class="absolute inset-0 rounded-xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none  "></div>
@@ -62,7 +62,7 @@ export interface AddChapterDialogResult {
                     <select
                       [ngModel]="orientation()"
                       (ngModelChange)="orientation.set($event)"
-                      class="w-full px-4 py-2.5 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm    outline-none    appearance-none cursor-pointer"
+                      class="w-full px-4 py-2.5 bg-subtle/50 border border-base rounded-xl text-sm    outline-none    appearance-none cursor-pointer"
                     >
                       <option value="white">White</option>
                       <option value="black">Black</option>
@@ -115,7 +115,7 @@ export interface AddChapterDialogResult {
                       [ngModel]="fen()"
                       (ngModelChange)="fen.set($event)"
                       placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-                      class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm    outline-none   "
+                      class="w-full px-4 py-3 bg-subtle/50 border border-base rounded-xl text-sm    outline-none   "
                     />
                   </div>
                 </div>
@@ -154,7 +154,7 @@ export interface AddChapterDialogResult {
                         (ngModelChange)="pgn.set($event)"
                         rows="8"
                         placeholder="paste pgn here.."
-                        class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-xl text-sm outline-none    resize-none custom-scrollbar"
+                        class="w-full px-4 py-3 bg-subtle/50 border border-base rounded-xl text-sm outline-none    resize-none custom-scrollbar"
                       ></textarea>
                       
                       @if (fileSummary()) {
@@ -229,11 +229,11 @@ export interface AddChapterDialogResult {
 export class AddChapterDialogComponent implements OnInit {
   @ViewChild('editor') boardEditor?: BoardEditorComponent;
   dialogRef = inject(DialogRef<AddChapterDialogResult>);
-  data = inject<{ 
-    defaultName?: string; 
-    tab?: ChapterTab; 
+  data = inject<{
+    defaultName?: string;
+    tab?: ChapterTab;
   }>(DIALOG_DATA, { optional: true });
-  
+
   name = signal('');
   activeTab = signal<ChapterTab>('empty');
   orientation = signal<'white' | 'black'>('white');
@@ -285,7 +285,7 @@ export class AddChapterDialogComponent implements OnInit {
       this.pgn.update(current => current ? current + '\n\n' + combinedPgn : combinedPgn);
       this.fileSummary.set(`Successfully loaded ${files.length} file(s)`);
       this.isReadingFiles.set(false);
-      
+
       // Reset file input so same files can be selected again if needed
       event.target.value = '';
     }).catch(err => {

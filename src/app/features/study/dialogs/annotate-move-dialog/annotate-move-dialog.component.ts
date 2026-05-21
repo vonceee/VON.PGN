@@ -70,7 +70,7 @@ export interface AnnotateMoveDialogResult {
                 (ngModelChange)="comment.set($event)"
                 placeholder="add your thoughts on this move.."
                 rows="4"
-                class="w-full px-4 py-3 bg-subtle/50 backdrop-blur-sm border border-base rounded-2xl text-sm    outline-none    resize-none custom-scrollbar"
+                class="w-full px-4 py-3 bg-subtle/50 border border-base rounded-2xl text-sm    outline-none    resize-none custom-scrollbar"
                 autofocus
               ></textarea>
               <div class="absolute inset-0 rounded-2xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none  "></div>
@@ -116,7 +116,7 @@ export class AnnotateMoveDialogComponent implements OnInit {
     // We'll support multiple just in case, but toggle logic should be intuitive.
     // Actually, Lichess usually only allows one primary evaluation glyph.
     // For simplicity, let's allow only one glyph from this set at a time.
-    this.selectedGlyphs.update(current => 
+    this.selectedGlyphs.update(current =>
       current.includes(id) ? [] : [id]
     );
   }

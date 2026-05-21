@@ -1,283 +1,250 @@
 <div class="h-full w-full p-4 lg:p-8 flex flex-col relative overflow-hidden">
-  <div class="w-full flex-1 flex flex-col lg:flex-row gap-8 items-stretch relative">
+  <div class="w-full flex-1 flex flex-col lg:flex-row gap-8 items-stretch relative min-h-0">
 
     @if (isLoading()) {
-      <div class="flex-1 flex items-center justify-center">
-        <app-loading></app-loading>
-      </div>
+    <div class="flex-1 flex items-center justify-center">
+      <app-loading></app-loading>
+    </div>
     } @else if (hasError()) {
-      <div class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-main border border-border-base rounded-2xl max-w-md mx-auto shadow-sm">
-        <svg class="w-16 h-16 text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-        <h3 class="text-xl font-medium text-slate-800 mb-2">Failed to load session</h3>
-        <p class="text-muted mb-6">We encountered an issue loading this Woodpecker training session. It may have been deleted or archived.</p>
-        <button appButton routerLink="/tactics/woodpecker" class="px-6 py-3 font-semibold">Back to Dashboard</button>
-      </div>
+    <div
+      class="flex-1 flex flex-col items-center justify-center text-center p-8 bg-main border border-border-base rounded-2xl max-w-md mx-auto">
+      <svg class="w-16 h-16 text-red-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <h3 class="text-xl font-medium text-slate-800 mb-2">Failed to load session</h3>
+      <p class="text-muted mb-6">We encountered an issue loading this Woodpecker training session. It may have been
+        deleted or archived.</p>
+      <button appButton routerLink="/tactics/woodpecker" class="px-6 py-3 font-semibold">Back to Dashboard</button>
+    </div>
     } @else if (isFinished()) {
-      <!-- Session Finished Screen -->
-      <div class="flex-1 flex flex-col items-center justify-center text-center p-8 max-w-2xl mx-auto">
-        <div class="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center text-green-500 mb-6 shadow-inner">
-          <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-          </svg>
-        </div>
-        <h2 class="text-3xl font-light text-slate-800 mb-2">Training session complete!</h2>
-        <p class="text-muted text-lg mb-8">
-          You completed all 4 repetition cycles of <strong>{{ session()?.name }}</strong>! Your subconscious pattern recognition has been significantly enhanced.
-        </p>
-
-        <!-- Final Diagnostics summary -->
-        <div class="bg-main border border-border-base rounded-2xl p-6 w-full shadow-sm mb-8">
-          <h3 class="text-sm uppercase font-semibold text-slate-500 tracking-wider mb-4">Repetition Analytics</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            @for (cycle of session()?.cycles; track cycle.id) {
-              <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                <span class="text-xs font-semibold text-muted block mb-1">Cycle {{ cycle.cycle_number }}</span>
-                <span class="text-xl font-bold text-slate-800 block mb-1">
-                  {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}%
-                </span>
-                <span class="text-xs font-medium text-slate-500">{{ formatTime(cycle.total_time_seconds) }}</span>
-              </div>
-            }
-          </div>
-        </div>
-
-        <button appButton routerLink="/tactics/woodpecker" class="px-8 py-3 font-semibold text-base">Back to Dashboard</button>
+    <!-- Session Finished Screen -->
+    <div class="flex-1 flex flex-col items-center justify-center text-center p-8 max-w-2xl mx-auto">
+      <div class="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center text-green-500 mb-6 shadow-inner">
+        <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+        </svg>
       </div>
+      <h2 class="text-3xl font-light text-slate-800 mb-2">Training session complete!</h2>
+      <p class="text-muted text-lg mb-8">
+        You completed all 4 repetition cycles of <strong>{{ session()?.name }}</strong>!
+      </p>
+
+      <!-- Final Diagnostics summary -->
+      <div class="bg-subtle rounded-4xl p-6 w-full mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          @for (cycle of session()?.cycles; track cycle.id) {
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+            <span class="text-md font-medium block mb-1">Cycle {{ cycle.cycle_number }}</span>
+            <span class="text-xl font-bold text-slate-800 block mb-1">
+              {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}%
+            </span>
+            <span class="text-md font-medium">{{ formatTime(cycle.total_time_seconds) }}</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <button appButton variant="primary" routerLink="/tactics/woodpecker">Back to
+        Dashboard</button>
+    </div>
     } @else {
-      
-      <!-- Left Column: Interactive Chess Board -->
-      <div class="flex-1 flex items-center justify-center min-h-0 min-w-0">
-        @if (currentPuzzle()) {
-          <div class="w-full max-w-[620px] max-h-[620px] aspect-square relative">
-            <app-tactics-board
-              [puzzle]="currentPuzzle()!"
-              [exploreMode]="status() === 'failed'"
-              [retryMode]="false"
-              (puzzleSolved)="onPuzzleSolved()"
-              (puzzleFailed)="onPuzzleFailed()"
-              (wrongMove)="onWrongMove()"
-              (moveMade)="onPuzzleMoveMade($event)"
-              (userColorChange)="onUserColorChange($event)"
-              class="block w-full h-full"
-            ></app-tactics-board>
-          </div>
-        }
-      </div>
 
-      <!-- Right Column: Sidebar controls & diagnostics -->
-      <div class="w-full lg:w-[400px] flex flex-col gap-4 shrink-0">
-        
-        <!-- Unified Control & Diagnostics Card -->
-        <div class="bg-main border border-border-base rounded-2xl p-6 shadow-sm flex flex-col gap-6">
-          
-          <!-- Header block with Rating -->
-          <div class="border-b border-slate-100 pb-4 flex justify-between items-start">
-            <div>
-              <span class="text-xs uppercase font-semibold text-accent tracking-wider block mb-1">
+    <!-- Left Column: Interactive Chess Board -->
+    <div class="flex-1 flex items-center justify-center min-h-0 min-w-0">
+      @if (currentPuzzle()) {
+      <div class="board-container-parent w-full h-full max-w-[620px] max-h-[620px] flex items-center justify-center">
+        <app-tactics-board [puzzle]="currentPuzzle()!" [exploreMode]="status() === 'failed'" [retryMode]="false"
+          (puzzleSolved)="onPuzzleSolved()" (puzzleFailed)="onPuzzleFailed()" (wrongMove)="onWrongMove()"
+          (moveMade)="onPuzzleMoveMade($event)" (userColorChange)="onUserColorChange($event)"
+          class="block w-full h-full"></app-tactics-board>
+      </div>
+      }
+    </div>
+
+    <!-- Right Column: Sidebar controls & diagnostics -->
+    <div class="w-full lg:w-[400px] flex flex-col gap-4 shrink-0 min-h-0 lg:h-full lg:overflow-y-auto custom-scrollbar">
+
+      <!-- Unified Control & Diagnostics Card -->
+      <div class="bg-subtle rounded-4xl p-6 flex flex-col gap-6">
+
+        <!-- Header block with Rating -->
+        <div class="border-b border-slate-100 pb-4 flex justify-between items-start">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-sm font-medium">
                 Cycle {{ session()?.current_cycle_number }} of 4
               </span>
-              <h2 class="text-xl font-medium text-slate-800">{{ session()?.name }}</h2>
             </div>
-            @if (currentPuzzle()?.rating) {
-              <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 shrink-0">
-                {{ currentPuzzle()?.rating }} Elo
-              </span>
-            }
+            <h2 class="text-xl font-medium text-slate-800">{{ session()?.name }}</h2>
           </div>
-
-          <!-- Digital Readout Timer -->
-          <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex items-center justify-between">
-            <div>
-              <span class="text-xs text-muted block mb-0.5">Cycle Timer</span>
-              <span class="text-3xl font-bold font-mono text-slate-800">{{ formatTime(cycleTimeElapsed()) }}</span>
-            </div>
-            <div class="text-right">
-              <span class="text-xs text-muted block mb-0.5">Puzzle Index</span>
-              <span class="text-2xl font-bold text-slate-800">
-                {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-slate-400 text-sm font-normal">/ {{ session()?.total_puzzles }}</span>
-              </span>
-            </div>
-          </div>
-
-          <!-- Progress slider -->
-          <div>
-            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-2">
-              <div 
-                class="bg-accent h-full rounded-full transition-all duration-300"
-                [style.width.%]="(((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)"
-              ></div>
-            </div>
-            <div class="flex justify-between text-xs text-muted">
-              <span>Progress</span>
-              <span>
-                {{ Math.round((((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)) }}% completed
-              </span>
-            </div>
-          </div>
-
-          <!-- Accuracy so far in active cycle -->
-          <div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4">
-            <div>
-              <span class="text-xs text-muted block">Accuracy</span>
-              <span class="text-base font-semibold text-slate-800">
-                @if (currentCycle(); as cycle) {
-                  {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}%
-                } @else {
-                  0%
-                }
-              </span>
-            </div>
-            <div>
-              <span class="text-xs text-muted block">Correct Puzzles</span>
-              <span class="text-base font-semibold text-slate-800">
-                {{ currentCycle()?.total_correct ?? 0 }} / {{ currentCycle()?.total_solved ?? 0 }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Dynamic Solve State Alerts and Actions -->
-          <div class="border-t border-slate-100 pt-6">
-            @if (status() === 'playing') {
-              <!-- Playing / User Turn Alert -->
-              <div class="flex items-center gap-3">
-                <div 
-                  class="w-3 h-3 rounded-full animate-pulse"
-                  [class.bg-white]="userColor() === 'white'"
-                  [class.border]="userColor() === 'white'"
-                  [class.border-slate-400]="userColor() === 'white'"
-                  [class.bg-slate-900]="userColor() === 'black'"
-                ></div>
-                <h3 class="text-base font-semibold"><span class="capitalize">{{ userColor() }}</span> to play</h3>
-              </div>
-            } @else if (status() === 'failed') {
-              <!-- Failed Move Alert and Action Block -->
-              <div class="flex flex-col gap-4">
-                <div class="flex items-center gap-2 text-red-600">
-                  <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                  <span class="font-bold">Incorrect Move!</span>
-                </div>
-                
-                <p class="text-sm text-muted">
-                  You missed the tactical solution. Review the correct moves on the board or proceed to the next puzzle.
-                </p>
-
-                <div class="flex gap-3 mt-2">
-                  @if (!hasRevealedSolution()) {
-                    <button
-                      appButton
-                      variant="outline"
-                      (click)="revealSolution()"
-                      class="flex-1 py-2.5 font-semibold text-sm border-red-200 text-red-700 hover:bg-red-50/50"
-                    >
-                      Reveal
-                    </button>
-                  } @else {
-                    <div class="flex-1 bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-500 font-mono text-center flex items-center justify-center">
-                      Revealed
-                    </div>
-                  }
-                  
-                  <button
-                    appButton
-                    (click)="nextPuzzle()"
-                    class="flex-1 py-2.5 font-semibold text-sm bg-red-600 hover:bg-red-700 text-white"
-                  >
-                    Next Puzzle
-                  </button>
-                </div>
-              </div>
-            }
-          </div>
-
+          @if (currentPuzzle()?.rating) {
+          <span class="px-2.5 py-1 text-xs font-medium rounded-full border border-border-base bg-main shrink-0">
+            {{ currentPuzzle()?.rating }} Elo
+          </span>
+          }
         </div>
 
-        <!-- Exit footer -->
-        <a 
-          routerLink="/tactics/woodpecker"
-          class="text-center text-sm font-medium text-slate-500 hover:text-slate-800 flex items-center justify-center gap-1.5 py-2"
-        >
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          Exit Session
-        </a>
+        <!-- Digital Readout Timer -->
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex items-center justify-between">
+          <div>
+            <span class="text-xs text-muted block mb-0.5">Cycle timer</span>
+            <span class="text-3xl font-bold">{{ formatTime(cycleTimeElapsed()) }}</span>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-muted block mb-0.5">Puzzle Index</span>
+            <span class="text-2xl font-bold text-slate-800">
+              {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-slate-400 text-sm font-normal">/
+                {{ session()?.total_puzzles }}</span>
+            </span>
+          </div>
+        </div>
 
+        <!-- Progress slider -->
+        <div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-2">
+            <div class="bg-accent h-full rounded-full transition-all duration-300"
+              [style.width.%]="(((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)">
+            </div>
+          </div>
+          <div class="flex justify-between text-xs text-muted">
+            <span>Progress</span>
+            <span>
+              {{ Math.round((((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)) }}%
+              completed
+            </span>
+          </div>
+        </div>
+
+        <!-- Accuracy so far in active cycle -->
+        <div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4">
+          <div>
+            <span class="text-xs text-muted block">Accuracy</span>
+            <span class="text-base font-semibold text-slate-800">
+              @if (currentCycle(); as cycle) {
+              {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}%
+              } @else {
+              0%
+              }
+            </span>
+          </div>
+          <div>
+            <span class="text-xs text-muted block">Correct Puzzles</span>
+            <span class="text-base font-semibold text-slate-800">
+              {{ currentCycle()?.total_correct ?? 0 }} / {{ currentCycle()?.total_solved ?? 0 }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Dynamic Solve State Alerts and Actions -->
+        <div class="border-t border-slate-100 pt-6">
+          @if (status() === 'playing') {
+          <!-- Playing / User Turn Alert -->
+          <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-full" [class.bg-white]="userColor() === 'white'"
+              [class.border]="userColor() === 'white'" [class.border-slate-400]="userColor() === 'white'"
+              [class.bg-slate-950]="userColor() === 'black'"></div>
+          </div>
+          } @else if (status() === 'failed') {
+          <!-- Failed Move Alert and Action Block -->
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2 text-red-600">
+              <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span class="font-medium">Incorrect move</span>
+            </div>
+            <div class="flex gap-3 mt-2">
+              @if (!hasRevealedSolution()) {
+              <button appButton variant="primary" (click)="revealSolution()" class="flex-1">
+                Reveal
+              </button>
+              }
+
+              <button appButton variant="primary" (click)="nextPuzzle()" class="flex-1">
+                Next Puzzle
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+
+        <a routerLink="/tactics/woodpecker"
+          class="text-sm font-medium flex items-center gap-1.5 py-2 hover:underline cursor-pointer">
+          Pause session
+        </a>
       </div>
+
+
+
+    </div>
     }
 
     <!-- Gorgeous Cycle Completion Overlay -->
-    @if (showCompletionOverlay() && completedCycleStats(); as stats) {
-      <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-        <div class="bg-main border border-border-base rounded-3xl p-8 max-w-md w-full shadow-2xl text-center flex flex-col items-center gap-6 animate-scale-up">
-          
-          <!-- Celebration Badge -->
-          <div class="w-20 h-20 rounded-full bg-amber-50 border border-amber-200 text-amber-500 flex items-center justify-center shadow-lg relative">
-            <svg class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.75a1.125 1.125 0 01-1.125-1.125V11.25M7.5 18.75v-3.375c0-.621.503-1.125 1.125-1.125h.75A1.125 1.125 0 0010.5 12V11.25m-1.5 0a1.5 1.5 0 00-3 0v1.125c0 .621.504 1.125 1.125 1.125h.75m3-3h.75m-.75 0a1.5 1.5 0 003 0v1.125c0 .621-.504 1.125-1.125 1.125h-.75m-9-6h1.5a2.25 2.25 0 012.25 2.25v1.5a2.25 2.25 0 01-2.25 2.25h-1.5a2.25 2.25 0 01-2.25-2.25v-1.5a2.25 2.25 0 012.25-2.25zm13.5 0h1.5a2.25 2.25 0 012.25 2.25v1.5a2.25 2.25 0 01-2.25 2.25h-1.5a2.25 2.25 0 01-2.25-2.25v-1.5a2.25 2.25 0 012.25-2.25z" />
-            </svg>
-            <span class="absolute -top-1.5 -right-1.5 bg-accent text-white font-bold text-xs px-2 py-0.5 rounded-full shadow-sm">
-              Cycle {{ stats.cycleNumber }}
-            </span>
-          </div>
+    @if (showCompletionOverlay() && !isFinished() && completedCycleStats(); as stats) {
+    <div class="absolute inset-0 flex items-center justify-center p-4 z-50">
+      <div class="bg-main rounded-4xl shadow-xl p-8 max-w-md w-full text-center flex flex-col items-center gap-6">
 
-          <!-- Celebration Title -->
+        <!-- Celebration Title -->
+        <div>
+          <h3 class="text-2xl font-semibold text-slate-800 mb-1">Cycle completed!</h3>
+          <p class="text-sm text-muted">You finished all puzzles in Cycle {{ stats.cycleNumber }}.</p>
+        </div>
+
+
+
+        <!-- Diagnostic Metrics -->
+        <div class="grid grid-cols-2 gap-4 w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left">
           <div>
-            <h3 class="text-2xl font-semibold text-slate-800 mb-1">Cycle Completed!</h3>
-            <p class="text-sm text-muted">You finished all puzzles in Cycle {{ stats.cycleNumber }}.</p>
+            <span class="text-xs text-muted block mb-0.5">Accuracy</span>
+            <span class="text-lg font-bold text-slate-800">{{ stats.accuracy }}%</span>
+            <span class="text-xs block">{{ stats.totalCorrect }} / {{ stats.totalPuzzles }}
+              correct</span>
           </div>
-
-
-
-          <!-- Diagnostic Metrics -->
-          <div class="grid grid-cols-2 gap-4 w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left">
-            <div>
-              <span class="text-xs text-muted block mb-0.5">Accuracy</span>
-              <span class="text-lg font-bold text-slate-800">{{ stats.accuracy }}%</span>
-              <span class="text-[10px] text-slate-400 block">{{ stats.totalCorrect }} / {{ stats.totalPuzzles }} correct</span>
-            </div>
-            <div>
-              <span class="text-xs text-muted block mb-0.5">Total Time</span>
-              <span class="text-lg font-bold text-slate-800">{{ formatTime(stats.totalTime) }}</span>
-              <span class="text-[10px] text-slate-400 block">Avg {{ Math.round(stats.totalTime / stats.totalPuzzles) }}s per puzzle</span>
-            </div>
+          <div>
+            <span class="text-xs text-muted block mb-0.5">Total Time</span>
+            <span class="text-lg font-bold text-slate-800">{{ formatTime(stats.totalTime) }}</span>
+            <span class="text-xs block">Avg {{ Math.round(stats.totalTime / stats.totalPuzzles) }}s
+              per puzzle</span>
           </div>
+        </div>
 
-          <!-- Woodpecker Spaced Repetition explanation message -->
-          @if (stats.cycleNumber < 4) {
-            <p class="text-xs text-muted max-w-sm">
-              Your next goal is <strong>Cycle {{ stats.cycleNumber + 1 }}</strong>. Aim to complete the exact same set in <strong>{{ formatTime(Math.round(stats.totalTime / 2)) }}</strong> (half the time!) with even higher accuracy.
-            </p>
+        <!-- Woodpecker Spaced Repetition explanation message -->
+        @if (stats.cycleNumber < 4) { <p class="text-md text-muted max-w-sm">
+          Your next goal is <strong>Cycle {{ stats.cycleNumber + 1 }}</strong>. Aim to complete the exact same set in
+          <strong>{{ formatTime(Math.round(stats.totalTime / 2)) }}</strong> (half the time!) with even higher accuracy.
+          </p>
           } @else {
-            <p class="text-xs text-muted max-w-sm">
-              Incredible effort! You completed the full 4 cycles of Axel Smith's tactical spaced-repetition program. Check out your detailed timeline diagnostic results on the dashboard!
-            </p>
+          <p class="text-xs text-muted max-w-sm">
+            Incredible effort! You completed the full 4 cycles of Axel Smith's tactical spaced-repetition program. Check
+            out your detailed timeline diagnostic results on the dashboard!
+          </p>
           }
 
           <!-- Next Button Action -->
           @if (session()?.status === 'completed') {
-            <button
-              appButton
-              routerLink="/tactics/woodpecker"
-              class="w-full py-3.5 font-semibold text-base mt-2"
-            >
-              Finish & Return to Dashboard
-            </button>
+          <button appButton variant="primary" routerLink="/tactics/woodpecker" class="w-full">
+            Finish & Return to Dashboard
+          </button>
           } @else {
-            <button
-              appButton
-              (click)="startNextCycle()"
-              class="w-full py-3.5 font-semibold text-base mt-2"
-            >
-              Start Cycle {{ stats.cycleNumber + 1 }}
+          <div class="flex flex-col gap-3 w-full">
+            <button appButton variant="primary" (click)="startNextCycle()" class="w-full">
+              Start cycle {{ stats.cycleNumber + 1 }}
             </button>
+            <button appButton variant="outline" routerLink="/tactics/woodpecker" class="w-full">
+              Back to dashboard
+            </button>
+          </div>
           }
 
-        </div>
       </div>
+    </div>
+    }
+
+    <!-- Gorgeous Woodpecker Explanation Modal -->
+    @if (showExplanation()) {
+    <app-woodpecker-explanation-modal (close)="toggleExplanation()"></app-woodpecker-explanation-modal>
     }
 
   </div>

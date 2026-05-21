@@ -7,6 +7,7 @@ import { TacticsBoardComponent } from '@shared/chess';
 import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
 import { DevLogger } from '../../../../core/utils/dev-logger';
+import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpecker-explanation-modal.component';
 
 @Component({
   selector: 'app-woodpecker-solve',
@@ -17,9 +18,13 @@ import { DevLogger } from '../../../../core/utils/dev-logger';
     TacticsBoardComponent,
     LoadingComponent,
     ButtonComponent,
+    WoodpeckerExplanationModalComponent,
   ],
   templateUrl: './woodpecker-solve.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'absolute inset-0 overflow-hidden',
+  },
 })
 export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   private tacticsService = inject(TacticsService);
@@ -36,6 +41,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   session = signal<WoodpeckerSession | null>(null);
   currentCycle = signal<WoodpeckerCycle | null>(null);
   currentPuzzle = signal<Puzzle | null>(null);
+  nextPuzzlePending = signal<Puzzle | null>(null);
 
   isLoading = signal<boolean>(true);
   hasError = signal<boolean>(false);
@@ -59,18 +65,26 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
     totalPuzzles: number;
   } | null>(null);
 
+  showExplanation = signal<boolean>(false);
+
+  toggleExplanation() {
+    this.showExplanation.update(v => !v);
+  }
+
   isFinished = computed(() => this.session()?.status === 'completed');
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.sessionId.set(Number(id));
-        this.loadSessionState();
-      } else {
-        this.hasError.set(true);
-      }
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.route.paramMap.subscribe(params => {
+        const id = params.get('id');
+        if (id) {
+          this.sessionId.set(Number(id));
+          this.loadSessionState();
+        } else {
+          this.hasError.set(true);
+        }
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -121,6 +135,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
     this.status.set('playing');
     this.hasRevealedSolution.set(false);
     this.puzzleTimeElapsed.set(0);
+    this.nextPuzzlePending.set(null);
 
     try {
       this.chess.load(puzzle.fen);
@@ -223,10 +238,14 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
 
           this.showCompletionOverlay.set(true);
         } else {
-          // If not completed, transition to next puzzle immediately
+          // If not completed, transition to next puzzle immediately only on success
           if (res.current_puzzle) {
-            this.setupPuzzle(res.current_puzzle);
-            this.startTimer();
+            if (success) {
+              this.setupPuzzle(res.current_puzzle);
+              this.startTimer();
+            } else {
+              this.nextPuzzlePending.set(res.current_puzzle);
+            }
           }
         }
       },
@@ -239,6 +258,13 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
 
   nextPuzzle() {
     // This is called when user made a mistake and finally clicks 'Next'
+    const pending = this.nextPuzzlePending();
+    if (pending) {
+      this.setupPuzzle(pending);
+      this.startTimer();
+      return;
+    }
+
     const id = this.sessionId();
     if (!id) return;
 

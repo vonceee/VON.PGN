@@ -74,7 +74,7 @@ import { heroSparkles, heroUserGroup, heroCircleStack } from '@ng-icons/heroicon
       </section>
 
       <!-- Pull Reveal Overlay -->
-      <div *ngIf="showReveal()" class="reveal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-6 backdrop-blur-sm">
+      <div *ngIf="showReveal()" class="reveal-overlay fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-6">
         <div class="text-center w-full max-w-4xl">
           <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
             @for (result of pullResults(); track result.id) {
@@ -159,7 +159,7 @@ import { heroSparkles, heroUserGroup, heroCircleStack } from '@ng-icons/heroicon
 })
 export class GachaHubComponent implements OnInit {
   gachaService = inject(GachaService);
-  
+
   allPlayers = signal<CollectiblePlayer[]>([]);
   pullResults = signal<CollectiblePlayer[]>([]);
   isPulling = signal(false);

@@ -1,9 +1,10 @@
-import { Component, OnInit, signal, inject, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, inject, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { TacticsService, WoodpeckerSession } from '../../../../core/services/tactics.service';
 import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
+import { TacticsService, WoodpeckerSession } from '../../../../core/services/tactics.service';
+import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpecker-explanation-modal.component';
 
 @Component({
   selector: 'app-woodpecker-dashboard',
@@ -13,23 +14,29 @@ import { ButtonComponent } from '@shared/ui';
     RouterLink,
     LoadingComponent,
     ButtonComponent,
+    WoodpeckerExplanationModalComponent,
   ],
   templateUrl: './woodpecker-dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WoodpeckerDashboardComponent implements OnInit {
   private tacticsService = inject(TacticsService);
+  private platformId = inject(PLATFORM_ID);
 
   sessions = signal<WoodpeckerSession[]>([]);
   isLoading = signal<boolean>(true);
   showExplanation = signal<boolean>(false);
+  sessionToAbandon = signal<number | null>(null);
+  sessionToDelete = signal<number | null>(null);
 
   toggleExplanation() {
     this.showExplanation.update(val => !val);
   }
 
   ngOnInit() {
-    this.loadSessions();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadSessions();
+    }
   }
 
   loadSessions() {
@@ -48,13 +55,45 @@ export class WoodpeckerDashboardComponent implements OnInit {
   abandonSession(id: number, event: Event) {
     event.stopPropagation();
     event.preventDefault();
-    if (confirm('Are you sure you want to abandon this Woodpecker session? This cannot be undone.')) {
-      this.tacticsService.abandonWoodpeckerSession(id).subscribe({
-        next: () => {
-          this.loadSessions();
-        },
-      });
-    }
+    this.sessionToAbandon.set(id);
+  }
+
+  cancelAbandon() {
+    this.sessionToAbandon.set(null);
+  }
+
+  confirmAbandon(id: number) {
+    this.tacticsService.abandonWoodpeckerSession(id).subscribe({
+      next: () => {
+        this.sessionToAbandon.set(null);
+        this.loadSessions();
+      },
+      error: () => {
+        this.sessionToAbandon.set(null);
+      }
+    });
+  }
+
+  deleteSession(id: number, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.sessionToDelete.set(id);
+  }
+
+  cancelDelete() {
+    this.sessionToDelete.set(null);
+  }
+
+  confirmDelete(id: number) {
+    this.tacticsService.deleteWoodpeckerSession(id).subscribe({
+      next: () => {
+        this.sessionToDelete.set(null);
+        this.loadSessions();
+      },
+      error: () => {
+        this.sessionToDelete.set(null);
+      }
+    });
   }
 
   getThemeDisplayName(theme: string | null): string {

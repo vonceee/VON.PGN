@@ -69,7 +69,8 @@
               "dns",
               "zlib",
               "string_decoder",
-              "os"
+              "os",
+              "tty"
             ],
             "prerender": false
           },

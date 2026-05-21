@@ -32,7 +32,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
   template: `
     @if (isOpen()) {
       <div 
-        class="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm"
+        class="fixed inset-0 z-[100] bg-black/40"
         [@backdropAnimation]
         (click)="close.emit()"
       ></div>

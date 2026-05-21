@@ -1,39 +1,30 @@
 <div class="mx-auto p-6 max-w-[1600px]">
-  <input
-    #posterUploadInput
-    type="file"
-    hidden
-    (change)="onPosterFileSelected($event)"
-    accept="image/png, image/jpeg, image/webp"
-  />
-  <form [formGroup]="tournamentForm" class="grid grid-cols-1 lg:grid-cols-[180px_1fr_420px] 2xl:grid-cols-[200px_1fr_500px] gap-2 items-start">
+  <input #posterUploadInput type="file" hidden (change)="onPosterFileSelected($event)"
+    accept="image/png, image/jpeg, image/webp" />
+  <form [formGroup]="tournamentForm"
+    class="grid grid-cols-1 lg:grid-cols-[180px_1fr_420px] 2xl:grid-cols-[200px_1fr_500px] gap-2 items-start">
     <!-- Left Sidebar: Section Navigation -->
     <aside class="hidden lg:flex sticky top-6 flex flex-col gap-2">
       @for (
-        section of [
-          { id: 'sec-basic', label: 'Basic Info' },
-          { id: 'sec-dates', label: 'Dates & Location' },
-          { id: 'sec-format', label: 'Format & Rules' },
-          { id: 'sec-organizer', label: 'Organizer' },
-          { id: 'sec-registration', label: 'Registration' },
-          { id: 'sec-eligibility', label: 'Eligibility' },
-          { id: 'sec-prizes', label: 'Prizes' },
-          { id: 'sec-schedule', label: 'Schedule' },
-        ];
-        track section.id
+      section of [
+      { id: 'sec-basic', label: 'Basic Info' },
+      { id: 'sec-dates', label: 'Dates & Location' },
+      { id: 'sec-format', label: 'Format & Rules' },
+      { id: 'sec-organizer', label: 'Organizer' },
+      { id: 'sec-registration', label: 'Registration' },
+      { id: 'sec-eligibility', label: 'Eligibility' },
+      { id: 'sec-prizes', label: 'Prizes' },
+      { id: 'sec-schedule', label: 'Schedule' },
+      ];
+      track section.id
       ) {
-        <button
-          type="button"
-          (click)="scrollToSection(section.id)"
-          [class]="
+      <button type="button" (click)="scrollToSection(section.id)" [class]="
             activeSection() === section.id
               ? 'bg-accent'
               : 'hover:bg-slate-100 '
-          "
-          class="flex items-center px-4 py-3 rounded-md text-sm font-semibold text-left border-none cursor-pointer"
-        >
-          {{ section.label }}
-        </button>
+          " class="flex items-center px-4 py-3 rounded-md text-sm font-semibold text-left border-none cursor-pointer">
+        {{ section.label }}
+      </button>
       }
     </aside>
 
@@ -44,27 +35,20 @@
 
         <div class="flex items-center justify-between w-full">
           <header class="flex-1">
-            <h1 class="text-3xl md:text-4xl mb-1">{{ tournamentId() ? 'Update tournament' : 'Create new tournament' }}</h1>
+            <h1 class="text-3xl md:text-4xl mb-1">{{ tournamentId() ? 'Update tournament' : 'Create new tournament' }}
+            </h1>
             <p class="text-muted text-lg">Fill in the details below to publish your chess event.</p>
           </header>
 
           <div class="header-actions">
             @if (!useCustomPoster) {
-              <button
-                appButton
-                variant="primary"
-                (click)="posterUploadInput.click()"
-              >
-                Upload Own Custom Poster
-              </button>
+            <button appButton variant="primary" (click)="posterUploadInput.click()">
+              Upload Own Custom Poster
+            </button>
             } @else {
-              <button
-                appButton
-                variant="danger"
-                (click)="removeCustomPoster()"
-              >
-                Remove Custom Poster
-              </button>
+            <button appButton variant="danger" (click)="removeCustomPoster()">
+              Remove Custom Poster
+            </button>
             }
           </div>
         </div>
@@ -73,99 +57,65 @@
       <!-- Basic Info -->
       <section id="sec-basic" class="p-8 scroll-mt-6 ui-panel">
         <h2 class="text-2xl mb-3">Basic information</h2>
-        <app-step-basic-info
-          [form]="tournamentForm"
-          [getError]="getError.bind(this)"
-        ></app-step-basic-info>
+        <app-step-basic-info [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-basic-info>
       </section>
 
       <!-- Dates & Location -->
       <section id="sec-dates" class="p-8 scroll-mt-6 ui-panel">
         <h2 class="text-2xl mb-3">Dates & location</h2>
-        <app-step-dates-location
-          [form]="tournamentForm"
-          [getError]="getError.bind(this)"
-          [mapsLink]="mapsLink"
-          [mapsLinkLoading]="mapsLinkLoading"
-          [mapsLinkError]="mapsLinkError"
-          [verificationStatus]="verificationStatus"
-          (parseMapsLink)="parseMapsLink()"
-        ></app-step-dates-location>
+        <app-step-dates-location [form]="tournamentForm" [getError]="getError.bind(this)" [mapsLink]="mapsLink"
+          [mapsLinkLoading]="mapsLinkLoading" [mapsLinkError]="mapsLinkError" [verificationStatus]="verificationStatus"
+          (parseMapsLink)="parseMapsLink()"></app-step-dates-location>
       </section>
 
       <!-- Format & Rules -->
       <section id="sec-format" class="p-8 scroll-mt-6 ui-panel">
         <h2 class="text-2xl mb-3">Format & rules</h2>
-        <app-step-format-rules
-          [form]="tournamentForm"
-          [getError]="getError.bind(this)"
-        ></app-step-format-rules>
+        <app-step-format-rules [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-format-rules>
       </section>
 
       <!-- Organizer -->
       <section id="sec-organizer" class="p-8 scroll-mt-6 ui-panel">
         <h2 class="text-2xl mb-3">Organizer information</h2>
-        <app-step-organizer
-          [form]="tournamentForm"
-          [getError]="getError.bind(this)"
-        ></app-step-organizer>
+        <app-step-organizer [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-organizer>
       </section>
 
       <!-- Registration -->
       <section id="sec-registration" class="p-8 scroll-mt-6 ui-panel">
         <h2 class="text-2xl mb-3">Registration details</h2>
-        <app-step-registration
-          [form]="tournamentForm"
-          [getError]="getError.bind(this)"
-        ></app-step-registration>
+        <app-step-registration [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-registration>
       </section>
 
       <!-- Eligibility -->
       <section id="sec-eligibility" class="p-8 scroll-mt-6 ui-panel">
         <h2 class="text-2xl mb-3">Player eligibility</h2>
-        <app-step-eligibility
-          [eligibilityArray]="eligibilityArray"
-          (addItem)="addEligibilityItem()"
-          (removeItem)="removeEligibilityItem($event)"
-        ></app-step-eligibility>
+        <app-step-eligibility [eligibilityArray]="eligibilityArray" (addItem)="addEligibilityItem()"
+          (removeItem)="removeEligibilityItem($event)"></app-step-eligibility>
       </section>
 
       <!-- Prizes -->
       <section id="sec-prizes" class="p-8 scroll-mt-6 ui-panel">
         <h2 class="text-2xl mb-3">Prizes & categories</h2>
-        <app-step-prizes
-          [categoriesArray]="categoriesArray"
-          (addCategory)="addCategory()"
-          (removeCategory)="removeCategory($event)"
-          (addExtraPrize)="addExtraPrize($event)"
-          (removeExtraPrize)="removeExtraPrize($event.ci, $event.ei)"
-          (addSpecialAward)="addSpecialAward($event)"
-          (removeSpecialAward)="removeSpecialAward($event.ci, $event.ai)"
-        ></app-step-prizes>
+        <app-step-prizes [categoriesArray]="categoriesArray" (addCategory)="addCategory()"
+          (removeCategory)="removeCategory($event)" (addExtraPrize)="addExtraPrize($event)"
+          (removeExtraPrize)="removeExtraPrize($event.ci, $event.ei)" (addSpecialAward)="addSpecialAward($event)"
+          (removeSpecialAward)="removeSpecialAward($event.ci, $event.ai)"></app-step-prizes>
       </section>
 
       <!-- Schedule -->
       <section id="sec-schedule" class="p-8 scroll-mt-6 ui-panel">
         <h2 class="text-2xl mb-3">Event schedule</h2>
-        <app-step-schedule
-          [scheduleDaysArray]="scheduleDaysArray"
-          (addScheduleDay)="addScheduleDay()"
-          (removeScheduleDay)="removeScheduleDay($event)"
-          (addScheduleEvent)="addScheduleEvent($event)"
-          (removeScheduleEvent)="removeScheduleEvent($event.di, $event.ei)"
-        ></app-step-schedule>
+        <app-step-schedule [scheduleDaysArray]="scheduleDaysArray" (addScheduleDay)="addScheduleDay()"
+          (removeScheduleDay)="removeScheduleDay($event)" (addScheduleEvent)="addScheduleEvent($event)"
+          (removeScheduleEvent)="removeScheduleEvent($event.di, $event.ei)"></app-step-schedule>
       </section>
     </main>
 
     <!-- Right Sidebar: Live Poster Preview -->
     <aside class="sticky top-6 flex flex-col gap-6">
       @if (tournamentDataSignal(); as data) {
-        <app-poster-preview
-          [form]="tournamentForm"
-          [tournamentData]="data"
-          [prizeCategories]="posterPrizeCategories"
-          [downloading]="downloadingPoster()"
-        ></app-poster-preview>
+      <app-poster-preview [form]="tournamentForm" [tournamentData]="data" [prizeCategories]="posterPrizeCategories"
+        [downloading]="downloadingPoster()"></app-poster-preview>
       }
     </aside>
 
@@ -174,27 +124,17 @@
       <div class="max-w-[1600px] mx-auto w-full flex justify-between items-center">
         <span class="text-sm  hidden md:inline">
           {{
-            tournamentId()
-              ? 'Editing: ' + tournamentForm.get('name')?.value
-              : 'Creating new tournament'
+          tournamentId()
+          ? 'Editing: ' + tournamentForm.get('name')?.value
+          : 'Creating new tournament'
           }}
         </span>
         <div class="flex gap-4 w-full md:w-auto">
-          <button
-            appButton
-            variant="ghost"
-            class="flex-1 md:flex-none"
-            (click)="location.back()"
-          >
+          <button appButton variant="ghost" class="flex-1 md:flex-none" (click)="location.back()">
             Discard Changes
           </button>
-          <button
-            appButton
-            variant="primary"
-            class="flex-1 md:flex-none px-12"
-            (click)="confirmSave()"
-            [loading]="saving()"
-          >
+          <button appButton variant="primary" class="flex-1 md:flex-none px-12" (click)="confirmSave()"
+            [loading]="saving()">
             {{ tournamentId() ? 'Update Tournament' : 'Publish Tournament' }}
           </button>
         </div>
@@ -203,47 +143,32 @@
   </form>
 
   @if (showReviewModal()) {
-    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm   " (click)="closeReviewModal()">
-      <div class="ui-panel bg-main w-full max-w-4xl max-h-[90vh] flex flex-col relative   " (click)="$event.stopPropagation()">
-        <button 
-          class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500   z-10" 
-          (click)="closeReviewModal()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60   " (click)="closeReviewModal()">
+    <div class="ui-panel bg-main w-full max-w-4xl max-h-[90vh] flex flex-col relative   "
+      (click)="$event.stopPropagation()">
+      <button
+        class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500   z-10"
+        (click)="closeReviewModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+          class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="p-10 overflow-y-auto flex-1 custom-scrollbar">
+        <app-review-section [data]="tournamentDataSignal()" [comparePrizeKeys]="comparePrizeKeys"
+          (editSection)="onReviewEdit($event)"></app-review-section>
+      </div>
+
+      <div class="p-6 px-10 bg-subtle border-t border-border-base flex justify-between items-center gap-6">
+        <button appButton variant="ghost" (click)="closeReviewModal()">
+          Back to Editing
         </button>
-
-        <div class="p-10 overflow-y-auto flex-1 custom-scrollbar">
-          <app-review-section
-            [data]="tournamentDataSignal()"
-            [comparePrizeKeys]="comparePrizeKeys"
-            (editSection)="onReviewEdit($event)"
-          ></app-review-section>
-        </div>
-
-        <div class="p-6 px-10 bg-subtle border-t border-border-base flex justify-between items-center gap-6">
-          <button appButton variant="ghost" (click)="closeReviewModal()">
-            Back to Editing
-          </button>
-          <button
-            appButton
-            variant="primary"
-            class="px-10"
-            [loading]="saving()"
-            (click)="executeSave()"
-          >
-            {{ tournamentId() ? 'Confirm & Update' : 'Confirm & Publish' }}
-          </button>
-        </div>
+        <button appButton variant="primary" class="px-10" [loading]="saving()" (click)="executeSave()">
+          {{ tournamentId() ? 'Confirm & Update' : 'Confirm & Publish' }}
+        </button>
       </div>
     </div>
+  </div>
   }
 </div>

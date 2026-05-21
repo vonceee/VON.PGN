@@ -171,6 +171,10 @@ export class TacticsService {
       {}
     );
   }
+
+  deleteWoodpeckerSession(id: number): Observable<{ success: boolean }> {
+    return this.http.delete<{ success: boolean }>(`${this.apiUrl}/tactics/woodpecker/${id}`);
+  }
 }
 
 // Woodpecker interfaces

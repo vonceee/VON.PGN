@@ -16,7 +16,7 @@ export interface CustomTimeControlResult {
   template: `
     <div class="ui-panel w-full max-w-xl p-8 font-sans space-y-8 relative">
       <div class="flex items-center justify-between">
-        <h2 class="text-2xl text-content">Custom time control</h2>
+        <h2 class="text-4xl text-content">Custom time control</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
