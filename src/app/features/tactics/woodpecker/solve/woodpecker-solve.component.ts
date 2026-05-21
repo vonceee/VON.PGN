@@ -51,7 +51,6 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
 
   // Cycle completion state
   showCompletionOverlay = signal<boolean>(false);
-  creditsRewarded = signal<number>(0);
   completedCycleStats = signal<{
     cycleNumber: number;
     accuracy: number;
@@ -222,7 +221,6 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
             });
           }
 
-          this.creditsRewarded.set(res.credits_rewarded);
           this.showCompletionOverlay.set(true);
         } else {
           // If not completed, transition to next puzzle immediately
@@ -271,7 +269,6 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   startNextCycle() {
     this.showCompletionOverlay.set(false);
     this.completedCycleStats.set(null);
-    this.creditsRewarded.set(0);
 
     const activeCycle = this.currentCycle();
     if (activeCycle) {

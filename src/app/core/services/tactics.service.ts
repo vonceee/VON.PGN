@@ -190,7 +190,7 @@ export interface WoodpeckerAttempt {
 export interface WoodpeckerSolveResponse {
   success: boolean;
   cycle_completed: boolean;
-  credits_rewarded: number;
+  credits_rewarded?: number;
   session: WoodpeckerSession;
   current_cycle: WoodpeckerCycle | null;
   current_puzzle: Puzzle | null;

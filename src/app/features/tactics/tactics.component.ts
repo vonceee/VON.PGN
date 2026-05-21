@@ -285,12 +285,18 @@ export class TacticsComponent implements OnInit, OnDestroy {
         this.retryMode.set(false);
         this.exploreMode.set(true);
       } else {
-        this.tacticsService.solvePuzzle(pId, true).subscribe((res: SolveResponse) => {
-          this.ratingChange.set(res.rating_change);
-          this.newRating.set(res.new_rating);
-          this.newStreak.set(res.new_streak);
-          this.userService.loadMyProfile().subscribe();
-          this.exploreMode.set(true);
+        this.tacticsService.solvePuzzle(pId, true).subscribe({
+          next: (res: SolveResponse) => {
+            this.ratingChange.set(res.rating_change);
+            this.newRating.set(res.new_rating);
+            this.newStreak.set(res.new_streak);
+            this.userService.loadMyProfile().subscribe();
+            this.exploreMode.set(true);
+          },
+          error: (err) => {
+            DevLogger.error('[Tactics] Failed to submit puzzle solve:', err);
+            this.exploreMode.set(true);
+          }
         });
       }
     } else {
@@ -307,11 +313,16 @@ export class TacticsComponent implements OnInit, OnDestroy {
       const pId = this.currentPuzzle()?.id;
       if (!pId) return;
 
-      this.tacticsService.solvePuzzle(pId, false).subscribe((res: any) => {
-        this.ratingChange.set(res.rating_change);
-        this.newRating.set(res.new_rating);
-        this.newStreak.set(res.new_streak);
-        this.userService.loadMyProfile().subscribe();
+      this.tacticsService.solvePuzzle(pId, false).subscribe({
+        next: (res: any) => {
+          this.ratingChange.set(res.rating_change);
+          this.newRating.set(res.new_rating);
+          this.newStreak.set(res.new_streak);
+          this.userService.loadMyProfile().subscribe();
+        },
+        error: (err) => {
+          DevLogger.error('[Tactics] Failed to submit puzzle failure:', err);
+        }
       });
     }
   }
@@ -325,12 +336,18 @@ export class TacticsComponent implements OnInit, OnDestroy {
       const pId = this.currentPuzzle()?.id;
       if (!pId) return;
 
-      this.tacticsService.solvePuzzle(pId, false).subscribe((res: SolveResponse) => {
-        this.ratingChange.set(res.rating_change);
-        this.newRating.set(res.new_rating);
-        this.newStreak.set(res.new_streak);
-        this.userService.loadMyProfile().subscribe();
-        this.resetToInitialPuzzleState();
+      this.tacticsService.solvePuzzle(pId, false).subscribe({
+        next: (res: SolveResponse) => {
+          this.ratingChange.set(res.rating_change);
+          this.newRating.set(res.new_rating);
+          this.newStreak.set(res.new_streak);
+          this.userService.loadMyProfile().subscribe();
+          this.resetToInitialPuzzleState();
+        },
+        error: (err) => {
+          DevLogger.error('[Tactics] Failed to submit wrong move:', err);
+          this.resetToInitialPuzzleState();
+        }
       });
     } else {
       this.resetToInitialPuzzleState();
