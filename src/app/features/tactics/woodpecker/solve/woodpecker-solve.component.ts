@@ -221,11 +221,11 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
         if (res.cycle_completed) {
           // Fetch the completed cycle number
           const completedNum = res.session.current_cycle_number === 1 && res.session.status === 'completed'
-            ? 4 
+            ? 4
             : res.session.current_cycle_number - 1;
 
           const completedCycle = res.session.cycles.find(c => c.cycle_number === completedNum);
-          
+
           if (completedCycle) {
             this.completedCycleStats.set({
               cycleNumber: completedNum,
@@ -326,7 +326,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    
+
     if (hrs > 0) {
       return `${hrs}h ${mins}m`;
     }

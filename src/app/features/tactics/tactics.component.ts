@@ -17,13 +17,12 @@ import { TacticsService, Puzzle, SolveResponse, PuzzleAttempt } from '../../core
 import { GameService } from '../../core/services/game.service';
 import { UserService } from '../../core/services/user.service';
 import { Chess, Move } from 'chess.js';
-import { MoveNotationComponent  } from '@shared/chess';
-import { TacticsBoardComponent  } from '@shared/chess';
-import { LoadingComponent  } from '@shared/feedback';
+import { MoveNotationComponent } from '@shared/chess';
+import { TacticsBoardComponent } from '@shared/chess';
+import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
-import { LayoutService } from '../../core/services/layout.service';
 
 @Component({
   selector: 'app-tactics',
@@ -46,7 +45,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
   private userService = inject(UserService);
   private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
-  private layoutService = inject(LayoutService);
   private chess = new Chess();
   private gameStartFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
@@ -56,7 +54,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
     const key = this.activeTheme();
     if (!key) return null;
     if (key === 'mix') return 'Recommended Mix';
-    
+
     for (const category of PUZZLE_THEMES_HIERARCHY) {
       const found = category.themes.find(t => t.key === key);
       if (found) return found.name;
@@ -64,7 +62,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
     return key;
   });
 
-  constructor() {}
+  constructor() { }
 
   currentUser = this.userService.currentUser;
   puzzleHistory = signal<PuzzleAttempt[]>([]);
@@ -103,7 +101,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    this.layoutService.setFluid(true);
     this.onResize();
     if (this.currentUser()) {
       this.loadHistory();
@@ -113,7 +110,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
         });
       });
     }
-    
+
     this.route.paramMap.subscribe(params => {
       const theme = params.get('theme');
       this.activeTheme.set(theme);
@@ -122,7 +119,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.layoutService.setFluid(false);
+
   }
 
 
@@ -155,7 +152,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
         } catch (e) {
           DevLogger.warn('[Tactics] Failed to load puzzle FEN:', e);
         }
-        
+
         this.currentPuzzle.set(res.data);
         this.isLoading.set(false);
         this.loadGameWithPuzzle(res.data);
@@ -216,7 +213,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
           }
 
           this.basePgnMoves.set(base);
-          
+
           let mergedMoves = [...base];
           if (base.length > 0 && currentSessionMoves.length > 0) {
             const lastBase = base[base.length - 1];
@@ -245,10 +242,10 @@ export class TacticsComponent implements OnInit, OnDestroy {
               }
             });
             this.currentFen.set(this.chess.fen());
-            
+
             if (this.boardComponent) {
               this.boardComponent.setGameMoves(mergedMoves);
-              
+
               // No need for explicit playIntro call here, 
               // the board's initPuzzle handles the first solution move animation.
               // Just ensure lastMove highlight is synced.
@@ -261,7 +258,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
           } catch (e) {
             DevLogger.warn('[Tactics] Failed to sync chess state for merged moves:', e);
           }
-          
+
           this.currentPly.set(mergedMoves.length);
         } else {
           DevLogger.warn('[Tactics] PGN fetched but empty');
@@ -296,7 +293,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
 
   onPuzzleSolved() {
     this.status.set('success');
-    
+
     if (this.currentUser()) {
       const pId = this.currentPuzzle()?.id;
       if (!pId) return;
@@ -397,7 +394,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
 
   private resetToInitialPuzzleState() {
     this.retryMode.set(true);
-    
+
     // The board resets to initialFen, which includes the first computer move.
     // We should keep the computer move in pgnMoves and sync this.chess.
     const puzzle = this.currentPuzzle();
@@ -417,7 +414,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
     } catch (e) {
       DevLogger.warn('[Tactics] Failed to reset to initial puzzle state:', e);
     }
-    
+
     this.currentPly.set(this.pgnMoves().length);
   }
 
@@ -438,12 +435,12 @@ export class TacticsComponent implements OnInit, OnDestroy {
       if (moves.length > 0 && moves[moves.length - 1] === san) return moves;
       return [...moves, san];
     });
-    
+
     if (this.boardComponent) {
       this.boardComponent.setGameMoves(this.pgnMoves());
     }
     this.currentPly.set(this.pgnMoves().length);
-    
+
     // Update internal chess state and FEN
     try {
       this.chess.move(san);
@@ -463,10 +460,10 @@ export class TacticsComponent implements OnInit, OnDestroy {
   loadGameReview() {
     if (this.fullPgnMoves.length > 0 && this.boardComponent) {
       this.pgnMoves.set(this.fullPgnMoves);
-      
+
       const solvedPly = this.puzzleStartPly() + this.boardComponent.solutionPly;
       this.currentPly.set(solvedPly);
-      
+
       this.boardComponent.setGameModeAtMove(this.fullPgnMoves, solvedPly);
     }
   }
@@ -496,7 +493,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
     } catch (e) {
       DevLogger.warn('[Tactics] Robust PGN parsing failed, falling back to manual regex:', e);
       const moves: string[] = [];
-      
+
       const jsonMatch = realPgn.match(/\{.*"moves"\s*:\s*"([^"]*)"/);
       if (jsonMatch && jsonMatch[1]) {
         const movesStr = jsonMatch[1];
@@ -511,22 +508,22 @@ export class TacticsComponent implements OnInit, OnDestroy {
         this.pgnMoves.set(moves);
         return;
       }
-      
+
       const moveRegex = /\d+\.\s*([KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBNP])?[+#?=!]*)\s*([KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBNP])?[+#?=!]*)?/g;
-      
+
       let match;
       while ((match = moveRegex.exec(realPgn)) !== null) {
         if (match[1] && match[1] !== 'e.p.' && match[1] !== 'ep') moves.push(match[1]);
         if (match[2] && match[2] !== 'e.p.' && match[2] !== 'ep') moves.push(match[2]);
       }
-      
+
       this.pgnMoves.set(moves);
     }
   }
 
   goToMove(ply: number) {
     if (!this.boardComponent) return;
-    
+
     if (ply < 0 || ply > this.pgnMoves().length) return;
 
     if (ply === this.pgnMoves().length && this.status() === 'playing') {
@@ -534,7 +531,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
       this.currentPly.set(ply);
       return;
     }
-    
+
     this.boardComponent.setGameModeAtMove(this.pgnMoves(), ply);
     this.currentPly.set(ply);
 
@@ -546,7 +543,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
         this.chess.move(moves[i]);
       }
       this.currentFen.set(this.chess.fen());
-      
+
       const history = this.chess.history({ verbose: true });
       const last = history[history.length - 1];
       if (last && this.boardComponent) {
