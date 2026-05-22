@@ -14,7 +14,7 @@ function seoResolver(route: import('@angular/router').ActivatedRouteSnapshot) {
     title: data['title'] ?? 'vonchess',
     description:
       data['description'] ??
-      "vonchess — the Philippines' chess platform for learning, playing, and competing.",
+      "vonchess — your online chess platform for learning, playing, and competing.",
   });
 }
 
@@ -82,7 +82,7 @@ export const routes: Routes = [
         title: 'Vonchess.net • Home',
         data: {
           description:
-            "vonchess is the Philippines' chess platform — learn openings, solve tactics, find coaches, and join tournaments.",
+            "vonchess is your online chess platform — learn openings, solve tactics, find coaches, and join tournaments.",
         },
         resolve: { seo: seoResolver },
       },
@@ -92,7 +92,7 @@ export const routes: Routes = [
         title: 'Vonchess.net • Home',
         data: {
           description:
-            "vonchess is the Philippines' chess platform — learn openings, solve tactics, find coaches, and join tournaments.",
+            "vonchess is your online chess platform — learn openings, solve tactics, find coaches, and join tournaments.",
         },
         resolve: { seo: seoResolver },
       },
@@ -365,7 +365,7 @@ export const routes: Routes = [
         component: TournamentsComponent,
         title: 'Vonchess.net • Events',
         data: {
-          description: 'Browse upcoming, ongoing, and past chess events across the Philippines.',
+          description: 'Browse upcoming, ongoing, and past chess events worldwide.',
         },
         resolve: { seo: seoResolver },
       },
