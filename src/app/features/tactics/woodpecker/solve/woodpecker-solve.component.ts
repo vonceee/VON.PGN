@@ -64,6 +64,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
     totalCorrect: number;
     totalPuzzles: number;
   } | null>(null);
+  cycleCompletionPending = signal<{session: WoodpeckerSession, currentCycle: WoodpeckerCycle | null, stats: any} | null>(null);
 
   showExplanation = signal<boolean>(false);
 
@@ -214,10 +215,6 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
 
     this.tacticsService.submitWoodpeckerSolve(id, success, timeSpent, moves).subscribe({
       next: (res) => {
-        // Keep updated session and cycle data
-        this.session.set(res.session);
-        this.currentCycle.set(res.current_cycle);
-
         if (res.cycle_completed) {
           // Fetch the completed cycle number
           const completedNum = res.session.current_cycle_number === 1 && res.session.status === 'completed'
@@ -225,27 +222,31 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
             : res.session.current_cycle_number - 1;
 
           const completedCycle = res.session.cycles.find(c => c.cycle_number === completedNum);
-
+          
+          let stats = null;
           if (completedCycle) {
-            this.completedCycleStats.set({
+            stats = {
               cycleNumber: completedNum,
               accuracy: Math.round((completedCycle.total_correct / completedCycle.total_solved) * 100),
               totalTime: completedCycle.total_time_seconds,
               totalCorrect: completedCycle.total_correct,
               totalPuzzles: completedCycle.total_solved
-            });
+            };
           }
 
-          this.showCompletionOverlay.set(true);
+          this.cycleCompletionPending.set({
+            session: res.session,
+            currentCycle: res.current_cycle,
+            stats: stats
+          });
         } else {
-          // If not completed, transition to next puzzle immediately only on success
+          // Keep updated session and cycle data
+          this.session.set(res.session);
+          this.currentCycle.set(res.current_cycle);
+
+          // If not completed, store next puzzle as pending so user can click next
           if (res.current_puzzle) {
-            if (success) {
-              this.setupPuzzle(res.current_puzzle);
-              this.startTimer();
-            } else {
-              this.nextPuzzlePending.set(res.current_puzzle);
-            }
+            this.nextPuzzlePending.set(res.current_puzzle);
           }
         }
       },
@@ -257,6 +258,20 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   }
 
   nextPuzzle() {
+    const completionPending = this.cycleCompletionPending();
+    if (completionPending) {
+      this.session.set(completionPending.session);
+      this.currentCycle.set(completionPending.currentCycle);
+      
+      if (completionPending.stats) {
+        this.completedCycleStats.set(completionPending.stats);
+      }
+      
+      this.showCompletionOverlay.set(true);
+      this.cycleCompletionPending.set(null);
+      return;
+    }
+
     // This is called when user made a mistake and finally clicks 'Next'
     const pending = this.nextPuzzlePending();
     if (pending) {

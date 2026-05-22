@@ -13,7 +13,7 @@ const LOCKOUT_DURATION_MS = 60_000;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TypewriterTextComponent, BackLinkComponent, ButtonComponent, AuthBrandingComponent],
+  imports: [ReactiveFormsModule, RouterLink, BackLinkComponent, ButtonComponent, AuthBrandingComponent],
   templateUrl: './login.html',
 })
 export class LoginComponent {

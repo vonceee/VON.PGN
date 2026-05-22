@@ -20,7 +20,7 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TypewriterTextComponent, BackLinkComponent, ButtonComponent, AuthBrandingComponent],
+  imports: [ReactiveFormsModule, RouterLink, BackLinkComponent, ButtonComponent, AuthBrandingComponent],
   templateUrl: './register.html',
 })
 export class RegisterComponent {

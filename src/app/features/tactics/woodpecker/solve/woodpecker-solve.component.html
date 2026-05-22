@@ -126,42 +126,44 @@
         </div>
 
         <!-- Dynamic Solve State Alerts and Actions -->
-        <div class="border-t border-slate-100 pt-6">
-          @if (status() === 'playing') {
-          <!-- Playing / User Turn Alert -->
-          <div class="flex items-center gap-3">
-            <div class="w-3 h-3 rounded-full" [class.bg-white]="userColor() === 'white'"
-              [class.border]="userColor() === 'white'" [class.border-slate-400]="userColor() === 'white'"
-              [class.bg-slate-950]="userColor() === 'black'"></div>
-          </div>
-          } @else if (status() === 'failed') {
-          <!-- Failed Move Alert and Action Block -->
-          <div class="flex flex-col gap-4">
-            <div class="flex items-center gap-2 text-red-600">
-              <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <div class="border-t border-slate-100 pt-6 mt-auto">
+          <div class="flex items-center gap-4">
+            <!-- Feedback / Turn Indicator -->
+            <div class="flex items-center justify-center shrink-0">
+              @if (status() === 'playing') {
+              <div class="w-4 h-4 rounded-full" [class.bg-white]="userColor() === 'white'"
+                [class.border]="userColor() === 'white'" [class.border-slate-400]="userColor() === 'white'"
+                [class.bg-slate-950]="userColor() === 'black'"></div>
+              } @else if (status() === 'success') {
+              <svg class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+              } @else if (status() === 'failed') {
+              <svg class="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
-              <span class="font-medium">Incorrect move</span>
+              }
             </div>
-            <div class="flex gap-3 mt-2">
-              @if (!hasRevealedSolution()) {
-              <button appButton variant="primary" (click)="revealSolution()" class="flex-1">
+
+            <div class="flex-1"></div>
+
+            <div class="flex items-center gap-3">
+              @if (status() === 'failed' && !hasRevealedSolution()) {
+              <button appButton variant="primary" (click)="revealSolution()">
                 Reveal
               </button>
               }
-
-              <button appButton variant="primary" (click)="nextPuzzle()" class="flex-1">
-                Next Puzzle
+              <button appButton variant="primary" routerLink="/tactics/woodpecker">
+                Pause
+              </button>
+              <button appButton variant="primary" (click)="nextPuzzle()" [disabled]="status() === 'playing'">
+                {{ cycleCompletionPending() ? 'Finish' : 'Next' }}
               </button>
             </div>
           </div>
-          }
         </div>
-
-        <a routerLink="/tactics/woodpecker"
-          class="text-sm font-medium flex items-center gap-1.5 py-2 hover:underline cursor-pointer">
-          Pause session
-        </a>
       </div>
 
 
@@ -171,8 +173,9 @@
 
     <!-- Gorgeous Cycle Completion Overlay -->
     @if (showCompletionOverlay() && !isFinished() && completedCycleStats(); as stats) {
-    <div class="absolute inset-0 flex items-center justify-center p-4 z-50">
-      <div class="bg-main rounded-4xl shadow-xl p-8 max-w-md w-full text-center flex flex-col items-center gap-6">
+    <div class="absolute inset-0 flex items-center justify-center p-4 z-50" (click)="showCompletionOverlay.set(false)">
+      <div class="bg-main rounded-4xl shadow-xl p-8 max-w-md w-full text-center flex flex-col items-center gap-6"
+        (click)="$event.stopPropagation()">
 
         <!-- Celebration Title -->
         <div>

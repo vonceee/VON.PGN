@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, OnDestroy, signal, computed, ViewChild, ElementRef, NgZone, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, OnDestroy, signal, computed, ViewChild, ElementRef, NgZone, AfterViewInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { TvService, CanvasGame } from '../../core/services/tv.service';
 import { ChessBoardComponent, ChessClockComponent } from '@shared/chess';
@@ -109,21 +109,25 @@ export class TvComponent implements OnInit, OnDestroy, AfterViewInit {
   private boundPointerMove = this.onPointerMove.bind(this);
   private boundPointerUp = this.onPointerUp.bind(this);
 
+  private platformId = inject(PLATFORM_ID);
+
   ngOnInit() {
     this.tvService.startPollingGames();
   }
 
   ngAfterViewInit() {
-    this.ngZone.runOutsideAngular(() => {
-      const viewport = this.viewportRef.nativeElement;
-      viewport.addEventListener('pointerdown', this.boundPointerDown);
-      window.addEventListener('pointermove', this.boundPointerMove);
-      window.addEventListener('pointerup', this.boundPointerUp);
-      window.addEventListener('pointercancel', this.boundPointerUp);
-    });
-    // Set initial transform
-    if (this.canvasPlaneRef) {
-      this.canvasPlaneRef.nativeElement.style.transform = `translate(0px, 0px)`;
+    if (isPlatformBrowser(this.platformId)) {
+      this.ngZone.runOutsideAngular(() => {
+        const viewport = this.viewportRef.nativeElement;
+        viewport.addEventListener('pointerdown', this.boundPointerDown);
+        window.addEventListener('pointermove', this.boundPointerMove);
+        window.addEventListener('pointerup', this.boundPointerUp);
+        window.addEventListener('pointercancel', this.boundPointerUp);
+      });
+      // Set initial transform
+      if (this.canvasPlaneRef) {
+        this.canvasPlaneRef.nativeElement.style.transform = `translate(0px, 0px)`;
+      }
     }
   }
 
