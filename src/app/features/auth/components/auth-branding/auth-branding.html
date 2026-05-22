@@ -1,0 +1,31 @@
+<div
+  class="hidden lg:flex lg:basis-3/5 bg-[#0a0a0c] p-10 flex-col relative overflow-hidden h-full w-full justify-between z-0">
+  <!-- Glowing gradient background behind board -->
+  <div
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[100px] pointer-events-none -z-10">
+  </div>
+
+  <!-- Content Header/Headline -->
+  <div class="z-10 mt-8 mb-4 max-w-xl">
+    <app-typewriter-text size="text-3xl md:text-5xl text-white font-medium"
+      text="free online chess — play, learn, and compete in tournaments anytime."></app-typewriter-text>
+  </div>
+
+  <!-- Animated Board -->
+  <div class="flex-1 min-h-0 flex items-center justify-center w-full mx-auto my-8">
+
+    <!-- The Board itself -->
+    <div
+      class="h-full max-h-[500px] aspect-square shadow-[0_0_50px_-12px_rgba(0,0,0,0.8)] rounded-md overflow-hidden relative board-container-parent z-10">
+      <div class="absolute inset-0 z-20 pointer-events-none"></div> <!-- Overlay to block interactions -->
+      <app-chess-board [fen]="currentFen()" [lastMove]="currentLastMove()" [interactive]="false" [resizable]="false"
+        [hideCoordinates]="true" [fluid]="true"></app-chess-board>
+    </div>
+
+  </div>
+
+  <!-- A tiny footer signature or empty space for balance -->
+  <div class="mt-auto text-zinc-500 text-sm opacity-80 z-10 text-center lg:text-left">
+    The Game of the Century • Byrne vs. Fischer, 1956
+  </div>
+</div>

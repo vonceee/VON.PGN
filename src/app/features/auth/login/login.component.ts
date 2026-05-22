@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { TypewriterTextComponent  } from '@shared/ui';
 import { BackLinkComponent  } from '@shared/ui';
 import { ButtonComponent  } from '@shared/ui';
+import { AuthBrandingComponent } from '../components/auth-branding/auth-branding';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 60_000;
@@ -12,7 +13,7 @@ const LOCKOUT_DURATION_MS = 60_000;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, TypewriterTextComponent, BackLinkComponent, ButtonComponent],
+  imports: [ReactiveFormsModule, RouterLink, TypewriterTextComponent, BackLinkComponent, ButtonComponent, AuthBrandingComponent],
   templateUrl: './login.html',
 })
 export class LoginComponent {
