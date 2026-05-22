@@ -1,25 +1,16 @@
-import {
-  Component,
-  inject,
-  OnInit,
-  OnDestroy,
-  signal,
-  computed,
-  PLATFORM_ID,
-  effect,
-} from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, inject, OnInit, OnDestroy, signal, computed, ViewChild, ElementRef, NgZone, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { TvService } from '../../core/services/tv.service';
-import { GameService } from '../../core/services/game.service';
-import { AudioService } from '../../core/services/audio.service';
-import { ChessBoardComponent  } from '@shared/chess';
-import { ChessClockComponent  } from '@shared/chess';
+import { TvService, CanvasGame } from '../../core/services/tv.service';
+import { ChessBoardComponent, ChessClockComponent } from '@shared/chess';
 import { GameInfoComponent } from '../play/live-game/components/game-info.component';
-import { MoveNotationComponent  } from '@shared/chess';
-import { GameControlsComponent } from '../play/live-game/components/game-controls.component';
-import { Chess } from 'chess.js';
 import { Config } from 'chessground/config';
+
+export interface CanvasItem {
+  game?: CanvasGame;
+  x: number;
+  y: number;
+}
 
 @Component({
   selector: 'app-tv',
@@ -30,183 +21,216 @@ import { Config } from 'chessground/config';
     ChessBoardComponent,
     ChessClockComponent,
     GameInfoComponent,
-    MoveNotationComponent,
   ],
   templateUrl: './tv.component.html',
   styleUrls: ['./tv.component.css'],
 })
-export class TvComponent implements OnInit, OnDestroy {
+export class TvComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('viewport') viewportRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('canvasPlane') canvasPlaneRef!: ElementRef<HTMLDivElement>;
+
   tvService = inject(TvService);
-  gameService = inject(GameService);
-  private platformId = inject(PLATFORM_ID);
-  private audioService = inject(AudioService);
   private router = inject(Router);
+  private ngZone = inject(NgZone);
 
-  readonly STARTING_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-  readonly placeholderPlayer = { id: 0, name: '...' };
+  ongoingGames = this.tvService.ongoingGames;
 
-  boardSize = signal<number>(this.calculateInitialBoardSize());
-  currentPly = signal(0);
-  chess = new Chess();
-  displayFen = signal<string>(this.STARTING_FEN);
-  private moveSanCache = signal<string[]>([]);
+  // Infinite Canvas State
+  panX = signal(0);
+  panY = signal(0);
+  gridPanX = signal(0);
+  gridPanY = signal(0);
+  isDragging = signal(false);
 
-  selectedTvGame = computed(() => {
-    const state = this.tvService.tvState();
-    return state.rapid || state.blitz || state.bullet || null;
-  });
+  private startX = 0;
+  private startY = 0;
+  private startPanX = 0;
+  private startPanY = 0;
+  private itemMap = new Map<string, { x: number, y: number }>();
+  private dragThresholdExceeded = false;
 
-  game = this.gameService.gameState;
+  canvasItems = computed(() => {
+    const activeGames = this.ongoingGames() || [];
+    const items: CanvasItem[] = [];
+    
+    const activeCols = 6;
+    const xGap = 600;
+    const yGap = 700;
+    const offsetX = 240; 
+    const offsetY = 300;
 
-  constructor() {
-    // Watch for featured TV game changes and load full state via GameService
-    effect(() => {
-      const tvGame = this.selectedTvGame();
-      if (tvGame?.gameId) {
-        const currentId = this.gameService.gameState()?.id;
-        if (currentId !== tvGame.gameId) {
-          this.gameService.loadGame(tvGame.gameId);
-          this.currentPly.set(0);
-        }
-      } else if (this.gameService.gameState()) {
-        // Clear state if no game is featured on TV
-        this.gameService.clearGame(false);
-      }
+    // Map active games to their fixed grid coordinates
+    const activeMap = new Map<string, CanvasGame>();
+    activeGames.forEach((game, index) => {
+      const r = Math.floor(index / activeCols);
+      const c = index % activeCols;
+      activeMap.set(`${c},${r}`, game);
     });
 
-    // Sync chess instance and display when global game state updates
-    effect(() => {
-      const g = this.game();
-      if (g) {
-        this.chess.load(g.fen);
-        this.rebuildSanCache();
-        this.currentPly.set(g.moves.length);
-        this.displayFen.set(g.fen);
+    // Calculate visible grid based on gridPan (throttled) instead of visual pan
+    const pX = this.gridPanX();
+    const pY = this.gridPanY();
+    
+    // Tighter buffer window (1400x900) drastically reduces total loaded boards
+    const minCol = Math.floor((-pX - 1400 + offsetX) / xGap);
+    const maxCol = Math.ceil((-pX + 1400 + offsetX) / xGap);
+    
+    const minRow = Math.floor((-pY - 900 + offsetY) / yGap);
+    const maxRow = Math.ceil((-pY + 900 + offsetY) / yGap);
 
-        if (isPlatformBrowser(this.platformId)) {
-          document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
-        }
-      } else {
-        this.displayFen.set(this.STARTING_FEN);
-      }
-    });
-  }
-
-  private calculateInitialBoardSize(): number {
-    if (isPlatformBrowser(this.platformId)) {
-      const vh = window.innerHeight;
-      return Math.min(600, vh - 280);
-    }
-    return 600;
-  }
-
-  onBoardSizeChange(event: number) {
-    this.boardSize.set(event);
-    if (isPlatformBrowser(this.platformId)) {
-      document.documentElement.style.setProperty('--board-size', `${event}px`);
-    }
-  }
-
-  rebuildSanCache(): void {
-    const g = this.game();
-    if (!g) return;
-
-    const newCache: string[] = [];
-    const tempChess = new Chess();
-    tempChess.reset();
-
-    for (const uci of g.moves) {
-      if (!uci || uci.length < 4) {
-        newCache.push(uci);
-        continue;
-      }
-      const from = uci.substring(0, 2);
-      const to = uci.substring(2, 4);
-      const promotion = uci.length > 4 ? uci[4] : undefined;
-      try {
-        const result = tempChess.move({ from, to, promotion: promotion as any });
-        if (result) {
-          newCache.push(result.san);
+    for (let r = minRow; r <= maxRow; r++) {
+      for (let c = minCol; c <= maxCol; c++) {
+        const key = `${c},${r}`;
+        const activeGame = activeMap.get(key);
+        
+        let gameToRender: CanvasGame;
+        if (activeGame) {
+          gameToRender = activeGame;
         } else {
-          newCache.push(uci);
+          gameToRender = {
+            gameId: `dummy-${c}-${r}`,
+            fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            turn: 'white'
+          } as CanvasGame;
         }
-      } catch {
-        newCache.push(uci);
+
+        items.push({
+          game: gameToRender,
+          x: c * xGap - offsetX,
+          y: r * yGap - offsetY
+        });
       }
     }
-    this.moveSanCache.set(newCache);
-  }
-
-  moveRounds = computed(() => {
-    const g = this.game();
-    const san = this.moveSanCache();
-    if (!g) return [];
-    const rounds = [];
-    for (let i = 0; i < g.moves.length; i += 2) {
-      rounds.push({
-        num: Math.floor(i / 2) + 1,
-        white: san[i] ?? g.moves[i],
-        black: i + 1 < g.moves.length ? san[i + 1] ?? g.moves[i + 1] : null,
-        whiteIndex: i,
-        blackIndex: i + 1,
-      });
-    }
-    return rounds;
+    
+    return items;
   });
 
-  goToMove(ply: number): void {
-    const g = this.game();
-    if (!g || ply < 0 || ply > g.moves.length) return;
+  private boundPointerDown = this.onPointerDown.bind(this);
+  private boundPointerMove = this.onPointerMove.bind(this);
+  private boundPointerUp = this.onPointerUp.bind(this);
 
-    this.currentPly.set(ply);
-    const tempChess = new Chess();
-    for (let i = 0; i < ply; i++) {
-        const uci = g.moves[i];
-        const from = uci.substring(0, 2);
-        const to = uci.substring(2, 4);
-        const promotion = uci.length > 4 ? uci[4] : undefined;
-        try { tempChess.move({ from, to, promotion: promotion as any }); } catch {}
-    }
-    this.displayFen.set(tempChess.fen());
-  }
-
-  formatResult(result: string | null): string {
-    return result || '';
-  }
-
-  formatTermination(result: string | null, termination: string | null): string {
-    if (!termination) return '';
-    if (result === '1/2-1/2') return 'Draw';
-    return termination.toLowerCase();
-  }
-
-  getResultClass(result: string | null): string {
-    if (result === '1/2-1/2') return '';
-    return result === '1-0' ? 'text-green-500' : 'text-red-500';
-  }
-
-  cgConfig = computed(() => {
-    const g = this.game();
-    if (!g) return {};
-    return {
-      turnColor: g.turn,
-      viewOnly: true,
-      movable: { color: undefined, dests: new Map() },
-      check: this.chess.inCheck() ? (this.chess.turn() === 'w' ? 'white' : 'black') : undefined,
-    } as Config;
-  });
   ngOnInit() {
-    this.tvService.joinTv();
+    this.tvService.startPollingGames();
+  }
+
+  ngAfterViewInit() {
+    this.ngZone.runOutsideAngular(() => {
+      const viewport = this.viewportRef.nativeElement;
+      viewport.addEventListener('pointerdown', this.boundPointerDown);
+      window.addEventListener('pointermove', this.boundPointerMove);
+      window.addEventListener('pointerup', this.boundPointerUp);
+      window.addEventListener('pointercancel', this.boundPointerUp);
+    });
+    // Set initial transform
+    if (this.canvasPlaneRef) {
+      this.canvasPlaneRef.nativeElement.style.transform = `translate(0px, 0px)`;
+    }
   }
 
   ngOnDestroy() {
-    this.tvService.leaveTv();
-    this.gameService.clearGame(false);
-  }
-  goToGame(gameId: string | undefined) {
-    if (gameId) {
-      this.router.navigate(['/play', gameId]);
+    this.tvService.stopPollingGames();
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('pointermove', this.boundPointerMove);
+      window.removeEventListener('pointerup', this.boundPointerUp);
+      window.removeEventListener('pointercancel', this.boundPointerUp);
     }
   }
-}
 
+  onPointerDown(event: PointerEvent) {
+    if (event.button !== 0 && event.pointerType === 'mouse') return;
+    this.ngZone.run(() => this.isDragging.set(true));
+    this.dragThresholdExceeded = false;
+    this.startX = event.clientX;
+    this.startY = event.clientY;
+    this.startPanX = this.panX();
+    this.startPanY = this.panY();
+    
+    const target = event.currentTarget as HTMLElement;
+    target.setPointerCapture(event.pointerId);
+  }
+
+  onPointerMove(event: PointerEvent) {
+    if (!this.isDragging()) return;
+    
+    const dx = event.clientX - this.startX;
+    const dy = event.clientY - this.startY;
+    
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+      this.dragThresholdExceeded = true;
+    }
+    
+    const newPanX = this.startPanX + dx;
+    const newPanY = this.startPanY + dy;
+    
+    // Update raw signal values without triggering immediate CD
+    this.panX.set(newPanX);
+    this.panY.set(newPanY);
+    
+    // Direct DOM update outside Angular zone
+    if (this.canvasPlaneRef) {
+      this.canvasPlaneRef.nativeElement.style.transform = `translate(${newPanX}px, ${newPanY}px)`;
+    }
+
+    // Only recalculate the grid items every 200 pixels
+    if (Math.abs(newPanX - this.gridPanX()) > 200 || Math.abs(newPanY - this.gridPanY()) > 200) {
+      this.ngZone.run(() => {
+        this.gridPanX.set(newPanX);
+        this.gridPanY.set(newPanY);
+      });
+    }
+  }
+
+  onPointerUp(event: PointerEvent) {
+    this.ngZone.run(() => this.isDragging.set(false));
+    const target = event.currentTarget as HTMLElement;
+    target.releasePointerCapture(event.pointerId);
+  }
+
+
+
+  goToGame(gameId: string) {
+    // If user was dragging, don't trigger click navigation
+    if (this.dragThresholdExceeded) return;
+    this.router.navigate(['/play', gameId]);
+  }
+
+  resetPan() {
+    this.ngZone.run(() => {
+      this.panX.set(0);
+      this.panY.set(0);
+      this.gridPanX.set(0);
+      this.gridPanY.set(0);
+      if (this.canvasPlaneRef) {
+        this.canvasPlaneRef.nativeElement.style.transform = `translate(0px, 0px)`;
+      }
+    });
+  }
+
+  getCgConfig(game: CanvasGame | undefined): Config {
+    return {
+      turnColor: game?.turn === 'black' ? 'black' : 'white',
+      viewOnly: true,
+      movable: { color: undefined, dests: new Map() },
+      coordinates: false,
+    };
+  }
+
+  formatTime(ms: number): string {
+    if (ms < 0) ms = 0;
+    const totalSeconds = Math.floor(ms / 1000);
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  getGamePlayer(playerData: { name?: string; rating?: number } | undefined): any {
+    if (!playerData) {
+      return { id: 0, name: 'Anonymous', rating: 1500 };
+    }
+    return {
+      id: 0,
+      name: playerData.name || 'Anonymous',
+      rating: playerData.rating || 1500
+    };
+  }
+}

@@ -52,8 +52,9 @@ export class MainLayoutComponent {
       const isTactics = url.startsWith('/tactics/');
       const isStudy = url.includes('/study/');
       const isReview = url.includes('/games/') && url.includes('/review');
+      const isTv = url === '/tv' || url.startsWith('/tv/');
 
-      const hideFooter = isPlay || isPlayComputer || isArena || isTactics || isStudy || isReview;
+      const hideFooter = isPlay || isPlayComputer || isArena || isTactics || isStudy || isReview || isTv;
       this.showFooter.set(!hideFooter);
     });
   }

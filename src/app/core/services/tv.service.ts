@@ -1,92 +1,50 @@
-import { Injectable, signal, OnDestroy } from '@angular/core';
-import { io, Socket } from 'socket.io-client';
+import { Injectable, inject, signal, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
-export interface TvGame {
-  gameId: string;
-  fen: string;
-  whitePlayer: any;
-  blackPlayer: any;
-  whiteTimeRemainingMs: number;
-  blackTimeRemainingMs: number;
-  turn: string;
-  timeControl: string;
-}
-
-export interface TvState {
-  bullet: TvGame | null;
-  blitz: TvGame | null;
-  rapid: TvGame | null;
+export interface CanvasGame {
+  gameId?: string;
+  white?: { name?: string, rating?: number };
+  black?: { name?: string, rating?: number };
+  score?: number;
+  fen?: string;
+  turn?: string;
+  whiteTimeRemainingMs?: number;
+  blackTimeRemainingMs?: number;
+  serverTimestamp?: string | null;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class TvService implements OnDestroy {
-  private socket: Socket | null = null;
-  private socketUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
+  private http = inject(HttpClient);
+  private microserviceUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
+  
+  ongoingGames = signal<CanvasGame[]>([]);
+  private pollInterval: any;
 
-  tvState = signal<TvState>({ bullet: null, blitz: null, rapid: null });
+  startPollingGames(): void {
+    this.fetchGames();
+    this.pollInterval = setInterval(() => this.fetchGames(), 5000);
+  }
 
-  joinTv(): void {
-    if (!this.socket) {
-      this.socket = io(this.socketUrl, {
-        transports: ['websocket', 'polling'],
-        reconnection: true,
-      });
-
-      this.socket.on('connect', () => {
-        this.socket?.emit('join_tv');
-      });
-
-      this.socket.on('tv_state', (data: TvState) => {
-        this.tvState.set(data);
-      });
-
-      this.socket.on('tv_switch_game', (data: any) => {
-        const { category, ...gameData } = data;
-        const validCategory = category as keyof TvState;
-        this.tvState.update(state => ({
-          ...state,
-          [validCategory]: gameData
-        }));
-      });
-
-      this.socket.on('tv_move', (data: any) => {
-        const { category, gameId, fen, turn, whiteTimeRemainingMs, blackTimeRemainingMs } = data;
-        const validCategory = category as keyof TvState;
-        this.tvState.update(state => {
-          const catState = state[validCategory];
-          if (catState && catState.gameId === gameId) {
-            return {
-              ...state,
-              [validCategory]: {
-                ...catState,
-                fen,
-                turn,
-                whiteTimeRemainingMs,
-                blackTimeRemainingMs
-              }
-            };
-          }
-          return state;
-        });
-      });
-    } else if (this.socket.connected) {
-      this.socket.emit('join_tv');
+  stopPollingGames(): void {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+      this.pollInterval = null;
     }
   }
 
-  leaveTv(): void {
-    if (this.socket) {
-      this.socket.emit('leave_tv');
-      this.socket.disconnect();
-      this.socket = null;
-    }
-    this.tvState.set({ bullet: null, blitz: null, rapid: null });
+  private fetchGames(): void {
+    this.http.get<{ games: CanvasGame[] }>(`${this.microserviceUrl}/api/active/all`)
+      .subscribe({
+        next: (res) => this.ongoingGames.set(res.games || []),
+        error: (err) => console.error('[TV Service] Error fetching active games', err)
+      });
   }
 
   ngOnDestroy(): void {
-    this.leaveTv();
+    this.stopPollingGames();
   }
 }

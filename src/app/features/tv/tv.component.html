@@ -1,161 +1,83 @@
-<div class="tv-root-container p-6 md:p-12 pb-0">
-  <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 max-w-[1700px] mx-auto w-full">
-    <div class="flex-1">
-      <h1 class="text-4xl md:text-5xl mb-2">Watch</h1>
-      <p class="text-muted text-lg">Spectate the best live games from around the world.</p>
-    </div>
-  </header>
-  <div class="w-full max-w-[1700px] h-full flex items-center justify-center">
-    @let g = game();
-    <div class="tv-layout">
-      <!-- Left Column: Info & History -->
-      <div class="sidebar-wrapper left-sidebar">
-        <div class="flex flex-col ui-panel overflow-hidden h-full">
-          <div class="p-4 border-b border-border-theme">
-            <app-game-info
-              [player]="g?.black_player || placeholderPlayer"
-              [color]="'black'"
-              class="block mb-3"
-            />
-            <app-game-info
-              [player]="g?.white_player || placeholderPlayer"
-              [color]="'white'"
-            />
-          </div>
-
-          <app-move-notation
-            class="flex-1"
-            [moves]="g?.moves || []"
-            [currentPly]="currentPly()"
-            [showNavigation]="true"
-            (navigate)="goToMove($event)"
-          />
-
-          <div class="p-4 border-t border-border-theme bg-slate-900/30">
-            <div
-              class="text-xs uppercase   text-center  opacity-50"
-            >
-              TV Spectator Mode
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Center Column: Board Area -->
-      <div class="board-container-area">
-        <!-- Mobile Info (Top) -->
-        <div class="w-full md:hidden mb-2 flex items-center justify-between gap-2 px-2">
+<div class="tv-viewport" #viewport
+     [class.is-dragging]="isDragging()">
+  
+  <div class="tv-canvas-plane" #canvasPlane>
+    
+    @for (item of canvasItems(); track item.game?.gameId || $index) {
+      <div class="tv-game-card absolute transition-shadow duration-300 group"
+           [style.left.px]="item.x"
+           [style.top.px]="item.y"
+           [class.cursor-pointer]="!item.game?.gameId?.startsWith('dummy')"
+           [class.hover:shadow-[0_15px_40px_rgba(34,211,238,0.25)]]="!item.game?.gameId?.startsWith('dummy')"
+           (click)="item.game?.gameId?.startsWith('dummy') ? null : goToGame(item.game?.gameId!)">
+        
+        <!-- Top Player (Black) -->
+        <div class="flex items-center justify-between gap-4 mb-1" [class.invisible]="item.game?.gameId?.startsWith('dummy')">
           <app-game-info
-            [player]="g?.black_player || placeholderPlayer"
+            [player]="getGamePlayer(item.game?.black)"
             [color]="'black'"
+            [showStatus]="false"
             class="flex-1 min-w-0"
           />
           <app-chess-clock
             class="shrink-0"
-            [serverTimeMs]="g?.black_time_remaining_ms ?? -1"
-            [serverTimestamp]="g?.server_timestamp || ''"
-            [isActive]="g?.turn === 'black' && g?.status === 'active'"
+            [size]="'md'"
+            [serverTimeMs]="item.game?.blackTimeRemainingMs || 0"
+            [serverTimestamp]="item.game?.serverTimestamp || ''"
+            [isActive]="item.game?.turn === 'black' && !item.game?.gameId?.startsWith('dummy')"
           />
         </div>
 
-        <div class="board-wrapper-outer">
+        <!-- Board -->
+        <div class="board-wrapper relative w-[480px] h-[480px] shadow-xl rounded-sm">
           <app-chess-board
-            [fen]="displayFen()"
+            [fen]="item.game?.fen || 'start'"
             [orientation]="'white'"
             [interactive]="false"
-            [configOverride]="cgConfig()"
-            (sizeChange)="onBoardSizeChange($event)"
+            [configOverride]="getCgConfig(item.game)"
+            class="w-full h-full pointer-events-none block"
           ></app-chess-board>
+          
+          <!-- Hover Overlay -->
+          @if (!item.game?.gameId?.startsWith('dummy')) {
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+              <div class="px-8 py-3 rounded-full bg-slate-900/80 border border-accent/40 text-accent font-bold backdrop-blur-md shadow-[0_0_20px_rgba(34,211,238,0.2)] scale-90 group-hover:scale-100 transition-transform duration-300">
+                SPECTATE
+              </div>
+            </div>
+          }
         </div>
 
-        <!-- Mobile Info (Bottom) -->
-        <div class="w-full md:hidden mt-2 flex items-center justify-between gap-2 px-2">
+        <!-- Bottom Player (White) -->
+        <div class="flex items-center justify-between gap-4 mt-1" [class.invisible]="item.game?.gameId?.startsWith('dummy')">
           <app-game-info
-            [player]="g?.white_player || placeholderPlayer"
+            [player]="getGamePlayer(item.game?.white)"
             [color]="'white'"
+            [showStatus]="false"
             class="flex-1 min-w-0"
           />
           <app-chess-clock
             class="shrink-0"
-            [serverTimeMs]="g?.white_time_remaining_ms ?? -1"
-            [serverTimestamp]="g?.server_timestamp || ''"
-            [isActive]="g?.turn === 'white' && g?.status === 'active'"
+            [size]="'md'"
+            [serverTimeMs]="item.game?.whiteTimeRemainingMs || 0"
+            [serverTimestamp]="item.game?.serverTimestamp || ''"
+            [isActive]="item.game?.turn === 'white' && !item.game?.gameId?.startsWith('dummy')"
           />
         </div>
-
-        <!-- Mobile Move Notation (Simplified) -->
-        <div class="md:hidden w-full mt-4 px-2">
-          <div class="ui-panel overflow-hidden max-h-[200px]">
-            <app-move-notation
-              [moves]="g?.moves || []"
-              [currentPly]="currentPly()"
-              [showNavigation]="true"
-              (navigate)="goToMove($event)"
-            />
-          </div>
-        </div>
       </div>
+    }
+  </div>
 
-      <!-- Right Column: Clocks & Status -->
-      <div class="sidebar-wrapper right-sidebar">
-        <div class="flex flex-col justify-between h-full">
-          <div class="ui-panel p-3 flex flex-col gap-2">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs uppercase  font-semibold "
-                >Black</span
-              >
-              @if (g?.turn === 'black' && g?.status === 'active') {
-                <span class="w-2 h-2 rounded-full bg-accent "></span>
-              }
-            </div>
-            <app-chess-clock
-              [serverTimeMs]="g?.black_time_remaining_ms ?? -1"
-              [serverTimestamp]="g?.server_timestamp || ''"
-              [isActive]="g?.turn === 'black' && g?.status === 'active'"
-            />
-          </div>
-
-          <div class="flex-1 flex flex-col justify-center py-4 px-2">
-            @if (g?.status === 'completed' || g?.status === 'aborted') {
-              <div
-                class="ui-panel p-4 text-center border-border-theme/50 bg-slate-800/20"
-              >
-                <div class="text-xl font-semibold " [class]="getResultClass(g?.result || null)">
-                  {{ formatResult(g?.result || null) }}
-                </div>
-                <div
-                  class="text-xs  mt-1 uppercase  font-semibold "
-                >
-                  {{ formatTermination(g?.result || null, g?.termination || null) }}
-                </div>
-              </div>
-            } @else {
-              <div class="text-center">
-                <div class="text-xs uppercase  text-cyan-400/40 ">
-                  {{ g ? 'Live Match' : 'Waiting' }}
-                </div>
-              </div>
-            }
-          </div>
-
-          <div class="ui-panel p-3 flex flex-col gap-2">
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs uppercase  font-semibold "
-                >White</span
-              >
-              @if (g?.turn === 'white' && g?.status === 'active') {
-                <span class="w-2 h-2 rounded-full bg-accent "></span>
-              }
-            </div>
-            <app-chess-clock
-              [serverTimeMs]="g?.white_time_remaining_ms ?? -1"
-              [serverTimestamp]="g?.server_timestamp || ''"
-              [isActive]="g?.turn === 'white' && g?.status === 'active'"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- Reset Pan Control -->
+  <div class="absolute bottom-8 right-8 flex flex-col gap-2 z-50">
+    <button class="w-12 h-12 rounded-full bg-slate-800/90 backdrop-blur-md border border-border-theme/50 text-white hover:bg-slate-700 hover:border-accent/50 hover:text-accent transition-all flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+            (click)="resetPan()"
+            title="Reset to center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="16"></line>
+        <line x1="8" y1="12" x2="16" y2="12"></line>
+      </svg>
+    </button>
   </div>
 </div>
-
