@@ -1,9 +1,4 @@
 @import 'tailwindcss';
-@import 'chessground/assets/chessground.base.css';
-@import 'chessground/assets/chessground.brown.css';
-@import 'chessground/assets/chessground.cburnett.css';
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
-@import '@angular/cdk/overlay-prebuilt.css';
 
 @theme {
   --font-sans:
@@ -34,11 +29,12 @@
   --est: 0.15em;
 }
 
-/* --- Modular Styles --- */
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/utilities.css';
 @import './styles/overrides.css';
+
+/* --- Modular Styles --- */
 
 /* Custom Background Support */
 .theme-transparent {

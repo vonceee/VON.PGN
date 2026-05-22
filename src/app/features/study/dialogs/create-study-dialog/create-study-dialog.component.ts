@@ -1,16 +1,19 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
-import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 
 @Component({
   selector: 'app-create-study-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
-    <app-dialog-wrapper title="Create New Study" (close)="dialogRef.close()">
+    <div class="bg-main rounded-4xl shadow-xl w-full max-w-xl p-8 font-sans space-y-8 relative">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl text-content">Create new study</h2>
+      </div>
+
       <div class="space-y-4">
         <!-- Study Name -->
         <div class="space-y-2">
@@ -20,7 +23,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             [(ngModel)]="name"
             maxlength="100"
             placeholder="e.g. My Openings Analysis"
-            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm    outline-none placeholder:text-muted  "
+            class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-lg text-sm outline-none placeholder:text-muted"
             autofocus
           />
         </div>
@@ -28,36 +31,102 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         <!-- Visibility -->
         <div class="space-y-2">
           <label class="text-sm font-semibold text-content">Visibility</label>
-          <select
-            [(ngModel)]="visibility"
-            class="w-full px-4 py-2.5 bg-subtle border border-base rounded-lg text-sm    outline-none  "
-          >
-            <option value="public">Public (Everyone can see)</option>
-            <option value="unlisted">Unlisted (Hidden from search)</option>
-            <option value="private">Private (Only me)</option>
-          </select>
+          <div #dropdownContainer class="relative w-full">
+            <button (click)="isDropdownOpen.update(v => !v)"
+              class="w-full py-3 pl-2 pr-8 text-left text-content font-medium cursor-pointer text-base border-b-2 border-border-base flex items-center justify-between focus:outline-none">
+              <span>{{ getVisibilityLabel() }}</span>
+              <svg class="fill-current h-4 w-4 text-muted transition-transform duration-200"
+                [class.rotate-180]="isDropdownOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </button>
+
+            @if (isDropdownOpen()) {
+            <div
+              class="absolute top-full left-0 w-full min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 z-50 flex flex-col shadow-lg max-h-64 overflow-y-auto">
+              <button (click)="setVisibility('public')"
+                class="w-full px-4 py-2.5 hover:bg-subtle flex items-center text-left group/item cursor-pointer focus:outline-none">
+                <span class="text-sm text-content group-hover/item:text-accent font-medium"
+                  [class.text-accent]="visibility() === 'public'">Public (Everyone can see)</span>
+              </button>
+              <button (click)="setVisibility('unlisted')"
+                class="w-full px-4 py-2.5 hover:bg-subtle flex items-center text-left group/item cursor-pointer focus:outline-none">
+                <span class="text-sm text-content group-hover/item:text-accent font-medium"
+                  [class.text-accent]="visibility() === 'unlisted'">Unlisted (Hidden from search)</span>
+              </button>
+              <button (click)="setVisibility('private')"
+                class="w-full px-4 py-2.5 hover:bg-subtle flex items-center text-left group/item cursor-pointer focus:outline-none">
+                <span class="text-sm text-content group-hover/item:text-accent font-medium"
+                  [class.text-accent]="visibility() === 'private'">Private (Only me)</span>
+              </button>
+            </div>
+            }
+          </div>
         </div>
       </div>
 
-      <button actions appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
-      <button actions appButton variant="primary" (click)="onSubmit()" [disabled]="!name().trim()">
-        Create Study
-      </button>
-    </app-dialog-wrapper>
+      <div class="pt-4 flex gap-4 w-full">
+        <button
+          appButton
+          variant="outline"
+          class="flex-1"
+          (click)="dialogRef.close()"
+        >
+          Cancel
+        </button>
+        <button
+          appButton
+          variant="primary"
+          class="flex-1"
+          (click)="onSubmit()"
+          [disabled]="!name().trim()"
+        >
+          Create study
+        </button>
+      </div>
+    </div>
   `,
 })
 export class CreateStudyDialogComponent {
   dialogRef = inject(DialogRef<any>);
-  
+
+  @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
+  isDropdownOpen = signal(false);
+
   name = signal('');
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
 
+  getVisibilityLabel(): string {
+    switch (this.visibility()) {
+      case 'public': return 'Public (Everyone can see)';
+      case 'unlisted': return 'Unlisted (Hidden from search)';
+      case 'private': return 'Private (Only me)';
+      default: return 'Public';
+    }
+  }
+
+  setVisibility(val: 'public' | 'private' | 'unlisted') {
+    this.visibility.set(val);
+    this.isDropdownOpen.set(false);
+  }
+
   onSubmit() {
     if (this.name().trim()) {
-      this.dialogRef.close({ 
-        name: this.name().trim(), 
-        visibility: this.visibility() 
+      this.dialogRef.close({
+        name: this.name().trim(),
+        visibility: this.visibility()
       });
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    if (
+      this.isDropdownOpen() &&
+      this.dropdownContainer &&
+      !this.dropdownContainer.nativeElement.contains(event.target as Node)
+    ) {
+      this.isDropdownOpen.set(false);
     }
   }
 }

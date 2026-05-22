@@ -70,7 +70,11 @@ export class StudyListComponent implements OnInit {
   }
 
   createNewStudy() {
-    const dialogRef = this.dialog.open<{ name: string; visibility: string }>(CreateStudyDialogComponent);
+    const dialogRef = this.dialog.open<{ name: string; visibility: string }>(CreateStudyDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/5'],
+    });
 
     dialogRef.closed.subscribe((result) => {
       if (result && result.name) {
