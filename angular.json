@@ -33,7 +33,6 @@
             ],
             "styles": [
               "node_modules/@angular/cdk/overlay-prebuilt.css",
-              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/chessground/assets/chessground.base.css",
               "node_modules/chessground/assets/chessground.brown.css",
               "node_modules/chessground/assets/chessground.cburnett.css",

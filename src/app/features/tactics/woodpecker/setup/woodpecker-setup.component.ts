@@ -1,9 +1,10 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TacticsService } from '../../../../core/services/tactics.service';
 import { ButtonComponent } from '@shared/ui';
+import { PUZZLE_THEMES_HIERARCHY } from '../../themes/puzzle-themes.config';
 
 @Component({
   selector: 'app-woodpecker-setup',
@@ -17,13 +18,14 @@ import { ButtonComponent } from '@shared/ui';
   templateUrl: './woodpecker-setup.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WoodpeckerSetupComponent {
+export class WoodpeckerSetupComponent implements OnInit {
   private tacticsService = inject(TacticsService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
 
   isSubmitting = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
+  themeCounts = signal<Record<string, number>>({});
 
   setupForm = this.fb.group({
     name: ['My Woodpecker Training', [Validators.required, Validators.maxLength(50)]],
@@ -33,16 +35,7 @@ export class WoodpeckerSetupComponent {
     rating_max: [1600, [Validators.min(0), Validators.max(4000)]],
   });
 
-  popularThemes = [
-    { key: 'mix', name: 'Recommended Mix', desc: 'All tactical motifs' },
-    { key: 'opening', name: 'Opening Tactics', desc: 'Flaws in the early game' },
-    { key: 'middlegame', name: 'Middlegame Tactics', desc: 'Complex battles & motifs' },
-    { key: 'endgame', name: 'Endgame Tactics', desc: 'Precision final conversions' },
-    { key: 'fork', name: 'Forks & Double Attacks', desc: 'Attacking multiple pieces' },
-    { key: 'pin', name: 'Pins & Skewers', desc: 'Restricting piece movement' },
-    { key: 'sacrifice', name: 'Sacrifices', desc: 'Giving up material for mate/win' },
-    { key: 'mate', name: 'Checkmates', desc: 'Mating nets & patterns' },
-  ];
+  puzzleThemesHierarchy = PUZZLE_THEMES_HIERARCHY;
 
   puzzleSizes = [
     { value: 5, label: '5 Puzzles (Quick Demo)', desc: 'Perfect to test the system in minutes' },
@@ -54,6 +47,53 @@ export class WoodpeckerSetupComponent {
     { value: 500, label: '500 Puzzles (Elite)', desc: 'Advanced intuition builder' },
     { value: 1000, label: '1,000 Puzzles (Gold Standard)', desc: ' Axel Smith\'s ultimate routine' },
   ];
+
+  ratingRangeMode = signal<'preset' | 'custom'>('preset');
+
+  ratingPresets = [
+    { label: 'Beginner (1200 - 1600)', min: 1200, max: 1600 },
+    { label: 'Intermediate (1600 - 2000)', min: 1600, max: 2000 },
+    { label: 'Advanced (2000 - 2400)', min: 2000, max: 2400 },
+    { label: 'Master (2400+)', min: 2400, max: 4000 }
+  ];
+
+  selectPreset(min: number, max: number) {
+    this.ratingRangeMode.set('preset');
+    this.setupForm.patchValue({ rating_min: min, rating_max: max });
+  }
+
+  selectCustom() {
+    this.ratingRangeMode.set('custom');
+  }
+
+  isPresetSelected(min: number, max: number): boolean {
+    return this.ratingRangeMode() === 'preset' &&
+           this.setupForm.get('rating_min')?.value === min &&
+           this.setupForm.get('rating_max')?.value === max;
+  }
+
+  ngOnInit() {
+    this.tacticsService.getThemeCounts().subscribe({
+      next: (counts) => {
+        this.themeCounts.set(counts);
+      },
+      error: () => {}
+    });
+  }
+
+  getThemeCount(key: string): number {
+    if (key === 'mix') {
+      return Object.values(this.themeCounts()).reduce((a, b) => a + b, 0);
+    }
+    return this.themeCounts()[key] ?? 0;
+  }
+
+  getIconName(key: string): string {
+    if (key.startsWith('mateIn')) {
+      return 'mate';
+    }
+    return key;
+  }
 
   onSubmit() {
     if (this.setupForm.invalid) {

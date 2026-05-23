@@ -120,11 +120,10 @@
     <!-- History / Completed Sessions Section -->
     @if (sessions().length > 0) {
     <section class="mt-8">
-      <h2 class="text-2xl text-content mb-6">Session history & diagnostics</h2>
+      <h2 class="text-2xl text-content mb-6">Session diagnostics & history</h2>
 
       <div class="space-y-6">
         @for (session of sessions(); track session.id) {
-        @if (session.status !== 'active') {
         <div class="bg-subtle rounded-4xl p-6">
           <!-- Session Details Title -->
           <div
@@ -133,6 +132,7 @@
               <div class="flex items-center gap-2 mb-1">
                 <span class="text-xs font-semibold rounded-full uppercase"
                   [class.text-green-600]="session.status === 'completed'"
+                  [class.text-orange-500]="session.status === 'active'"
                   [class.text-slate-500]="session.status === 'abandoned'">
                   {{ session.status }}
                 </span>
@@ -146,11 +146,13 @@
                   getThemeDisplayName(session.theme) }}</strong></span>
               <span class="text-muted">Puzzles: <strong class="text-slate-800 font-medium">{{ session.total_puzzles
                   }}</strong></span>
+              @if (session.status !== 'active') {
               <button (click)="deleteSession(session.id, $event)"
                 class="text-muted hover:text-red-500 hover:underline cursor-pointer flex items-center gap-1.5 px-2"
                 title="Delete Session History">
                 Delete history
               </button>
+              }
             </div>
           </div>
 
@@ -200,7 +202,6 @@
           </div>
         </div>
       </div>
-      }
       }
   </div>
   </section>
