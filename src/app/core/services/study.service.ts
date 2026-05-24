@@ -75,8 +75,10 @@ export class StudyService {
     name: string,
     description: string = '',
     visibility: string = 'public',
+    category: string = 'general',
+    orientation: string = 'white'
   ): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies`, { name, description, visibility });
+    return this.http.post(`${this.apiUrl}/studies`, { name, description, visibility, category, orientation });
   }
 
   updateStudy(id: number, data: any): Observable<any> {

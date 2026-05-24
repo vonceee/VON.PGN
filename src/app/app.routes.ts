@@ -167,6 +167,24 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'study/drills',
+        loadComponent: () =>
+          import('./features/study/opening-drills/opening-drills.component').then((m) => m.OpeningDrillsComponent),
+        canActivate: [authGuard],
+        title: 'Vonchess.net • Opening Drills',
+        data: { description: 'Build opening muscle memory by practicing your repertoires against an automated opponent.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'study/drills/solve/:id',
+        loadComponent: () =>
+          import('./features/study/opening-drills/solve/opening-drill-solve.component').then((m) => m.OpeningDrillSolveComponent),
+        canActivate: [authGuard],
+        title: 'Vonchess.net • Repertoire Drill',
+        data: { description: 'Build opening muscle memory by practicing your repertoires against an automated opponent.' },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'study/:id',
         loadComponent: () =>
           import('./features/study/study.component').then((m) => m.StudyComponent),

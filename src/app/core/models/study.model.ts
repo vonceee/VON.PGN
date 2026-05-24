@@ -10,6 +10,8 @@ export interface Study {
   name: string;
   visibility: 'public' | 'private' | 'unlisted';
   engine_visibility: 'everyone' | 'owner';
+  category?: 'general' | 'opening_repertoire';
+  orientation?: 'white' | 'black';
   user_id: number;
   owner: {
     id: number;

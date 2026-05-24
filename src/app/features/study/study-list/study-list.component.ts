@@ -70,7 +70,7 @@ export class StudyListComponent implements OnInit {
   }
 
   createNewStudy() {
-    const dialogRef = this.dialog.open<{ name: string; visibility: string }>(CreateStudyDialogComponent, {
+    const dialogRef = this.dialog.open<{ name: string; visibility: string; category: string; orientation?: string }>(CreateStudyDialogComponent, {
       width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/5'],
@@ -78,7 +78,7 @@ export class StudyListComponent implements OnInit {
 
     dialogRef.closed.subscribe((result) => {
       if (result && result.name) {
-        this.studyService.createStudy(result.name, result.visibility).subscribe((res) => {
+        this.studyService.createStudy(result.name, '', result.visibility, result.category, result.orientation || 'white').subscribe((res) => {
           this.router.navigate(['/study', res.data.id]);
         });
       }

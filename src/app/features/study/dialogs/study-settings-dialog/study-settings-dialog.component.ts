@@ -48,6 +48,32 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <option value="owner">Only me</option>
           </select>
         </div>
+
+        <!-- Category Selection -->
+        <div class="space-y-2">
+          <label class="text-sm font-semibold text-content">Category</label>
+          <select
+            [(ngModel)]="category"
+            class="w-full px-4 py-2.5 bg-subtle  rounded-lg text-sm outline-none  "
+          >
+            <option value="general">General Study</option>
+            <option value="opening_repertoire">Opening Repertoire</option>
+          </select>
+        </div>
+
+        <!-- Repertoire Side Selection (Only visible for repertoires) -->
+        @if (category() === 'opening_repertoire') {
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-content">Repertoire Side (Bulk Updates Chapters)</label>
+            <select
+              [(ngModel)]="orientation"
+              class="w-full px-4 py-2.5 bg-subtle rounded-lg text-sm outline-none"
+            >
+              <option value="white">White Repertoire</option>
+              <option value="black">Black Repertoire</option>
+            </select>
+          </div>
+        }
       </div>
 
       <button actions
@@ -84,12 +110,16 @@ export class StudySettingsDialogComponent implements OnInit {
   name = signal('');
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
   engineVisibility = signal<'everyone' | 'owner'>('everyone');
+  category = signal<'general' | 'opening_repertoire'>('general');
+  orientation = signal<'white' | 'black'>('white');
 
   ngOnInit() {
     if (this.data) {
       this.name.set(this.data.name || '');
       this.visibility.set(this.data.visibility || 'public');
       this.engineVisibility.set(this.data.engine_visibility || 'everyone');
+      this.category.set(this.data.category || 'general');
+      this.orientation.set(this.data.orientation || 'white');
     }
   }
 
@@ -99,7 +129,9 @@ export class StudySettingsDialogComponent implements OnInit {
         action: 'save',
         name: this.name().trim(), 
         visibility: this.visibility(),
-        engine_visibility: this.engineVisibility()
+        engine_visibility: this.engineVisibility(),
+        category: this.category(),
+        orientation: this.category() === 'opening_repertoire' ? this.orientation() : 'white'
       });
     }
   }

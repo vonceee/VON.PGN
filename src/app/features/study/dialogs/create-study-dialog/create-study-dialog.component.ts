@@ -63,6 +63,66 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             }
           </div>
         </div>
+
+        <!-- Category Selection -->
+        <div class="space-y-2">
+          <label class="text-sm font-semibold text-content">Category</label>
+          <div class="flex gap-4">
+            <button
+              (click)="category.set('general')"
+              type="button"
+              class="flex-1 p-4 border rounded-2xl cursor-pointer hover:bg-subtle transition flex flex-col items-center gap-1.5 focus:outline-none"
+              [class.border-accent]="category() === 'general'"
+              [class.bg-accent/5]="category() === 'general'"
+              [class.border-border-base]="category() !== 'general'"
+            >
+              <span class="text-sm text-content font-medium">General Study</span>
+              <span class="text-xs text-muted text-center">For casual puzzles or game analysis</span>
+            </button>
+            <button
+              (click)="category.set('opening_repertoire')"
+              type="button"
+              class="flex-1 p-4 border rounded-2xl cursor-pointer hover:bg-subtle transition flex flex-col items-center gap-1.5 focus:outline-none"
+              [class.border-accent]="category() === 'opening_repertoire'"
+              [class.bg-accent/5]="category() === 'opening_repertoire'"
+              [class.border-border-base]="category() !== 'opening_repertoire'"
+            >
+              <span class="text-sm text-content font-medium">Opening Repertoire</span>
+              <span class="text-xs text-muted text-center">For memorizing lines with repeat drilling</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Repertoire Orientation Selector (Only visible for Opening Repertoires) -->
+        @if (category() === 'opening_repertoire') {
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-content">Repertoire Side (Default for Chapters)</label>
+            <div class="flex gap-4">
+              <button
+                (click)="orientation.set('white')"
+                type="button"
+                class="flex-1 py-2.5 px-4 border rounded-xl cursor-pointer hover:bg-subtle transition text-sm font-medium focus:outline-none flex items-center justify-center gap-2"
+                [class.border-accent]="orientation() === 'white'"
+                [class.bg-accent/5]="orientation() === 'white'"
+                [class.border-border-base]="orientation() !== 'white'"
+              >
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-300 border border-slate-400"></span>
+                White Repertoire
+              </button>
+              <button
+                (click)="orientation.set('black')"
+                type="button"
+                class="flex-1 py-2.5 px-4 border rounded-xl cursor-pointer hover:bg-subtle transition text-sm font-medium focus:outline-none flex items-center justify-center gap-2"
+                [class.border-accent]="orientation() === 'black'"
+                [class.bg-accent/5]="orientation() === 'black'"
+                [class.border-border-base]="orientation() !== 'black'"
+              >
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-950"></span>
+                Black Repertoire
+              </button>
+            </div>
+          </div>
+        }
       </div>
 
       <div class="pt-4 flex gap-4 w-full">
@@ -95,6 +155,8 @@ export class CreateStudyDialogComponent {
 
   name = signal('');
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
+  category = signal<'general' | 'opening_repertoire'>('general');
+  orientation = signal<'white' | 'black'>('white');
 
   getVisibilityLabel(): string {
     switch (this.visibility()) {
@@ -114,7 +176,9 @@ export class CreateStudyDialogComponent {
     if (this.name().trim()) {
       this.dialogRef.close({
         name: this.name().trim(),
-        visibility: this.visibility()
+        visibility: this.visibility(),
+        category: this.category(),
+        orientation: this.category() === 'opening_repertoire' ? this.orientation() : 'white'
       });
     }
   }

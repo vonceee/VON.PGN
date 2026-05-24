@@ -119,6 +119,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   viewerCount = this.studyService.viewerCount;
   
   id = input.required<string>();
+  chapterId = input<string | undefined>(undefined, { alias: 'chapter' });
 
   // Engine state
   isEngineActive = signal(false);
@@ -285,7 +286,10 @@ export class StudyComponent implements OnInit, OnDestroy {
 
     effect(() => {
       const studyId = this.id();
-      if (studyId && isPlatformBrowser(this.platformId)) this.studyService.getStudy(Number(studyId));
+      const chapId = this.chapterId();
+      if (studyId && isPlatformBrowser(this.platformId)) {
+        this.studyService.getStudy(Number(studyId), chapId ? Number(chapId) : undefined);
+      }
     });
 
     effect(() => {
