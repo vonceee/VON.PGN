@@ -29,11 +29,10 @@
         </span>
         <span class="text-xs text-muted   uppercase">Synchronization</span>
       </div>
-      <mat-slide-toggle 
+      <app-toggle 
         [checked]="isSyncing()" 
-        (change)="toggleSync()"
-        color="primary"
-      ></mat-slide-toggle>
+        (checkedChange)="toggleSync()"
+      ></app-toggle>
     </div>
 
     <!-- Timestamps & Stats -->
@@ -72,11 +71,11 @@
             
             @if (isOwner()) {
               <div class="flex items-center gap-4">
-                <mat-slide-toggle 
+                <app-toggle 
                   [checked]="collab.can_edit"
-                  (change)="toggleCollaboratorPermission(collab.uid, $event.checked)"
+                  (checkedChange)="toggleCollaboratorPermission(collab.uid, $event)"
                   title="Toggle Edit Permission"
-                ></mat-slide-toggle>
+                ></app-toggle>
 
                 <button 
                   (click)="removeCollaborator(collab.uid)"

@@ -1,14 +1,11 @@
 <!-- Analysis Toolbar -->
 <div class="flex items-center justify-between px-4 h-10 border-b border-border-base bg-surface overflow-hidden">
   <div class="flex items-center gap-3 h-full">
-    <mat-slide-toggle 
+    <app-toggle 
       [checked]="isEngineActive()" 
-      (change)="onToggleEngine()"
-      color="primary"
-      class="engine-slide-toggle"
+      (checkedChange)="onToggleEngine()"
       title="Toggle Local Evaluation"
-    >
-    </mat-slide-toggle>
+    ></app-toggle>
 
     @if (isEngineError() && isEngineActive()) {
       <button

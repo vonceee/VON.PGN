@@ -9,3 +9,4 @@ export * from './link/link.component';
 export * from './notification-badge/notification-badge.component';
 export * from './win-rate-bar.component';
 export * from './flag-icon/flag-icon.component';
+export * from './toggle/toggle.component';

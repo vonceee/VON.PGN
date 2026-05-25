@@ -1,13 +1,13 @@
 import { Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { EngineService, type SearchMode } from '../../../core/services/engine.service';
 import { computed } from '@angular/core';
+import { ToggleComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-study-analysis',
   standalone: true,
-  imports: [CommonModule, MatSlideToggleModule],
+  imports: [CommonModule, ToggleComponent],
   templateUrl: './study-analysis.component.html',
 })
 export class StudyAnalysisComponent {

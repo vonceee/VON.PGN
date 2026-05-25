@@ -5,8 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast.service';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { ButtonComponent } from '@shared/ui';
+import { ButtonComponent, ToggleComponent } from '@shared/ui';
 import { UserHovercardDirective } from '@shared/directives';
 import { AddCollaboratorDialogComponent } from '../dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
@@ -16,7 +15,7 @@ import { UserSearchResult } from '../../../core/services/user.service';
 @Component({
   selector: 'app-study-info',
   standalone: true,
-  imports: [CommonModule, MatSlideToggleModule, ButtonComponent, UserHovercardDirective, DialogModule],
+  imports: [CommonModule, ToggleComponent, ButtonComponent, UserHovercardDirective, DialogModule],
   templateUrl: './study-info.component.html',
   host: { class: 'flex-1 flex flex-col min-h-0' }
 })
