@@ -66,9 +66,13 @@ export class StudyService {
 
   // ── HTTP API ──────────────────────────────────────────────────
 
-  getStudies(my: boolean = false): Observable<any> {
-    const params = my ? '?my=1' : '';
-    return this.http.get(`${this.apiUrl}/studies${params}`);
+  getStudies(my: boolean = false, category?: string): Observable<any> {
+    let params = my ? 'my=1' : '';
+    if (category) {
+      params += params ? `&category=${category}` : `category=${category}`;
+    }
+    const queryString = params ? `?${params}` : '';
+    return this.http.get(`${this.apiUrl}/studies${queryString}`);
   }
 
   createStudy(
