@@ -1,8 +1,7 @@
-import { Component, inject, signal, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 import { BoardEditorComponent } from '../../../../shared/components/chess/board-editor/board-editor.component';
 
@@ -22,209 +21,213 @@ export interface AddChapterDialogResult {
   imports: [
     CommonModule,
     FormsModule,
-    DialogWrapperComponent,
     ButtonComponent,
     BoardEditorComponent,
   ],
   template: `
-    <div class="block w-[90vw] mx-auto   ease-in-out" [class.max-w-xl]="activeTab() !== 'editor'" [class.max-w-3xl]="activeTab() === 'editor'">
-      <app-dialog-wrapper [title]="activeTab() === 'editor' ? 'Board Editor' : 'New Chapter'" (close)="dialogRef.close()">
-        <!-- Body Content -->
-        @if (activeTab() !== 'editor') {
-          <div class="space-y-6">
-            <!-- Chapter Name & Orientation Section -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Chapter Name -->
+    <div class="bg-main rounded-4xl shadow-xl w-full p-8 font-sans space-y-8 relative">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl text-content">{{ activeTab() === 'editor' ? 'Board editor' : 'New chapter' }}</h2>
+      </div>
+
+      <!-- Body Content -->
+      @if (activeTab() !== 'editor') {
+        <div class="space-y-6">
+          <!-- Chapter Name & Orientation Section -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Chapter Name -->
+            <div class="space-y-2">
+              <label class="text-sm font-semibold ml-1">
+                Chapter Name
+              </label>
+              <div class="relative group">
+                <input
+                  type="text"
+                  [ngModel]="name()"
+                  (ngModelChange)="name.set($event)"
+                  placeholder="e.g. Opening Analysis"
+                  class="w-full px-4 py-2.5 bg-subtle rounded-xl text-sm outline-none placeholder:text-muted/50"
+                  autofocus
+                />
+              </div>
+            </div>
+
+            <!-- Orientation (Hidden for PGN) -->
+            @if (activeTab() !== 'pgn') {
               <div class="space-y-2">
                 <label class="text-sm font-semibold ml-1">
-                  Chapter Name
+                  Orientation
                 </label>
-                <div class="relative group">
-                  <input
-                    type="text"
-                    [ngModel]="name()"
-                    (ngModelChange)="name.set($event)"
-                    placeholder="e.g. Opening Analysis"
-                    class="w-full px-4 py-2.5 bg-subtle/50 border border-base rounded-xl text-sm    outline-none placeholder:text-muted/50   "
-                    autofocus
-                  />
-                  <div class="absolute inset-0 rounded-xl bg-accent/5 opacity-0 group-focus-within:opacity-100 pointer-events-none  "></div>
+                <div class="relative">
+                  <select
+                    [ngModel]="orientation()"
+                    (ngModelChange)="orientation.set($event)"
+                    class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none appearance-none cursor-pointer text-content"
+                  >
+                    <option value="white">White</option>
+                    <option value="black">Black</option>
+                  </select>
+                  <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
+                  </div>
                 </div>
               </div>
+            }
+          </div>
 
-              <!-- Orientation (Hidden for PGN) -->
-              @if (activeTab() !== 'pgn') {
-                <div class="space-y-2    ">
-                  <label class="text-sm font-semibold ml-1">
-                    Orientation
-                  </label>
-                  <div class="relative">
-                    <select
-                      [ngModel]="orientation()"
-                      (ngModelChange)="orientation.set($event)"
-                      class="w-full px-4 py-2.5 bg-subtle/50 border border-base rounded-xl text-sm    outline-none    appearance-none cursor-pointer"
+          <!-- Tab Switcher (appButton Style) -->
+          <div class="flex flex-wrap gap-2 px-1">
+            @for (tab of tabs; track tab.id) {
+              <button
+                appButton
+                [variant]="activeTab() === tab.id ? 'primary' : 'outline'"
+                (click)="activeTab.set(tab.id)"
+                class="whitespace-nowrap"
+              >
+                {{ tab.label }}
+              </button>
+            }
+          </div>
+
+          <!-- Tab Content Area -->
+          <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md relative rounded-2xl p-4 border border-border-base">
+            @if (activeTab() === 'empty') {
+              <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4">
+                <div class="space-y-1">
+                  <h3 class="text-sm font-semibold text-content uppercase">Start Fresh</h3>
+                  <p class="text-xs text-muted max-w-[200px] mx-auto">
+                    Create a new chapter starting from the standard initial position.
+                  </p>
+                </div>
+              </div>
+            }
+
+            @if (activeTab() === 'fen') {
+              <div class="space-y-4 py-4">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-content uppercase ml-1">
+                      Paste FEN
+                    </h3>
+                  </div>
+                  <input
+                    type="text"
+                    [ngModel]="fen()"
+                    (ngModelChange)="fen.set($event)"
+                    placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+                    class="w-full px-4 py-3 bg-subtle rounded-xl text-sm outline-none"
+                  />
+                </div>
+              </div>
+            }
+
+            @if (activeTab() === 'pgn') {
+              <div class="space-y-4 py-2">
+                <div class="space-y-3">
+                  <div class="flex justify-between items-center px-1">
+                    <button 
+                      appButton
+                      variant="primary"
+                      (click)="fileInput.click()" 
+                      [disabled]="isReadingFiles()"
                     >
-                      <option value="white">White</option>
-                      <option value="black">Black</option>
-                    </select>
-                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
-                      <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-
-            <!-- Tab Switcher (appButton Style) -->
-            <div class="flex flex-wrap gap-2 px-1">
-              @for (tab of tabs; track tab.id) {
-                <button
-                  appButton
-                  [variant]="activeTab() === tab.id ? 'primary' : 'outline'"
-                  (click)="activeTab.set(tab.id)"
-                  class="whitespace-nowrap"
-                >
-                  {{ tab.label }}
-                </button>
-              }
-            </div>
-
-            <!-- Tab Content Area -->
-            <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md relative">
-              @if (activeTab() === 'empty') {
-                <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4">
-                  <div class="space-y-1">
-                    <h3 class="text-sm font-semibold text-content uppercase ">Start Fresh</h3>
-                    <p class="text-xs text-muted max-w-[200px] mx-auto ">
-                      create a new chapter starting from the standard initial position.
-                    </p>
-                  </div>
-                </div>
-              }
-
-              @if (activeTab() === 'fen') {
-                <div class="space-y-4 py-4   ">
-                  <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                      <h3 class="text-sm font-semibold text-content uppercase  ml-1">
-                        Paste FEN
-                      </h3>
-                    </div>
-                    <input
-                      type="text"
-                      [ngModel]="fen()"
-                      (ngModelChange)="fen.set($event)"
-                      placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-                      class="w-full px-4 py-3 bg-subtle/50 border border-base rounded-xl text-sm    outline-none   "
-                    />
-                  </div>
-                </div>
-              }
-
-              @if (activeTab() === 'pgn') {
-                <div class="space-y-4 py-2   ">
-                  <div class="space-y-3">
-                    <div class="flex justify-between items-center px-1">
-                      <button 
-                        appButton
-                        variant="primary"
-                        (click)="fileInput.click()" 
-                        [disabled]="isReadingFiles()"
-                      >
-                        @if (isReadingFiles()) {
-                          <div class="w-3 h-3 border-2 border-accent/30 border-t-accent rounded-full animate-spin"></div>
-                          Reading...
-                        } @else {
-                          Choose Files
-                        }
-                      </button>
-                      <input 
-                        #fileInput 
-                        type="file" 
-                        multiple 
-                        (change)="onFilesSelected($event)" 
-                        class="hidden" 
-                        accept=".pgn"
-                      >
-                    </div>
-                    
-                    <div class="relative group">
-                      <textarea
-                        [ngModel]="pgn()"
-                        (ngModelChange)="pgn.set($event)"
-                        rows="8"
-                        placeholder="paste pgn here.."
-                        class="w-full px-4 py-3 bg-subtle/50 border border-base rounded-xl text-sm outline-none    resize-none custom-scrollbar"
-                      ></textarea>
-                      
-                      @if (fileSummary()) {
-                        <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-base rounded-lg text-xs text-accent font-semibold   slide-in-from-bottom-2">
-                          {{ fileSummary() }}
-                        </div>
+                      @if (isReadingFiles()) {
+                        <span class="w-3 h-3 border-2 border-accent/30 border-t-accent rounded-full animate-spin mr-2 inline-block"></span>
+                        Reading...
+                      } @else {
+                        Choose Files
                       }
-                    </div>
+                    </button>
+                    <input 
+                      #fileInput 
+                      type="file" 
+                      multiple 
+                      (change)="onFilesSelected($event)" 
+                      class="hidden" 
+                      accept=".pgn"
+                    >
+                  </div>
+                  
+                  <div class="relative group">
+                    <textarea
+                      [ngModel]="pgn()"
+                      (ngModelChange)="pgn.set($event)"
+                      rows="8"
+                      placeholder="Paste PGN here..."
+                      class="w-full px-4 py-3 bg-subtle rounded-xl text-sm outline-none resize-none custom-scrollbar"
+                    ></textarea>
+                    
+                    @if (fileSummary()) {
+                      <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-border-base rounded-lg text-xs text-accent font-semibold slide-in-from-bottom-2">
+                        {{ fileSummary() }}
+                      </div>
+                    }
                   </div>
                 </div>
-              }
-            </div>
+              </div>
+            }
           </div>
+        </div>
+      } @else {
+        <!-- Full-screen Editor View -->
+        <div>
+          <app-board-editor 
+            #editor
+            [fen]="fen()" 
+            (fenChange)="fen.set($event)"
+            [orientation]="orientation()"
+            [compact]="true"
+            [hideCoordinates]="true"
+          ></app-board-editor>
+        </div>
+      }
+
+      <!-- Footer Actions -->
+      <div class="pt-4 flex gap-4 w-full">
+        @if (activeTab() !== 'editor') {
+          <button appButton variant="outline" (click)="dialogRef.close()" class="flex-1">
+            <span>Cancel</span>
+          </button>
+          <button 
+            appButton 
+            variant="primary" 
+            (click)="onSubmit()" 
+            [disabled]="!isFormValid()"
+            class="flex-1"
+          >
+            <span>Create chapter</span>
+          </button>
         } @else {
-          <!-- Full-screen Editor View -->
-          <div>
-            <app-board-editor 
-              #editor
-              [fen]="fen()" 
-              (fenChange)="fen.set($event)"
-              [orientation]="orientation()"
-              [compact]="true"
-              [hideCoordinates]="true"
-            ></app-board-editor>
-          </div>
+          <button appButton variant="outline" (click)="activeTab.set('empty')" class="flex items-center gap-2 group flex-1">
+            <svg class="w-4 h-4 fill-current group-hover:-translate-x-1" viewBox="0 0 20 20"><path d="M11.707 5.293a1 1 0 010 1.414L8.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/></svg>
+            <span>Back</span>
+          </button>
+
+          <button appButton variant="outline" (click)="boardEditor?.resetToInitial()" class="flex-1">
+            <span>Reset Position</span>
+          </button>
+          <button appButton variant="outline" (click)="boardEditor?.clearBoard()" class="flex-1">
+            <span>Clear Board</span>
+          </button>
+          
+          <button 
+            appButton 
+            variant="primary" 
+            (click)="onSubmit()" 
+            [disabled]="!isFormValid()"
+            class="flex-1"
+          >
+            <span>Create Chapter</span>
+          </button>
         }
-
-        <!-- Footer Actions (projected to [actions]) -->
-        <ng-container actions>
-          @if (activeTab() !== 'editor') {
-            <button appButton variant="outline" (click)="dialogRef.close()">
-              Cancel
-            </button>
-            <button 
-              appButton 
-              variant="primary" 
-              (click)="onSubmit()" 
-              [disabled]="!isFormValid()"
-            >
-              Create Chapter
-            </button>
-          } @else {
-            <button appButton variant="outline" (click)="activeTab.set('empty')" class="flex items-center gap-2 group">
-              <svg class="w-4 h-4 fill-current  group-hover:-translate-x-1" viewBox="0 0 20 20"><path d="M11.707 5.293a1 1 0 010 1.414L8.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/></svg>
-              Back
-            </button>
-
-            <button appButton variant="ghost" (click)="boardEditor?.resetToInitial()">
-              Reset Position
-            </button>
-            <button appButton variant="ghost" (click)="boardEditor?.clearBoard()">
-              Clear Board
-            </button>
-
-            <div class="flex-1"></div>
-            
-            <button 
-              appButton 
-              variant="primary" 
-              (click)="onSubmit()" 
-              [disabled]="!isFormValid()"
-              class="px-8"
-            >
-              Create Chapter
-            </button>
-          }
-        </ng-container>
-      </app-dialog-wrapper>
+      </div>
     </div>
   `,
+  styles: [`
+    :host {
+      display: block;
+    }
+  `]
 })
 export class AddChapterDialogComponent implements OnInit {
   @ViewChild('editor') boardEditor?: BoardEditorComponent;
@@ -248,6 +251,13 @@ export class AddChapterDialogComponent implements OnInit {
     { id: 'fen', label: 'FEN' },
     { id: 'pgn', label: 'PGN' },
   ];
+
+  constructor() {
+    effect(() => {
+      const isEditor = this.activeTab() === 'editor';
+      this.dialogRef.updateSize(isEditor ? '768px' : '450px');
+    });
+  }
 
   ngOnInit() {
     if (this.data?.defaultName) {

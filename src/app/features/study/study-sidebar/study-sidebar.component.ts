@@ -71,6 +71,9 @@ export class StudySidebarComponent {
     if (!s) return;
 
     const dialogRef = this.dialog.open<AddChapterDialogResult>(AddChapterDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/5'],
       data: { 
         defaultName: `Chapter ${(s.chapters?.length ?? 0) + 1}`,
       }

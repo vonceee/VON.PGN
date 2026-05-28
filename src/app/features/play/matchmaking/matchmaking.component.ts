@@ -8,7 +8,7 @@ import { GameSeek, TIME_CONTROLS, TimeControlOption } from '../../../core/models
 import { PresenceService } from '../../../core/services/presence.service';
 import { LayoutService } from '../../../core/services/layout.service';
 import { ComputerSetupModalComponent } from '../computer/computer-setup-modal.component';
-import { CustomTimeControlModalComponent } from './custom-time-control-modal.component';
+import { CustomTimeControlDialogComponent } from './custom-time-control-dialog.component';
 import { ButtonComponent } from '@shared/ui';
 import { TopMatchesComponent } from './components/top-matches.component';
 
@@ -88,7 +88,7 @@ export class MatchmakingComponent implements OnInit, OnDestroy {
   }
 
   openCustomTimeControl(): void {
-    const dialogRef = this.dialog.open(CustomTimeControlModalComponent, {
+    const dialogRef = this.dialog.open(CustomTimeControlDialogComponent, {
       width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/5'],

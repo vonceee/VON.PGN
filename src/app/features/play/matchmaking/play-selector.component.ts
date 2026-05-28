@@ -8,7 +8,7 @@ import { TIME_CONTROLS, TimeControlOption } from '../../../core/models/game.mode
 import { ButtonComponent } from '@shared/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ComputerSetupModalComponent } from '../computer/computer-setup-modal.component';
-import { CustomTimeControlModalComponent } from './custom-time-control-modal.component';
+import { CustomTimeControlDialogComponent } from './custom-time-control-dialog.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroInformationCircle } from '@ng-icons/heroicons/outline';
 
@@ -39,7 +39,7 @@ export class PlaySelectorComponent {
 
 
   openCustomTimeControl(): void {
-    const dialogRef = this.dialog.open(CustomTimeControlModalComponent, {
+    const dialogRef = this.dialog.open(CustomTimeControlDialogComponent, {
       width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/5'],

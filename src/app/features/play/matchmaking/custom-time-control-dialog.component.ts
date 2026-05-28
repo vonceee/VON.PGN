@@ -10,7 +10,7 @@ export interface CustomTimeControlResult {
 }
 
 @Component({
-  selector: 'app-custom-time-control-modal',
+  selector: 'app-custom-time-control-dialog',
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
@@ -72,7 +72,7 @@ export interface CustomTimeControlResult {
     }
   `]
 })
-export class CustomTimeControlModalComponent {
+export class CustomTimeControlDialogComponent {
   dialogRef = inject(DialogRef<CustomTimeControlResult>);
 
   customMinutes = signal(10);

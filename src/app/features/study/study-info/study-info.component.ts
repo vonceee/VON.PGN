@@ -42,7 +42,11 @@ export class StudyInfoComponent {
 
   addCollaborator() {
     if (!this.isOwner()) return;
-    const dialogRef = this.dialog.open<UserSearchResult>(AddCollaboratorDialogComponent);
+    const dialogRef = this.dialog.open<UserSearchResult>(AddCollaboratorDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/5'],
+    });
     dialogRef.closed.subscribe((result) => {
       if (result) {
         this.studyService.addCollaborator(this.study()!.id, result.uid).subscribe({
@@ -100,6 +104,9 @@ export class StudyInfoComponent {
     if (!s) return;
 
     const dialogRef = this.dialog.open<any>(StudySettingsDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/5'],
       data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility, category: s.category, orientation: s.orientation }
     });
 
