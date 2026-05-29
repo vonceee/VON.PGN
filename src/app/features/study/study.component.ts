@@ -505,6 +505,75 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
   }
 
+  onPromoteToMainline(target: MoveNode) {
+    if (!this.canEdit()) return;
+
+    this.isActionInProgress.set(true);
+
+    this.moveTree.update(tree => {
+      const treeCopy = JSON.parse(JSON.stringify(tree)); // Deep copy to guarantee pure reactivity
+      const res = this.findVariationBranch(treeCopy, target.fen, target.ply);
+      if (res) {
+        const { parentList, variationIndex, branchIndex } = res;
+        const i = variationIndex;
+        const j = branchIndex;
+        const V = parentList[i].variations[j];
+
+        // Sibling 1 (old mainline path slice starting at index i)
+        const oldMainlinePath = [...parentList.slice(i)];
+        const siblingVars = oldMainlinePath[0].variations || [];
+        const remainingSiblings = siblingVars.filter((_, idx) => idx !== j);
+
+        // Demote old mainline path to a side variation
+        oldMainlinePath[0].variations = [];
+
+        // Assign the previous mainline and other siblings as sibling branches under the promoted move
+        V[0].variations = [oldMainlinePath, ...remainingSiblings];
+
+        // Splay in the promoted branch
+        parentList.splice(i, parentList.length - i, ...V);
+      }
+      return treeCopy;
+    });
+
+    // Align user's selected node selection and board navigation context to the newly promoted move
+    const updatedTree = this.moveTree();
+    const nodeInPromotedTree = this.findNodeRecursive(updatedTree, target.fen);
+    if (nodeInPromotedTree) {
+      this.updateCurrentPosition(nodeInPromotedTree);
+    }
+
+    // Broadcast updated moves tree to backend and collaborators
+    this.studyService.emitMove('', this.currentFen(), this.moveTree(), this.boardOrientation(), this.isSyncing())
+      .subscribe({
+        next: () => this.isActionInProgress.set(false),
+        error: () => this.isActionInProgress.set(false),
+        complete: () => this.isActionInProgress.set(false)
+      });
+  }
+
+  private findVariationBranch(
+    nodes: MoveNode[],
+    targetFen: string,
+    targetPly: number
+  ): { parentList: MoveNode[]; variationIndex: number; branchIndex: number } | null {
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      if (node.variations) {
+        for (let j = 0; j < node.variations.length; j++) {
+          const variation = node.variations[j];
+          const foundIdx = variation.findIndex(n => n.fen === targetFen && n.ply === targetPly);
+          if (foundIdx !== -1) {
+            return { parentList: nodes, variationIndex: i, branchIndex: j };
+          }
+          const res = this.findVariationBranch(variation, targetFen, targetPly);
+          if (res) return res;
+        }
+      }
+    }
+    return null;
+  }
+
   onNavigateToPly(ply: number) {
     if (this.isSyncing() && !this.canEdit()) return;
     this.lastLocalInteractionTime = Date.now();

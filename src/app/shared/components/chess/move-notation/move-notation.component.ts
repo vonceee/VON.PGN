@@ -41,7 +41,7 @@ export class MoveNotationComponent {
   // Legacy Flat Moves (Used by everything else)
   moves = input<string[]>([]);
 
-  layout = input<'grid' | 'inline'>('inline');
+  layout = input<'grid' | 'inline' | 'tree'>('inline');
 
   currentFen = input<string>('');
   currentPly = input<number>(0);
@@ -54,17 +54,26 @@ export class MoveNotationComponent {
   nodeClicked = output<MoveNode>();
   deleteFromHere = output<MoveNode>();
   annotateMove = output<MoveNode>();
+  promoteToMainline = output<MoveNode>();
 
   // Context Menu State
   contextMenuNode = signal<MoveNode | null>(null);
   contextMenuPos = signal<{ x: number; y: number }>({ x: 0, y: 0 });
+  isContextMenuNodeMainline = signal<boolean>(true);
 
   // Navigation Selection State
   selectedVariationIndex = signal(0);
 
+  // Active Layout State
+  activeLayout = signal<'grid' | 'inline' | 'tree'>('tree');
+
   scrollContainer = viewChild<ElementRef>('scrollContainer');
 
   constructor() {
+    // Initialize activeLayout based on the layout input (map inline to tree for default premium view)
+    const initial = this.layout();
+    this.activeLayout.set(initial === 'inline' ? 'tree' : initial);
+
     effect(() => {
       // Trigger scroll when currentFen changes
       this.currentFen();
@@ -243,10 +252,11 @@ export class MoveNotationComponent {
     }
   }
 
-  onContextMenu(event: MouseEvent, node: MoveNode) {
+  onContextMenu(event: MouseEvent, node: MoveNode, isMainline: boolean) {
     event.preventDefault();
     this.contextMenuNode.set(node);
     this.contextMenuPos.set({ x: event.clientX, y: event.clientY });
+    this.isContextMenuNodeMainline.set(isMainline);
   }
 
   @HostListener('document:click')
@@ -266,6 +276,14 @@ export class MoveNotationComponent {
     const node = this.contextMenuNode();
     if (node) {
       this.annotateMove.emit(node);
+    }
+    this.closeContextMenu();
+  }
+
+  onPromoteToMainline() {
+    const node = this.contextMenuNode();
+    if (node) {
+      this.promoteToMainline.emit(node);
     }
     this.closeContextMenu();
   }
