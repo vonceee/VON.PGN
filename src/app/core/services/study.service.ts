@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, EMPTY, throwError, tap } from 'rxjs';
 import { Router } from '@angular/router';
@@ -16,6 +16,11 @@ import {
   StudyShapesDrawnPayload,
   StudySyncedPayload,
 } from '../models/study.model';
+
+export interface StudyViewer {
+  userId: string;
+  userName: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +41,29 @@ export class StudyService {
   isLoading = signal(false);
   isConnected = signal(false);
   viewerCount = signal(1);
-  viewerNames = signal<string[]>([]);
+  viewerNames = signal<StudyViewer[]>([]);
+  
+  isClassActive = signal<boolean>(false);
+  lockHolderId = signal<string | null>(null);
+  hasJoinedClass = signal<boolean>(false);
+
+  hasBoardControl = computed(() => {
+    // If no class is active, everyone can explore locally
+    if (!this.isClassActive()) return true;
+
+    // If a class is active, check if this is the owner
+    const user = this.authService.currentUser();
+    const myUid = user?.uid || user?.id;
+    const study = this.currentStudy();
+    const studyOwnerId = study?.user_id || (study as any)?.userId || study?.owner?.id;
+    const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
+
+    // Students who haven't joined the class yet can explore freely
+    if (!isOwner && !this.hasJoinedClass()) return true;
+
+    // If joined, only the lock holder can explore/write
+    return !!(myUid && this.lockHolderId() && String(myUid) === String(this.lockHolderId()));
+  });
   
   // Track recently emitted move IDs to prevent 'back and forth' stuttering when receiving own broadcasts
   private emittedMoveIds = new Set<string>();
@@ -100,6 +127,15 @@ export class StudyService {
         DevLogger.log('[StudyService] Raw API Response:', res.data);
         this.currentStudy.set(res.data);
         
+        // Real-time synchronization of collaborator roles
+        const user = this.authService.currentUser();
+        const studyOwnerId = res.data.user_id || (res.data as any).userId || res.data.owner?.id;
+        const myUid = user?.uid || user?.id;
+        const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
+        if (isOwner && this.socket) {
+          this.emitMembersUpdate(res.data.id, res.data.collaborators || []);
+        }
+
         const chapters = res.data.chapters || [];
         if (chapters.length > 0) {
           const unwrap = (c: any) => (c as any)?.data || c;
@@ -170,8 +206,12 @@ export class StudyService {
     });
   }
 
-  addCollaborator(studyId: number, userId: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies/${studyId}/collaborators`, { user_id: userId });
+  addCollaborator(studyId: number, userId: string, canEdit?: boolean): Observable<any> {
+    const body: any = { user_id: userId };
+    if (canEdit !== undefined) {
+      body.can_edit = canEdit;
+    }
+    return this.http.post(`${this.apiUrl}/studies/${studyId}/collaborators`, body);
   }
 
   removeCollaborator(studyId: number, userId: string): Observable<any> {
@@ -231,10 +271,12 @@ export class StudyService {
       });
     });
 
-    this.socket.on('study_synced', (state: StudySyncedPayload) => {
+    this.socket.on('study_synced', (state: any) => {
       DevLogger.log(`[Study] Synced state received for study ${state.chapterId || 'unknown'}`);
+      this.isClassActive.set(state.isClassActive || false);
+      this.lockHolderId.set(state.lockHolderId || null);
       this.lastRemoteState.set({
-        chapterId: state.chapterId,
+        chapterId: state.chapterId || state.currentChapterId,
         fen: state.fen,
         moves: state.moves,
         orientation: state.orientation,
@@ -282,9 +324,54 @@ export class StudyService {
       this.chapterChangedSubject.next(payload);
     });
 
-    this.socket.on('viewer_list_update', (payload: { studyId: string | number; viewers: string[]; count: number }) => {
+    this.socket.on('viewer_list_update', (payload: { studyId: string | number; viewers: StudyViewer[]; count: number }) => {
       this.viewerNames.set(payload.viewers || []);
       this.viewerCount.set(payload.count || 0);
+    });
+
+    this.socket.on('class_session_started', (payload: { isClassActive: boolean; lockHolderId: string }) => {
+      DevLogger.log(`[Study] Class started. Lock holder: ${payload.lockHolderId}`);
+      this.isClassActive.set(payload.isClassActive);
+      this.lockHolderId.set(payload.lockHolderId);
+
+      const user = this.authService.currentUser();
+      const myUid = user?.uid || user?.id;
+      const study = this.currentStudy();
+      const studyOwnerId = study?.user_id || (study as any)?.userId || study?.owner?.id;
+      const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
+
+      if (isOwner) {
+        this.hasJoinedClass.set(true); // Host is always in class
+        this.toastService.show('Classroom session has started!');
+      } else {
+        this.hasJoinedClass.set(false); // Students reset join state
+      }
+    });
+
+    this.socket.on('class_session_ended', (payload: { isClassActive: boolean; lockHolderId: string | null }) => {
+      DevLogger.log('[Study] Class ended.');
+      this.isClassActive.set(payload.isClassActive);
+      this.lockHolderId.set(payload.lockHolderId);
+      this.hasJoinedClass.set(false);
+      this.toastService.show('Classroom session has ended. Free exploration restored.');
+    });
+
+    this.socket.on('board_control_updated', (payload: { lockHolderId: string }) => {
+      DevLogger.log(`[Study] Board control updated. Lock holder: ${payload.lockHolderId}`);
+      this.lockHolderId.set(payload.lockHolderId);
+      
+      const user = this.authService.currentUser();
+      const myUid = user?.uid || user?.id;
+      if (String(myUid) === String(payload.lockHolderId)) {
+        this.toastService.show('You have been granted board control!', 'success');
+      } else {
+        this.toastService.show('Board control has been updated.');
+      }
+    });
+
+    this.socket.on('members_updated', (payload: { collaborators: any[] }) => {
+      DevLogger.log('[Study] Members/Collaborators list updated in real-time');
+      this.currentStudy.update(curr => curr ? { ...curr, collaborators: payload.collaborators } : null);
     });
 
     this.socket.on('study_chat_message', (payload: any) => {
@@ -310,6 +397,13 @@ export class StudyService {
       DevLogger.error('[StudyService] Chapter object exists but ID is missing:', chapter);
       return throwError(() => new Error('Chapter ID missing'));
     }
+
+    this.lastRemoteState.set({
+      chapterId,
+      fen,
+      moves,
+      orientation: orientation || chapter.orientation
+    });
 
     const clientGeneratedId = crypto.randomUUID();
     if (broadcast) {
@@ -394,7 +488,22 @@ export class StudyService {
     });
   }
 
+  emitMembersUpdate(studyId: number, collaborators: any[]): void {
+    if (!this.socket) return;
+    this.socket.emit('update_members', {
+      studyId,
+      collaborators
+    });
+  }
+
   emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
+    this.lastRemoteState.set({
+      chapterId,
+      fen,
+      moves,
+      orientation
+    });
+
     if (!broadcast) return;
     const clientGeneratedId = crypto.randomUUID();
     this.emittedMoveIds.add(clientGeneratedId);
@@ -415,6 +524,13 @@ export class StudyService {
     const s = this.currentStudy();
     const c = this.currentChapter();
     if (!s || !c || !this.socket || !broadcast) return;
+
+    this.lastRemoteState.set({
+      chapterId: c.id,
+      fen,
+      moves,
+      orientation: orientation || c.orientation
+    });
 
     const clientGeneratedId = crypto.randomUUID();
     if (broadcast) this.emittedMoveIds.add(clientGeneratedId);
@@ -449,6 +565,30 @@ export class StudyService {
       a.click();
       window.URL.revokeObjectURL(url);
     });
+  }
+
+  startClass(): void {
+    const study = this.currentStudy();
+    if (!study || !this.socket) return;
+    this.socket.emit('start_class', { studyId: study.id });
+  }
+
+  endClass(): void {
+    const study = this.currentStudy();
+    if (!study || !this.socket) return;
+    this.socket.emit('end_class', { studyId: study.id });
+  }
+
+  grantBoardControl(targetUserId: string): void {
+    const study = this.currentStudy();
+    if (!study || !this.socket) return;
+    this.socket.emit('grant_board_control', { studyId: study.id, targetUserId });
+  }
+
+  revokeBoardControl(): void {
+    const study = this.currentStudy();
+    if (!study || !this.socket) return;
+    this.socket.emit('revoke_board_control', { studyId: study.id });
   }
 
   disconnect(): void {

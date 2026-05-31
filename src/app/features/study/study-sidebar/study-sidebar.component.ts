@@ -48,10 +48,19 @@ export class StudySidebarComponent {
   viewerCount = this.studyService.viewerCount;
   viewerNames = this.studyService.viewerNames;
 
+  /**
+   * Switches the active chapter for the current user.
+   *
+   * WHY: Chapter navigation is intentionally ungated for view-only members and
+   * guests. Blocking it (the old `isSyncing() && !canEdit()` guard) prevented
+   * non-editors from reading any chapter other than the one the owner was on,
+   * making the study effectively unusable for viewers. Chapter selection is a
+   * read-only local operation; only the subsequent `emitChapterChange` call
+   * (which is canEdit-gated) affects other connected clients.
+   */
   selectChapter(chap: StudyChapter) {
-    if (this.isSyncing() && !this.canEdit()) return;
     if (this.currentChapter()?.id === chap.id) return;
-    
+
     this.studyService.currentChapter.set(chap);
     if (this.canEdit()) {
       this.studyService.emitChapterChange(

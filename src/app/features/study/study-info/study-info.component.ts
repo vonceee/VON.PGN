@@ -5,17 +5,17 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast.service';
-import { ButtonComponent, ToggleComponent } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 import { UserHovercardDirective } from '@shared/directives';
-import { AddCollaboratorDialogComponent } from '../dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
+import { AddMemberDialogComponent, AddMemberResult } from '../dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { StudySettingsDialogComponent } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
-import { UserSearchResult } from '../../../core/services/user.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-study-info',
   standalone: true,
-  imports: [CommonModule, ToggleComponent, ButtonComponent, UserHovercardDirective, DialogModule],
+  imports: [CommonModule, ButtonComponent, UserHovercardDirective, DialogModule, FormsModule],
   templateUrl: './study-info.component.html',
   host: { class: 'flex-1 flex flex-col min-h-0' }
 })
@@ -31,27 +31,22 @@ export class StudyInfoComponent {
   canEdit = input.required<boolean>();
   isSyncing = input.required<boolean>();
 
-  // Outputs
-  syncToggle = output<boolean>();
-
   study = this.studyService.currentStudy;
 
-  toggleSync() {
-    this.syncToggle.emit(!this.isSyncing());
-  }
-
-  addCollaborator() {
+  addMember() {
     if (!this.isOwner()) return;
-    const dialogRef = this.dialog.open<UserSearchResult>(AddCollaboratorDialogComponent, {
+    const dialogRef = this.dialog.open<AddMemberResult>(AddMemberDialogComponent, {
       width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/5'],
     });
     dialogRef.closed.subscribe((result) => {
       if (result) {
-        this.studyService.addCollaborator(this.study()!.id, result.uid).subscribe({
+        const canEdit = result.role === 'collaborator';
+        this.studyService.addCollaborator(this.study()!.id, result.user.uid, canEdit).subscribe({
           next: () => {
-            this.toastService.show('Collaborator added', 'success');
+            const roleName = result.role === 'collaborator' ? 'Collaborator' : 'Member';
+            this.toastService.show(`${roleName} added successfully`, 'success');
             this.studyService.getStudy(this.study()!.id);
           }
         });
@@ -59,15 +54,15 @@ export class StudyInfoComponent {
     });
   }
 
-  removeCollaborator(userId: string) {
+  removeMember(userId: string) {
     if (!this.isOwner()) return;
     const s = this.study();
     if (!s) return;
 
     const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
       data: {
-        title: 'Remove Collaborator',
-        message: 'Are you sure you want to remove this collaborator?',
+        title: 'Remove Member',
+        message: 'Are you sure you want to remove this member?',
         confirmText: 'Remove'
       }
     });
@@ -76,7 +71,7 @@ export class StudyInfoComponent {
       if (confirmed) {
         this.studyService.removeCollaborator(s.id, userId).subscribe({
           next: () => {
-            this.toastService.show('Collaborator removed', 'success');
+            this.toastService.show('Member removed successfully', 'success');
             this.studyService.getStudy(s.id);
           }
         });
@@ -84,11 +79,12 @@ export class StudyInfoComponent {
     });
   }
 
-  toggleCollaboratorPermission(userId: string, canEdit: boolean) {
+  toggleMemberPermission(userId: string, canEdit: boolean) {
     if (!this.isOwner()) return;
     this.studyService.updateCollaboratorPermission(this.study()!.id, userId, canEdit).subscribe({
       next: () => {
-        this.toastService.show(canEdit ? 'Permission granted' : 'Permission revoked', 'success');
+        const roleName = canEdit ? 'Collaborator' : 'Member';
+        this.toastService.show(`Role updated to ${roleName}`, 'success');
         this.studyService.getStudy(this.study()!.id);
       }
     });

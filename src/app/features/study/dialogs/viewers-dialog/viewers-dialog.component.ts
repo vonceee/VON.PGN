@@ -1,9 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 import { UserHovercardDirective } from '@shared/directives';
+import { StudyService, StudyViewer } from '../../../../core/services/study.service';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-viewers-dialog',
@@ -14,14 +16,47 @@ import { UserHovercardDirective } from '@shared/directives';
       <app-dialog-wrapper title="Players in the lobby" (close)="dialogRef.close()">
         <div class="space-y-4">
           <div class="max-h-[300px] overflow-y-auto custom-scrollbar space-y-0.5 pr-1">
-            @for (viewer of data.viewers; track viewer) {
-              <div class="w-full flex items-center p-2.5 px-4 rounded-xl hover:bg-surface group">
-                <div class="flex flex-col">
+            @for (viewer of data.viewers; track getViewerKey(viewer)) {
+              <div class="w-full flex items-center justify-between p-2.5 px-4 rounded-xl hover:bg-surface group">
+                <div class="flex items-center gap-2 overflow-hidden flex-1">
                   <span 
-                    class="text-sm font-semibold text-content group-hover:text-accent cursor-pointer"
-                    [appUserHovercard]="viewer"
-                  >{{ viewer }}</span>
+                    class="text-sm font-semibold text-content group-hover:text-accent cursor-pointer truncate"
+                    [appUserHovercard]="getViewerName(viewer)"
+                  >{{ getViewerName(viewer) }}</span>
+
+                  @if (isStudyViewer(viewer) && isLockHolder(viewer)) {
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                      <svg class="w-2.5 h-2.5 animate-pulse" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                      </svg>
+                      Chalk
+                    </span>
+                  }
                 </div>
+
+                @if (isStudyViewer(viewer) && showPassChalk(viewer)) {
+                  <div class="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
+                    @if (isLockHolder(viewer)) {
+                      <button 
+                        appButton 
+                        variant="danger" 
+                        class="!px-2.5 !py-1 !text-[11px] !font-bold"
+                        (click)="revokeChalk()"
+                      >
+                        Revoke
+                      </button>
+                    } @else {
+                      <button 
+                        appButton 
+                        variant="primary" 
+                        class="!px-2.5 !py-1 !text-[11px] !font-bold"
+                        (click)="passChalk(viewer.userId)"
+                      >
+                        Pass Chalk
+                      </button>
+                    }
+                  </div>
+                }
               </div>
             }
           </div>
@@ -51,6 +86,53 @@ import { UserHovercardDirective } from '@shared/directives';
 })
 export class ViewersDialogComponent {
   dialogRef = inject(DialogRef);
-  data = inject<{ viewers: string[], count: number }>(DIALOG_DATA);
+  data = inject<{ viewers: Array<string | StudyViewer>, count: number }>(DIALOG_DATA);
+
+  private studyService = inject(StudyService, { optional: true });
+  private authService = inject(AuthService, { optional: true });
+
+  isClassActive = computed(() => this.studyService?.isClassActive() ?? false);
+  lockHolderId = computed(() => this.studyService?.lockHolderId() ?? null);
+
+  isOwner = computed(() => {
+    if (!this.authService || !this.studyService) return false;
+    const user = this.authService.currentUser();
+    const s = this.studyService.currentStudy();
+    if (!user || !s) return false;
+    const myUid = user.uid || user.id;
+    const studyOwnerId = s.user_id || (s as any).userId || s.owner?.id;
+    return !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
+  });
+
+  isStudyViewer(viewer: any): viewer is StudyViewer {
+    return viewer && typeof viewer === 'object' && 'userId' in viewer;
+  }
+
+  getViewerKey(viewer: string | StudyViewer): string {
+    return this.isStudyViewer(viewer) ? viewer.userId : viewer;
+  }
+
+  getViewerName(viewer: string | StudyViewer): string {
+    return this.isStudyViewer(viewer) ? viewer.userName : viewer;
+  }
+
+  isLockHolder(viewer: StudyViewer): boolean {
+    return String(viewer.userId) === String(this.lockHolderId());
+  }
+
+  showPassChalk(viewer: StudyViewer): boolean {
+    if (!this.isOwner() || !this.isClassActive()) return false;
+    const user = this.authService?.currentUser();
+    const myUid = user?.uid || user?.id;
+    return !!(myUid && String(viewer.userId) !== String(myUid));
+  }
+
+  passChalk(userId: string) {
+    this.studyService?.grantBoardControl(userId);
+  }
+
+  revokeChalk() {
+    this.studyService?.revokeBoardControl();
+  }
 }
 

@@ -33,6 +33,8 @@ import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { AnnotateMoveDialogComponent } from './dialogs/annotate-move-dialog/annotate-move-dialog.component';
 import { StudySidebarComponent } from './study-sidebar/study-sidebar.component';
 import { StudyInfoComponent } from './study-info/study-info.component';
+import { JoinClassDialogComponent } from './dialogs/join-class-dialog/join-class-dialog.component';
+import { ToastService } from '../../core/services/toast.service';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { ButtonComponent } from '@shared/ui';
 import { ExplorerBoxComponent } from '../explorer/explorer-box.component';
@@ -112,6 +114,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private dialog = inject(Dialog);
   private destroyRef = inject(DestroyRef);
   private layoutService = inject(LayoutService);
+  private toastService = inject(ToastService);
 
   study = this.studyService.currentStudy;
   currentChapter = this.studyService.currentChapter;
@@ -187,20 +190,114 @@ export class StudyComponent implements OnInit, OnDestroy {
       .filter((g): g is { square: string; symbol: string; class: string } => !!g);
   });
 
+  /**
+   * Determines whether the current user is the owner of this study.
+   *
+   * WHY: The backend UserProfileResource serializes `id` as `uid`, making
+   * a direct `user.id === study.user_id` comparison fail silently (comparing
+   * undefined === undefined, which would default to true for every user).
+   * The null-guard `!!(myUid && ownerId && ...)` prevents false-positive matches.
+   *
+   * ASSUMPTIONS/EDGE CASES:
+   * - Falls back to `user.id` if `user.uid` is absent (guest/legacy sessions).
+   * - Falls back to `s.owner?.id` if `s.user_id` is absent (older API shapes).
+   */
   isOwner = computed(() => {
     const user = this.authService.currentUser();
     const s = this.study();
     if (!user || !s) return false;
-    return String(s.user_id || (s as any).userId || s.owner?.id) === String(user.id || user.uid);
+    const myUid = user.uid || user.id;
+    const studyOwnerId = s.user_id || (s as any).userId || s.owner?.id;
+    return !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
   });
 
+  /**
+   * Determines whether the current user may save and broadcast moves/annotations.
+   *
+   * WHY: Centralizes the three-tier permission hierarchy (class session → owner →
+   * collaborator) into a single reactive gate so every write operation can
+   * simply guard with `if (!this.canEdit()) return` without duplicating logic.
+   *
+   * TRADEOFF: During an active class session the entire permission hierarchy is
+   * bypassed in favour of board-control lock ownership. This means even the study
+   * owner cannot edit while a student holds the chalk — intentional for
+   * classroom coherence.
+   */
   canEdit = computed(() => {
+    if (this.studyService.isClassActive()) {
+      return this.studyService.hasBoardControl();
+    }
+
     if (this.isOwner()) return true;
     const user = this.authService.currentUser();
     const s = this.study();
     if (!user || !s) return false;
-    return s.collaborators?.find(c => String(c.uid) === String(user.id || user.uid))?.can_edit ?? false;
+    const myUid = user.uid || user.id;
+    return s.collaborators?.find(c => myUid && String(c.uid) === String(myUid))?.can_edit ?? false;
   });
+
+  /**
+   * Controls whether pieces can be physically dragged on the chessboard.
+   *
+   * WHY: Decouples the board's drag interactivity from save permissions. Every
+   * visitor (owner, member, guest) should be able to explore positions freely
+   * by dragging pieces. Whether the resulting move is persisted is determined
+   * separately inside `onMoveMade()` via `canEdit()`. Conflating these two
+   * concerns (as the old `[interactive]="canEdit()"` binding did) caused guests
+   * and view-only members to get a completely frozen board.
+   *
+   * TRADEOFF: A guest's local move tree diverges from the saved study after
+   * any drag. This is intentional — the ephemeral session resets on page
+   * reload, preserving the canonical study state for authenticated editors.
+   */
+  boardInteractive = computed(() => {
+    // CRITICAL: hasBoardControl() encodes the full joined/not-joined logic for
+    // class sessions — do not inline-replace this with isClassActive() alone.
+    if (this.studyService.isClassActive()) {
+      return this.studyService.hasBoardControl();
+    }
+    return true;
+  });
+
+  isClassActive = this.studyService.isClassActive;
+  lockHolderId = this.studyService.lockHolderId;
+  hasBoardControl = this.studyService.hasBoardControl;
+  hasJoinedClass = this.studyService.hasJoinedClass;
+
+  toggleClassSession() {
+    if (this.isClassActive()) {
+      this.studyService.endClass();
+    } else {
+      this.studyService.startClass();
+    }
+  }
+
+  joinClassSession() {
+    this.studyService.hasJoinedClass.set(true);
+    this.toastService.show('Joined live classroom session!', 'success');
+  }
+
+  private joinClassDialogRef: any = null;
+
+  openJoinClassDialog() {
+    if (this.joinClassDialogRef) return;
+
+    this.joinClassDialogRef = this.dialog.open<boolean>(JoinClassDialogComponent, {
+      width: '380px',
+      maxWidth: '90vw',
+      backdropClass: ['bg-black/5'],
+      disableClose: true
+    });
+
+    this.joinClassDialogRef.closed.subscribe((joined: boolean | undefined) => {
+      this.joinClassDialogRef = null;
+      if (joined) {
+        this.joinClassSession();
+      } else {
+        this.toastService.show('Exploring freely. You can join the class anytime using the banner.');
+      }
+    });
+  }
 
   isSyncing = signal(true);
   isLargeScreen = signal(false);
@@ -213,7 +310,6 @@ export class StudyComponent implements OnInit, OnDestroy {
   private lastChapterId: number | null = null;
   private lastChapterOrientation: 'white' | 'black' | null = null;
   private pvChess = new Chess();
-  private lastLocalInteractionTime = 0;
 
   isEngineVisible = computed(() => {
     const s = this.study();
@@ -223,6 +319,16 @@ export class StudyComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
+    effect(() => {
+      const active = this.isClassActive();
+      const isOwner = this.isOwner();
+      if (active && !isOwner) {
+        this.ngZone.run(() => {
+          this.openJoinClassDialog();
+        });
+      }
+    });
+
     // Engine Analysis Side-Effect
     toObservable(this.analysisInput)
       .pipe(
@@ -260,7 +366,13 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      if (this.isSyncing() && this.studyService.lastRemoteState().chapterId && !this.isActionInProgress()) this.syncToRemoteState();
+      // Synchronize boards instantly if class session is active and this user is a follower
+      const isClassActive = this.studyService.isClassActive();
+      const hasControl = this.studyService.hasBoardControl();
+
+      if (isClassActive && !hasControl && this.studyService.lastRemoteState().chapterId && !this.isActionInProgress()) {
+        this.syncToRemoteState();
+      }
     });
 
     effect(() => {
@@ -296,7 +408,8 @@ export class StudyComponent implements OnInit, OnDestroy {
       const s = this.study();
       const user = this.authService.currentUser();
       if (s && user) {
-        const collaborator = s.collaborators?.find(c => String(c.uid) === String(user.id || user.uid));
+        const myUid = user.uid || user.id;
+        const collaborator = s.collaborators?.find(c => myUid && String(c.uid) === String(myUid));
         if (collaborator) {
           this.ngZone.runOutsideAngular(() => {
             setTimeout(() => this.isSyncing.set(collaborator.is_syncing), 0);
@@ -355,14 +468,11 @@ export class StudyComponent implements OnInit, OnDestroy {
     const remote = this.studyService.lastRemoteState();
     if (!remote.chapterId) return;
 
-    // Guard against remote updates overwriting very recent local interactions 
-    // unless it's a chapter change or we've been idle for at least 1000ms
     const isChapterChange = String(this.currentChapter()?.id) !== String(remote.chapterId);
-    if (!isChapterChange && Date.now() - this.lastLocalInteractionTime < 1000) {
-      DevLogger.log('[Study] Skipping remote sync due to recent local interaction');
-      return;
-    }
+    this.executeSync(remote, isChapterChange);
+  }
 
+  private executeSync(remote: any, isChapterChange: boolean) {
     // Only sync if the FEN is actually different to avoid redundant board resets
     if (!isChapterChange && this.currentFen() === remote.fen) {
       return;
@@ -417,9 +527,20 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.updateCurrentPosition(tree.length > 0 ? tree[tree.length - 1] : null);
   }
 
+  /**
+   * Handles a move completed on the chessboard by any user.
+   *
+   * WHY: Moves are always applied to the local signal tree immediately so
+   * every visitor (including unauthenticated guests) gets a responsive,
+   * explorable board. The decision to persist is a separate concern gated by
+   * `canEdit()`, keeping the UI layer decoupled from authorization.
+   *
+   * TRADEOFF: A guest's or view-only member's local move tree diverges from
+   * the canonical study after a drag. This is intentional — the ephemeral
+   * session state resets on page reload, preserving the saved study for
+   * authenticated editors.
+   */
   onMoveMade(event: any) {
-    if (!this.canEdit()) return;
-    this.lastLocalInteractionTime = Date.now();
     const move = event.move || event;
     const san = String(move.san || '');
     const fen = String(event.fen || '');
@@ -434,7 +555,10 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.remoteShapes.set([]);
     this.engineArrows.set([]);
     this.audioService.playChessMove(move);
-    this.studyService.emitMove(san, fen, this.moveTree(), this.boardOrientation(), this.isSyncing()).subscribe();
+
+    if (this.canEdit()) {
+      this.studyService.emitMove(san, fen, this.moveTree(), this.boardOrientation(), this.isSyncing()).subscribe();
+    }
   }
 
   private insertNodeDeep(nodes: MoveNode[], parentPly: number, parentFen: string, newNode: MoveNode): MoveNode[] {
@@ -463,8 +587,11 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onNodeClicked(node: MoveNode) {
-    if (this.isSyncing() && !this.canEdit()) return;
-    this.lastLocalInteractionTime = Date.now();
+    // WHY: During an active class session, joined followers are locked to the
+    // teacher's board position — allowing them to navigate independently would
+    // desync the shared board state. Outside a class (or for non-joined viewers)
+    // navigation is always local and never broadcasts to other clients.
+    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
     this.updateCurrentPosition(node);
     this.remoteShapes.set([]);
     this.engineArrows.set([]);
@@ -575,8 +702,8 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onNavigateToPly(ply: number) {
-    if (this.isSyncing() && !this.canEdit()) return;
-    this.lastLocalInteractionTime = Date.now();
+    // WHY: See onNodeClicked — same class-session lock rationale applies.
+    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
     if (ply <= this.initialPly()) {
       this.updateCurrentPosition(null);
       if (this.canEdit()) this.studyService.emitNavigation(this.currentChapter()?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', this.moveTree(), this.boardOrientation(), this.isSyncing());
@@ -593,14 +720,14 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onPrevMove() {
-    if (this.isSyncing() && !this.canEdit()) return;
+    // WHY: See onNodeClicked — same class-session lock rationale applies.
+    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
     
     const context = findNodeContext(this.moveTree(), this.currentFen());
     if (context.parent) {
       this.onNodeClicked(context.parent);
     } else if (this.currentNode()) {
       // Go to start
-      this.lastLocalInteractionTime = Date.now();
       this.updateCurrentPosition(null);
       this.remoteShapes.set([]);
       this.engineArrows.set([]);
@@ -617,7 +744,8 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   onNextMove() {
-    if (this.isSyncing() && !this.canEdit()) return;
+    // WHY: See onNodeClicked — same class-session lock rationale applies.
+    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
 
     const tree = this.moveTree();
     if (tree.length === 0) return;
