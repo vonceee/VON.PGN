@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ViewChild, effect } from '@angular/core';
+import { Component, inject, signal, OnInit, ViewChild, effect, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
@@ -58,18 +58,53 @@ export interface AddChapterDialogResult {
                 <label class="text-sm font-semibold ml-1">
                   Orientation
                 </label>
-                <div class="relative">
-                  <select
-                    [ngModel]="orientation()"
-                    (ngModelChange)="orientation.set($event)"
-                    class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none appearance-none cursor-pointer text-content"
+                <div #orientationDropdownContainer class="relative">
+                  <button
+                    type="button"
+                    (click)="isOrientationDropdownOpen.update(v => !v)"
+                    class="w-full py-2.5 pl-1 pr-1 text-left text-content font-medium cursor-pointer text-sm border-b-2 border-border-base flex items-center justify-between focus:outline-none bg-transparent"
                   >
-                    <option value="white">White</option>
-                    <option value="black">Black</option>
-                  </select>
-                  <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
-                  </div>
+                    <span>{{ orientation() === 'white' ? 'White' : 'Black' }}</span>
+                    <svg
+                      class="fill-current h-4 w-4 text-muted transition-transform duration-200"
+                      [class.rotate-180]="isOrientationDropdownOpen()"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  </button>
+
+                  @if (isOrientationDropdownOpen()) {
+                    <div
+                      class="absolute top-full left-0 w-full bg-main border border-border-base rounded-xl py-2 mt-2 z-50 flex flex-col shadow-lg max-h-64 overflow-y-auto"
+                    >
+                      <button
+                        type="button"
+                        (click)="setOrientation('white')"
+                        class="w-full px-4 py-2.5 hover:bg-subtle flex items-center text-left group/item cursor-pointer focus:outline-none"
+                      >
+                        <span
+                          class="text-sm text-content group-hover/item:text-accent font-medium"
+                          [class.text-accent]="orientation() === 'white'"
+                        >
+                          White
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        (click)="setOrientation('black')"
+                        class="w-full px-4 py-2.5 hover:bg-subtle flex items-center text-left group/item cursor-pointer focus:outline-none"
+                      >
+                        <span
+                          class="text-sm text-content group-hover/item:text-accent font-medium"
+                          [class.text-accent]="orientation() === 'black'"
+                        >
+                          Black
+                        </span>
+                      </button>
+                    </div>
+                  }
                 </div>
               </div>
             }
@@ -94,7 +129,7 @@ export interface AddChapterDialogResult {
             @if (activeTab() === 'empty') {
               <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4">
                 <div class="space-y-1">
-                  <h3 class="text-sm font-semibold text-content uppercase">Start Fresh</h3>
+                  <h3 class="text-sm font-semibold text-content">Start fresh</h3>
                   <p class="text-xs text-muted max-w-[200px] mx-auto">
                     Create a new chapter starting from the standard initial position.
                   </p>
@@ -106,7 +141,7 @@ export interface AddChapterDialogResult {
               <div class="space-y-4 py-4">
                 <div class="space-y-3">
                   <div class="flex items-center justify-between">
-                    <h3 class="text-sm font-semibold text-content uppercase ml-1">
+                    <h3 class="text-sm font-semibold text-content ml-1">
                       Paste FEN
                     </h3>
                   </div>
@@ -125,19 +160,6 @@ export interface AddChapterDialogResult {
               <div class="space-y-4 py-2">
                 <div class="space-y-3">
                   <div class="flex justify-between items-center px-1">
-                    <button 
-                      appButton
-                      variant="primary"
-                      (click)="fileInput.click()" 
-                      [disabled]="isReadingFiles()"
-                    >
-                      @if (isReadingFiles()) {
-                        <span class="w-3 h-3 border-2 border-accent/30 border-t-accent rounded-full animate-spin mr-2 inline-block"></span>
-                        Reading...
-                      } @else {
-                        Choose Files
-                      }
-                    </button>
                     <input 
                       #fileInput 
                       type="file" 
@@ -152,19 +174,31 @@ export interface AddChapterDialogResult {
                     <textarea
                       [ngModel]="pgn()"
                       (ngModelChange)="pgn.set($event)"
-                      rows="8"
+                      rows="4"
                       placeholder="Paste PGN here..."
                       class="w-full px-4 py-3 bg-subtle rounded-xl text-sm outline-none resize-none custom-scrollbar"
                     ></textarea>
-                    
-                    @if (fileSummary()) {
-                      <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-border-base rounded-lg text-xs text-accent font-semibold slide-in-from-bottom-2">
-                        {{ fileSummary() }}
-                      </div>
-                    }
                   </div>
                 </div>
               </div>
+              <button
+                class="hover:underline cursor-pointer ml-2" 
+                (click)="fileInput.click()" 
+                [disabled]="isReadingFiles()"
+              >
+                @if (isReadingFiles()) {
+                  <span class="w-3 h-3 border-2 border-accent/30 border-t-accent rounded-full animate-spin mr-2 inline-block"></span>
+                  Reading...
+                } @else {
+                  + Upload file
+                }
+              </button>
+              
+              @if (fileSummary()) {
+                <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-border-base rounded-lg text-xs text-accent font-semibold slide-in-from-bottom-2">
+                  {{ fileSummary() }}
+                </div>
+              }
             }
           </div>
         </div>
@@ -231,6 +265,7 @@ export interface AddChapterDialogResult {
 })
 export class AddChapterDialogComponent implements OnInit {
   @ViewChild('editor') boardEditor?: BoardEditorComponent;
+  @ViewChild('orientationDropdownContainer') dropdownContainer?: ElementRef;
   dialogRef = inject(DialogRef<AddChapterDialogResult>);
   data = inject<{
     defaultName?: string;
@@ -240,6 +275,23 @@ export class AddChapterDialogComponent implements OnInit {
   name = signal('');
   activeTab = signal<ChapterTab>('empty');
   orientation = signal<'white' | 'black'>('white');
+  isOrientationDropdownOpen = signal(false);
+
+  setOrientation(value: 'white' | 'black') {
+    this.orientation.set(value);
+    this.isOrientationDropdownOpen.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    if (
+      this.isOrientationDropdownOpen() &&
+      this.dropdownContainer &&
+      !this.dropdownContainer.nativeElement.contains(event.target as Node)
+    ) {
+      this.isOrientationDropdownOpen.set(false);
+    }
+  }
   fen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
   pgn = signal('');
   isReadingFiles = signal(false);

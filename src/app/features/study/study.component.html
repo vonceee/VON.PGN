@@ -49,82 +49,77 @@
 
         <!-- Right Column: Notation & Info -->
         <div class="h-full flex flex-col gap-4 overflow-hidden">
-          <!-- Sidebar Pills (Outside Panel) -->
-          <div class="flex items-center gap-1.5 px-1 shrink-0 overflow-x-auto whitespace-nowrap scrollbar-hide flex-nowrap">
+          <!-- Tab Icon Pills (Outside Panel) -->
+          <div class="flex items-center gap-0.5 px-1 shrink-0">
             @if (!isThreeColumn()) {
               <button
-                appButton
-                [variant]="activeTab() === 'chapters' ? 'primary' : 'outline'"
                 (click)="activeTab.set('chapters')"
-                class="capitalize"
+                title="Chapters"
+                class="p-2 rounded-lg transition-colors cursor-pointer"
+                [class.text-accent]="activeTab() === 'chapters'"
+                [class.bg-accent\/10]="activeTab() === 'chapters'"
+                [class.text-muted]="activeTab() !== 'chapters'"
               >
-                Chapters
+                <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
               </button>
               <button
-                appButton
-                [variant]="activeTab() === 'chat' ? 'primary' : 'outline'"
                 (click)="activeTab.set('chat')"
-                class="capitalize"
+                title="Chat"
+                class="p-2 rounded-lg transition-colors cursor-pointer"
+                [class.text-accent]="activeTab() === 'chat'"
+                [class.bg-accent\/10]="activeTab() === 'chat'"
+                [class.text-muted]="activeTab() !== 'chat'"
               >
-                Chat
+                <ng-icon name="heroChatBubbleLeftRight" class="text-lg"></ng-icon>
               </button>
             }
             <button
-              appButton
-              [variant]="activeTab() === 'notation' ? 'primary' : 'outline'"
               (click)="activeTab.set('notation')"
-              class="capitalize"
+              title="Notation"
+              class="p-2 rounded-lg transition-colors cursor-pointer"
+              [class.text-accent]="activeTab() === 'notation'"
+              [class.bg-accent\/10]="activeTab() === 'notation'"
+              [class.text-muted]="activeTab() !== 'notation'"
             >
-              Notation
+              <ng-icon name="heroQueueList" class="text-lg"></ng-icon>
             </button>
             <button
-              appButton
-              [variant]="activeTab() === 'info' ? 'primary' : 'outline'"
               (click)="activeTab.set('info')"
-              class="capitalize"
+              title="Info"
+              class="p-2 rounded-lg transition-colors cursor-pointer"
+              [class.text-accent]="activeTab() === 'info'"
+              [class.bg-accent\/10]="activeTab() === 'info'"
+              [class.text-muted]="activeTab() !== 'info'"
             >
-              Info
+              <ng-icon name="heroInformationCircle" class="text-lg"></ng-icon>
             </button>
             <button
-              appButton
-              [variant]="activeTab() === 'metadata' ? 'primary' : 'outline'"
               (click)="activeTab.set('metadata')"
-              class="capitalize"
+              title="Metadata"
+              class="p-2 rounded-lg transition-colors cursor-pointer"
+              [class.text-accent]="activeTab() === 'metadata'"
+              [class.bg-accent\/10]="activeTab() === 'metadata'"
+              [class.text-muted]="activeTab() !== 'metadata'"
             >
-              Metadata
+              <ng-icon name="heroTag" class="text-lg"></ng-icon>
             </button>
             <div class="flex-1"></div>
-            <button
-              appButton
-              variant="ghost"
-              (click)="openShortcuts()"
-              title="Keyboard Shortcuts"
-              class="!px-3 hover:!bg-accent/10 font-semibold text-muted sticky right-0 bg-main z-10"
-            >
-              ?
-            </button>
+            @if (isOwner()) {
+              <button
+                (click)="toggleClassSession()"
+                [title]="isClassActive() ? 'End Class Session' : 'Start Class Session'"
+                class="p-2 rounded-lg transition-colors cursor-pointer"
+                [class.text-red-500]="isClassActive()"
+                [class.text-muted]="!isClassActive()"
+              >
+                <ng-icon [name]="isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
+              </button>
+            }
           </div>
 
           <!-- Main Content Panel -->
-          <div class="flex-1 flex flex-col overflow-hidden bg-surface/5 ui-panel border-l border-border-base/50">
+          <div class="flex-1 flex flex-col overflow-hidden bg-subtle rounded-4xl border border-border-base/50">
             <div class="flex-1 flex flex-col overflow-hidden relative">
-              <!-- Classroom Owner Control Banner -->
-              @if (activeTab() === 'notation' && isOwner()) {
-                <div class="flex-none p-3 px-4 bg-accent/5 border-b border-border-base flex items-center justify-between z-10 shrink-0 select-none">
-                  <div class="flex items-center gap-2">
-                    <span class="relative flex h-2.5 w-2.5">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                        [class.bg-emerald-400]="isClassActive()" [class.bg-slate-400]="!isClassActive()"></span>
-                      <span class="relative inline-flex rounded-full h-2.5 w-2.5"
-                        [class.bg-emerald-500]="isClassActive()" [class.bg-slate-500]="!isClassActive()"></span>
-                    </span>
-                    <span class="text-xs font-bold text-content uppercase tracking-wider">Classroom Mode</span>
-                  </div>
-                  <button appButton [variant]="isClassActive() ? 'danger' : 'primary'" (click)="toggleClassSession()" class="!px-3.5 !py-1.5 !text-xs !font-bold">
-                    {{ isClassActive() ? 'End Class Session' : 'Start Class Session' }}
-                  </button>
-                </div>
-              }
 
               <!-- Classroom Student Join/Lock Banner -->
               @if (activeTab() === 'notation' && !isOwner() && isClassActive()) {
@@ -243,13 +238,20 @@
           </div>
 
           <!-- Opening Explorer & Tablebase -->
-          <div class="px-1">
+          <div class="px-1 flex items-center gap-0.5">
             <app-explorer-box 
               [fen]="currentFen()" 
               [variant]="currentChapter()?.variant || 'standard'"
               [orientation]="boardOrientation()"
               (flipBoard)="flipBoard()"
             ></app-explorer-box>
+            <button
+              (click)="openShortcuts()"
+              title="Keyboard Shortcuts"
+              class="p-2 rounded-lg transition-colors cursor-pointer text-muted hover:text-accent shrink-0"
+            >
+              <ng-icon name="heroQuestionMarkCircle" class="text-lg"></ng-icon>
+            </button>
           </div>
         </div>
       </div>
@@ -268,5 +270,12 @@
       (confirm)="onDeleteConfirmed()"
       (cancel)="showDeleteModal.set(false)"
     ></app-confirm-delete-modal>
+  }
+
+  @if (showStartClassDialog()) {
+    <app-start-class-dialog
+      (confirm)="onStartClassConfirmed()"
+      (cancel)="onStartClassCancelled()"
+    ></app-start-class-dialog>
   }
 </div>

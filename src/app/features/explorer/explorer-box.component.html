@@ -155,22 +155,24 @@
   }
 
   <!-- Trigger Buttons (Always at bottom) -->
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-0.5">
     <button
-      appButton
-      [variant]="isCollapsed() ? 'outline' : 'primary'"
       (click)="toggleCollapse()"
+      title="{{ isCollapsed() ? 'Open Explorer' : 'Close Explorer' }}"
+      class="p-2 rounded-lg transition-colors cursor-pointer"
+      [class.text-accent]="!isCollapsed()"
+      [class.bg-accent\/10]="!isCollapsed()"
+      [class.text-muted]="isCollapsed()"
     >
-      {{ isCollapsed() ? 'Opening Explorer' : 'Close Explorer' }}
+      <ng-icon name="heroMagnifyingGlass" class="text-lg"></ng-icon>
     </button>
 
     <button
-      appButton
-      variant="outline"
       (click)="flipBoard.emit()"
       title="Flip Board"
+      class="p-2 rounded-lg transition-colors cursor-pointer text-muted hover:text-accent"
     >
-      Flip Board
+      <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
     </button>
   </div>
 </div>

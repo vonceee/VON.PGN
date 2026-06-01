@@ -2,106 +2,182 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-wrapper/dialog-wrapper.component';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 
 @Component({
   selector: 'app-edit-metadata-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DialogWrapperComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
-    <app-dialog-wrapper title="Edit Game Metadata" (close)="dialogRef.close()">
+    <div class="bg-main rounded-4xl shadow-xl w-full p-8 font-sans space-y-8 relative">
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl text-content">Edit game metadata</h2>
+      </div>
+
+      <!-- Form Grid -->
       <div class="space-y-6">
-        <!-- Form Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="md:col-span-3 space-y-1">
-            <label class="text-xs  text-muted uppercase ">Tournament / Event</label>
-            <input type="text" [(ngModel)]="tags['Event']" class="metadata-input" placeholder="e.g. World Chess Championship" />
+          <!-- Tournament / Event -->
+          <div class="md:col-span-3 space-y-2">
+            <label class="text-sm font-semibold ml-1">Tournament / Event</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['Event']"
+              placeholder="e.g. World Chess Championship"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">Date</label>
-            <input type="text" [(ngModel)]="tags['Date']" class="metadata-input" placeholder="YYYY.MM.DD" />
+          <!-- Date -->
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">Date</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['Date']"
+              placeholder="YYYY.MM.DD"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
           
           <!-- White Player -->
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">White Title</label>
-            <input type="text" [(ngModel)]="tags['WhiteTitle']" class="metadata-input" placeholder="GM" />
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">White Title</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['WhiteTitle']"
+              placeholder="GM"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
-          <div class="md:col-span-2 space-y-1">
-            <label class="text-xs  text-muted uppercase ">White Player</label>
-            <input type="text" [(ngModel)]="tags['White']" class="metadata-input" placeholder="Full Name" />
+          <div class="md:col-span-2 space-y-2">
+            <label class="text-sm font-semibold ml-1">White Player</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['White']"
+              placeholder="Full Name"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">White Elo</label>
-            <input type="text" [(ngModel)]="tags['WhiteElo']" class="metadata-input" placeholder="Rating" />
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">White Elo</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['WhiteElo']"
+              placeholder="Rating"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
 
           <!-- Black Player -->
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">Black Title</label>
-            <input type="text" [(ngModel)]="tags['BlackTitle']" class="metadata-input" placeholder="GM" />
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">Black Title</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['BlackTitle']"
+              placeholder="GM"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
-          <div class="md:col-span-2 space-y-1">
-            <label class="text-xs  text-muted uppercase ">Black Player</label>
-            <input type="text" [(ngModel)]="tags['Black']" class="metadata-input" placeholder="Full Name" />
+          <div class="md:col-span-2 space-y-2">
+            <label class="text-sm font-semibold ml-1">Black Player</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['Black']"
+              placeholder="Full Name"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">Black Elo</label>
-            <input type="text" [(ngModel)]="tags['BlackElo']" class="metadata-input" placeholder="Rating" />
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">Black Elo</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['BlackElo']"
+              placeholder="Rating"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
 
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">Round</label>
-            <input type="text" [(ngModel)]="tags['Round']" class="metadata-input" placeholder="e.g. 1.1" />
+          <!-- Round -->
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">Round</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['Round']"
+              placeholder="e.g. 1.1"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">Result</label>
-            <select [(ngModel)]="tags['Result']" class="metadata-input cursor-pointer">
-              <option value="*">* (Ongoing/Unknown)</option>
-              <option value="1-0">1-0 (White Wins)</option>
-              <option value="0-1">0-1 (Black Wins)</option>
-              <option value="1/2-1/2">1/2-1/2 (Draw)</option>
-            </select>
+          <!-- Result -->
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">Result</label>
+            <div class="relative">
+              <select
+                [(ngModel)]="tags['Result']"
+                class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none appearance-none cursor-pointer text-content pr-10"
+              >
+                <option value="*">* (Ongoing/Unknown)</option>
+                <option value="1-0">1-0 (White Wins)</option>
+                <option value="0-1">0-1 (Black Wins)</option>
+                <option value="1/2-1/2">1/2-1/2 (Draw)</option>
+              </select>
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                </svg>
+              </div>
+            </div>
           </div>
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">ECO Code</label>
-            <input type="text" [(ngModel)]="tags['ECO']" class="metadata-input" placeholder="e.g. E15" />
+          <!-- ECO Code -->
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">ECO Code</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['ECO']"
+              placeholder="e.g. E15"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
-          <div class="md:col-span-1 space-y-1">
-            <label class="text-xs  text-muted uppercase ">Site</label>
-            <input type="text" [(ngModel)]="tags['Site']" class="metadata-input" placeholder="e.g. London, ENG" />
+          <!-- Site -->
+          <div class="md:col-span-1 space-y-2">
+            <label class="text-sm font-semibold ml-1">Site</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['Site']"
+              placeholder="e.g. London, ENG"
+              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50 text-content"
+            />
           </div>
-        </div>
-
-        <div class="p-3 bg-accent/5 border border-accent/10 rounded-xl">
-          <p class="text-xs text-content/70  italic">
-            PGN metadata follows standard chess headers.
-          </p>
         </div>
       </div>
 
-      <div actions class="flex-1"></div>
-      <button actions appButton variant="outline" (click)="dialogRef.close()">Cancel</button>
-      <button actions appButton variant="primary" (click)="onSave()">
-        Save Changes
-      </button>
-    </app-dialog-wrapper>
+      <!-- Actions -->
+      <div class="pt-4 flex gap-4 w-full">
+        <button appButton variant="outline" (click)="dialogRef.close()" class="flex-1">
+          Cancel
+        </button>
+        <button appButton variant="primary" (click)="onSave()" class="flex-1">
+          Save Changes
+        </button>
+      </div>
+    </div>
   `,
   styles: [`
-    @reference "../../../../../styles.css";
-    .metadata-input {
-      @apply w-full px-3 py-2 bg-subtle border border-border-base rounded-lg text-sm  focus:ring-2   outline-none placeholder:text-muted/50  ;
+    :host {
+      display: block;
     }
   `]
 })
 export class EditMetadataDialogComponent {
   dialogRef = inject(DialogRef<Record<string, string>>);
   data = inject<Record<string, string>>(DIALOG_DATA);
-  
+
   tags = { ...this.data };
+
+  constructor() {
+    this.dialogRef.updateSize('680px');
+  }
 
   onSave() {
     this.dialogRef.close(this.tags);
   }
 }
+

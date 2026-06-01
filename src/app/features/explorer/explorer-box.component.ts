@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { OpeningExplorerService } from '../../core/services/opening-explorer.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LichessExplorerResponse, TablebaseResponse, LichessExplorerMove, TablebaseMove, ExplorerData } from '../../core/models/opening.model';
-import { WinRateBarComponent, ButtonComponent } from '@shared/ui';
+import { WinRateBarComponent } from '@shared/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroMagnifyingGlass, heroArrowsRightLeft } from '@ng-icons/heroicons/outline';
+
 
 @Component({
   selector: 'app-explorer-box',
@@ -19,8 +22,9 @@ import { MatMenuModule } from '@angular/material/menu';
     MatTooltipModule, 
     MatButtonModule, 
     MatMenuModule,
-    ButtonComponent
+    NgIconComponent,
   ],
+  providers: [provideIcons({ heroMagnifyingGlass, heroArrowsRightLeft })],
   templateUrl: './explorer-box.component.html',
   host: {
     'class': 'block z-50 relative   ease-in-out w-full'

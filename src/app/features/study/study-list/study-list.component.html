@@ -7,9 +7,9 @@
 
     <div class="flex items-center gap-2">
       <!-- Dropdown -->
-      <div #dropdownContainer class="relative shrink-0">
+      <div #dropdownContainer class="relative shrink-0 w-36">
         <button (click)="isDropdownOpen.update(v => !v)"
-          class="w-full py-3 pl-2 pr-8 text-left text-content font-medium cursor-pointer text-base border-b-2 border-border-base flex items-center justify-between focus:outline-none">
+          class="w-full py-3 pl-1 pr-1 text-left text-content font-medium cursor-pointer text-base border-b-2 border-border-base flex items-center justify-between focus:outline-none">
           <span>{{ activeTab() === 'all' ? 'Public' : 'My Studies' }}</span>
           <svg class="fill-current h-4 w-4 text-muted transition-transform duration-200"
             [class.rotate-180]="isDropdownOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -37,7 +37,7 @@
       </div>
 
       @if (isLoggedIn()) {
-      <button appButton variant="primary" (click)="createNewStudy()">Create New Study</button>
+      <button appButton variant="primary" (click)="createNewStudy()">Create new study</button>
       }
     </div>
   </header>
@@ -77,7 +77,7 @@
           <!-- Bottom Row -->
           <div class="mt-auto flex items-center justify-end">
             <a appButton variant="primary" [routerLink]="'/study/' + study.id">
-              View Study
+              View study
             </a>
           </div>
         </div>

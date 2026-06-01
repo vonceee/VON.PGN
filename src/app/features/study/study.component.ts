@@ -14,6 +14,8 @@ import {
   DestroyRef,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroQueueList, heroInformationCircle, heroTag, heroBookOpen, heroChatBubbleLeftRight, heroQuestionMarkCircle, heroPlay, heroStop } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { StudyService } from '../../core/services/study.service';
 import { AudioService } from '../../core/services/audio.service';
@@ -43,6 +45,7 @@ import { StudyMetadataTabComponent } from './study-metadata-tab/study-metadata-t
 import { EditMetadataDialogComponent } from './dialogs/edit-metadata-dialog/edit-metadata-dialog.component';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { ShortcutsDialogComponent } from './dialogs/shortcuts-dialog/shortcuts-dialog.component';
+import { StartClassDialogComponent } from './dialogs/start-class-dialog/start-class-dialog.component';
 import { LayoutService } from '../../core/services/layout.service';
 
 @Component({
@@ -50,6 +53,7 @@ import { LayoutService } from '../../core/services/layout.service';
   standalone: true,
   imports: [
     CommonModule,
+    NgIconComponent,
     ChessBoardComponent,
     EvalBarComponent,
     MoveNotationComponent,
@@ -63,7 +67,9 @@ import { LayoutService } from '../../core/services/layout.service';
     ButtonComponent,
     StudyMetadataComponent,
     StudyMetadataTabComponent,
+    StartClassDialogComponent,
   ],
+  providers: [provideIcons({ heroQueueList, heroInformationCircle, heroTag, heroBookOpen, heroChatBubbleLeftRight, heroQuestionMarkCircle, heroPlay, heroStop })],
   templateUrl: './study.component.html',
   styles: [`
     :host ::ng-deep {
@@ -266,10 +272,21 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   toggleClassSession() {
     if (this.isClassActive()) {
+      // End immediately — no confirmation needed
       this.studyService.endClass();
-    } else {
-      this.studyService.startClass();
+      return;
     }
+    // Show confirmation dialog via signal
+    this.showStartClassDialog.set(true);
+  }
+
+  onStartClassConfirmed() {
+    this.showStartClassDialog.set(false);
+    this.studyService.startClass();
+  }
+
+  onStartClassCancelled() {
+    this.showStartClassDialog.set(false);
   }
 
   joinClassSession() {
@@ -305,6 +322,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   isTwoColumn = signal(false);
   activeTab = signal<'notation' | 'info' | 'metadata' | 'chapters' | 'chat'>('notation');
   showDeleteModal = signal(false);
+  showStartClassDialog = signal(false);
   isDeleting = signal(false);
   isActionInProgress = signal(false);
   private lastChapterId: number | null = null;
