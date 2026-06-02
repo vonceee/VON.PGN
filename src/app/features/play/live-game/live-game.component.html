@@ -1,28 +1,32 @@
-<div class="h-full w-full overflow-hidden flex flex-col bg-main p-4 md:p-8">
+<div class="h-[calc(100vh-64px)] w-full overflow-hidden flex flex-col bg-main p-4 md:p-8">
   <div class="flex-1 flex items-center justify-center overflow-hidden">
     @if (game(); as g) {
     <div
-      class="w-full max-w-[1920px] mx-auto h-full flex flex-col items-center md:grid md:grid-cols-[300px_1fr_350px] xl:grid-cols-[340px_1fr_400px] gap-4 md:gap-8 md:items-stretch overflow-hidden">
+      class="w-full max-w-[1920px] mx-auto h-full flex flex-col items-center md:grid md:grid-cols-[240px_1fr_260px] xl:grid-cols-[280px_1fr_300px] gap-4 md:gap-8 md:items-stretch overflow-hidden">
       <!-- Left Column: Info & History -->
-      <div class="hidden md:flex flex-col min-w-0 h-full w-full border-r border-border-base overflow-hidden">
-        <div class="flex flex-col overflow-hidden h-full">
+      <div class="hidden md:flex flex-col min-w-0 w-full bg-subtle rounded-4xl h-full max-h-[500px] lg:max-h-[580px] my-auto overflow-hidden">
+        <div class="flex flex-col overflow-hidden w-full h-full p-6">
           <app-game-info [player]="g.my_color === 'white' ? g.black_player : g.white_player"
             [color]="g.my_color === 'white' ? 'black' : 'white'" [ratingChange]="getOpponentRatingChange()"
             class="block mb-3" />
           <app-game-info [player]="g.my_color === 'white' ? g.white_player : g.black_player" [color]="g.my_color"
             [ratingChange]="getMyRatingChange()" />
 
-          <app-move-notation class="flex-1 pt-2" [moves]="moveSanCache()" [currentPly]="currentPly()"
-            [showNavigation]="true" (navigate)="goToMove($event)" />
+          <div class="flex-1 min-h-0 mt-4 flex flex-col overflow-hidden">
+            <app-move-notation class="flex-1" layout="grid" [moves]="moveSanCache()" [currentPly]="currentPly()"
+              [showNavigation]="true" (navigate)="goToMove($event)" />
+          </div>
 
           @if (g.status === 'active') {
-          <app-game-controls [game]="g" [canOfferDraw]="canOfferDraw()"
-            [drawOfferFromOpponent]="drawOfferState() === 'opponentOffered'"
-            [iOfferedDraw]="drawOfferState() === 'iOffered'" [myRematchOffered]="myRematchOffered()"
-            [rematchOfferFrom]="rematchOfferFrom()" (abort)="abort()" (offerDraw)="offerDraw()"
-            (cancelDraw)="cancelDrawOffer()" (acceptDraw)="acceptDraw()" (declineDraw)="declineDraw()"
-            (resign)="confirmResign()" (offerRematch)="offerRematch()" (acceptRematch)="acceptRematch()"
-            (declineRematch)="declineRematch()" (newOpponent)="findNewOpponent()" />
+          <div class="mt-4">
+            <app-game-controls [game]="g" [canOfferDraw]="canOfferDraw()"
+              [drawOfferFromOpponent]="drawOfferState() === 'opponentOffered'"
+              [iOfferedDraw]="drawOfferState() === 'iOffered'" [myRematchOffered]="myRematchOffered()"
+              [rematchOfferFrom]="rematchOfferFrom()" (abort)="abort()" (offerDraw)="offerDraw()"
+              (cancelDraw)="cancelDrawOffer()" (acceptDraw)="acceptDraw()" (declineDraw)="declineDraw()"
+              (resign)="confirmResign()" (offerRematch)="offerRematch()" (acceptRematch)="acceptRematch()"
+              (declineRematch)="declineRematch()" (newOpponent)="findNewOpponent()" />
+          </div>
           }
         </div>
       </div>
@@ -49,7 +53,7 @@
           <!-- Mobile Game Over Overlay -->
           @if ((g.status === 'completed' || g.status === 'aborted') && showMobileResult()) {
           <div class="md:hidden absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/60   zoom-in ">
-            <div class="ui-panel p-6 text-center border-cyan-500/50 max-w-xs w-full relative">
+            <div class="p-6 text-center border-cyan-500/50 max-w-xs w-full relative">
               <!-- Close Button -->
               <button (click)="showMobileResult.set(false)" class="absolute top-3 right-3 p-1 hover:text-white ">
                 <ng-icon name="heroXMark" class="text-xl"></ng-icon>
@@ -117,7 +121,7 @@
         </div>
 
         @if (g.status === 'active' && g.firstMoveCountdown !== undefined && g.firstMoveCountdown !== null &&
-        g.moves.length < 2) { <div class="md:hidden w-full ui-panel p-4 text-center bg-slate-900/40 mt-4   ">
+        g.moves.length < 2) { <div class="md:hidden w-full p-4 text-center bg-slate-900/40 mt-4   ">
           <div class="text-2xl font-semibold">
             {{ g.firstMoveCountdown }}s
           </div>
@@ -132,101 +136,99 @@
     </div>
 
     <!-- Right Column: Clocks -->
-    <div class="hidden md:flex flex-col min-w-0 h-full w-full border-l border-border-base overflow-hidden">
-      <div class="flex flex-col justify-center gap-6 h-full px-4 lg:px-8">
-        <div class="ui-panel p-3 flex flex-col gap-2">
+    <div class="hidden md:flex flex-col min-w-0 w-full bg-subtle rounded-4xl h-full max-h-[500px] lg:max-h-[580px] my-auto overflow-hidden">
+      <div class="flex flex-col justify-between gap-4 h-full p-6">
+        <div class="p-4 flex flex-col gap-2 bg-main rounded-2xl border border-border-base/50">
           <app-chess-clock [serverTimeMs]="opponentTimeMs()" [serverTimestamp]="g.server_timestamp"
             [isActive]="isOpponentTurn()" (expired)="onClockExpired()" />
         </div>
 
-        <div class="flex flex-col justify-center">
+        <div class="flex flex-col justify-center flex-1 min-h-0">
           @if (g.status === 'active' && g.firstMoveCountdown !== undefined && g.firstMoveCountdown !== null &&
-          g.moves.length < 2) { <div class="ui-panel p-4 text-center   zoom-in ">
+          g.moves.length < 2) {
+          <div class="p-4 text-center zoom-in">
             <div class="text-2xl font-semibold">
               {{ g.firstMoveCountdown }}s
             </div>
-            <div class="text-sm  mt-1 opacity-80 uppercase font-semibold ">
+            <div class="text-sm mt-1 opacity-80 uppercase font-semibold">
               to play first move
             </div>
-        </div>
-        }
-        @if (g.status === 'completed' || g.status === 'aborted') {
-        <div class="ui-panel p-4 text-center">
-          <div class="text-2xl font-semibold" [class]="g.status === 'aborted' ? '' : getResultClass(g.result)">
-            {{ g.status === 'aborted' ? '½-½' : g.result || '½-½' }}
           </div>
-          <div class="text-sm  opacity-80 mt-1">
-            @if (g.status === 'aborted') {
-            {{ formatTermination(null, g.termination) || 'game aborted' }}
-            } @else if (g.status === 'completed') {
-            {{ formatResult(g.result) }} •
-            {{ formatTermination(g.result, g.termination) }}
-            } @else {
-            {{ formatResult(g.result) }}
-            }
-          </div>
+          }
+          @if (g.status === 'completed' || g.status === 'aborted') {
+          <div class="p-4 text-center">
+            <div class="text-2xl font-semibold" [class]="g.status === 'aborted' ? '' : getResultClass(g.result)">
+              {{ g.status === 'aborted' ? '½-½' : g.result || '½-½' }}
+            </div>
+            <div class="text-sm opacity-80 mt-1">
+              @if (g.status === 'aborted') {
+              {{ formatTermination(null, g.termination) || 'game aborted' }}
+              } @else if (g.status === 'completed') {
+              {{ formatResult(g.result) }} •
+              {{ formatTermination(g.result, g.termination) }}
+              } @else {
+              {{ formatResult(g.result) }}
+              }
+            </div>
 
-          <div class="flex flex-col gap-2 mt-6">
-            @if (g.arena_id) {
-            <div class="flex flex-col gap-2">
-              <button appButton variant="primary" (click)="backToArena()">
-                Next Game
+            <div class="flex flex-col gap-2 mt-6">
+              @if (g.arena_id) {
+              <div class="flex flex-col gap-2">
+                <button appButton variant="primary" (click)="backToArena()">
+                  Next Game
+                </button>
+                <button appButton variant="outline" (click)="pauseArena()">
+                  Pause
+                </button>
+              </div>
+              } @else {
+              @if (!myRematchOffered() && !rematchOfferFrom()) {
+              <button appButton variant="primary" (click)="offerRematch()">
+                Rematch
               </button>
-              <button appButton variant="outline" (click)="pauseArena()">
-                Pause
+              } @else if (myRematchOffered()) {
+              <div class="text-xs uppercase text-center py-3 bg-slate-400/5 rounded border border-border-base">
+                Waiting for opponent...
+              </div>
+              } @else if (rematchOfferFrom()) {
+              <div class="flex gap-2">
+                <button appButton variant="primary" (click)="acceptRematch()" class="flex-1">
+                  Accept Rematch
+                </button>
+                <button appButton variant="outline" (click)="declineRematch()" title="Decline" class="shrink-0">
+                  <ng-icon name="heroXMark" class="text-xl"></ng-icon>
+                </button>
+              </div>
+              }
+              <button appButton variant="ghost" (click)="findNewOpponent()">
+                New Game
               </button>
-            </div>
-            } @else {
-            @if (!myRematchOffered() && !rematchOfferFrom()) {
-            <button appButton variant="primary" (click)="offerRematch()">
-              Rematch
-            </button>
-            } @else if (myRematchOffered()) {
-            <div class="text-xs uppercase   text-center py-3  bg-slate-400/5 rounded border border-border-base">
-              Waiting for opponent...
-            </div>
-            } @else if (rematchOfferFrom()) {
-            <div class="flex gap-2">
-              <button appButton variant="primary" (click)="acceptRematch()" class="flex-1">
-                Accept Rematch
-              </button>
-              <button appButton variant="outline" (click)="declineRematch()" title="Decline" class="shrink-0">
-                <ng-icon name="heroXMark" class="text-xl"></ng-icon>
-              </button>
-            </div>
-            }
-            <button appButton variant="ghost" (click)="findNewOpponent()">
-              New Game
-            </button>
-            }
-          </div>
-        </div>
-        }
-        @if (
-        g.status === 'active' &&
-        opponentAwayCountdown() !== null
-        ) {
-        <div class="space-y-3">
-          <div class="border border-red-500/30 rounded-xl p-3 text-center bg-red-500/5 shadow-inner">
-            <div class="text-sm uppercase font-semibold text-red-400  mb-1">
-              Opponent Disconnected
-            </div>
-            <div class="text-2xl   text-red-400 er">
-              {{ opponentAwayCountdown() }}s
+              }
             </div>
           </div>
+          }
+          @if (g.status === 'active' && opponentAwayCountdown() !== null) {
+          <div class="space-y-3">
+            <div class="border border-red-500/30 rounded-xl p-3 text-center bg-red-500/5 shadow-inner">
+              <div class="text-sm uppercase font-semibold text-red-400 mb-1">
+                Opponent Disconnected
+              </div>
+              <div class="text-2xl text-red-400 er">
+                {{ opponentAwayCountdown() }}s
+              </div>
+            </div>
+          </div>
+          }
         </div>
-        }
-      </div>
 
-      <div class="ui-panel p-3 flex flex-col gap-2">
-        <app-chess-clock [serverTimeMs]="myTimeMs()" [serverTimestamp]="g.server_timestamp" [isActive]="isMyTurn()"
-          (expired)="onClockExpired()" />
+        <div class="p-4 flex flex-col gap-2 bg-main rounded-2xl border border-border-base/50">
+          <app-chess-clock [serverTimeMs]="myTimeMs()" [serverTimestamp]="g.server_timestamp" [isActive]="isMyTurn()"
+            (expired)="onClockExpired()" />
+        </div>
       </div>
     </div>
-  </div>
-</div>
-} @else {
+    </div>
+  } @else {
 <div class="flex items-center justify-center min-h-96">
   <app-loading></app-loading>
 </div>

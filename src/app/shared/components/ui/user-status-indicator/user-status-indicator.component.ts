@@ -7,17 +7,12 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="flex items-center shrink-0" [title]="isOnline() ? 'Online' : 'Offline'">
-      <div
-        class="px-1.5 py-0.5 rounded border text-xs  uppercase"
-        [class.text-cyan-400]="isOnline()"
-        [class.border-cyan-500]="isOnline()"
-        [class.]="!isOnline()"
-        [class.border-border-base]="!isOnline()"
-      >
-        {{ isOnline() ? 'Online' : 'Offline' }}
-      </div>
-    </div>
+    <div 
+      class="w-2.5 h-2.5 rounded-full shrink-0"
+      [class.bg-green-500]="isOnline()"
+      [class.bg-muted/30]="!isOnline()"
+      [title]="isOnline() ? 'Online' : 'Offline'"
+    ></div>
   `,
   styles: [
     `

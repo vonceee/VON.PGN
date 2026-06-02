@@ -16,18 +16,18 @@ import { heroMagnifyingGlass, heroArrowsRightLeft } from '@ng-icons/heroicons/ou
   selector: 'app-explorer-box',
   standalone: true,
   imports: [
-    CommonModule, 
-    WinRateBarComponent, 
-    MatIconModule, 
-    MatTooltipModule, 
-    MatButtonModule, 
+    CommonModule,
+    WinRateBarComponent,
+    MatIconModule,
+    MatTooltipModule,
+    MatButtonModule,
     MatMenuModule,
     NgIconComponent,
   ],
   providers: [provideIcons({ heroMagnifyingGlass, heroArrowsRightLeft })],
   templateUrl: './explorer-box.component.html',
   host: {
-    'class': 'block z-50 relative   ease-in-out w-full'
+    'class': 'block z-50 relative ease-in-out w-full'
   }
 })
 export class ExplorerBoxComponent {
@@ -36,19 +36,19 @@ export class ExplorerBoxComponent {
   fen = input.required<string>();
   variant = input<string>('standard');
   orientation = input<'white' | 'black'>('white');
-  
+
   // Outputs
   flipBoard = output<void>();
-  
+
   explorerService = inject(OpeningExplorerService);
   authService = inject(AuthService);
-  
+
   dbType = signal<'masters' | 'lichess' | 'player'>('lichess');
   isLoading = signal(false);
   isCollapsed = signal(true);
   error = signal<string | null>(null);
   data = signal<ExplorerData | null>(null);
-  
+
   isTablebase = computed(() => {
     const fenStr = this.fen();
     if (!fenStr) return false;
@@ -75,9 +75,9 @@ export class ExplorerBoxComponent {
     if (this.isCollapsed()) return; // Don't fetch if hidden
 
     const currentFen = this.fen();
-    
+
     if (!currentFen) return;
-    
+
     this.isLoading.set(true);
     this.error.set(null);
 

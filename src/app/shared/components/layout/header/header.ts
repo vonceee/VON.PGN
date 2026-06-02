@@ -19,6 +19,7 @@ import {
   heroMoon,
   heroXMark,
   heroBars3,
+  heroCheck,
 } from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
 import { BackgroundSettings } from './background-settings';
@@ -41,6 +42,7 @@ import { GachaService } from '../../../../core/services/gacha';
       heroTrophy,
       heroBell,
       heroCircleStack,
+      heroCheck,
     }),
   ],
   templateUrl: './header.html',

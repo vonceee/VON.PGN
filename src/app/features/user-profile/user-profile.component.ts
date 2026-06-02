@@ -4,16 +4,14 @@ import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ChatService } from '../../core/services/chat.service';
-import { TournamentService } from '../../core/services/tournament.service';
 import { UserProfile, FollowUser } from '../../core/models/user.model';
-import { Tournament } from '../../core/models/tournament.model';
 import { FormsModule } from '@angular/forms';
 import { LoadingComponent } from '@shared/feedback';
-import { UserStatusIndicatorComponent } from '@shared/ui';
+import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { GameHistoryComponent } from '../profile/game-history/game-history.component';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { ChallengeService } from '../../core/services/challenge.service';
-import { ChallengeUserModalComponent } from '../play/challenge/challenge-user-modal.component';
+import { ChallengeUserDialogComponent } from '../play/challenge/challenge-user-dialog.component';
 import { ChallengeSettings } from '../../core/models/game.model';
 import { UserHovercardDirective } from '@shared/directives';
 import { FlagIconComponent } from '@shared/ui';
@@ -21,7 +19,7 @@ import { FlagIconComponent } from '@shared/ui';
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserStatusIndicatorComponent, GameHistoryComponent, DialogModule, UserHovercardDirective, FlagIconComponent],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, ButtonComponent, GameHistoryComponent, DialogModule, UserHovercardDirective, FlagIconComponent],
   templateUrl: './user-profile.component.html'
 })
 export class UserProfileComponent implements OnInit {
@@ -29,7 +27,6 @@ export class UserProfileComponent implements OnInit {
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private chatService = inject(ChatService);
-  private tournamentService = inject(TournamentService);
   private router = inject(Router);
   private dialog = inject(Dialog);
   private challengeService = inject(ChallengeService);
@@ -54,9 +51,6 @@ export class UserProfileComponent implements OnInit {
   isLoadingMore = signal(false);
 
   isAuthenticated = this.authService.isAuthenticated;
-
-  userTournaments = signal<Tournament[]>([]);
-  tournamentsLoading = signal(false);
 
   isOwnProfile = computed(() => {
     const currentUser = this.authService.currentUser();
@@ -90,7 +84,6 @@ export class UserProfileComponent implements OnInit {
         this.followersCount.set(profile.followers_count);
         this.followingCount.set(profile.following_count);
         this.isLoading.set(false);
-        this.loadUserTournaments(userId);
       },
       error: () => {
         this.error.set('User not found');
@@ -156,7 +149,7 @@ export class UserProfileComponent implements OnInit {
     const profileUser = this.user();
     if (!profileUser) return;
 
-    const dialogRef = this.dialog.open<ChallengeSettings>(ChallengeUserModalComponent, {
+    const dialogRef = this.dialog.open<ChallengeSettings>(ChallengeUserDialogComponent, {
       data: { username: profileUser.displayName || profileUser.username },
     });
 
@@ -277,26 +270,7 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  private loadUserTournaments(userId: string) {
-    this.tournamentsLoading.set(true);
-    this.tournamentService.getUserTournaments(userId).subscribe({
-      next: (tournaments) => {
-        this.userTournaments.set(tournaments);
-        this.tournamentsLoading.set(false);
-      },
-      error: () => {
-        this.tournamentsLoading.set(false);
-      },
-    });
-  }
 
-  formatDate(dateStr: string): string {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  }
 
   private formatCount(count: number): string {
     if (count >= 1_000_000) return (count / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';

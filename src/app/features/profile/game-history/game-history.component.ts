@@ -31,9 +31,9 @@ import { Chess } from 'chess.js';
       @if (isLoading()) {
         <app-loading></app-loading>
       } @else if (games().length > 0) {
-        <div class="flex flex-col gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           @for (game of games(); track game.id) {
-            <div class="group flex flex-col md:flex-row gap-4 p-4 md:p-5 bg-surface border border-border-base rounded-2xl hover:border-accent/30 transition-all">
+            <div class="group flex flex-col md:flex-row gap-4 p-4 md:p-5 bg-subtle rounded-4xl transition-all">
               
               <!-- Mini Board -->
               <div class="w-full md:w-32 lg:w-40 aspect-square shrink-0">
@@ -62,7 +62,7 @@ import { Chess } from 'chess.js';
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3 mb-5">
                     <!-- White Player -->
                     <div class="flex items-center gap-2">
-                      <a [routerLink]="['/user', game.white_player.name]" class="text-sm font-bold text-content hover:text-accent transition-colors">
+                      <a [routerLink]="['/user', game.white_player.name]" class="text-sm font-bold text-content transition-colors">
                         {{ game.white_player.name }}
                       </a>
                       <span class="text-xs text-muted">({{ game.white_elo }})</span>
@@ -75,7 +75,7 @@ import { Chess } from 'chess.js';
 
                     <!-- Black Player -->
                     <div class="flex items-center gap-2">
-                      <a [routerLink]="['/user', game.black_player.name]" class="text-sm font-bold text-content hover:text-accent transition-colors">
+                      <a [routerLink]="['/user', game.black_player.name]" class="text-sm font-bold text-content transition-colors">
                         {{ game.black_player.name }}
                       </a>
                       <span class="text-xs text-muted">({{ game.black_elo }})</span>
@@ -104,19 +104,17 @@ import { Chess } from 'chess.js';
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Actions -->
-              <div class="flex md:flex-col items-center justify-center gap-2 shrink-0 md:border-l border-border-base md:pl-5">
-                <a
-                  appButton
-                  variant="outline"
-                  size="sm"
-                  [routerLink]="['/games', game.id, 'review']"
-                  class="w-full md:w-auto px-4 whitespace-nowrap"
-                >
-                  Review
-                </a>
+                <!-- Repositioned Review Button to Bottom-Right -->
+                <div class="mt-4 flex justify-end">
+                  <a
+                    appButton
+                    variant="primary"
+                    [routerLink]="['/games', game.id, 'review']"
+                  >
+                    Review
+                  </a>
+                </div>
               </div>
             </div>
           }
@@ -184,11 +182,11 @@ export class GameHistoryComponent implements OnInit {
         } else {
           this.games.update(prev => [...prev, ...res.data]);
         }
-        
+
         this.currentPage.set(res.current_page);
         this.totalPages.set(res.last_page);
         this.hasMore.set(res.current_page < res.last_page);
-        
+
         this.isLoading.set(false);
         this.isLoadingMore.set(false);
       },
@@ -273,7 +271,7 @@ export class GameHistoryComponent implements OnInit {
 
     const whiteWon = result === '1-0';
     const blackWon = result === '0-1';
-    
+
     const isMeWhite = this.isMe(game.white_player_id);
     const iWon = (whiteWon && isMeWhite) || (blackWon && !isMeWhite);
     return iWon ? 'text-annotation-good' : 'text-annotation-bad';
@@ -281,7 +279,7 @@ export class GameHistoryComponent implements OnInit {
 
   getVictoryText(game: any): string {
     if (game.status === 'aborted') return 'Aborted';
-    
+
     const result = game.result?.replace(/\s/g, '');
     if (result === '1/2-1/2' || result === '0.5-0.5' || game.termination === 'draw') {
       return 'Draw';
@@ -290,7 +288,7 @@ export class GameHistoryComponent implements OnInit {
     const whiteWon = result === '1-0';
     const blackWon = result === '0-1';
     const winner = whiteWon ? 'White' : 'Black';
-    
+
     let text = '';
     if (game.termination === 'checkmate') text = 'Checkmate';
     else if (game.termination === 'resigned') text = `${winner} resigned`;
@@ -302,14 +300,14 @@ export class GameHistoryComponent implements OnInit {
 
   getFinalFen(game: any): string {
     if (!game.moves || game.moves.length === 0) return 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-    
+
     const chess = new Chess();
     try {
       for (const m of game.moves) {
-        chess.move({ 
-          from: m.substring(0, 2), 
-          to: m.substring(2, 4), 
-          promotion: m.length > 4 ? m.substring(4) : 'q' 
+        chess.move({
+          from: m.substring(0, 2),
+          to: m.substring(2, 4),
+          promotion: m.length > 4 ? m.substring(4) : 'q'
         });
       }
       return chess.fen();
@@ -326,20 +324,20 @@ export class GameHistoryComponent implements OnInit {
 
   getMoveSequence(game: any): string {
     if (!game.moves || game.moves.length === 0) return 'No moves played';
-    
+
     const chess = new Chess();
     const moves: string[] = [];
     const maxMoves = 8; // Show first 4 full moves
-    
+
     try {
       for (let i = 0; i < Math.min(game.moves.length, maxMoves); i++) {
         const m = game.moves[i];
-        const move = chess.move({ 
-          from: m.substring(0, 2), 
-          to: m.substring(2, 4), 
-          promotion: m.length > 4 ? m.substring(4) : 'q' 
+        const move = chess.move({
+          from: m.substring(0, 2),
+          to: m.substring(2, 4),
+          promotion: m.length > 4 ? m.substring(4) : 'q'
         });
-        
+
         if (move) {
           if (i % 2 === 0) {
             moves.push(`${(i / 2) + 1}. ${move.san}`);
@@ -348,7 +346,7 @@ export class GameHistoryComponent implements OnInit {
           }
         }
       }
-      
+
       let sequence = moves.join(' ');
       if (game.moves.length > maxMoves) sequence += ' ...';
       return sequence;
