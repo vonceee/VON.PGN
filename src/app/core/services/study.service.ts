@@ -74,12 +74,16 @@ export class StudyService {
   private chapterChangedSubject = new Subject<any>();
   private chatMessageSubject = new Subject<any>();
   private chatClearedSubject = new Subject<void>();
+  private movePermissionRequestedSubject = new Subject<{ userId: string; userName: string }>();
+  private movePermissionDeclinedSubject = new Subject<{ targetUserId: string }>();
 
   onMoveMade$ = this.moveMadeSubject.asObservable();
   onShapesDrawn$ = this.shapesDrawnSubject.asObservable();
   onChapterChanged$ = this.chapterChangedSubject.asObservable();
   onChatMessage$ = this.chatMessageSubject.asObservable();
   onChatCleared$ = this.chatClearedSubject.asObservable();
+  onMovePermissionRequested$ = this.movePermissionRequestedSubject.asObservable();
+  onMovePermissionDeclined$ = this.movePermissionDeclinedSubject.asObservable();
 
   // Track the absolute current state of the study room (owner's state)
   lastRemoteState = signal<{
@@ -381,6 +385,14 @@ export class StudyService {
     this.socket.on('study_chat_cleared', () => {
       this.chatClearedSubject.next();
     });
+
+    this.socket.on('move_permission_requested', (payload: { userId: string; userName: string }) => {
+      this.movePermissionRequestedSubject.next(payload);
+    });
+
+    this.socket.on('move_permission_declined', (payload: { targetUserId: string }) => {
+      this.movePermissionDeclinedSubject.next(payload);
+    });
   }
 
   emitMove(move: string, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): Observable<any> {
@@ -589,6 +601,18 @@ export class StudyService {
     const study = this.currentStudy();
     if (!study || !this.socket) return;
     this.socket.emit('revoke_board_control', { studyId: study.id });
+  }
+
+  requestMovePermission(userId: string, userName: string): void {
+    const study = this.currentStudy();
+    if (!study || !this.socket) return;
+    this.socket.emit('request_move_permission', { studyId: study.id, userId, userName });
+  }
+
+  declineMovePermission(targetUserId: string): void {
+    const study = this.currentStudy();
+    if (!study || !this.socket) return;
+    this.socket.emit('decline_move_permission', { studyId: study.id, targetUserId });
   }
 
   disconnect(): void {

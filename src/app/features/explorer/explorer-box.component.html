@@ -159,20 +159,22 @@
     <button
       (click)="toggleCollapse()"
       title="{{ isCollapsed() ? 'Open Explorer' : 'Close Explorer' }}"
-      class="p-2 rounded-lg transition-colors cursor-pointer"
+      class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
       [class.text-accent]="!isCollapsed()"
       [class.bg-accent\/10]="!isCollapsed()"
       [class.text-muted]="isCollapsed()"
     >
       <ng-icon name="heroMagnifyingGlass" class="text-lg"></ng-icon>
+      <span class="text-xs font-semibold">Explorer</span>
     </button>
 
     <button
       (click)="flipBoard.emit()"
       title="Flip Board"
-      class="p-2 rounded-lg transition-colors cursor-pointer text-muted hover:text-accent"
+      class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-muted hover:text-accent flex items-center gap-1.5"
     >
       <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
+      <span class="text-xs font-semibold">Flip board</span>
     </button>
   </div>
 </div>

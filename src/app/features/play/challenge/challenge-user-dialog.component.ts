@@ -2,16 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { ButtonComponent, LinkComponent } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 import { TIME_CONTROLS, TimeControlOption, ChallengeSettings } from '../../../core/models/game.model';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroArrowRight } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-challenge-user-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, LinkComponent, NgIcon],
-  providers: [provideIcons({ heroArrowRight })],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
     <div class="bg-main rounded-4xl shadow-xl w-full p-8 font-sans space-y-8 relative">
       <!-- Header -->

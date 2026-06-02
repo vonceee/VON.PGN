@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroQueueList, heroInformationCircle, heroTag, heroBookOpen, heroChatBubbleLeftRight, heroQuestionMarkCircle, heroPlay, heroStop } from '@ng-icons/heroicons/outline';
+import { heroQueueList, heroInformationCircle, heroTag, heroBookOpen, heroChatBubbleLeftRight, heroQuestionMarkCircle, heroPlay, heroStop, heroArrowsRightLeft } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { StudyService } from '../../core/services/study.service';
 import { AudioService } from '../../core/services/audio.service';
@@ -38,8 +38,6 @@ import { StudyInfoComponent } from './study-info/study-info.component';
 import { JoinClassDialogComponent } from './dialogs/join-class-dialog/join-class-dialog.component';
 import { ToastService } from '../../core/services/toast.service';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
-import { ButtonComponent } from '@shared/ui';
-import { ExplorerBoxComponent } from '../explorer/explorer-box.component';
 import { StudyMetadataComponent } from './study-metadata/study-metadata.component';
 import { StudyMetadataTabComponent } from './study-metadata-tab/study-metadata-tab.component';
 import { EditMetadataDialogComponent } from './dialogs/edit-metadata-dialog/edit-metadata-dialog.component';
@@ -47,6 +45,8 @@ import { DevLogger } from '../../core/utils/dev-logger';
 import { ShortcutsDialogComponent } from './dialogs/shortcuts-dialog/shortcuts-dialog.component';
 import { StartClassDialogComponent } from './dialogs/start-class-dialog/start-class-dialog.component';
 import { LayoutService } from '../../core/services/layout.service';
+import { RequestControlDialogComponent } from './dialogs/request-control-dialog/request-control-dialog.component';
+import { ReceiveRequestDialogComponent } from './dialogs/receive-request-dialog/receive-request-dialog.component';
 
 @Component({
   selector: 'app-study',
@@ -63,13 +63,12 @@ import { LayoutService } from '../../core/services/layout.service';
     StudySidebarComponent,
     StudyInfoComponent,
     StudyAnalysisComponent,
-    ExplorerBoxComponent,
-    ButtonComponent,
     StudyMetadataComponent,
     StudyMetadataTabComponent,
     StartClassDialogComponent,
+    JoinClassDialogComponent,
   ],
-  providers: [provideIcons({ heroQueueList, heroInformationCircle, heroTag, heroBookOpen, heroChatBubbleLeftRight, heroQuestionMarkCircle, heroPlay, heroStop })],
+  providers: [provideIcons({ heroQueueList, heroInformationCircle, heroTag, heroBookOpen, heroChatBubbleLeftRight, heroQuestionMarkCircle, heroPlay, heroStop, heroArrowsRightLeft })],
   templateUrl: './study.component.html',
   styles: [`
     :host ::ng-deep {
@@ -260,6 +259,11 @@ export class StudyComponent implements OnInit, OnDestroy {
     // CRITICAL: hasBoardControl() encodes the full joined/not-joined logic for
     // class sessions — do not inline-replace this with isClassActive() alone.
     if (this.studyService.isClassActive()) {
+      // If student is joined but doesn't have control, we keep board interactive
+      // so their move attempt triggers the request dialog in onMoveMade()
+      if (!this.isOwner() && this.hasJoinedClass() && !this.hasBoardControl()) {
+        return true;
+      }
       return this.studyService.hasBoardControl();
     }
     return true;
@@ -294,26 +298,20 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.toastService.show('Joined live classroom session!', 'success');
   }
 
-  private joinClassDialogRef: any = null;
+  showJoinClassDialog = signal(false);
 
   openJoinClassDialog() {
-    if (this.joinClassDialogRef) return;
+    this.showJoinClassDialog.set(true);
+  }
 
-    this.joinClassDialogRef = this.dialog.open<boolean>(JoinClassDialogComponent, {
-      width: '380px',
-      maxWidth: '90vw',
-      backdropClass: ['bg-black/5'],
-      disableClose: true
-    });
+  onJoinClassConfirmed() {
+    this.showJoinClassDialog.set(false);
+    this.joinClassSession();
+  }
 
-    this.joinClassDialogRef.closed.subscribe((joined: boolean | undefined) => {
-      this.joinClassDialogRef = null;
-      if (joined) {
-        this.joinClassSession();
-      } else {
-        this.toastService.show('Exploring freely. You can join the class anytime using the banner.');
-      }
-    });
+  onJoinClassCancelled() {
+    this.showJoinClassDialog.set(false);
+    this.toastService.show('Exploring freely. You can join the class anytime using the banner.');
   }
 
   isSyncing = signal(true);
@@ -559,6 +557,32 @@ export class StudyComponent implements OnInit, OnDestroy {
    * authenticated editors.
    */
   onMoveMade(event: any) {
+    // Classroom guard: If student attempts to move during class without board control
+    if (this.isClassActive() && !this.isOwner() && this.hasJoinedClass() && !this.hasBoardControl()) {
+      // 1. Instantly reset FEN locally to prevent the piece from staying on the board
+      const current = this.currentFen();
+      this.currentFen.set('');
+      setTimeout(() => this.currentFen.set(current), 0);
+
+      // 2. Open Request Control Dialog
+      const dialogRef = this.dialog.open<boolean>(RequestControlDialogComponent, {
+        width: '450px',
+        maxWidth: '90vw',
+        backdropClass: ['bg-black/5'],
+      });
+
+      dialogRef.closed.subscribe((requested) => {
+        if (requested) {
+          const user = this.authService.currentUser();
+          const userId = String(user?.uid || user?.id || '');
+          const userName = String(user?.username || user?.displayName || user?.name || 'Student');
+          this.studyService.requestMovePermission(userId, userName);
+          this.toastService.show('Move permission request sent to tutor!', 'success');
+        }
+      });
+      return;
+    }
+
     const move = event.move || event;
     const san = String(move.san || '');
     const fen = String(event.fen || '');
@@ -811,6 +835,40 @@ export class StudyComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.layoutService.setFluid(true);
     if (isPlatformBrowser(this.platformId)) {
+      // Listen for incoming move permission requests (Tutor side)
+      this.studyService.onMovePermissionRequested$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(payload => {
+          if (this.isOwner()) {
+            this.ngZone.run(() => {
+              const dialogRef = this.dialog.open<'grant' | 'decline'>(ReceiveRequestDialogComponent, {
+                width: '450px',
+                maxWidth: '90vw',
+                data: { userName: payload.userName },
+                backdropClass: ['bg-black/5']
+              });
+
+              dialogRef.closed.subscribe(action => {
+                if (action === 'grant') {
+                  this.studyService.grantBoardControl(payload.userId);
+                } else if (action === 'decline') {
+                  this.studyService.declineMovePermission(payload.userId);
+                }
+              });
+            });
+          }
+        });
+
+      // Listen for declined move permission requests (Student side)
+      this.studyService.onMovePermissionDeclined$
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(payload => {
+          const user = this.authService.currentUser();
+          const myUid = String(user?.uid || user?.id || '');
+          if (String(payload.targetUserId) === myUid) {
+            this.toastService.show('Your tutor declined the move request.', 'error');
+          }
+        });
       this.engineService.analysis$
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(analysis => {

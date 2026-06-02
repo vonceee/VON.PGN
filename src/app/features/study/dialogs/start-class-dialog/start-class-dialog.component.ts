@@ -8,21 +8,13 @@ import { ButtonComponent } from '@shared/ui';
   template: `
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="cancel.emit()">
       <div
-        class="bg-main rounded-4xl w-full max-w-md mx-4 border border-border-base"
+        class="bg-main rounded-4xl w-full max-w-md mx-4"
         (click)="$event.stopPropagation()"
       >
         <div class="p-6">
-          <!-- Icon -->
-          <div class="w-12 h-12 rounded-full bg-subtle flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-              <path fill-rule="evenodd" d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z" clip-rule="evenodd" />
-            </svg>
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl text-content">Start class session</h2>
           </div>
-
-          <h2 class="text-lg font-semibold text-center mb-2">Start class session</h2>
-          <p class="text-sm text-muted text-center mb-5">
-            Turn this study into a live teaching session.
-          </p>
 
           <!-- Feature list -->
           <ul class="space-y-3 mb-6">
@@ -47,7 +39,7 @@ import { ButtonComponent } from '@shared/ui';
 
         <!-- Actions -->
         <div class="flex gap-3 px-6 pb-6">
-          <button appButton variant="ghost" class="flex-1" (click)="cancel.emit()">
+          <button appButton variant="outline" class="flex-1" (click)="cancel.emit()">
             Cancel
           </button>
           <button appButton variant="primary" class="flex-1" (click)="confirm.emit()">
