@@ -184,6 +184,52 @@ export class MoveNotationComponent {
 
   nextOptions = computed(() => this.navigationCtx().next);
 
+  isSubvariationActive = computed(() => {
+    const fen = this.currentFen();
+    const tree = this.effectiveTree();
+    const ply = this.currentPly();
+    const initialPly = this.initialPly();
+    
+    if (ply <= initialPly || tree.length === 0) return false;
+    
+    return !tree.some(n => n.fen === fen);
+  });
+
+  activeContinuationLine = computed(() => {
+    if (!this.isSubvariationActive()) return [];
+
+    const fen = this.currentFen();
+    const tree = this.effectiveTree();
+    
+    return this.findContinuationPathRecursive(tree, fen);
+  });
+
+  activeContinuationSet = computed(() => {
+    const line = this.activeContinuationLine();
+    const set = new Set<string>();
+    line.forEach(n => set.add(`${n.fen}_${n.ply}`));
+    return set;
+  });
+
+  private findContinuationPathRecursive(nodes: MoveNode[], activeFen: string): MoveNode[] {
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      if (node.fen === activeFen) {
+        return nodes; // Return the entire branch array so that the whole variation remains highlighted
+      }
+      
+      if (node.variations) {
+        for (const variation of node.variations) {
+          const res = this.findContinuationPathRecursive(variation, activeFen);
+          if (res.length > 0 || variation.some(n => n.fen === activeFen)) {
+            return res.length > 0 ? res : variation;
+          }
+        }
+      }
+    }
+    return [];
+  }
+
   isLastMove = computed(() => this.nextOptions().length === 0);
 
   @HostListener('window:keydown', ['$event'])

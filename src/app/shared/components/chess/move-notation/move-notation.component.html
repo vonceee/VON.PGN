@@ -57,9 +57,11 @@
             @if (turn.white; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move underline bg-accent/20 text-accent font-semibold px-2 py-1 rounded-md'
-                        : 'text-content hover:bg-accent/10 px-2 py-1 rounded-md transition-colors'
-                    " class="text-left font-medium hover:cursor-pointer select-none active-move-target">
+                        ? 'active-move underline bg-accent/20 text-accent font-semibold'
+                        : activeContinuationSet().has(node.fen + '_' + node.ply)
+                          ? 'next-move-static transition-all'
+                          : 'text-content hover:bg-accent/10 transition-colors'
+                    " class="text-left font-medium hover:cursor-pointer select-none active-move-target px-2 py-1 rounded-md">
               {{ node.san }}
               @if (node.glyphs && node.glyphs.length > 0) {
               @for (glyphId of node.glyphs; track glyphId) {
@@ -79,9 +81,11 @@
             @if (turn.black; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move underline bg-accent/20 text-accent font-semibold px-2 py-1 rounded-md'
-                        : 'text-content hover:bg-accent/10 px-2 py-1 rounded-md transition-colors'
-                    " class="text-left font-medium hover:cursor-pointer select-none active-move-target">
+                        ? 'active-move underline bg-accent/20 text-accent font-semibold'
+                        : activeContinuationSet().has(node.fen + '_' + node.ply)
+                          ? 'next-move-static transition-all'
+                          : 'text-content hover:bg-accent/10 transition-colors'
+                    " class="text-left font-medium hover:cursor-pointer select-none active-move-target px-2 py-1 rounded-md">
               {{ node.san }}
               @if (node.glyphs && node.glyphs.length > 0) {
               @for (glyphId of node.glyphs; track glyphId) {
@@ -226,9 +230,11 @@
       <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, isMainline)" [class]="
             currentFen() === node.fen
               ? 'active-move underline bg-accent'
-              : 'text-content'
+              : activeContinuationSet().has(node.fen + '_' + node.ply)
+                ? 'next-move-static'
+                : 'text-content'
           " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm]="!isMainline"
-        class="text-left hover:bg-accent hover:cursor-pointer select-none active-move-target">
+        class="text-left hover:bg-accent hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
         {{ node.san }}
         <!-- Glyph Rendering -->
         @if (node.glyphs && node.glyphs.length > 0) {
@@ -247,7 +253,7 @@
         <div class="variation-tree-block w-full flex flex-col gap-1 pl-4 my-2 relative">
           @for (variation of node.variations; track $index) {
             <div class="variation-branch-item relative pl-5 py-1 flex flex-wrap items-baseline">
-              <span class="text-xs font-semibold text-accent/50 mr-1.5 select-none opacity-60">var</span>
+              <span class="text-[10px] font-bold text-accent mr-1.5 select-none uppercase">var</span>
               <ng-container *ngTemplateOutlet="
                         renderNodes;
                         context: { nodes: variation, isMainline: false }
@@ -311,6 +317,18 @@
         transform: translateY(0);
         opacity: 1;
       }
+    }
+
+    button.active-move-target {
+      border: 1.5px solid transparent !important;
+      border-radius: 4px !important;
+      box-sizing: border-box !important;
+    }
+
+    .next-move-static {
+      background-color: hsla(45, 90%, 50%, 0.1);
+      border: 1.5px dashed hsla(45, 90%, 45%, 0.25) !important;
+      color: hsl(38, 85%, 32%) !important;
     }
 
     /* Chess Variation Tree styling */
