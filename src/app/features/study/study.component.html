@@ -43,12 +43,14 @@
         <div class="flex items-center gap-0.5 px-1 shrink-0">
           @if (!isThreeColumn()) {
           <button (click)="activeTab.set('chapters')" title="Chapters"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent" [class.text-accent]="activeTab() === 'chapters'"
-            [class.bg-accent\/10]="activeTab() === 'chapters'" [class.text-muted]="activeTab() !== 'chapters'">
+            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
+            [class.text-accent]="activeTab() === 'chapters'" [class.bg-accent\/10]="activeTab() === 'chapters'"
+            [class.text-muted]="activeTab() !== 'chapters'">
             <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
             <span class="text-xs font-semibold">Chapters</span>
           </button>
-          <button (click)="activeTab.set('chat')" title="Chat" class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
+          <button (click)="activeTab.set('chat')" title="Chat"
+            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
             [class.text-accent]="activeTab() === 'chat'" [class.bg-accent\/10]="activeTab() === 'chat'"
             [class.text-muted]="activeTab() !== 'chat'">
             <ng-icon name="heroChatBubbleLeftRight" class="text-lg"></ng-icon>
@@ -56,12 +58,14 @@
           </button>
           }
           <button (click)="activeTab.set('notation')" title="Notation"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent" [class.text-accent]="activeTab() === 'notation'"
-            [class.bg-accent\/10]="activeTab() === 'notation'" [class.text-muted]="activeTab() !== 'notation'">
+            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
+            [class.text-accent]="activeTab() === 'notation'" [class.bg-accent\/10]="activeTab() === 'notation'"
+            [class.text-muted]="activeTab() !== 'notation'">
             <ng-icon name="heroQueueList" class="text-lg"></ng-icon>
             <span class="text-xs font-semibold">Notation</span>
           </button>
-          <button (click)="activeTab.set('info')" title="Info" class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
+          <button (click)="activeTab.set('info')" title="Info"
+            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
             [class.text-accent]="activeTab() === 'info'" [class.bg-accent\/10]="activeTab() === 'info'"
             [class.text-muted]="activeTab() !== 'info'">
             <ng-icon name="heroInformationCircle" class="text-lg"></ng-icon>
@@ -75,16 +79,13 @@
           <div class="flex items-center gap-3 animate-fadeIn select-none mr-2">
             <div class="flex items-center gap-1.5 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20">
               <span class="relative flex h-1.5 w-1.5">
-                <span
-                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
               </span>
               <span class="text-[10px] font-bold text-red-700 uppercase tracking-wider">Class ongoing</span>
             </div>
-            <button
-              (click)="joinClassSession()"
-              class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 text-muted hover:text-accent"
-            >
+            <button (click)="joinClassSession()"
+              class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 text-muted hover:text-accent">
               <ng-icon name="heroPlay" class="text-lg"></ng-icon>
               <span class="text-xs font-semibold">Join class</span>
             </button>
@@ -107,8 +108,9 @@
 
           @if (isOwner()) {
           <button (click)="toggleClassSession()" [title]="isClassActive() ? 'End Class Session' : 'Start Class Session'"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5" [class.text-rose-500]="isClassActive()"
-            [class.bg-rose-500\/10]="isClassActive()" [class.text-muted]="!isClassActive()">
+            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
+            [class.text-rose-500]="isClassActive()" [class.bg-rose-500\/10]="isClassActive()"
+            [class.text-muted]="!isClassActive()">
             <ng-icon [name]="isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
             <span class="text-xs font-semibold">{{ isClassActive() ? 'End class' : 'Start class' }}</span>
           </button>
@@ -137,6 +139,58 @@
               (nodeClicked)="onNodeClicked($event)" (navigate)="onNavigateToPly($event)"
               (deleteFromHere)="onDeleteFromHere($event)" (annotateMove)="onAnnotateMove($event)"
               (promoteToMainline)="onPromoteToMainline($event)"></app-move-notation>
+
+            @if (currentNode(); as activeNode) {
+            @if ((activeNode.comments && activeNode.comments.length > 0) || (activeNode.preComments &&
+            activeNode.preComments.length > 0)) {
+            <!-- Dedicated Commentary Section -->
+            <div
+              class="px-5 py-4 bg-amber-50/35 border-t border-border-base/60 flex flex-col gap-2 shrink-0 animate-slideUp select-text">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="px-2.5 py-1 text-xs font-bold bg-accent/15 text-accent rounded-lg border border-accent/25">
+                    {{ activeNode.ply % 2 !== 0 ? (activeNode.ply + 1) / 2 : activeNode.ply / 2 + '...' }} {{
+                    activeNode.san }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                <!-- Pre-move comments -->
+                @if (activeNode.preComments && activeNode.preComments.length > 0) {
+                <div class="text-xs text-muted italic border-l-2 border-slate-300 pl-3 py-0.5">
+                  {{ activeNode.preComments[0] }}
+                </div>
+                }
+                <!-- Core move comments -->
+                @if (activeNode.comments && activeNode.comments.length > 0) {
+                <div class="text-sm text-content/95 font-sans leading-relaxed">
+                  {{ activeNode.comments[0] }}
+                </div>
+                }
+              </div>
+            </div>
+            }
+            }
+
+            <style>
+              @keyframes slide-up {
+                from {
+                  transform: translateY(10px);
+                  opacity: 0;
+                }
+
+                to {
+                  transform: translateY(0);
+                  opacity: 1;
+                }
+              }
+
+              .animate-slideUp {
+                animation: slide-up 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+              }
+            </style>
             } @else if (activeTab() === 'info') {
             <app-study-info [isOwner]="isOwner()" [canEdit]="canEdit()" [isSyncing]="isSyncing()"></app-study-info>
             } @else if (activeTab() === 'metadata') {
@@ -165,10 +219,11 @@
             <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
             <span class="text-xs font-semibold">Flip board</span>
           </button>
-          
+
           <button (click)="activeTab.set('metadata')" title="Metadata"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent" [class.text-accent]="activeTab() === 'metadata'"
-            [class.bg-accent\/10]="activeTab() === 'metadata'" [class.text-muted]="activeTab() !== 'metadata'">
+            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
+            [class.text-accent]="activeTab() === 'metadata'" [class.bg-accent\/10]="activeTab() === 'metadata'"
+            [class.text-muted]="activeTab() !== 'metadata'">
             <ng-icon name="heroTag" class="text-lg"></ng-icon>
             <span class="text-xs font-semibold">Metadata</span>
           </button>
@@ -200,7 +255,6 @@
   }
 
   @if (showJoinClassDialog()) {
-  <app-join-class-dialog (confirm)="onJoinClassConfirmed()"
-    (cancel)="onJoinClassCancelled()"></app-join-class-dialog>
+  <app-join-class-dialog (confirm)="onJoinClassConfirmed()" (cancel)="onJoinClassCancelled()"></app-join-class-dialog>
   }
 </div>

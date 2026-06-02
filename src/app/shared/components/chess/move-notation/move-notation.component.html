@@ -101,23 +101,13 @@
           </div>
         </div>
 
-        <!-- Variations & Comments below the move row (Full Width) -->
+        <!-- Variations below the move row (Full Width) -->
         <!-- White Move Details -->
         @if (turn.white; as node) {
-        @if ((node.preComments && node.preComments.length > 0) ||
-        (node.comments && node.comments.length > 0) ||
-        (node.variations && node.variations.length > 0)) {
+        @if (node.variations && node.variations.length > 0) {
         <div
           class="pl-12 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 rounded-lg mx-2 my-0.5 border-l-2 border-slate-200">
-          <!-- Pre-Move Comment -->
-          @if (node.preComments && node.preComments.length > 0) {
-          <div class="text-xs text-muted italic my-0.5">
-            {{ node.preComments[0] }}
-          </div>
-          }
-
           <!-- Variations -->
-          @if (node.variations && node.variations.length > 0) {
           <div class="text-xs text-muted/80 leading-relaxed py-0.5">
             @for (variation of node.variations; track $index) {
             <div class="pl-2 border-l border-slate-200/50 py-0.5">
@@ -127,34 +117,16 @@
             </div>
             }
           </div>
-          }
-
-          <!-- After-Move Comment -->
-          @if (node.comments && node.comments.length > 0) {
-          <div class="text-xs text-content/90 font-sans my-0.5">
-            {{ node.comments[0] }}
-          </div>
-          }
         </div>
         }
         }
 
         <!-- Black Move Details -->
         @if (turn.black; as node) {
-        @if ((node.preComments && node.preComments.length > 0) ||
-        (node.comments && node.comments.length > 0) ||
-        (node.variations && node.variations.length > 0)) {
+        @if (node.variations && node.variations.length > 0) {
         <div
           class="pl-12 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 rounded-lg mx-2 my-0.5 border-l-2 border-slate-200">
-          <!-- Pre-Move Comment -->
-          @if (node.preComments && node.preComments.length > 0) {
-          <div class="text-xs text-muted italic my-0.5">
-            {{ node.preComments[0] }}
-          </div>
-          }
-
           <!-- Variations -->
-          @if (node.variations && node.variations.length > 0) {
           <div class="text-xs text-muted/80 leading-relaxed py-0.5">
             @for (variation of node.variations; track $index) {
             <div class="pl-2 border-l border-slate-200/50 py-0.5">
@@ -164,14 +136,6 @@
             </div>
             }
           </div>
-          }
-
-          <!-- After-Move Comment -->
-          @if (node.comments && node.comments.length > 0) {
-          <div class="text-xs text-content/90 font-sans my-0.5">
-            {{ node.comments[0] }}
-          </div>
-          }
         </div>
         }
         }
@@ -209,12 +173,7 @@
   <!-- Recursive Template for Moves -->
   <ng-template #renderNodes let-nodes="nodes" let-isMainline="isMainline">
     @for (node of nodes; track node.fen; let i = $index; let $firstNode = $first) {
-    <!-- Pre-Move Comment -->
-    @if (node.preComments && node.preComments.length > 0) {
-    <span class="inline text-xs  mx-1  select-text align-baseline">
-      {{ node.preComments[0] }}
-    </span>
-    }
+    <!-- Pre-Move Comment Hidden (Option A) -->
 
     <span class="inline-block whitespace-nowrap mr-1">
       <!-- Move Number -->
@@ -277,12 +236,7 @@
       }
     }
 
-    <!-- After-Move Comment -->
-    @if (node.comments && node.comments.length > 0) {
-    <span class="inline text-xs md:text-sm  mx-1  select-text align-baseline">
-      {{ node.comments[0] }}
-    </span>
-    }
+    <!-- After-Move Comment Hidden (Option A) -->
     }
   </ng-template>
 
