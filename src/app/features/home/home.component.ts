@@ -6,7 +6,6 @@ import { LessonService } from '../../core/services/lesson.service';
 import { PresenceService } from '../../core/services/presence.service';
 
 import { ButtonComponent, ArrowLinkComponent } from '@shared/ui';
-import { FeedbackButtonComponent } from '@shared/feedback';
 import { ChessBoardComponent } from '@shared/chess';
 import { Chess } from 'chess.js';
 import type { Key } from 'chessground/types';
@@ -46,7 +45,6 @@ const RUY_LOPEZ_MOVES = ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6', 'Ba4', 'Nf6'];
   imports: [
     CommonModule,
     RouterModule,
-    FeedbackButtonComponent,
     ButtonComponent,
     ArrowLinkComponent,
     ChessBoardComponent,

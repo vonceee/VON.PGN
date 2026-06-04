@@ -77,12 +77,6 @@ import { filter, map, startWith } from 'rxjs';
                 <span>Enrollments</span>
               </a>
             </li>
-            <li>
-              <a routerLink="/admin/feedback" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-100 hover:text-blue-600 mx-2  ">
-                
-                <span>Feedback</span>
-              </a>
-            </li>
           </ul>
         </nav>
       </aside>
@@ -149,7 +143,6 @@ export class AdminLayoutComponent {
     else if (url.includes('/admin/coach-applications')) this.pageTitle.set('Coach Applications');
 
     else if (url.includes('/admin/academy-enrollments')) this.pageTitle.set('Academy Enrollments');
-    else if (url.includes('/admin/feedback')) this.pageTitle.set('User Feedback');
     else this.pageTitle.set('Dashboard Overview');
   }
 

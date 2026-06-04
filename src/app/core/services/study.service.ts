@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, EMPTY, throwError, tap } from 'rxjs';
+import { Observable, Subject, EMPTY, throwError, tap, of, concat } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastService } from './toast.service';
 import { io, Socket } from 'socket.io-client';
@@ -93,17 +93,36 @@ export class StudyService {
     orientation?: 'white' | 'black';
   }>({ chapterId: null, fen: null, moves: null });
 
+  private studiesCache = new Map<string, any>();
+
   constructor() {}
 
   // ── HTTP API ──────────────────────────────────────────────────
 
-  getStudies(my: boolean = false, category?: string): Observable<any> {
+  getStudies(my: boolean = false, category?: string, forceRefresh = false): Observable<any> {
     let params = my ? 'my=1' : '';
     if (category) {
       params += params ? `&category=${category}` : `category=${category}`;
     }
     const queryString = params ? `?${params}` : '';
-    return this.http.get(`${this.apiUrl}/studies${queryString}`);
+    const cacheKey = `${my}_${category || 'all'}`;
+
+    const apiCall = this.http.get(`${this.apiUrl}/studies${queryString}`).pipe(
+      tap((res) => this.studiesCache.set(cacheKey, res))
+    );
+
+    if (this.studiesCache.has(cacheKey) && !forceRefresh) {
+      return concat(
+        of(this.studiesCache.get(cacheKey)),
+        apiCall
+      );
+    }
+
+    return apiCall;
+  }
+
+  clearCache(): void {
+    this.studiesCache.clear();
   }
 
   createStudy(
@@ -113,15 +132,21 @@ export class StudyService {
     category: string = 'general',
     orientation: string = 'white'
   ): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies`, { name, description, visibility, category, orientation });
+    return this.http.post(`${this.apiUrl}/studies`, { name, description, visibility, category, orientation }).pipe(
+      tap(() => this.clearCache())
+    );
   }
 
   updateStudy(id: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/studies/${id}`, data);
+    return this.http.put(`${this.apiUrl}/studies/${id}`, data).pipe(
+      tap(() => this.clearCache())
+    );
   }
 
   deleteStudy(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/studies/${id}`);
+    return this.http.delete(`${this.apiUrl}/studies/${id}`).pipe(
+      tap(() => this.clearCache())
+    );
   }
 
   getStudy(id: number, targetChapterId?: number): void {
@@ -563,7 +588,9 @@ export class StudyService {
   }
 
   importPgn(studyId: number, pgn: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies/${studyId}/import-pgn`, { pgn });
+    return this.http.post(`${this.apiUrl}/studies/${studyId}/import-pgn`, { pgn }).pipe(
+      tap(() => this.clearCache())
+    );
   }
 
   exportPgn(studyId: number): void {

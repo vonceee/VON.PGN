@@ -2,7 +2,6 @@ import { Component, inject, OnInit, signal, computed, PLATFORM_ID } from '@angul
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
-import { FeedbackService } from '../../../core/services/feedback.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -13,14 +12,10 @@ import { FeedbackService } from '../../../core/services/feedback.service';
 })
 export class AdminDashboardComponent implements OnInit {
   private adminService = inject(AdminService);
-  private feedbackService = inject(FeedbackService);
 
   coursesCount = signal(0);
   coachesCount = signal(0);
   recentEnrollments = signal<any[]>([]);
-
-  // Reactive feedback count using computed signal
-  feedbackCount = computed(() => this.feedbackService.feedbackItems().length);
 
   private platformId = inject(PLATFORM_ID);
 

@@ -1,78 +1,23 @@
-<footer
-  class="w-full relative bg-white  border-t border-border-base  pt-10 md:pt-16 pb-24 md:pb-32 px-6 lg:px-24"
->
-  <div
-    class="mx-auto flex flex-col md:flex-row justify-between gap-10 md:gap-12 lg:gap-24 mb-12 md:mb-24"
-  >
-    <!-- Left Section -->
-    <div class="flex flex-col max-w-sm">
-      <a
-        routerLink="/"
-        class="text-2xl font-semibold   mb-6 hover:opacity-80 "
-      >
-        <span class="decoration-cyan-400 hover:underline underline-offset-8">vonchess</span>
+<footer class="w-full bg-main border-t border-border-base py-8 md:py-12 px-6 lg:px-24">
+  <div class="mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <!-- Left: Brand Logo & Copyright -->
+    <div class="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+      <a routerLink="/" class="text-xl font-semibold hover:opacity-80 transition-opacity">
+        <span class="text-content">vonchess</span>
       </a>
-
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs   ">
-        <span>&copy; 2026 vonchess.net</span>
-        <a appLink routerLink="/privacy-policy">Privacy</a>
-        <a appLink routerLink="/terms-of-service">Terms</a>
-        <a appLink routerLink="/cookie-policy">Cookie Policy</a>
-      </div>
+      <span class="hidden md:inline text-border-base">|</span>
+      <span class="text-xs text-muted">&copy; 2026 vonchess.net. All rights reserved.</span>
     </div>
 
-    <!-- Right Section (Grid of Links) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-16 pt-2">
-      <!-- Play column -->
-      <div>
-        <h3 class="font-semibold   mb-6">Play</h3>
-        <ul class="flex flex-col gap-4 text-base   ">
-          <li><a appLink routerLink="/play">Play Now</a></li>
-          <li><a appLink routerLink="/tactics">Tactics Training</a></li>
-          <li><a appLink routerLink="/tactics/leaderboard">Leaderboard</a></li>
-          <li><a appLink routerLink="/tv">Watch TV</a></li>
-        </ul>
-      </div>
-
-      <!-- Compete column -->
-      <div>
-        <h3 class="font-semibold   mb-6">Compete</h3>
-        <ul class="flex flex-col gap-4 text-base   ">
-          <li><a appLink routerLink="/events">Tournaments</a></li>
-          <li><a appLink routerLink="/arena">Arena Battleground</a></li>
-          <li><a appLink routerLink="/broadcasts">Broadcasts</a></li>
-        </ul>
-      </div>
-
-      <!-- Learn column -->
-      <div>
-        <h3 class="font-semibold   mb-6">Learn</h3>
-        <ul class="flex flex-col gap-4 text-base   ">
-          <li><a appLink routerLink="/roadmap">Roadmap</a></li>
-          <li><a appLink routerLink="/explorer">Opening Explorer</a></li>
-          <li><a appLink routerLink="/coaches">Find a Coach</a></li>
-          <li><a appLink routerLink="/documentation">Documentation</a></li>
-        </ul>
-      </div>
-
-      <!-- Company column -->
-      <div>
-        <h3 class="font-semibold   mb-6">Company</h3>
-        <ul class="flex flex-col gap-4 text-base   ">
-          <li><a appLink routerLink="/about">About</a></li>
-          <li><a appLink routerLink="/contact">Contact Us</a></li>
-          <li><a appLink routerLink="/whats-new">What's New</a></li>
-        </ul>
-      </div>
+    <!-- Right: Minimal Link List -->
+    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+      <a appLink routerLink="/play" class="text-muted hover:text-accent transition-colors">Play</a>
+      <a appLink routerLink="/tactics" class="text-muted hover:text-accent transition-colors">Tactics</a>
+      <a appLink routerLink="/roadmap" class="text-muted hover:text-accent transition-colors">Learn</a>
+      <a appLink routerLink="/coaches" class="text-muted hover:text-accent transition-colors">Coaches</a>
+      <a appLink routerLink="/about" class="text-muted hover:text-accent transition-colors">About</a>
+      <a appLink routerLink="/privacy-policy" class="text-muted hover:text-accent transition-colors">Privacy</a>
+      <a appLink routerLink="/terms-of-service" class="text-muted hover:text-accent transition-colors">Terms</a>
     </div>
-  </div>
-
-  <!-- Bottom Giant Text -->
-  <div class="w-full flex justify-center mt-8 md:mt-12">
-    <h1
-      class="text-[clamp(3rem,20vw,24rem)] font-semibold text-cyan-400 leading-[0.75] er select-none"
-    >
-      vonchess
-    </h1>
   </div>
 </footer>

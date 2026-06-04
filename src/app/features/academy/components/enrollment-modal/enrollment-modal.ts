@@ -7,11 +7,12 @@ import { ButtonComponent  } from '@shared/ui';
 import { AcademyService } from '../../../../core/services/academy.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-academy-enrollment-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgIcon, ButtonComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgIcon, ButtonComponent, RouterLink],
   providers: [provideIcons({ heroXMark })],
   templateUrl: './enrollment-modal.html',
   styles: [`
