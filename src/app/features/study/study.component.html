@@ -22,7 +22,7 @@
         <div
           class="flex-1 w-full flex items-center justify-center min-h-0 overflow-hidden relative board-container-parent">
           <div class="flex items-center justify-center gap-0 max-h-full w-full max-w-6xl mx-auto">
-            <app-chess-board [fen]="currentFen()" [orientation]="boardOrientation()" [interactive]="boardInteractive()"
+            <app-chess-board #board [fen]="currentFen()" [orientation]="boardOrientation()" [interactive]="boardInteractive()"
               (moveMade)="onMoveMade($event)" (shapeDrawn)="onShapeDrawn($event)" (sizeChange)="boardSize.set($event)"
               (prevMove)="onPrevMove()" (nextMove)="onNextMove()" [syncedShapes]="mergedShapes()"
               [lastMove]="lastMoveSquares()" [glyphs]="activeGlyphs()"></app-chess-board>

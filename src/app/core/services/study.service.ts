@@ -58,8 +58,11 @@ export class StudyService {
     const studyOwnerId = study?.user_id || (study as any)?.userId || study?.owner?.id;
     const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
 
+    // Owner always retains board control in a live class session
+    if (isOwner) return true;
+
     // Students who haven't joined the class yet can explore freely
-    if (!isOwner && !this.hasJoinedClass()) return true;
+    if (!this.hasJoinedClass()) return true;
 
     // If joined, only the lock holder can explore/write
     return !!(myUid && this.lockHolderId() && String(myUid) === String(this.lockHolderId()));

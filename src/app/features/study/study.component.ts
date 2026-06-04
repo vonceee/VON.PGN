@@ -12,6 +12,7 @@ import {
   HostListener,
   ChangeDetectionStrategy,
   DestroyRef,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -122,6 +123,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
 
   study = this.studyService.currentStudy;
+  @ViewChild('board') board!: ChessBoardComponent;
   currentChapter = this.studyService.currentChapter;
   isLoading = this.studyService.isLoading;
   viewerCount = this.studyService.viewerCount;
@@ -380,11 +382,13 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      // Synchronize boards instantly if class session is active and this user is a follower
+      // Synchronize boards instantly if class session is active and this user is participating
+      // (either the owner, or a student who has joined the class).
       const isClassActive = this.studyService.isClassActive();
-      const hasControl = this.studyService.hasBoardControl();
+      const isOwner = this.isOwner();
+      const hasJoined = this.hasJoinedClass();
 
-      if (isClassActive && !hasControl && this.studyService.lastRemoteState().chapterId && !this.isActionInProgress()) {
+      if (isClassActive && (isOwner || hasJoined) && this.studyService.lastRemoteState().chapterId && !this.isActionInProgress()) {
         this.syncToRemoteState();
       }
     });
@@ -557,10 +561,10 @@ export class StudyComponent implements OnInit, OnDestroy {
   onMoveMade(event: any) {
     // Classroom guard: If student attempts to move during class without board control
     if (this.isClassActive() && !this.isOwner() && this.hasJoinedClass() && !this.hasBoardControl()) {
-      // 1. Instantly reset FEN locally to prevent the piece from staying on the board
-      const current = this.currentFen();
-      this.currentFen.set('');
-      setTimeout(() => this.currentFen.set(current), 0);
+      // Undo the move immediately on the chessboard component
+      if (this.board) {
+        this.board.undoMove();
+      }
 
       // 2. Open Request Control Dialog
       const dialogRef = this.dialog.open<boolean>(RequestControlDialogComponent, {
