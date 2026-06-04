@@ -25,7 +25,7 @@ import { StudyChapter } from '../../../core/models/study.model';
               <div class="text-xs  uppercase  text-muted/60 flex items-center">
                 {{ item.label }}
               </div>
-              <div class="text-sm font-semibold text-content">
+              <div class="text-sm font-semibold text-content truncate min-w-0" [title]="item.value">
                 {{ item.value }}
               </div>
             }

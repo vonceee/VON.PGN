@@ -28,7 +28,7 @@ import { fromEvent } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
-import { MoveNode, GLYPH_MAPPING } from '../../core/models/study.model';
+import { MoveNode, GLYPH_MAPPING, StudyChapter } from '../../core/models/study.model';
 import { buildTreeFromMoves, updateNodeInTree, getPlyFromFen, findNodeContext } from '../../core/utils/chess-tree.utils';
 import { EngineService } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
@@ -368,10 +368,8 @@ export class StudyComponent implements OnInit, OnDestroy {
 
       if (this.lastChapterId !== chapter.id) {
         this.lastChapterId = chapter.id;
-        this.currentNode.set(null);
-        this.currentFen.set(chapter.current_fen);
         this.moveTree.set(buildTreeFromMoves(chapter.moves || [], chapter.initial_fen));
-        if (!this.isSyncing() || this.canEdit()) this.goToLastMainlineNode();
+        this.updateCurrentPosition(null);
       }
     });
 
@@ -985,6 +983,18 @@ export class StudyComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Next / Previous Chapter
+    if (event.shiftKey && key === 'ArrowRight') {
+      event.preventDefault();
+      this.nextChapter();
+      return;
+    }
+    if (event.shiftKey && key === 'ArrowLeft') {
+      event.preventDefault();
+      this.prevChapter();
+      return;
+    }
+
     // --- 2. Editor Shortcuts (Require canEdit permissions) ---
     if (!this.canEdit()) return;
 
@@ -1054,6 +1064,54 @@ export class StudyComponent implements OnInit, OnDestroy {
     ).subscribe();
     
     this.audioService.playNavigationSound(); // Subtle feedback
+  }
+
+  selectChapter(chap: StudyChapter) {
+    if (this.currentChapter()?.id === chap.id) return;
+
+    this.studyService.currentChapter.set(chap);
+    if (this.canEdit()) {
+      this.studyService.emitChapterChange(
+        this.study()!.id,
+        chap.id,
+        chap.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        chap.moves || [],
+        chap.orientation,
+        this.isSyncing()
+      );
+    }
+  }
+
+  nextChapter() {
+    const s = this.study();
+    const current = this.currentChapter();
+    if (!s || !s.chapters || !current) return;
+
+    const currentIndex = s.chapters.findIndex(c => c.id === current.id);
+    if (currentIndex !== -1 && currentIndex < s.chapters.length - 1) {
+      const nextChap = s.chapters[currentIndex + 1];
+      this.selectChapter(nextChap);
+      this.toastService.show(`Switched to chapter: ${nextChap.name}`, 'success');
+      this.audioService.playNavigationSound();
+    } else {
+      this.toastService.show('Already on the last chapter.', 'success');
+    }
+  }
+
+  prevChapter() {
+    const s = this.study();
+    const current = this.currentChapter();
+    if (!s || !s.chapters || !current) return;
+
+    const currentIndex = s.chapters.findIndex(c => c.id === current.id);
+    if (currentIndex > 0) {
+      const prevChap = s.chapters[currentIndex - 1];
+      this.selectChapter(prevChap);
+      this.toastService.show(`Switched to chapter: ${prevChap.name}`, 'success');
+      this.audioService.playNavigationSound();
+    } else {
+      this.toastService.show('Already on the first chapter.', 'success');
+    }
   }
 
   openShortcuts() {

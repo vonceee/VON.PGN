@@ -66,7 +66,7 @@ export class StudySidebarComponent {
       this.studyService.emitChapterChange(
         this.study()!.id,
         chap.id,
-        chap.current_fen,
+        chap.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
         chap.moves || [],
         chap.orientation,
         this.isSyncing()

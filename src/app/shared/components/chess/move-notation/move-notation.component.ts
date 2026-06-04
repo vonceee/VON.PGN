@@ -244,6 +244,7 @@ export class MoveNotationComponent {
 
     switch (event.key) {
       case 'ArrowLeft':
+        if (event.shiftKey) return;
         event.preventDefault();
         const parent = this.navigationCtx().parent;
         if (parent) {
@@ -254,6 +255,7 @@ export class MoveNotationComponent {
         }
         break;
       case 'ArrowRight':
+        if (event.shiftKey) return;
         event.preventDefault();
         if (options.length > 0) {
           const idx = Math.min(this.selectedVariationIndex(), options.length - 1);

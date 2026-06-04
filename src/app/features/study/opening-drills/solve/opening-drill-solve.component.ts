@@ -36,7 +36,12 @@ export interface PracticeMistake {
   templateUrl: './opening-drill-solve.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'absolute inset-0 overflow-hidden',
+    '[class.absolute]': "viewState() === 'active'",
+    '[class.inset-0]': "viewState() === 'active'",
+    '[class.overflow-hidden]': "viewState() === 'active'",
+    '[class.w-full]': 'true',
+    '[class.min-h-full]': 'true',
+    '[class.block]': 'true',
   },
 })
 export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
@@ -486,7 +491,6 @@ export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
     if (this.isRetryMode()) {
       this.isRetryMode.set(false);
       this.viewState.set('success');
-      this.toastService.show('Mistake position resolved successfully!', 'success');
       return;
     }
 
@@ -503,7 +507,6 @@ export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
       const chaptersList = this.chapters();
 
       if (currentChapterIdx + 1 < chaptersList.length) {
-        this.toastService.show(`Completed all variations in "${chaptersList[currentChapterIdx].name}"! Moving to next line...`, 'success');
         this.currentChapterIndex.set(currentChapterIdx + 1);
         this.startChapterDrill();
       } else {

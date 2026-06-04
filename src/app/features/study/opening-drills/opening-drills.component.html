@@ -10,9 +10,9 @@
       </div>
       <div class="flex items-center gap-2 flex-wrap">
         <!-- Dropdown -->
-        <div #dropdownContainer class="relative shrink-0">
+        <div #dropdownContainer class="relative shrink-0 w-44">
           <button (click)="isDropdownOpen.update(v => !v)"
-            class="w-full py-3 pl-2 pr-8 text-left text-content font-medium cursor-pointer text-base border-b-2 border-border-base flex items-center justify-between focus:outline-none">
+            class="w-full py-3 pl-2 pr-1 text-left text-content font-medium cursor-pointer text-base border-b-2 border-border-base flex items-center justify-between focus:outline-none">
             <span>{{ activeTab() === 'my' ? 'My Repertoires' : 'Public' }}</span>
             <svg class="fill-current h-4 w-4 text-muted transition-transform duration-200"
               [class.rotate-180]="isDropdownOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
