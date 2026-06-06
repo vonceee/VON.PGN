@@ -31,6 +31,7 @@ export interface LeaderboardEntry {
   user_id: number;
   username: string;
   score: number;
+  country_code?: string | null;
 }
 
 export interface UserLeaderboardStats {

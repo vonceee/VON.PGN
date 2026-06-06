@@ -5,13 +5,30 @@ import { interval, Subscription } from 'rxjs';
 import { TacticsService, LeaderboardResponse } from '../../../core/services/tactics.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
-import { TypewriterTextComponent  } from '@shared/ui';
+import { TypewriterTextComponent, FlagIconComponent } from '@shared/ui';
 import { UserHovercardDirective } from '@shared/directives';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  heroBolt,
+  heroClock,
+  heroFire,
+  heroPuzzlePiece,
+  heroRocketLaunch
+} from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-leaderboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, UserHovercardDirective],
+  imports: [CommonModule, RouterLink, UserHovercardDirective, NgIcon, FlagIconComponent],
+  providers: [
+    provideIcons({
+      heroBolt,
+      heroClock,
+      heroFire,
+      heroPuzzlePiece,
+      heroRocketLaunch
+    })
+  ],
   templateUrl: './leaderboard.component.html',
 })
 export class LeaderboardComponent implements OnInit, OnDestroy {
@@ -58,6 +75,16 @@ export class LeaderboardComponent implements OnInit, OnDestroy {
     });
   }
 
-
+  getCategoryIcon(category: string): string {
+    switch (category.toLowerCase()) {
+      case 'bullet': return 'heroRocketLaunch';
+      case 'blitz': return 'heroBolt';
+      case 'rapid': return 'heroClock';
+      case 'tactics': return 'heroPuzzlePiece';
+      case 'streak': return 'heroFire';
+      default: return 'heroBolt';
+    }
+  }
 }
+
 

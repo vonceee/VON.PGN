@@ -11,150 +11,216 @@
 
     <!-- Main Content Area -->
     <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 min-h-0">
-    @if (isLoading()) {
+      @if (isLoading()) {
       <!-- Skeleton Loading -->
       <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
         @for (category of ['Tactics', 'Streak', 'Bullet', 'Blitz', 'Rapid']; track category) {
-          <div class="ui-panel p-6">
-            <h3 class="text-lg font-semibold mb-4">{{ category }}</h3>
-            <div class="flex flex-col gap-3 ">
-              @for (i of [1,2,3,4,5,6,7,8,9,10]; track i) {
-                <div class="h-12 bg-slate-100 rounded-xl w-full"></div>
-              }
+        <div class="bg-subtle rounded-4xl p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-2xl flex items-center justify-center bg-main border border-border-base text-muted shadow-xs">
+              <ng-icon [name]="getCategoryIcon(category)" class="text-xl"></ng-icon>
             </div>
+            <h3 class="text-lg font-semibold text-content">{{ category }}</h3>
           </div>
+          <div class="flex flex-col gap-3">
+            @for (i of [1,2,3,4,5,6,7,8,9,10]; track i) {
+            <div class="h-12 bg-slate-100 rounded-xl w-full"></div>
+            }
+          </div>
+        </div>
         }
       </div>
-    } @else {
+      } @else {
       @if (leaderboard()) {
-        <!-- All Leaderboards Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-          <!-- Bullet Rating -->
-          <div class="ui-panel p-6">
-            <h3 class="text-lg font-semibold mb-4">
+      <!-- All Leaderboards Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+        <!-- Bullet Rating -->
+        <div class="bg-subtle rounded-4xl p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-2xl flex items-center justify-center bg-main border border-border-base text-muted shadow-xs">
+              <ng-icon name="heroRocketLaunch" class="text-xl"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-content">
               Bullet
             </h3>
-            <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.bullet_rating?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg">
-                  <div class="w-6 text-center text-sm font-semibold ">
-                    #{{ entry.rank }}
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold   truncate hover:text-cyan-400 ">
-                      {{ entry.username }}
-                    </a>
-                  </div>
-                  <div class="text-sm font-semibold">
-                    {{ entry.score }}
-                  </div>
-                </div>
-              }
-            </div>
           </div>
+          <div class="flex flex-col gap-2">
+            @for (entry of leaderboard()?.bullet_rating?.slice(0, 10); track entry.user_id) {
+            <div [routerLink]="['/user', entry.username]"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl hover:underline cursor-pointer group">
+              <div class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shrink-0"
+                [class.bg-amber-400]="entry.rank === 1" [class.text-white]="entry.rank === 1"
+                [class.bg-slate-300]="entry.rank === 2" [class.text-white]="entry.rank === 2"
+                [class.bg-amber-600]="entry.rank === 3" [class.text-white]="entry.rank === 3"
+                [class.text-muted]="entry.rank > 3">
+                {{ entry.rank }}
+              </div>
+              <div class="flex-1 min-w-0 flex items-center gap-2">
+                <span [appUserHovercard]="entry.username" class="text-sm font-semibold text-content truncate">
+                  {{ entry.username }}
+                </span>
+                <app-flag-icon [countryCode]="entry.country_code" shape="circle"></app-flag-icon>
+              </div>
+              <div class="text-sm font-bold text-content">
+                {{ entry.score }}
+              </div>
+            </div>
+            }
+          </div>
+        </div>
 
-          <!-- Blitz Rating -->
-          <div class="ui-panel p-6">
-            <h3 class="text-lg font-semibold mb-4">
+        <!-- Blitz Rating -->
+        <div class="bg-subtle rounded-4xl p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-2xl flex items-center justify-center bg-main border border-border-base text-muted shadow-xs">
+              <ng-icon name="heroBolt" class="text-xl"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-content">
               Blitz
             </h3>
-            <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.blitz_rating?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg">
-                  <div class="w-6 text-center text-sm font-semibold ">
-                    #{{ entry.rank }}
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold   truncate hover:text-cyan-400 ">
-                      {{ entry.username }}
-                    </a>
-                  </div>
-                  <div class="text-sm font-semibold">
-                    {{ entry.score }}
-                  </div>
-                </div>
-              }
-            </div>
           </div>
+          <div class="flex flex-col gap-2">
+            @for (entry of leaderboard()?.blitz_rating?.slice(0, 10); track entry.user_id) {
+            <div [routerLink]="['/user', entry.username]"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl hover:underline cursor-pointer group">
+              <div class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shrink-0"
+                [class.bg-amber-400]="entry.rank === 1" [class.text-white]="entry.rank === 1"
+                [class.bg-slate-300]="entry.rank === 2" [class.text-white]="entry.rank === 2"
+                [class.bg-amber-600]="entry.rank === 3" [class.text-white]="entry.rank === 3"
+                [class.text-muted]="entry.rank > 3">
+                {{ entry.rank }}
+              </div>
+              <div class="flex-1 min-w-0 flex items-center gap-2">
+                <span [appUserHovercard]="entry.username" class="text-sm font-semibold text-content truncate">
+                  {{ entry.username }}
+                </span>
+                <app-flag-icon [countryCode]="entry.country_code" shape="circle"></app-flag-icon>
+              </div>
+              <div class="text-sm font-bold text-content">
+                {{ entry.score }}
+              </div>
+            </div>
+            }
+          </div>
+        </div>
 
-          <!-- Rapid Rating -->
-          <div class="ui-panel p-6">
-            <h3 class="text-lg font-semibold mb-4">
+        <!-- Rapid Rating -->
+        <div class="bg-subtle rounded-4xl p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-2xl flex items-center justify-center bg-main border border-border-base text-muted shadow-xs">
+              <ng-icon name="heroClock" class="text-xl"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-content">
               Rapid
             </h3>
-            <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.rapid_rating?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg">
-                  <div class="w-6 text-center text-sm font-semibold ">
-                    #{{ entry.rank }}
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold   truncate hover:text-cyan-400 ">
-                      {{ entry.username }}
-                    </a>
-                  </div>
-                  <div class="text-sm font-semibold">
-                    {{ entry.score }}
-                  </div>
-                </div>
-              }
-            </div>
           </div>
+          <div class="flex flex-col gap-2">
+            @for (entry of leaderboard()?.rapid_rating?.slice(0, 10); track entry.user_id) {
+            <div [routerLink]="['/user', entry.username]"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl hover:underline cursor-pointer group">
+              <div class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shrink-0"
+                [class.bg-amber-400]="entry.rank === 1" [class.text-white]="entry.rank === 1"
+                [class.bg-slate-300]="entry.rank === 2" [class.text-white]="entry.rank === 2"
+                [class.bg-amber-600]="entry.rank === 3" [class.text-white]="entry.rank === 3"
+                [class.text-muted]="entry.rank > 3">
+                {{ entry.rank }}
+              </div>
+              <div class="flex-1 min-w-0 flex items-center gap-2">
+                <span [appUserHovercard]="entry.username" class="text-sm font-semibold text-content truncate">
+                  {{ entry.username }}
+                </span>
+                <app-flag-icon [countryCode]="entry.country_code" shape="circle"></app-flag-icon>
+              </div>
+              <div class="text-sm font-bold text-content">
+                {{ entry.score }}
+              </div>
+            </div>
+            }
+          </div>
+        </div>
 
-          <!-- Tactics Rating -->
-          <div class="ui-panel p-6">
-            <h3 class="text-lg font-semibold mb-4">
+        <!-- Tactics Rating -->
+        <div class="bg-subtle rounded-4xl p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-2xl flex items-center justify-center bg-main border border-border-base text-muted shadow-xs">
+              <ng-icon name="heroPuzzlePiece" class="text-xl"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-content">
               Tactics
             </h3>
-            <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.tactics_rating?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg">
-                  <div class="w-6 text-center text-sm font-semibold ">
-                    #{{ entry.rank }}
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold   truncate hover:text-cyan-400 ">
-                      {{ entry.username }}
-                    </a>
-                  </div>
-                  <div class="text-sm font-semibold">
-                    {{ entry.score }}
-                  </div>
-                </div>
-              }
-            </div>
           </div>
+          <div class="flex flex-col gap-2">
+            @for (entry of leaderboard()?.tactics_rating?.slice(0, 10); track entry.user_id) {
+            <div [routerLink]="['/user', entry.username]"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl hover:underline cursor-pointer group">
+              <div class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shrink-0"
+                [class.bg-amber-400]="entry.rank === 1" [class.text-white]="entry.rank === 1"
+                [class.bg-slate-300]="entry.rank === 2" [class.text-white]="entry.rank === 2"
+                [class.bg-amber-600]="entry.rank === 3" [class.text-white]="entry.rank === 3"
+                [class.text-muted]="entry.rank > 3">
+                {{ entry.rank }}
+              </div>
+              <div class="flex-1 min-w-0 flex items-center gap-2">
+                <span [appUserHovercard]="entry.username" class="text-sm font-semibold text-content truncate">
+                  {{ entry.username }}
+                </span>
+                <app-flag-icon [countryCode]="entry.country_code" shape="circle"></app-flag-icon>
+              </div>
+              <div class="text-sm font-bold text-content">
+                {{ entry.score }}
+              </div>
+            </div>
+            }
+          </div>
+        </div>
 
-          <!-- Best Streak -->
-          <div class="ui-panel rounded-2xl p-6">
-            <h3 class="text-lg font-semibold mb-4">
+        <!-- Best Streak -->
+        <div class="bg-subtle rounded-4xl p-6">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-2xl flex items-center justify-center bg-main border border-border-base text-muted shadow-xs">
+              <ng-icon name="heroFire" class="text-xl"></ng-icon>
+            </div>
+            <h3 class="text-lg font-semibold text-content">
               Streak
             </h3>
-            <div class="flex flex-col gap-2">
-              @for (entry of leaderboard()?.streak?.slice(0, 10); track entry.user_id) {
-                <div class="flex items-center gap-3 px-3 py-2 rounded-lg">
-                  <div class="w-6 text-center text-sm font-semibold ">
-                    #{{ entry.rank }}
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <a [routerLink]="['/user', entry.username]" [appUserHovercard]="entry.username" class="text-sm font-semibold truncate hover:text-cyan-400 ">
-                      {{ entry.username }}
-                    </a>
-                  </div>
-                  <div class="text-sm font-semibold">
-                    {{ entry.score }}
-                  </div>
-                </div>
-              }
+          </div>
+          <div class="flex flex-col gap-2">
+            @for (entry of leaderboard()?.streak?.slice(0, 10); track entry.user_id) {
+            <div [routerLink]="['/user', entry.username]"
+              class="flex items-center gap-3 px-3 py-2 rounded-xl hover:underline cursor-pointer group">
+              <div class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold shrink-0"
+                [class.bg-amber-400]="entry.rank === 1" [class.text-white]="entry.rank === 1"
+                [class.bg-slate-300]="entry.rank === 2" [class.text-white]="entry.rank === 2"
+                [class.bg-amber-600]="entry.rank === 3" [class.text-white]="entry.rank === 3"
+                [class.text-muted]="entry.rank > 3">
+                {{ entry.rank }}
+              </div>
+              <div class="flex-1 min-w-0 flex items-center gap-2">
+                <span [appUserHovercard]="entry.username" class="text-sm font-semibold text-content truncate">
+                  {{ entry.username }}
+                </span>
+                <app-flag-icon [countryCode]="entry.country_code" shape="circle"></app-flag-icon>
+              </div>
+              <div class="text-sm font-bold text-content">
+                {{ entry.score }}
+              </div>
             </div>
+            }
           </div>
         </div>
+      </div>
       } @else {
-        <div class="py-20 text-center">
-          <p>Could not load leaderboard data.</p>
-        </div>
+      <div class="py-20 text-center">
+        <p>Could not load leaderboard data.</p>
+      </div>
       }
-    }
+      }
     </div>
   </div>
 </div>

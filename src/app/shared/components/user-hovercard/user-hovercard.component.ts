@@ -3,11 +3,21 @@ import { CommonModule } from '@angular/common';
 import { UserProfile } from '../../../core/models/user.model';
 import { ChessBoardComponent } from '../chess/chess-board/chess-board.component';
 import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroRocketLaunch, heroBolt, heroClock, heroPuzzlePiece } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-user-hovercard',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, FlagIconComponent],
+  imports: [CommonModule, ChessBoardComponent, FlagIconComponent, NgIcon],
+  providers: [
+    provideIcons({
+      heroRocketLaunch,
+      heroBolt,
+      heroClock,
+      heroPuzzlePiece,
+    })
+  ],
   template: `
     <div class="ui-panel p-4 w-80 overflow-hidden zoom-in">
       @if (user()) {
@@ -18,10 +28,10 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
               <a 
                 [href]="'/user/' + user()!.username" 
                 target="_blank"
-                class="text-lg  text-content truncate hover:text-accent  flex items-center gap-2"
+                class="text-lg text-content truncate hover:underline flex items-center gap-2"
               >
-                <app-flag-icon [countryCode]="user()!.country_code"></app-flag-icon>
                 {{ user()!.username }}
+                <app-flag-icon [countryCode]="user()!.country_code" shape="circle"></app-flag-icon>
               </a>
               <div 
                 class="w-2.5 h-2.5 rounded-full"
@@ -31,32 +41,22 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
               ></div>
             </div>
           </div>
-          @if (user()!.verified_organizer) {
-            <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-semibold capitalize ">
-              Verified
-            </div>
-          }
         </div>
 
         <!-- Ratings Grid -->
-        <div class="grid grid-cols-3 gap-2 mb-4">
+        <div class="flex items-center justify-between gap-2 mb-4 px-1">
           @for (type of ratingTypes; track type.id) {
-            <div class="flex flex-col items-center p-2 rounded-xl bg-subtle/50 border border-border-base">
-              <span class="text-xs  font-semibold capitalize  mb-1">
-                {{ type.label }}
-              </span>
-              <span class="text-sm  text-content">
-                {{ user()!.ratings?.[type.id]?.rating || 1500 }}
+            <div class="flex items-center gap-1.5" [title]="type.label">
+              <ng-icon [name]="type.icon" class="text-base text-muted"></ng-icon>
+              <span class="text-sm font-semibold text-content">
+                {{ getRating(type.id) }}
               </span>
             </div>
           }
         </div>
 
         <!-- Stats -->
-        <div class="flex items-center gap-4 mb-4 px-1 text-xs font-semibold capitalize">
-          <div class="flex items-center gap-1.5">
-            <span>{{ user()!.followers_count }} Followers</span>
-          </div>
+        <div class="flex items-center gap-4 px-1 text-xs font-semibold capitalize">
           <div class="flex items-center gap-1.5">
             <span>Joined {{ joinedDate() }}</span>
           </div>
@@ -66,7 +66,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
         @if (user()!.active_game; as game) {
           <div class="mt-4 pt-4 border-t border-border-base/50">
             <div class="flex items-center justify-between mb-2 px-1">
-              <span class="text-xs font-semibold capitalize text-accent">Playing Now</span>
+              <span class="text-xs font-semibold capitalize">Playing Now</span>
               <span class="text-xs ">{{ game.time_control }}</span>
             </div>
             
@@ -83,10 +83,6 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
                 <span class="text-xs font-semibold text-content truncate max-w-[120px]">
                   vs {{ game.white_player.id === user()!.uid ? game.black_player.name : game.white_player.name }}
                 </span>
-                <div class="flex items-center gap-1">
-                  <div class="w-1.5 h-1.5 rounded-full bg-accent "></div>
-                  <span class="text-xs  capitalize text-accent">Live</span>
-                </div>
               </div>
             </div>
           </div>
@@ -94,10 +90,11 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
       } @else {
         <div class="flex flex-col gap-3 ">
           <div class="h-6 w-32 bg-subtle rounded-md"></div>
-          <div class="grid grid-cols-3 gap-2">
-            <div class="h-12 bg-subtle rounded-xl"></div>
-            <div class="h-12 bg-subtle rounded-xl"></div>
-            <div class="h-12 bg-subtle rounded-xl"></div>
+          <div class="flex items-center justify-between mb-1">
+            <div class="h-6 w-14 bg-subtle rounded-md"></div>
+            <div class="h-6 w-14 bg-subtle rounded-md"></div>
+            <div class="h-6 w-14 bg-subtle rounded-md"></div>
+            <div class="h-6 w-14 bg-subtle rounded-md"></div>
           </div>
           <div class="h-4 w-48 bg-subtle rounded-md"></div>
         </div>
@@ -120,10 +117,11 @@ export class UserHovercardComponent {
     this.user.set(value);
   }
 
-  ratingTypes: { id: 'bullet' | 'blitz' | 'rapid', label: string }[] = [
-    { id: 'bullet', label: 'Bullet' },
-    { id: 'blitz', label: 'Blitz' },
-    { id: 'rapid', label: 'Rapid' },
+  ratingTypes: { id: 'bullet' | 'blitz' | 'rapid' | 'tactics', icon: string, label: string }[] = [
+    { id: 'bullet', icon: 'heroRocketLaunch', label: 'Bullet' },
+    { id: 'blitz', icon: 'heroBolt', label: 'Blitz' },
+    { id: 'rapid', icon: 'heroClock', label: 'Rapid' },
+    { id: 'tactics', icon: 'heroPuzzlePiece', label: 'Tactics' },
   ];
 
   joinedDate = computed(() => {
@@ -132,4 +130,17 @@ export class UserHovercardComponent {
     const date = new Date(userData.createdAt);
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   });
+
+  getRating(typeId: 'bullet' | 'blitz' | 'rapid' | 'tactics'): number {
+    const userData = this.user();
+    if (!userData) return 1500;
+
+    if (typeId === 'tactics') {
+      return userData.progress?.puzzleRating || 1500;
+    }
+
+    return userData.ratings?.[typeId]?.rating || 1500;
+  }
 }
+
+

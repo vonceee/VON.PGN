@@ -8,8 +8,8 @@
           <!-- Left Side: Identity -->
           <div class="flex-1 w-full">
             <h1 class="text-2xl font-semibold  flex items-center gap-3">
-              <app-flag-icon [countryCode]="profile.country_code"></app-flag-icon>
               {{ profile.username }}
+              <app-flag-icon [countryCode]="profile.country_code" shape="circle"></app-flag-icon>
             </h1>
 
             @if (profile.verified_organizer) {

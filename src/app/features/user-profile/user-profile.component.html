@@ -25,8 +25,8 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h1 class="text-2xl font-semibold  flex items-center gap-3">
-                  <app-flag-icon [countryCode]="profile.country_code"></app-flag-icon>
                   {{ profile.username }}
+                  <app-flag-icon [countryCode]="profile.country_code" shape="circle"></app-flag-icon>
                   <div class="w-3 h-3 rounded-full shrink-0" [class.bg-green-500]="profile.is_online"
                     [class.bg-muted/30]="!profile.is_online" [title]="profile.is_online ? 'Online' : 'Offline'"></div>
                 </h1>
