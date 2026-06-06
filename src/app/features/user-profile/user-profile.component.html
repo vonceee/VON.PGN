@@ -26,11 +26,10 @@
               <div>
                 <h1 class="text-2xl font-semibold  flex items-center gap-3">
                   <app-flag-icon [countryCode]="profile.country_code"></app-flag-icon>
-                  {{ profile.displayName || profile.username }}
+                  {{ profile.username }}
                   <div class="w-3 h-3 rounded-full shrink-0" [class.bg-green-500]="profile.is_online"
                     [class.bg-muted/30]="!profile.is_online" [title]="profile.is_online ? 'Online' : 'Offline'"></div>
                 </h1>
-                <p class="text-sm mt-0.5 ">{{ '@' + profile.username }}</p>
                 @if (profile.verified_organizer) {
                 <div class="mt-2 flex items-center gap-1.5">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -263,17 +262,14 @@
           <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
             [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
             class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-border-base  text-sm font-semibold text-slate-700  uppercase shrink-0">
-            {{ userItem.displayName.charAt(0) || 'U' }}
+            {{ userItem.username.charAt(0) || 'U' }}
           </a>
           <div class="flex-1 min-w-0">
             <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
               [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
               class="text-sm font-semibold   truncate block hover:text-cyan-500 ">
-              {{ userItem.displayName }}
+              {{ userItem.username }}
             </a>
-            <span class="text-xs   truncate">{{
-              '@' + userItem.username
-              }}</span>
           </div>
           @if (isAuthenticated()) {
           <button (click)="toggleTabUserFollow(userItem)"

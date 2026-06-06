@@ -250,10 +250,7 @@
             >
               <div class="flex flex-col min-w-0">
                 <span class="text-sm text-content truncate">{{
-                  user.displayName
-                }}</span>
-                <span class="text-xs text-muted truncate">{{
-                  '@' + user.username
+                  user.username
                 }}</span>
               </div>
             </a>
@@ -372,7 +369,7 @@
             <span
               class="text-sm lg:text-base text-muted font-medium hover:underline cursor-pointer"
             >
-              {{ userService.currentUser()?.displayName || 'User' }}
+              {{ userService.currentUser()?.username || 'User' }}
             </span>
           </div>
         </button>

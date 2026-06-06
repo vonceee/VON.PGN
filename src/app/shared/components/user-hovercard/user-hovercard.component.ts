@@ -31,7 +31,7 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
               ></div>
             </div>
             <span class="text-xs   capitalize ">
-              {{ user()!.displayName || 'Chess Enthusiast' }}
+              Chess Enthusiast
             </span>
           </div>
           @if (user()!.verified_organizer) {

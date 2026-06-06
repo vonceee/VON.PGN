@@ -61,10 +61,7 @@ import { Router } from '@angular/router';
                 class="w-full flex flex-col px-3 py-2 rounded-lg   text-left "
               >
                 <span class="text-xs font-semibold   capitalize">{{
-                  user.displayName
-                }}</span>
-                <span class="text-xs  ">{{
-                  '@' + user.username
+                  user.username
                 }}</span>
               </button>
             }

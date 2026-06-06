@@ -87,7 +87,7 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUser(user: any) {
-    if (confirm(`Are you sure you want to delete user ${user.displayName || user.username}?`)) {
+    if (confirm(`Are you sure you want to delete user ${user.username}?`)) {
       this.adminService.deleteUser(user.uid).subscribe({
         next: () => {
           this.users.update(users => users.filter(u => u.uid !== user.uid));

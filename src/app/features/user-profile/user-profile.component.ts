@@ -150,7 +150,7 @@ export class UserProfileComponent implements OnInit {
     if (!profileUser) return;
 
     const dialogRef = this.dialog.open<ChallengeSettings>(ChallengeUserDialogComponent, {
-      data: { username: profileUser.displayName || profileUser.username },
+      data: { username: profileUser.username },
     });
 
     dialogRef.closed.subscribe((settings) => {

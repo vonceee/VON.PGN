@@ -9,7 +9,7 @@
           <div class="flex-1 w-full">
             <h1 class="text-2xl font-semibold  flex items-center gap-3">
               <app-flag-icon [countryCode]="profile.country_code"></app-flag-icon>
-              {{ profile.displayName || profile.username }}
+              {{ profile.username }}
             </h1>
 
             @if (profile.verified_organizer) {
@@ -163,17 +163,14 @@
                 <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
                   [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
                   class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-border-base  text-sm font-semibold text-slate-700  uppercase shrink-0">
-                  {{ userItem.displayName.charAt(0) || 'U' }}
+                  {{ userItem.username.charAt(0) || 'U' }}
                 </a>
                 <div class="flex-1 min-w-0">
                   <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
                     [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
                     class="text-sm font-semibold   truncate block hover:text-cyan-500 ">
-                    {{ userItem.displayName }}
+                    {{ userItem.username }}
                   </a>
-                  <span class="text-xs   truncate">{{
-                    '@' + userItem.username
-                    }}</span>
                 </div>
                 <button (click)="toggleTabUserFollow(userItem)"
                   class="px-3 py-1.5 rounded-lg text-xs font-semibold   cursor-pointer shrink-0"

@@ -9,7 +9,6 @@ import { GachaService } from './gacha';
 export interface UserSearchResult {
   uid: string;
   username: string;
-  displayName: string;
 }
 
 export interface FollowStatusResponse {

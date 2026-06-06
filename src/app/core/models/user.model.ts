@@ -2,7 +2,6 @@ export interface UserProfile {
   uid: string; // unique ID from backend
   email: string;
   username: string; // e.g, "yunah_afk, will be for tags e.g, @yunah_afk --unique"
-  displayName?: string; // e.g, "Noh Yunah --not unique"
   avatarUrl?: string;
   bio?: string;
   is_admin: string;
@@ -92,7 +91,6 @@ export interface Badge {
 export interface FollowUser {
   uid: string;
   username: string;
-  displayName: string;
   is_following: boolean;
 }
 
