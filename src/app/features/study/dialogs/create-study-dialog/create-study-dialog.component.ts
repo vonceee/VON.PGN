@@ -9,7 +9,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
-    <div class="bg-main rounded-4xl shadow-xl w-full max-w-xl p-8 font-sans space-y-8 relative">
+    <div class="bg-main rounded-4xl shadow-lg w-full max-w-xl p-8 font-sans space-y-8 relative">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl text-content">Create new study</h2>
       </div>
@@ -205,7 +205,7 @@ export class CreateStudyDialogComponent {
 
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
   @ViewChild('categoryDropdownContainer') categoryDropdownContainer!: ElementRef;
-  
+
   isDropdownOpen = signal(false);
   isCategoryDropdownOpen = signal(false);
 

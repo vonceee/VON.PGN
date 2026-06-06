@@ -7,12 +7,7 @@ export const COACHES_ROUTES: Routes = [
       import('./coaches.component').then((m) => m.CoachesComponent),
     title: 'Find a Coach - vonchess',
   },
-  {
-    path: 'apply',
-    loadComponent: () =>
-      import('./coach-application/coach-application.component').then((m) => m.CoachApplicationComponent),
-    title: 'Submit Coach Profile - vonchess',
-  },
+
   {
     path: ':id',
     loadComponent: () =>

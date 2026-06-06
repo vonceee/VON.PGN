@@ -1,11 +1,7 @@
 <header
-  class="sticky top-0 z-50 flex w-full items-center justify-between px-4 md:px-16 py-1.5 lg:py-2.5 bg-main border-b border-border-base  "
->
-  <a
-    appLink
-    routerLink="/home"
-    class="text-lg text-muted font-medium tracking-tighter flex items-center gap-2 shrink-0 group "
-  >
+  class="sticky top-0 z-50 flex w-full items-center justify-between px-4 md:px-16 py-1.5 lg:py-2.5 bg-main border-b border-border-base  ">
+  <a appLink routerLink="/home"
+    class="text-lg text-muted font-medium tracking-tighter flex items-center gap-2 shrink-0 group ">
     vonchess
   </a>
 
@@ -13,47 +9,22 @@
   <div class="hidden md:flex ml-10 gap-6 lg:gap-10 xl:gap-14 mt-1">
     <!-- Play Dropdown -->
     <div class="group relative">
-      <a
-        appLink
-        routerLink="/play"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
-      >
+      <a appLink routerLink="/play"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         Play
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col"
-      >
-        <a
-          appLink
-          routerLink="/play"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Play</span
-          >
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col">
+        <a appLink routerLink="/play" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Play</span>
         </a>
-        <a
-          appLink
-          routerLink="/tactics"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Tactics</span
-          >
+        <a appLink routerLink="/tactics" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Tactics</span>
         </a>
 
-        <a
-          appLink
-          routerLink="/tv"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Watch</span
-          >
+        <a appLink routerLink="/tv" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Watch</span>
         </a>
       </div>
     </div>
@@ -61,488 +32,299 @@
     <!-- <a routerLink="/explorer" class="hover:text-cyan-400">Opening Explorer</a> -->
     <!-- Learn Dropdown -->
     <div class="group relative">
-      <a
-        appLink
-        routerLink="/study"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
-      >
+      <a appLink routerLink="/study"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         Learn
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col "
-      >
-        <a
-          appLink
-          routerLink="/study"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Study</span
-          >
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col ">
+        <a appLink routerLink="/study" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Study</span>
         </a>
-        <a
-          appLink
-          routerLink="/roadmap"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Roadmap</span
-          >
+        <a appLink routerLink="/roadmap" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Roadmap</span>
         </a>
-        <a
-          appLink
-          routerLink="/study/drills"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Opening drills</span
-          >
+        <a appLink routerLink="/study/drills" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Opening drills</span>
         </a>
       </div>
     </div>
 
     <!-- Tournament Dropdown -->
     <div class="group relative">
-      <a
-        appLink
-        routerLink="/events"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
-      >
+      <a appLink routerLink="/events"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         Tournaments
 
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col "
-      >
-        <a
-          appLink
-          routerLink="/events"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Tournaments</span
-          >
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col ">
+        <a appLink routerLink="/events" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Tournaments</span>
         </a>
-        <a
-          appLink
-          routerLink="/arena"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Arena</span
-          >
+        <a appLink routerLink="/arena" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Arena</span>
         </a>
-        <a
-          appLink
-          routerLink="/broadcasts"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span
-            class="text-sm text-content group-hover/item:text-accent  "
-            >Broadcasts</span
-          >
+        <a appLink routerLink="/broadcasts" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
+          <span class="text-sm text-content group-hover/item:text-accent  ">Broadcasts</span>
         </a>
       </div>
     </div>
 
     <!-- Community Dropdown -->
     <div class="group relative">
-      <a
-        appLink
-        routerLink="/fide/players"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10"
-      >
+      <a appLink routerLink="/coaches"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         Community
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col "
-      >
-        <a
-          appLink
-          routerLink="/fide/players"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span class="text-sm text-content group-hover/item:text-accent">Players</span>
-        </a>
-        <a
-          appLink
-          routerLink="/fide/federations"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
-          <span class="text-sm text-content group-hover/item:text-accent">Federations</span>
-        </a>
-        <a
-          appLink
-          routerLink="/coaches"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col ">
+        <a appLink routerLink="/coaches" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
           <span class="text-sm text-content group-hover/item:text-accent">Coaches</span>
         </a>
-        <a
-          appLink
-          routerLink="/academy"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item"
-        >
+        <a appLink routerLink="/academy" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
           <span class="text-sm text-content group-hover/item:text-accent">Academy</span>
         </a>
+      </div>
     </div>
-  </div>
 
-  <!-- Leaderboard Link -->
-    <a
-      appLink
-      routerLink="/tactics/leaderboard"
-      class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium"
-    >
+    <!-- Leaderboard Link -->
+    <a appLink routerLink="/tactics/leaderboard"
+      class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium">
       Leaderboard
     </a>
   </div>
 
   <!-- Desktop/Tablet Search Bar -->
   <div class="relative ml-auto sm:ml-10 mr-4 hidden sm:block group/search" #searchContainer>
-    <div
-      class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-surface/50 border border-border-base focus-within:border-accent/50 focus-within:bg-main/50 focus-within:ring-4 focus-within:ring-accent/5  "
-    >
-      <input
-        #searchInput
-        type="text"
-        placeholder="search players..."
-        [value]="searchQuery()"
-        (input)="onSearchInput($event)"
-        (focus)="isSearchOpen.set(true)"
-        class="bg-transparent outline-none text-sm text-content placeholder-muted w-full "
-      />
+    <div class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-surface/50 border border-border-base">
+      <input #searchInput type="text" placeholder="search players..." [value]="searchQuery()"
+        (input)="onSearchInput($event)" (focus)="isSearchOpen.set(true)"
+        class="bg-transparent outline-none text-sm text-content placeholder-muted w-full " />
 
       <!-- Keyboard Hint instead of Icon -->
-      <div
-        class="hidden lg:flex items-center gap-1  group-focus-within/search:opacity-0  pointer-events-none"
-      >
-        <span class="text-xs  border border-border-base rounded px-1.5 py-0.5 select-none">/</span
-        >
+      <div class="hidden lg:flex items-center gap-1  group-focus-within/search:opacity-0  pointer-events-none">
+        <span class="text-xs  border border-border-base rounded px-1.5 py-0.5 select-none">/</span>
       </div>
 
       @if (isSearching()) {
-        <div
-          class="w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"
-        ></div>
+      <div class="w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2">
+      </div>
       }
     </div>
 
     <!-- Search Results Dropdown -->
     @if (isSearchOpen()) {
-      @if (searchResults().length > 0) {
-        <div
-          class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50 shadow-lg"
-        >
-          @for (user of searchResults(); track user.uid) {
-            <a
-              [routerLink]="['/user', user.username]"
-              target="_blank"
-              rel="noopener noreferrer"
-              (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
-              class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-subtle text-left  cursor-pointer"
-            >
-              <div class="flex flex-col min-w-0">
-                <span class="text-sm text-content truncate">{{
-                  user.username
-                }}</span>
-              </div>
-            </a>
-          }
+    @if (searchResults().length > 0) {
+    <div class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50 shadow-lg">
+      @for (user of searchResults(); track user.uid) {
+      <a [routerLink]="['/user', user.username]" target="_blank" rel="noopener noreferrer"
+        (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
+        class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-subtle text-left  cursor-pointer">
+        <div class="flex flex-col min-w-0">
+          <span class="text-sm text-content truncate">{{
+            user.username
+            }}</span>
         </div>
-      } @else if (searchQuery().length >= 2 && !isSearching()) {
-        <div
-          class="absolute right-0 top-full mt-2 w-64 bg-white  rounded-xl border border-border-theme py-2 z-50"
-        >
-          <div class="px-4 py-3 text-sm text-center">player not found</div>
-        </div>
+      </a>
       }
+    </div>
+    }
     }
   </div>
 
   <!-- Right Section: Auth + Hamburger -->
   <div class="flex items-center gap-2 md:gap-3 ml-auto md:ml-0">
     @if (authService.isAuthenticated()) {
-      <!-- Notifications Dropdown -->
-      <div class="relative hidden md:block">
-        <button
-          (click)="toggleNotifications()"
-          class="flex items-center gap-1.5 px-3 py-1.5 cursor-pointer relative group"
-          aria-label="Notifications"
-        >
-          <svg
-            class="w-4.5 h-4.5 text-muted"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-            />
-          </svg>
-          @if (notificationService.unreadCount() + challengeService.incomingChallenges().length > 0) {
-            <span class="absolute top-1.5 right-1.5 px-1 py-0.5 min-w-[1rem] h-4 flex items-center justify-center bg-rose-600 text-white text-[9px] font-bold rounded-full border border-[var(--color-main)] shadow-xs leading-none">
-              {{ (notificationService.unreadCount() + challengeService.incomingChallenges().length) > 9 ? '9+' : (notificationService.unreadCount() + challengeService.incomingChallenges().length) }}
-            </span>
-          }
-        </button>
-
-        @if (isNotificationsOpen()) {
-          <div class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl  z-50 overflow-hidden flex flex-col">
-            <div class="px-4 py-3 border-b border-border-base flex items-center justify-between">
-              <span class=" text-sm">Notifications</span>
-              @if (notificationService.unreadCount() > 0) {
-                <button (click)="notificationService.markAllAsRead().subscribe()" class="text-xs text-accent hover:underline ">Mark all as read</button>
-              }
-            </div>
-
-            <div class="max-h-96 overflow-y-auto">
-              <!-- Challenges -->
-              @for (challenge of challengeService.incomingChallenges(); track challenge.id) {
-                <div class="px-4 py-3 bg-accent/5 border-b border-border-base">
-                  <div class="flex items-center justify-between gap-3">
-                    <div class="flex-1 min-w-0">
-                      <p class="text-sm text-content">
-                        <span class="font-semibold">{{ challenge.challenger.name }}</span> challenged you to a 
-                        <span class="text-accent font-semibold">{{ formatTime(challenge.settings.timeControl) }}</span> game
-                      </p>
-                    </div>
-                    <div class="flex items-center gap-2 shrink-0">
-                      <button 
-                        (click)="challengeService.acceptChallenge(challenge.id); isNotificationsOpen.set(false)"
-                        class="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/10 hover:bg-emerald-600 text-emerald-600 hover:text-white transition-all border border-emerald-500/20 shadow-xs cursor-pointer"
-                        title="Accept"
-                      >
-                        <ng-icon name="heroCheck" class="text-base"></ng-icon>
-                      </button>
-                      <button 
-                        (click)="challengeService.declineChallenge(challenge.id)"
-                        class="flex items-center justify-center w-8 h-8 rounded-full bg-rose-500/10 hover:bg-rose-600 text-rose-600 hover:text-white transition-all border border-rose-500/20 shadow-xs cursor-pointer"
-                        title="Decline"
-                      >
-                        <ng-icon name="heroXMark" class="text-base"></ng-icon>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              }
-
-              <!-- Notifications -->
-              @if (notificationService.isLoading() && notificationService.notifications().length === 0) {
-                <div class="px-4 py-8 text-center text-muted text-sm italic">Loading...</div>
-              } @else if (notificationService.notifications().length === 0 && challengeService.incomingChallenges().length === 0) {
-                <div class="px-4 py-8 text-center text-muted text-sm italic">No notifications yet</div>
-              } @else {
-                @for (n of notificationService.notifications(); track n.id) {
-                  <div 
-                    class="px-4 py-3 hover:bg-subtle  cursor-pointer border-b border-border-base last:border-0"
-                    [class.bg-accent/5]="!n.read_at"
-                    (click)="navigateToNotification(n)"
-                  >
-                    <div class="flex flex-col gap-1">
-                      <p class="text-sm text-content ">{{ n.data.message }}</p>
-                      <span class="text-xs text-muted">{{ n.created_at | date:'short' }}</span>
-                    </div>
-                  </div>
-                }
-              }
-            </div>
-          </div>
+    <!-- Notifications Dropdown -->
+    <div class="relative hidden md:block">
+      <button (click)="toggleNotifications()"
+        class="flex items-center gap-1.5 px-3 py-1.5 cursor-pointer relative group" aria-label="Notifications">
+        <svg class="w-4.5 h-4.5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        @if (notificationService.unreadCount() + challengeService.incomingChallenges().length > 0) {
+        <span
+          class="absolute top-1.5 right-1.5 px-1 py-0.5 min-w-[1rem] h-4 flex items-center justify-center bg-rose-600 text-white text-[9px] font-bold rounded-full border border-[var(--color-main)] shadow-xs leading-none">
+          {{ (notificationService.unreadCount() + challengeService.incomingChallenges().length) > 9 ? '9+' :
+          (notificationService.unreadCount() + challengeService.incomingChallenges().length) }}
+        </span>
         }
-      </div>
+      </button>
 
-      <div class="relative hidden md:block" #profileContainer>
-        <button
-          (click)="toggleProfileDropdown()"
-          class="flex items-center gap-2 group cursor-pointer focus:outline-none relative"
-        >
-          <div class="flex items-center gap-1.5">
-            <span
-              class="text-sm lg:text-base text-muted font-medium hover:underline cursor-pointer"
-            >
-              {{ userService.currentUser()?.username || 'User' }}
-            </span>
-          </div>
-        </button>
+      @if (isNotificationsOpen()) {
+      <div
+        class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl  z-50 overflow-hidden flex flex-col">
+        <div class="px-4 py-3 border-b border-border-base flex items-center justify-between">
+          <span class=" text-sm">Notifications</span>
+          @if (notificationService.unreadCount() > 0) {
+          <button (click)="notificationService.markAllAsRead().subscribe()"
+            class="text-xs text-accent hover:underline ">Mark all as read</button>
+          }
+        </div>
 
-        <!-- Desktop Profile Dropdown -->
-        <div
-          [class.hidden]="!isProfileDropdownOpen()"
-          class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl  z-50 overflow-hidden origin-top-right "
-        >
-          <!-- Navigation Links -->
-          <div class="flex flex-col py-1">
-            <a
-              appLink
-              [routerLink]="['/profile']"
-              (click)="toggleProfileDropdown()"
-              class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content "
-            >
-              Profile
-            </a>
-
-            <div class="h-px w-full bg-border-base"></div>
-
-            <!-- Personal Chess Hub -->
-            <a
-              appLink
-              routerLink="/my-progress"
-              (click)="toggleProfileDropdown()"
-              class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content "
-            >
-              My Progress
-            </a>
-            @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
-              <a
-                appLink
-                routerLink="/my-events"
-                (click)="toggleProfileDropdown()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content "
-              >
-                My Tournaments
-              </a>
-              <a
-                appLink
-                routerLink="/my-arena"
-                (click)="toggleProfileDropdown()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content "
-              >
-                My Arena
-              </a>
-            }
-            <a
-              appLink
-              routerLink="/bookmarks"
-              (click)="toggleProfileDropdown()"
-              class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content "
-            >
-              Bookmarks
-            </a>
-            <a
-              appLink
-              routerLink="/chat"
-              (click)="toggleProfileDropdown()"
-              class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content "
-            >
-              Messages
-              @if (chatService.totalUnreadCount() > 0) {
-                <span
-                  class="ml-auto min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-accent text-white text-xs "
-                >
-                  {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
-                </span>
-              }
-            </a>
-
-            @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
-              <div class="h-px w-full bg-border-base"></div>
-              <a
-                routerLink="/admin"
-                (click)="toggleProfileDropdown()"
-                class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm text-accent "
-              >
-                Admin Panel
-              </a>
-            }
-            <div class="h-px w-full bg-border-base"></div>
-
-            <button
-              (click)="openBackgroundDrawer()"
-              class="w-full text-left flex items-center justify-between px-4 py-2 hover:bg-subtle text-sm text-content transition-colors"
-            >
-              <span>Background</span>
-              <div class="w-2 h-2 rounded-full" [style.backgroundColor]="themeService.isTransparent() ? 'var(--color-accent)' : 'transparent'"></div>
-            </button>
-
-            <div class="h-px w-full bg-border-base my-1"></div>
-
-            <!-- Network Status -->
-            <div class="flex items-center justify-between px-4 py-2">
-              <div class="flex items-center gap-3">
-                <span class="text-sm text-content">Network</span>
+        <div class="max-h-96 overflow-y-auto">
+          <!-- Challenges -->
+          @for (challenge of challengeService.incomingChallenges(); track challenge.id) {
+          <div class="px-4 py-3 bg-accent/5 border-b border-border-base">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-content">
+                  <span class="font-semibold">{{ challenge.challenger.name }}</span> challenged you to a
+                  <span class="text-accent font-semibold">{{ formatTime(challenge.settings.timeControl) }}</span> game
+                </p>
               </div>
-              <div class="flex items-center gap-2">
-                @if (pingSignal() > 0) {
-                  <span class="text-xs text-muted"
-                    >{{ pingSignal() }}ms</span
-                  >
-                }
-                <div class="flex items-end gap-0.5 h-3.5">
-                  <div
-                    class="w-1 rounded-sm  "
-                    [style.height]="getPingBarHeight(0)"
-                    [style.backgroundColor]="getPingColor()"
-                  ></div>
-                  <div
-                    class="w-1 rounded-sm  "
-                    [style.height]="getPingBarHeight(1)"
-                    [style.backgroundColor]="getPingColor()"
-                  ></div>
-                  <div
-                    class="w-1 rounded-sm  "
-                    [style.height]="getPingBarHeight(2)"
-                    [style.backgroundColor]="getPingColor()"
-                  ></div>
-                  <div
-                    class="w-1 rounded-sm  "
-                    [style.height]="getPingBarHeight(3)"
-                    [style.backgroundColor]="getPingColor()"
-                  ></div>
-                </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <button (click)="challengeService.acceptChallenge(challenge.id); isNotificationsOpen.set(false)"
+                  class="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/10 hover:bg-emerald-600 text-emerald-600 hover:text-white transition-all border border-emerald-500/20 shadow-xs cursor-pointer"
+                  title="Accept">
+                  <ng-icon name="heroCheck" class="text-base"></ng-icon>
+                </button>
+                <button (click)="challengeService.declineChallenge(challenge.id)"
+                  class="flex items-center justify-center w-8 h-8 rounded-full bg-rose-500/10 hover:bg-rose-600 text-rose-600 hover:text-white transition-all border border-rose-500/20 shadow-xs cursor-pointer"
+                  title="Decline">
+                  <ng-icon name="heroXMark" class="text-base"></ng-icon>
+                </button>
               </div>
             </div>
-
-            <div class="h-px w-full bg-border-base my-1"></div>
-
-            <!-- Logout -->
-            <button
-              (click)="logout()"
-              class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50  text-red-600  text-sm "
-            >
-              Logout
-            </button>
           </div>
+          }
+
+          <!-- Notifications -->
+          @if (notificationService.isLoading() && notificationService.notifications().length === 0) {
+          <div class="px-4 py-8 text-center text-muted text-sm italic">Loading...</div>
+          } @else if (notificationService.notifications().length === 0 && challengeService.incomingChallenges().length
+          === 0) {
+          <div class="px-4 py-8 text-center text-muted text-sm italic">No notifications yet</div>
+          } @else {
+          @for (n of notificationService.notifications(); track n.id) {
+          <div class="px-4 py-3 hover:bg-subtle  cursor-pointer border-b border-border-base last:border-0"
+            [class.bg-accent/5]="!n.read_at" (click)="navigateToNotification(n)">
+            <div class="flex flex-col gap-1">
+              <p class="text-sm text-content ">{{ n.data.message }}</p>
+              <span class="text-xs text-muted">{{ n.created_at | date:'short' }}</span>
+            </div>
+          </div>
+          }
+          }
         </div>
       </div>
+      }
+    </div>
+
+    <div class="relative hidden md:block" #profileContainer>
+      <button (click)="toggleProfileDropdown()"
+        class="flex items-center gap-2 group cursor-pointer focus:outline-none relative">
+        <div class="flex items-center gap-1.5">
+          <span class="text-sm lg:text-base text-muted font-medium hover:underline cursor-pointer">
+            {{ userService.currentUser()?.username || 'User' }}
+          </span>
+        </div>
+      </button>
+
+      <!-- Desktop Profile Dropdown -->
+      <div [class.hidden]="!isProfileDropdownOpen()"
+        class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl  z-50 overflow-hidden origin-top-right ">
+        <!-- Navigation Links -->
+        <div class="flex flex-col py-1">
+          <a appLink [routerLink]="['/profile']" (click)="toggleProfileDropdown()"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
+            Profile
+          </a>
+
+          <div class="h-px w-full bg-border-base"></div>
+
+          <!-- Personal Chess Hub -->
+          <a appLink routerLink="/my-progress" (click)="toggleProfileDropdown()"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
+            My Progress
+          </a>
+          @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
+          <a appLink routerLink="/my-events" (click)="toggleProfileDropdown()"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
+            My Tournaments
+          </a>
+          <a appLink routerLink="/my-arena" (click)="toggleProfileDropdown()"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
+            My Arena
+          </a>
+          }
+          <a appLink routerLink="/bookmarks" (click)="toggleProfileDropdown()"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
+            Bookmarks
+          </a>
+          <a appLink routerLink="/chat" (click)="toggleProfileDropdown()"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
+            Messages
+            @if (chatService.totalUnreadCount() > 0) {
+            <span
+              class="ml-auto min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-accent text-white text-xs ">
+              {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
+            </span>
+            }
+          </a>
+
+          @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
+          <div class="h-px w-full bg-border-base"></div>
+          <a routerLink="/admin" (click)="toggleProfileDropdown()"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm text-accent ">
+            Admin Panel
+          </a>
+          }
+          <div class="h-px w-full bg-border-base my-1"></div>
+
+          <!-- Network Status -->
+          <div class="flex items-center justify-between px-4 py-2">
+            <div class="flex items-center gap-3">
+              <span class="text-sm text-content">Network</span>
+            </div>
+            <div class="flex items-center gap-2">
+              @if (pingSignal() > 0) {
+              <span class="text-xs text-muted">{{ pingSignal() }}ms</span>
+              }
+              <div class="flex items-end gap-0.5 h-3.5">
+                <div class="w-1 rounded-sm  " [style.height]="getPingBarHeight(0)"
+                  [style.backgroundColor]="getPingColor()"></div>
+                <div class="w-1 rounded-sm  " [style.height]="getPingBarHeight(1)"
+                  [style.backgroundColor]="getPingColor()"></div>
+                <div class="w-1 rounded-sm  " [style.height]="getPingBarHeight(2)"
+                  [style.backgroundColor]="getPingColor()"></div>
+                <div class="w-1 rounded-sm  " [style.height]="getPingBarHeight(3)"
+                  [style.backgroundColor]="getPingColor()"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="h-px w-full bg-border-base my-1"></div>
+
+          <!-- Logout -->
+          <button (click)="logout()"
+            class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50  text-red-600  text-sm ">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
     } @else {
-      <a appLink routerLink="/login">Log in</a>
+    <a appLink routerLink="/login">Log in</a>
     }
 
     <!-- Mobile Hamburger Button -->
-    <button
-      (click)="toggleMobileMenu()"
-      class="md:hidden p-2 rounded-lg hover:bg-slate-200 "
-      aria-label="Toggle Menu"
-    >
+    <button (click)="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-slate-200 " aria-label="Toggle Menu">
       @if (isMobileMenuOpen()) {
-        <!-- Close Icon -->
-        <ng-icon name="heroXMark" class="w-6 h-6"></ng-icon>
+      <!-- Close Icon -->
+      <ng-icon name="heroXMark" class="w-6 h-6"></ng-icon>
       } @else {
-        <!-- Hamburger Icon -->
-        <ng-icon name="heroBars3" class="w-6 h-6"></ng-icon>
+      <!-- Hamburger Icon -->
+      <ng-icon name="heroBars3" class="w-6 h-6"></ng-icon>
       }
     </button>
   </div>
 </header>
 
-<app-side-drawer 
-  [isOpen]="isBackgroundOpen()" 
-  title="Background" 
-  (close)="closeBackgroundDrawer()"
->
-  <app-background-settings (close)="closeBackgroundDrawer()"></app-background-settings>
-</app-side-drawer>
-
 <!-- Mobile Menu Overlay -->
 @if (isMobileMenuOpen()) {
-  <app-mobile-menu (close)="isMobileMenuOpen.set(false)"></app-mobile-menu>
+<app-mobile-menu (close)="isMobileMenuOpen.set(false)"></app-mobile-menu>
 }

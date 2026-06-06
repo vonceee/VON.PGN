@@ -490,31 +490,8 @@ export const routes: Routes = [
         data: { description: 'Challenge Stockfish 16.1 in a local game.' },
         resolve: { seo: seoResolver },
       },
-      {
-        path: 'legends',
-        loadComponent: () =>
-          import('./features/gacha/gacha-hub/gacha-hub').then((m) => m.GachaHubComponent),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Legends',
-        data: { description: 'Collect and summon legendary chess players.' },
-        resolve: { seo: seoResolver },
-      },
-      {
-        path: 'fide/players',
-        loadComponent: () =>
-          import('./features/fide/top-ranking/top-ranking').then((m) => m.TopRankingComponent),
-        title: 'Vonchess.net • FIDE Database',
-        data: { description: 'Search and view the official FIDE world rankings and player registry.' },
-        resolve: { seo: seoResolver },
-      },
-      {
-        path: 'fide/federations',
-        loadComponent: () =>
-          import('./features/fide/federation-list/federation-list').then((m) => m.FederationListComponent),
-        title: 'Vonchess.net • Federations',
-        data: { description: 'Browse FIDE chess federations and player counts.' },
-        resolve: { seo: seoResolver },
-      },
+
+
     ],
   },
 ];

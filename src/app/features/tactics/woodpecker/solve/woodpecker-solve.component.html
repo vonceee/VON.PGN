@@ -174,7 +174,7 @@
     <!-- Gorgeous Cycle Completion Overlay -->
     @if (showCompletionOverlay() && !isFinished() && completedCycleStats(); as stats) {
     <div class="absolute inset-0 flex items-center justify-center p-4 z-50" (click)="showCompletionOverlay.set(false)">
-      <div class="bg-main rounded-4xl shadow-xl p-8 max-w-md w-full text-center flex flex-col items-center gap-6"
+      <div class="bg-main rounded-4xl shadow-lg p-8 max-w-md w-full text-center flex flex-col items-center gap-6"
         (click)="$event.stopPropagation()">
 
         <!-- Celebration Title -->

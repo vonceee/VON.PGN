@@ -25,7 +25,7 @@ export interface AddChapterDialogResult {
     BoardEditorComponent,
   ],
   template: `
-    <div class="bg-main rounded-4xl shadow-xl w-full p-8 font-sans space-y-8 relative">
+    <div class="bg-main rounded-4xl shadow-lg w-full p-8 font-sans space-y-8 relative">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl text-content">{{ activeTab() === 'editor' ? 'Board editor' : 'New chapter' }}</h2>
       </div>

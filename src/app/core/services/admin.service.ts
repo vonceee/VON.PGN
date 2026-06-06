@@ -87,22 +87,6 @@ export class AdminService {
     return this.http.delete<any>(`${this.apiUrl}/tournaments/${id}`);
   }
 
-  // Coach Applications
-  getCoachApplications(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/coach-applications`);
-  }
-
-  approveCoachApplication(id: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/coach-applications/${id}/approve`, {});
-  }
-
-  rejectCoachApplication(id: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/coach-applications/${id}/reject`, {});
-  }
-
-  deleteCoachApplication(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/coach-applications/${id}`);
-  }
 
   // Academy Enrollments
   getAcademyEnrollments(params: any = {}): Observable<any[]> {

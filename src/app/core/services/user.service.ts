@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http';
 import { UserProfile, Badge, FollowUser, PaginatedResponse } from '../models/user.model';
 import { tap, map, of, catchError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { GachaService } from './gacha';
 
 export interface UserSearchResult {
   uid: string;
@@ -38,7 +37,6 @@ export class UserService {
 
   currentUser = signal<UserProfile | null>(null);
   private profileCache = new Map<string, { profile: UserProfile; expiry: number }>();
-  private gachaService = inject(GachaService);
 
   getUserProfileByUsername(username: string) {
     // Check cache
@@ -96,9 +94,6 @@ export class UserService {
         next: (response) => {
           this.currentUser.set(response.data);
           this.cacheProfile(response.data);
-          
-          // Sync daily packs with GachaService
-          this.gachaService.loadPacks(response.data.daily_packs_available || 0);
         },
         error: (err) => {
           console.error('Failed to load user profile', err.status, err.message);

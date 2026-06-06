@@ -30,9 +30,6 @@ import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
                 [title]="user()!.is_online ? 'Online' : 'Offline'"
               ></div>
             </div>
-            <span class="text-xs   capitalize ">
-              Chess Enthusiast
-            </span>
           </div>
           @if (user()!.verified_organizer) {
             <div class="px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-semibold capitalize ">

@@ -225,18 +225,14 @@ export class MobileMenuComponent {
     {
       title: 'Community',
       links: [
-        { path: '/fide/players', label: 'Players' },
-        { path: '/fide/federations', label: 'Federations' },
         { path: '/coaches', label: 'Coaches' },
         { path: '/academy', label: 'Academy' },
-        { path: '/legends', label: 'Legends' },
       ],
     },
   ];
 
   authLinks = [
     { path: '/my-progress', label: 'My Progress' },
-    { path: '/legends', label: 'My Legends' },
     { path: '/games/history', label: 'Game History' },
     { path: '/chat', label: 'Messages' },
     { path: '/my-events', label: 'My Tournaments' },

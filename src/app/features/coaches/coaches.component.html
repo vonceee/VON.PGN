@@ -62,27 +62,5 @@
       }
     </div>
   </div>
-
-  <!-- Minimal Coach CTA -->
-  @if (!checkingApplication()) {
-    <div class="mt-auto py-8 text-center w-full">
-      @if (shouldShowBanner()) {
-        <p class="text-sm flex items-center justify-center gap-2">
-          <span class="w-1.5 h-1.5 rounded-full bg-blue-500 "></span>
-          Your coach profile is currently under review.
-        </p>
-      } @else {
-        <p class="text-sm px-4">
-          Interested in Coaching at vonchess?
-          <a
-            appLink
-            routerLink="/coaches/apply"
-            class="text-cyan-400 cursor-pointer hover:underline"
-            >Apply now</a
-          >
-        </p>
-      }
-    </div>
-  }
 </div>
 

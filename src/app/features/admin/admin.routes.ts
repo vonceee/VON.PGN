@@ -78,13 +78,7 @@ export const ADMIN_ROUTES: Routes = [
           import('./coach-editor/coach-editor.component').then((m) => m.CoachEditorComponent),
         title: 'Edit Coach Profile',
       },
-      {
-        path: 'coach-applications',
 
-        loadComponent: () =>
-          import('./coach-applications/coach-applications.component').then((m) => m.CoachApplicationsComponent),
-        title: 'Coach Applications - CHESS.PGN',
-      },
       {
         path: 'academy-enrollments',
         loadComponent: () =>

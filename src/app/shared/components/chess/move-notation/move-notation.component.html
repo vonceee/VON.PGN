@@ -319,7 +319,7 @@
 
   <!-- Premium Context Menu -->
   @if (contextMenuNode(); as node) {
-  <div class="fixed z-50 min-w-[200px] bg-surface rounded-2xl shadow-xl overflow-hidden"
+  <div class="fixed z-50 min-w-[200px] bg-surface rounded-2xl shadow-lg overflow-hidden"
     [style.left.px]="contextMenuPos().x" [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()"
     (contextmenu)="$event.preventDefault()">
     <button (click)="onAnnotate()"

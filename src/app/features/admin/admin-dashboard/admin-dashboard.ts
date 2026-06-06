@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal, computed, PLATFORM_ID } from '@angul
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../core/services/admin.service';
+import { CoachService } from '../../coaches/services/coach.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,9 +13,10 @@ import { AdminService } from '../../../core/services/admin.service';
 })
 export class AdminDashboardComponent implements OnInit {
   private adminService = inject(AdminService);
+  private coachService = inject(CoachService);
 
   coursesCount = signal(0);
-  coachesCount = signal(0);
+  coachesCount = computed(() => this.coachService.coaches().length);
   recentEnrollments = signal<any[]>([]);
 
   private platformId = inject(PLATFORM_ID);
@@ -26,16 +28,8 @@ export class AdminDashboardComponent implements OnInit {
         error: () => {}
       });
 
-      this.loadCoachApplications();
       this.loadRecentEnrollments();
     }
-  }
-
-  loadCoachApplications() {
-    this.adminService.getCoachApplications().subscribe({
-      next: (data) => this.coachesCount.set(data.length),
-      error: () => {}
-    });
   }
 
   loadRecentEnrollments() {

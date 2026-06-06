@@ -9,7 +9,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
-    <div class="bg-main rounded-4xl shadow-xl w-full p-8 font-sans space-y-8 relative">
+    <div class="bg-main rounded-4xl shadow-lg w-full p-8 font-sans space-y-8 relative">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl text-content">Study settings</h2>
       </div>
@@ -145,7 +145,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
 export class StudySettingsDialogComponent implements OnInit {
   dialogRef = inject(DialogRef<any>);
   data = inject<any>(DIALOG_DATA);
-  
+
   name = signal('');
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
   engineVisibility = signal<'everyone' | 'owner'>('everyone');
@@ -164,9 +164,9 @@ export class StudySettingsDialogComponent implements OnInit {
 
   onSubmit() {
     if (this.name().trim()) {
-      this.dialogRef.close({ 
+      this.dialogRef.close({
         action: 'save',
-        name: this.name().trim(), 
+        name: this.name().trim(),
         visibility: this.visibility(),
         engine_visibility: this.engineVisibility(),
         category: this.category(),

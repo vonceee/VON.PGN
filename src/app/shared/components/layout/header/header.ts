@@ -22,15 +22,12 @@ import {
   heroCheck,
 } from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
-import { BackgroundSettings } from './background-settings';
-import { SideDrawerComponent } from '../../ui/side-drawer/side-drawer.component';
 import { heroTrophy, heroBell, heroCircleStack } from '@ng-icons/heroicons/outline';
-import { GachaService } from '../../../../core/services/gacha';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent, BackgroundSettings, SideDrawerComponent],
+  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent],
   providers: [
     provideIcons({
       heroChevronDown,
@@ -58,7 +55,6 @@ export class Header implements OnInit, OnDestroy {
   chatService = inject(ChatService);
   challengeService = inject(ChallengeService);
   notificationService = inject(NotificationService);
-  gachaService = inject(GachaService);
   private router = inject(Router);
 
 
@@ -73,7 +69,6 @@ export class Header implements OnInit, OnDestroy {
   isSearchOpen = signal(false);
   isSearching = signal(false);
   isNotificationsOpen = signal(false);
-  isBackgroundOpen = signal(false);
 
   toggleNotifications() {
     this.isNotificationsOpen.update(v => !v);
@@ -120,11 +115,6 @@ export class Header implements OnInit, OnDestroy {
     if (this.authService.isAuthenticated()) {
       this.chatService.loadUnreadCount();
       this.notificationService.getUnreadCount().subscribe();
-      
-      const user = this.userService.currentUser();
-      if (user) {
-        this.gachaService.loadPacks(user.daily_packs_available || 0);
-      }
     }
   }
 
@@ -183,14 +173,7 @@ export class Header implements OnInit, OnDestroy {
     }
   }
 
-  openBackgroundDrawer() {
-    this.isProfileDropdownOpen.set(false);
-    this.isBackgroundOpen.set(true);
-  }
 
-  closeBackgroundDrawer() {
-    this.isBackgroundOpen.set(false);
-  }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen.update((v) => !v);

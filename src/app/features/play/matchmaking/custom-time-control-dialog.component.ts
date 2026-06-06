@@ -14,7 +14,7 @@ export interface CustomTimeControlResult {
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
-    <div class="bg-main rounded-4xl shadow-xl w-full max-w-xl p-8 font-sans space-y-8 relative">
+    <div class="bg-main rounded-4xl shadow-lg w-full max-w-xl p-8 font-sans space-y-8 relative">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl text-content">Custom time control</h2>
       </div>
