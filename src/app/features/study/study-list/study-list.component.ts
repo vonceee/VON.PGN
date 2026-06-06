@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal, PLATFORM_ID, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, PLATFORM_ID, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { StudyService } from '../../../core/services/study.service';
@@ -9,6 +10,8 @@ import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '@shared/ui';
 import { LoadingComponent } from '@shared/feedback';
 import { effect } from '@angular/core';
+import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 
 @Component({
@@ -26,11 +29,43 @@ export class StudyListComponent implements OnInit {
   
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
   
-  studies = signal<any[]>([]);
   activeTab = signal<'all' | 'my'>('all');
   isLoggedIn = signal(false);
   isDropdownOpen = signal(false);
   isLoading = signal(false);
+  searchQuery = signal('');
+  sortBy = signal<'last_updated' | 'alphabetical'>('last_updated');
+
+  queryParams = computed(() => ({
+    isMyStudies: this.activeTab() === 'my',
+    search: this.searchQuery(),
+    sort: this.sortBy()
+  }));
+
+  private studiesResult = toSignal(
+    toObservable(this.queryParams).pipe(
+      debounceTime(300),
+      tap(() => this.isLoading.set(true)),
+      switchMap(params => {
+        if (!isPlatformBrowser(this.platformId)) {
+          return of({ data: [] });
+        }
+        const forceRefresh = !!(params.search || params.sort !== 'last_updated');
+        return this.studyService.getStudies(
+          params.isMyStudies,
+          undefined,
+          forceRefresh,
+          params.search,
+          params.sort
+        ).pipe(
+          catchError(() => of({ data: [] }))
+        );
+      }),
+      tap(() => this.isLoading.set(false))
+    )
+  );
+
+  studies = computed(() => this.studiesResult()?.data || []);
 
   constructor() {
     effect(() => {
@@ -39,34 +74,29 @@ export class StudyListComponent implements OnInit {
         this.activeTab.set('all');
       }
     });
-
-    effect(() => {
-      this.loadStudies();
-    });
   }
 
   ngOnInit() {
-    // Initial load is handled by effect
-  }
-
-  loadStudies() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.isLoading.set(true);
-      this.studyService.getStudies(this.activeTab() === 'my').subscribe({
-        next: (res) => {
-          this.studies.set(res.data);
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        }
-      });
-    }
+    // Initial load is handled reactively by queryParams computed signal
   }
 
   setTab(tab: 'all' | 'my') {
     this.activeTab.set(tab);
     this.isDropdownOpen.set(false);
+  }
+
+  onSearchInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+  }
+
+  onSortChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value as 'last_updated' | 'alphabetical';
+    this.sortBy.set(value);
+  }
+
+  clearSearch() {
+    this.searchQuery.set('');
   }
 
   createNewStudy() {

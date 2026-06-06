@@ -102,13 +102,25 @@ export class StudyService {
 
   // ── HTTP API ──────────────────────────────────────────────────
 
-  getStudies(my: boolean = false, category?: string, forceRefresh = false): Observable<any> {
+  getStudies(
+    my: boolean = false,
+    category?: string,
+    forceRefresh = false,
+    search?: string,
+    sort?: string
+  ): Observable<any> {
     let params = my ? 'my=1' : '';
     if (category) {
       params += params ? `&category=${category}` : `category=${category}`;
     }
+    if (search) {
+      params += params ? `&search=${encodeURIComponent(search)}` : `search=${encodeURIComponent(search)}`;
+    }
+    if (sort) {
+      params += params ? `&sort=${sort}` : `sort=${sort}`;
+    }
     const queryString = params ? `?${params}` : '';
-    const cacheKey = `${my}_${category || 'all'}`;
+    const cacheKey = `${my}_${category || 'all'}_${search || ''}_${sort || ''}`;
 
     const apiCall = this.http.get(`${this.apiUrl}/studies${queryString}`).pipe(
       tap((res) => this.studiesCache.set(cacheKey, res))
