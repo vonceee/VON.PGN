@@ -126,17 +126,6 @@ export interface AddChapterDialogResult {
 
           <!-- Tab Content Area -->
           <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md relative rounded-2xl p-4 border border-border-base">
-            @if (activeTab() === 'empty') {
-              <div class="h-full flex flex-col items-center justify-center py-8 text-center space-y-4">
-                <div class="space-y-1">
-                  <h3 class="text-sm font-semibold text-content">Start fresh</h3>
-                  <p class="text-xs text-muted max-w-[200px] mx-auto">
-                    Create a new chapter starting from the standard initial position.
-                  </p>
-                </div>
-              </div>
-            }
-
             @if (activeTab() === 'fen') {
               <div class="space-y-4 py-4">
                 <div class="space-y-3">

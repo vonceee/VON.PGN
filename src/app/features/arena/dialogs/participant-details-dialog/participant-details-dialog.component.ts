@@ -48,7 +48,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
             @for (game of player.games?.slice()?.reverse(); track game.gameId; let i = $index) {
               <div class="flex items-center justify-between p-3 bg-subtle border border-border-base rounded-lg group hover:border-accent/30 transition-all">
                 <div class="flex items-center gap-4">
-                  <span class="text-[10px] font-bold text-muted w-4">{{ player.games!.length - i }}</span>
+                  <span class="text-xs font-bold text-muted w-4">{{ player.games!.length - i }}</span>
                   <div class="flex flex-col">
                     <div class="flex items-center gap-2">
                       <span class="text-xs w-3 h-3 rounded-sm border border-border-base" [class.bg-white]="game.color === 'white'" [class.bg-black]="game.color === 'black'"></span>
@@ -56,11 +56,11 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
                         {{ game.opponentName }}
                       </a>
                     </div>
-                    <span class="text-[10px] text-muted">{{ game.opponentRating }}</span>
+                    <span class="text-xs text-muted">{{ game.opponentRating }}</span>
                   </div>
                 </div>
                 <div class="flex items-center justify-between gap-6">
-                  <span class="text-[10px] font-bold uppercase" [class.text-green-500]="game.result === 'win'" [class.text-orange-500]="game.result === 'draw'" [class.text-muted]="game.result === 'loss'">
+                  <span class="text-xs font-bold uppercase" [class.text-green-500]="game.result === 'win'" [class.text-orange-500]="game.result === 'draw'" [class.text-muted]="game.result === 'loss'">
                     {{ game.result }}
                   </span>
                   <span class="text-sm font-bold tabular-nums w-4 text-right" [class.text-accent]="game.points > 2">
@@ -84,7 +84,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
       @apply flex flex-col p-3 bg-subtle border border-border-base rounded-xl;
     }
     .stat-label {
-      @apply text-[10px] font-bold text-muted uppercase mb-1;
+      @apply text-xs font-bold text-muted uppercase mb-1;
     }
     .stat-value {
       @apply text-lg font-bold text-content tabular-nums;
@@ -94,7 +94,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
 export class ParticipantDetailsDialogComponent {
   dialogRef = inject(DialogRef);
   data = inject<{ player: ArenaParticipant; rank: number }>(DIALOG_DATA);
-  
+
   get player() { return this.data.player; }
 
   winRate() {

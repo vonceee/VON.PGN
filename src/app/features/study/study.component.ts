@@ -810,6 +810,9 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (!this.canEdit()) return;
     
     const dialogRef = this.dialog.open(AnnotateMoveDialogComponent, {
+      width: '600px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/60'],
       data: node,
     });
 

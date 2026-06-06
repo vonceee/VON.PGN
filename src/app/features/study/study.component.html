@@ -22,10 +22,11 @@
         <div
           class="flex-1 w-full flex items-center justify-center min-h-0 overflow-hidden relative board-container-parent">
           <div class="flex items-center justify-center gap-0 max-h-full w-full max-w-6xl mx-auto">
-            <app-chess-board #board [fen]="currentFen()" [orientation]="boardOrientation()" [interactive]="boardInteractive()"
-              (moveMade)="onMoveMade($event)" (shapeDrawn)="onShapeDrawn($event)" (sizeChange)="boardSize.set($event)"
-              (prevMove)="onPrevMove()" (nextMove)="onNextMove()" [syncedShapes]="mergedShapes()"
-              [lastMove]="lastMoveSquares()" [glyphs]="activeGlyphs()"></app-chess-board>
+            <app-chess-board #board [fen]="currentFen()" [orientation]="boardOrientation()"
+              [interactive]="boardInteractive()" (moveMade)="onMoveMade($event)" (shapeDrawn)="onShapeDrawn($event)"
+              (sizeChange)="boardSize.set($event)" (prevMove)="onPrevMove()" (nextMove)="onNextMove()"
+              [syncedShapes]="mergedShapes()" [lastMove]="lastMoveSquares()"
+              [glyphs]="activeGlyphs()"></app-chess-board>
 
             <div class="hidden lg:block w-4 h-[var(--board-size)]   ease-in-out"
               [class.opacity-0]="!isEngineActive() || !isEngineVisible()"
@@ -62,14 +63,14 @@
             [class.text-accent]="activeTab() === 'notation'" [class.bg-accent\/10]="activeTab() === 'notation'"
             [class.text-muted]="activeTab() !== 'notation'">
             <ng-icon name="heroQueueList" class="text-lg"></ng-icon>
-            <span class="text-xs font-semibold">Notation</span>
+            <span class="text-sm">Notation</span>
           </button>
           <button (click)="activeTab.set('info')" title="Info"
             class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
             [class.text-accent]="activeTab() === 'info'" [class.bg-accent\/10]="activeTab() === 'info'"
             [class.text-muted]="activeTab() !== 'info'">
             <ng-icon name="heroInformationCircle" class="text-lg"></ng-icon>
-            <span class="text-xs font-semibold">Info</span>
+            <span class="text-sm">Info</span>
           </button>
           <div class="flex-1"></div>
 
@@ -82,7 +83,7 @@
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
               </span>
-              <span class="text-[10px] font-bold text-red-700 uppercase tracking-wider">Class ongoing</span>
+              <span class="text-xs font-bold text-red-700 uppercase tracking-wider">Class ongoing</span>
             </div>
             <button (click)="joinClassSession()"
               class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 text-muted hover:text-accent">
@@ -100,7 +101,7 @@
                   class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
               </span>
-              <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider">Class Active</span>
+              <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Class Active</span>
             </div>
           </div>
           }
@@ -112,7 +113,7 @@
             [class.text-rose-500]="isClassActive()" [class.bg-rose-500\/10]="isClassActive()"
             [class.text-muted]="!isClassActive()">
             <ng-icon [name]="isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
-            <span class="text-xs font-semibold">{{ isClassActive() ? 'End class' : 'Start class' }}</span>
+            <span class="text-sm">{{ isClassActive() ? 'End class' : 'Start class' }}</span>
           </button>
           }
         </div>
@@ -215,9 +216,9 @@
 
           <!-- Flip Board Button -->
           <button (click)="flipBoard()" title="Flip Board"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-muted hover:text-accent flex items-center gap-1.5">
+            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-muted flex items-center gap-1.5">
             <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
-            <span class="text-xs font-semibold">Flip board</span>
+            <span class="text-sm">Flip board</span>
           </button>
 
           <button (click)="activeTab.set('metadata')" title="Metadata"
@@ -225,7 +226,7 @@
             [class.text-accent]="activeTab() === 'metadata'" [class.bg-accent\/10]="activeTab() === 'metadata'"
             [class.text-muted]="activeTab() !== 'metadata'">
             <ng-icon name="heroTag" class="text-lg"></ng-icon>
-            <span class="text-xs font-semibold">Metadata</span>
+            <span class="text-sm">Metadata</span>
           </button>
 
           <div class="flex-1"></div>

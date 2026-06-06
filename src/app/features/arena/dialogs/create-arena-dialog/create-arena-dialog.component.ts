@@ -43,7 +43,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
           <div class="space-y-1.5">
             <div class="flex justify-between items-center">
               <label class="text-xs font-semibold text-muted uppercase">Arena Name</label>
-              <span class="text-[10px] text-muted font-medium italic">Optional</span>
+              <span class="text-xs text-muted font-medium italic">Optional</span>
             </div>
             <input
               type="text"

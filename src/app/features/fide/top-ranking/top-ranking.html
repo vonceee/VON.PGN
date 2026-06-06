@@ -7,25 +7,14 @@
 
     <!-- Search Bar -->
     <div class="w-full md:w-80 relative group">
-      <input 
-        #searchInput
-        id="fide-search-input"
-        type="text" 
-        placeholder="Search by name..."
-        aria-label="Search players by name"
-        [value]="searchQuery()"
-        (input)="onSearch(searchInput.value)"
-        class="w-full bg-surface border border-border-base rounded-2xl px-5 py-3.5 text-sm font-medium outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all"
-      >
+      <input #searchInput id="fide-search-input" type="text" placeholder="Search by name..."
+        aria-label="Search players by name" [value]="searchQuery()" (input)="onSearch(searchInput.value)"
+        class="w-full bg-surface border border-border-base rounded-2xl px-5 py-3.5 text-sm font-medium outline-none focus:border-accent focus:ring-4 focus:ring-accent/5 transition-all">
       @if (searchQuery()) {
-        <button 
-          id="fide-search-clear"
-          (click)="onSearch(''); searchInput.value = ''" 
-          aria-label="Clear search"
-          class="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-accent transition-colors"
-        >
-          Clear
-        </button>
+      <button id="fide-search-clear" (click)="onSearch(''); searchInput.value = ''" aria-label="Clear search"
+        class="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-accent transition-colors">
+        Clear
+      </button>
       }
     </div>
   </header>
@@ -33,140 +22,120 @@
   <div class="ranking-wrapper bg-surface border border-border-base rounded-3xl overflow-hidden shadow-sm">
     <!-- Category Tabs (Only if not searching) -->
     @if (!searchQuery()) {
-      <div class="flex border-b border-border-base bg-subtle/30" role="tablist">
-        <button 
-          id="fide-tab-standard"
-          (click)="switchType('standard')"
-          role="tab"
-          [attr.aria-selected]="activeType() === 'standard'"
-          aria-label="View Classical World Ranking"
-          class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
-          [class.active-tab]="activeType() === 'standard'"
-          [class.text-muted]="activeType() !== 'standard'"
-        >
-          World Ranking
-        </button>
-        <button 
-          id="fide-tab-rapid"
-          (click)="switchType('rapid')"
-          role="tab"
-          [attr.aria-selected]="activeType() === 'rapid'"
-          aria-label="View Rapid World Ranking"
-          class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
-          [class.active-tab]="activeType() === 'rapid'"
-          [class.text-muted]="activeType() !== 'rapid'"
-        >
-          Rapid
-        </button>
-        <button 
-          id="fide-tab-blitz"
-          (click)="switchType('blitz')"
-          role="tab"
-          [attr.aria-selected]="activeType() === 'blitz'"
-          aria-label="View Blitz World Ranking"
-          class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
-          [class.active-tab]="activeType() === 'blitz'"
-          [class.text-muted]="activeType() !== 'blitz'"
-        >
-          Blitz
-        </button>
-      </div>
+    <div class="flex border-b border-border-base bg-subtle/30" role="tablist">
+      <button id="fide-tab-standard" (click)="switchType('standard')" role="tab"
+        [attr.aria-selected]="activeType() === 'standard'" aria-label="View Classical World Ranking"
+        class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
+        [class.active-tab]="activeType() === 'standard'" [class.text-muted]="activeType() !== 'standard'">
+        World Ranking
+      </button>
+      <button id="fide-tab-rapid" (click)="switchType('rapid')" role="tab"
+        [attr.aria-selected]="activeType() === 'rapid'" aria-label="View Rapid World Ranking"
+        class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
+        [class.active-tab]="activeType() === 'rapid'" [class.text-muted]="activeType() !== 'rapid'">
+        Rapid
+      </button>
+      <button id="fide-tab-blitz" (click)="switchType('blitz')" role="tab"
+        [attr.aria-selected]="activeType() === 'blitz'" aria-label="View Blitz World Ranking"
+        class="flex-1 px-8 py-5 text-sm font-black uppercase transition-all relative"
+        [class.active-tab]="activeType() === 'blitz'" [class.text-muted]="activeType() !== 'blitz'">
+        Blitz
+      </button>
+    </div>
     } @else {
-      <div class="px-8 py-4 bg-subtle/30 border-b border-border-base">
-        <span class="text-xs font-black text-accent uppercase">Search Results for "{{ searchQuery() }}"</span>
-      </div>
+    <div class="px-8 py-4 bg-subtle/30 border-b border-border-base">
+      <span class="text-xs font-black text-accent uppercase">Search Results for "{{ searchQuery() }}"</span>
+    </div>
     }
 
     <div class="table-scroll overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="bg-subtle/10 border-b border-border-base">
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase w-16">Rank</th>
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase">Player Details</th>
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase text-center">Classical</th>
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase text-center">Rapid</th>
-            <th class="px-8 py-4 text-[10px] font-black text-muted uppercase text-center">Blitz</th>
+            <th class="px-8 py-4 text-xs font-black text-muted uppercase w-16">Rank</th>
+            <th class="px-8 py-4 text-xs font-black text-muted uppercase">Player Details</th>
+            <th class="px-8 py-4 text-xs font-black text-muted uppercase text-center">Classical</th>
+            <th class="px-8 py-4 text-xs font-black text-muted uppercase text-center">Rapid</th>
+            <th class="px-8 py-4 text-xs font-black text-muted uppercase text-center">Blitz</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-border-base">
           @for (player of players(); track player.fide_id; let i = $index) {
-            <tr class="ranking-row hover:bg-subtle/30 transition-colors group">
-              <!-- Rank Column -->
-              <td class="px-8 py-5">
-                <span 
-                  class="text-lg font-blacker"
-                  [class.text-accent]="i < 3 && !searchQuery()"
-                  [class.text-muted]="i >= 3 || searchQuery()"
-                >
-                  {{ searchQuery() ? '-' : (i + 1) }}
-                </span>
-              </td>
+          <tr class="ranking-row hover:bg-subtle/30 transition-colors group">
+            <!-- Rank Column -->
+            <td class="px-8 py-5">
+              <span class="text-lg font-blacker" [class.text-accent]="i < 3 && !searchQuery()"
+                [class.text-muted]="i >= 3 || searchQuery()">
+                {{ searchQuery() ? '-' : (i + 1) }}
+              </span>
+            </td>
 
-              <td class="px-8 py-5">
-                <div class="flex items-center gap-5">
-                  <!-- Avatar (No Badge) -->
-                  <div class="w-12 h-12 rounded-xl overflow-hidden bg-subtle border border-border-base shadow-xs group-hover:border-accent transition-colors relative">
-                    <div class="absolute inset-0 bg-subtle animate-pulse" *ngIf="isLoading()"></div>
-                    <img 
-                      [src]="getPlayerImage(player.fide_id)" 
-                      (error)="handleImageError($event)"
-                      loading="lazy"
-                      class="w-full h-full object-cover relative z-10"
-                    >
+            <td class="px-8 py-5">
+              <div class="flex items-center gap-5">
+                <!-- Avatar (No Badge) -->
+                <div
+                  class="w-12 h-12 rounded-xl overflow-hidden bg-subtle border border-border-base shadow-xs group-hover:border-accent transition-colors relative">
+                  <div class="absolute inset-0 bg-subtle animate-pulse" *ngIf="isLoading()"></div>
+                  <img [src]="getPlayerImage(player.fide_id)" (error)="handleImageError($event)" loading="lazy"
+                    class="w-full h-full object-cover relative z-10">
+                </div>
+
+                <!-- Info -->
+                <div class="flex flex-col gap-0.5">
+                  <div class="flex items-center gap-2">
+                    <span class="text-accent font-black text-xs">{{ player.title || 'GM' }}</span>
+                    <span class="text-content font-bold text-base group-hover:text-accent transition-colors">
+                      {{ player.name }}
+                    </span>
                   </div>
-                  
-                  <!-- Info -->
-                  <div class="flex flex-col gap-0.5">
-                    <div class="flex items-center gap-2">
-                      <span class="text-accent font-black text-xs">{{ player.title || 'GM' }}</span>
-                      <span class="text-content font-bold text-base group-hover:text-accent transition-colors">
-                        {{ player.name }}
-                      </span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <img [src]="getFlagUrl(player.federation?.alpha2)" class="w-4 h-2.5 rounded-xs shadow-xs border border-border-base">
-                      <span class="text-[10px] font-black text-muted uppercase">{{ player.federation?.name }}</span>
-                    </div>
+                  <div class="flex items-center gap-2">
+                    <img [src]="getFlagUrl(player.federation?.alpha2)"
+                      class="w-4 h-2.5 rounded-xs shadow-xs border border-border-base">
+                    <span class="text-xs font-black text-muted uppercase">{{ player.federation?.name }}</span>
                   </div>
                 </div>
-              </td>
-              
-              <!-- Ratings -->
-              <td class="px-8 py-5 text-center">
-                <span class="text-lg font-black tabular-nums transition-all" [class.text-accent]="activeType() === 'standard' && !searchQuery()">
-                  {{ player.rating_standard || '-' }}
-                </span>
-              </td>
-              
-              <td class="px-8 py-5 text-center">
-                <span class="text-lg font-black tabular-nums transition-all" [class.text-accent]="activeType() === 'rapid' && !searchQuery()">
-                  {{ player.rating_rapid || '-' }}
-                </span>
-              </td>
-              
-              <td class="px-8 py-5 text-center">
-                <span class="text-lg font-black tabular-nums transition-all" [class.text-accent]="activeType() === 'blitz' && !searchQuery()">
-                  {{ player.rating_blitz || '-' }}
-                </span>
-              </td>
-            </tr>
+              </div>
+            </td>
+
+            <!-- Ratings -->
+            <td class="px-8 py-5 text-center">
+              <span class="text-lg font-black tabular-nums transition-all"
+                [class.text-accent]="activeType() === 'standard' && !searchQuery()">
+                {{ player.rating_standard || '-' }}
+              </span>
+            </td>
+
+            <td class="px-8 py-5 text-center">
+              <span class="text-lg font-black tabular-nums transition-all"
+                [class.text-accent]="activeType() === 'rapid' && !searchQuery()">
+                {{ player.rating_rapid || '-' }}
+              </span>
+            </td>
+
+            <td class="px-8 py-5 text-center">
+              <span class="text-lg font-black tabular-nums transition-all"
+                [class.text-accent]="activeType() === 'blitz' && !searchQuery()">
+                {{ player.rating_blitz || '-' }}
+              </span>
+            </td>
+          </tr>
           } @empty {
-            @if (isLoading()) {
-              <tr>
-                <td colspan="5" class="px-8 py-24 text-center">
-                  <div class="flex flex-col items-center gap-4">
-                    <div class="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-[10px] font-black text-muted uppercase">Querying FIDE Registry</span>
-                  </div>
-                </td>
-              </tr>
-            } @else {
-              <tr>
-                <td colspan="5" class="px-8 py-24 text-center">
-                  <span class="text-sm font-bold text-muted">No players found matching your search.</span>
-                </td>
-              </tr>
-            }
+          @if (isLoading()) {
+          <tr>
+            <td colspan="5" class="px-8 py-24 text-center">
+              <div class="flex flex-col items-center gap-4">
+                <div class="w-10 h-10 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-xs font-black text-muted uppercase">Querying FIDE Registry</span>
+              </div>
+            </td>
+          </tr>
+          } @else {
+          <tr>
+            <td colspan="5" class="px-8 py-24 text-center">
+              <span class="text-sm font-bold text-muted">No players found matching your search.</span>
+            </td>
+          </tr>
+          }
           }
         </tbody>
       </table>
@@ -174,29 +143,21 @@
 
     <!-- Pagination (Only if searching) -->
     @if (searchQuery() && totalPages() > 1) {
-      <div class="px-8 py-6 bg-subtle/10 border-t border-border-base flex items-center justify-between">
-        <span class="text-xs font-black text-muted uppercase">Page {{ currentPage() }} of {{ totalPages() }}</span>
-        <div class="flex gap-2">
-          <button 
-            id="fide-page-prev"
-            [disabled]="currentPage() === 1"
-            (click)="setPage(currentPage() - 1)"
-            aria-label="Previous page"
-            class="px-4 py-2 rounded-xl border border-border-base bg-main text-xs font-black uppercase disabled:opacity-30 hover:border-accent transition-colors"
-          >
-            Prev
-          </button>
-          <button 
-            id="fide-page-next"
-            [disabled]="currentPage() === totalPages()"
-            (click)="setPage(currentPage() + 1)"
-            aria-label="Next page"
-            class="px-4 py-2 rounded-xl border border-border-base bg-main text-xs font-black uppercase disabled:opacity-30 hover:border-accent transition-colors"
-          >
-            Next
-          </button>
-        </div>
+    <div class="px-8 py-6 bg-subtle/10 border-t border-border-base flex items-center justify-between">
+      <span class="text-xs font-black text-muted uppercase">Page {{ currentPage() }} of {{ totalPages() }}</span>
+      <div class="flex gap-2">
+        <button id="fide-page-prev" [disabled]="currentPage() === 1" (click)="setPage(currentPage() - 1)"
+          aria-label="Previous page"
+          class="px-4 py-2 rounded-xl border border-border-base bg-main text-xs font-black uppercase disabled:opacity-30 hover:border-accent transition-colors">
+          Prev
+        </button>
+        <button id="fide-page-next" [disabled]="currentPage() === totalPages()" (click)="setPage(currentPage() + 1)"
+          aria-label="Next page"
+          class="px-4 py-2 rounded-xl border border-border-base bg-main text-xs font-black uppercase disabled:opacity-30 hover:border-accent transition-colors">
+          Next
+        </button>
       </div>
+    </div>
     }
   </div>
 </div>

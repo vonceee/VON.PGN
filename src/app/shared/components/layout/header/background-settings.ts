@@ -8,35 +8,35 @@ import { heroXMark, heroLink } from '@ng-icons/heroicons/outline';
 import { debounceTime, Subject } from 'rxjs';
 
 const PRESET_BACKGROUNDS = [
-  { 
-    id: 'marble', 
-    title: 'Dark Marble', 
-    url: 'https://images.unsplash.com/photo-1517148815978-75f6acaaf327?q=80&w=1000&auto=format&fit=crop' 
+  {
+    id: 'marble',
+    title: 'Dark Marble',
+    url: 'https://images.unsplash.com/photo-1517148815978-75f6acaaf327?q=80&w=1000&auto=format&fit=crop'
   },
-  { 
-    id: 'forest', 
-    title: 'Deep Forest', 
-    url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1000&auto=format&fit=crop' 
+  {
+    id: 'forest',
+    title: 'Deep Forest',
+    url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1000&auto=format&fit=crop'
   },
-  { 
-    id: 'space', 
-    title: 'Starry Night', 
-    url: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1000&auto=format&fit=crop' 
+  {
+    id: 'space',
+    title: 'Starry Night',
+    url: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1000&auto=format&fit=crop'
   },
-  { 
-    id: 'chess', 
-    title: 'Grandmaster', 
-    url: 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=1000&auto=format&fit=crop' 
+  {
+    id: 'chess',
+    title: 'Grandmaster',
+    url: 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=1000&auto=format&fit=crop'
   },
-  { 
-    id: 'abstract', 
-    title: 'Ocean Waves', 
-    url: 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1000&auto=format&fit=crop' 
+  {
+    id: 'abstract',
+    title: 'Ocean Waves',
+    url: 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1000&auto=format&fit=crop'
   },
-  { 
-    id: 'minimal', 
-    title: 'Clean Studio', 
-    url: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=1000&auto=format&fit=crop' 
+  {
+    id: 'minimal',
+    title: 'Clean Studio',
+    url: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=1000&auto=format&fit=crop'
   }
 ];
 
@@ -63,7 +63,7 @@ const PRESET_BACKGROUNDS = [
               <img [src]="bg.url" [alt]="bg.title" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
               <div class="absolute bottom-2 left-2 right-2">
-                <span class="text-[10px] font-medium text-white drop-shadow-md truncate block">{{ bg.title }}</span>
+                <span class="text-xs font-medium text-white drop-shadow-md truncate block">{{ bg.title }}</span>
               </div>
               @if (url() === bg.url) {
                 <div class="absolute top-2 right-2 w-5 h-5 bg-accent text-white rounded-full flex items-center justify-center shadow-lg animate-in zoom-in">
@@ -131,13 +131,13 @@ const PRESET_BACKGROUNDS = [
 export class BackgroundSettings {
   private userService = inject(UserService);
   private toastService = inject(ToastService);
-  
+
   close = output<void>();
   presets = PRESET_BACKGROUNDS;
-  
+
   url = signal(this.userService.currentUser()?.preferences?.backgroundImage || '');
   currentTheme = signal(this.userService.currentUser()?.preferences?.theme || 'light');
-  
+
   private urlUpdateSubject = new Subject<string>();
 
   constructor() {
@@ -166,8 +166,8 @@ export class BackgroundSettings {
   private updateBackground(url: string) {
     const theme: 'light' | 'dark' | 'transparent' | 'system' = url ? 'transparent' : 'light';
     this.currentTheme.set(theme);
-    
-    this.userService.updatePreferences({ 
+
+    this.userService.updatePreferences({
       background_image: url || null,
       theme: theme
     }).subscribe({

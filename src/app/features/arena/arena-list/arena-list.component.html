@@ -6,107 +6,70 @@
         <p class="text-muted text-lg">Join live online Arena tournaments and compete for the top spot.</p>
       </div>
     </header>
-    
+
     <!-- Arena Timeline View -->
     <app-arena-timeline [arenas]="arenas()"></app-arena-timeline>
-    
+
     <!-- Search & Filter Bar -->
     <div class="flex gap-3 flex-wrap md:flex-nowrap items-center mb-6">
       <!-- Tab Dropdown -->
       <div class="relative" #tabDropdownContainer>
-        <button
-          (click)="toggleTabDropdown()"
-          class="ui-panel flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-content whitespace-nowrap"
-        >
+        <button (click)="toggleTabDropdown()"
+          class="ui-panel flex items-center justify-between px-4 py-2.5 text-sm font-semibold text-content whitespace-nowrap">
           <span class="flex items-center gap-2">
             @if (activeTab() === 'ongoing') {
-              <span class="w-2 h-2 rounded-full bg-green-500"></span>
+            <span class="w-2 h-2 rounded-full bg-green-500"></span>
             }
             {{ activeTab() | titlecase }}
           </span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="w-5 h-5 ml-2"
-            [class.rotate-180]="isTabDropdownOpen()"
-          >
-            <path
-              fill-rule="evenodd"
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 ml-2"
+            [class.rotate-180]="isTabDropdownOpen()">
+            <path fill-rule="evenodd"
               d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-              clip-rule="evenodd"
-            />
+              clip-rule="evenodd" />
           </svg>
         </button>
 
         @if (isTabDropdownOpen()) {
-          <div
-            class="ui-panel absolute top-full left-0 mt-1 shadow-lg z-20"
-          >
-            <button
-              (click)="setTab('upcoming')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle"
-              [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }"
-            >
-              <span>Upcoming</span>
-            </button>
-            <button
-              (click)="setTab('ongoing')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle"
-              [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }"
-            >
-              <span class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                Ongoing
-              </span>
-            </button>
-            <button
-              (click)="setTab('past')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle"
-              [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }"
-            >
-              <span>Past</span>
-            </button>
-          </div>
+        <div class="ui-panel absolute top-full left-0 mt-1 shadow-lg z-20">
+          <button (click)="setTab('upcoming')"
+            class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle"
+            [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }">
+            <span>Upcoming</span>
+          </button>
+          <button (click)="setTab('ongoing')"
+            class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle"
+            [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-green-500"></span>
+              Ongoing
+            </span>
+          </button>
+          <button (click)="setTab('past')"
+            class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle"
+            [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }">
+            <span>Past</span>
+          </button>
+        </div>
         }
       </div>
 
       <div class="relative flex-1">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-        >
-          <path
-            fill-rule="evenodd"
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none">
+          <path fill-rule="evenodd"
             d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-            clip-rule="evenodd"
-          />
+            clip-rule="evenodd" />
         </svg>
-        <input
-          type="text"
-          [value]="searchQuery()"
-          (input)="onSearchInput($event)"
-          placeholder="Search arenas..."
-          class="ui-panel block w-full pl-9 pr-9 py-2.5 text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50"
-        />
+        <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search arenas..."
+          class="ui-panel block w-full pl-9 pr-9 py-2.5 text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
         @if (searchQuery()) {
-          <button
-            (click)="clearSearch()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              class="w-4 h-4"
-            >
-              <path
-                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
-              />
-            </svg>
-          </button>
+        <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+            <path
+              d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+          </svg>
+        </button>
         }
       </div>
     </div>
@@ -114,310 +77,255 @@
 
   <!-- Results Info -->
   @if (!loading() && filteredArenas().length > 0) {
-    <p class="text-xs text-muted mb-4 px-8 md:px-16">
-      Showing {{ paginatedArenas().length }} of {{ filteredArenas().length }} arena{{
-        filteredArenas().length !== 1 ? 's' : ''
-      }}
-    </p>
+  <p class="text-xs text-muted mb-4 px-8 md:px-16">
+    Showing {{ paginatedArenas().length }} of {{ filteredArenas().length }} arena{{
+    filteredArenas().length !== 1 ? 's' : ''
+    }}
+  </p>
   }
 
   <!-- Arena Cards -->
   @if (loading()) {
-    <app-loading></app-loading>
+  <app-loading></app-loading>
   } @else if (paginatedArenas().length === 0) {
-    <div class="flex flex-col items-center justify-center py-20 text-center px-8 mx-8 md:px-16 md:mx-16">
-      <h3 class="text-lg mb-2 text-content">No Arenas Found</h3>
-    </div>
+  <div class="flex flex-col items-center justify-center py-20 text-center px-8 mx-8 md:px-16 md:mx-16">
+    <h3 class="text-lg mb-2 text-content">No Arenas Found</h3>
+  </div>
   } @else {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-8 md:px-16">
-      @for (arena of paginatedArenas(); track arena.id) {
-        <div class="card-perspective h-[380px]">
-          <div class="card-inner" [class.card-flipped]="isFlipped(arena.id)">
-            <!-- Card Front -->
-            <div class="card-front ui-panel overflow-hidden flex flex-col group">
-              <!-- Card Content -->
-              <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
-                <div class="flex gap-4 flex-1 mb-6">
-                  <!-- Date Sidebar -->
-                  <div class="flex flex-col items-center justify-start pt-1 shrink-0 w-14 border-r border-border-base pr-4">
-                    <span class="text-xs font-semibold text-accent uppercase">
-                      {{ arena.start_date | date : 'MMM' }}
-                    </span>
-                    <span class="text-2xl font-semibold text-content">
-                      {{ arena.start_date | date : 'dd' }}
-                    </span>
-                  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-8 md:px-16">
+    @for (arena of paginatedArenas(); track arena.id) {
+    <div class="card-perspective h-[380px]">
+      <div class="card-inner" [class.card-flipped]="isFlipped(arena.id)">
+        <!-- Card Front -->
+        <div class="card-front ui-panel overflow-hidden flex flex-col group">
+          <!-- Card Content -->
+          <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
+            <div class="flex gap-4 flex-1 mb-6">
+              <!-- Date Sidebar -->
+              <div class="flex flex-col items-center justify-start pt-1 shrink-0 w-14 border-r border-border-base pr-4">
+                <span class="text-xs font-semibold text-accent uppercase">
+                  {{ arena.start_date | date : 'MMM' }}
+                </span>
+                <span class="text-2xl font-semibold text-content">
+                  {{ arena.start_date | date : 'dd' }}
+                </span>
+              </div>
 
-                  <!-- Details Area -->
-                  <div class="flex flex-col flex-1 min-w-0">
-                    <!-- Title -->
-                    <h2 class="text-base md:text-lg font-semibold line-clamp-2 h-14 text-content mb-1" [title]="arena.name">
-                      {{ arena.name }}
-                    </h2>
+              <!-- Details Area -->
+              <div class="flex flex-col flex-1 min-w-0">
+                <!-- Title -->
+                <h2 class="text-base md:text-lg font-semibold line-clamp-2 h-14 text-content mb-1" [title]="arena.name">
+                  {{ arena.name }}
+                </h2>
 
-                    <!-- Location -->
-                    <div class="text-sm font-semibold text-content truncate mb-3">
-                      Online Arena
-                    </div>
-
-                    <!-- Metadata Chips -->
-                    <div class="flex flex-wrap gap-1.5 mt-auto pb-1">
-                      <span class="px-2.5 py-1 bg-subtle rounded-md text-xs font-semibold text-content uppercase">
-                        Arena
-                      </span>
-                      <span class="px-2.5 py-1 bg-subtle rounded-md text-xs font-semibold text-content uppercase">
-                        {{ arena.timeControl }}
-                      </span>
-                      @if (arena.creator) {
-                        <span class="px-2.5 py-1 bg-accent/10 rounded-md text-xs font-semibold text-accent uppercase">
-                          By {{ arena.creator.name }}
-                        </span>
-                      }
-                    </div>
-                  </div>
+                <!-- Location -->
+                <div class="text-sm font-semibold text-content truncate mb-3">
+                  Online Arena
                 </div>
 
-                <!-- Bottom Row -->
-                <div class="mt-auto flex flex-col gap-3">
-                  <div class="flex items-center justify-between gap-2">
-                    @if (arena.status === 'ongoing' || arena.status === 'upcoming') {
-                      <div class="flex items-center gap-2">
-                        <span class="text-xs text-muted">
-                          {{ arena.participantsCount }} Players Joined
-                        </span>
-                      </div>
-                    } @else if (arena.winner) {
-                      <div class="flex items-center gap-1 text-xs">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          class="w-4 h-4 text-yellow-500"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <span class="font-semibold line-clamp-1">Winner: {{ arena.winner }}</span>
-                      </div>
-                    } @else {
-                      <span class="text-xs text-muted">Arena Finished</span>
-                    }
-
-                    <div class="flex gap-2">
-                      @if (getArenaThumbnail(arena)) {
-                        <button 
-                          appButton 
-                          variant="ghost" 
-                          class="text-xs"
-                          (click)="toggleFlip(arena.id)"
-                        >
-                          Poster
-                        </button>
-                      }
-                      <a appButton variant="primary" class="text-xs" [routerLink]="['/events', arena.id, 'arena']">
-                        {{ arena.status === 'past' ? 'Results' : 'Lobby' }}
-                      </a>
-                    </div>
-                  </div>
+                <!-- Metadata Chips -->
+                <div class="flex flex-wrap gap-1.5 mt-auto pb-1">
+                  <span class="px-2.5 py-1 bg-subtle rounded-md text-xs font-semibold text-content uppercase">
+                    Arena
+                  </span>
+                  <span class="px-2.5 py-1 bg-subtle rounded-md text-xs font-semibold text-content uppercase">
+                    {{ arena.timeControl }}
+                  </span>
+                  @if (arena.creator) {
+                  <span class="px-2.5 py-1 bg-accent/10 rounded-md text-xs font-semibold text-accent uppercase">
+                    By {{ arena.creator.name }}
+                  </span>
+                  }
                 </div>
               </div>
             </div>
 
-            <!-- Card Back (Poster Only) -->
-            <div class="card-back ui-panel overflow-hidden flex flex-col group">
-              @if (getArenaThumbnail(arena); as thumb) {
-                <div class="relative flex-1 bg-slate-900 overflow-hidden">
-                  <img
-                    [src]="thumb"
-                    class="w-full h-full object-contain object-top"
-                    [alt]="arena.name + ' Poster'"
-                  />
-                  
-                  <!-- Overlay Controls -->
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 flex flex-col justify-end p-6">
-                    <h3 class="text-white font-semibold text-lg mb-4">{{ arena.name }}</h3>
-                    <div class="flex gap-3">
-                      <button 
-                        appButton 
-                        variant="primary" 
-                        class="flex-1"
-                        (click)="openPoster(thumb)"
-                      >
-                        View Full Poster
-                      </button>
-                      <button 
-                        appButton 
-                        variant="outline" 
-                        class="flex-1"
-                        (click)="toggleFlip(arena.id)"
-                      >
-                        Back
-                      </button>
-                    </div>
-                  </div>
+            <!-- Bottom Row -->
+            <div class="mt-auto flex flex-col gap-3">
+              <div class="flex items-center justify-between gap-2">
+                @if (arena.status === 'ongoing' || arena.status === 'upcoming') {
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-muted">
+                    {{ arena.participantsCount }} Players Joined
+                  </span>
+                </div>
+                } @else if (arena.winner) {
+                <div class="flex items-center gap-1 text-xs">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                    class="w-4 h-4 text-yellow-500">
+                    <path fill-rule="evenodd"
+                      d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <span class="font-semibold line-clamp-1">Winner: {{ arena.winner }}</span>
+                </div>
+                } @else {
+                <span class="text-xs text-muted">Arena Finished</span>
+                }
 
-                  <!-- Quick Close Button -->
-                  <button 
-                    (click)="toggleFlip(arena.id)"
-                    class="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 z-10"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                <div class="flex gap-2">
+                  @if (getArenaThumbnail(arena)) {
+                  <button appButton variant="ghost" class="text-xs" (click)="toggleFlip(arena.id)">
+                    Poster
                   </button>
+                  }
+                  <a appButton variant="primary" class="text-xs" [routerLink]="['/events', arena.id, 'arena']">
+                    {{ arena.status === 'past' ? 'Results' : 'Lobby' }}
+                  </a>
                 </div>
-              } @else {
-                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-100">
-                   <p class="mb-6">No poster available for this arena.</p>
-                   <button appButton variant="outline" (click)="toggleFlip(arena.id)">
-                     Go Back
-                   </button>
-                </div>
-              }
+              </div>
             </div>
           </div>
         </div>
-      }
+
+        <!-- Card Back (Poster Only) -->
+        <div class="card-back ui-panel overflow-hidden flex flex-col group">
+          @if (getArenaThumbnail(arena); as thumb) {
+          <div class="relative flex-1 bg-slate-900 overflow-hidden">
+            <img [src]="thumb" class="w-full h-full object-contain object-top" [alt]="arena.name + ' Poster'" />
+
+            <!-- Overlay Controls -->
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 flex flex-col justify-end p-6">
+              <h3 class="text-white font-semibold text-lg mb-4">{{ arena.name }}</h3>
+              <div class="flex gap-3">
+                <button appButton variant="primary" class="flex-1" (click)="openPoster(thumb)">
+                  View Full Poster
+                </button>
+                <button appButton variant="outline" class="flex-1" (click)="toggleFlip(arena.id)">
+                  Back
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Close Button -->
+            <button (click)="toggleFlip(arena.id)"
+              class="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 z-10">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          } @else {
+          <div class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-100">
+            <p class="mb-6">No poster available for this arena.</p>
+            <button appButton variant="outline" (click)="toggleFlip(arena.id)">
+              Go Back
+            </button>
+          </div>
+          }
+        </div>
+      </div>
     </div>
+    }
+  </div>
   }
 
   <!-- Pagination -->
   @if (!loading() && totalPages() > 1) {
-    <div class="flex items-center justify-center gap-1 mt-8">
-      <button
-        (click)="prevPage()"
-        [disabled]="currentPage() === 1"
-        class="px-3 py-2 text-sm rounded-lg border border-border-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-subtle"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="w-4 h-4"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
+  <div class="flex items-center justify-center gap-1 mt-8">
+    <button (click)="prevPage()" [disabled]="currentPage() === 1"
+      class="px-3 py-2 text-sm rounded-lg border border-border-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-subtle">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd"
+          d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+          clip-rule="evenodd" />
+      </svg>
+    </button>
 
-      @for (page of pages(); track page === '...' ? $index : page) {
-        @if (page === '...') {
-          <span class="px-3 py-2 text-sm text-muted">...</span>
-        } @else {
-          <button
-            (click)="goToPage(page)"
-            class="min-w-[36px] px-3 py-2 text-sm rounded-lg border"
-            [ngClass]="{
+    @for (page of pages(); track page === '...' ? $index : page) {
+    @if (page === '...') {
+    <span class="px-3 py-2 text-sm text-muted">...</span>
+    } @else {
+    <button (click)="goToPage(page)" class="min-w-[36px] px-3 py-2 text-sm rounded-lg border" [ngClass]="{
               'bg-accent border-accent text-main': currentPage() === page,
               'border-border-base hover:bg-subtle':
                 currentPage() !== page,
-            }"
-          >
-            {{ page }}
-          </button>
-        }
-      }
+            }">
+      {{ page }}
+    </button>
+    }
+    }
 
-      <button
-        (click)="nextPage()"
-        [disabled]="currentPage() === totalPages()"
-        class="px-3 py-2 text-sm rounded-lg border border-border-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-subtle"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="w-4 h-4"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
-    </div>
+    <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+      class="px-3 py-2 text-sm rounded-lg border border-border-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-subtle">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd"
+          d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+          clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
   }
 
   <!-- Recently Completed Section -->
   @if (!loading() && activeTab() !== 'past' && recentlyCompletedArenas().length > 0) {
-    <div class="mt-16 mb-12 px-8 md:px-16">
-      <div class="mb-6">
-        <h2 class="text-2xl text-content">Recently completed</h2>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        @for (arena of recentlyCompletedArenas(); track arena.id) {
-          <a 
-            [routerLink]="['/events', arena.id, 'arena']"
-            class="ui-panel p-4 flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-lg group"
-          >
-            <div class="flex items-center justify-between mb-3">
-              <span class="text-[10px] font-bold uppercase text-muted px-2 py-0.5 bg-subtle rounded">
-                {{ arena.timeControl }}
-              </span>
-              <span class="text-[10px] font-medium text-muted">
-                {{ formatRelativeTime(arena.end_date) }}
-              </span>
-            </div>
-            
-            <h3 class="text-sm font-semibold text-content line-clamp-1 mb-3 group-hover:text-accent transition-colors">
-              {{ arena.name }}
-            </h3>
-
-            @if (arena.winner) {
-              <div class="mt-auto flex items-center gap-2 pt-3 border-t border-border-base/50">
-                <div class="w-6 h-6 rounded-full bg-yellow-500/10 flex items-center justify-center shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-yellow-500">
-                    <path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z" clip-rule="evenodd" />
-                  </svg>
-                </div>
-                <div class="min-w-0">
-                  <p class="text-[10px] text-muted leading-tight">Winner</p>
-                  <p class="text-xs font-bold text-content truncate">{{ arena.winner }}</p>
-                </div>
-              </div>
-            } @else {
-              <div class="mt-auto pt-3 border-t border-border-base/50">
-                <span class="text-xs text-muted">View Results</span>
-              </div>
-            }
-          </a>
-        }
-      </div>
+  <div class="mt-16 mb-12 px-8 md:px-16">
+    <div class="mb-6">
+      <h2 class="text-2xl text-content">Recently completed</h2>
     </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      @for (arena of recentlyCompletedArenas(); track arena.id) {
+      <a [routerLink]="['/events', arena.id, 'arena']"
+        class="ui-panel p-4 flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-lg group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-bold uppercase text-muted px-2 py-0.5 bg-subtle rounded">
+            {{ arena.timeControl }}
+          </span>
+          <span class="text-xs font-medium text-muted">
+            {{ formatRelativeTime(arena.end_date) }}
+          </span>
+        </div>
+
+        <h3 class="text-sm font-semibold text-content line-clamp-1 mb-3 group-hover:text-accent transition-colors">
+          {{ arena.name }}
+        </h3>
+
+        @if (arena.winner) {
+        <div class="mt-auto flex items-center gap-2 pt-3 border-t border-border-base/50">
+          <div class="w-6 h-6 rounded-full bg-yellow-500/10 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+              class="w-3.5 h-3.5 text-yellow-500">
+              <path fill-rule="evenodd"
+                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <p class="text-xs text-muted leading-tight">Winner</p>
+            <p class="text-xs font-bold text-content truncate">{{ arena.winner }}</p>
+          </div>
+        </div>
+        } @else {
+        <div class="mt-auto pt-3 border-t border-border-base/50">
+          <span class="text-xs text-muted">View Results</span>
+        </div>
+        }
+      </a>
+      }
+    </div>
+  </div>
   }
 </div>
 
 <!-- Poster Lightbox Overlay -->
 @if (selectedPoster(); as url) {
-  <div 
-    class="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4 md:p-12"
-    (click)="closePoster()"
-  >
-    <!-- Close Button -->
-    <button 
-      class="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 z-[110]"
-      (click)="closePoster()"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
+<div class="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4 md:p-12"
+  (click)="closePoster()">
+  <!-- Close Button -->
+  <button class="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 z-[110]"
+    (click)="closePoster()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+      class="w-8 h-8">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
 
-    <!-- Poster Image -->
-    <div class="relative w-full h-full flex items-center justify-center" (click)="$event.stopPropagation()">
-      <img 
-        [src]="url" 
-        class="max-w-full max-h-full object-contain rounded-lg"
-        alt="Full Size Poster"
-      />
-    </div>
+  <!-- Poster Image -->
+  <div class="relative w-full h-full flex items-center justify-center" (click)="$event.stopPropagation()">
+    <img [src]="url" class="max-w-full max-h-full object-contain rounded-lg" alt="Full Size Poster" />
   </div>
+</div>
 }

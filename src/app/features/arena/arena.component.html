@@ -1,7 +1,7 @@
 <div class="h-full flex flex-col p-2 lg:p-4 gap-4 overflow-hidden">
   <!-- Grid Container -->
   <div class="grid grid-cols-1 md:grid-cols-12 gap-4 w-full flex-1 min-h-0">
-    
+
     <!-- Column 1: Arena Info & Chat (Left) -->
     <div class="md:col-span-3 flex flex-col h-full gap-3 min-h-0">
       <!-- Info Panel -->
@@ -18,25 +18,20 @@
         </div>
 
         @if (!isPast()) {
-          <div class="pt-4 border-t border-border-base">
-            <button
-              appButton
-              (click)="toggleJoin()"
-              [variant]="isWaiting() ? 'outline' : 'primary'"
-              class="w-full"
-            >
-              @if (!isParticipating()) {
-                JOIN ARENA
-              } @else if (isWaiting()) {
-                <span class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-                  PAUSE
-                </span>
-              } @else {
-                RESUME ARENA
-              }
-            </button>
-          </div>
+        <div class="pt-4 border-t border-border-base">
+          <button appButton (click)="toggleJoin()" [variant]="isWaiting() ? 'outline' : 'primary'" class="w-full">
+            @if (!isParticipating()) {
+            JOIN ARENA
+            } @else if (isWaiting()) {
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+              PAUSE
+            </span>
+            } @else {
+            RESUME ARENA
+            }
+          </button>
+        </div>
         }
       </div>
 
@@ -46,10 +41,8 @@
       </div>
 
       <!-- Viewer Count below chat -->
-      <div 
-        (click)="openViewers()"
-        class="flex items-center gap-2 px-2 pb-1 text-sm font-semibold text-muted cursor-pointer hover:text-accent transition-colors w-fit shrink-0"
-      >
+      <div (click)="openViewers()"
+        class="flex items-center gap-2 px-2 pb-1 text-sm font-semibold text-muted cursor-pointer hover:text-accent transition-colors w-fit shrink-0">
         <span>{{ viewerCount() }} player/s in lobby</span>
       </div>
     </div>
@@ -72,62 +65,66 @@
 
           <div class="text-right">
             @if (isPast()) {
-              <div class="text-[10px] uppercase text-accent font-bold mb-0.5">
-                Tournament Finished
-              </div>
-              <div class="text-2xl tabular-numser text-content font-bold">
-                Final Results
-              </div>
+            <div class="text-xs uppercase text-accent font-bold mb-0.5">
+              Tournament Finished
+            </div>
+            <div class="text-2xl tabular-numser text-content font-bold">
+              Final Results
+            </div>
             } @else {
-              <div class="text-[10px] uppercase text-muted mb-0.5">
-                {{ countdownLabel() }}
-              </div>
-              <div class="text-3xl tabular-numser text-accent font-black">
-                {{ countdown() }}
-              </div>
+            <div class="text-xs uppercase text-muted mb-0.5">
+              {{ countdownLabel() }}
+            </div>
+            <div class="text-3xl tabular-numser text-accent font-black">
+              {{ countdown() }}
+            </div>
             }
           </div>
         </div>
 
         <!-- Podium View (Only when finished) -->
         @if (isPast() && topThree().length > 0) {
-          <div class="flex items-end justify-center gap-2 md:gap-3 mb-8 h-56 pt-4 shrink-0">
-            <!-- 2nd Place -->
-            @if (topThree()[1]; as p2) {
-              <div class="flex flex-col items-center flex-1 max-w-[140px]">
-                <div class="w-full bg-subtle border border-border-base rounded-t-2xl h-24 flex flex-col items-center justify-center p-3">
-                  <div class="text-2xl font-bold text-muted/30 mb-1">2</div>
-                  <div class="text-sm font-medium truncate w-full text-center text-content">{{ p2.name }}</div>
-                  <div class="text-[10px] text-muted">{{ p2.score }} points</div>
-                </div>
-              </div>
-            }
-            
-            <!-- 1st Place -->
-            @if (topThree()[0]; as p1) {
-              <div class="flex flex-col items-center flex-1 max-w-[180px]">
-                <div class="w-full bg-accent/[0.03] border-x border-t border-accent/20 rounded-t-3xl h-36 flex flex-col items-center justify-center p-4 relative">
-                  <div class="absolute -top-3 bg-accent text-white px-3 py-1 rounded-full text-[9px] font-bold uppercase shadow-lg shadow-accent/20">
-                    Winner
-                  </div>
-                  <div class="text-4xl font-black text-accent/20 mb-2 italic">1</div>
-                  <div class="text-lg font-bold truncate w-full text-center text-content mb-0.5">{{ p1.name }}</div>
-                  <div class="text-xs font-medium text-accent">{{ p1.score }} points</div>
-                </div>
-              </div>
-            }
-
-            <!-- 3rd Place -->
-            @if (topThree()[2]; as p3) {
-              <div class="flex flex-col items-center flex-1 max-w-[140px]">
-                <div class="w-full bg-subtle border border-border-base rounded-t-2xl h-20 flex flex-col items-center justify-center p-3">
-                  <div class="text-xl font-bold text-muted/30 mb-0.5">3</div>
-                  <div class="text-sm font-medium truncate w-full text-center text-content">{{ p3.name }}</div>
-                  <div class="text-[10px] text-muted">{{ p3.score }} points</div>
-                </div>
-              </div>
-            }
+        <div class="flex items-end justify-center gap-2 md:gap-3 mb-8 h-56 pt-4 shrink-0">
+          <!-- 2nd Place -->
+          @if (topThree()[1]; as p2) {
+          <div class="flex flex-col items-center flex-1 max-w-[140px]">
+            <div
+              class="w-full bg-subtle border border-border-base rounded-t-2xl h-24 flex flex-col items-center justify-center p-3">
+              <div class="text-2xl font-bold text-muted/30 mb-1">2</div>
+              <div class="text-sm font-medium truncate w-full text-center text-content">{{ p2.name }}</div>
+              <div class="text-xs text-muted">{{ p2.score }} points</div>
+            </div>
           </div>
+          }
+
+          <!-- 1st Place -->
+          @if (topThree()[0]; as p1) {
+          <div class="flex flex-col items-center flex-1 max-w-[180px]">
+            <div
+              class="w-full bg-accent/[0.03] border-x border-t border-accent/20 rounded-t-3xl h-36 flex flex-col items-center justify-center p-4 relative">
+              <div
+                class="absolute -top-3 bg-accent text-white px-3 py-1 rounded-full text-[9px] font-bold uppercase shadow-lg shadow-accent/20">
+                Winner
+              </div>
+              <div class="text-4xl font-black text-accent/20 mb-2 italic">1</div>
+              <div class="text-lg font-bold truncate w-full text-center text-content mb-0.5">{{ p1.name }}</div>
+              <div class="text-xs font-medium text-accent">{{ p1.score }} points</div>
+            </div>
+          </div>
+          }
+
+          <!-- 3rd Place -->
+          @if (topThree()[2]; as p3) {
+          <div class="flex flex-col items-center flex-1 max-w-[140px]">
+            <div
+              class="w-full bg-subtle border border-border-base rounded-t-2xl h-20 flex flex-col items-center justify-center p-3">
+              <div class="text-xl font-bold text-muted/30 mb-0.5">3</div>
+              <div class="text-sm font-medium truncate w-full text-center text-content">{{ p3.name }}</div>
+              <div class="text-xs text-muted">{{ p3.score }} points</div>
+            </div>
+          </div>
+          }
+        </div>
         }
 
         <!-- Leaderboard Table -->
@@ -143,86 +140,68 @@
             </thead>
             <tbody class="divide-y divide-border-base">
               @for (player of paginatedLeaderboard(); track player.userId; let i = $index) {
-                <tr
-                  (click)="openParticipantDetails(player, i)"
-                  class="group transition-colors hover:bg-subtle cursor-pointer"
-                  [class.bg-accent/5]="player.userId === authService.currentUser()?.uid"
-                >
-                  <td class="py-3 text-center text-muted">
-                    {{ (currentPage() - 1) * pageSize() + i + 1 }}
-                  </td>
-                  <td class="py-3">
-                    <div class="flex items-center gap-3">
-                      <div class="flex flex-col">
-                        <div class="flex items-center gap-2">
-                          <span class="text-base font-semibold text-content group-hover:text-accent transition-colors">
-                            {{ player.name }}
-                          </span>
-                          <span class="text-[10px] text-muted">{{ player.rating }}</span>
-                          @if (player.streak >= 2) {
-                            <span class="text-orange-500 text-[10px]">
-                              🔥 {{ player.streak }}
-                            </span>
-                          }
-                        </div>
+              <tr (click)="openParticipantDetails(player, i)"
+                class="group transition-colors hover:bg-subtle cursor-pointer"
+                [class.bg-accent/5]="player.userId === authService.currentUser()?.uid">
+                <td class="py-3 text-center text-muted">
+                  {{ (currentPage() - 1) * pageSize() + i + 1 }}
+                </td>
+                <td class="py-3">
+                  <div class="flex items-center gap-3">
+                    <div class="flex flex-col">
+                      <div class="flex items-center gap-2">
+                        <span class="text-base font-semibold text-content group-hover:text-accent transition-colors">
+                          {{ player.name }}
+                        </span>
+                        <span class="text-xs text-muted">{{ player.rating }}</span>
+                        @if (player.streak >= 2) {
+                        <span class="text-orange-500 text-xs">
+                          🔥 {{ player.streak }}
+                        </span>
+                        }
                       </div>
                     </div>
-                  </td>
-                  <td class="py-3 text-right hidden sm:table-cell pr-8">
-                    <div class="flex items-center justify-end gap-1 overflow-hidden max-w-[150px]">
-                      @for (game of player.games; track game.gameId) {
-                        <span 
-                          class="text-[10px] font-bold"
-                          [class.text-green-500]="game.result === 'win'"
-                          [class.text-orange-500]="game.result === 'draw'"
-                          [class.text-muted]="game.result === 'loss'"
-                          [class.text-accent]="game.points > 2"
-                        >
-                          {{ game.points }}
-                        </span>
-                      }
-                    </div>
-                  </td>
-                  <td class="py-2 text-right text-lg tabular-nums text-content font-bold">
-                    {{ player.score }}
-                  </td>
-                </tr>
+                  </div>
+                </td>
+                <td class="py-3 text-right hidden sm:table-cell pr-8">
+                  <div class="flex items-center justify-end gap-1 overflow-hidden max-w-[150px]">
+                    @for (game of player.games; track game.gameId) {
+                    <span class="text-xs font-bold" [class.text-green-500]="game.result === 'win'"
+                      [class.text-orange-500]="game.result === 'draw'" [class.text-muted]="game.result === 'loss'"
+                      [class.text-accent]="game.points > 2">
+                      {{ game.points }}
+                    </span>
+                    }
+                  </div>
+                </td>
+                <td class="py-2 text-right text-lg tabular-nums text-content font-bold">
+                  {{ player.score }}
+                </td>
+              </tr>
               }
             </tbody>
           </table>
 
           <!-- Pagination Footer -->
           @if (leaderboard().length > pageSize()) {
-            <div class="flex items-center justify-between mt-6 px-2">
-              <div class="text-[10px] uppercase font-bold text-muted">
-                {{ leaderboard().length }} Participants
-              </div>
-              <div class="flex items-center gap-4">
-                <button 
-                  appButton 
-                  variant="outline" 
-                  size="sm" 
-                  (click)="prevPage()" 
-                  [disabled]="currentPage() === 1"
-                  class="!px-3 !py-1 text-[10px]"
-                >
-                  PREV
-                </button>
-                <span class="text-[10px] font-bold text-content">
-                  PAGE {{ currentPage() }} / {{ totalPages() }}
-                </span>
-                <button 
-                  appButton 
-                  variant="outline" 
-                  size="sm" 
-                  (click)="nextPage()" 
-                  [disabled]="currentPage() === totalPages()"
-                  class="!px-3 !py-1 text-[10px]"
-                >
-                  NEXT
-                </button>
-              </div>
+          <div class="flex items-center justify-between mt-6 px-2">
+            <div class="text-xs uppercase font-bold text-muted">
+              {{ leaderboard().length }} Participants
             </div>
+            <div class="flex items-center gap-4">
+              <button appButton variant="outline" size="sm" (click)="prevPage()" [disabled]="currentPage() === 1"
+                class="!px-3 !py-1 text-xs">
+                PREV
+              </button>
+              <span class="text-xs font-bold text-content">
+                PAGE {{ currentPage() }} / {{ totalPages() }}
+              </span>
+              <button appButton variant="outline" size="sm" (click)="nextPage()"
+                [disabled]="currentPage() === totalPages()" class="!px-3 !py-1 text-xs">
+                NEXT
+              </button>
+            </div>
+          </div>
           }
         </div>
       </div>
@@ -234,59 +213,28 @@
       <div class="shrink-0 flex flex-col gap-2">
         <div class="flex-1">
           @if (game(); as g) {
-            <!-- Top Player (Black) -->
-            <div class="flex items-center justify-between gap-4">
-              <app-game-info
-                [player]="g.black_player || placeholderPlayer"
-                [color]="'black'"
-                [showStatus]="false"
-                class="flex-1 min-w-0"
-              />
-              <app-chess-clock
-                class="shrink-0"
-                [size]="'md'"
-                [serverTimeMs]="g.black_time_remaining_ms || 0"
-                [serverTimestamp]="g.server_timestamp || ''"
-                [isActive]="g.turn === 'black' && g.status === 'active'"
-              />
-            </div>
+          <!-- Top Player (Black) -->
+          <div class="flex items-center justify-between gap-4">
+            <app-game-info [player]="g.black_player || placeholderPlayer" [color]="'black'" [showStatus]="false"
+              class="flex-1 min-w-0" />
+            <app-chess-clock class="shrink-0" [size]="'md'" [serverTimeMs]="g.black_time_remaining_ms || 0"
+              [serverTimestamp]="g.server_timestamp || ''" [isActive]="g.turn === 'black' && g.status === 'active'" />
+          </div>
 
-            <!-- Board -->
-            <app-chess-board
-              [fen]="displayFen()"
-              [orientation]="'white'"
-              [interactive]="false"
-              [configOverride]="cgConfig()"
-              [hideCoordinates]="true"
-              [resizable]="false"
-              [fluid]="true"
-            ></app-chess-board>
+          <!-- Board -->
+          <app-chess-board [fen]="displayFen()" [orientation]="'white'" [interactive]="false"
+            [configOverride]="cgConfig()" [hideCoordinates]="true" [resizable]="false" [fluid]="true"></app-chess-board>
 
-            <!-- Bottom Player (White) -->
-            <div class="flex items-center justify-between gap-4">
-              <app-game-info
-                [player]="g.white_player || placeholderPlayer"
-                [color]="'white'"
-                [showStatus]="false"
-                class="flex-1 min-w-0"
-              />
-              <app-chess-clock
-                class="shrink-0"
-                [size]="'md'"
-                [serverTimeMs]="g.white_time_remaining_ms || 0"
-                [serverTimestamp]="g.server_timestamp || ''"
-                [isActive]="g.turn === 'white' && g.status === 'active'"
-              />
-            </div>
+          <!-- Bottom Player (White) -->
+          <div class="flex items-center justify-between gap-4">
+            <app-game-info [player]="g.white_player || placeholderPlayer" [color]="'white'" [showStatus]="false"
+              class="flex-1 min-w-0" />
+            <app-chess-clock class="shrink-0" [size]="'md'" [serverTimeMs]="g.white_time_remaining_ms || 0"
+              [serverTimestamp]="g.server_timestamp || ''" [isActive]="g.turn === 'white' && g.status === 'active'" />
+          </div>
           } @else {
-            <app-chess-board
-              [fen]="STARTING_FEN"
-              [orientation]="'white'"
-              [interactive]="false"
-              [hideCoordinates]="true"
-              [resizable]="false"
-              [fluid]="true"
-            ></app-chess-board>
+          <app-chess-board [fen]="STARTING_FEN" [orientation]="'white'" [interactive]="false" [hideCoordinates]="true"
+            [resizable]="false" [fluid]="true"></app-chess-board>
           }
         </div>
       </div>
@@ -294,52 +242,43 @@
       <!-- Top Games List -->
       <div class="flex-1 overflow-y-auto custom-scrollbar min-h-0 space-y-1 pr-1">
         @for (game of arenaService.topGames(); track game.gameId; let i = $index) {
-          @let isActive = selectedGameId() === game.gameId || (!selectedGameId() && game.gameId === arenaService.topGameId());
-          <div 
-            (click)="selectGame(game.gameId)"
-            class="ui-panel p-2.5 transition-all cursor-pointer group relative shrink-0"
-            [class.border-accent]="isActive"
-            [class.bg-accent/[0.02]]="isActive"
-            [class.shadow-sm]="isActive"
-            [class.hover:bg-subtle]="!isActive"
-          >
-            <!-- Active Indicator Bar -->
-            @if (isActive) {
-              <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
-            }
+        @let isActive = selectedGameId() === game.gameId || (!selectedGameId() && game.gameId ===
+        arenaService.topGameId());
+        <div (click)="selectGame(game.gameId)"
+          class="ui-panel p-2.5 transition-all cursor-pointer group relative shrink-0" [class.border-accent]="isActive"
+          [class.bg-accent/[0.02]]="isActive" [class.shadow-sm]="isActive" [class.hover:bg-subtle]="!isActive">
+          <!-- Active Indicator Bar -->
+          @if (isActive) {
+          <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
+          }
 
-            <div class="flex flex-col gap-2">
-              <!-- Top Row (White) -->
-              <div class="flex items-center justify-between gap-4">
-                <span 
-                  class="text-sm font-semibold truncate"
-                  [class]="isActive ? 'text-accent' : 'text-content'"
-                >
-                  {{ game.white.name }}
-                </span>
-                <div class="flex items-center gap-2 shrink-0">
-                  <span class="text-xs font-medium text-muted tabular-nums">{{ game.white.rating }}</span>
-                  <span class="text-xs font-bold text-muted/30">#{{ game.white.rank }}</span>
-                </div>
-              </div>
-
-              <!-- Bottom Row (Black) -->
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-2 shrink-0">
-                  <div class="px-1.5 py-0.5 rounded bg-muted/10 text-xs font-bold text-muted/60">
-                    #{{ game.black.rank }}
-                  </div>
-                  <span class="text-xs font-medium text-muted tabular-nums">{{ game.black.rating }}</span>
-                </div>
-                <span 
-                  class="text-sm font-semibold truncate text-right"
-                  [class]="isActive ? 'text-accent' : 'text-content'"
-                >
-                  {{ game.black.name }}
-                </span>
+          <div class="flex flex-col gap-2">
+            <!-- Top Row (White) -->
+            <div class="flex items-center justify-between gap-4">
+              <span class="text-sm font-semibold truncate" [class]="isActive ? 'text-accent' : 'text-content'">
+                {{ game.white.name }}
+              </span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-xs font-medium text-muted tabular-nums">{{ game.white.rating }}</span>
+                <span class="text-xs font-bold text-muted/30">#{{ game.white.rank }}</span>
               </div>
             </div>
+
+            <!-- Bottom Row (Black) -->
+            <div class="flex items-center justify-between gap-4">
+              <div class="flex items-center gap-2 shrink-0">
+                <div class="px-1.5 py-0.5 rounded bg-muted/10 text-xs font-bold text-muted/60">
+                  #{{ game.black.rank }}
+                </div>
+                <span class="text-xs font-medium text-muted tabular-nums">{{ game.black.rating }}</span>
+              </div>
+              <span class="text-sm font-semibold truncate text-right"
+                [class]="isActive ? 'text-accent' : 'text-content'">
+                {{ game.black.name }}
+              </span>
+            </div>
           </div>
+        </div>
         }
       </div>
     </div>

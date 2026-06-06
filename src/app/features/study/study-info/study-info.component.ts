@@ -38,7 +38,7 @@ export class StudyInfoComponent {
     const dialogRef = this.dialog.open<AddMemberResult>(AddMemberDialogComponent, {
       width: '450px',
       maxWidth: '95vw',
-      backdropClass: ['bg-black/5'],
+      backdropClass: ['bg-black/60'],
     });
     dialogRef.closed.subscribe((result) => {
       if (result) {
@@ -102,15 +102,15 @@ export class StudyInfoComponent {
     const dialogRef = this.dialog.open<any>(StudySettingsDialogComponent, {
       width: '450px',
       maxWidth: '95vw',
-      backdropClass: ['bg-black/5'],
+      backdropClass: ['bg-black/60'],
       data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility, category: s.category, orientation: s.orientation }
     });
 
     dialogRef.closed.subscribe((result) => {
       if (!result) return;
       if (result.action === 'save') {
-        this.studyService.updateStudy(s.id, { 
-          name: result.name, 
+        this.studyService.updateStudy(s.id, {
+          name: result.name,
           visibility: result.visibility,
           engine_visibility: result.engine_visibility,
           category: result.category,
