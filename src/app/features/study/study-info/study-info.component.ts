@@ -61,7 +61,7 @@ export class StudyInfoComponent {
 
     const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
       data: {
-        title: 'Remove Member',
+        title: 'Remove member',
         message: 'Are you sure you want to remove this member?',
         confirmText: 'Remove'
       }
@@ -141,9 +141,9 @@ export class StudyInfoComponent {
 
     const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
       data: {
-        title: 'Delete Study',
+        title: 'Delete study',
         message: 'Are you sure you want to delete this study? This will delete all chapters and comments forever.',
-        confirmText: 'Delete Forever'
+        confirmText: 'Delete forever'
       }
     });
 
