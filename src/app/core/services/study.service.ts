@@ -1,94 +1,69 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject, signal, computed, DestroyRef } from '@angular/core';
 import { Observable, Subject, EMPTY, throwError, tap, of, concat } from 'rxjs';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime, switchMap, catchError } from 'rxjs/operators';
 import { ToastService } from './toast.service';
-import { io, Socket } from 'socket.io-client';
 import { AuthService } from './auth.service';
-import { environment } from '../../../environments/environment';
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID } from '@angular/core';
 import { DevLogger } from '../utils/dev-logger';
+import { StudyApiService } from './study-api.service';
+import { StudySocketService, StudyViewer } from './study-socket.service';
+export type { StudyViewer } from './study-socket.service';
 import {
   Study,
   StudyChapter,
   StudyMoveMadePayload,
   StudyShapesDrawnPayload,
-  StudySyncedPayload,
 } from '../models/study.model';
-
-export interface StudyViewer {
-  userId: string;
-  userName: string;
-}
 
 @Injectable({
   providedIn: 'root',
 })
 export class StudyService {
-  private http = inject(HttpClient);
+  private api = inject(StudyApiService);
+  private socketService = inject(StudySocketService);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
   private router = inject(Router);
-  private platformId = inject(PLATFORM_ID);
-
-  private apiUrl = environment.apiUrl;
-  private socketUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
-  private socket: Socket | null = null;
+  private destroyRef = inject(DestroyRef);
 
   currentStudy = signal<Study | null>(null);
   currentChapter = signal<StudyChapter | null>(null);
   isLoading = signal(false);
-  isConnected = signal(false);
+  isConnected = this.socketService.isConnected;
   viewerCount = signal(1);
   viewerNames = signal<StudyViewer[]>([]);
-  
+
   isClassActive = signal<boolean>(false);
   lockHolderId = signal<string | null>(null);
   hasJoinedClass = signal<boolean>(false);
 
   hasBoardControl = computed(() => {
-    // If no class is active, everyone can explore locally
     if (!this.isClassActive()) return true;
 
-    // If a class is active, check if this is the owner
     const user = this.authService.currentUser();
     const myUid = user?.uid || user?.id;
     const study = this.currentStudy();
     const studyOwnerId = study?.user_id || (study as any)?.userId || study?.owner?.id;
     const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
 
-    // Owner always retains board control in a live class session
     if (isOwner) return true;
-
-    // Students who haven't joined the class yet can explore freely
     if (!this.hasJoinedClass()) return true;
 
-    // If joined, only the lock holder can explore/write
     return !!(myUid && this.lockHolderId() && String(myUid) === String(this.lockHolderId()));
   });
-  
-  // Track recently emitted move IDs to prevent 'back and forth' stuttering when receiving own broadcasts
+
   private emittedMoveIds = new Set<string>();
 
-  // Real-time updates
-  private moveMadeSubject = new Subject<StudyMoveMadePayload>();
-  private shapesDrawnSubject = new Subject<StudyShapesDrawnPayload>();
-  private chapterChangedSubject = new Subject<any>();
-  private chatMessageSubject = new Subject<any>();
-  private chatClearedSubject = new Subject<void>();
-  private movePermissionRequestedSubject = new Subject<{ userId: string; userName: string }>();
-  private movePermissionDeclinedSubject = new Subject<{ targetUserId: string }>();
+  // Expose Real-time event streams from Socket service
+  onMoveMade$ = this.socketService.onMoveMade$;
+  onShapesDrawn$ = this.socketService.onShapesDrawn$;
+  onChapterChanged$ = this.socketService.onChapterChanged$;
+  onChatMessage$ = this.socketService.onChatMessage$;
+  onChatCleared$ = this.socketService.onChatCleared$;
+  onMovePermissionRequested$ = this.socketService.onMovePermissionRequested$;
+  onMovePermissionDeclined$ = this.socketService.onMovePermissionDeclined$;
 
-  onMoveMade$ = this.moveMadeSubject.asObservable();
-  onShapesDrawn$ = this.shapesDrawnSubject.asObservable();
-  onChapterChanged$ = this.chapterChangedSubject.asObservable();
-  onChatMessage$ = this.chatMessageSubject.asObservable();
-  onChatCleared$ = this.chatClearedSubject.asObservable();
-  onMovePermissionRequested$ = this.movePermissionRequestedSubject.asObservable();
-  onMovePermissionDeclined$ = this.movePermissionDeclinedSubject.asObservable();
-
-  // Track the absolute current state of the study room (owner's state)
   lastRemoteState = signal<{
     chapterId: number | null;
     fen: string | null;
@@ -96,87 +71,255 @@ export class StudyService {
     orientation?: 'white' | 'black';
   }>({ chapterId: null, fen: null, moves: null });
 
-  private studiesCache = new Map<string, any>();
+  private dbSaveSubject = new Subject<{
+    studyId: number;
+    chapterId: number;
+    fen: string;
+    moves: any[];
+    broadcast: boolean;
+    clientGeneratedId: string;
+  }>();
 
-  constructor() {}
+  private pendingSavePayload: {
+    studyId: number;
+    chapterId: number;
+    fen: string;
+    moves: any[];
+    broadcast: boolean;
+    clientGeneratedId: string;
+  } | null = null;
 
-  // ── HTTP API ──────────────────────────────────────────────────
+  constructor() {
+    this.initDbSavePipeline();
+    this.listenToSocketEvents();
+  }
 
-  getStudies(
-    my: boolean = false,
-    category?: string,
-    forceRefresh = false,
-    search?: string,
-    sort?: string
-  ): Observable<any> {
-    let params = my ? 'my=1' : '';
-    if (category) {
-      params += params ? `&category=${category}` : `category=${category}`;
+  private initDbSavePipeline(): void {
+    this.dbSaveSubject.pipe(
+      debounceTime(5000),
+      switchMap((payload) => {
+        if (!this.pendingSavePayload) return EMPTY;
+        this.pendingSavePayload = null;
+
+        return this.api.updateChapter(payload.studyId, payload.chapterId, {
+          current_fen: payload.fen,
+          moves: payload.moves,
+        }).pipe(
+          tap({
+            next: (res) => {
+              const updated = (res as any).data || res;
+              this.currentChapter.set(updated);
+              this.currentStudy.update(s => {
+                if (!s || !s.chapters) return s;
+                const chapters = s.chapters.map(c =>
+                  String(c.id) === String(updated.id) ? updated : c
+                );
+                return { ...s, chapters };
+              });
+              if (payload.broadcast) {
+                this.socketService.emitChangeChapter({
+                  studyId: payload.studyId,
+                  chapterId: updated.id,
+                  fen: updated.current_fen,
+                  moves: updated.moves,
+                  orientation: updated.orientation,
+                  clientGeneratedId: payload.clientGeneratedId
+                });
+              }
+            },
+            error: (err) => {
+              DevLogger.error('[StudyService] Failed to save move to DB:', err);
+              this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
+            }
+          }),
+          catchError(() => EMPTY)
+        );
+      })
+    ).subscribe();
+  }
+
+  flushPendingSaves(): void {
+    if (this.pendingSavePayload) {
+      const payload = this.pendingSavePayload;
+      this.pendingSavePayload = null;
+
+      this.api.updateChapter(payload.studyId, payload.chapterId, {
+        current_fen: payload.fen,
+        moves: payload.moves,
+      }).subscribe({
+        next: (res) => {
+          const updated = (res as any).data || res;
+          this.currentChapter.set(updated);
+          this.currentStudy.update(s => {
+            if (!s || !s.chapters) return s;
+            const chapters = s.chapters.map(c =>
+              String(c.id) === String(updated.id) ? updated : c
+            );
+            return { ...s, chapters };
+          });
+          if (payload.broadcast) {
+            this.socketService.emitChangeChapter({
+              studyId: payload.studyId,
+              chapterId: updated.id,
+              fen: updated.current_fen,
+              moves: updated.moves,
+              orientation: updated.orientation,
+              clientGeneratedId: payload.clientGeneratedId
+            });
+          }
+        },
+        error: (err) => {
+          DevLogger.error('[StudyService] Failed to flush pending saves to DB:', err);
+        }
+      });
     }
-    if (search) {
-      params += params ? `&search=${encodeURIComponent(search)}` : `search=${encodeURIComponent(search)}`;
-    }
-    if (sort) {
-      params += params ? `&sort=${sort}` : `sort=${sort}`;
-    }
-    const queryString = params ? `?${params}` : '';
-    const cacheKey = `${my}_${category || 'all'}_${search || ''}_${sort || ''}`;
+  }
 
-    const apiCall = this.http.get(`${this.apiUrl}/studies${queryString}`).pipe(
-      tap((res) => this.studiesCache.set(cacheKey, res))
-    );
+  private listenToSocketEvents(): void {
+    this.socketService.onSynced$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((state) => {
+        DevLogger.log(`[Study] Synced state received for study ${state.chapterId || 'unknown'}`);
+        this.isClassActive.set(state.isClassActive || false);
+        this.lockHolderId.set(state.lockHolderId || null);
+        this.lastRemoteState.set({
+          chapterId: state.chapterId || state.currentChapterId,
+          fen: state.fen,
+          moves: state.moves,
+          orientation: state.orientation,
+        });
+      });
 
-    if (this.studiesCache.has(cacheKey) && !forceRefresh) {
-      return concat(
-        of(this.studiesCache.get(cacheKey)),
-        apiCall
-      );
-    }
+    this.socketService.onMoveMade$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((payload) => {
+        if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
+          DevLogger.log('[Study] Ignoring own move broadcast:', payload.clientGeneratedId);
+          return;
+        }
 
-    return apiCall;
+        DevLogger.log(`[Study] Move received for chapter ${payload.chapterId}, FEN: ${payload.fen}`);
+        this.lastRemoteState.update(s => ({
+          ...s,
+          chapterId: payload.chapterId,
+          fen: payload.fen,
+          moves: payload.moves,
+          orientation: payload.orientation
+        }));
+      });
+
+    this.socketService.onChapterChanged$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((payload) => {
+        if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
+          DevLogger.log('[Study] Ignoring own chapter change broadcast:', payload.clientGeneratedId);
+          return;
+        }
+
+        DevLogger.log(`[Study] Chapter changed to ${payload.chapterId}`);
+        this.lastRemoteState.set({
+          chapterId: payload.chapterId,
+          fen: payload.fen,
+          moves: payload.moves,
+          orientation: payload.orientation
+        });
+      });
+
+    this.socketService.onViewerListUpdate$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((payload) => {
+        this.viewerNames.set(payload.viewers || []);
+        this.viewerCount.set(payload.count || 0);
+      });
+
+    this.socketService.onClassSessionStarted$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((payload) => {
+        DevLogger.log(`[Study] Class started. Lock holder: ${payload.lockHolderId}`);
+        this.isClassActive.set(payload.isClassActive);
+        this.lockHolderId.set(payload.lockHolderId);
+
+        const user = this.authService.currentUser();
+        const myUid = user?.uid || user?.id;
+        const study = this.currentStudy();
+        const studyOwnerId = study?.user_id || (study as any)?.userId || study?.owner?.id;
+        const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
+
+        if (isOwner) {
+          this.hasJoinedClass.set(true);
+          this.toastService.show('Classroom session has started!');
+        } else {
+          this.hasJoinedClass.set(false);
+        }
+      });
+
+    this.socketService.onClassSessionEnded$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((payload) => {
+        DevLogger.log('[Study] Class ended.');
+        this.isClassActive.set(payload.isClassActive);
+        this.lockHolderId.set(payload.lockHolderId);
+        this.hasJoinedClass.set(false);
+        this.toastService.show('Classroom session has ended. Free exploration restored.');
+      });
+
+    this.socketService.onBoardControlUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((payload) => {
+        DevLogger.log(`[Study] Board control updated. Lock holder: ${payload.lockHolderId}`);
+        this.lockHolderId.set(payload.lockHolderId);
+
+        const user = this.authService.currentUser();
+        const myUid = user?.uid || user?.id;
+        if (String(myUid) === String(payload.lockHolderId)) {
+          this.toastService.show('You have been granted board control!', 'success');
+        } else {
+          this.toastService.show('Board control has been updated.');
+        }
+      });
+
+    this.socketService.onMembersUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((payload) => {
+        DevLogger.log('[Study] Members/Collaborators list updated in real-time');
+        this.currentStudy.update(curr => curr ? { ...curr, collaborators: payload.collaborators } : null);
+      });
+  }
+
+  // ── HTTP Proxy Methods ────────────────────────────────────────
+
+  getStudies(my: boolean = false, category?: string, forceRefresh = false, search?: string, sort?: string): Observable<any> {
+    return this.api.getStudies(my, category, forceRefresh, search, sort);
   }
 
   clearCache(): void {
-    this.studiesCache.clear();
+    this.api.clearCache();
   }
 
-  createStudy(
-    name: string,
-    description: string = '',
-    visibility: string = 'public',
-    category: string = 'general',
-    orientation: string = 'white'
-  ): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies`, { name, description, visibility, category, orientation }).pipe(
-      tap(() => this.clearCache())
-    );
+  createStudy(name: string, description: string = '', visibility: string = 'public', category: string = 'general', orientation: string = 'white'): Observable<any> {
+    return this.api.createStudy(name, description, visibility, category, orientation);
   }
 
   updateStudy(id: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/studies/${id}`, data).pipe(
-      tap(() => this.clearCache())
-    );
+    return this.api.updateStudy(id, data);
   }
 
   deleteStudy(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/studies/${id}`).pipe(
-      tap(() => this.clearCache())
-    );
+    return this.api.deleteStudy(id);
   }
 
   getStudy(id: number, targetChapterId?: number): void {
     this.isLoading.set(true);
-    this.http.get<{ data: Study }>(`${this.apiUrl}/studies/${id}`).subscribe({
+    this.api.getStudyRaw(id).subscribe({
       next: (res) => {
         DevLogger.log('[StudyService] Raw API Response:', res.data);
         this.currentStudy.set(res.data);
-        
-        // Real-time synchronization of collaborator roles
+
         const user = this.authService.currentUser();
         const studyOwnerId = res.data.user_id || (res.data as any).userId || res.data.owner?.id;
         const myUid = user?.uid || user?.id;
         const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
-        if (isOwner && this.socket) {
+        if (isOwner) {
           this.emitMembersUpdate(res.data.id, res.data.collaborators || []);
         }
 
@@ -185,13 +328,11 @@ export class StudyService {
           const unwrap = (c: any) => (c as any)?.data || c;
           let chapterToSet = null;
 
-          // 1. Try to find targetChapterId if provided
           if (targetChapterId) {
             const found = chapters.find(c => String(unwrap(c).id) === String(targetChapterId));
             if (found) chapterToSet = unwrap(found);
           }
 
-          // 2. Fallback to currently selected if it exists in the refreshed list
           if (!chapterToSet) {
             const current = this.currentChapter();
             if (current) {
@@ -200,21 +341,20 @@ export class StudyService {
             }
           }
 
-          // 3. Fallback to first chapter
           if (!chapterToSet) {
             chapterToSet = unwrap(chapters[0]);
           }
 
           this.currentChapter.set(chapterToSet);
         }
-        
+
         this.isLoading.set(false);
-        this.connectSocket(res.data);
+        this.socketService.connect(res.data, this.currentChapter());
       },
       error: (err) => {
         this.isLoading.set(false);
         DevLogger.error('[StudyService] Failed to fetch study:', err);
-        
+
         if (err.status === 403) {
           this.toastService.show('This study is private.', 'error');
         } else if (err.status === 404) {
@@ -222,223 +362,73 @@ export class StudyService {
         } else {
           this.toastService.show('Failed to load study.', 'error');
         }
-        
+
         this.router.navigate(['/study']);
       },
     });
   }
 
   addChapter(studyId: number, name: string, fen?: string, orientation?: 'white' | 'black'): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies/${studyId}/chapters`, { 
-      name, 
-      initial_fen: fen,
-      orientation: orientation 
-    });
+    return this.api.addChapter(studyId, name, fen, orientation);
   }
 
   updateChapter(studyId: number, chapterId: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`, data);
+    return this.api.updateChapter(studyId, chapterId, data);
   }
 
   deleteChapter(studyId: number, chapterId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`);
+    return this.api.deleteChapter(studyId, chapterId);
   }
-  
+
   reorderChapters(studyId: number, chapterIds: number[]): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies/${studyId}/chapters/reorder`, { 
-      chapter_ids: chapterIds 
-    });
+    return this.api.reorderChapters(studyId, chapterIds);
   }
 
   addCollaborator(studyId: number, userId: string, canEdit?: boolean): Observable<any> {
-    const body: any = { user_id: userId };
-    if (canEdit !== undefined) {
-      body.can_edit = canEdit;
-    }
-    return this.http.post(`${this.apiUrl}/studies/${studyId}/collaborators`, body);
+    return this.api.addCollaborator(studyId, userId, canEdit);
   }
 
   removeCollaborator(studyId: number, userId: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/studies/${studyId}/collaborators/${userId}`);
+    return this.api.removeCollaborator(studyId, userId);
   }
 
   updateCollaboratorPermission(studyId: number, userId: string, canEdit: boolean): Observable<any> {
-    return this.http.put(`${this.apiUrl}/studies/${studyId}/collaborators/${userId}`, { can_edit: canEdit });
+    return this.api.updateCollaboratorPermission(studyId, userId, canEdit);
   }
 
   getStudyMessages(studyId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/studies/${studyId}/messages`);
+    return this.api.getStudyMessages(studyId);
   }
 
   sendMessageToDb(studyId: number, body: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies/${studyId}/messages`, { body });
+    return this.api.sendMessageToDb(studyId, body);
   }
 
   clearStudyChat(studyId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/studies/${studyId}/messages`);
+    return this.api.clearStudyChat(studyId);
   }
 
-  // ── Socket Logic ──────────────────────────────────────────────
+  importPgn(studyId: number, pgn: string): Observable<any> {
+    return this.api.importPgn(studyId, pgn);
+  }
 
-  private connectSocket(study: Study): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    if (this.socket?.connected) this.socket.disconnect();
-
-    const user = this.authService.currentUser();
-    const token = this.authService.getToken();
-
-    const userId = user?.uid || user?.id;
-    const userName = user?.username || user?.displayName || user?.name || 'Anonymous';
-
-    this.socket = io(this.socketUrl, {
-      auth: { token, userId, userName },
-    });
-
-    this.socket.on('connect', () => {
-      this.isConnected.set(true);
-      const s = this.currentStudy();
-      if (!s) return;
-
-      // Fallback for ownerId: check user_id, userId, or owner.id
-      const ownerId = s.user_id || (s as any).userId || s.owner?.id;
-
-      this.socket?.emit('join_study', {
-        studyId: s.id,
-        ownerId: ownerId,
-        collaboratorIds: s.collaborators?.map(c => String(c.uid)) || [],
-        initialState: {
-          chapterId: this.currentChapter()?.id,
-          fen: this.currentChapter()?.current_fen,
-          moves: this.currentChapter()?.moves,
-          orientation: this.currentChapter()?.orientation,
-        },
-      });
-    });
-
-    this.socket.on('study_synced', (state: any) => {
-      DevLogger.log(`[Study] Synced state received for study ${state.chapterId || 'unknown'}`);
-      this.isClassActive.set(state.isClassActive || false);
-      this.lockHolderId.set(state.lockHolderId || null);
-      this.lastRemoteState.set({
-        chapterId: state.chapterId || state.currentChapterId,
-        fen: state.fen,
-        moves: state.moves,
-        orientation: state.orientation,
-      });
-    });
-
-    this.socket.on('study_move_made', (payload: StudyMoveMadePayload) => {
-      // Ignore own move broadcasts to prevent 'back and forth' stuttering
-      if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
-        DevLogger.log('[Study] Ignoring own move broadcast:', payload.clientGeneratedId);
-        return;
-      }
-
-      DevLogger.log(`[Study] Move received for chapter ${payload.chapterId}, FEN: ${payload.fen}`);
-
-      this.lastRemoteState.update(s => ({ 
-        ...s, 
-        chapterId: payload.chapterId, // CRITICAL: Update chapterId so component knows which context this move belongs to
-        fen: payload.fen, 
-        moves: payload.moves,
-        orientation: payload.orientation
-      }));
-      this.moveMadeSubject.next(payload);
-    });
-
-    this.socket.on('study_shapes_drawn', (payload: StudyShapesDrawnPayload) => {
-      this.shapesDrawnSubject.next(payload);
-    });
-
-    this.socket.on('study_chapter_changed', (payload: any) => {
-      // Ignore own chapter change broadcasts
-      if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
-        DevLogger.log('[Study] Ignoring own chapter change broadcast:', payload.clientGeneratedId);
-        return;
-      }
-
-      DevLogger.log(`[Study] Chapter changed to ${payload.chapterId}`);
-
-      this.lastRemoteState.set({ 
-        chapterId: payload.chapterId, 
-        fen: payload.fen, 
-        moves: payload.moves,
-        orientation: payload.orientation 
-      });
-      this.chapterChangedSubject.next(payload);
-    });
-
-    this.socket.on('viewer_list_update', (payload: { studyId: string | number; viewers: StudyViewer[]; count: number }) => {
-      this.viewerNames.set(payload.viewers || []);
-      this.viewerCount.set(payload.count || 0);
-    });
-
-    this.socket.on('class_session_started', (payload: { isClassActive: boolean; lockHolderId: string }) => {
-      DevLogger.log(`[Study] Class started. Lock holder: ${payload.lockHolderId}`);
-      this.isClassActive.set(payload.isClassActive);
-      this.lockHolderId.set(payload.lockHolderId);
-
-      const user = this.authService.currentUser();
-      const myUid = user?.uid || user?.id;
-      const study = this.currentStudy();
-      const studyOwnerId = study?.user_id || (study as any)?.userId || study?.owner?.id;
-      const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
-
-      if (isOwner) {
-        this.hasJoinedClass.set(true); // Host is always in class
-        this.toastService.show('Classroom session has started!');
-      } else {
-        this.hasJoinedClass.set(false); // Students reset join state
-      }
-    });
-
-    this.socket.on('class_session_ended', (payload: { isClassActive: boolean; lockHolderId: string | null }) => {
-      DevLogger.log('[Study] Class ended.');
-      this.isClassActive.set(payload.isClassActive);
-      this.lockHolderId.set(payload.lockHolderId);
-      this.hasJoinedClass.set(false);
-      this.toastService.show('Classroom session has ended. Free exploration restored.');
-    });
-
-    this.socket.on('board_control_updated', (payload: { lockHolderId: string }) => {
-      DevLogger.log(`[Study] Board control updated. Lock holder: ${payload.lockHolderId}`);
-      this.lockHolderId.set(payload.lockHolderId);
-      
-      const user = this.authService.currentUser();
-      const myUid = user?.uid || user?.id;
-      if (String(myUid) === String(payload.lockHolderId)) {
-        this.toastService.show('You have been granted board control!', 'success');
-      } else {
-        this.toastService.show('Board control has been updated.');
-      }
-    });
-
-    this.socket.on('members_updated', (payload: { collaborators: any[] }) => {
-      DevLogger.log('[Study] Members/Collaborators list updated in real-time');
-      this.currentStudy.update(curr => curr ? { ...curr, collaborators: payload.collaborators } : null);
-    });
-
-    this.socket.on('study_chat_message', (payload: any) => {
-      this.chatMessageSubject.next(payload);
-    });
-
-    this.socket.on('study_chat_cleared', () => {
-      this.chatClearedSubject.next();
-    });
-
-    this.socket.on('move_permission_requested', (payload: { userId: string; userName: string }) => {
-      this.movePermissionRequestedSubject.next(payload);
-    });
-
-    this.socket.on('move_permission_declined', (payload: { targetUserId: string }) => {
-      this.movePermissionDeclinedSubject.next(payload);
+  exportPgn(studyId: number): void {
+    this.api.exportPgnBlob(studyId).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `study_${studyId}.pgn`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     });
   }
 
-  emitMove(move: string, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): Observable<any> {
+  // ── Socket Proxy Emitter Methods ──────────────────────────────
+
+  emitMove(move: string, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true, immediate: boolean = false): Observable<any> {
     const study = this.currentStudy();
     const chapter = this.currentChapter();
-    
+
     if (!study || !chapter) {
       DevLogger.warn('[StudyService] Missing study or chapter to save move.');
       return EMPTY;
@@ -460,8 +450,8 @@ export class StudyService {
     const clientGeneratedId = crypto.randomUUID();
     if (broadcast) {
       this.emittedMoveIds.add(clientGeneratedId);
-      
-      this.socket?.emit('study_move', {
+
+      this.socketService.emitMove({
         studyId: study.id,
         move,
         fen,
@@ -471,84 +461,84 @@ export class StudyService {
         clientGeneratedId
       });
 
-      // Cleanup ID after 15 seconds
       setTimeout(() => this.emittedMoveIds.delete(clientGeneratedId), 15000);
     }
 
-    // Persist full tree to database
-    return this.updateChapter(study.id, chapterId, {
-      current_fen: fen,
-      moves: moves,
-    }).pipe(
-      tap({
-        next: (res) => {
-          const updated = (res as any).data || res;
-          this.currentChapter.set(updated);
+    const payload = {
+      studyId: study.id,
+      chapterId,
+      fen,
+      moves,
+      broadcast,
+      clientGeneratedId
+    };
 
-          // SYNC: Update the chapter in the master study list so the sidebar stays current
-          this.currentStudy.update(s => {
-            if (!s || !s.chapters) return s;
-            const chapters = s.chapters.map(c => 
-              String(c.id) === String(updated.id) ? updated : c
-            );
-            return { ...s, chapters };
-          });
+    if (immediate) {
+      this.pendingSavePayload = null;
 
-          // Broadcast switch to other clients with the same ID to prevent self-sync
-          if (broadcast) {
-            this.socket?.emit('study_change_chapter', {
-              studyId: study.id,
-              chapterId: updated.id,
-              fen: updated.current_fen,
-              moves: updated.moves,
-              orientation: updated.orientation,
-              clientGeneratedId // REUSE the same ID
+      return this.api.updateChapter(study.id, chapterId, {
+        current_fen: fen,
+        moves: moves,
+      }).pipe(
+        tap({
+          next: (res) => {
+            const updated = (res as any).data || res;
+            this.currentChapter.set(updated);
+            this.currentStudy.update(s => {
+              if (!s || !s.chapters) return s;
+              const chapters = s.chapters.map(c =>
+                String(c.id) === String(updated.id) ? updated : c
+              );
+              return { ...s, chapters };
             });
+            if (broadcast) {
+              this.socketService.emitChangeChapter({
+                studyId: study.id,
+                chapterId: updated.id,
+                fen: updated.current_fen,
+                moves: updated.moves,
+                orientation: updated.orientation,
+                clientGeneratedId
+              });
+            }
+          },
+          error: (err) => {
+            DevLogger.error('[StudyService] Failed to save move to DB:', err);
+            this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
           }
-        },
-        error: (err) => {
-          DevLogger.error('[StudyService] Failed to save move to DB:', err);
-          this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
-        }
-      })
-    );
+        })
+      );
+    } else {
+      this.pendingSavePayload = payload;
+      this.dbSaveSubject.next(payload);
+      return of(null);
+    }
   }
 
   emitShapes(shapes: any[]): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('study_draw_shapes', {
-      studyId: study.id,
-      shapes,
-    });
+    if (!study) return;
+    this.socketService.emitShapes(study.id, shapes);
   }
 
   sendChatMessage(text: string): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('study_send_chat', {
-      studyId: study.id,
-      text
-    });
+    if (!study) return;
+    this.socketService.emitSendChat(study.id, text);
   }
 
   emitClearChat(): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('study_clear_chat', {
-      studyId: study.id
-    });
+    if (!study) return;
+    this.socketService.emitClearChat(study.id);
   }
 
   emitMembersUpdate(studyId: number, collaborators: any[]): void {
-    if (!this.socket) return;
-    this.socket.emit('update_members', {
-      studyId,
-      collaborators
-    });
+    this.socketService.emitMembersUpdate(studyId, collaborators);
   }
 
   emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
+    this.flushPendingSaves();
     this.lastRemoteState.set({
       chapterId,
       fen,
@@ -559,8 +549,8 @@ export class StudyService {
     if (!broadcast) return;
     const clientGeneratedId = crypto.randomUUID();
     this.emittedMoveIds.add(clientGeneratedId);
-    
-    this.socket?.emit('study_change_chapter', {
+
+    this.socketService.emitChangeChapter({
       studyId,
       chapterId,
       fen,
@@ -568,14 +558,14 @@ export class StudyService {
       orientation,
       clientGeneratedId
     });
-    
+
     setTimeout(() => this.emittedMoveIds.delete(clientGeneratedId), 15000);
   }
 
   emitNavigation(fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
     const s = this.currentStudy();
     const c = this.currentChapter();
-    if (!s || !c || !this.socket || !broadcast) return;
+    if (!s || !c || !broadcast) return;
 
     this.lastRemoteState.set({
       chapterId: c.id,
@@ -585,9 +575,9 @@ export class StudyService {
     });
 
     const clientGeneratedId = crypto.randomUUID();
-    if (broadcast) this.emittedMoveIds.add(clientGeneratedId);
+    this.emittedMoveIds.add(clientGeneratedId);
 
-    this.socket.emit('study_move', {
+    this.socketService.emitMove({
       studyId: s.id,
       chapterId: c.id,
       fen: fen,
@@ -597,69 +587,48 @@ export class StudyService {
       clientGeneratedId
     });
 
-    if (broadcast) {
-      setTimeout(() => this.emittedMoveIds.delete(clientGeneratedId), 10000);
-    }
-  }
-
-  importPgn(studyId: number, pgn: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/studies/${studyId}/import-pgn`, { pgn }).pipe(
-      tap(() => this.clearCache())
-    );
-  }
-
-  exportPgn(studyId: number): void {
-    this.http.get(`${this.apiUrl}/studies/${studyId}/export-pgn`, { 
-      responseType: 'blob' 
-    }).subscribe(blob => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `study_${studyId}.pgn`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
+    setTimeout(() => this.emittedMoveIds.delete(clientGeneratedId), 10000);
   }
 
   startClass(): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('start_class', { studyId: study.id });
+    if (!study) return;
+    this.socketService.emitStartClass(study.id);
   }
 
   endClass(): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('end_class', { studyId: study.id });
+    if (!study) return;
+    this.socketService.emitEndClass(study.id);
   }
 
   grantBoardControl(targetUserId: string): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('grant_board_control', { studyId: study.id, targetUserId });
+    if (!study) return;
+    this.socketService.emitGrantBoardControl(study.id, targetUserId);
   }
 
   revokeBoardControl(): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('revoke_board_control', { studyId: study.id });
+    if (!study) return;
+    this.socketService.emitRevokeBoardControl(study.id);
   }
 
   requestMovePermission(userId: string, userName: string): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('request_move_permission', { studyId: study.id, userId, userName });
+    if (!study) return;
+    this.socketService.emitRequestMovePermission(study.id, userId, userName);
   }
 
   declineMovePermission(targetUserId: string): void {
     const study = this.currentStudy();
-    if (!study || !this.socket) return;
-    this.socket.emit('decline_move_permission', { studyId: study.id, targetUserId });
+    if (!study) return;
+    this.socketService.emitDeclineMovePermission(study.id, targetUserId);
   }
 
   disconnect(): void {
-    this.socket?.disconnect();
-    this.isConnected.set(false);
+    this.flushPendingSaves();
+    this.socketService.disconnect();
     this.viewerNames.set([]);
     this.viewerCount.set(0);
   }

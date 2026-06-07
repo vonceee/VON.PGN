@@ -30,7 +30,7 @@ import { debounceTime, filter } from 'rxjs/operators';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Chess } from 'chess.js';
 import { MoveNode, GLYPH_MAPPING, StudyChapter } from '../../core/models/study.model';
-import { buildTreeFromMoves, updateNodeInTree, getPlyFromFen, findNodeContext } from '../../core/utils/chess-tree.utils';
+import { buildTreeFromMoves, updateNodeInTree, getPlyFromFen, findNodeContext, findNodeRecursive, insertNodeDeep, deleteFromHereRecursive, findVariationBranch } from '../../core/utils/chess-tree.utils';
 import { EngineService } from '../../core/services/engine.service';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { AnnotateMoveDialogComponent } from './dialogs/annotate-move-dialog/annotate-move-dialog.component';
@@ -48,6 +48,7 @@ import { StartClassDialogComponent } from './dialogs/start-class-dialog/start-cl
 import { LayoutService } from '../../core/services/layout.service';
 import { RequestControlDialogComponent } from './dialogs/request-control-dialog/request-control-dialog.component';
 import { ReceiveRequestDialogComponent } from './dialogs/receive-request-dialog/receive-request-dialog.component';
+import { StudyShortcutsService } from './services/study-shortcuts.service';
 
 @Component({
   selector: 'app-study',
@@ -69,7 +70,10 @@ import { ReceiveRequestDialogComponent } from './dialogs/receive-request-dialog/
     StartClassDialogComponent,
     JoinClassDialogComponent,
   ],
-  providers: [provideIcons({ heroQueueList, heroInformationCircle, heroTag, heroBookOpen, heroChatBubbleLeftRight, heroQuestionMarkCircle, heroPlay, heroStop, heroArrowsRightLeft })],
+  providers: [
+    StudyShortcutsService,
+    provideIcons({ heroQueueList, heroInformationCircle, heroTag, heroBookOpen, heroChatBubbleLeftRight, heroQuestionMarkCircle, heroPlay, heroStop, heroArrowsRightLeft })
+  ],
   templateUrl: './study.component.html',
   styles: [`
     :host ::ng-deep {
@@ -121,6 +125,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
   private layoutService = inject(LayoutService);
   private toastService = inject(ToastService);
+  private shortcutsService = inject(StudyShortcutsService);
 
   study = this.studyService.currentStudy;
   @ViewChild('board') board!: ChessBoardComponent;
@@ -443,6 +448,18 @@ export class StudyComponent implements OnInit, OnDestroy {
         .subscribe(() => {
           this.updateLayoutStates();
         });
+
+      this.shortcutsService.register({
+        flipBoard: () => this.flipBoard(),
+        toggleEngine: () => this.toggleEngine(),
+        nextChapter: () => this.nextChapter(),
+        prevChapter: () => this.prevChapter(),
+        isEngineVisible: () => this.isEngineVisible(),
+        canEdit: () => this.canEdit(),
+        getCurrentNode: () => this.currentNode(),
+        annotateMove: (node) => this.onAnnotateMove(node),
+        quickAnnotate: (node, glyphId) => this.quickAnnotate(node, glyphId)
+      });
     }
   }
 
@@ -508,23 +525,10 @@ export class StudyComponent implements OnInit, OnDestroy {
       if (remote.orientation) {
         this.boardOrientation.set(remote.orientation);
       }
-      const node = this.findNodeRecursive(this.moveTree(), remote.fen);
+      const node = findNodeRecursive(this.moveTree(), remote.fen);
       this.currentNode.set(node);
       this.currentPly.set(node?.ply || this.initialPly());
     }
-  }
-
-  private findNodeRecursive(nodes: MoveNode[], fen: string): MoveNode | null {
-    for (const node of nodes) {
-      if (node.fen === fen) return node;
-      if (node.variations) {
-        for (const variation of node.variations) {
-          const found = this.findNodeRecursive(variation, fen);
-          if (found) return found;
-        }
-      }
-    }
-    return null;
   }
 
   private updateCurrentPosition(node: MoveNode | null) {
@@ -592,7 +596,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     const newNode: MoveNode = { san, uci: String(move.from || '') + String(move.to || ''), fen, ply: (current?.ply || this.initialPly()) + 1, variations: [], comments: [] };
     this.moveTree.update(tree => {
       if (!current) return [...tree, newNode];
-      const newTree = this.insertNodeDeep(tree, current.ply, current.fen, newNode);
+      const newTree = insertNodeDeep(tree, current.ply, current.fen, newNode);
       return newTree.length > 0 ? newTree : [...tree, newNode];
     });
     this.updateCurrentPosition(newNode);
@@ -603,31 +607,6 @@ export class StudyComponent implements OnInit, OnDestroy {
     if (this.canEdit()) {
       this.studyService.emitMove(san, fen, this.moveTree(), this.boardOrientation(), this.isSyncing()).subscribe();
     }
-  }
-
-  private insertNodeDeep(nodes: MoveNode[], parentPly: number, parentFen: string, newNode: MoveNode): MoveNode[] {
-    const result: MoveNode[] = nodes.map(node => ({ ...node, variations: node.variations ? node.variations.map(v => [...v]) : [] }));
-    for (let i = 0; i < result.length; i++) {
-      const node = result[i];
-      if (node.ply === parentPly && node.fen === parentFen) {
-        if (i === result.length - 1) result.push(newNode);
-        else {
-          const nextNode = result[i + 1];
-          if (nextNode.san !== newNode.san) {
-            if (!nextNode.variations) nextNode.variations = [];
-            if (!nextNode.variations.find(v => v.length > 0 && v[0].san === newNode.san)) nextNode.variations.push([newNode]);
-          }
-        }
-        return result;
-      }
-      if (node.variations) {
-        for (let j = 0; j < node.variations.length; j++) {
-          const updated = this.insertNodeDeep(node.variations[j], parentPly, parentFen, newNode);
-          if (updated.length > 0) { node.variations[j] = updated; return result; }
-        }
-      }
-    }
-    return [];
   }
 
   onNodeClicked(node: MoveNode) {
@@ -649,31 +628,21 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.isActionInProgress.set(true);
 
     // 1. Update tree locally first (synchronous)
-    this.moveTree.update(tree => this.deleteFromHereRecursive(tree, target));
+    this.moveTree.update(tree => deleteFromHereRecursive(tree, target));
     
     // 2. Adjust current position if it was deleted
     const tree = this.moveTree();
-    if (this.currentNode() && !this.findNodeRecursive(tree, this.currentNode()!.fen)) {
+    if (this.currentNode() && !findNodeRecursive(tree, this.currentNode()!.fen)) {
       this.goToLastMainlineNode();
     }
 
-    // 3. Sync with server
-    this.studyService.emitMove('', this.currentFen(), this.moveTree(), this.boardOrientation(), this.isSyncing())
+    // 3. Sync with server (immediate save to avoid race conditions on delete)
+    this.studyService.emitMove('', this.currentFen(), this.moveTree(), this.boardOrientation(), this.isSyncing(), true)
       .subscribe({
         next: () => this.isActionInProgress.set(false),
         error: () => this.isActionInProgress.set(false),
         complete: () => this.isActionInProgress.set(false)
       });
-  }
-
-  private deleteFromHereRecursive(nodes: MoveNode[], target: MoveNode): MoveNode[] {
-    const index = nodes.findIndex(n => n.fen === target.fen && n.ply === target.ply);
-    if (index !== -1) return nodes.slice(0, index);
-    return nodes.map(node => {
-      if (!node.variations?.length) return node;
-      const updatedVariations = node.variations.map(v => this.deleteFromHereRecursive(v, target)).filter(v => v.length > 0);
-      return (updatedVariations.length !== node.variations.length || updatedVariations.some((v, i) => v !== node.variations![i])) ? { ...node, variations: updatedVariations } : node;
-    });
   }
 
   onPromoteToMainline(target: MoveNode) {
@@ -683,7 +652,7 @@ export class StudyComponent implements OnInit, OnDestroy {
 
     this.moveTree.update(tree => {
       const treeCopy = JSON.parse(JSON.stringify(tree)); // Deep copy to guarantee pure reactivity
-      const res = this.findVariationBranch(treeCopy, target.fen, target.ply);
+      const res = findVariationBranch(treeCopy, target.fen, target.ply);
       if (res) {
         const { parentList, variationIndex, branchIndex } = res;
         const i = variationIndex;
@@ -709,40 +678,18 @@ export class StudyComponent implements OnInit, OnDestroy {
 
     // Align user's selected node selection and board navigation context to the newly promoted move
     const updatedTree = this.moveTree();
-    const nodeInPromotedTree = this.findNodeRecursive(updatedTree, target.fen);
+    const nodeInPromotedTree = findNodeRecursive(updatedTree, target.fen);
     if (nodeInPromotedTree) {
       this.updateCurrentPosition(nodeInPromotedTree);
     }
 
-    // Broadcast updated moves tree to backend and collaborators
-    this.studyService.emitMove('', this.currentFen(), this.moveTree(), this.boardOrientation(), this.isSyncing())
+    // Broadcast updated moves tree to backend and collaborators (immediate save for structural change)
+    this.studyService.emitMove('', this.currentFen(), this.moveTree(), this.boardOrientation(), this.isSyncing(), true)
       .subscribe({
         next: () => this.isActionInProgress.set(false),
         error: () => this.isActionInProgress.set(false),
         complete: () => this.isActionInProgress.set(false)
       });
-  }
-
-  private findVariationBranch(
-    nodes: MoveNode[],
-    targetFen: string,
-    targetPly: number
-  ): { parentList: MoveNode[]; variationIndex: number; branchIndex: number } | null {
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      if (node.variations) {
-        for (let j = 0; j < node.variations.length; j++) {
-          const variation = node.variations[j];
-          const foundIdx = variation.findIndex(n => n.fen === targetFen && n.ply === targetPly);
-          if (foundIdx !== -1) {
-            return { parentList: nodes, variationIndex: i, branchIndex: j };
-          }
-          const res = this.findVariationBranch(variation, targetFen, targetPly);
-          if (res) return res;
-        }
-      }
-    }
-    return null;
   }
 
   onNavigateToPly(ply: number) {
@@ -825,13 +772,14 @@ export class StudyComponent implements OnInit, OnDestroy {
           })
         );
         
-        // Broadcast and save
+        // Broadcast and save (immediate save for annotation updates)
         this.studyService.emitMove(
           '', // No SAN change
           this.currentFen(),
           this.moveTree(),
           this.boardOrientation(),
-          this.isSyncing()
+          this.isSyncing(),
+          true
         ).subscribe();
       }
     });
@@ -914,6 +862,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() { 
+    this.shortcutsService.unregister();
     this.studyService.disconnect(); 
     this.layoutService.setFluid(false);
   }
@@ -964,94 +913,6 @@ export class StudyComponent implements OnInit, OnDestroy {
         this.onSaveMetadata(result);
       }
     });
-  }
-  @HostListener('window:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    // Ignore if typing in any input/textarea/editable
-    const target = event.target as HTMLElement;
-    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
-
-    const key = event.key;
-    const keyLower = key.toLowerCase();
-
-    // --- 1. Global Study Shortcuts (Available to everyone) ---
-
-    // Flip Board
-    if (keyLower === 'f') {
-      event.preventDefault();
-      this.flipBoard();
-      return;
-    }
-
-    // Toggle Engine
-    if (keyLower === 'l' && this.isEngineVisible()) {
-      event.preventDefault();
-      this.toggleEngine();
-      return;
-    }
-
-    // Next / Previous Chapter
-    if (event.shiftKey && key === 'ArrowRight') {
-      event.preventDefault();
-      this.nextChapter();
-      return;
-    }
-    if (event.shiftKey && key === 'ArrowLeft') {
-      event.preventDefault();
-      this.prevChapter();
-      return;
-    }
-
-    // --- 2. Editor Shortcuts (Require canEdit permissions) ---
-    if (!this.canEdit()) return;
-
-    const node = this.currentNode();
-    if (!node) return;
-    
-    // Handle Dialog opening (A or Enter)
-    if (keyLower === 'a' || (key === 'Enter' && !event.shiftKey && !event.ctrlKey)) {
-      event.preventDefault();
-      this.onAnnotateMove(node);
-      return;
-    }
-
-    // Handle Quick Evaluations
-    let glyphId: number | null = null;
-    
-    // Plain keys 1-8 for Move Evaluations
-    if (!event.shiftKey && !event.ctrlKey && !event.altKey) {
-      const moveEvals: Record<string, number> = { 
-        '1': 1,  // !
-        '2': 2,  // ?
-        '3': 3,  // !!
-        '4': 4,  // ??
-        '5': 5,  // !?
-        '6': 6,  // ?!
-        '7': 7,  // □
-        '8': 22  // ⊙
-      };
-      if (moveEvals[key]) glyphId = moveEvals[key];
-      else if (key === '0') glyphId = 0; // Clear all
-    } 
-    // Shift + 1-6 for Positional Evaluations
-    else if (event.shiftKey && !event.ctrlKey && !event.altKey) {
-       const posEvals: Record<string, number> = { 
-         '1': 10, // =
-         '2': 16, // ±
-         '3': 17, // ∓
-         '4': 18, // +-
-         '5': 19, // -+
-         '6': 13  // ∞
-       };
-       if (posEvals[key]) {
-         glyphId = posEvals[key];
-       }
-    }
-
-    if (glyphId !== null) {
-      event.preventDefault();
-      this.quickAnnotate(node, glyphId);
-    }
   }
 
   private quickAnnotate(node: MoveNode, glyphId: number) {

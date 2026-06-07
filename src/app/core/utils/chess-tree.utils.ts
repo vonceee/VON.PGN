@@ -377,3 +377,73 @@ export function findNodeContext(
   }
   return { current: null, next: [], parent: null };
 }
+
+export function findNodeRecursive(nodes: MoveNode[], fen: string): MoveNode | null {
+  for (const node of nodes) {
+    if (node.fen === fen) return node;
+    if (node.variations) {
+      for (const variation of node.variations) {
+        const found = findNodeRecursive(variation, fen);
+        if (found) return found;
+      }
+    }
+  }
+  return null;
+}
+
+export function insertNodeDeep(nodes: MoveNode[], parentPly: number, parentFen: string, newNode: MoveNode): MoveNode[] {
+  const result: MoveNode[] = nodes.map(node => ({ ...node, variations: node.variations ? node.variations.map(v => [...v]) : [] }));
+  for (let i = 0; i < result.length; i++) {
+    const node = result[i];
+    if (node.ply === parentPly && node.fen === parentFen) {
+      if (i === result.length - 1) result.push(newNode);
+      else {
+        const nextNode = result[i + 1];
+        if (nextNode.san !== newNode.san) {
+          if (!nextNode.variations) nextNode.variations = [];
+          if (!nextNode.variations.find(v => v.length > 0 && v[0].san === newNode.san)) nextNode.variations.push([newNode]);
+        }
+      }
+      return result;
+    }
+    if (node.variations) {
+      for (let j = 0; j < node.variations.length; j++) {
+        const updated = insertNodeDeep(node.variations[j], parentPly, parentFen, newNode);
+        if (updated.length > 0) { node.variations[j] = updated; return result; }
+      }
+    }
+  }
+  return [];
+}
+
+export function deleteFromHereRecursive(nodes: MoveNode[], target: MoveNode): MoveNode[] {
+  const index = nodes.findIndex(n => n.fen === target.fen && n.ply === target.ply);
+  if (index !== -1) return nodes.slice(0, index);
+  return nodes.map(node => {
+    if (!node.variations?.length) return node;
+    const updatedVariations = node.variations.map(v => deleteFromHereRecursive(v, target)).filter(v => v.length > 0);
+    return (updatedVariations.length !== node.variations.length || updatedVariations.some((v, i) => v !== node.variations![i])) ? { ...node, variations: updatedVariations } : node;
+  });
+}
+
+export function findVariationBranch(
+  nodes: MoveNode[],
+  targetFen: string,
+  targetPly: number
+): { parentList: MoveNode[]; variationIndex: number; branchIndex: number } | null {
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    if (node.variations) {
+      for (let j = 0; j < node.variations.length; j++) {
+        const variation = node.variations[j];
+        const foundIdx = variation.findIndex(n => n.fen === targetFen && n.ply === targetPly);
+        if (foundIdx !== -1) {
+          return { parentList: nodes, variationIndex: i, branchIndex: j };
+        }
+        const res = findVariationBranch(variation, targetFen, targetPly);
+        if (res) return res;
+      }
+    }
+  }
+  return null;
+}
