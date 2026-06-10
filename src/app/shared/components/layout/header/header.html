@@ -1,12 +1,11 @@
 <header
-  class="sticky top-0 z-50 flex w-full items-center justify-between px-4 md:px-16 py-1.5 lg:py-2.5 bg-main border-b border-border-base  ">
-  <a appLink routerLink="/home"
-    class="text-lg text-muted font-medium tracking-tighter flex items-center gap-2 shrink-0 group ">
+  class="sticky top-0 z-50 flex w-full items-center justify-between px-4 lg:px-16 py-1.5 lg:py-2.5 bg-main border-b border-border-base  ">
+  <a appLink routerLink="/home" class="text-lg text-muted font-medium flex items-center gap-2 shrink-0 group ">
     vonchess
   </a>
 
   <!-- Desktop Navigation -->
-  <div class="hidden md:flex ml-10 gap-6 lg:gap-10 xl:gap-14 mt-1">
+  <div class="hidden lg:flex ml-10 gap-6 lg:gap-10 xl:gap-14 mt-1">
     <!-- Play Dropdown -->
     <div class="group relative">
       <a appLink routerLink="/play"
@@ -96,8 +95,8 @@
     </a>
   </div>
 
-  <!-- Desktop/Tablet Search Bar -->
-  <div class="relative ml-auto sm:ml-10 mr-4 hidden sm:block group/search" #searchContainer>
+  <!-- Desktop Search Bar -->
+  <div class="relative ml-auto lg:ml-10 mr-4 hidden lg:block group/search" #searchContainer>
     <div class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-surface/50 border border-border-base">
       <input #searchInput type="text" placeholder="search players..." [value]="searchQuery()"
         (input)="onSearchInput($event)" (focus)="isSearchOpen.set(true)"
@@ -135,10 +134,10 @@
   </div>
 
   <!-- Right Section: Auth + Hamburger -->
-  <div class="flex items-center gap-2 md:gap-3 ml-auto md:ml-0">
+  <div class="flex items-center gap-2 lg:gap-3 ml-auto lg:ml-0">
     @if (authService.isAuthenticated()) {
     <!-- Notifications Dropdown -->
-    <div class="relative hidden md:block">
+    <div class="relative hidden lg:block">
       <button (click)="toggleNotifications()"
         class="flex items-center gap-1.5 px-3 py-1.5 cursor-pointer relative group" aria-label="Notifications">
         <svg class="w-4.5 h-4.5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -214,7 +213,7 @@
       }
     </div>
 
-    <div class="relative hidden md:block" #profileContainer>
+    <div class="relative hidden lg:block" #profileContainer>
       <button (click)="toggleProfileDropdown()"
         class="flex items-center gap-2 group cursor-pointer focus:outline-none relative">
         <div class="flex items-center gap-1.5">
@@ -312,14 +311,8 @@
     }
 
     <!-- Mobile Hamburger Button -->
-    <button (click)="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-slate-200 " aria-label="Toggle Menu">
-      @if (isMobileMenuOpen()) {
-      <!-- Close Icon -->
-      <ng-icon name="heroXMark" class="w-6 h-6"></ng-icon>
-      } @else {
-      <!-- Hamburger Icon -->
-      <ng-icon name="heroBars3" class="w-6 h-6"></ng-icon>
-      }
+    <button (click)="toggleMobileMenu()" class="lg:hidden p-2" aria-label="Toggle Menu">
+      Menu
     </button>
   </div>
 </header>

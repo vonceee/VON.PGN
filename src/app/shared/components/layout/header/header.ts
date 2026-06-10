@@ -118,7 +118,7 @@ export class Header implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 
   private measurePing() {
     const now = Date.now();
@@ -126,7 +126,7 @@ export class Header implements OnInit, OnDestroy {
       return;
     }
     this.lastPingTime = now;
-    
+
     const start = performance.now();
     fetch(`${environment.apiUrl}/ping`, {
       method: 'HEAD',

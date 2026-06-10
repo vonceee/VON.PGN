@@ -1,5 +1,5 @@
 import { Component, inject, output, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
@@ -13,127 +13,185 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-mobile-menu',
   standalone: true,
-  imports: [RouterLink, FormsModule, NgIcon],
+  imports: [RouterLink, RouterLinkActive, FormsModule, NgIcon],
   providers: [provideIcons({ heroXMark, heroMagnifyingGlass })],
   template: `
-    <div class="md:hidden fixed inset-0 z-40 bg-black/50" (click)="close.emit()"></div>
+    <div class="lg:hidden fixed inset-0 z-40 bg-slate-950/40" (click)="close.emit()"></div>
     <div
-      class="md:hidden fixed top-0 right-0 z-50 w-72 h-full bg-white   flex flex-col overflow-y-auto"
+      class="lg:hidden fixed top-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] h-full bg-main border-l border-border-base flex flex-col overflow-y-auto shadow-2xl transition-transform duration-300"
     >
-      <!-- Mobile Menu Header -->
-      <div
-        class="flex items-center justify-between px-4 py-3 border-b border-border-base "
-      >
-        <span class="font-semibold text-lg">Menu</span>
+      <!-- Menu Header -->
+      <div class="flex items-center shrink-0 h-16 px-4">
+        <!-- Close Button -->
         <button
           (click)="close.emit()"
-          class="p-2 rounded-lg hover:bg-slate-200 "
+          aria-label="Close menu"
         >
-          <ng-icon name="heroXMark" class="w-5 h-5"></ng-icon>
+          Close menu
         </button>
       </div>
 
-      <!-- Mobile Search -->
-      <div class="px-4 py-3 border-b border-border-base ">
-        <div
-          class="flex items-center bg-slate-100 /10 rounded-xl px-3 py-2 border border-transparent focus-within:border-cyan-500/50 "
-        >
-          <ng-icon name="heroMagnifyingGlass" class="w-4 h-4  mr-2"></ng-icon>
+      <!-- Search Section -->
+      <div class="px-6 py-4 border-b border-border-base">
+        <div class="flex items-center bg-surface/50 rounded-full px-4 py-2 border border-border-base focus-within:border-accent/50 focus-within:bg-main transition-all">
+          <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 mr-2 shrink-0"></ng-icon>
           <input
             type="text"
-            placeholder="Search accounts..."
+            placeholder="Search players..."
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
-            class="bg-transparent outline-none flex-1 text-sm  "
+            class="bg-transparent outline-none flex-1 text-sm text-content placeholder-muted"
           />
           @if (isSearching()) {
-            <div
-              class="w-3 h-3 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"
-            ></div>
+            <div class="w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
           }
         </div>
-
         @if (searchResults().length > 0) {
-          <div class="mt-2 space-y-1 max-h-60 overflow-y-auto">
+          <div class="mt-2 py-1 max-h-60 overflow-y-auto bg-main border border-border-base rounded-2xl shadow-md">
             @for (user of searchResults(); track user.uid) {
               <button
                 (click)="viewUserProfile(user)"
-                class="w-full flex flex-col px-3 py-2 rounded-lg   text-left "
+                class="w-full flex items-center px-4 py-2 text-sm text-content hover:bg-subtle text-left transition-colors cursor-pointer"
               >
-                <span class="text-xs font-semibold   capitalize">{{
-                  user.username
-                }}</span>
+                <span class="font-medium truncate">{{ user.username }}</span>
               </button>
             }
           </div>
         } @else if (searchQuery().length >= 2 && !isSearching()) {
-          <div class="mt-2 px-3 py-2 text-xs  italic">No players found</div>
+          <div class="mt-2 px-4 py-2 text-xs italic">No players found</div>
         }
       </div>
 
-      <!-- Mobile Navigation Sections -->
-      <div class="flex flex-col py-2">
-        @for (group of linkGroups; track group.title) {
-          <div class="px-4 py-2 mt-2">
-            <span class="text-xs font-semibold   uppercase ">{{ group.title }}</span>
-          </div>
-          @for (link of group.links; track link.path) {
-            <a
-              [routerLink]="link.path"
-              (click)="close.emit()"
-              class="px-4 py-3   font-semibold  flex items-center justify-between group"
-            >
-              <span>{{ link.label }}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-slate-300  group-hover:text-cyan-500 ">
-                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-              </svg>
-            </a>
+      <!-- Navigation Grid -->
+      <div class="flex-1 p-6 md:p-8 overflow-y-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
+          @for (group of linkGroups; track group.title) {
+            <div class="flex flex-col gap-2">
+              <span class="text-sm font-bold text-content uppercase tracking-wider pb-1.5 border-b border-border-base/50 block">
+                {{ group.title }}
+              </span>
+              <div class="flex flex-col gap-1 pl-1">
+                @for (link of group.links; track link.path) {
+                  <a
+                    [routerLink]="link.path"
+                    routerLinkActive="text-accent font-semibold"
+                    [routerLinkActiveOptions]="{ exact: link.path === '/play' || link.path === '/study' || link.path === '/events' }"
+                    (click)="close.emit()"
+                    class="py-1 text-sm font-medium text-muted hover:text-content hover:underline transition-all flex items-center justify-between"
+                  >
+                    <span>{{ link.label }}</span>
+                  </a>
+                }
+              </div>
+            </div>
           }
-        }
+        </div>
       </div>
 
-      <!-- Mobile Auth Section -->
-      <div class="border-t border-border-base  py-2">
-
+      <!-- Auth Section -->
+      <div class="border-t border-border-base p-6 bg-surface/30 shrink-0">
         @if (authService.isAuthenticated()) {
-          <a
-            routerLink="/profile"
-            (click)="close.emit()"
-            class="flex items-center gap-3 px-4 py-3  "
-          >
-            <span class="font-semibold">Profile</span>
-          </a>
+          <!-- User Profile Label -->
+          <div class="px-3 py-2 mb-3">
+            <span class="text-sm font-semibold text-content block">
+              {{ userService.currentUser()?.username || 'User' }}
+            </span>
+          </div>
 
-          <!-- Shared Links -->
-          @for (link of authLinks; track link.path) {
+          <!-- User Actions Grid (Matches Desktop Dropdown Items) -->
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2 px-1">
             <a
-              [routerLink]="link.path"
+              routerLink="/profile"
+              routerLinkActive="text-accent font-semibold"
+              [routerLinkActiveOptions]="{ exact: true }"
               (click)="close.emit()"
-              class="flex items-center gap-3 px-4 py-3   font-semibold"
+              class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
             >
-              {{ link.label }}
-              @if (link.label === 'Messages' && chatService.totalUnreadCount() > 0) {
-                <span
-                  class="min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-accent text-white text-xs font-semibold"
-                >
+              Profile
+            </a>
+
+            <a
+              routerLink="/my-progress"
+              routerLinkActive="text-accent font-semibold"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="close.emit()"
+              class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
+            >
+              My Progress
+            </a>
+
+            @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
+              <a
+                routerLink="/my-events"
+                routerLinkActive="text-accent font-semibold"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="close.emit()"
+                class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
+              >
+                My Tournaments
+              </a>
+
+              <a
+                routerLink="/my-arena"
+                routerLinkActive="text-accent font-semibold"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="close.emit()"
+                class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
+              >
+                My Arena
+              </a>
+            }
+
+            <a
+              routerLink="/bookmarks"
+              routerLinkActive="text-accent font-semibold"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="close.emit()"
+              class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
+            >
+              Bookmarks
+            </a>
+
+            <a
+              routerLink="/chat"
+              routerLinkActive="text-accent font-semibold"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="close.emit()"
+              class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all flex items-center justify-between gap-1"
+            >
+              <span>Messages</span>
+              @if (chatService.totalUnreadCount() > 0) {
+                <span class="min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-accent text-white text-[9px] font-bold shrink-0">
                   {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
                 </span>
               }
             </a>
-          }
 
+            @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
+              <a
+                routerLink="/admin"
+                routerLinkActive="text-accent font-semibold"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="close.emit()"
+                class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
+              >
+                Admin Panel
+              </a>
+            }
 
-          <button
-            (click)="authService.logout(); close.emit()"
-            class="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-red-50  text-red-600  font-semibold"
-          >
-            Logout
-          </button>
+            <button
+              (click)="authService.logout(); close.emit()"
+              class="col-span-2 mt-2 py-1.5 px-4 rounded-full border border-rose-200/60 hover:bg-rose-50/50 text-center text-xs font-medium text-rose-600 transition-all cursor-pointer"
+            >
+              Logout
+            </button>
+          </div>
         } @else {
+          <!-- Google-style Primary Button for Login -->
           <a
             routerLink="/login"
             (click)="close.emit()"
-            class="flex items-center justify-center gap-2 mx-4 mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700  border border-border-base  hover:border-cyan-500/60 hover:text-cyan-600 "
+            class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-white bg-accent hover:bg-accent/90 shadow-sm transition-colors text-center cursor-pointer"
           >
             Log in
           </a>
@@ -231,12 +289,6 @@ export class MobileMenuComponent {
     },
   ];
 
-  authLinks = [
-    { path: '/my-progress', label: 'My Progress' },
-    { path: '/games/history', label: 'Game History' },
-    { path: '/chat', label: 'Messages' },
-    { path: '/my-events', label: 'My Tournaments' },
-    { path: '/bookmarks', label: 'Following' },
-  ];
+
 }
 
