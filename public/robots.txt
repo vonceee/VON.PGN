@@ -5,7 +5,6 @@ Disallow: /login
 Disallow: /register
 Disallow: /chat
 Disallow: /profile
-Disallow: /my-progress
 Disallow: /play
 
 Sitemap: https://vonchess.net/sitemap.xml

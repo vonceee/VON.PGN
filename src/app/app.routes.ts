@@ -127,17 +127,7 @@ export const routes: Routes = [
         data: { description: "View a player's profile, ratings, and activity on vonchess." },
         resolve: { seo: seoResolver },
       },
-      {
-        path: 'my-progress',
-        loadComponent: () =>
-          import('./features/profile/my-progress/my-progress.component').then((m) => m.MyProgressComponent),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Progress',
-        data: {
-          description: 'Track your chess learning progress, completed courses, and puzzle ratings.',
-        },
-        resolve: { seo: seoResolver },
-      },
+
       {
         path: 'bookmarks',
         loadComponent: () =>

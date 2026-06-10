@@ -31,10 +31,7 @@ export const serverRoutes: ServerRoute[] = [
     path: 'profile',
     renderMode: RenderMode.Server,
   },
-  {
-    path: 'my-progress',
-    renderMode: RenderMode.Server,
-  },
+
   {
     path: 'bookmarks',
     renderMode: RenderMode.Server,

@@ -110,15 +110,7 @@ import { Router } from '@angular/router';
               Profile
             </a>
 
-            <a
-              routerLink="/my-progress"
-              routerLinkActive="text-accent font-semibold"
-              [routerLinkActiveOptions]="{ exact: true }"
-              (click)="close.emit()"
-              class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
-            >
-              My Progress
-            </a>
+
 
             @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
               <a

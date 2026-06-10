@@ -235,11 +235,7 @@
 
           <div class="h-px w-full bg-border-base"></div>
 
-          <!-- Personal Chess Hub -->
-          <a appLink routerLink="/my-progress" (click)="toggleProfileDropdown()"
-            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
-            My Progress
-          </a>
+
           @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
           <a appLink routerLink="/my-events" (click)="toggleProfileDropdown()"
             class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
