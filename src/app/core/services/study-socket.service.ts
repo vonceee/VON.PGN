@@ -43,6 +43,9 @@ export class StudySocketService {
   private chatClearedSubject = new Subject<void>();
   private movePermissionRequestedSubject = new Subject<{ userId: string; userName: string }>();
   private movePermissionDeclinedSubject = new Subject<{ targetUserId: string }>();
+  private userJoinedCallSubject = new Subject<{ userId: string; userName: string }>();
+  private userLeftCallSubject = new Subject<{ userId: string }>();
+  private webrtcSignalSubject = new Subject<{ senderUserId: string; studyId: string | number; signalData: any }>();
 
   // Expose Observables
   onSynced$ = this.syncedSubject.asObservable();
@@ -58,6 +61,9 @@ export class StudySocketService {
   onChatCleared$ = this.chatClearedSubject.asObservable();
   onMovePermissionRequested$ = this.movePermissionRequestedSubject.asObservable();
   onMovePermissionDeclined$ = this.movePermissionDeclinedSubject.asObservable();
+  onUserJoinedCall$ = this.userJoinedCallSubject.asObservable();
+  onUserLeftCall$ = this.userLeftCallSubject.asObservable();
+  onWebrtcSignal$ = this.webrtcSignalSubject.asObservable();
 
   connect(study: Study, currentChapter: StudyChapter | null): void {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -147,6 +153,18 @@ export class StudySocketService {
     this.socket.on('move_permission_declined', (payload: any) => {
       this.movePermissionDeclinedSubject.next(payload);
     });
+
+    this.socket.on('user_joined_call', (payload: any) => {
+      this.userJoinedCallSubject.next(payload);
+    });
+
+    this.socket.on('user_left_call', (payload: any) => {
+      this.userLeftCallSubject.next(payload);
+    });
+
+    this.socket.on('webrtc_signal', (payload: any) => {
+      this.webrtcSignalSubject.next(payload);
+    });
   }
 
   emitJoinStudy(studyId: number, ownerId: any, collaboratorIds: string[], initialState: any): void {
@@ -208,6 +226,18 @@ export class StudySocketService {
 
   emitLeaveStudy(studyId: number): void {
     this.socket?.emit('leave_study', studyId);
+  }
+
+  emitJoinCall(studyId: number): void {
+    this.socket?.emit('join_call', { studyId });
+  }
+
+  emitLeaveCall(studyId: number): void {
+    this.socket?.emit('leave_call', { studyId });
+  }
+
+  emitWebrtcSignal(studyId: number, targetUserId: string, signalData: any): void {
+    this.socket?.emit('webrtc_signal', { studyId, targetUserId, signalData });
   }
 
   disconnect(): void {

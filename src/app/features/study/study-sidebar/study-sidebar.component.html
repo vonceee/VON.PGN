@@ -79,9 +79,27 @@
   }
 
   @if (displayMode() === 'all' || displayMode() === 'chat') {
-  <!-- Chat Section -->
+  <!-- Chat & Call Section -->
   <div class="flex flex-col min-h-0 overflow-hidden bg-subtle rounded-4xl">
-    <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
+    <!-- Chat Header with Voice Call Toggle -->
+    <div class="flex items-center justify-end px-4 py-3 shrink-0 select-none">
+      <!-- Call Button -->
+      @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
+      <button (click)="toggleVideoCall()" class="p-2 rounded-full cursor-pointer transition-colors duration-150 relative flex items-center justify-center
+            {{
+              webrtc.isCallActive()
+                ? 'bg-content text-main'
+                : 'text-muted'
+            }}" [title]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'">
+        <ng-icon [name]="webrtc.isCallActive() ? 'heroPhoneXMark' : 'heroPhone'" class="text-sm"></ng-icon>
+      </button>
+      }
+    </div>
+
+    <!-- Tab Contents -->
+    <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
+      <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
+    </div>
   </div>
   }
 </aside>

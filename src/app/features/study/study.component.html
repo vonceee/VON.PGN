@@ -36,6 +36,7 @@
           </div>
 
         </div>
+
       </div>
 
       <!-- Right Column: Notation & Info -->
@@ -51,11 +52,17 @@
             <span class="text-xs font-semibold">Chapters</span>
           </button>
           <button (click)="activeTab.set('chat')" title="Chat"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent"
+            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 hover:text-accent relative"
             [class.text-accent]="activeTab() === 'chat'" [class.bg-accent\/10]="activeTab() === 'chat'"
             [class.text-muted]="activeTab() !== 'chat'">
             <ng-icon name="heroChatBubbleLeftRight" class="text-lg"></ng-icon>
             <span class="text-xs font-semibold">Chat</span>
+            @if (webrtc.isCallActive() && activeTab() !== 'chat') {
+              <span class="absolute top-1 right-1 flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+            }
           </button>
           }
           <button (click)="activeTab.set('notation')" title="Notation"
@@ -72,6 +79,7 @@
             <ng-icon name="heroInformationCircle" class="text-lg"></ng-icon>
             <span class="text-sm">Info</span>
           </button>
+
           <div class="flex-1"></div>
 
           <!-- Classroom Student Join/Lock Banner -->
@@ -103,6 +111,8 @@
               </span>
               <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Class Active</span>
             </div>
+
+
           </div>
           }
           }
@@ -115,6 +125,8 @@
             <ng-icon [name]="isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
             <span class="text-sm">{{ isClassActive() ? 'End class' : 'Start class' }}</span>
           </button>
+
+
           }
         </div>
 
@@ -204,6 +216,7 @@
             } @else if (activeTab() === 'chat') {
             <app-study-sidebar class="h-full overflow-hidden" [isLargeScreen]="isLargeScreen()"
               [isSyncing]="isSyncing()" [canEdit]="canEdit()" [isTabMode]="true" displayMode="chat"></app-study-sidebar>
+
             }
           </div>
         </div>

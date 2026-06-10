@@ -7,7 +7,6 @@ import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroEye } from '@ng-icons/heroicons/outline';
 import { ButtonComponent } from '@shared/ui';
 import { StudyChapter } from '../../../core/models/study.model';
 import { AddChapterDialogComponent, AddChapterDialogResult } from '../dialogs/add-chapter-dialog/add-chapter-dialog.component';
@@ -15,14 +14,16 @@ import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ViewersDialogComponent } from '../dialogs/viewers-dialog/viewers-dialog.component';
 import { StudyChatComponent } from '../study-chat/study-chat.component';
+import { WebrtcService } from '../../../core/services/webrtc.service';
 import { input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { heroEye, heroPhone, heroPhoneXMark } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-study-sidebar',
   standalone: true,
   imports: [CommonModule, NgIconComponent, ButtonComponent, DialogModule, StudyChatComponent, DragDropModule],
-  providers: [provideIcons({ heroEye })],
+  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark })],
   templateUrl: './study-sidebar.component.html',
   host: {
     'class': 'block h-full overflow-hidden'
@@ -34,6 +35,21 @@ export class StudySidebarComponent {
   private toastService = inject(ToastService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  public webrtc = inject(WebrtcService);
+
+  isClassActive = this.studyService.isClassActive;
+  isOwner = this.studyService.isOwner;
+  hasJoinedClass = this.studyService.hasJoinedClass;
+
+  toggleVideoCall() {
+    if (this.webrtc.isCallActive()) {
+      this.webrtc.leaveCall();
+    } else {
+      this.webrtc.joinCall().catch(err => {
+        console.error('[StudySidebarComponent] Error joining video call:', err);
+      });
+    }
+  }
 
   // Inputs
   isLargeScreen = input.required<boolean>();
@@ -83,7 +99,7 @@ export class StudySidebarComponent {
       width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/60'],
-      data: { 
+      data: {
         defaultName: `Chapter ${(s.chapters?.length ?? 0) + 1}`,
       }
     });
@@ -141,7 +157,7 @@ export class StudySidebarComponent {
         if (!result) return;
 
         if (result.action === 'save' && result.name) {
-          this.studyService.updateChapter(s.id, chap.id, { 
+          this.studyService.updateChapter(s.id, chap.id, {
             name: result.name,
             orientation: result.orientation
           }).subscribe({
@@ -201,7 +217,7 @@ export class StudySidebarComponent {
     // Local update for instant feedback
     const chapters = [...s.chapters];
     moveItemInArray(chapters, event.previousIndex, event.currentIndex);
-    
+
     this.studyService.currentStudy.update(curr => curr ? { ...curr, chapters } : null);
 
     // Persist to backend

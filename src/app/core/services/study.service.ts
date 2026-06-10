@@ -38,18 +38,22 @@ export class StudyService {
   lockHolderId = signal<string | null>(null);
   hasJoinedClass = signal<boolean>(false);
 
+  isOwner = computed(() => {
+    const user = this.authService.currentUser();
+    const study = this.currentStudy();
+    if (!user || !study) return false;
+    const myUid = user.uid || user.id;
+    const studyOwnerId = study.user_id || (study as any).userId || study.owner?.id;
+    return !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
+  });
+
   hasBoardControl = computed(() => {
     if (!this.isClassActive()) return true;
+    if (this.isOwner()) return true;
+    if (!this.hasJoinedClass()) return true;
 
     const user = this.authService.currentUser();
     const myUid = user?.uid || user?.id;
-    const study = this.currentStudy();
-    const studyOwnerId = study?.user_id || (study as any)?.userId || study?.owner?.id;
-    const isOwner = !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
-
-    if (isOwner) return true;
-    if (!this.hasJoinedClass()) return true;
-
     return !!(myUid && this.lockHolderId() && String(myUid) === String(this.lockHolderId()));
   });
 

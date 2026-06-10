@@ -49,6 +49,7 @@ import { LayoutService } from '../../core/services/layout.service';
 import { RequestControlDialogComponent } from './dialogs/request-control-dialog/request-control-dialog.component';
 import { ReceiveRequestDialogComponent } from './dialogs/receive-request-dialog/receive-request-dialog.component';
 import { StudyShortcutsService } from './services/study-shortcuts.service';
+import { WebrtcService } from '../../core/services/webrtc.service';
 
 @Component({
   selector: 'app-study',
@@ -126,6 +127,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   private layoutService = inject(LayoutService);
   private toastService = inject(ToastService);
   private shortcutsService = inject(StudyShortcutsService);
+  public webrtc = inject(WebrtcService);
 
   study = this.studyService.currentStudy;
   @ViewChild('board') board!: ChessBoardComponent;
@@ -214,14 +216,7 @@ export class StudyComponent implements OnInit, OnDestroy {
    * - Falls back to `user.id` if `user.uid` is absent (guest/legacy sessions).
    * - Falls back to `s.owner?.id` if `s.user_id` is absent (older API shapes).
    */
-  isOwner = computed(() => {
-    const user = this.authService.currentUser();
-    const s = this.study();
-    if (!user || !s) return false;
-    const myUid = user.uid || user.id;
-    const studyOwnerId = s.user_id || (s as any).userId || s.owner?.id;
-    return !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
-  });
+  isOwner = this.studyService.isOwner;
 
   /**
    * Determines whether the current user may save and broadcast moves/annotations.
@@ -291,6 +286,8 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.showStartClassDialog.set(true);
   }
 
+
+
   onStartClassConfirmed() {
     this.showStartClassDialog.set(false);
     this.studyService.startClass();
@@ -326,6 +323,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   isThreeColumn = signal(false);
   isTwoColumn = signal(false);
   activeTab = signal<'notation' | 'info' | 'metadata' | 'chapters' | 'chat'>('notation');
+
   showDeleteModal = signal(false);
   showStartClassDialog = signal(false);
   isDeleting = signal(false);
@@ -865,6 +863,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.shortcutsService.unregister();
     this.studyService.disconnect(); 
     this.layoutService.setFluid(false);
+    this.webrtc.leaveCall();
   }
 
   onDeleteConfirmed() {
