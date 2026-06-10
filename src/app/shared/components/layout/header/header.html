@@ -17,14 +17,14 @@
       <div
         class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col">
         <a appLink routerLink="/play" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Play</span>
+          <span class="text-sm font-medium">Play</span>
         </a>
         <a appLink routerLink="/tactics" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Tactics</span>
+          <span class="text-sm font-medium">Tactics</span>
         </a>
 
         <a appLink routerLink="/tv" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Watch</span>
+          <span class="text-sm font-medium">Watch</span>
         </a>
       </div>
     </div>
@@ -40,13 +40,13 @@
       <div
         class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col ">
         <a appLink routerLink="/study" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Study</span>
+          <span class="text-sm font-medium">Study</span>
         </a>
         <a appLink routerLink="/roadmap" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Roadmap</span>
+          <span class="text-sm font-medium">Roadmap</span>
         </a>
         <a appLink routerLink="/study/drills" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Opening drills</span>
+          <span class="text-sm font-medium">Opening drills</span>
         </a>
       </div>
     </div>
@@ -61,13 +61,13 @@
       <div
         class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col ">
         <a appLink routerLink="/events" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Tournaments</span>
+          <span class="text-sm font-medium">Tournaments</span>
         </a>
         <a appLink routerLink="/arena" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Arena</span>
+          <span class="text-sm font-medium">Arena</span>
         </a>
         <a appLink routerLink="/broadcasts" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent  ">Broadcasts</span>
+          <span class="text-sm font-medium">Broadcasts</span>
         </a>
       </div>
     </div>
@@ -81,10 +81,10 @@
       <div
         class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible   z-50 flex flex-col ">
         <a appLink routerLink="/coaches" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent">Coaches</span>
+          <span class="text-sm font-medium">Coaches</span>
         </a>
         <a appLink routerLink="/academy" class="px-4 py-2.5 hover:bg-subtle flex items-center  group/item">
-          <span class="text-sm text-content group-hover/item:text-accent">Academy</span>
+          <span class="text-sm font-medium">Academy</span>
         </a>
       </div>
     </div>
@@ -101,7 +101,7 @@
     <div class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-surface/50 border border-border-base">
       <input #searchInput type="text" placeholder="search players..." [value]="searchQuery()"
         (input)="onSearchInput($event)" (focus)="isSearchOpen.set(true)"
-        class="bg-transparent outline-none text-sm text-content placeholder-muted w-full " />
+        class="bg-transparent outline-none text-sm font-medium placeholder-muted w-full " />
 
       <!-- Keyboard Hint instead of Icon -->
       <div class="hidden lg:flex items-center gap-1  group-focus-within/search:opacity-0  pointer-events-none">
@@ -123,7 +123,7 @@
         (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
         class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-subtle text-left  cursor-pointer">
         <div class="flex flex-col min-w-0">
-          <span class="text-sm text-content truncate">{{
+          <span class="text-sm font-medium truncate">{{
             user.username
             }}</span>
         </div>
@@ -160,8 +160,8 @@
         <div class="px-4 py-3 border-b border-border-base flex items-center justify-between">
           <span class=" text-sm">Notifications</span>
           @if (notificationService.unreadCount() > 0) {
-          <button (click)="notificationService.markAllAsRead().subscribe()"
-            class="text-xs text-accent hover:underline ">Mark all as read</button>
+          <button (click)="notificationService.markAllAsRead().subscribe()" class="text-xs hover:underline ">Mark all as
+            read</button>
           }
         </div>
 
@@ -171,7 +171,7 @@
           <div class="px-4 py-3 bg-accent/5 border-b border-border-base">
             <div class="flex items-center justify-between gap-3">
               <div class="flex-1 min-w-0">
-                <p class="text-sm text-content">
+                <p class="text-sm font-medium">
                   <span class="font-semibold">{{ challenge.challenger.name }}</span> challenged you to a
                   <span class="text-accent font-semibold">{{ formatTime(challenge.settings.timeControl) }}</span> game
                 </p>
@@ -203,7 +203,7 @@
           <div class="px-4 py-3 hover:bg-subtle  cursor-pointer border-b border-border-base last:border-0"
             [class.bg-accent/5]="!n.read_at" (click)="navigateToNotification(n)">
             <div class="flex flex-col gap-1">
-              <p class="text-sm text-content ">{{ n.data.message }}</p>
+              <p class="text-sm font-medium ">{{ n.data.message }}</p>
               <span class="text-xs text-muted">{{ n.created_at | date:'short' }}</span>
             </div>
           </div>
@@ -269,7 +269,7 @@
           @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
           <div class="h-px w-full bg-border-base"></div>
           <a routerLink="/admin" (click)="toggleProfileDropdown()"
-            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm text-accent ">
+            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm ">
             Admin Panel
           </a>
           }
@@ -278,7 +278,7 @@
           <!-- Network Status -->
           <div class="flex items-center justify-between px-4 py-2">
             <div class="flex items-center gap-3">
-              <span class="text-sm text-content">Network</span>
+              <span class="text-sm font-medium">Network</span>
             </div>
             <div class="flex items-center gap-2">
               @if (pingSignal() > 0) {

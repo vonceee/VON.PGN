@@ -33,7 +33,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
           </div>
           <div class="stat-card">
             <span class="stat-label">Points</span>
-            <span class="stat-value text-accent">{{ player.score }}</span>
+            <span class="stat-value">{{ player.score }}</span>
           </div>
           <div class="stat-card">
             <span class="stat-label">Rank</span>
@@ -52,7 +52,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
                   <div class="flex flex-col">
                     <div class="flex items-center gap-2">
                       <span class="text-xs w-3 h-3 rounded-sm border border-border-base" [class.bg-white]="game.color === 'white'" [class.bg-black]="game.color === 'black'"></span>
-                      <a [routerLink]="['/play', game.gameId]" (click)="dialogRef.close()" class="text-sm font-semibold text-content hover:text-accent transition-colors">
+                      <a [routerLink]="['/play', game.gameId]" (click)="dialogRef.close()" class="text-sm font-semibold text-content transition-colors">
                         {{ game.opponentName }}
                       </a>
                     </div>

@@ -1,10 +1,10 @@
 import { Component, inject, computed, ChangeDetectionStrategy, ViewChild, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { 
-  heroVideoCamera, 
-  heroVideoCameraSlash, 
-  heroMicrophone, 
+import {
+  heroVideoCamera,
+  heroVideoCameraSlash,
+  heroMicrophone,
   heroPhoneXMark,
   heroUser,
   heroArrowUpRight,
@@ -18,10 +18,10 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [CommonModule, NgIconComponent],
   providers: [
-    provideIcons({ 
-      heroVideoCamera, 
-      heroVideoCameraSlash, 
-      heroMicrophone, 
+    provideIcons({
+      heroVideoCamera,
+      heroVideoCameraSlash,
+      heroMicrophone,
       heroPhoneXMark,
       heroUser,
       heroArrowUpRight,
@@ -49,7 +49,7 @@ import { AuthService } from '../../../core/services/auth.service';
                 <div class="w-12 h-12 rounded-full bg-surface border border-border-base flex items-center justify-center mb-1.5 shadow-inner">
                   <ng-icon name="heroUser" class="w-6 h-6 text-muted"></ng-icon>
                 </div>
-                <span class="text-[11px] text-muted font-medium">Camera Off</span>
+                <span class="text-xstext-muted font-medium">Camera Off</span>
               </div>
             }
           } @else {
@@ -57,7 +57,7 @@ import { AuthService } from '../../../core/services/auth.service';
               <div class="w-10 h-10 rounded-full bg-surface border border-border-base/50 flex items-center justify-center mb-2">
                 <ng-icon name="heroVideoCameraSlash" class="w-5 h-5 text-muted"></ng-icon>
               </div>
-              <span class="text-[11px] font-medium">Connecting camera...</span>
+              <span class="text-xsfont-medium">Connecting camera...</span>
             </div>
           }
           <!-- Label Overlay -->

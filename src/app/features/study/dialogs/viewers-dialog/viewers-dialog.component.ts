@@ -46,7 +46,7 @@ import { AuthService } from '../../../../core/services/auth.service';
                     <button 
                       appButton 
                       variant="danger" 
-                      class="!px-2.5 !py-1 !text-[11px] !font-bold"
+                      class="!px-2.5 !py-1 !text-xs!font-bold"
                       (click)="revokeChalk()"
                     >
                       Revoke
@@ -55,7 +55,7 @@ import { AuthService } from '../../../../core/services/auth.service';
                     <button 
                       appButton 
                       variant="primary" 
-                      class="!px-2.5 !py-1 !text-[11px] !font-bold"
+                      class="!px-2.5 !py-1 !text-xs!font-bold"
                       (click)="passChalk(viewer.userId)"
                     >
                       Pass Chalk

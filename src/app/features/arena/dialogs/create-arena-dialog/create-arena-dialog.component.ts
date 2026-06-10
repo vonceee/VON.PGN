@@ -71,7 +71,7 @@ import { DialogWrapperComponent } from '../../../../shared/components/ui/dialog-
         <div class="space-y-3">
           <div class="flex justify-between items-center">
             <label class="text-xs font-semibold text-muted uppercase">Duration (Minutes)</label>
-            <span class="text-lg font-bold text-accent">{{ arenaForm.get('durationMinutes')?.value }}m</span>
+            <span class="text-lg font-bold">{{ arenaForm.get('durationMinutes')?.value }}m</span>
           </div>
           <input
             type="range"

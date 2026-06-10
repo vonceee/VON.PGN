@@ -11,110 +11,71 @@
     <div class="flex gap-3 flex-wrap md:flex-nowrap items-center mb-6">
       <!-- Tab Dropdown (Mobile & Desktop) -->
       <div class="relative" #tabDropdownContainer>
-        <button
-          (click)="toggleTabDropdown()"
-          class="flex items-center justify-between px-4 py-2.5 bg-main border border-border-base rounded-xl text-sm font-semibold text-content whitespace-nowrap"
-        >
+        <button (click)="toggleTabDropdown()"
+          class="flex items-center justify-between px-4 py-2.5 bg-main border border-border-base rounded-xl text-sm font-semibold text-content whitespace-nowrap">
           <span class="flex items-center gap-2">
             @if (activeTab() === 'ongoing') {
-              <span class="w-2 h-2 rounded-full bg-green-500"></span>
+            <span class="w-2 h-2 rounded-full bg-green-500"></span>
             }
             {{ activeTab() | titlecase }}
           </span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="w-5 h-5   ml-2"
-            [class.rotate-180]="isTabDropdownOpen()"
-          >
-            <path
-              fill-rule="evenodd"
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5   ml-2"
+            [class.rotate-180]="isTabDropdownOpen()">
+            <path fill-rule="evenodd"
               d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-              clip-rule="evenodd"
-            />
+              clip-rule="evenodd" />
           </svg>
         </button>
 
         @if (isTabDropdownOpen()) {
-          <div
-            class="absolute top-full left-0 mt-1 bg-main border border-border-base rounded-xl shadow-lg z-20 overflow-hidden"
-          >
-            <button
-              (click)="setTab('upcoming')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
-              [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }"
-            >
-              <span>Upcoming</span>
-            </button>
-            <button
-              (click)="setTab('ongoing')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
-              [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }"
-            >
-              <span class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                Ongoing
-              </span>
-            </button>
-            <button
-              (click)="setTab('past')"
-              class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
-              [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }"
-            >
-              <span>Past</span>
-            </button>
-          </div>
+        <div
+          class="absolute top-full left-0 mt-1 bg-main border border-border-base rounded-xl shadow-lg z-20 overflow-hidden">
+          <button (click)="setTab('upcoming')"
+            class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
+            [ngClass]="{ 'text-cyan-400': activeTab() === 'upcoming' }">
+            <span>Upcoming</span>
+          </button>
+          <button (click)="setTab('ongoing')"
+            class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
+            [ngClass]="{ 'text-cyan-400': activeTab() === 'ongoing' }">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-green-500"></span>
+              Ongoing
+            </span>
+          </button>
+          <button (click)="setTab('past')"
+            class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
+            [ngClass]="{ 'text-cyan-400': activeTab() === 'past' }">
+            <span>Past</span>
+          </button>
+        </div>
         }
       </div>
       <div class="relative flex-1">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4  pointer-events-none"
-        >
-          <path
-            fill-rule="evenodd"
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4  pointer-events-none">
+          <path fill-rule="evenodd"
             d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-            clip-rule="evenodd"
-          />
+            clip-rule="evenodd" />
         </svg>
-        <input
-          type="text"
-          [value]="searchQuery()"
-          (input)="onSearchInput($event)"
-          placeholder="Search tournaments..."
-          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50  "
-        />
+        <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search tournaments..."
+          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50  " />
         @if (searchQuery()) {
-          <button
-            (click)="clearSearch()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              class="w-4 h-4"
-            >
-              <path
-                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
-              />
-            </svg>
-          </button>
+        <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+            <path
+              d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+          </svg>
+        </button>
         }
       </div>
-      <select
-        [value]="sortBy()"
-        (change)="onSortChange($event)"
+      <select [value]="sortBy()" (change)="onSortChange($event)"
         class="w-40 px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50  appearance-none bg-no-repeat bg-right pr-8"
         style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
           background-size: 1.25rem;
-        "
-      >
+        ">
         <option value="">Sort by</option>
         <option value="recently_posted">Recently Posted</option>
         <option value="starting_soon">Starting Soon</option>
@@ -125,275 +86,211 @@
 
   <!-- Results Info -->
   @if (!loading() && filteredTournaments().length > 0) {
-    <p class="text-xs text-muted mb-4 px-8 md:px-16">
-      Showing {{ paginatedTournaments().length }} of {{ filteredTournaments().length }} tournament{{
-        filteredTournaments().length !== 1 ? 's' : ''
-      }}
-    </p>
+  <p class="text-xs text-muted mb-4 px-8 md:px-16">
+    Showing {{ paginatedTournaments().length }} of {{ filteredTournaments().length }} tournament{{
+    filteredTournaments().length !== 1 ? 's' : ''
+    }}
+  </p>
   }
 
   <!-- Tournament Cards -->
   @if (loading()) {
-    <app-loading></app-loading>
+  <app-loading></app-loading>
   } @else if (paginatedTournaments().length === 0) {
-    <div class="flex flex-col items-center justify-center py-20 text-center px-8 mx-8 md:px-16 md:mx-16">
-      <h3 class="text-lg mb-2 text-content">No Tournaments Found</h3>
-    </div>
+  <div class="flex flex-col items-center justify-center py-20 text-center px-8 mx-8 md:px-16 md:mx-16">
+    <h3 class="text-lg mb-2 text-content">No Tournaments Found</h3>
+  </div>
   } @else {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-8 md:px-16">
-      @for (tournament of paginatedTournaments(); track tournament.id) {
-        <div class="card-perspective h-[380px]">
-          <div class="card-inner" [class.card-flipped]="isFlipped(tournament.id)">
-            <!-- Card Front -->
-            <div class="card-front ui-panel overflow-hidden flex flex-col group">
-              <!-- Card Content -->
-              <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
-                <div class="flex gap-4 flex-1 mb-6">
-                  <!-- Date Sidebar -->
-                  <div class="flex flex-col items-center justify-start pt-1 shrink-0 w-14 border-r border-border-base pr-4">
-                    <span class="text-xs font-semibold text-accent uppercase ">
-                      {{ tournament.dates.start | date : 'MMM' }}
-                    </span>
-                    <span class="text-2xl font-semibold text-content">
-                      {{ tournament.dates.start | date : 'dd' }}
-                    </span>
-                  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-8 md:px-16">
+    @for (tournament of paginatedTournaments(); track tournament.id) {
+    <div class="card-perspective h-[380px]">
+      <div class="card-inner" [class.card-flipped]="isFlipped(tournament.id)">
+        <!-- Card Front -->
+        <div class="card-front ui-panel overflow-hidden flex flex-col group">
+          <!-- Card Content -->
+          <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
+            <div class="flex gap-4 flex-1 mb-6">
+              <!-- Date Sidebar -->
+              <div class="flex flex-col items-center justify-start pt-1 shrink-0 w-14 border-r border-border-base pr-4">
+                <span class="text-xs font-semibold uppercase ">
+                  {{ tournament.dates.start | date : 'MMM' }}
+                </span>
+                <span class="text-2xl font-semibold text-content">
+                  {{ tournament.dates.start | date : 'dd' }}
+                </span>
+              </div>
 
-                  <!-- Details Area -->
-                  <div class="flex flex-col flex-1 min-w-0">
-                    <!-- Title -->
-                    <h2 class="text-base md:text-lg font-semibold line-clamp-2 h-14 text-content mb-1" [title]="tournament.name">
-                      {{ tournament.name }}
-                    </h2>
+              <!-- Details Area -->
+              <div class="flex flex-col flex-1 min-w-0">
+                <!-- Title -->
+                <h2 class="text-base md:text-lg font-semibold line-clamp-2 h-14 text-content mb-1"
+                  [title]="tournament.name">
+                  {{ tournament.name }}
+                </h2>
 
-                    <!-- Location -->
-                    <div class="text-sm font-semibold text-content truncate mb-3">
-                      {{ tournament.location }}
-                    </div>
-
-                    <!-- Metadata Chips -->
-                    <div class="flex flex-wrap gap-1.5 mt-auto pb-1">
-                      <span class="px-2.5 py-1 bg-subtle rounded-md text-xs font-semibold text-content uppercase ">
-                        {{ tournament.format }}
-                      </span>
-                      <span class="px-2.5 py-1 bg-subtle rounded-md text-xs font-semibold text-content uppercase ">
-                        {{ tournament.timeControl }}
-                      </span>
-                      @if (tournament.creator) {
-                        <span class="px-2.5 py-1 bg-accent/10 rounded-md text-xs font-semibold text-accent uppercase ">
-                          By {{ tournament.creator.name }}
-                        </span>
-                      }
-                    </div>
-                  </div>
+                <!-- Location -->
+                <div class="text-sm font-semibold text-content truncate mb-3">
+                  {{ tournament.location }}
                 </div>
 
-                <!-- Bottom Row -->
-                <div class="mt-auto flex flex-col gap-3">
-                  <div class="flex items-center justify-between gap-2">
-                    @if (tournament.status === 'ongoing') {
-                      <div class="flex items-center gap-2">
-                        <div
-                          class="w-16 md:w-20 h-1.5 bg-subtle rounded-full overflow-hidden"
-                        >
-                          <div
-                            class="h-full bg-green-500 rounded-full"
-                            [style.width.%]="
-                              (tournament.participants.current / tournament.participants.max) * 100
-                            "
-                          ></div>
-                        </div>
-                        <span class="text-xs text-muted"
-                          >{{ tournament.participants.current }}/{{ tournament.participants.max }}</span
-                        >
-                      </div>
-                    } @else if (tournament.status === 'upcoming') {
-                      <span class="text-xs font-semibold"
-                        >Prize Pool: {{ formatPrizePool(tournament.prizePool) }}</span
-                      >
-                    } @else {
-                      <div class="flex items-center gap-1 text-xs">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                          class="w-4 h-4 text-yellow-500"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                        <span class="font-semibold line-clamp-1">{{ tournament.winner }}</span>
-                      </div>
-                    }
-
-                    <div class="flex gap-2">
-                      @if (getTournamentThumbnail(tournament)) {
-                        <button 
-                          appButton 
-                          variant="ghost" 
-                          class="text-xs"
-                          (click)="toggleFlip(tournament.id)"
-                        >
-                          Poster
-                        </button>
-                      }
-                      <a appButton variant="primary" class="text-xs" [routerLink]="['/events', tournament.id]">
-                        Details
-                      </a>
-                    </div>
-                  </div>
+                <!-- Metadata Chips -->
+                <div class="flex flex-wrap gap-1.5 mt-auto pb-1">
+                  <span class="px-2.5 py-1 bg-subtle rounded-md text-xs font-semibold text-content uppercase ">
+                    {{ tournament.format }}
+                  </span>
+                  <span class="px-2.5 py-1 bg-subtle rounded-md text-xs font-semibold text-content uppercase ">
+                    {{ tournament.timeControl }}
+                  </span>
+                  @if (tournament.creator) {
+                  <span class="px-2.5 py-1 bg-accent/10 rounded-md text-xs font-semibold uppercase ">
+                    By {{ tournament.creator.name }}
+                  </span>
+                  }
                 </div>
               </div>
             </div>
 
-            <!-- Card Back (Poster Only) -->
-            <div class="card-back ui-panel overflow-hidden flex flex-col group">
-              @if (getTournamentThumbnail(tournament); as thumb) {
-                <div class="relative flex-1 bg-slate-900 overflow-hidden">
-                  <img
-                    [src]="thumb"
-                    class="w-full h-full object-contain object-top"
-                    [alt]="tournament.name + ' Poster'"
-                  />
-                  
-                  <!-- Overlay Controls -->
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100   flex flex-col justify-end p-6">
-                    <h3 class="text-white font-semibold text-lg mb-4">{{ tournament.name }}</h3>
-                    <div class="flex gap-3">
-                      <button 
-                        appButton 
-                        variant="primary" 
-                        class="flex-1"
-                        (click)="openPoster(thumb)"
-                      >
-                        View Full Poster
-                      </button>
-                      <button 
-                        appButton 
-                        variant="outline" 
-                        class="flex-1"
-                        (click)="toggleFlip(tournament.id)"
-                      >
-                        Back
-                      </button>
-                    </div>
+            <!-- Bottom Row -->
+            <div class="mt-auto flex flex-col gap-3">
+              <div class="flex items-center justify-between gap-2">
+                @if (tournament.status === 'ongoing') {
+                <div class="flex items-center gap-2">
+                  <div class="w-16 md:w-20 h-1.5 bg-subtle rounded-full overflow-hidden">
+                    <div class="h-full bg-green-500 rounded-full" [style.width.%]="
+                              (tournament.participants.current / tournament.participants.max) * 100
+                            "></div>
                   </div>
+                  <span class="text-xs text-muted">{{ tournament.participants.current }}/{{ tournament.participants.max
+                    }}</span>
+                </div>
+                } @else if (tournament.status === 'upcoming') {
+                <span class="text-xs font-semibold">Prize Pool: {{ formatPrizePool(tournament.prizePool) }}</span>
+                } @else {
+                <div class="flex items-center gap-1 text-xs">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                    class="w-4 h-4 text-yellow-500">
+                    <path fill-rule="evenodd"
+                      d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z"
+                      clip-rule="evenodd" />
+                  </svg>
+                  <span class="font-semibold line-clamp-1">{{ tournament.winner }}</span>
+                </div>
+                }
 
-                  <!-- Quick Close Button (Top Right) -->
-                  <button 
-                    (click)="toggleFlip(tournament.id)"
-                    class="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80  z-10"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                <div class="flex gap-2">
+                  @if (getTournamentThumbnail(tournament)) {
+                  <button appButton variant="ghost" class="text-xs" (click)="toggleFlip(tournament.id)">
+                    Poster
                   </button>
+                  }
+                  <a appButton variant="primary" class="text-xs" [routerLink]="['/events', tournament.id]">
+                    Details
+                  </a>
                 </div>
-              } @else {
-                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-100 ">
-                   <p class=" mb-6">No poster available for this event.</p>
-                   <button appButton variant="outline" (click)="toggleFlip(tournament.id)">
-                     Go Back
-                   </button>
-                </div>
-              }
+              </div>
             </div>
           </div>
         </div>
-      }
+
+        <!-- Card Back (Poster Only) -->
+        <div class="card-back ui-panel overflow-hidden flex flex-col group">
+          @if (getTournamentThumbnail(tournament); as thumb) {
+          <div class="relative flex-1 bg-slate-900 overflow-hidden">
+            <img [src]="thumb" class="w-full h-full object-contain object-top" [alt]="tournament.name + ' Poster'" />
+
+            <!-- Overlay Controls -->
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100   flex flex-col justify-end p-6">
+              <h3 class="text-white font-semibold text-lg mb-4">{{ tournament.name }}</h3>
+              <div class="flex gap-3">
+                <button appButton variant="primary" class="flex-1" (click)="openPoster(thumb)">
+                  View Full Poster
+                </button>
+                <button appButton variant="outline" class="flex-1" (click)="toggleFlip(tournament.id)">
+                  Back
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Close Button (Top Right) -->
+            <button (click)="toggleFlip(tournament.id)"
+              class="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80  z-10">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          } @else {
+          <div class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-100 ">
+            <p class=" mb-6">No poster available for this event.</p>
+            <button appButton variant="outline" (click)="toggleFlip(tournament.id)">
+              Go Back
+            </button>
+          </div>
+          }
+        </div>
+      </div>
     </div>
+    }
+  </div>
   }
 
   <!-- Pagination -->
   @if (!loading() && totalPages() > 1) {
-    <div class="flex items-center justify-center gap-1 mt-8">
-      <button
-        (click)="prevPage()"
-        [disabled]="currentPage() === 1"
-        class="px-3 py-2 text-sm  rounded-lg border border-border-base  disabled: disabled:cursor-not-allowed hover:bg-subtle"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="w-4 h-4"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
+  <div class="flex items-center justify-center gap-1 mt-8">
+    <button (click)="prevPage()" [disabled]="currentPage() === 1"
+      class="px-3 py-2 text-sm  rounded-lg border border-border-base  disabled: disabled:cursor-not-allowed hover:bg-subtle">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd"
+          d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+          clip-rule="evenodd" />
+      </svg>
+    </button>
 
-      @for (page of pages(); track page === '...' ? $index : page) {
-        @if (page === '...') {
-          <span class="px-3 py-2 text-sm text-muted">...</span>
-        } @else {
-          <button
-            (click)="goToPage(page)"
-            class="min-w-[36px] px-3 py-2 text-sm  rounded-lg border "
-            [ngClass]="{
+    @for (page of pages(); track page === '...' ? $index : page) {
+    @if (page === '...') {
+    <span class="px-3 py-2 text-sm text-muted">...</span>
+    } @else {
+    <button (click)="goToPage(page)" class="min-w-[36px] px-3 py-2 text-sm  rounded-lg border " [ngClass]="{
               'bg-accent border-accent text-main': currentPage() === page,
               'border-border-base hover:bg-subtle':
                 currentPage() !== page,
-            }"
-          >
-            {{ page }}
-          </button>
-        }
-      }
+            }">
+      {{ page }}
+    </button>
+    }
+    }
 
-      <button
-        (click)="nextPage()"
-        [disabled]="currentPage() === totalPages()"
-        class="px-3 py-2 text-sm  rounded-lg border border-border-base  disabled: disabled:cursor-not-allowed hover:bg-subtle"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="w-4 h-4"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
-    </div>
+    <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+      class="px-3 py-2 text-sm  rounded-lg border border-border-base  disabled: disabled:cursor-not-allowed hover:bg-subtle">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+        <path fill-rule="evenodd"
+          d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+          clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
   }
 </div>
 
 
 <!-- Poster Lightbox Overlay -->
 @if (selectedPoster(); as url) {
-  <div 
-    class="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4 md:p-12   "
-    (click)="closePoster()"
-  >
-    <!-- Close Button -->
-    <button 
-      class="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20  z-[110]"
-      (click)="closePoster()"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-8 h-8">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
+<div class="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4 md:p-12   "
+  (click)="closePoster()">
+  <!-- Close Button -->
+  <button class="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20  z-[110]"
+    (click)="closePoster()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+      class="w-8 h-8">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
 
-    <!-- Poster Image -->
-    <div class="relative w-full h-full flex items-center justify-center" (click)="$event.stopPropagation()">
-      <img 
-        [src]="url" 
-        class="max-w-full max-h-full object-contain  rounded-lg"
-        alt="Full Size Poster"
-      />
-    </div>
+  <!-- Poster Image -->
+  <div class="relative w-full h-full flex items-center justify-center" (click)="$event.stopPropagation()">
+    <img [src]="url" class="max-w-full max-h-full object-contain  rounded-lg" alt="Full Size Poster" />
   </div>
+</div>
 }
-

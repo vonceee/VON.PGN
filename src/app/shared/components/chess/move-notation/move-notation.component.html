@@ -57,7 +57,7 @@
             @if (turn.white; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move underline bg-accent/20 text-accent font-semibold'
+                        ? 'active-move underline bg-accent/20 font-semibold'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'next-move-static transition-all'
                           : 'text-content hover:bg-accent/10 transition-colors'
@@ -82,7 +82,7 @@
             @if (turn.black; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move underline bg-accent/20 text-accent font-semibold'
+                        ? 'active-move underline bg-accent/20 font-semibold'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'next-move-static transition-all'
                           : 'text-content hover:bg-accent/10 transition-colors'
@@ -215,7 +215,7 @@
     <div class="variation-tree-block w-full flex flex-col gap-1 pl-4 my-2 relative">
       @for (variation of node.variations; track $index) {
       <div class="variation-branch-item relative pl-5 py-1 flex flex-wrap items-baseline">
-        <span class="text-xs font-bold text-accent mr-1.5 select-none uppercase">var</span>
+        <span class="text-xs font-bold mr-1.5 select-none uppercase">var</span>
         <ng-container *ngTemplateOutlet="
                         renderNodes;
                         context: { nodes: variation, isMainline: false }

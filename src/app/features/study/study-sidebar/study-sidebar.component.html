@@ -8,15 +8,14 @@
   <div class="px-4">
     <div class="flex flex-col">
       <div class="flex items-center justify-between">
-        <h2
-          class="text-lg font-semibold select-none line-clamp-2 whitespace-normal cursor-pointer hover:text-accent min-w-0 "
+        <h2 class="text-lg font-semibold select-none line-clamp-2 whitespace-normal cursor-pointer min-w-0 "
           [title]="s.name">
           {{ s.name }}
         </h2>
       </div>
       <div (click)="openViewers()"
         class="flex items-center gap-1.5 mt-1.5 text-sm font-semibold text-muted cursor-pointer hover:underline">
-        <ng-icon name="heroEye" class="text-sm font-semibold text-accent"></ng-icon>
+        <ng-icon name="heroEye" class="text-sm font-semibold"></ng-icon>
         <span>{{ viewerCount() }} viewer{{ viewerCount() === 1 ? '' : 's' }}</span>
       </div>
     </div>

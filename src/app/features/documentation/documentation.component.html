@@ -1,21 +1,16 @@
 <div class="min-h-screen bg-slate-50    flex flex-col md:flex-row pt-16">
-  
+
   <!-- Sidebar Navigation -->
-  <aside class="w-full md:w-64 lg:w-72 shrink-0 border-r border-border-base  md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto px-6 py-8 bg-white ">
+  <aside
+    class="w-full md:w-64 lg:w-72 shrink-0 border-r border-border-base  md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto px-6 py-8 bg-white ">
     <div class="mb-8">
       <h2 class="text-xs font-semibold uppercase    mb-4 px-3">Documentation</h2>
       <nav class="space-y-1">
-        <button 
-          *ngFor="let section of sections"
-          (click)="scrollTo(section.id)"
-          [class.text-cyan-600]="activeSection === section.id"
-          [class.bg-accent]="activeSection === section.id"
-          [class.]="activeSection === section.id"
-          [class.]="activeSection === section.id"
-          [class.text-slate-600]="activeSection !== section.id"
-          [class.]="activeSection !== section.id"
-          class="w-full text-left px-3 py-2.5 text-sm  rounded-lg  hover:bg-slate-100 "
-        >
+        <button *ngFor="let section of sections" (click)="scrollTo(section.id)"
+          [class.text-cyan-600]="activeSection === section.id" [class.bg-accent]="activeSection === section.id"
+          [class.]="activeSection === section.id" [class.]="activeSection === section.id"
+          [class.text-slate-600]="activeSection !== section.id" [class.]="activeSection !== section.id"
+          class="w-full text-left px-3 py-2.5 text-sm  rounded-lg  hover:bg-slate-100 ">
           {{ section.title }}
         </button>
       </nav>
@@ -37,19 +32,21 @@
           </h2>
           <div class="prose prose-slate  max-w-none text-slate-600 ">
             <p class="text-lg ">{{ section.content }}</p>
-            
+
             <!-- Placeholder for future content blocks -->
-            <div class="mt-8 p-6 rounded-2xl bg-white  border border-border-base  shadow-sm  hover:shadow-md">
+            <div class="mt-8 p-6 rounded-2xl bg-white  border border-border-base  shadow-sm ">
               <div class="flex items-center gap-4 mb-3">
                 <div class="w-10 h-10 rounded-full bg-accent  flex items-center justify-center flex-shrink-0">
                   <svg class="w-5 h-5 text-cyan-600 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </div>
                 <h3 class="text-xl font-semibold   m-0">Content Under Construction</h3>
               </div>
               <p class="text-sm md:text-base   md:ml-14">
-                We are currently expanding our documentation. Stay tuned for a comprehensive guide on {{ section.title | lowercase }}.
+                We are currently expanding our documentation. Stay tuned for a comprehensive guide on {{ section.title |
+                lowercase }}.
               </p>
             </div>
           </div>

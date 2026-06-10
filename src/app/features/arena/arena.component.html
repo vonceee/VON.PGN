@@ -42,7 +42,7 @@
 
       <!-- Viewer Count below chat -->
       <div (click)="openViewers()"
-        class="flex items-center gap-2 px-2 pb-1 text-sm font-semibold text-muted cursor-pointer hover:text-accent transition-colors w-fit shrink-0">
+        class="flex items-center gap-2 px-2 pb-1 text-sm font-semibold text-muted cursor-pointer transition-colors w-fit shrink-0">
         <span>{{ viewerCount() }} player/s in lobby</span>
       </div>
     </div>
@@ -65,7 +65,7 @@
 
           <div class="text-right">
             @if (isPast()) {
-            <div class="text-xs uppercase text-accent font-bold mb-0.5">
+            <div class="text-xs uppercase font-bold mb-0.5">
               Tournament Finished
             </div>
             <div class="text-2xl tabular-numser text-content font-bold">
@@ -75,7 +75,7 @@
             <div class="text-xs uppercase text-muted mb-0.5">
               {{ countdownLabel() }}
             </div>
-            <div class="text-3xl tabular-numser text-accent font-black">
+            <div class="text-3xl tabular-numser font-black">
               {{ countdown() }}
             </div>
             }
@@ -106,9 +106,9 @@
                 class="absolute -top-3 bg-accent text-white px-3 py-1 rounded-full text-[9px] font-bold uppercase shadow-lg shadow-accent/20">
                 Winner
               </div>
-              <div class="text-4xl font-black text-accent/20 mb-2 italic">1</div>
+              <div class="text-4xl font-black/20 mb-2 italic">1</div>
               <div class="text-lg font-bold truncate w-full text-center text-content mb-0.5">{{ p1.name }}</div>
-              <div class="text-xs font-medium text-accent">{{ p1.score }} points</div>
+              <div class="text-xs font-medium">{{ p1.score }} points</div>
             </div>
           </div>
           }

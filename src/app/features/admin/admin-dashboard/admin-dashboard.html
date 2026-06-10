@@ -39,7 +39,7 @@
           <h2 class="text-xl font-semibold text-content">Recent Enrollments</h2>
           <p class="text-sm text-muted mt-1">Latest academy students waiting for review.</p>
         </div>
-        <a routerLink="/admin/academy-enrollments" class="text-sm font-semibold text-accent hover:underline">
+        <a routerLink="/admin/academy-enrollments" class="text-sm font-semibold hover:underline">
           View All
         </a>
       </div>
@@ -56,25 +56,25 @@
           </thead>
           <tbody class="divide-y divide-border-base/50">
             @for (item of recentEnrollments(); track item.id) {
-              <tr class="hover:bg-subtle ">
-                <td class="py-4">
-                  <div class="font-semibold text-content">{{ item.full_name }}</div>
-                  <div class="text-xs text-muted">{{ item.email }}</div>
-                </td>
-                <td class="py-4">
-                  <span class="text-xs font-semibold text-content bg-subtle px-2.5 py-1 rounded-lg">
-                    {{ item.chess_level }}
-                  </span>
-                </td>
-                <td class="py-4">
-                  <span [class]="'text-xs  uppercase  px-2.5 py-1 rounded-lg ' + getStatusClass(item.status)">
-                    {{ item.status }}
-                  </span>
-                </td>
-                <td class="py-4 text-right text-xs  text-muted">
-                  {{ item.created_at | date:'MMM d, h:mm a' }}
-                </td>
-              </tr>
+            <tr class="hover:bg-subtle ">
+              <td class="py-4">
+                <div class="font-semibold text-content">{{ item.full_name }}</div>
+                <div class="text-xs text-muted">{{ item.email }}</div>
+              </td>
+              <td class="py-4">
+                <span class="text-xs font-semibold text-content bg-subtle px-2.5 py-1 rounded-lg">
+                  {{ item.chess_level }}
+                </span>
+              </td>
+              <td class="py-4">
+                <span [class]="'text-xs  uppercase  px-2.5 py-1 rounded-lg ' + getStatusClass(item.status)">
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="py-4 text-right text-xs  text-muted">
+                {{ item.created_at | date:'MMM d, h:mm a' }}
+              </td>
+            </tr>
             }
           </tbody>
         </table>

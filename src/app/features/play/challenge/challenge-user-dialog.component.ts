@@ -67,7 +67,7 @@ import { TIME_CONTROLS, TimeControlOption, ChallengeSettings } from '../../../co
         @if (showCustomForm()) {
           <section class="space-y-6 pt-4 border-t border-border-base/50">
             <div class="flex justify-between items-center">
-              <h3 class="text-sm font-semibold text-accent ml-1">Custom Setup</h3>
+              <h3 class="text-sm font-semibold ml-1">Custom Setup</h3>
               <button
                 (click)="showCustomForm.set(false)"
                 class="text-xs font-semibold underline cursor-pointer bg-transparent border-none text-muted hover:text-content"

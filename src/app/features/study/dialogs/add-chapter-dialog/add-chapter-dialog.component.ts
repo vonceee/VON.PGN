@@ -184,7 +184,7 @@ export interface AddChapterDialogResult {
               </button>
               
               @if (fileSummary()) {
-                <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-border-base rounded-lg text-xs text-accent font-semibold slide-in-from-bottom-2">
+                <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-border-base rounded-lg text-xs font-semibold slide-in-from-bottom-2">
                   {{ fileSummary() }}
                 </div>
               }

@@ -37,7 +37,7 @@ export class ButtonComponent {
       case 'danger':
         return `${base} bg-transparent border-transparent text-rose-500 hover:text-rose-600 underline underline-offset-4 decoration-rose-500/30 hover:decoration-rose-600`;
       case 'ghost':
-        return `${base} bg-transparent hover:bg-accent/10 border-transparent text-muted hover:text-accent`;
+        return `${base} bg-transparent hover:bg-accent/10 border-transparent text-muted`;
       default:
         return `${base} bg-main border-border-base hover:underline rounded-full text-content`;
     }
