@@ -464,8 +464,8 @@ export class StudyComponent implements OnInit, OnDestroy {
   private updateLayoutStates() {
     const width = window.innerWidth;
     this.isLargeScreen.set(width >= 1024);
-    this.isThreeColumn.set(width >= 1280);
-    this.isTwoColumn.set(width >= 1024 && width < 1280);
+    this.isThreeColumn.set(width >= 1536);
+    this.isTwoColumn.set(width >= 768 && width < 1536);
     
     // If we move back to 3-column and were on a sidebar tab, move back to notation
     if (this.isThreeColumn() && (this.activeTab() === 'chapters' || this.activeTab() === 'chat')) {

@@ -3,7 +3,7 @@
   <!-- Main Content Grid Wrapper -->
   <div class="flex-1 w-full max-w-[1700px] mx-auto overflow-hidden p-2 lg:p-4 xl:p-6">
     <div
-      class="grid grid-cols-1 lg:grid-cols-[1fr_minmax(350px,450px)] xl:grid-cols-[minmax(260px,320px)_1fr_minmax(320px,420px)] 2xl:grid-cols-[minmax(300px,360px)_1fr_minmax(380px,480px)] gap-3 lg:gap-4 xl:gap-6 h-full overflow-hidden">
+      class="grid justify-center grid-cols-1 md:grid-cols-[var(--board-size)_400px] 2xl:grid-cols-[330px_var(--board-size)_400px] gap-3 lg:gap-4 xl:gap-6 h-full overflow-hidden">
 
       <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
       @if (isThreeColumn()) {
@@ -12,7 +12,7 @@
       }
 
       <!-- Center Column: Board -->
-      <div class="flex flex-col items-center justify-center overflow-hidden relative">
+      <div class="flex flex-col items-center justify-start overflow-hidden relative">
         @if (isEngineVisible() && isEngineActive()) {
         <div class="lg:hidden w-full max-w-[800px] px-4 pb-2    ">
           <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="horizontal"></app-eval-bar>
@@ -20,15 +20,15 @@
         }
 
         <div
-          class="flex-1 w-full flex items-center justify-center min-h-0 overflow-hidden relative board-container-parent">
+          class="flex-1 w-full flex items-start justify-center min-h-0 overflow-hidden relative board-container-parent">
           <div class="flex items-center justify-center gap-0 max-h-full w-full max-w-6xl mx-auto">
-            <app-chess-board #board [fen]="currentFen()" [orientation]="boardOrientation()"
+            <app-chess-board #board [minSize]="400" [fen]="currentFen()" [orientation]="boardOrientation()"
               [interactive]="boardInteractive()" (moveMade)="onMoveMade($event)" (shapeDrawn)="onShapeDrawn($event)"
               (sizeChange)="boardSize.set($event)" (prevMove)="onPrevMove()" (nextMove)="onNextMove()"
               [syncedShapes]="mergedShapes()" [lastMove]="lastMoveSquares()"
               [glyphs]="activeGlyphs()"></app-chess-board>
 
-            <div class="hidden lg:block w-4 h-[var(--board-size)]   ease-in-out"
+            <div class="hidden lg:block w-4 h-[var(--board-size)] pb-[20px] box-border ease-in-out"
               [class.opacity-0]="!isEngineActive() || !isEngineVisible()"
               [class.invisible]="!isEngineActive() || !isEngineVisible()">
               <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="vertical"></app-eval-bar>
@@ -40,45 +40,21 @@
       </div>
 
       <!-- Right Column: Notation & Info -->
-      <div class="h-full flex flex-col gap-4 overflow-hidden">
-        <!-- Tab Icon Pills (Outside Panel) -->
+      <div class="h-full flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
         <div class="flex items-center gap-0.5 px-1 shrink-0">
-          @if (!isThreeColumn()) {
-          <button (click)="activeTab.set('chapters')" title="Chapters"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-            [class.text-accent]="activeTab() === 'chapters'" [class.bg-accent\/10]="activeTab() === 'chapters'"
-            [class.text-muted]="activeTab() !== 'chapters'">
-            <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
-            <span class="text-xs font-semibold">Chapters</span>
-          </button>
-          <button (click)="activeTab.set('chat')" title="Chat"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 relative"
-            [class.text-accent]="activeTab() === 'chat'" [class.bg-accent\/10]="activeTab() === 'chat'"
-            [class.text-muted]="activeTab() !== 'chat'">
-            <ng-icon name="heroChatBubbleLeftRight" class="text-lg"></ng-icon>
-            <span class="text-xs font-semibold">Chat</span>
-            @if (webrtc.isCallActive() && activeTab() !== 'chat') {
-            <span class="absolute top-1 right-1 flex h-2 w-2">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            }
-          </button>
-          }
           <button (click)="activeTab.set('notation')" title="Notation"
             class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
             [class.text-accent]="activeTab() === 'notation'" [class.bg-accent\/10]="activeTab() === 'notation'"
             [class.text-muted]="activeTab() !== 'notation'">
             <ng-icon name="heroQueueList" class="text-lg"></ng-icon>
-            <span class="text-sm">Notation</span>
+            <span class="hidden xl:inline text-sm">Notation</span>
           </button>
           <button (click)="activeTab.set('info')" title="Info"
             class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
             [class.text-accent]="activeTab() === 'info'" [class.bg-accent\/10]="activeTab() === 'info'"
             [class.text-muted]="activeTab() !== 'info'">
             <ng-icon name="heroInformationCircle" class="text-lg"></ng-icon>
-            <span class="text-sm">Info</span>
+            <span class="hidden xl:inline text-sm">Info</span>
           </button>
 
           <div class="flex-1"></div>
@@ -131,61 +107,62 @@
           }
         </div>
 
-        <!-- Main Content Panel -->
-        <div class="flex-1 flex flex-col overflow-hidden bg-subtle rounded-4xl border border-border-base/50">
+        <div class="h-[400px] md:h-[var(--board-size)] flex flex-col overflow-hidden bg-subtle rounded-4xl border border-border-base/50">
           <div class="flex-1 flex flex-col overflow-hidden relative">
 
             @if (activeTab() === 'notation') {
-            @if (isEngineVisible()) {
-            <app-study-analysis [isEngineActive]="isEngineActive()" [isEngineError]="isEngineError()"
-              [engineEval]="engineEval()" [engineDepth]="engineDepth()" [formattedNps]="formattedNps()"
-              [showEngineSettings]="showEngineSettings()" [multiPvCount]="multiPvCount()" [searchMode]="searchMode()"
-              [enginePvLines]="enginePvLines()" [currentPly]="currentPly()" (toggleEngine)="toggleEngine()"
-              (retryEngine)="onEngineRetry()" (toggleSettings)="toggleEngineSettings()"
-              (multiPvChange)="onMultiPvChange($event)"></app-study-analysis>
-            }
+            <div class="flex-1 flex flex-col overflow-hidden min-h-0">
+              @if (isEngineVisible()) {
+              <app-study-analysis [isEngineActive]="isEngineActive()" [isEngineError]="isEngineError()"
+                [engineEval]="engineEval()" [engineDepth]="engineDepth()" [formattedNps]="formattedNps()"
+                [showEngineSettings]="showEngineSettings()" [multiPvCount]="multiPvCount()" [searchMode]="searchMode()"
+                [enginePvLines]="enginePvLines()" [currentPly]="currentPly()" (toggleEngine)="toggleEngine()"
+                (retryEngine)="onEngineRetry()" (toggleSettings)="toggleEngineSettings()"
+                (multiPvChange)="onMultiPvChange($event)"></app-study-analysis>
+              }
 
-            <app-study-metadata [chapter]="currentChapter()"></app-study-metadata>
+              <app-study-metadata [chapter]="currentChapter()"></app-study-metadata>
 
-            <app-move-notation class="flex-1 overflow-y-auto custom-scrollbar" [moveTree]="moveTree()"
-              [currentFen]="currentFen()" [currentPly]="currentPly()" [initialPly]="initialPly()"
-              [showNavigation]="true" [result]="currentChapter()?.pgn_tags?.['Result']"
-              (nodeClicked)="onNodeClicked($event)" (navigate)="onNavigateToPly($event)"
-              (deleteFromHere)="onDeleteFromHere($event)" (annotateMove)="onAnnotateMove($event)"
-              (promoteToMainline)="onPromoteToMainline($event)"></app-move-notation>
+              <app-move-notation class="flex-1 overflow-y-auto custom-scrollbar" [moveTree]="moveTree()"
+                [currentFen]="currentFen()" [currentPly]="currentPly()" [initialPly]="initialPly()"
+                [showNavigation]="true" [result]="currentChapter()?.pgn_tags?.['Result']"
+                (nodeClicked)="onNodeClicked($event)" (navigate)="onNavigateToPly($event)"
+                (deleteFromHere)="onDeleteFromHere($event)" (annotateMove)="onAnnotateMove($event)"
+                (promoteToMainline)="onPromoteToMainline($event)"></app-move-notation>
 
-            @if (currentNode(); as activeNode) {
-            @if ((activeNode.comments && activeNode.comments.length > 0) || (activeNode.preComments &&
-            activeNode.preComments.length > 0)) {
-            <!-- Dedicated Commentary Section -->
-            <div
-              class="px-5 py-4 bg-amber-50/35 border-t border-border-base/60 flex flex-col gap-2 shrink-0 animate-slideUp select-text">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <span class="text-md">
-                    {{ activeNode.ply % 2 !== 0 ? (activeNode.ply + 1) / 2 : activeNode.ply / 2 + '...' }} {{
-                    activeNode.san }}
-                  </span>
+              @if (currentNode(); as activeNode) {
+              @if ((activeNode.comments && activeNode.comments.length > 0) || (activeNode.preComments &&
+              activeNode.preComments.length > 0)) {
+              <!-- Dedicated Commentary Section -->
+              <div
+                class="px-5 py-4 bg-amber-50/35 border-t border-border-base/60 flex flex-col gap-2 shrink-0 animate-slideUp select-text">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="text-md">
+                      {{ activeNode.ply % 2 !== 0 ? (activeNode.ply + 1) / 2 : activeNode.ply / 2 + '...' }} {{
+                      activeNode.san }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                  <!-- Pre-move comments -->
+                  @if (activeNode.preComments && activeNode.preComments.length > 0) {
+                  <div class="text-md text-muted pl-3 py-0.5">
+                    {{ activeNode.preComments[0] }}
+                  </div>
+                  }
+                  <!-- Core move comments -->
+                  @if (activeNode.comments && activeNode.comments.length > 0) {
+                  <div class="text-md">
+                    {{ activeNode.comments[0] }}
+                  </div>
+                  }
                 </div>
               </div>
-
-              <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto custom-scrollbar pr-1">
-                <!-- Pre-move comments -->
-                @if (activeNode.preComments && activeNode.preComments.length > 0) {
-                <div class="text-md text-muted pl-3 py-0.5">
-                  {{ activeNode.preComments[0] }}
-                </div>
-                }
-                <!-- Core move comments -->
-                @if (activeNode.comments && activeNode.comments.length > 0) {
-                <div class="text-md">
-                  {{ activeNode.comments[0] }}
-                </div>
-                }
-              </div>
+              }
+              }
             </div>
-            }
-            }
 
             <style>
               @keyframes slide-up {
@@ -209,17 +186,15 @@
             } @else if (activeTab() === 'metadata') {
             <app-study-metadata-tab [chapter]="currentChapter()" [canEdit]="canEdit()"
               (edit)="onEditMetadata()"></app-study-metadata-tab>
-            } @else if (activeTab() === 'chapters') {
-            <app-study-sidebar class="h-full overflow-hidden" [isLargeScreen]="isLargeScreen()"
-              [isSyncing]="isSyncing()" [canEdit]="canEdit()" [isTabMode]="true"
-              displayMode="chapters"></app-study-sidebar>
-            } @else if (activeTab() === 'chat') {
-            <app-study-sidebar class="h-full overflow-hidden" [isLargeScreen]="isLargeScreen()"
-              [isSyncing]="isSyncing()" [canEdit]="canEdit()" [isTabMode]="true" displayMode="chat"></app-study-sidebar>
-
             }
           </div>
         </div>
+
+        <!-- Sidebar component visible below the notation box on 2-column layouts -->
+        @if (activeTab() === 'notation' && !isThreeColumn()) {
+        <app-study-sidebar class="h-[var(--board-size)] overflow-hidden" [isLargeScreen]="isLargeScreen()" [isSyncing]="isSyncing()"
+          [canEdit]="canEdit()"></app-study-sidebar>
+        }
 
         <!-- Opening Explorer & Tablebase -->
         <div class="px-1 flex items-center gap-0.5 shrink-0">

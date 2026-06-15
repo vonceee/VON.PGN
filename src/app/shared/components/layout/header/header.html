@@ -137,7 +137,7 @@
   <div class="flex items-center gap-2 lg:gap-3 ml-auto lg:ml-0">
     @if (authService.isAuthenticated()) {
     <!-- Notifications Dropdown -->
-    <div class="relative hidden lg:block">
+    <div class="relative hidden md:block">
       <button (click)="toggleNotifications()"
         class="flex items-center gap-1.5 px-3 py-1.5 cursor-pointer relative group" aria-label="Notifications">
         <svg class="w-4.5 h-4.5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -194,9 +194,6 @@
           <!-- Notifications -->
           @if (notificationService.isLoading() && notificationService.notifications().length === 0) {
           <div class="px-4 py-8 text-center text-muted text-sm italic">Loading...</div>
-          } @else if (notificationService.notifications().length === 0 && challengeService.incomingChallenges().length
-          === 0) {
-          <div class="px-4 py-8 text-center text-muted text-sm italic">No notifications yet</div>
           } @else {
           @for (n of notificationService.notifications(); track n.id) {
           <div class="px-4 py-3 hover:bg-subtle  cursor-pointer border-b border-border-base last:border-0"
@@ -213,11 +210,16 @@
       }
     </div>
 
-    <div class="relative hidden lg:block" #profileContainer>
+    <div class="relative hidden md:block" #profileContainer>
       <button (click)="toggleProfileDropdown()"
         class="flex items-center gap-2 group cursor-pointer focus:outline-none relative">
         <div class="flex items-center gap-1.5">
-          <span class="text-sm lg:text-base text-muted font-medium hover:underline cursor-pointer">
+          <!-- Profile Icon (visible on tablet, hidden on desktop) -->
+          <svg class="w-4.5 h-4.5 text-muted group-hover:text-content transition-colors md:block lg:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <!-- Username Text (hidden on tablet, visible on desktop) -->
+          <span class="hidden lg:inline text-sm lg:text-base text-muted font-medium hover:underline cursor-pointer">
             {{ userService.currentUser()?.username || 'User' }}
           </span>
         </div>
@@ -307,8 +309,12 @@
     }
 
     <!-- Mobile Hamburger Button -->
-    <button (click)="toggleMobileMenu()" class="lg:hidden p-2" aria-label="Toggle Menu">
-      Menu
+    <button (click)="toggleMobileMenu()"
+      class="lg:hidden p-1.5 cursor-pointer relative group text-muted hover:text-content transition-colors flex items-center justify-center rounded-lg"
+      aria-label="Toggle Menu">
+      <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
     </button>
   </div>
 </header>

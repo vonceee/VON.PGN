@@ -36,64 +36,66 @@ import { AudioService } from '../../../../core/services/audio.service';
   template: `
     <div class="board-resize-wrapper" [class.fluid]="fluid">
       <div class="board-container-wrapper relative">
-        <div #boardEl class="board-container">
-          <div class="absolute inset-0 flex items-center justify-center text-muted opacity-20 pointer-events-none">
-            {{ isEditor ? 'Editor Board' : 'Loading...' }}
-          </div>
-        </div>
-
-        <!-- Promotion Overlay -->
-        @if (pendingPromotion(); as p) {
-          <div class="absolute inset-0 z-40 bg-black/20" (click)="cancelPromotion()"></div>
-
-          <div
-            class="absolute inset-0 z-50 flex items-center justify-center    zoom-in "
-          >
-            <div
-              class="promotion-menu p-4 bg-surface border border-border-base rounded-2xl  flex gap-4"
-              (click)="$event.stopPropagation()"
-            >
-              @for (piece of promotionPieces; track piece.type) {
-                <button
-                  (click)="selectPromotion(piece.type)"
-                  class="w-20 h-20 flex items-center justify-center rounded-xl bg-subtle hover:bg-surface border border-border-base  active:scale-90"
-                >
-                  <span class="text-3xl  text-content uppercase">{{ piece.type }}</span>
-                </button>
-              }
+        <div class="board-tiles-container relative w-full h-full">
+          <div #boardEl class="board-container">
+            <div class="absolute inset-0 flex items-center justify-center text-muted opacity-20 pointer-events-none">
+              {{ isEditor ? 'Editor Board' : 'Loading...' }}
             </div>
           </div>
-        }
 
-        <!-- Resize Handle -->
-        @if (resizable) {
-          <div
-            class="board-resize-handle"
-            (mousedown)="startResizing($event)"
-            (touchstart)="startResizing($event)"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="21" y1="3" x2="3" y2="21"></line>
-              <line x1="21" y1="12" x2="12" y2="21"></line>
-            </svg>
-          </div>
-        }
+          <!-- Promotion Overlay -->
+          @if (pendingPromotion(); as p) {
+            <div class="absolute inset-0 z-40 bg-black/20" (click)="cancelPromotion()"></div>
 
-        <!-- Glyphs Layer -->
-        <div class="absolute inset-0 pointer-events-none z-20">
-          @for (g of glyphs(); track g.square + g.symbol) {
-            <div 
-              class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white  text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border    absolute"
-              [class.bg-[var(--color-annotation-good)]]="g.class === 'good' || g.class === 'brilliant'"
-              [class.bg-[var(--color-annotation-bad)]]="g.class === 'mistake' || g.class === 'blunder'"
-              [class.bg-[var(--color-annotation-interesting)]]="g.class === 'interesting' || g.class === 'dubious' || g.class === 'only-move' || g.class === 'zugzwang'"
-              [style]="getGlyphStyle(g.square)"
+            <div
+              class="absolute inset-0 z-50 flex items-center justify-center    zoom-in "
             >
-              <span class="text-[14px] leading-none  [text-shadow:_0_1px_2px_rgba(0,0,0,0.2)]">
-                {{ g.symbol }}
-              </span>
+              <div
+                class="promotion-menu p-4 bg-surface border border-border-base rounded-2xl  flex gap-4"
+                (click)="$event.stopPropagation()"
+              >
+                @for (piece of promotionPieces; track piece.type) {
+                  <button
+                    (click)="selectPromotion(piece.type)"
+                    class="w-20 h-20 flex items-center justify-center rounded-xl bg-subtle hover:bg-surface border border-border-base  active:scale-90"
+                  >
+                    <span class="text-3xl  text-content uppercase">{{ piece.type }}</span>
+                  </button>
+                }
+              </div>
             </div>
           }
+
+          <!-- Resize Handle -->
+          @if (resizable) {
+            <div
+              class="board-resize-handle"
+              (mousedown)="startResizing($event)"
+              (touchstart)="startResizing($event)"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="21" y1="3" x2="3" y2="21"></line>
+                <line x1="21" y1="12" x2="12" y2="21"></line>
+              </svg>
+            </div>
+          }
+
+          <!-- Glyphs Layer -->
+          <div class="absolute inset-0 pointer-events-none z-20">
+            @for (g of glyphs(); track g.square + g.symbol) {
+              <div 
+                class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white  text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border    absolute"
+                [class.bg-[var(--color-annotation-good)]]="g.class === 'good' || g.class === 'brilliant'"
+                [class.bg-[var(--color-annotation-bad)]]="g.class === 'mistake' || g.class === 'blunder'"
+                [class.bg-[var(--color-annotation-interesting)]]="g.class === 'interesting' || g.class === 'dubious' || g.class === 'only-move' || g.class === 'zugzwang'"
+                [style]="getGlyphStyle(g.square)"
+              >
+                <span class="text-[14px] leading-none  [text-shadow:_0_1px_2px_rgba(0,0,0,0.2)]">
+                  {{ g.symbol }}
+                </span>
+              </div>
+            }
+          </div>
         </div>
       </div>
     </div>
@@ -118,6 +120,13 @@ import { AudioService } from '../../../../core/services/audio.service';
         width: 100%;
         aspect-ratio: 1 / 1;
         box-sizing: border-box;
+        padding-left: 20px;
+        padding-bottom: 20px;
+      }
+      .board-tiles-container {
+        width: 100%;
+        height: 100%;
+        position: relative;
       }
       .board-container {
         width: 100%;
@@ -273,13 +282,22 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   private updateBoardSize() {
     const GUTTER = 0;
-    // Determine the maximum square size that fits in the container (100% fit)
-    const maxPossible = Math.min(this.containerSize.width, this.containerSize.height);
+    
+    // Determine the maximum size that fits the screen height
+    const maxHeight = this.containerSize.height || (window.innerHeight - 120);
+    
+    // Determine the maximum size that fits the screen width (accounting for other columns' fixed widths)
+    const isThreeCol = window.innerWidth >= 1536;
+    const otherColumnsWidth = (isThreeCol ? 330 : 0) + 400 + 80;
+    const maxWidth = window.innerWidth - otherColumnsWidth;
+    
+    // The maximum possible board size is the minimum of available width and height
+    const maxPossible = Math.max(this.minSize, Math.min(maxWidth, maxHeight));
     
     // Use manual size if set, otherwise fit to parent
     const targetSize = this.manualSize() || maxPossible;
 
-    // Clamp to global min/max and current container limits
+    // Clamp to global min/max and stable screen limits
     const totalSize = Math.max(this.minSize + GUTTER, Math.min(this.maxSize, targetSize, maxPossible));
 
     // Direct DOM update for performance
@@ -327,7 +345,10 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @HostListener('window:mouseup')
   @HostListener('window:touchend')
   onMouseUp() {
-    this.isResizing.set(false);
+    if (this.isResizing()) {
+      this.isResizing.set(false);
+      this.updateBoardSize();
+    }
   }
 
   @HostListener('wheel', ['$event'])

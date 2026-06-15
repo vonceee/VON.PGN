@@ -21,13 +21,16 @@ import { Router } from '@angular/router';
       class="lg:hidden fixed top-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] h-full bg-main border-l border-border-base flex flex-col overflow-y-auto shadow-2xl transition-transform duration-300"
     >
       <!-- Menu Header -->
-      <div class="flex items-center shrink-0 h-16 px-4">
+      <div class="flex items-center justify-end shrink-0 h-16 px-4">
         <!-- Close Button -->
         <button
           (click)="close.emit()"
           aria-label="Close menu"
+          class="p-1.5 cursor-pointer relative group text-muted hover:text-content transition-colors flex items-center justify-center rounded-lg hover:bg-subtle"
         >
-          Close menu
+          <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
 
@@ -89,7 +92,7 @@ import { Router } from '@angular/router';
       </div>
 
       <!-- Auth Section -->
-      <div class="border-t border-border-base p-6 bg-surface/30 shrink-0">
+      <div class="border-t border-border-base p-6 bg-surface/30 shrink-0 md:hidden">
         @if (authService.isAuthenticated()) {
           <!-- User Profile Label -->
           <div class="px-3 py-2 mb-3">
