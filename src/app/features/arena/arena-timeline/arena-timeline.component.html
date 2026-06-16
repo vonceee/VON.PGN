@@ -18,7 +18,7 @@
       <!-- Time Grid & Labels -->
       <div class="absolute inset-0 pointer-events-none">
         @for (marker of timeMarkers(); track marker.time) {
-        <div class="absolute top-0 bottom-0 border-l border-border-base/30" [style.left.px]="marker.left">
+        <div class="absolute top-0 bottom-0 border-l border-border-base/50" [style.left.px]="marker.left">
           <span class="absolute top-2 left-2 text-xs font-bold text-muted whitespace-nowrap"
             [class.text-content]="marker.isHour">
             {{ marker.label }}

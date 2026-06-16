@@ -4,21 +4,21 @@
       <app-chess-board [fen]="currentFen()" (fenChange)="onFenChanged($event)"></app-chess-board>
     </div>
 
-    <div class="data-section border border-border-theme p-4 rounded-lg">
+    <div class="data-section border border-border-base p-4 rounded-lg">
       @if (isLoading()) {
         <div>
-          <div class="h-6 bg-slate-200 /80 rounded w-2/3 mb-6"></div>
+          <div class="h-6 bg-subtle /80 rounded w-2/3 mb-6"></div>
           <div class="border-collapse w-full">
-            <div class="flex gap-4 py-2 border-b border-border-theme mb-2">
-              <div class="h-5 bg-slate-200 /80 rounded w-16"></div>
-              <div class="h-5 bg-slate-200 /80 rounded w-16"></div>
-              <div class="h-5 bg-slate-200 /80 rounded w-40"></div>
+            <div class="flex gap-4 py-2 border-b border-border-base mb-2">
+              <div class="h-5 bg-subtle /80 rounded w-16"></div>
+              <div class="h-5 bg-subtle /80 rounded w-16"></div>
+              <div class="h-5 bg-subtle /80 rounded w-40"></div>
             </div>
             @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
-              <div class="flex gap-4 py-3 border-b border-border-theme">
-                <div class="h-5 bg-slate-200 /80 rounded w-10 shrink-0"></div>
-                <div class="h-5 bg-slate-200 /80 rounded w-16 shrink-0"></div>
-                <div class="h-5 bg-slate-200 /80 rounded flex-1"></div>
+              <div class="flex gap-4 py-3 border-b border-border-base">
+                <div class="h-5 bg-subtle /80 rounded w-10 shrink-0"></div>
+                <div class="h-5 bg-subtle /80 rounded w-16 shrink-0"></div>
+                <div class="h-5 bg-subtle /80 rounded flex-1"></div>
               </div>
             }
           </div>
@@ -35,7 +35,7 @@
 
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="border-b border-border-theme">
+            <tr class="border-b border-border-base">
               <th class="py-2">Move</th>
               <th class="py-2">Games</th>
               <th class="py-2 text-center">Results (White / Draw / Black)</th>
@@ -43,7 +43,7 @@
           </thead>
           <tbody>
             @for (move of data.moves; track move.san) {
-              <tr class="border-b border-border-theme hover:bg-accent cursor-pointer">
+              <tr class="border-b border-border-base hover:bg-accent cursor-pointer">
                 <td class="py-2 font-semibold">{{ move.san }}</td>
                 <td class="py-2 text-sm">{{ move.white + move.draws + move.black | number }}</td>
                 <td class="py-2">
@@ -84,7 +84,7 @@
     class="h-full w-full flex flex-col items-center justify-center py-20 px-8   "
   >
     <div
-      class="border border-border-theme rounded-3xl p-12 flex flex-col items-center max-w-lg text-center bg-slate-900"
+      class="border border-border-base rounded-3xl p-12 flex flex-col items-center max-w-lg text-center bg-content"
     >
       <div class="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center mb-8">
         <svg class="w-12 h-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -110,7 +110,7 @@
         </a>
         <a
           routerLink="/register"
-          class="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl  border border-border-theme"
+          class="px-8 py-3 bg-content hover:bg-muted text-white font-semibold rounded-xl  border border-border-base"
         >
           Register
         </a>

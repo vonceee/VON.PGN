@@ -1,38 +1,30 @@
-<div class="absolute inset-0 overflow-hidden flex flex-col bg-main">
-  @if (study(); as s) {
+<div class="absolute inset-0 flex flex-col bg-subtle" [class.overflow-hidden]="isThreeColumn()"
+  [class.overflow-y-auto]="!isThreeColumn()" [class.custom-scrollbar]="!isThreeColumn()">
+  @if (facade.study(); as s) {
   <!-- Main Content Grid Wrapper -->
-  <div class="flex-1 w-full max-w-[1700px] mx-auto overflow-hidden p-2 lg:p-4 xl:p-6">
+  <div class="flex-1 w-full max-w-[1700px] mx-auto p-2 lg:p-4 xl:p-6" [class.overflow-hidden]="isThreeColumn()">
     <div
-      class="grid justify-center grid-cols-1 md:grid-cols-[var(--board-size)_400px] 2xl:grid-cols-[330px_var(--board-size)_400px] gap-3 lg:gap-4 xl:gap-6 h-full overflow-hidden">
+      class="grid justify-center grid-cols-1 md:grid-cols-[var(--board-size)_400px] xl:grid-cols-[330px_var(--board-size)_400px] gap-3 lg:gap-4 xl:gap-6"
+      [class.h-full]="isThreeColumn()" [class.overflow-hidden]="isThreeColumn()">
 
       <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
       @if (isThreeColumn()) {
-      <app-study-sidebar class="h-full overflow-hidden" [isLargeScreen]="isLargeScreen()" [isSyncing]="isSyncing()"
-        [canEdit]="canEdit()"></app-study-sidebar>
+      <app-study-sidebar class="h-full overflow-hidden" [isLargeScreen]="isLargeScreen()"
+        [isSyncing]="facade.isSyncing()" [canEdit]="facade.canEdit()"></app-study-sidebar>
       }
 
       <!-- Center Column: Board -->
-      <div class="flex flex-col items-center justify-start overflow-hidden relative">
-        @if (isEngineVisible() && isEngineActive()) {
-        <div class="lg:hidden w-full max-w-[800px] px-4 pb-2    ">
-          <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="horizontal"></app-eval-bar>
-        </div>
-        }
-
-        <div
-          class="flex-1 w-full flex items-start justify-center min-h-0 overflow-hidden relative board-container-parent">
+      <div class="flex flex-col items-center justify-start relative" [class.overflow-hidden]="isThreeColumn()"
+        [class.md:sticky]="!isThreeColumn()" [class.md:top-6]="!isThreeColumn()">
+        <div class="w-full flex items-start justify-center min-h-0 relative board-container-parent"
+          [class.flex-1]="isThreeColumn()" [class.overflow-hidden]="isThreeColumn()">
           <div class="flex items-center justify-center gap-0 max-h-full w-full max-w-6xl mx-auto">
-            <app-chess-board #board [minSize]="400" [fen]="currentFen()" [orientation]="boardOrientation()"
-              [interactive]="boardInteractive()" (moveMade)="onMoveMade($event)" (shapeDrawn)="onShapeDrawn($event)"
-              (sizeChange)="boardSize.set($event)" (prevMove)="onPrevMove()" (nextMove)="onNextMove()"
-              [syncedShapes]="mergedShapes()" [lastMove]="lastMoveSquares()"
-              [glyphs]="activeGlyphs()"></app-chess-board>
-
-            <div class="hidden lg:block w-4 h-[var(--board-size)] pb-[20px] box-border ease-in-out"
-              [class.opacity-0]="!isEngineActive() || !isEngineVisible()"
-              [class.invisible]="!isEngineActive() || !isEngineVisible()">
-              <app-eval-bar [eval]="engineEval()" [orientation]="boardOrientation()" mode="vertical"></app-eval-bar>
-            </div>
+            <app-chess-board #board [minSize]="400" [fen]="facade.currentFen()"
+              [orientation]="facade.boardOrientation()" [interactive]="facade.boardInteractive()"
+              (moveMade)="onMoveMade($event)" (shapeDrawn)="facade.onShapeDrawn($event)"
+              (sizeChange)="boardSize.set($event)" (prevMove)="facade.onPrevMove()" (nextMove)="facade.onNextMove()"
+              [syncedShapes]="facade.mergedShapes()" [lastMove]="facade.lastMoveSquares()"
+              [glyphs]="facade.activeGlyphs()"></app-chess-board>
           </div>
 
         </div>
@@ -40,210 +32,154 @@
       </div>
 
       <!-- Right Column: Notation & Info -->
-      <div class="h-full flex flex-col gap-4 overflow-y-auto custom-scrollbar pr-1">
-        <div class="flex items-center gap-0.5 px-1 shrink-0">
-          <button (click)="activeTab.set('notation')" title="Notation"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-            [class.text-accent]="activeTab() === 'notation'" [class.bg-accent\/10]="activeTab() === 'notation'"
-            [class.text-muted]="activeTab() !== 'notation'">
-            <ng-icon name="heroQueueList" class="text-lg"></ng-icon>
-            <span class="hidden xl:inline text-sm">Notation</span>
-          </button>
-          <button (click)="activeTab.set('info')" title="Info"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-            [class.text-accent]="activeTab() === 'info'" [class.bg-accent\/10]="activeTab() === 'info'"
-            [class.text-muted]="activeTab() !== 'info'">
-            <ng-icon name="heroInformationCircle" class="text-lg"></ng-icon>
-            <span class="hidden xl:inline text-sm">Info</span>
-          </button>
+      <div class="flex flex-col gap-4 custom-scrollbar pr-1" [class.h-full]="isThreeColumn()"
+        [class.overflow-y-auto]="isThreeColumn()" [class.md:overflow-hidden]="isThreeColumn()">
 
-          <div class="flex-1"></div>
+        <!-- Notation & Commentary Card -->
+        <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0" [class.h-[450px]]="!isThreeColumn()"
+          [class.h-[400px]]="isThreeColumn()" [class.md:h-0]="isThreeColumn()" [class.md:flex-1]="isThreeColumn()"
+          [class.md:min-h-0]="isThreeColumn()">
+          <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
+            <app-study-metadata [chapter]="facade.currentChapter()"></app-study-metadata>
 
-          <!-- Classroom Student Join/Lock Banner -->
-          @if (!isOwner() && isClassActive()) {
-          @if (!hasJoinedClass()) {
-          <div class="flex items-center gap-3 animate-fadeIn select-none mr-2">
-            <div class="flex items-center gap-1.5 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20">
-              <span class="relative flex h-1.5 w-1.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
-              </span>
-              <span class="text-xs font-bold text-red-700 uppercase tracking-wider">Class ongoing</span>
-            </div>
-            <button (click)="joinClassSession()"
-              class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 text-muted">
-              <ng-icon name="heroPlay" class="text-lg"></ng-icon>
-              <span class="text-xs font-semibold">Join class</span>
-            </button>
-          </div>
-          } @else {
-          <div class="flex items-center gap-3 select-none mr-2">
-            <!-- Class Active Badge -->
-            <div
-              class="flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-              <span class="relative flex h-1.5 w-1.5">
-                <span
-                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-              </span>
-              <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Class Active</span>
-            </div>
+            <app-move-notation class="flex-1 overflow-y-auto custom-scrollbar" layout="grid"
+              [moveTree]="facade.moveTree()" [currentFen]="facade.currentFen()" [currentPly]="facade.currentPly()"
+              [initialPly]="facade.initialPly()" [showNavigation]="true"
+              [result]="facade.currentChapter()?.pgn_tags?.['Result']" (nodeClicked)="facade.onNodeClicked($event)"
+              (navigate)="facade.onNavigateToPly($event)" (deleteFromHere)="facade.onDeleteFromHere($event)"
+              (annotateMove)="facade.onAnnotateMove($event)"
+              (promoteToMainline)="facade.onPromoteToMainline($event)"></app-move-notation>
 
-
-          </div>
-          }
-          }
-
-          @if (isOwner()) {
-          <button (click)="toggleClassSession()" [title]="isClassActive() ? 'End Class Session' : 'Start Class Session'"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-            [class.text-rose-500]="isClassActive()" [class.bg-rose-500\/10]="isClassActive()"
-            [class.text-muted]="!isClassActive()">
-            <ng-icon [name]="isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
-            <span class="text-sm">{{ isClassActive() ? 'End class' : 'Start class' }}</span>
-          </button>
-
-
-          }
-        </div>
-
-        <div class="h-[400px] md:h-[var(--board-size)] flex flex-col overflow-hidden bg-subtle rounded-4xl border border-border-base/50">
-          <div class="flex-1 flex flex-col overflow-hidden relative">
-
-            @if (activeTab() === 'notation') {
-            <div class="flex-1 flex flex-col overflow-hidden min-h-0">
-              @if (isEngineVisible()) {
-              <app-study-analysis [isEngineActive]="isEngineActive()" [isEngineError]="isEngineError()"
-                [engineEval]="engineEval()" [engineDepth]="engineDepth()" [formattedNps]="formattedNps()"
-                [showEngineSettings]="showEngineSettings()" [multiPvCount]="multiPvCount()" [searchMode]="searchMode()"
-                [enginePvLines]="enginePvLines()" [currentPly]="currentPly()" (toggleEngine)="toggleEngine()"
-                (retryEngine)="onEngineRetry()" (toggleSettings)="toggleEngineSettings()"
-                (multiPvChange)="onMultiPvChange($event)"></app-study-analysis>
-              }
-
-              <app-study-metadata [chapter]="currentChapter()"></app-study-metadata>
-
-              <app-move-notation class="flex-1 overflow-y-auto custom-scrollbar" [moveTree]="moveTree()"
-                [currentFen]="currentFen()" [currentPly]="currentPly()" [initialPly]="initialPly()"
-                [showNavigation]="true" [result]="currentChapter()?.pgn_tags?.['Result']"
-                (nodeClicked)="onNodeClicked($event)" (navigate)="onNavigateToPly($event)"
-                (deleteFromHere)="onDeleteFromHere($event)" (annotateMove)="onAnnotateMove($event)"
-                (promoteToMainline)="onPromoteToMainline($event)"></app-move-notation>
-
-              @if (currentNode(); as activeNode) {
-              @if ((activeNode.comments && activeNode.comments.length > 0) || (activeNode.preComments &&
-              activeNode.preComments.length > 0)) {
-              <!-- Dedicated Commentary Section -->
-              <div
-                class="px-5 py-4 bg-amber-50/35 border-t border-border-base/60 flex flex-col gap-2 shrink-0 animate-slideUp select-text">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <span class="text-md">
-                      {{ activeNode.ply % 2 !== 0 ? (activeNode.ply + 1) / 2 : activeNode.ply / 2 + '...' }} {{
-                      activeNode.san }}
-                    </span>
-                  </div>
+            @if (facade.currentNode(); as activeNode) {
+            @if ((activeNode.comments && activeNode.comments.length > 0) || (activeNode.preComments &&
+            activeNode.preComments.length > 0)) {
+            <!-- Dedicated Commentary Section -->
+            <div class="px-5 py-4 border-t border-border-base/50 flex flex-col gap-2 shrink-0 select-text">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-4xl font-medium">
+                    {{activeNode.san }}
+                  </span>
                 </div>
+              </div>
 
-                <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto custom-scrollbar pr-1">
-                  <!-- Pre-move comments -->
-                  @if (activeNode.preComments && activeNode.preComments.length > 0) {
-                  <div class="text-md text-muted pl-3 py-0.5">
-                    {{ activeNode.preComments[0] }}
-                  </div>
-                  }
-                  <!-- Core move comments -->
-                  @if (activeNode.comments && activeNode.comments.length > 0) {
-                  <div class="text-md">
-                    {{ activeNode.comments[0] }}
-                  </div>
-                  }
+              <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+                <!-- Pre-move comments -->
+                @if (activeNode.preComments && activeNode.preComments.length > 0) {
+                <div class="text-md text-muted pl-3 py-0.5">
+                  {{ activeNode.preComments[0] }}
+                </div>
+                }
+                <!-- Core move comments -->
+                @if (activeNode.comments && activeNode.comments.length > 0) {
+                <div class="text-md">
+                  {{ activeNode.comments[0] }}
+                </div>
+                }
+              </div>
+            </div>
+            }
+            }
+
+            <!-- Bottom Toolbar inside Notation Card -->
+            <div class="p-4 flex items-center shrink-0 select-none">
+              <!-- Flip Board Button -->
+              <button (click)="flipBoard()" title="Flip Board"
+                class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center gap-1.5">
+                <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
+                <span class="text-sm">Flip board</span>
+              </button>
+
+              <div class="h-5 w-px bg-muted/30 mx-1 shrink-0"></div>
+
+              <button (click)="openMetadataDialog()" title="Metadata"
+                class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
+                [class.text-accent]="isMetadataDialogOpen()" [class.bg-accent\/10]="isMetadataDialogOpen()"
+                [class.text-muted]="!isMetadataDialogOpen()">
+                <ng-icon name="heroTag" class="text-lg"></ng-icon>
+                <span class="text-sm">Metadata</span>
+              </button>
+
+              <!-- Classroom Actions & Status -->
+              @if (facade.isOwner()) {
+              <div class="h-5 w-px bg-muted/30 mx-1 shrink-0"></div>
+              <button (click)="facade.toggleClassSession()"
+                [title]="facade.isClassActive() ? 'End Class Session' : 'Start Class Session'"
+                class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
+                [class.text-rose-500]="facade.isClassActive()" [class.bg-rose-500\/10]="facade.isClassActive()"
+                [class.text-muted]="!facade.isClassActive()">
+                <ng-icon [name]="facade.isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
+                <span class="text-sm">{{ facade.isClassActive() ? 'End class' : 'Start class' }}</span>
+              </button>
+              } @else if (facade.isClassActive()) {
+              <div class="h-5 w-px bg-muted/30 mx-1 shrink-0"></div>
+              @if (!facade.hasJoinedClass()) {
+              <div class="flex items-center gap-3 animate-fadeIn select-none">
+                <div class="flex items-center gap-1.5 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20">
+                  <span class="relative flex h-1.5 w-1.5">
+                    <span
+                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+                  </span>
+                  <span class="text-xs font-bold text-red-700 uppercase tracking-wider">Class ongoing</span>
+                </div>
+                <button (click)="facade.joinClassSession()"
+                  class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 text-muted">
+                  <ng-icon name="heroPlay" class="text-lg"></ng-icon>
+                  <span class="text-xs font-semibold">Join class</span>
+                </button>
+              </div>
+              } @else {
+              <div class="flex items-center gap-3 select-none">
+                <!-- Class Active Badge -->
+                <div
+                  class="flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                  <span class="relative flex h-1.5 w-1.5">
+                    <span
+                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                  </span>
+                  <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Class Active</span>
                 </div>
               </div>
               }
               }
             </div>
-
-            <style>
-              @keyframes slide-up {
-                from {
-                  transform: translateY(10px);
-                  opacity: 0;
-                }
-
-                to {
-                  transform: translateY(0);
-                  opacity: 1;
-                }
-              }
-
-              .animate-slideUp {
-                animation: slide-up 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-              }
-            </style>
-            } @else if (activeTab() === 'info') {
-            <app-study-info [isOwner]="isOwner()" [canEdit]="canEdit()" [isSyncing]="isSyncing()"></app-study-info>
-            } @else if (activeTab() === 'metadata') {
-            <app-study-metadata-tab [chapter]="currentChapter()" [canEdit]="canEdit()"
-              (edit)="onEditMetadata()"></app-study-metadata-tab>
-            }
           </div>
         </div>
 
-        <!-- Sidebar component visible below the notation box on 2-column layouts -->
-        @if (activeTab() === 'notation' && !isThreeColumn()) {
-        <app-study-sidebar class="h-[var(--board-size)] overflow-hidden" [isLargeScreen]="isLargeScreen()" [isSyncing]="isSyncing()"
-          [canEdit]="canEdit()"></app-study-sidebar>
-        }
-
-        <!-- Opening Explorer & Tablebase -->
-        <div class="px-1 flex items-center gap-0.5 shrink-0">
-          <!-- Temporarily hidden Explorer Box -->
-          <!-- <app-explorer-box [fen]="currentFen()" [variant]="currentChapter()?.variant || 'standard'"
-            [orientation]="boardOrientation()" (flipBoard)="flipBoard()"></app-explorer-box> -->
-
-          <!-- Flip Board Button -->
-          <button (click)="flipBoard()" title="Flip Board"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-muted flex items-center gap-1.5">
-            <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
-            <span class="text-sm">Flip board</span>
-          </button>
-
-          <button (click)="activeTab.set('metadata')" title="Metadata"
-            class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-            [class.text-accent]="activeTab() === 'metadata'" [class.bg-accent\/10]="activeTab() === 'metadata'"
-            [class.text-muted]="activeTab() !== 'metadata'">
-            <ng-icon name="heroTag" class="text-lg"></ng-icon>
-            <span class="text-sm">Metadata</span>
-          </button>
-
-          <div class="flex-1"></div>
-
-          <button (click)="openShortcuts()" title="Keyboard Shortcuts"
-            class="p-2 rounded-lg transition-colors cursor-pointer text-muted shrink-0">
-            <ng-icon name="heroQuestionMarkCircle" class="text-lg"></ng-icon>
-          </button>
+        <!-- Outside Notation: Chapters & Chat (only when NOT in 3-column layout) -->
+        @if (!isThreeColumn()) {
+        <div class="h-[180px] overflow-hidden shrink-0">
+          <app-study-sidebar displayMode="chapters" [isTabMode]="true" [isLargeScreen]="isLargeScreen()"
+            [isSyncing]="facade.isSyncing()" [canEdit]="facade.canEdit()"></app-study-sidebar>
         </div>
+        <div class="h-[200px] overflow-hidden shrink-0">
+          <app-study-sidebar displayMode="chat" [isTabMode]="true" [isLargeScreen]="isLargeScreen()"
+            [isSyncing]="facade.isSyncing()" [canEdit]="facade.canEdit()"></app-study-sidebar>
+        </div>
+        }
       </div>
     </div>
   </div>
-  } @else if (isLoading()) {
+  } @else if (facade.isLoading()) {
   <div class="flex items-center justify-center min-h-96">
     <div class="w-10 h-10 border-3 border-accent border-t-transparent rounded-full animate-spin"></div>
   </div>
   }
 
-  @if (showDeleteModal() && study(); as s) {
-  <app-confirm-delete-modal [itemName]="s.name" itemType="study" [loading]="isDeleting()"
-    (confirm)="onDeleteConfirmed()" (cancel)="showDeleteModal.set(false)"></app-confirm-delete-modal>
+  @if (facade.showDeleteModal() && facade.study(); as s) {
+  <app-confirm-delete-modal [itemName]="s.name" itemType="study" [loading]="facade.isDeleting()"
+    (confirm)="onDeleteConfirmed()" (cancel)="facade.showDeleteModal.set(false)"></app-confirm-delete-modal>
   }
 
-  @if (showStartClassDialog()) {
-  <app-start-class-dialog (confirm)="onStartClassConfirmed()"
-    (cancel)="onStartClassCancelled()"></app-start-class-dialog>
+  @if (facade.showStartClassDialog()) {
+  <app-start-class-dialog (confirm)="facade.onStartClassConfirmed()"
+    (cancel)="facade.onStartClassCancelled()"></app-start-class-dialog>
   }
 
-  @if (showJoinClassDialog()) {
-  <app-join-class-dialog (confirm)="onJoinClassConfirmed()" (cancel)="onJoinClassCancelled()"></app-join-class-dialog>
+  @if (facade.showJoinClassDialog()) {
+  <app-join-class-dialog (confirm)="facade.onJoinClassConfirmed()"
+    (cancel)="facade.onJoinClassCancelled()"></app-join-class-dialog>
   }
 </div>

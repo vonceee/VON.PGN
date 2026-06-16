@@ -42,7 +42,7 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
       @if (isLoading()) {
         <div class="flex-1 flex items-center justify-center">
           <div class="text-center">
-            <div class="w-12 h-12 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div class="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p>Loading game archive...</p>
           </div>
         </div>
@@ -53,10 +53,10 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
             
             <!-- Left Column: Game Info Sidebar -->
             <div class="h-full overflow-hidden flex flex-col gap-4">
-              <div class="p-6 border border-border-theme rounded-2xl bg-surface/5 ui-panel flex flex-col gap-6">
+              <div class="p-6 border border-border-base rounded-2xl bg-surface/5 ui-panel flex flex-col gap-6">
                 <div class="flex items-center justify-between">
                   <div class="text-xl  flex items-center gap-2 opacity-80 uppercase er">
-                    <span class="text-cyan-400">•</span>
+                    <span class="text-accent">•</span>
                     <span>Review</span>
                   </div>
                   <div class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-xs   uppercase ">
@@ -118,16 +118,16 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
               </div>
 
               <!-- Details Card -->
-              <div class="p-5 border border-border-theme rounded-2xl bg-surface/5 ui-panel">
+              <div class="p-5 border border-border-base rounded-2xl bg-surface/5 ui-panel">
                 <h4 class="text-xs uppercase   mb-4 ">Game Details</h4>
                 <div class="space-y-4">
                   <div class="flex flex-col gap-1">
                     <span class="text-xs  uppercase font-semibold">Played on</span>
-                    <span class="text-xs  text-slate-300">{{ g.created_at | date: 'mediumDate' }}</span>
+                    <span class="text-xs  text-muted">{{ g.created_at | date: 'mediumDate' }}</span>
                   </div>
                   <div class="flex flex-col gap-1">
                     <span class="text-xs  uppercase font-semibold">Category</span>
-                    <span class="text-xs  text-slate-300">{{ g.time_control }}</span>
+                    <span class="text-xs  text-muted">{{ g.time_control }}</span>
                   </div>
                 </div>
               </div>
@@ -160,14 +160,14 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
             </div>
 
             <!-- Right Column: Notation & Analysis -->
-            <div class="h-full flex flex-col gap-2 overflow-hidden border-l border-border-theme bg-surface/5 ui-panel rounded-2xl">
+            <div class="h-full flex flex-col gap-2 overflow-hidden border-l border-border-base bg-surface/5 ui-panel rounded-2xl">
               <!-- Tabs Header -->
-              <div class="flex border-b border-border-theme">
+              <div class="flex border-b border-border-base">
                 @for (tab of ['notation', 'analysis']; track tab) {
                   <button
                     (click)="activeTab.set(tab === 'notation' ? 'notation' : 'analysis')"
                     class="flex-1 py-4 text-xs font-semibold uppercase    relative after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 after:bg-accent after:-translate-x-1/2 after: after:"
-                    [class.text-cyan-400]="activeTab() === tab"
+                    [class.text-accent]="activeTab() === tab"
                     [class.]="activeTab() !== tab"
                     [class.after:w-full]="activeTab() === tab"
                   >

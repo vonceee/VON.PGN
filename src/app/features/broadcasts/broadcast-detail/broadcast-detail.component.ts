@@ -53,7 +53,7 @@ type TabType = 'details' | 'games';
       @if (loading()) {
         <div class="flex items-center justify-center py-20">
           <div class="flex flex-col items-center gap-4">
-            <div class="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+            <div class="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
             <p class="text-sm ">Loading broadcast details...</p>
           </div>
         </div>
@@ -68,7 +68,7 @@ type TabType = 'details' | 'games';
         <div class="relative overflow-hidden">
           <div class="mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <a routerLink="/broadcasts"
-              class="inline-flex items-center gap-2 text-sm font-semibold   hover:text-cyan-400 mb-4 ">
+              class="inline-flex items-center gap-2 text-sm font-semibold   hover:text-accent mb-4 ">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                 class="w-4 h-4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -125,7 +125,7 @@ type TabType = 'details' | 'games';
                     </div>
                   }
                   @if (detail()?.info?.website) {
-                    <a [href]="detail()?.info?.website" target="_blank" class="flex items-center gap-1 text-cyan-500 hover:text-cyan-400">
+                    <a [href]="detail()?.info?.website" target="_blank" class="flex items-center gap-1 text-accent hover:text-accent">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
                       </svg>
@@ -150,9 +150,9 @@ type TabType = 'details' | 'games';
           <div class="flex flex-col sm:flex-row gap-4 items-start">
             <!-- Round Dropdown -->
             <div class="shrink-0">
-              <label class="block text-sm  text-slate-700  mb-2">Round</label>
+              <label class="block text-sm  text-muted  mb-2">Round</label>
               <select 
-                class="w-full border border-border-theme rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:opacity-50 "
+                class="w-full border border-border-base rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent disabled:opacity-50 "
                 disabled
               >
                 <option>disabled</option>
@@ -162,10 +162,10 @@ type TabType = 'details' | 'games';
             <!-- Category Dropdown -->
             @if (categories().length > 1) {
               <div class="shrink-0">
-                <label class="block text-sm  text-slate-700  mb-2">Category</label>
+                <label class="block text-sm  text-muted  mb-2">Category</label>
                 <select 
                   (change)="onCategoryChange($event)"
-                  class="border border-border-theme rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent  whitespace-nowrap"
+                  class="border border-border-base rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent  whitespace-nowrap"
                 >
                   @for (cat of categories(); track cat.id) {
                     <option [value]="cat.id" [selected]="cat.id === detail()?.id">
@@ -180,23 +180,23 @@ type TabType = 'details' | 'games';
 
         <!-- Tabs -->
         <div class="mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="border-b border-border-theme">
+          <div class="border-b border-border-base">
             <nav class="-mb-px flex gap-8">
               <button
                 (click)="activeTab.set('details')"
                 [class]="activeTab() === 'details' 
-                  ? 'border-cyan-500 text-cyan-500' 
+                  ? 'border-accent text-accent' 
                   : 'border-transparent hover:border-border-base'"
-                class="py-4 px-1 border-b-2  text-sm  text-slate-600 "
+                class="py-4 px-1 border-b-2  text-sm  text-muted "
               >
                 Details
               </button>
               <button
                 (click)="activeTab.set('games')"
                 [class]="activeTab() === 'games' 
-                  ? 'border-cyan-500 text-cyan-500' 
+                  ? 'border-accent text-accent' 
                   : 'border-transparent hover:border-border-base'"
-                class="py-4 px-1 border-b-2  text-sm  text-slate-600 "
+                class="py-4 px-1 border-b-2  text-sm  text-muted "
               >
                 Games
               </button>
@@ -210,14 +210,14 @@ type TabType = 'details' | 'games';
                 <!-- Left Column -->
                 <div class="space-y-6">
                   @if (detail()?.description) {
-                    <div class=" rounded-xl p-6 border border-border-theme">
+                    <div class=" rounded-xl p-6 border border-border-base">
                       <h3 class="text-lg font-semibold  mb-4">About</h3>
                       <div class="prose prose-invert prose-sm max-w-none " [innerHTML]="formattedDescription()"></div>
                     </div>
                   }
 
                   @if (detail()?.url || detail()?.createdAt || detail()?.tier) {
-                    <div class=" rounded-xl p-6 border border-border-theme">
+                    <div class=" rounded-xl p-6 border border-border-base">
                       <h3 class="text-lg font-semibold  mb-4">Broadcast Info</h3>
                       <dl class="space-y-3">
                         @if (detail()?.tier) {
@@ -242,7 +242,7 @@ type TabType = 'details' | 'games';
                           <div class="flex justify-between">
                             <dt class="text-xs uppercase   ">Lichess URL</dt>
                             <dd class="text-sm">
-                              <a [href]="detail()?.url" target="_blank" class="text-cyan-500 hover:text-cyan-400">View on Lichess →</a>
+                              <a [href]="detail()?.url" target="_blank" class="text-accent hover:text-accent">View on Lichess →</a>
                             </dd>
                           </div>
                         }
@@ -250,7 +250,7 @@ type TabType = 'details' | 'games';
                           <div class="flex justify-between">
                             <dt class="text-xs uppercase   ">Website</dt>
                             <dd class="text-sm">
-                              <a [href]="detail()?.website" target="_blank" class="text-cyan-500 hover:text-cyan-400">Visit →</a>
+                              <a [href]="detail()?.website" target="_blank" class="text-accent hover:text-accent">Visit →</a>
                             </dd>
                           </div>
                         }
@@ -262,7 +262,7 @@ type TabType = 'details' | 'games';
                 <!-- Right Column -->
                 <div class="space-y-6">
                   @if (detail()?.dates?.[0] || detail()?.dates?.[1]) {
-                    <div class=" rounded-xl p-6 border border-border-theme">
+                    <div class=" rounded-xl p-6 border border-border-base">
                       <h3 class="text-lg font-semibold  mb-4">Schedule</h3>
                       <dl class="space-y-3">
                         @if (detail()?.dates?.[0]) {
@@ -282,8 +282,8 @@ type TabType = 'details' | 'games';
                   }
 
                   @if (detail()?.info?.standings) {
-                    <div class=" rounded-xl p-6 border border-border-theme">
-                      <a [href]="detail()?.info?.standings" target="_blank" class="flex items-center justify-between text-cyan-500 hover:text-cyan-400">
+                    <div class=" rounded-xl p-6 border border-border-base">
+                      <a [href]="detail()?.info?.standings" target="_blank" class="flex items-center justify-between text-accent hover:text-accent">
                         <span class="font-semibold ">View Standings</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -295,7 +295,7 @@ type TabType = 'details' | 'games';
               </div>
             } @else if (activeTab() === 'games') {
               <div class="text-center py-12">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100  mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-subtle  mb-4">
                   <svg class="w-8 h-8 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                   </svg>
@@ -387,7 +387,7 @@ export class BroadcastDetailComponent implements OnInit {
     return desc
       .replace(/## (.*)/g, '<h4 class="text-md font-semibold mt-4 mb-2">$1</h4>')
       .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-cyan-500 hover:text-cyan-400">$1</a>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-accent hover:text-accent">$1</a>')
       .replace(/\n\n/g, '</p><p class="mb-3">')
       .replace(/\n/g, '<br>');
   }

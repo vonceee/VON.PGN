@@ -131,8 +131,8 @@ export class ExplorerBoxComponent {
     switch (category) {
       case 'win': return 'text-emerald-500';
       case 'loss': return 'text-rose-500';
-      case 'draw': return 'text-zinc-400';
-      default: return 'text-zinc-400';
+      case 'draw': return 'text-muted';
+      default: return 'text-muted';
     }
   }
 }

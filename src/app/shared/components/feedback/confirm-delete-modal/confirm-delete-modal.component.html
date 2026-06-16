@@ -28,7 +28,7 @@
       </p>
 
       <!-- Tournament name display -->
-      <div class="bg-slate-50  rounded-lg px-4 py-2.5 mb-4 text-center">
+      <div class="bg-subtle  rounded-lg px-4 py-2.5 mb-4 text-center">
         <span class="font-semibold text-sm">{{ itemName() }}</span>
       </div>
 
@@ -43,7 +43,7 @@
         [class]="
           canDelete
             ? 'border-red-500 focus:border-red-500'
-            : 'border-border-theme focus:border-red-400'
+            : 'border-border-base focus:border-red-400'
         "
       />
 
@@ -56,7 +56,7 @@
     <div class="flex gap-3 px-6 pb-6">
       <button
         (click)="onCancel()"
-        class="flex-1 px-4 py-2.5 rounded-lg  text-sm bg-slate-100 hover:bg-slate-200   "
+        class="flex-1 px-4 py-2.5 rounded-lg  text-sm bg-subtle hover:bg-subtle   "
       >
         Cancel
       </button>

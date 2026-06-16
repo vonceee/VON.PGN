@@ -4,7 +4,7 @@
   <nav aria-label="breadcrumb" class="text-sm">
     <ul class="flex items-center gap-1">
       <li>
-        <a routerLink="/roadmap" class="cursor-pointer hover:underline hover:text-cyan-400">
+        <a routerLink="/roadmap" class="cursor-pointer hover:underline hover:text-accent">
           Roadmap
         </a>
       </li>
@@ -31,11 +31,11 @@
     </div>
     <div class="mt-4 flex flex-col gap-4 text-sm">
       <div class="flex flex-wrap items-center gap-3">
-        <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 /70 px-3 py-1.5 text-slate-700 ">
+        <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-muted ">
           <span class="font-semibold  ">Estimated time:</span>
           <span>{{ estimatedTime }}</span>
         </span>
-        <span class="inline-flex items-center gap-2 rounded-full bg-slate-100 /70 px-3 py-1.5 text-slate-700 ">
+        <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-muted ">
           <span class="font-semibold  ">Difficulty:</span>
           <span>{{ difficulty }}</span>
         </span>
@@ -44,7 +44,7 @@
         <div class="flex flex-wrap gap-2">
           @for (prereq of prerequisites; track prereq) {
           <span
-            class="inline-flex items-center rounded-full border border-border-base  bg-white  px-3 py-1 text-sm text-slate-700 ">
+            class="inline-flex items-center rounded-full border border-border-base  bg-white  px-3 py-1 text-sm text-muted ">
             {{ prereq }}
           </span>
           }
@@ -60,7 +60,7 @@
       <h2 class="text-xl font-semibold mb-4">Course Chapters</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         @for (chap of chapters; track chap.id) {
-        <div class="p-4 border border-border-theme rounded-lg">
+        <div class="p-4 border border-border-base rounded-lg">
           <div class="text-lg ">{{ chap.order }}. {{ chap.title }}</div>
           <div class="text-sm">{{ chap.lessons.length }} lessons</div>
         </div>
@@ -82,8 +82,8 @@
       <!-- Read Aloud + Navigation -->
       <div class="flex flex-wrap items-center gap-3">
         <button
-          class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-cyan-400 hover:cursor-pointer  "
-          [class.text-cyan-400]="isSpeaking() && !isPaused()" (click)="toggleReadAloud()">
+          class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-accent hover:cursor-pointer  "
+          [class.text-accent]="isSpeaking() && !isPaused()" (click)="toggleReadAloud()">
           @if (isSpeaking() && !isPaused()) {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
             stroke="currentColor" class="w-4 h-4">
@@ -102,7 +102,7 @@
 
         @if (availableVoices().length > 0) {
         <div class="relative flex items-center">
-          <button class="hover:text-cyan-400 hover:cursor-pointer  " (click)="toggleSettings()"
+          <button class="hover:text-accent hover:cursor-pointer  " (click)="toggleSettings()"
             title="Read Aloud Settings">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
               stroke="currentColor" class="w-5 h-5">
@@ -113,12 +113,12 @@
 
           @if (isSettingsOpen()) {
           <div
-            class="absolute right-0 sm:left-auto mt-2 w-56 bg-white  border border-border-theme rounded-lg  z-50 p-4 flex flex-col gap-4"
+            class="absolute right-0 sm:left-auto mt-2 w-56 bg-white  border border-border-base rounded-lg  z-50 p-4 flex flex-col gap-4"
             [style.top]="'100%'">
             <div class="flex flex-col gap-2">
               <label class="text-xs font-semibold uppercase ">Voice Selection</label>
               <select
-                class="text-xs text-black bg-white border border-border-theme rounded-md px-3 py-2 w-full cursor-pointer appearance-none"
+                class="text-xs text-black bg-white border border-border-base rounded-md px-3 py-2 w-full cursor-pointer appearance-none"
                 [value]="selectedVoiceURI()" (change)="onVoiceChange($event)">
                 @for (voice of availableVoices(); track voice.voiceURI) {
                 <option [value]="voice.voiceURI" class="bg-white text-black text-xs">
@@ -130,7 +130,7 @@
             <div class="flex flex-col gap-2">
               <label class="text-xs font-semibold uppercase ">Playback Speed</label>
               <select
-                class="text-xs text-black bg-white border border-border-theme rounded-md px-3 py-2 w-full cursor-pointer appearance-none"
+                class="text-xs text-black bg-white border border-border-base rounded-md px-3 py-2 w-full cursor-pointer appearance-none"
                 [value]="playbackRate()" (change)="onRateChange($event)">
                 @for (rate of playbackRates; track rate) {
                 <option [value]="rate" class="bg-white text-black text-xs">
@@ -163,14 +163,14 @@
       @if (block.type === 'text') {
       <div class="group relative my-6 rounded-lg   border border-transparent"
         [class.bg-accent]="activeBlockIndex() === $index" [class.]="activeBlockIndex() === $index"
-        [class.!border-cyan-400]="activeBlockIndex() === $index" [class.shadow-sm]="activeBlockIndex() === $index"
+        [class.!border-accent]="activeBlockIndex() === $index" [class.shadow-sm]="activeBlockIndex() === $index"
         [class.px-4]="activeBlockIndex() === $index" [class.py-2]="activeBlockIndex() === $index">
         <!-- Play from here button overlay -->
         <button
-          class="absolute right-3 flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-cyan-400 opacity-0 group-hover:opacity-100 z-10"
+          class="absolute right-3 flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-accent opacity-0 group-hover:opacity-100 z-10"
           [class]="
                   activeBlockIndex() === $index
-                    ? '!opacity-100 !text-cyan-400 !border-cyan-400'
+                    ? '!opacity-100 !text-accent !border-accent'
                     : ''
                 " type="button" [title]="activeBlockIndex() === $index ? 'Reading...' : 'Play from here'"
           (click)="activeBlockIndex() === $index ? toggleReadAloud() : readFromBlock($index)">
@@ -221,13 +221,13 @@
     </div>
 
     @if (isLastLesson) {
-    <div class="mt-8 mb-8 bg-slate-50 /50 p-6 rounded-2xl border border-border-theme">
+    <div class="mt-8 mb-8 bg-subtle/50 p-6 rounded-2xl border border-border-base">
       <h3 class="text-xl font-semibold mb-6">What to learn next?</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         @for (course of suggestedCourses; track course.id) {
         <a [routerLink]="['/learn', course.id]"
-          class="group flex flex-col p-4 border border-border-theme rounded-xl hover:border-cyan-400  cursor-pointer bg-white ">
-          <h4 class="font-semibold text-lg mb-2 group-hover:text-cyan-400">
+          class="group flex flex-col p-4 border border-border-base rounded-xl hover:border-accent  cursor-pointer bg-white ">
+          <h4 class="font-semibold text-lg mb-2 group-hover:text-accent">
             {{ course.title }}
           </h4>
           <p class="text-sm  line-clamp-2">

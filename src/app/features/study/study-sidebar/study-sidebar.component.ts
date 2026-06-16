@@ -13,6 +13,7 @@ import { AddChapterDialogComponent, AddChapterDialogResult } from '../dialogs/ad
 import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ViewersDialogComponent } from '../dialogs/viewers-dialog/viewers-dialog.component';
+import { StudyInfoDialogComponent } from '../dialogs/study-info-dialog/study-info-dialog.component';
 import { StudyChatComponent } from '../study-chat/study-chat.component';
 import { WebrtcService } from '../../../core/services/webrtc.service';
 import { input } from '@angular/core';
@@ -205,6 +206,19 @@ export class StudySidebarComponent {
       data: {
         viewers: this.viewerNames(),
         count: this.viewerCount()
+      }
+    });
+  }
+
+  openStudyInfo() {
+    this.dialog.open(StudyInfoDialogComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/60'],
+      data: {
+        isOwner: this.isOwner(),
+        canEdit: this.canEdit(),
+        isSyncing: this.isSyncing()
       }
     });
   }

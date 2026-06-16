@@ -217,7 +217,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private readonly SCROLL_THROTTLE = 80;
 
   public get api(): Api { return this.cgApi; }
-  
+
   setPieces(pieces: Map<Key, Piece | undefined>) {
     if (!this.cgApi) return;
     this.cgApi.setPieces(pieces);
@@ -261,7 +261,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     while (parent && !parent.classList.contains('board-container-parent')) {
       parent = parent.parentElement;
     }
-    
+
     // Fallback to immediate parent if no boundary class found
     if (!parent) parent = this.el.nativeElement.parentElement;
     if (!parent) return;
@@ -269,9 +269,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
-        this.containerSize = { 
-          width: Math.max(0, width), 
-          height: Math.max(0, height) 
+        this.containerSize = {
+          width: Math.max(0, width),
+          height: Math.max(0, height)
         };
         this.updateBoardSize();
       }
@@ -282,18 +282,18 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
   private updateBoardSize() {
     const GUTTER = 0;
-    
+
     // Determine the maximum size that fits the screen height
     const maxHeight = this.containerSize.height || (window.innerHeight - 120);
-    
+
     // Determine the maximum size that fits the screen width (accounting for other columns' fixed widths)
     const isThreeCol = window.innerWidth >= 1536;
     const otherColumnsWidth = (isThreeCol ? 330 : 0) + 400 + 80;
     const maxWidth = window.innerWidth - otherColumnsWidth;
-    
+
     // The maximum possible board size is the minimum of available width and height
     const maxPossible = Math.max(this.minSize, Math.min(maxWidth, maxHeight));
-    
+
     // Use manual size if set, otherwise fit to parent
     const targetSize = this.manualSize() || maxPossible;
 
@@ -311,7 +311,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     if (this.boardSize !== boardSize) {
       this.boardSize = boardSize;
       this.sizeChange.emit(this.boardSize);
-      
+
       // Notify Chessground to redraw
       if (this.cgApi) {
         requestAnimationFrame(() => {
@@ -325,17 +325,17 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @HostListener('window:touchmove', ['$event'])
   onMouseMove(event: MouseEvent | TouchEvent) {
     if (!this.isResizing()) return;
-    
+
     const clientX = 'touches' in event ? event.touches[0].clientX : (event as MouseEvent).clientX;
     const rect = this.el.nativeElement.getBoundingClientRect();
-    
+
     // The manual size is based on total component width from its left edge
     const newSize = Math.round(clientX - rect.left);
-    
+
     if (newSize !== this.manualSize()) {
       this.manualSize.set(newSize);
       this.updateBoardSize();
-      
+
       if (isPlatformBrowser(this.platformId)) {
         localStorage.setItem(this.STORAGE_KEY, newSize.toString());
       }
@@ -435,7 +435,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
             after: (orig: Key, dest: Key, meta: MoveMetadata) => this.onMove(orig, dest, meta),
           },
         },
-        draggable: { 
+        draggable: {
           enabled: this.interactive,
           deleteOnDropOff: this.isEditor
         },
@@ -447,10 +447,10 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       };
       this.cgApi = Chessground(this.boardEl.nativeElement, config);
       this.initialized = true;
-      
+
       this.syncBoard();
       this.updateBoardSize();
-      
+
       // Secondary sync to ensure pieces are rendered
       requestAnimationFrame(() => {
         this.cgApi?.redrawAll();
@@ -477,7 +477,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private syncBoard() {
     if (!this.cgApi) return;
     const fenToUse = this.isEditor ? this.fen : this.chess.fen();
-    
+
     // Determine last move to highlight
     let lastMoveToSet = this.lastMove;
     if (lastMoveToSet === undefined) {
@@ -495,11 +495,11 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       movable: {
         free: this.isEditor,
         color: this.interactive ? 'both' : undefined,
-      dests: (this.interactive && !this.isEditor) ? this.getLegalMoves() : new Map(),
+        dests: (this.interactive && !this.isEditor) ? this.getLegalMoves() : new Map(),
         showDests: !this.isEditor,
       },
       selectable: { enabled: this.interactive },
-      draggable: { 
+      draggable: {
         enabled: this.interactive,
         deleteOnDropOff: this.isEditor
       },

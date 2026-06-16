@@ -160,7 +160,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
                 [class.border-accent]="orientation() === 'white'"
                 [class.bg-accent/5]="orientation() === 'white'"
               >
-                <span class="w-2.5 h-2.5 rounded-full bg-slate-300 border border-slate-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-subtle border border-slate-400"></span>
                 White Repertoire
               </button>
               <button
@@ -170,7 +170,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
                 [class.border-accent]="orientation() === 'black'"
                 [class.bg-accent/5]="orientation() === 'black'"
               >
-                <span class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-950"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-content border border-slate-950"></span>
                 Black Repertoire
               </button>
             </div>

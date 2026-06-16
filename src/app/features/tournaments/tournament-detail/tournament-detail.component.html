@@ -13,7 +13,7 @@
           [appUserHovercard]="tournament.creator.name"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 text-sm  hover:text-cyan-400  mt-1"
+          class="inline-flex items-center gap-2 text-sm  hover:text-accent  mt-1"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,8 +59,8 @@
         <button
           (click)="toggleBookmark()"
           [disabled]="!authService.isAuthenticated()"
-          class="flex items-center gap-1.5 hover:text-cyan-400  disabled: disabled:cursor-not-allowed"
-          [class.text-cyan-500]="isBookmarked()"
+          class="flex items-center gap-1.5 hover:text-accent  disabled: disabled:cursor-not-allowed"
+          [class.text-accent]="isBookmarked()"
           [class.font-semibold]="isBookmarked()"
         >
           <svg
@@ -83,7 +83,7 @@
         <div class="relative">
           <button
             (click)="toggleShareMenu()"
-            class="flex items-center gap-1.5 hover:text-cyan-400 "
+            class="flex items-center gap-1.5 hover:text-accent "
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +107,7 @@
             >
               <button
                 (click)="copyLink()"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100  flex items-center gap-2 text-slate-700 "
+                class="w-full text-left px-4 py-2 text-sm hover:bg-subtle  flex items-center gap-2 text-muted "
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +127,7 @@
               </button>
               <button
                 (click)="shareToFacebook()"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100  flex items-center gap-2 text-slate-700 "
+                class="w-full text-left px-4 py-2 text-sm hover:bg-subtle  flex items-center gap-2 text-muted "
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path
@@ -138,7 +138,7 @@
               </button>
               <button
                 (click)="shareToTwitter()"
-                class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100  flex items-center gap-2 text-slate-700 "
+                class="w-full text-left px-4 py-2 text-sm hover:bg-subtle  flex items-center gap-2 text-muted "
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                   <path
@@ -178,7 +178,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="2"
                 stroke="currentColor"
-                class="w-5 h-5 text-cyan-500"
+                class="w-5 h-5 text-accent"
               >
                 <path
                   stroke-linecap="round"
@@ -188,7 +188,7 @@
               </svg>
               About This Event
             </h2>
-            <p class="text-slate-600  ">
+            <p class="text-muted  ">
               {{ tournament.description }}
             </p>
           </section>
@@ -203,7 +203,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="2"
                 stroke="currentColor"
-                class="w-5 h-5 text-cyan-500"
+                class="w-5 h-5 text-accent"
               >
                 <path
                   stroke-linecap="round"
@@ -214,7 +214,7 @@
               How To Join
             </h2>
             @if (tournament.registrationInstructions) {
-              <div class="text-slate-600   whitespace-pre-line">
+              <div class="text-muted   whitespace-pre-line">
                 {{ tournament.registrationInstructions }}
               </div>
             } @else {
@@ -235,7 +235,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="2"
                   stroke="currentColor"
-                  class="w-5 h-5 text-cyan-500"
+                  class="w-5 h-5 text-accent"
                 >
                   <path
                     stroke-linecap="round"
@@ -250,7 +250,7 @@
                 </svg>
                 Venue Location
               </h2>
-              <div class="rounded-xl overflow-hidden border border-border-theme">
+              <div class="rounded-xl overflow-hidden border border-border-base">
                 <iframe
                   [src]="mapUrl()!"
                   class="w-full h-64 border-0"
@@ -276,7 +276,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="2"
                 stroke="currentColor"
-                class="w-5 h-5 text-cyan-500"
+                class="w-5 h-5 text-accent"
               >
                 <path
                   stroke-linecap="round"
@@ -287,7 +287,7 @@
               Format &amp; Rules
             </h2>
             <div class="flex flex-col gap-4">
-              <div class="flex items-start gap-3 text-slate-600 ">
+              <div class="flex items-start gap-3 text-muted ">
                 <div>
                   <span class="text-sm  ">Format</span>
                   <p class="font-semibold  ">
@@ -295,7 +295,7 @@
                   </p>
                 </div>
               </div>
-              <div class="flex items-start gap-3 text-slate-600 ">
+              <div class="flex items-start gap-3 text-muted ">
                 <div>
                   <span class="text-sm  ">Time Control</span>
                   <p class="font-semibold  ">
@@ -303,7 +303,7 @@
                   </p>
                 </div>
               </div>
-              <div class="flex items-start gap-3 text-slate-600 ">
+              <div class="flex items-start gap-3 text-muted ">
                 <div>
                   <span class="text-sm  ">Rounds</span>
                   <p class="font-semibold  ">
@@ -325,7 +325,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="2"
                   stroke="currentColor"
-                  class="w-5 h-5 text-cyan-500"
+                  class="w-5 h-5 text-accent"
                 >
                   <path
                     stroke-linecap="round"
@@ -337,12 +337,12 @@
               </h2>
               <ul class="space-y-3">
                 @for (req of tournament.eligibility; track req) {
-                  <li class="flex items-start gap-3 text-slate-600 ">
+                  <li class="flex items-start gap-3 text-muted ">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"
-                      class="w-5 h-5 text-cyan-500 shrink-0 mt-0.5"
+                      class="w-5 h-5 text-accent shrink-0 mt-0.5"
                     >
                       <path
                         fill-rule="evenodd"
@@ -368,7 +368,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="2"
                   stroke="currentColor"
-                  class="w-5 h-5 text-cyan-500"
+                  class="w-5 h-5 text-accent"
                 >
                   <path
                     stroke-linecap="round"
@@ -393,7 +393,7 @@
                       <ul class="space-y-1">
                         @for (req of tournament.categories![catKey].eligibility; track req) {
                           <li
-                            class="flex items-center gap-2 text-sm text-slate-600 "
+                            class="flex items-center gap-2 text-sm text-muted "
                           >
                             <span class="w-1 h-1 rounded-full bg-accent"></span>
                             {{ req }}
@@ -406,15 +406,15 @@
                   <!-- Main Prizes -->
                   <div class="ui-panel overflow-hidden mb-4">
                     <table class="w-full text-sm">
-                      <thead class="border-b border-border-theme">
+                      <thead class="border-b border-border-base">
                         <tr>
                           <th
-                            class="px-4 py-2.5 text-left font-semibold text-slate-600 "
+                            class="px-4 py-2.5 text-left font-semibold text-muted "
                           >
                             Placement
                           </th>
                           <th
-                            class="px-4 py-2.5 text-right font-semibold text-slate-600 "
+                            class="px-4 py-2.5 text-right font-semibold text-muted "
                           >
                             Prize
                           </th>
@@ -426,11 +426,11 @@
                           track prizeKey
                         ) {
                           @if (tournament.categories![catKey].prizes[prizeKey]) {
-                            <tr class="border-t border-border-theme">
+                            <tr class="border-t border-border-base">
                               <td class="px-4 py-2.5 font-semibold  ">
                                 {{ formatPrizeKey(prizeKey) }}
                               </td>
-                              <td class="px-4 py-2.5 text-right text-slate-600 ">
+                              <td class="px-4 py-2.5 text-right text-muted ">
                                 {{ tournament.categories![catKey].prizes[prizeKey] }}
                               </td>
                             </tr>
@@ -471,7 +471,7 @@
                                   as nested
                                 ) {
                                   <div
-                                    class="ml-4 mt-1 space-y-1 text-slate-600 "
+                                    class="ml-4 mt-1 space-y-1 text-muted "
                                   >
                                     <div>
                                       <span class="text-xs font-semibold ">1st:</span>
@@ -493,7 +493,7 @@
                                 <span class="font-semibold  "
                                   >{{ awardKey }}:</span
                                 >
-                                <span class="text-slate-600  ml-1">{{
+                                <span class="text-muted  ml-1">{{
                                   getSimpleAward(
                                     tournament.categories![catKey].specialAwards![awardKey]
                                   )
@@ -519,7 +519,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="2"
                   stroke="currentColor"
-                  class="w-5 h-5 text-cyan-500"
+                  class="w-5 h-5 text-accent"
                 >
                   <path
                     stroke-linecap="round"
@@ -549,7 +549,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="2"
                 stroke="currentColor"
-                class="w-5 h-5 text-cyan-500"
+                class="w-5 h-5 text-accent"
               >
                 <path
                   stroke-linecap="round"
@@ -563,11 +563,11 @@
               @for (dayKey of objectKeys(tournament.schedule); track dayKey) {
                 @if (tournament.schedule![dayKey].events.length > 0) {
                   <div class="ui-panel overflow-hidden">
-                    <div class="px-4 py-3 border-b border-border-theme flex items-center gap-3">
-                      <span class="text-xs font-semibold text-cyan-500 uppercase">{{
+                    <div class="px-4 py-3 border-b border-border-base flex items-center gap-3">
+                      <span class="text-xs font-semibold text-accent uppercase">{{
                         formatDayLabel(dayKey)
                       }}</span>
-                      <span class="text-sm text-slate-600 ">{{
+                      <span class="text-sm text-muted ">{{
                         formatDate(tournament.schedule![dayKey].date)
                       }}</span>
                     </div>
@@ -578,11 +578,11 @@
                           track event.name;
                           let i = $index
                         ) {
-                          <tr [ngClass]="{ 'border-t border-border-theme': i > 0 }">
+                          <tr [ngClass]="{ 'border-t border-border-base': i > 0 }">
                             <td class="px-4 py-2.5 font-semibold  ">
                               {{ event.name }}
                             </td>
-                            <td class="px-4 py-2.5 text-right text-slate-600 ">
+                            <td class="px-4 py-2.5 text-right text-muted ">
                               {{ event.time }}
                             </td>
                           </tr>
@@ -607,7 +607,7 @@
                   viewBox="0 0 24 24"
                   stroke-width="2"
                   stroke="currentColor"
-                  class="w-5 h-5 text-cyan-500"
+                  class="w-5 h-5 text-accent"
                 >
                   <path
                     stroke-linecap="round"
@@ -619,20 +619,20 @@
               </h2>
               <div class="ui-panel overflow-hidden">
                 <table class="w-full text-sm">
-                  <thead class="border-b border-border-theme">
+                  <thead class="border-b border-border-base">
                     <tr>
                       <th
-                        class="px-4 py-3 text-left font-semibold text-slate-600 "
+                        class="px-4 py-3 text-left font-semibold text-muted "
                       >
                         Rank
                       </th>
                       <th
-                        class="px-4 py-3 text-left font-semibold text-slate-600 "
+                        class="px-4 py-3 text-left font-semibold text-muted "
                       >
                         Player
                       </th>
                       <th
-                        class="px-4 py-3 text-right font-semibold text-slate-600 "
+                        class="px-4 py-3 text-right font-semibold text-muted "
                       >
                         Score
                       </th>
@@ -641,7 +641,7 @@
                   <tbody>
                     @for (entry of tournament.standings; track entry.rank) {
                       <tr
-                        class="border-t border-border-theme"
+                        class="border-t border-border-base"
                         [ngClass]="{ 'bg-yellow-500/5': entry.rank === 1 }"
                       >
                         <td class="px-4 py-3">
@@ -666,7 +666,7 @@
                           </span>
                         </td>
                         <td class="px-4 py-3   font-semibold">
-                          <a [routerLink]="['/user', entry.player]" [appUserHovercard]="entry.player" class="hover:text-cyan-400 ">
+                          <a [routerLink]="['/user', entry.player]" [appUserHovercard]="entry.player" class="hover:text-accent ">
                             {{ entry.player }}
                           </a>
                         </td>
@@ -694,7 +694,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="2"
                 stroke="currentColor"
-                class="w-4 h-4 text-cyan-500"
+                class="w-4 h-4 text-accent"
               >
                 <path
                   stroke-linecap="round"
@@ -739,7 +739,7 @@
                     [appUserHovercard]="tournament.creator.name"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="flex items-center gap-2 mt-1 hover:text-cyan-400 "
+                    class="flex items-center gap-2 mt-1 hover:text-accent "
                   >
                     <span
                       class="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-white text-xs font-semibold shrink-0"
@@ -763,7 +763,7 @@
                 viewBox="0 0 24 24"
                 stroke-width="2"
                 stroke="currentColor"
-                class="w-4 h-4 text-cyan-500"
+                class="w-4 h-4 text-accent"
               >
                 <path
                   stroke-linecap="round"
@@ -775,7 +775,7 @@
             </h3>
             <div class="space-y-2 text-sm">
               <p class="font-semibold  ">{{ tournament.organizer }}</p>
-              <div class="flex items-center gap-1 text-slate-600 ">
+              <div class="flex items-center gap-1 text-muted ">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -796,7 +796,7 @@
                   [href]="tournament.link"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="flex items-center gap-1 text-cyan-500 hover:text-cyan-400 "
+                  class="flex items-center gap-1 text-accent hover:text-accent "
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

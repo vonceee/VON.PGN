@@ -1,7 +1,7 @@
 @if (chatService.activeConversationId()) {
   <div class="chat-window h-full flex flex-col">
     <!-- Chat Header -->
-    <div class="flex items-center gap-3 px-4 py-3 border-b border-border-theme">
+    <div class="flex items-center gap-3 px-4 py-3 border-b border-border-base">
       <div class="flex flex-col">
         <span class="text-sm font-semibold  ">{{ getConversationName() }}</span>
         <span class="text-xs  ">
@@ -24,14 +24,14 @@
           @for (i of [1,2,3,4,5]; track i) {
             @if (i % 2 === 0) {
               <div class="flex flex-col items-end">
-                <div class="bg-slate-200 /80 rounded-2xl rounded-br-md px-4 py-2 w-2/3">
-                  <div class="h-3 bg-slate-300 /80 rounded w-full"></div>
+                <div class="bg-subtle /80 rounded-2xl rounded-br-md px-4 py-2 w-2/3">
+                  <div class="h-3 bg-subtle /80 rounded w-full"></div>
                 </div>
               </div>
             } @else {
               <div class="flex flex-col items-start">
-                <div class="bg-slate-200 /80 rounded-2xl rounded-bl-md px-4 py-2 w-2/3">
-                  <div class="h-3 bg-slate-300 /80 rounded w-full"></div>
+                <div class="bg-subtle /80 rounded-2xl rounded-bl-md px-4 py-2 w-2/3">
+                  <div class="h-3 bg-subtle /80 rounded w-full"></div>
                 </div>
               </div>
             }
@@ -40,7 +40,7 @@
       } @else if (chatService.messages().length === 0) {
         <div class="flex flex-col items-center justify-center h-full text-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-12 h-12 text-slate-300  mb-3">
+            class="w-12 h-12 text-muted  mb-3">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
           </svg>
@@ -52,7 +52,7 @@
           <div class="flex justify-center py-2">
             <button
               (click)="chatService.loadMoreMessages()"
-              class="text-xs text-cyan-500 hover:text-cyan-600    ">
+              class="text-xs text-accent hover:text-accent/80    ">
               Load earlier messages
             </button>
           </div>

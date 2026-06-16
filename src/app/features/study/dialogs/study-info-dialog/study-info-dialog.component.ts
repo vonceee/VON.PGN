@@ -1,40 +1,53 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StudyService } from '../../../core/services/study.service';
-import { AuthService } from '../../../core/services/auth.service';
-import { Dialog, DialogModule } from '@angular/cdk/dialog';
-import { Router } from '@angular/router';
-import { ToastService } from '../../../core/services/toast.service';
-import { ButtonComponent } from '@shared/ui';
-import { UserHovercardDirective } from '@shared/directives';
-import { AddMemberDialogComponent, AddMemberResult } from '../dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
-import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
-import { StudySettingsDialogComponent } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
 import { FormsModule } from '@angular/forms';
+import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
+import { Router } from '@angular/router';
+import { StudyService } from '../../../../core/services/study.service';
+import { AuthService } from '../../../../core/services/auth.service';
+import { ToastService } from '../../../../core/services/toast.service';
+import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
+import { UserHovercardDirective } from '@shared/directives';
+import { AddMemberDialogComponent, AddMemberResult } from '../add-collaborator-dialog/add-collaborator-dialog.component';
+import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
+import { StudySettingsDialogComponent } from '../study-settings-dialog/study-settings-dialog.component';
 
 @Component({
-  selector: 'app-study-info',
+  selector: 'app-study-info-dialog',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, UserHovercardDirective, DialogModule, FormsModule],
-  templateUrl: './study-info.component.html',
-  host: { class: 'flex-1 flex flex-col min-h-0' }
+  imports: [CommonModule, FormsModule, ButtonComponent, UserHovercardDirective],
+  templateUrl: './study-info-dialog.component.html',
+  styles: [`
+    :host {
+      display: block;
+    }
+  `]
 })
-export class StudyInfoComponent {
+export class StudyInfoDialogComponent implements OnInit {
+  dialogRef = inject(DialogRef<any>);
+  data = inject<any>(DIALOG_DATA);
+
   private studyService = inject(StudyService);
-  private authService = inject(AuthService);
   private dialog = inject(Dialog);
   private toastService = inject(ToastService);
   private router = inject(Router);
 
-  // Inputs
-  isOwner = input.required<boolean>();
-  canEdit = input.required<boolean>();
-  isSyncing = input.required<boolean>();
+  isOwner = false;
+  canEdit = false;
+  isSyncing = false;
 
   study = this.studyService.currentStudy;
 
+  ngOnInit() {
+    if (this.data) {
+      this.isOwner = this.data.isOwner ?? false;
+      this.canEdit = this.data.canEdit ?? false;
+      this.isSyncing = this.data.isSyncing ?? false;
+    }
+  }
+
   addMember() {
-    if (!this.isOwner()) return;
+    if (!this.isOwner) return;
     const dialogRef = this.dialog.open<AddMemberResult>(AddMemberDialogComponent, {
       width: '450px',
       maxWidth: '95vw',
@@ -55,7 +68,7 @@ export class StudyInfoComponent {
   }
 
   removeMember(userId: string) {
-    if (!this.isOwner()) return;
+    if (!this.isOwner) return;
     const s = this.study();
     if (!s) return;
 
@@ -80,7 +93,7 @@ export class StudyInfoComponent {
   }
 
   toggleMemberPermission(userId: string, canEdit: boolean) {
-    if (!this.isOwner()) return;
+    if (!this.isOwner) return;
     this.studyService.updateCollaboratorPermission(this.study()!.id, userId, canEdit).subscribe({
       next: () => {
         const roleName = canEdit ? 'Collaborator' : 'Member';
@@ -90,12 +103,8 @@ export class StudyInfoComponent {
     });
   }
 
-
-
-
-
   openSettings() {
-    if (!this.isOwner()) return;
+    if (!this.isOwner) return;
     const s = this.study();
     if (!s) return;
 
@@ -135,7 +144,7 @@ export class StudyInfoComponent {
   }
 
   onDeleteStudy() {
-    if (!this.isOwner()) return;
+    if (!this.isOwner) return;
     const s = this.study();
     if (!s) return;
 
@@ -152,6 +161,7 @@ export class StudyInfoComponent {
         this.studyService.deleteStudy(s.id).subscribe({
           next: () => {
             this.toastService.show('Study deleted successfully', 'success');
+            this.dialogRef.close();
             this.router.navigate(['/study']);
           }
         });

@@ -53,7 +53,7 @@
           <!-- Mobile Game Over Overlay -->
           @if ((g.status === 'completed' || g.status === 'aborted') && showMobileResult()) {
           <div class="md:hidden absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/60   zoom-in ">
-            <div class="p-6 text-center border-cyan-500/50 max-w-xs w-full relative">
+            <div class="p-6 text-center border-accent/50 max-w-xs w-full relative">
               <!-- Close Button -->
               <button (click)="showMobileResult.set(false)" class="absolute top-3 right-3 p-1 hover:text-white ">
                 <ng-icon name="heroXMark" class="text-xl"></ng-icon>
@@ -87,7 +87,7 @@
                   Rematch
                 </button>
                 } @else if (myRematchOffered()) {
-                <div class="text-xs uppercase   py-3  bg-slate-400/5 rounded border border-border-base">
+                <div class="text-xs uppercase   py-3  bg-muted/5 rounded border border-border-base">
                   Waiting for opponent...
                 </div>
                 } @else if (rematchOfferFrom()) {
@@ -121,7 +121,7 @@
         </div>
 
         @if (g.status === 'active' && g.firstMoveCountdown !== undefined && g.firstMoveCountdown !== null &&
-        g.moves.length < 2) { <div class="md:hidden w-full p-4 text-center bg-slate-900/40 mt-4   ">
+        g.moves.length < 2) { <div class="md:hidden w-full p-4 text-center bg-content/40 mt-4   ">
           <div class="text-2xl font-semibold">
             {{ g.firstMoveCountdown }}s
           </div>
@@ -187,7 +187,7 @@
                 Rematch
               </button>
               } @else if (myRematchOffered()) {
-              <div class="text-xs uppercase text-center py-3 bg-slate-400/5 rounded border border-border-base">
+              <div class="text-xs uppercase text-center py-3 bg-muted/5 rounded border border-border-base">
                 Waiting for opponent...
               </div>
               } @else if (rematchOfferFrom()) {
@@ -256,7 +256,7 @@
     <!-- Result Info Toggle (Only if game ended) -->
     @if (g.status === 'completed' || g.status === 'aborted') {
     <button appButton variant="ghost" (click)="showMobileResult.set(!showMobileResult())"
-      [class.text-cyan-400]="showMobileResult()" class="opacity-70 hover:opacity-100">
+      [class.text-accent]="showMobileResult()" class="opacity-70 hover:opacity-100">
       <ng-icon name="heroInformationCircle" class="text-xl"></ng-icon>
     </button>
     }
@@ -278,7 +278,7 @@
 
 @if (showExitConfirm()) {
 <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
-  <div class="bg-slate-800 border border-border-base rounded-2xl p-8 max-w-sm w-full">
+  <div class="bg-content border border-border-base rounded-2xl p-8 max-w-sm w-full">
     <h3 class="text-xl font-semibold mb-3">Leave Game?</h3>
     <p class="text-sm mb-6 ">
       You have an active game. Leaving will forfeit the game. Are you sure you want to leave?
@@ -289,7 +289,7 @@
         Yes, Leave
       </button>
       <button (click)="showExitConfirm.set(false)"
-        class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm font-semibold  hover:scale-[1.02] active:scale-[0.98]">
+        class="flex-1 px-4 py-3 bg-muted hover:bg-content rounded-xl text-sm font-semibold  hover:scale-[1.02] active:scale-[0.98]">
         Cancel
       </button>
     </div>

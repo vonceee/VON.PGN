@@ -2,12 +2,10 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
-import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 import { UserService, UserSearchResult } from '../../../../core/services/user.service';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UserHovercardDirective } from '@shared/directives';
 
 export interface AddMemberResult {
   user: UserSearchResult;
@@ -17,7 +15,7 @@ export interface AddMemberResult {
 @Component({
   selector: 'app-add-member-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent, UserHovercardDirective],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-collaborator-dialog.component.html',
   styles: [`
     :host {
@@ -32,7 +30,6 @@ export class AddMemberDialogComponent {
   searchQuery = signal('');
   results = signal<UserSearchResult[]>([]);
   isSearching = signal(false);
-  selectedUser = signal<UserSearchResult | null>(null);
 
   private searchSubject = new Subject<string>();
 
@@ -67,23 +64,12 @@ export class AddMemberDialogComponent {
   onSearchChange(query: string) {
     this.searchQuery.set(query);
     this.searchSubject.next(query);
-    if (this.selectedUser()?.username !== query) {
-      this.selectedUser.set(null);
-    }
   }
 
   selectUser(user: UserSearchResult) {
-    this.selectedUser.set(user);
-    this.searchQuery.set(user.username);
-  }
-
-  onSubmit() {
-    const user = this.selectedUser();
-    if (user) {
-      this.dialogRef.close({
-        user,
-        role: 'member'
-      });
-    }
+    this.dialogRef.close({
+      user,
+      role: 'member'
+    });
   }
 }

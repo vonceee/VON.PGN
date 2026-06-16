@@ -89,7 +89,7 @@ export class StepRegistrationComponent {
             type="text"
             [formControl]="eligibilityControl(i)"
             placeholder="e.g. 2200 & Below"
-            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 "
+            class="flex-1 p-3 border border-border-base rounded focus:outline-none focus:border-accent "
           />
           <button
             appButton

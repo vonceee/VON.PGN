@@ -20,7 +20,7 @@ import { UserHovercardDirective } from '@shared/directives';
             [appUserHovercard]="player().name"
             target="_blank"
             rel="noopener noreferrer"
-            class="truncate text-md hover:text-cyan-400  cursor-pointer"
+            class="truncate text-md hover:text-accent  cursor-pointer"
           >
             {{ player().name }}
           </a>

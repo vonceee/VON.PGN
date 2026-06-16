@@ -106,7 +106,7 @@ import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@a
               (input)="onInput($event)"
               (blur)="onBlur()"
               [placeholder]="placeholder"
-              class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 "
+              class="flex-1 p-3 border border-border-base rounded focus:outline-none focus:border-accent "
               [disabled]="disabled"
             />
             @if (showCharCount) {
@@ -180,7 +180,7 @@ export class FormFieldComponent implements ControlValueAccessor {
     if (this.hasError) {
       return base + ' border-red-500 focus:border-red-500';
     }
-    return base + ' border-border-theme focus:border-cyan-400';
+    return base + ' border-border-base focus:border-accent';
   }
 
   get textareaClasses(): string {
@@ -188,7 +188,7 @@ export class FormFieldComponent implements ControlValueAccessor {
     if (this.hasError) {
       return base + ' border-red-500 focus:border-red-500';
     }
-    return base + ' border-border-theme focus:border-cyan-400';
+    return base + ' border-border-base focus:border-accent';
   }
 
   writeValue(value: any): void {

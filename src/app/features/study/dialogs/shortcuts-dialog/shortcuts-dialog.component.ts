@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogRef } from '@angular/cdk/dialog';
-import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 
 @Component({
   selector: 'app-shortcuts-dialog',
   standalone: true,
-  imports: [CommonModule, ButtonComponent],
+  imports: [CommonModule],
   template: `
     <div class="bg-main rounded-4xl w-full p-8 relative max-w-2xl w-[95vw] sm:w-[600px] mx-auto flex flex-col max-h-[90vh] md:max-h-[85vh]">
       <div class="flex items-center justify-between pb-6 flex-none">
@@ -23,7 +22,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         <div class="space-y-4">
           <div class="space-y-2">
             @for (item of moveShortcuts; track item.key) {
-              <div class="flex items-center justify-between py-1.5 border-b border-border-base/30 last:border-0 group">
+              <div class="flex items-center justify-between py-1.5 border-b border-border-base/50 last:border-0 group">
                 <span class="text-sm text-content/80 group-hover:text-content">
                   {{ item.label }}
                 </span>
@@ -42,7 +41,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         <div class="space-y-4">
           <div class="space-y-2">
             @for (item of posShortcuts; track item.key) {
-              <div class="flex items-center justify-between py-1.5 border-b border-border-base/30 last:border-0 group">
+              <div class="flex items-center justify-between py-1.5 border-b border-border-base/50 last:border-0 group">
                 <span class="text-sm text-content/80 group-hover:text-content">
                   {{ item.label }}
                 </span>
@@ -77,13 +76,6 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             }
           </div>
         </div>
-      </div>
-
-      <!-- Footer Actions -->
-      <div class="pt-6 flex justify-end w-full flex-none">
-        <button appButton variant="primary" (click)="dialogRef.close()" class="px-8">
-          Got it
-        </button>
       </div>
     </div>
   `,

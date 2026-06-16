@@ -39,7 +39,7 @@ export class ButtonComponent {
       case 'ghost':
         return `${base} bg-transparent hover:bg-accent/10 border-transparent text-muted`;
       default:
-        return `${base} bg-main border-border-base hover:underline rounded-full text-content`;
+        return `${base} bg-transparent border-transparent hover:bg-accent/10 hover:underline rounded-xl text-content`;
     }
   });
 

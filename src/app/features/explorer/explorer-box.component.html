@@ -55,7 +55,7 @@
         <!-- Moves Table -->
         <table class="w-full text-xs">
           <thead>
-            <tr class="text-muted  font-semibold uppercase text-[9px] border-b border-border-base/30">
+            <tr class="text-muted  font-semibold uppercase text-[9px] border-b border-border-base/50">
               <th class="text-left py-1 px-2 w-14">Move</th>
               <th class="text-right py-1 px-2 w-16">Games</th>
               <th class="text-left py-1 px-2">W / D / B</th>
@@ -63,7 +63,7 @@
           </thead>
           <tbody>
             @for (move of d.moves; track move.uci) {
-            <tr class="hover:bg-accent/5 cursor-pointer group  border-b border-border-base/10 last:border-0">
+            <tr class="hover:bg-accent/5 cursor-pointer group  border-b border-border-base/50 last:border-0">
               <td class="py-2 px-2  text-content">{{ move.san }}</td>
               <td class="py-2 px-2 text-right text-muted ">
                 {{ formatTotal(move.white + move.draws + move.black) }}
@@ -81,13 +81,13 @@
         <!-- Top Games -->
         @if (d.topGames.length) {
         <div class="mt-6">
-          <div class="px-2 py-1 text-[9px] font-semibold text-muted uppercase  border-b border-border-base/30 mb-1">
+          <div class="px-2 py-1 text-[9px] font-semibold text-muted uppercase  border-b border-border-base/50 mb-1">
             Top Games
           </div>
           <div class="flex flex-col">
             @for (game of d.topGames.slice(0, 5); track game.id) {
             <div
-              class="px-2 py-2 hover:bg-accent/5 cursor-pointer flex flex-col gap-0.5 border-b border-border-base/10 last:border-0">
+              class="px-2 py-2 hover:bg-accent/5 cursor-pointer flex flex-col gap-0.5 border-b border-border-base/50 last:border-0">
               <div class="flex justify-between items-center text-xs">
                 <span class="font-semibold text-content truncate max-w-[150px]">{{ game.white.name }} ({{
                   game.white.rating }})</span>
@@ -97,7 +97,7 @@
                 <span class="font-semibold text-content truncate max-w-[150px]">{{ game.black.name }} ({{
                   game.black.rating }})</span>
                 <span class="font-semibold uppercase"
-                  [class]="game.winner === 'white' ? 'text-zinc-200' : game.winner === 'black' ? 'text-zinc-900' : 'text-zinc-500'">
+                  [class]="game.winner === 'white' ? 'text-zinc-200' : game.winner === 'black' ? 'text-content' : 'text-muted'">
                   {{ game.winner === 'white' ? '1-0' : game.winner === 'black' ? '0-1' : '½-½' }}
                 </span>
               </div>
@@ -118,7 +118,7 @@
 
         <table class="w-full text-xs">
           <thead>
-            <tr class="text-muted  font-semibold uppercase text-[9px] border-b border-border-base/30">
+            <tr class="text-muted  font-semibold uppercase text-[9px] border-b border-border-base/50">
               <th class="text-left py-1 px-2 w-14">Move</th>
               <th class="text-right py-1 px-2 w-24">DTZ / DTM</th>
               <th class="text-right py-1 px-2">Result</th>
@@ -126,7 +126,7 @@
           </thead>
           <tbody>
             @for (move of td.moves; track move.uci) {
-            <tr class="hover:bg-accent/5 cursor-pointer group  border-b border-border-base/10 last:border-0">
+            <tr class="hover:bg-accent/5 cursor-pointer group  border-b border-border-base/50 last:border-0">
               <td class="py-2 px-2  text-content">{{ move.san }}</td>
               <td class="py-2 px-2 text-right text-muted ">
                 @if (move.dtz !== undefined) {

@@ -10,7 +10,7 @@
         <div class="lg:col-span-1 space-y-8">
           <div>
             <h3 class="text-sm font-semibold   uppercase  mb-4">Email</h3>
-            <a href="mailto:support@vonchess.com" class="text-cyan-400 hover:text-cyan-300 ">
+            <a href="mailto:support@vonchess.com" class="text-accent hover:text-cyan-300 ">
               support&#64;vonchess.com
             </a>
           </div>
@@ -18,16 +18,16 @@
           <div>
             <h3 class="text-sm font-semibold   uppercase  mb-4">Social</h3>
             <div class="flex flex-col gap-3">
-              <a href="#" class="text-slate-600  hover:  ">
+              <a href="#" class="text-muted  hover:  ">
                 Twitter (X)
               </a>
-              <a href="#" class="text-slate-600  hover:  ">
+              <a href="#" class="text-muted  hover:  ">
                 YouTube
               </a>
-              <a href="#" class="text-slate-600  hover:  ">
+              <a href="#" class="text-muted  hover:  ">
                 Discord
               </a>
-              <a href="#" class="text-slate-600  hover:  ">
+              <a href="#" class="text-muted  hover:  ">
                 GitHub
               </a>
             </div>
@@ -36,13 +36,13 @@
           <div>
             <h3 class="text-sm font-semibold   uppercase  mb-4">Related</h3>
             <div class="flex flex-col gap-3">
-              <a routerLink="/about" class="text-slate-600  hover:  ">
+              <a routerLink="/about" class="text-muted  hover:  ">
                 About vonchess
               </a>
-              <a routerLink="/documentation" class="text-slate-600  hover:  ">
+              <a routerLink="/documentation" class="text-muted  hover:  ">
                 Documentation
               </a>
-              <a routerLink="/privacy-policy" class="text-slate-600  hover:  ">
+              <a routerLink="/privacy-policy" class="text-muted  hover:  ">
                 Privacy Policy
               </a>
             </div>
@@ -53,11 +53,11 @@
         <div class="lg:col-span-2">
           @if (submitted()) {
             <div class="bg-accent  border border-cyan-200  rounded-lg p-8 text-center">
-              <svg class="w-12 h-12 text-cyan-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg class="w-12 h-12 text-accent mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <h3 class="text-xl font-semibold   mb-2">Message Sent</h3>
-              <p class="text-slate-600 ">Thank you for reaching out. We'll get back to you as soon as possible.</p>
+              <p class="text-muted ">Thank you for reaching out. We'll get back to you as soon as possible.</p>
             </div>
           } @else {
             <form (ngSubmit)="onSubmit()" class="space-y-6">
@@ -72,7 +72,7 @@
                     (ngModelChange)="updateField('name', $event)"
                     name="name"
                     placeholder="Your name"
-                    class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder-slate-400  focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent "
+                    class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-muted/60  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent "
                   />
                 </div>
                 <div>
@@ -85,7 +85,7 @@
                     (ngModelChange)="updateField('email', $event)"
                     name="email"
                     placeholder="you@example.com"
-                    class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder-slate-400  focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent "
+                    class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-muted/60  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent "
                   />
                 </div>
               </div>
@@ -100,7 +100,7 @@
                   (ngModelChange)="updateField('subject', $event)"
                   name="subject"
                   placeholder="What's this about?"
-                  class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder-slate-400  focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent "
+                  class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-muted/60  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent "
                 />
               </div>
 
@@ -114,7 +114,7 @@
                   (ngModelChange)="updateField('message', $event)"
                   name="message"
                   placeholder="Tell us what's on your mind..."
-                  class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder-slate-400  focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent  resize-none"
+                  class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-muted/60  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent  resize-none"
                 ></textarea>
               </div>
 

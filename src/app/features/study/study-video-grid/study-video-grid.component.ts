@@ -29,12 +29,12 @@ import { AuthService } from '../../../core/services/auth.service';
     })
   ],
   template: `
-    <div class="flex flex-col h-full min-h-0 overflow-hidden" [ngClass]="webrtc.isDetached() ? 'bg-surface/95 text-content p-4 rounded-2xl border border-border-base/80 shadow-2xl backdrop-blur-md' : 'bg-transparent text-content p-3'">
+    <div class="flex flex-col h-full min-h-0 overflow-hidden" [ngClass]="webrtc.isDetached() ? 'bg-surface/95 text-content p-4 rounded-2xl border border-border-base/50 shadow-2xl backdrop-blur-md' : 'bg-transparent text-content p-3'">
       <!-- Scrollable Videos Container -->
       <div class="flex flex-col gap-3 flex-1 overflow-y-auto min-h-0 mb-4 custom-scrollbar">
         
         <!-- Local Stream Video Box -->
-        <div class="relative bg-subtle rounded-xl overflow-hidden border border-border-base/70 aspect-video flex items-center justify-center shadow-sm">
+        <div class="relative bg-subtle rounded-xl overflow-hidden border border-border-base/50 aspect-video flex items-center justify-center shadow-sm">
           @if (localStream()) {
             <video 
               #localVideo 
@@ -74,7 +74,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
         <!-- Remote Stream Video Boxes -->
         @for (peer of remoteStreamsList(); track peer.id) {
-          <div class="relative bg-subtle rounded-xl overflow-hidden border border-border-base/70 aspect-video flex items-center justify-center shadow-sm">
+          <div class="relative bg-subtle rounded-xl overflow-hidden border border-border-base/50 aspect-video flex items-center justify-center shadow-sm">
             <video 
               [srcObject]="peer.stream" 
               autoplay 
@@ -90,7 +90,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
 
       <!-- Controls Panel (Light Mode) -->
-      <div class="flex items-center justify-center gap-4 bg-surface py-2 px-4 rounded-xl border border-border-base/70 shadow-sm shrink-0">
+      <div class="flex items-center justify-center gap-4 bg-surface py-2 px-4 rounded-xl border border-border-base/50 shadow-sm shrink-0">
         <!-- Mic Toggle -->
         <button 
           (click)="toggleMic()" 

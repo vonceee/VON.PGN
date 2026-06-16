@@ -3,10 +3,10 @@ import { isPlatformBrowser } from '@angular/common';
 
 export interface StudyShortcutsHandlers {
   flipBoard: () => void;
-  toggleEngine: () => void;
+  toggleEngine?: () => void;
   nextChapter: () => void;
   prevChapter: () => void;
-  isEngineVisible: () => boolean;
+  isEngineVisible?: () => boolean;
   canEdit: () => boolean;
   getCurrentNode: () => any;
   annotateMove: (node: any) => void;
@@ -51,9 +51,9 @@ export class StudyShortcutsService {
     }
 
     // Toggle Engine
-    if (keyLower === 'l' && this.handlers.isEngineVisible()) {
+    if (keyLower === 'l' && this.handlers.isEngineVisible && this.handlers.isEngineVisible()) {
       event.preventDefault();
-      this.handlers.toggleEngine();
+      this.handlers.toggleEngine?.();
       return;
     }
 

@@ -17,7 +17,7 @@ import { filter, map, startWith } from 'rxjs';
       <aside class="w-80 bg-main text-content fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-border-base">
         <div class="p-8 border-b border-border-base">
           <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-slate-900 rounded flex items-center justify-center text-white font-semibold">
+            <div class="w-10 h-10 bg-content rounded flex items-center justify-center text-white font-semibold">
               V
             </div>
             <h1 class="text-xl font-semibold ">Admin</h1>
@@ -30,13 +30,13 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin" routerLinkActive="bg-blue-50 text-blue-600" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-100 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin" routerLinkActive="bg-blue-50 text-blue-600" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-subtle hover:text-blue-600 mx-2  ">
                 
                 <span>Dashboard</span>
               </a>
             </li>
             <li>
-              <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-100 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-subtle hover:text-blue-600 mx-2  ">
                 
                 <span>Users</span>
               </a>
@@ -48,7 +48,7 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin/courses" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-100 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin/courses" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-subtle hover:text-blue-600 mx-2  ">
                 
                 <span>Courses</span>
               </a>
@@ -60,14 +60,14 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin/coaches" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-100 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin/coaches" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-subtle hover:text-blue-600 mx-2  ">
                 
                 <span>Coach Profiles</span>
               </a>
             </li>
 
             <li>
-              <a routerLink="/admin/academy-enrollments" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-100 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin/academy-enrollments" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-subtle hover:text-blue-600 mx-2  ">
                 
                 <span>Enrollments</span>
               </a>
@@ -85,10 +85,10 @@ import { filter, map, startWith } from 'rxjs';
           </div>
 
           <div class="flex items-center gap-4">
-            <div class="h-8 w-px bg-slate-200 mx-2"></div>
+            <div class="h-8 w-px bg-subtle mx-2"></div>
 
             <div class="flex items-center gap-3 pl-2 group cursor-pointer">
-              <div class="w-10 h-10 rounded bg-slate-200 flex items-center justify-center text-slate-600 font-semibold overflow-hidden">
+              <div class="w-10 h-10 rounded bg-subtle flex items-center justify-center text-muted font-semibold overflow-hidden">
                 @if (user()?.avatar) {
                   <img [src]="user()?.avatar" class="w-full h-full object-cover">
                 } @else {

@@ -75,11 +75,11 @@
 
             <!-- Progress Bar -->
             <div class="mb-6">
-              <div class="flex justify-between items-center text-sm font-medium text-slate-700 mb-1.5">
+              <div class="flex justify-between items-center text-sm font-medium text-muted mb-1.5">
                 <span>Puzzles solved</span>
                 <span>{{ getProgressPercentage(session) }}%</span>
               </div>
-              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+              <div class="w-full bg-subtle h-2 rounded-full overflow-hidden">
                 <div class="bg-accent h-full rounded-full transition-all duration-500"
                   [style.width.%]="getProgressPercentage(session)"></div>
               </div>
@@ -89,7 +89,7 @@
             <div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 mb-6">
               <div>
                 <span class="text-xs text-muted block">Current Time</span>
-                <span class="text-lg font-medium text-slate-800">
+                <span class="text-lg font-medium text-content">
                   @if (session.cycles && session.cycles[session.current_cycle_number - 1]) {
                   {{ formatTime(session.cycles[session.current_cycle_number - 1].total_time_seconds) }}
                   } @else {
@@ -99,7 +99,7 @@
               </div>
               <div>
                 <span class="text-xs text-muted block">Accuracy</span>
-                <span class="text-lg font-medium text-slate-800">
+                <span class="text-lg font-medium text-content">
                   {{ getOverallAccuracy(session) }}%
                 </span>
               </div>
@@ -107,7 +107,7 @@
           </div>
 
           <a [routerLink]="['/tactics/woodpecker/solve', session.id]"
-            class="block text-center bg-slate-900 text-white font-medium py-3 px-4 rounded-full">
+            class="block text-center bg-content text-white font-medium py-3 px-4 rounded-full">
             Resume training
           </a>
         </div>
@@ -133,18 +133,18 @@
                 <span class="text-xs font-semibold rounded-full uppercase"
                   [class.text-green-600]="session.status === 'completed'"
                   [class.text-orange-500]="session.status === 'active'"
-                  [class.text-slate-500]="session.status === 'abandoned'">
+                  [class.text-muted]="session.status === 'abandoned'">
                   {{ session.status }}
                 </span>
                 <span class="text-xs text-muted">Created on {{ session.created_at | date:'mediumDate' }}</span>
               </div>
-              <h3 class="text-xl font-medium text-slate-800">{{ session.name }}</h3>
+              <h3 class="text-xl font-medium text-content">{{ session.name }}</h3>
             </div>
 
             <div class="flex flex-wrap items-center gap-6 text-sm">
-              <span class="text-muted">Theme: <strong class="text-slate-800 font-medium">{{
+              <span class="text-muted">Theme: <strong class="text-content font-medium">{{
                   getThemeDisplayName(session.theme) }}</strong></span>
-              <span class="text-muted">Puzzles: <strong class="text-slate-800 font-medium">{{ session.total_puzzles
+              <span class="text-muted">Puzzles: <strong class="text-content font-medium">{{ session.total_puzzles
                   }}</strong></span>
               @if (session.status !== 'active') {
               <button (click)="deleteSession(session.id, $event)"
@@ -162,7 +162,7 @@
             </h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               @for (cycle of session.cycles; track cycle.id) {
-              <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+              <div class="bg-subtle rounded-xl p-4 border border-slate-100">
                 <div class="flex justify-between items-center mb-3">
                   <span class="text-md font-semibold">Cycle {{ cycle.cycle_number }}</span>
                   <span class="w-2.5 h-2.5 rounded-full" [class.bg-green-500]="cycle.status === 'completed'"
@@ -172,19 +172,19 @@
                 <div class="space-y-2">
                   <div class="flex justify-between text-sm">
                     <span class="text-muted">Accuracy:</span>
-                    <span class="font-medium text-slate-800">
+                    <span class="font-medium text-content">
                       {{ getCycleAccuracy(cycle) }}%
                     </span>
                   </div>
                   <div class="flex justify-between text-sm">
                     <span class="text-muted">Time Spent:</span>
-                    <span class="font-medium text-slate-800">
+                    <span class="font-medium text-content">
                       {{ formatTime(cycle.total_time_seconds) }}
                     </span>
                   </div>
                   <div class="flex justify-between text-sm">
                     <span class="text-muted">Correct:</span>
-                    <span class="font-medium text-slate-800">{{ cycle.total_correct }} / {{ cycle.total_solved }}</span>
+                    <span class="font-medium text-content">{{ cycle.total_correct }} / {{ cycle.total_solved }}</span>
                   </div>
                 </div>
               </div>
@@ -193,7 +193,7 @@
               <!-- Render placeholders for uncompleted cycles -->
               @if (session.cycles && session.cycles.length < 4 && session.status !=='abandoned' ) { @for (cycleNum of
                 getMissingCycles(session); track cycleNum) { <div
-                class="bg-slate-50/50 rounded-xl p-4 border border-dashed border-slate-200 flex flex-col items-center justify-center min-h-[110px] text-muted text-xs">
+                class="bg-subtle/50 rounded-xl p-4 border border-dashed border-border-base flex flex-col items-center justify-center min-h-[110px] text-muted text-xs">
                 Cycle {{ cycleNum }}
                 <span class="text-xs mt-1">Pending progression</span>
             </div>

@@ -130,7 +130,7 @@ import {
               </button>
             } @else if (myRematchOffered()) {
               <div
-                class="flex-1 text-xs uppercase   text-center py-2  bg-slate-400/5 rounded border border-border-theme"
+                class="flex-1 text-xs uppercase   text-center py-2  bg-muted/5 rounded border border-border-base"
               >
                 Waiting...
               </div>

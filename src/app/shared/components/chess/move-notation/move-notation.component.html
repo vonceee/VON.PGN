@@ -1,17 +1,15 @@
 <div class="overflow-hidden flex flex-col h-full">
   <!-- Navigation Controls -->
   @if (showNavigation()) {
-  <div class="flex-none flex items-center justify-between p-2">
-    <div class="flex items-center gap-0.5">
-      <button appButton variant="ghost" (click)="navigate.emit(initialPly())" [disabled]="currentPly() <= initialPly()"
-        class="hover:!bg-accent/10">
+  <div class="flex-none flex items-center justify-between p-4">
+    <div class="flex items-center gap-4">
+      <button appButton (click)="navigate.emit(initialPly())" [disabled]="currentPly() <= initialPly()">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="11 17 6 12 11 7" />
           <polyline points="18 17 13 12 18 7" />
         </svg>
       </button>
-      <button appButton variant="ghost" (click)="onNavigateBack()"
-        [disabled]="!navigationCtx().parent && currentPly() <= initialPly()" class="hover:!bg-accent/10">
+      <button appButton (click)="onNavigateBack()" [disabled]="!navigationCtx().parent && currentPly() <= initialPly()">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="15 18 9 12 15 6" />
         </svg>
@@ -19,15 +17,14 @@
     </div>
 
     <div class="flex items-center gap-0.5">
-      <button appButton variant="ghost" (click)="onNavigateNext()" [disabled]="nextOptions().length === 0"
-        class="hover:!bg-accent/10">
+      <button appButton (click)="onNavigateNext()" [disabled]="nextOptions().length === 0">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </button>
-      <button appButton variant="ghost"
+      <button appButton
         (click)="navigate.emit(effectiveTree().length > 0 ? effectiveTree()[effectiveTree().length - 1].ply : initialPly())"
-        [disabled]="isLastMove()" class="hover:!bg-accent/10">
+        [disabled]="isLastMove()">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="13 17 18 12 13 7" />
           <polyline points="6 17 11 12 6 7" />
@@ -41,62 +38,65 @@
   <div #scrollContainer class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-3 text-base">
     @if (layout() === 'grid') {
     <div class="flex flex-col gap-1 w-full">
-      @for (turn of mainlineTurns(); track turn.moveNumber) {
+      @for (turn of mainlineTurns(); track turn.id) {
       <!-- Turn Row Container -->
-      <div class="flex flex-col border-b border-border-base/30 last:border-0 pb-1 mb-1">
+      <div class="flex flex-col mb-1">
         <!-- Main Move Pair Row -->
-        <div
-          class="grid grid-cols-[3rem_1fr_1fr] gap-4 items-center py-1.5 px-2 rounded-lg hover:bg-subtle/50 transition-colors">
+        <div class="grid grid-cols-[3rem_1fr_1fr] items-center">
           <!-- Move Number -->
-          <span class="text-xs font-semibold text-muted select-none text-right pr-2">
+          <span class="text-sm font-medium text-muted select-none text-right pr-4">
             {{ turn.moveNumber }}.
           </span>
 
           <!-- White Move Column -->
-          <div class="flex items-center">
+          <div [class.hover:cursor-pointer]="turn.white" [class.hover:bg-subtle]="turn.white"
+            class="flex items-center rounded-xl">
             @if (turn.white; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move underline bg-accent/20 font-semibold'
+                        ? 'active-move underline bg-subtle font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'next-move-static transition-all'
-                          : 'text-content hover:bg-accent/10 transition-colors'
-                    "
-              class="text-left font-medium hover:cursor-pointer select-none active-move-target px-2 py-1 rounded-md">
+                          : 'hover:bg-subtle transition-colors'
+                    " class="text-leftselect-none active-move-target px-2 py-1">
               {{ node.san }}
               @if (node.glyphs && node.glyphs.length > 0) {
               @for (glyphId of node.glyphs; track glyphId) {
               @if (getGlyph(glyphId); as glyph) {
-              <span class="ml-1 font-semibold" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
+              <span class="ml-1 font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
               }
               }
               }
             </button>
+            } @else if (turn.showWhiteEllipsis) {
+            <span class="text-muted/50 select-none px-2 font-medium">...</span>
             } @else {
             <span class="text-muted/30 select-none px-2">—</span>
             }
           </div>
 
           <!-- Black Move Column -->
-          <div class="flex items-center">
+          <div [class.hover:cursor-pointer]="turn.black" [class.hover:bg-subtle]="turn.black"
+            class="flex items-center rounded-xl">
             @if (turn.black; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move underline bg-accent/20 font-semibold'
+                        ? 'active-move underline bg-subtle font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'next-move-static transition-all'
-                          : 'text-content hover:bg-accent/10 transition-colors'
-                    "
-              class="text-left font-medium hover:cursor-pointer select-none active-move-target px-2 py-1 rounded-md">
+                          : 'text-content hover:bg-subtle transition-colors'
+                    " class="text-left select-none active-move-target px-2 py-1">
               {{ node.san }}
               @if (node.glyphs && node.glyphs.length > 0) {
               @for (glyphId of node.glyphs; track glyphId) {
               @if (getGlyph(glyphId); as glyph) {
-              <span class="ml-1 font-semibold" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
+              <span class="ml-1 font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
               }
               }
               }
             </button>
+            } @else if (turn.showBlackEllipsis) {
+            <span class="text-muted/50 select-none px-2 font-medium">...</span>
             } @else {
             <span class="text-muted/30 select-none px-2">—</span>
             }
@@ -107,13 +107,11 @@
         <!-- White Move Details -->
         @if (turn.white; as node) {
         @if (node.variations && node.variations.length > 0) {
-        <div
-          class="pl-12 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 rounded-lg mx-2 my-0.5 border-l-2 border-slate-200">
+        <div class="pl-4 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 mx-2 my-0.5">
           <!-- Variations -->
-          <div class="text-xs text-muted/80 leading-relaxed py-0.5">
+          <div class="variation-tree-block flex flex-col gap-1 w-full text-xs text-muted/80 leading-relaxed py-0.5">
             @for (variation of node.variations; track $index) {
-            <div class="pl-2 border-l border-slate-200/50 py-0.5">
-              <span class="text-muted/55 font-semibold mr-1">(var)</span>
+            <div class="variation-branch-item relative pl-5 py-1 flex flex-wrap items-baseline">
               <ng-container
                 *ngTemplateOutlet="renderNodes; context: { nodes: variation, isMainline: false }"></ng-container>
             </div>
@@ -126,13 +124,11 @@
         <!-- Black Move Details -->
         @if (turn.black; as node) {
         @if (node.variations && node.variations.length > 0) {
-        <div
-          class="pl-12 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 rounded-lg mx-2 my-0.5 border-l-2 border-slate-200">
+        <div class="pl-12 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 mx-2 my-0.5">
           <!-- Variations -->
-          <div class="text-xs text-muted/80 leading-relaxed py-0.5">
+          <div class="variation-tree-block flex flex-col gap-1 w-full text-xs text-muted/80 leading-relaxed py-0.5">
             @for (variation of node.variations; track $index) {
-            <div class="pl-2 border-l border-slate-200/50 py-0.5">
-              <span class="text-muted/55 font-semibold mr-1">(var)</span>
+            <div class="variation-branch-item relative pl-5 py-1 flex flex-wrap items-baseline">
               <ng-container
                 *ngTemplateOutlet="renderNodes; context: { nodes: variation, isMainline: false }"></ng-container>
             </div>
@@ -146,7 +142,7 @@
 
       @if (result() && result() !== '*') {
       <div class="text-center py-2 border-t border-border-base/50 mt-2">
-        <span class="text-sm font-semibold text-muted select-text">
+        <span class="text-sm font-medium text-muted select-text">
           {{ result() }}
         </span>
       </div>
@@ -163,7 +159,7 @@
       </div>
       @if (result() && result() !== '*') {
       <div class="text-center py-2 border-t border-border-base/50 mt-2">
-        <span class="text-sm font-semibold text-muted select-text">
+        <span class="text-sm font-medium text-muted select-text">
           {{ result() }}
         </span>
       </div>
@@ -191,18 +187,18 @@
       <!-- Move Button -->
       <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, isMainline)" [class]="
             currentFen() === node.fen
-              ? 'active-move underline bg-accent'
+              ? (isMainline ? 'active-move underline bg-accent text-white font-medium' : 'active-move underline bg-subtle text-content font-medium')
               : activeContinuationSet().has(node.fen + '_' + node.ply)
                 ? 'next-move-static'
-                : 'text-content'
+                : (isMainline ? 'text-content hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle hover:text-content transition-colors')
           " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm]="!isMainline"
-        class="text-left hover:bg-accent hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
+        class="text-left hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
         {{ node.san }}
         <!-- Glyph Rendering -->
         @if (node.glyphs && node.glyphs.length > 0) {
         @for (glyphId of node.glyphs; track glyphId) {
         @if (getGlyph(glyphId); as glyph) {
-        <span class="ml-0.2 font-semibold" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
+        <span class="ml-0.2 font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
         }
         }
         }
@@ -245,15 +241,16 @@
 
   <!-- Variation Selector -->
   @if (nextOptions().length > 1) {
-  <div class="flex-none p-3 bg-surface border-t border-border-base">
+  <div class="flex-none p-3 border-t border-border-base/50">
     <div class="flex flex-wrap gap-2">
       @for (option of nextOptions(); track option.fen) {
       <button (click)="onMoveClick(option)" [class]="
               selectedVariationIndex() === $index
-                ? 'bg-accent rounded-2xl'
+                ? 'bg-accent text-white rounded-2xl'
                 : 'bg-subtle rounded-2xl'
-            " class="px-3.5 py-1.5 font-semibold text-sm  flex items-center gap-2.5 cursor-pointer hover:bg-accent">
-        <span class="opacity-50 font-semibold text-xs">{{
+            "
+        class="px-3.5 py-1.5 font-medium text-sm  flex items-center gap-2.5 cursor-pointer hover:bg-accent hover:text-white">
+        <span class="opacity-50 font-medium text-xs">{{
           option.ply % 2 !== 0 ? (option.ply + 1) / 2 : option.ply / 2 + '...'
           }}</span>
         {{ option.san }}
@@ -279,7 +276,7 @@
     /* Chess Variation Tree styling */
     .variation-tree-block {
       margin-left: 0.4rem;
-      border-left: 1.5px dashed var(--color-border-base, rgba(226, 232, 240, 0.8));
+      border-left: 1.5px var(--color-border-base, rgba(226, 232, 240, 0.8));
     }
 
     .variation-branch-item {
@@ -323,7 +320,7 @@
     [style.left.px]="contextMenuPos().x" [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()"
     (contextmenu)="$event.preventDefault()">
     <button (click)="onAnnotate()"
-      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-semibold text-content cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium text-content cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -332,7 +329,7 @@
     </button>
     @if (!isContextMenuNodeMainline()) {
     <button (click)="onPromoteToMainline()"
-      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-semibold text-content cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium text-content cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
       </svg>
@@ -340,7 +337,7 @@
     </button>
     }
     <button (click)="onDeleteFromHere()"
-      class="w-full text-left px-4 py-2.5 text-sm text-red-500 flex items-center gap-3 font-semibold text-content cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm text-red-500 flex items-center gap-3 font-medium text-content cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

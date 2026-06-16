@@ -1,44 +1,46 @@
-<div class="bg-main rounded-4xl w-full max-w-xl p-8 space-y-8 relative">
-  <div class="flex items-center justify-between">
-    <h2 class="text-2xl text-content">Add study member</h2>
+<div class="bg-main rounded-4xl w-full max-w-md p-8 space-y-6 relative shadow-xl border border-border-base/50">
+  <!-- Dialog Header -->
+  <div class="flex items-center justify-between pb-2 border-b border-border-base/35">
+    <h2 class="text-2xl">Add study member</h2>
+    <button (click)="dialogRef.close()"
+      class="text-muted hover:text-content cursor-pointer transition-colors p-1 rounded-lg hover:bg-subtle"
+      title="Close">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
   </div>
 
-  <div class="space-y-6">
-    <div class="space-y-1">
+  <!-- Search & Results Section -->
+  <div class="relative space-y-4">
+    <div
+      class="flex items-center h-11 w-full px-4 rounded-full bg-subtle border border-border-base focus-within:border-accent/40 focus-within:ring-1 focus-within:ring-accent/40 transition-all">
       <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)"
-        placeholder="type username..."
-        class="w-full px-4 py-2 bg-subtle rounded-xl text-sm outline-none placeholder:text-muted" autofocus />
+        placeholder="search players..." autofocus
+        class="bg-transparent outline-none text-sm font-medium placeholder-muted w-full" />
+
+      @if (isSearching()) {
+      <div class="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
+      }
     </div>
 
-    <!-- Search Results -->
-    <div class="min-h-[160px] max-h-[220px] overflow-y-auto custom-scrollbar space-y-1 p-2">
-      @if (isSearching()) {
-      <div class="flex items-center justify-center py-8">
-        <div class="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
-      </div>
-      } @else if (results().length > 0) {
+    <!-- Search Results Dropdown List -->
+    @if (results().length > 0) {
+    <div
+      class="w-full bg-subtle rounded-3xl border border-border-base/50 py-2 max-h-48 overflow-y-auto custom-scrollbar shadow-inner">
       @for (user of results(); track user.uid) {
       <button (click)="selectUser(user)"
-        class="w-full flex items-center justify-between p-2.5 px-4 rounded-xl text-left group transition-all"
-        [class.bg-accent]="selectedUser()?.uid === user.uid"
-        [class.hover:bg-surface]="selectedUser()?.uid !== user.uid">
-        <div class="flex flex-col">
-          <span class="text-sm font-semibold text-content cursor-pointer"
-            [class.!text-white]="selectedUser()?.uid === user.uid" [appUserHovercard]="user.username"
-            [disableClick]="true">{{ user.username }}</span>
+        class="w-full flex items-center gap-3 px-5 py-3 hover:bg-main hover:text-accent text-left cursor-pointer transition-all border-b border-border-base/50 last:border-0">
+        <div class="flex flex-col min-w-0">
+          <span class="text-sm font-medium truncate">{{ user.username }}</span>
         </div>
       </button>
       }
-      }
     </div>
-  </div>
-
-  <div class="pt-4 flex gap-4 w-full">
-    <button appButton (click)="dialogRef.close()" class="flex-1">
-      <span>Cancel</span>
-    </button>
-    <button appButton variant="primary" class="flex-1" (click)="onSubmit()" [disabled]="!selectedUser()">
-      Add to study
-    </button>
+    } @else if (searchQuery().length >= 2 && !isSearching()) {
+    <div class="text-center py-6 text-sm text-muted bg-subtle rounded-3xl border border-border-base/50">
+      No players found.
+    </div>
+    }
   </div>
 </div>

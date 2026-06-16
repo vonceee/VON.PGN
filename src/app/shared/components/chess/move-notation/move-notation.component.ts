@@ -65,15 +65,14 @@ export class MoveNotationComponent {
   selectedVariationIndex = signal(0);
 
   // Active Layout State
-  activeLayout = signal<'grid' | 'inline' | 'tree'>('tree');
+  activeLayout = computed(() => {
+    const initial = this.layout();
+    return initial === 'inline' ? 'tree' : initial;
+  });
 
   scrollContainer = viewChild<ElementRef>('scrollContainer');
 
   constructor() {
-    // Initialize activeLayout based on the layout input (map inline to tree for default premium view)
-    const initial = this.layout();
-    this.activeLayout.set(initial === 'inline' ? 'tree' : initial);
-
     effect(() => {
       // Trigger scroll when currentFen changes
       this.currentFen();
@@ -118,20 +117,25 @@ export class MoveNotationComponent {
     const tree = this.effectiveTree();
     if (tree.length === 0) return [];
 
-    const turns: {
+    interface MainlineRow {
+      id: string;
       moveNumber: number;
       white?: MoveNode;
       black?: MoveNode;
-    }[] = [];
+      showWhiteEllipsis?: boolean;
+      showBlackEllipsis?: boolean;
+    }
+
+    const turnsMap = new Map<number, { moveNumber: number; white?: MoveNode; black?: MoveNode }>();
 
     tree.forEach((node) => {
       const isWhite = node.ply % 2 !== 0;
       const moveNumber = isWhite ? (node.ply + 1) / 2 : node.ply / 2;
 
-      let turn = turns.find((t) => t.moveNumber === moveNumber);
+      let turn = turnsMap.get(moveNumber);
       if (!turn) {
         turn = { moveNumber };
-        turns.push(turn);
+        turnsMap.set(moveNumber, turn);
       }
 
       if (isWhite) {
@@ -141,8 +145,37 @@ export class MoveNotationComponent {
       }
     });
 
-    turns.sort((a, b) => a.moveNumber - b.moveNumber);
-    return turns;
+    const sortedMoveNumbers = Array.from(turnsMap.keys()).sort((a, b) => a - b);
+    const rows: MainlineRow[] = [];
+
+    sortedMoveNumbers.forEach((moveNumber) => {
+      const turn = turnsMap.get(moveNumber)!;
+      const whiteHasVariations = !!(turn.white && turn.white.variations && turn.white.variations.length > 0);
+
+      if (whiteHasVariations && turn.white && turn.black) {
+        rows.push({
+          id: `${moveNumber}-w`,
+          moveNumber,
+          white: turn.white,
+          showBlackEllipsis: true,
+        });
+        rows.push({
+          id: `${moveNumber}-b`,
+          moveNumber,
+          black: turn.black,
+          showWhiteEllipsis: true,
+        });
+      } else {
+        rows.push({
+          id: `${moveNumber}-full`,
+          moveNumber,
+          white: turn.white,
+          black: turn.black,
+        });
+      }
+    });
+
+    return rows;
   });
 
   // Determine current navigation context (successors and parent)

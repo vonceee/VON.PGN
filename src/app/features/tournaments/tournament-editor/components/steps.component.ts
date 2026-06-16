@@ -68,7 +68,7 @@ export class StepBasicInfoComponent {
                 [ngModel]="isOneDayTournament()"
                 (ngModelChange)="toggleOneDayTournament()"
                 [ngModelOptions]="{ standalone: true }"
-                class="w-4 h-4 text-cyan-400 bg-slate-800 border-border-base rounded focus:ring-cyan-400 focus:ring-2"
+                class="w-4 h-4 text-accent bg-content border-border-base rounded focus:ring-accent focus:ring-2"
               />
               <span class="text-sm ">1-day tournament</span>
             </label>
@@ -94,7 +94,7 @@ export class StepBasicInfoComponent {
       ></app-form-field>
 
       <div class="space-y-1.5">
-        <label class="field-label block text-sm  text-slate-700 ">Google Maps Link <span class=" font-normal">(Optional)</span></label>
+        <label class="field-label block text-sm  text-muted ">Google Maps Link <span class=" font-normal">(Optional)</span></label>
         <div class="flex gap-2">
           <input
             type="text"
@@ -102,7 +102,7 @@ export class StepBasicInfoComponent {
             (ngModelChange)="mapsLink.set($event)"
             [ngModelOptions]="{ standalone: true }"
             placeholder="Paste Google Maps URL to verify location"
-            class="flex-1 p-3 border border-border-theme rounded focus:outline-none focus:border-cyan-400 "
+            class="flex-1 p-3 border border-border-base rounded focus:outline-none focus:border-accent "
           />
           <button
             appButton

@@ -4,8 +4,8 @@
   @if (isLoading()) {
   <div class="flex-1 flex flex-col items-center justify-center py-20">
     <div class="relative w-12 h-12">
-      <div class="absolute inset-0 border-4 border-cyan-500/20 rounded-full"></div>
-      <div class="absolute inset-0 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      <div class="absolute inset-0 border-4 border-accent/20 rounded-full"></div>
+      <div class="absolute inset-0 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
     </div>
   </div>
   } @else {
@@ -52,7 +52,7 @@
 
         <!-- Chapter Progression bar -->
         <div>
-          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-2">
+          <div class="w-full bg-subtle h-2 rounded-full overflow-hidden mb-2">
             <div class="bg-accent h-full rounded-full transition-all duration-500"
               [style.width.%]="((currentChapterIndex() + 1) / chapters().length) * 100"></div>
           </div>
@@ -87,7 +87,7 @@
         }
 
         <!-- Action Buttons -->
-        <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-border-base/60">
+        <div class="flex flex-col gap-2 mt-4 pt-4 border-t border-border-base/50">
           @if (isRetryMode()) {
           <button appButton variant="outline" (click)="cancelRetry()">
             Back to Summary
@@ -193,7 +193,7 @@
     </div>
 
     <!-- Call to Actions -->
-    <div class="flex flex-col sm:flex-row gap-4 w-full justify-start pt-6 border-t border-border-base/60">
+    <div class="flex flex-col sm:flex-row gap-4 w-full justify-start pt-6 border-t border-border-base/50">
       <button appButton variant="primary" class="min-w-[200px]" (click)="restartRepertoire()">
         Practice again
       </button>

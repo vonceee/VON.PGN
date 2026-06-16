@@ -4,9 +4,9 @@
     <div class="mx-auto w-full text-center">
       <div class="mb-8 flex justify-center">
         <div
-          class="h-20 w-20 bg-zinc-100  text-zinc-900  rounded-full flex items-center justify-center border border-zinc-200 ">
+          class="h-20 w-20 bg-subtle  text-content  rounded-full flex items-center justify-center border border-border-base ">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-            stroke="currentColor" class="w-10 h-10 text-cyan-400">
+            stroke="currentColor" class="w-10 h-10 text-accent">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
           </svg>
@@ -14,34 +14,34 @@
       </div>
 
       <h1 class="text-3xl font-semibold  mb-4">
-        Verify your <span class="text-cyan-400">Email</span>
+        Verify your <span class="text-accent">Email</span>
       </h1>
 
       @if (!isEditingEmail) {
-      <p class="text-zinc-500  mb-8 ">
+      <p class="text-muted  mb-8 ">
         we've sent a link to
-        <span class="font-semibold text-zinc-900 ">{{
+        <span class="font-semibold text-content ">{{
           unverifiedEmail() || 'your email address'
           }}</span>.
         <button (click)="startEditEmail()"
-          class="text-xs text-cyan-500 hover:text-cyan-600 underline underline-offset-2 ml-1">
+          class="text-xs text-accent hover:text-accent/80 underline underline-offset-2 ml-1">
           wrong email?</button><br /><br />
         you can close this tab after verification.
       </p>
       } @else {
       <div
-        class="mb-8 p-4 bg-zinc-50 /50 rounded-lg border border-zinc-200  text-left">
+        class="mb-8 p-4 bg-subtle/50 rounded-lg border border-border-base  text-left">
         <label class="block text-sm  mb-2">Update Email Address</label>
         <div class="flex gap-2">
           <input type="email" [(ngModel)]="newEmailInput"
-            class="flex-1 px-3 py-2 bg-white  border border-zinc-200  rounded-lg text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent outline-none placeholder:text-zinc-400  "
+            class="flex-1 px-3 py-2 bg-white  border border-border-base  rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-transparent outline-none placeholder:text-muted  "
             placeholder="Enter new email" (keyup.enter)="updateEmail()" />
           <button (click)="updateEmail()" [disabled]="isUpdatingEmail || !newEmailInput"
-            class="px-4 py-2 bg-black hover:bg-zinc-800   text-white  rounded-lg text-sm font-semibold disabled:opacity-50 ">
+            class="px-4 py-2 bg-black hover:bg-content   text-white  rounded-lg text-sm font-semibold disabled:opacity-50 ">
             {{ isUpdatingEmail ? 'Saving...' : 'Save' }}
           </button>
           <button (click)="cancelEditEmail()" [disabled]="isUpdatingEmail"
-            class="px-4 py-2 bg-zinc-200 hover:bg-zinc-300   text-zinc-900  rounded-lg text-sm font-semibold disabled:opacity-50 ">
+            class="px-4 py-2 bg-subtle hover:bg-subtle   text-content  rounded-lg text-sm font-semibold disabled:opacity-50 ">
             Cancel
           </button>
         </div>
@@ -54,7 +54,7 @@
       <p class="mt-12 text-sm ">
         Didn't receive the email? Check your spam folder or
         <button (click)="resendEmail()" [disabled]="isResending"
-          class="hover:text-zinc-900  underline underline-offset-2 bg-transparent border-none cursor-pointer text-inherit text-sm p-0">
+          class="hover:text-content  underline underline-offset-2 bg-transparent border-none cursor-pointer text-inherit text-sm p-0">
           {{ isResending ? 'sending...' : 'resend the link' }}</button>.
       </p>
 
@@ -66,7 +66,7 @@
 
   <!-- Right Column: Branding Section -->
   <div
-    class="hidden lg:flex flex-1 bg-zinc-900  text-white p-10 flex-col justify-between relative overflow-hidden">
+    class="hidden lg:flex flex-1 bg-content  text-white p-10 flex-col justify-between relative overflow-hidden">
     <!-- Abstract Chess Grid Pattern Background -->
     <div class="absolute inset-0 opacity-20 pointer-events-none">
       <div class="chess-grid h-full w-full"></div>
@@ -75,29 +75,29 @@
     <div class="relative z-10">
       <div class="max-w-xl">
         <h2 class="text-4xl xl:text-5xl   leading-[1.1]">
-          MASTER THE GAME OF <span class="text-cyan-400">CHESS.</span>
+          MASTER THE GAME OF <span class="text-accent">CHESS.</span>
         </h2>
-        <p class="mt-4 text-zinc-400  ">
+        <p class="mt-4 text-muted  ">
           PLAY AND LEARN ON vonchess — THE ULTIMATE <br class="hidden xl:block" />
-          PLATFORM FOR PLAYERS WHO AIM FOR THE <span class="text-cyan-400">TOP.</span>
+          PLATFORM FOR PLAYERS WHO AIM FOR THE <span class="text-accent">TOP.</span>
         </p>
       </div>
     </div>
 
     <div class="relative z-10 border-t border-zinc-800 pt-6">
-      <div class="flex items-center gap-2 text-cyan-400 mb-2 font-semibold text-sm">
+      <div class="flex items-center gap-2 text-accent mb-2 font-semibold text-sm">
         Support our mission
       </div>
-      <p class="text-zinc-400 text-xs  max-w-md">
+      <p class="text-muted text-xs  max-w-md">
         If you like the website, consider supporting us. Your donations help us keep the servers
         running and the puzzles fresh!
       </p>
 
-      <div class="mt-8 flex justify-between items-center text-xs text-zinc-500 ">
-        <span>Need help? <a href="#" class="text-zinc-300 hover:text-cyan-400">visit our FAQ</a></span>
+      <div class="mt-8 flex justify-between items-center text-xs text-muted ">
+        <span>Need help? <a href="#" class="text-muted hover:text-accent">visit our FAQ</a></span>
         <div class="flex gap-4">
-          <a href="#" class="hover:text-zinc-300">Twitter</a>
-          <a href="#" class="hover:text-zinc-300">Discord</a>
+          <a href="#" class="hover:text-muted">Twitter</a>
+          <a href="#" class="hover:text-muted">Discord</a>
         </div>
       </div>
     </div>

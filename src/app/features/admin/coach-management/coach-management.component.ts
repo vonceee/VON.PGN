@@ -20,7 +20,7 @@ import { ToastService } from '../../../core/services/toast.service';
           <h1 class="text-3xl font-semibold  ">Coach Profiles</h1>
           <p class=" mt-1 ">Manage and curate public coach profiles on the platform.</p>
         </div>
-        <a routerLink="/admin/coach/new" class="px-6 py-3 rounded bg-slate-900 text-white font-semibold hover:bg-slate-800">
+        <a routerLink="/admin/coach/new" class="px-6 py-3 rounded bg-content text-white font-semibold hover:bg-content">
           <span>Add New Coach</span>
         </a>
       </div>

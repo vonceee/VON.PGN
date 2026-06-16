@@ -36,7 +36,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (tournament of tournaments(); track tournament.id) {
         <div
-          class="border border-border-theme rounded-2xl overflow-hidden flex flex-col h-full relative group"
+          class="border border-border-base rounded-2xl overflow-hidden flex flex-col h-full relative group"
         >
           <!-- Status Badge -->
           <div class="p-4 md:p-5 pb-0">
@@ -55,7 +55,7 @@
                 >
               }
               @case ('past') {
-                <span class="px-2.5 py-1 bg-slate-500 text-white text-xs font-semibold rounded-full"
+                <span class="px-2.5 py-1 bg-subtle0 text-white text-xs font-semibold rounded-full"
                   >Completed</span
                 >
               }

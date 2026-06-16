@@ -13,7 +13,7 @@
         <div class="space-y-2">
           <label for="email" class="text-sm lg:text-base font-semibold"> Email </label>
           <input id="email" type="email" formControlName="email" placeholder="hello@email.com" (input)="clearError()"
-            class="w-full px-4 py-2.5 bg-zinc-50 /50 border border-zinc-200  rounded-lg text-sm lg:text-base  focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400   " />
+            class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   " />
         </div>
 
         <!-- Password Field -->
@@ -22,9 +22,9 @@
           <div class="relative">
             <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
               placeholder="••••••••" (input)="clearError()"
-              class="w-full px-4 py-2.5 bg-zinc-50 /50 border border-zinc-200  rounded-lg text-sm lg:text-base  focus:ring-cyan-500/10 focus:border-cyan-500 outline-none placeholder:text-zinc-400   pr-12 " />
+              class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   pr-12 " />
             <button type="button" (click)="showPassword.set(!showPassword())"
-              class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600   focus:outline-none">
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-muted   focus:outline-none">
               @if (showPassword()) {
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -42,7 +42,7 @@
               }
             </button>
           </div>
-          <a routerLink="/forgot-password" class="text-xs lg:text-sm  text-zinc-500 hover:text-zinc-900  ">forgot
+          <a routerLink="/forgot-password" class="text-xs lg:text-sm  text-muted hover:text-content  ">forgot
             password?</a>
         </div>
 
@@ -66,7 +66,7 @@
 
       <p class="mt-6 text-center text-sm">
         Don't have an account?
-        <a routerLink="/register" class="font-semibold hover:underline underline-offset-4 decoration-cyan-400">
+        <a routerLink="/register" class="font-semibold hover:underline underline-offset-4 decoration-accent">
           Sign up
         </a>
       </p>
@@ -74,10 +74,10 @@
       <p class="mt-8 text-center text-xs ">
         By signing in, you agree to our <br />
         <a routerLink="/terms-of-service" target="_blank" rel="noopener noreferrer"
-          class="hover:text-zinc-900  underline underline-offset-2">Terms of Service</a>
+          class="hover:text-content  underline underline-offset-2">Terms of Service</a>
         and
         <a routerLink="/privacy-policy" target="_blank" rel="noopener noreferrer"
-          class="hover:text-zinc-900  underline underline-offset-2">Privacy Policy</a>
+          class="hover:text-content  underline underline-offset-2">Privacy Policy</a>
       </p>
     </div>
   </div>
