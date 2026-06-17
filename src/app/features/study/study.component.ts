@@ -4,6 +4,7 @@ import {
   OnDestroy,
   inject,
   signal,
+  computed,
   effect,
   PLATFORM_ID,
   input,
@@ -134,6 +135,15 @@ export class StudyComponent implements OnInit, OnDestroy {
   isLargeScreen = signal(false);
   isThreeColumn = signal(false);
   isTwoColumn = signal(false);
+  otherColumnsWidth = computed(() => {
+    if (this.isThreeColumn()) {
+      return 330 + 400 + 80; // Left sidebar (330px) + Right notation (400px) + Gaps/Paddings (80px)
+    } else if (this.isTwoColumn()) {
+      return 400 + 60; // Right notation (400px) + Gaps/Paddings (60px)
+    } else {
+      return 32; // Mobile padding
+    }
+  });
 
   isMetadataDialogOpen = signal(false);
 

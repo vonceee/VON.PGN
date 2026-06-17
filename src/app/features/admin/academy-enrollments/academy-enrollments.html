@@ -1,20 +1,13 @@
 <div class="max-w-[1200px] space-y-6">
   <div class="flex flex-wrap items-center justify-end gap-4 mb-6">
     <div class="relative min-w-[240px]">
-      <input
-        type="text"
-        [(ngModel)]="searchTerm"
-        (ngModelChange)="loadEnrollments()"
+      <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="loadEnrollments()"
         placeholder="Search name, email..."
-        class="w-full px-4 py-2 bg-white border border-border-base rounded  outline-none"
-      />
+        class="w-full px-4 py-2 bg-white border border-border-base rounded  outline-none" />
     </div>
 
-    <select
-      [(ngModel)]="statusFilter"
-      (ngModelChange)="loadEnrollments()"
-      class="px-4 py-2 bg-white border border-border-base rounded  outline-none text-sm"
-    >
+    <select [(ngModel)]="statusFilter" (ngModelChange)="loadEnrollments()"
+      class="px-4 py-2 bg-white border border-border-base rounded  outline-none text-sm">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
       <option value="contacted">Contacted</option>
@@ -25,9 +18,7 @@
   </div>
 
   <!-- Table Core -->
-  <div
-    class="bg-white border border-border-base rounded overflow-hidden"
-  >
+  <div class="bg-white border border-border-base rounded overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
@@ -44,23 +35,16 @@
             <th class="px-6 py-4 text-xs  uppercase  ">
               Status
             </th>
-            <th
-              class="px-6 py-4 text-xs  uppercase   text-right"
-            >
+            <th class="px-6 py-4 text-xs  uppercase   text-right">
               Actions
             </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
-          <tr
-            *ngFor="let item of enrollments()"
-           
-          >
+          <tr *ngFor="let item of enrollments()">
             <td class="px-6 py-6">
               <div class="flex items-center gap-4">
-                <div
-                  class="w-12 h-12 rounded bg-subtle flex items-center justify-center  font-semibold text-xl"
-                >
+                <div class="w-12 h-12 rounded bg-subtle flex items-center justify-center  font-semibold text-xl">
                   {{ item.full_name[0] }}
                 </div>
                 <div>
@@ -76,17 +60,14 @@
               </span>
             </td>
             <td class="px-6 py-6 max-w-xs">
-              <p class="text-sm  line-clamp-2" [title]="item.experience">
+              <p class="text-sm  " [title]="item.experience">
                 {{ item.experience || 'No experience provided' }}
               </p>
             </td>
             <td class="px-6 py-6">
-              <select
-                [ngModel]="item.status"
-                (ngModelChange)="updateStatus(item.id, $event)"
+              <select [ngModel]="item.status" (ngModelChange)="updateStatus(item.id, $event)"
                 class="px-3 py-1.5 rounded text-xs font-semibold border-none outline-none cursor-pointer"
-                [ngClass]="getStatusClass(item.status)"
-              >
+                [ngClass]="getStatusClass(item.status)">
                 <option value="pending">Pending</option>
                 <option value="contacted">Contacted</option>
                 <option value="confirmed">Confirmed</option>
@@ -95,7 +76,8 @@
               </select>
             </td>
             <td class="px-6 py-6 text-right">
-              <button (click)="deleteEnrollment(item.id)" class="px-2 py-1 text-xs font-semibold text-rose-500 hover:underline">
+              <button (click)="deleteEnrollment(item.id)"
+                class="px-2 py-1 text-xs font-semibold text-rose-500 hover:underline">
                 Delete
               </button>
             </td>
@@ -112,7 +94,7 @@
 
     <!-- Loading State -->
     @if (isLoading()) {
-      <app-loading></app-loading>
+    <app-loading></app-loading>
     }
   </div>
 </div>

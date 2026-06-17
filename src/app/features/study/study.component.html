@@ -1,8 +1,8 @@
-<div class="absolute inset-0 flex flex-col bg-subtle" [class.overflow-hidden]="isThreeColumn()"
+<div class="absolute inset-0 flex flex-col" [class.overflow-hidden]="isThreeColumn()"
   [class.overflow-y-auto]="!isThreeColumn()" [class.custom-scrollbar]="!isThreeColumn()">
   @if (facade.study(); as s) {
   <!-- Main Content Grid Wrapper -->
-  <div class="flex-1 w-full max-w-[1700px] mx-auto p-2 lg:p-4 xl:p-6" [class.overflow-hidden]="isThreeColumn()">
+  <div class="flex-1 w-full max-w-[1850px] mx-auto p-2 lg:p-4 xl:p-6" [class.overflow-hidden]="isThreeColumn()">
     <div
       class="grid justify-center grid-cols-1 md:grid-cols-[var(--board-size)_400px] xl:grid-cols-[330px_var(--board-size)_400px] gap-3 lg:gap-4 xl:gap-6"
       [class.h-full]="isThreeColumn()" [class.overflow-hidden]="isThreeColumn()">
@@ -24,7 +24,7 @@
               (moveMade)="onMoveMade($event)" (shapeDrawn)="facade.onShapeDrawn($event)"
               (sizeChange)="boardSize.set($event)" (prevMove)="facade.onPrevMove()" (nextMove)="facade.onNextMove()"
               [syncedShapes]="facade.mergedShapes()" [lastMove]="facade.lastMoveSquares()"
-              [glyphs]="facade.activeGlyphs()"></app-chess-board>
+              [glyphs]="facade.activeGlyphs()" [layoutColumnsWidth]="otherColumnsWidth()"></app-chess-board>
           </div>
 
         </div>

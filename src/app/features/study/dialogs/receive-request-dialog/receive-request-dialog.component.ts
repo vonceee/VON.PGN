@@ -24,11 +24,11 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
           </div>
           <div>
             <p class="text-sm text-content font-semibold">Incoming Request</p>
-            <p class="text-xs text-muted leading-relaxed">A student wants to interact with the board.</p>
+            <p class="text-xs text-muted">A student wants to interact with the board.</p>
           </div>
         </div>
 
-        <p class="text-sm text-content/90 leading-relaxed font-medium">
+        <p class="text-sm text-content/90 font-medium">
           <span class="text-accent font-bold">{{ data.userName }}</span> is requesting temporary board control to demonstrate moves and draw shapes.
         </p>
 

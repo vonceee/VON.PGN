@@ -25,7 +25,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
           </div>
           <div>
             <p class="text-sm text-content font-semibold">Board is Locked</p>
-            <p class="text-xs text-muted leading-relaxed">The tutor currently has exclusive board control.</p>
+            <p class="text-xs text-muted">The tutor currently has exclusive board control.</p>
           </div>
         </div>
 

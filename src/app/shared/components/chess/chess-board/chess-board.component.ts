@@ -196,6 +196,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   @Input() resizable: boolean = true;
   @Input() fluid: boolean = false;
   @Input() lastMove: Key[] | undefined = undefined;
+  @Input() layoutColumnsWidth?: number;
   glyphs = input<{ square: string; symbol: string; class: string }[]>([]);
 
   @Output() fenChange = new EventEmitter<string>();
@@ -287,9 +288,16 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     const maxHeight = this.containerSize.height || (window.innerHeight - 120);
 
     // Determine the maximum size that fits the screen width (accounting for other columns' fixed widths)
-    const isThreeCol = window.innerWidth >= 1536;
-    const otherColumnsWidth = (isThreeCol ? 330 : 0) + 400 + 80;
-    const maxWidth = window.innerWidth - otherColumnsWidth;
+    let otherWidth = this.layoutColumnsWidth;
+    if (otherWidth === undefined) {
+      const isThreeCol = window.innerWidth >= 1280;
+      otherWidth = (isThreeCol ? 330 : 0) + 400 + 80;
+    }
+
+    // Limit screen width reference to maximum container width (1850px) to prevent overflowing container boundaries
+    const maxContainerWidth = 1850;
+    const activeWidth = Math.min(window.innerWidth, maxContainerWidth);
+    const maxWidth = activeWidth - otherWidth;
 
     // The maximum possible board size is the minimum of available width and height
     const maxPossible = Math.max(this.minSize, Math.min(maxWidth, maxHeight));

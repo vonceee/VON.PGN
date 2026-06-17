@@ -79,7 +79,7 @@ type TabType = 'details' | 'games';
               <!-- Left: Title & Info -->
               <div class="flex-1">
                 <!-- Title -->
-                <h1 class="text-3xl sm:text-4xl font-semibold  mb-4 line-clamp-2">{{ detail()?.name }}</h1>
+                <h1 class="text-3xl sm:text-4xl font-semibold  mb-4 ">{{ detail()?.name }}</h1>
 
                 <!-- Quick Info -->
                 <div class="flex flex-wrap items-center gap-4 text-sm  ">

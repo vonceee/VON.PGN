@@ -45,58 +45,35 @@
   <!-- Search & Filter Bar -->
   <div class="flex gap-3 flex-wrap md:flex-nowrap items-center mb-6">
     <div class="relative flex-1">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"
-      >
-        <path
-          fill-rule="evenodd"
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+        class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none">
+        <path fill-rule="evenodd"
           d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-          clip-rule="evenodd"
-        />
+          clip-rule="evenodd" />
       </svg>
-      <input
-        type="text"
-        [value]="searchQuery()"
-        (input)="onSearchInput($event)"
-        placeholder="Search studies..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50"
-      />
+      <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search studies..."
+        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
-        <button
-          (click)="clearSearch()"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="w-4 h-4"
-          >
-            <path
-              d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z"
-            />
-          </svg>
-        </button>
+      <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+          <path
+            d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+        </svg>
+      </button>
       }
     </div>
 
     @if (activeTab() === 'my') {
-      <select
-        [value]="sortBy()"
-        (change)="onSortChange($event)"
-        class="w-44 px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
-        style="
+    <select [value]="sortBy()" (change)="onSortChange($event)"
+      class="w-44 px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+      style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
           background-size: 1.25rem;
-        "
-      >
-        <option value="last_updated">Last updated</option>
-        <option value="alphabetical">Alphabetical</option>
-      </select>
+        ">
+      <option value="last_updated">Last updated</option>
+      <option value="alphabetical">Alphabetical</option>
+    </select>
     }
   </div>
 
@@ -110,16 +87,16 @@
       <h3 class="text-lg mb-2 text-content">No studies found</h3>
       <p class="text-muted text-sm">
         @if (searchQuery()) {
-          Try adjusting your search terms.
+        Try adjusting your search terms.
         } @else {
-          There are no studies available.
+        There are no studies available.
         }
       </p>
     </div>
     } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of studies(); track study.id) {
-      <div class="bg-subtle rounded-4xl overflow-hidden flex flex-col h-full relative group cursor-default">
+      <div class="bg-main rounded-4xl overflow-hidden flex flex-col h-full relative group cursor-default">
         <!-- Card Body -->
         <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
           <div class="flex items-start justify-between gap-2 mb-2">

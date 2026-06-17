@@ -76,6 +76,15 @@ export class OpeningDrillsComponent implements OnInit {
     this.router.navigate(['/study/drills/solve', study.id]);
   }
 
+  onSearchInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+  }
+
+  clearSearch() {
+    this.searchQuery.set('');
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     if (

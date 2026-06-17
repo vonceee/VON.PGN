@@ -42,6 +42,9 @@
             "outputMode": "server",
             "security": {
               "allowedHosts": [
+                "localhost",
+                "127.0.0.1",
+                "192.168.254.146",
                 "von-pgn.alonarvoncedric.workers.dev",
                 "vonchess.net",
                 "www.vonchess.net"
