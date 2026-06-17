@@ -22,7 +22,8 @@
         </div>
 
         <!-- Stats & Notation Sidebar -->
-        <div class="w-full h-full max-h-[620px] my-auto flex flex-col min-h-0 overflow-hidden bg-main rounded-4xl">
+        <div
+          class="w-full lg:w-[400px] h-[400px] max-h-[620px] my-auto flex flex-col min-h-0 overflow-hidden bg-main rounded-4xl">
           <div class="flex flex-col overflow-hidden w-full h-full">
             <!-- Top Section: Stats or Guest Prompt -->
             <div class="p-4 md:p-6 flex flex-col gap-4 shrink-0">
@@ -62,7 +63,7 @@
               <div class="flex items-center justify-between w-full">
                 <!-- Guest Info (Left) -->
                 <div>
-                  <p class="text-sm text-muted">
+                  <p class="text-md">
                     Sign in to save progress
                   </p>
                 </div>
@@ -89,7 +90,7 @@
 
             <!-- Puzzle History Strip -->
             @if (currentUser() && recentPuzzleHistory().length > 0) {
-            <div class="px-4 py-3 flex flex-wrap gap-2 shrink-0">
+            <div class="p-4 flex flex-wrap gap-2 shrink-0 border-t border-border-base/50">
               @for (attempt of recentPuzzleHistory(); track attempt.id) {
               <button (click)="selectHistoryPuzzle(attempt.puzzle_id)" [class.bg-green-100]="attempt.rating_change >= 0"
                 [class.text-green-700]="attempt.rating_change >= 0" [class.bg-red-100]="attempt.rating_change < 0"
