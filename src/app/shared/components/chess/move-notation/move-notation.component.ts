@@ -44,6 +44,7 @@ export class MoveNotationComponent {
   layout = input<'grid' | 'inline' | 'tree'>('inline');
 
   currentFen = input<string>('');
+  initialFen = input<string>('');
   currentPly = input<number>(0);
   initialPly = input<number>(0);
   result = input<string | null | undefined>(null);
@@ -108,7 +109,7 @@ export class MoveNotationComponent {
 
     const flatMoves = this.moves();
     if (flatMoves && flatMoves.length > 0) {
-      return buildTreeFromMoves(flatMoves);
+      return buildTreeFromMoves(flatMoves, this.initialFen());
     }
     return [];
   });

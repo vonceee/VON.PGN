@@ -98,7 +98,7 @@ export class TacticsBoardComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['exploreMode'] && !changes['exploreMode'].isFirstChange()) {
-      if (this.exploreMode && this.status === 'success') {
+      if (this.exploreMode) {
         this.enableFreePlay();
       }
     }
@@ -146,10 +146,38 @@ export class TacticsBoardComponent implements OnChanges {
   onBoardMove(event: { move: Move; fen: string }) {
     // Resume audio context on first move if needed
     this.audioService.resume();
-    if (this.gameMode) return;
-    if (this.status !== 'playing') return;
+    if (this.gameMode && !this.exploreMode) return;
 
     const { move, fen } = event;
+
+    if (this.exploreMode) {
+      try {
+        const moveResult = this.chess.move({
+          from: move.from,
+          to: move.to,
+          promotion: move.promotion,
+        });
+
+        if (moveResult) {
+          this.audioService.playChessMove(moveResult);
+          this.lastMove = [moveResult.from, moveResult.to];
+          this.currentFen = this.chess.fen();
+          if (this.gameMode) {
+            this.gameMoves = this.gameMoves.slice(0, this.gamePly);
+            this.gameMoves.push(moveResult.san);
+            this.gamePly = this.gameMoves.length;
+          }
+          this.moveMade.emit(moveResult.san);
+        } else {
+          this.boardComponent.undoMove();
+        }
+      } catch (err) {
+        this.boardComponent.undoMove();
+      }
+      return;
+    }
+
+    if (this.status !== 'playing') return;
     this.audioService.playChessMove(move);
     this.lastMove = [move.from, move.to];
 
@@ -252,7 +280,8 @@ export class TacticsBoardComponent implements OnChanges {
     this.gameMoves = moves;
     this.gamePly = 0;
     this.gameMode = true;
-    this.chess.load(this.gameStartFen);
+    const startFen = this.puzzle?.fen || this.gameStartFen;
+    this.chess.load(startFen);
     this.currentFen = this.chess.fen();
     this.syncLastMoveFromChess();
   }
@@ -262,7 +291,8 @@ export class TacticsBoardComponent implements OnChanges {
     this.gamePly = Math.max(0, Math.min(ply, moves.length));
     this.gameMode = true;
     
-    this.chess.load(this.gameStartFen);
+    const startFen = this.puzzle?.fen || this.gameStartFen;
+    this.chess.load(startFen);
     for (let i = 0; i < this.gamePly; i++) {
        const m = moves[i];
        if (m) this.chess.move(m);
@@ -273,7 +303,8 @@ export class TacticsBoardComponent implements OnChanges {
 
   resetToGameStart() {
     this.gameMode = true;
-    this.chess.load(this.gameStartFen);
+    const startFen = this.puzzle?.fen || this.gameStartFen;
+    this.chess.load(startFen);
     this.gamePly = 0;
     this.currentFen = this.chess.fen();
     this.syncLastMoveFromChess();
