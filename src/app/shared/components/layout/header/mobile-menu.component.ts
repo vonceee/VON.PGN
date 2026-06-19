@@ -126,15 +126,7 @@ import { Router } from '@angular/router';
                 My Tournaments
               </a>
 
-              <a
-                routerLink="/my-arena"
-                routerLinkActive="text-accent font-semibold"
-                [routerLinkActiveOptions]="{ exact: true }"
-                (click)="close.emit()"
-                class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
-              >
-                My Arena
-              </a>
+
             }
 
             <a
@@ -251,13 +243,12 @@ export class MobileMenuComponent {
 
   linkGroups = [
     {
-      title: 'Play',
+      title: 'Practice',
       links: [
-        { path: '/play', label: 'Play' },
         { path: '/tactics', label: 'Tactics' },
-        { path: '/tactics/leaderboard', label: 'Leaderboard' },
-        { path: '/tv', label: 'Watch' },
+        { path: '/study/drills', label: 'Opening drills' },
         { path: '/explorer', label: 'Opening Explorer' },
+        { path: '/tactics/leaderboard', label: 'Leaderboard' },
       ],
     },
     {
@@ -265,21 +256,15 @@ export class MobileMenuComponent {
       links: [
         { path: '/study', label: 'Study' },
         { path: '/roadmap', label: 'Roadmap' },
+        { path: '/academy', label: 'Academy' },
+        { path: '/coaches', label: 'Coaches' },
       ],
     },
     {
-      title: 'Compete',
+      title: 'Events',
       links: [
         { path: '/events', label: 'Tournaments' },
-        { path: '/arena', label: 'Arena' },
         { path: '/broadcasts', label: 'Broadcasts' },
-      ],
-    },
-    {
-      title: 'Community',
-      links: [
-        { path: '/coaches', label: 'Coaches' },
-        { path: '/academy', label: 'Academy' },
       ],
     },
   ];

@@ -46,15 +46,10 @@ export class MainLayoutComponent {
     ).subscribe((event) => {
       const url = event.urlAfterRedirects.split('?')[0];
 
-      const isPlay = url === '/play' || url === '/play/' || url.includes('/play/');
-      const isPlayComputer = url.includes('/play-computer');
-      const isArena = url.includes('/arena');
       const isTactics = url.startsWith('/tactics/');
       const isStudy = url.includes('/study/');
-      const isReview = url.includes('/games/') && url.includes('/review');
-      const isTv = url === '/tv' || url.startsWith('/tv/');
 
-      const hideFooter = isPlay || isPlayComputer || isArena || isTactics || isStudy || isReview || isTv;
+      const hideFooter = isTactics || isStudy;
       this.showFooter.set(!hideFooter);
     });
   }

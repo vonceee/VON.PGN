@@ -98,12 +98,8 @@ export const routes: Routes = [
       },
       {
         path: 'tv',
-        loadComponent: () => import('./features/tv/tv.component').then((m) => m.TvComponent),
-        title: 'Vonchess.net • Live TV',
-        data: {
-          description: 'Watch the best live games currently being played on vonchess.',
-        },
-        resolve: { seo: seoResolver },
+        redirectTo: 'broadcasts',
+        pathMatch: 'full',
       },
       {
         path: 'profile',
@@ -379,15 +375,8 @@ export const routes: Routes = [
       },
       {
         path: 'arena',
-        loadComponent: () =>
-          import('./features/arena/arena-list/arena-list.component').then(
-            (m) => m.ArenaListComponent,
-          ),
-        title: 'Vonchess.net • Arena',
-        data: {
-          description: 'Join live online Arena tournaments and compete for the top spot.',
-        },
-        resolve: { seo: seoResolver },
+        redirectTo: 'events',
+        pathMatch: 'full',
       },
       {
         path: 'events/:id',
@@ -403,14 +392,8 @@ export const routes: Routes = [
       },
       {
         path: 'events/:id/arena',
-        loadComponent: () =>
-          import('./features/arena/arena.component').then((m) => m.ArenaComponent),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Arena',
-        data: {
-          description: 'Join the live Arena tournament and compete for the top spot.',
-        },
-        resolve: { seo: seoResolver },
+        redirectTo: 'events/:id',
+        pathMatch: 'full',
       },
       {
         path: 'broadcasts',
@@ -437,48 +420,28 @@ export const routes: Routes = [
       },
       {
         path: 'my-arena',
-        canActivate: [adminGuard],
-        loadChildren: () =>
-          import('./features/arena/my-arena/my-arena.routes').then((m) => m.MY_ARENA_ROUTES),
-        title: 'Vonchess.net • My Arenas',
+        redirectTo: 'my-events',
+        pathMatch: 'full',
       },
       {
         path: 'play',
-        loadComponent: () =>
-          import('./features/play/matchmaking/matchmaking.component').then(
-            (m) => m.MatchmakingComponent,
-          ),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Play',
-        data: { description: 'Find a match and play live chess on vonchess.' },
-        resolve: { seo: seoResolver },
+        redirectTo: 'study',
+        pathMatch: 'full',
       },
       {
         path: 'games/:gameId/review',
-        loadComponent: () =>
-          import('./features/games/game-review/game-review.component').then(
-            (m) => m.GameReviewComponent,
-          ),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Review',
+        redirectTo: 'study',
+        pathMatch: 'full',
       },
       {
         path: 'play/:gameId',
-        loadComponent: () =>
-          import('./features/play/live-game/live-game.component').then((m) => m.LiveGameComponent),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Game',
-        data: { description: 'Watch or continue a live chess game on vonchess.' },
-        resolve: { seo: seoResolver },
+        redirectTo: 'study',
+        pathMatch: 'full',
       },
       {
         path: 'play-computer',
-        loadComponent: () =>
-          import('./features/play/computer/computer-play.component').then((m) => m.ComputerPlayComponent),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Play Computer',
-        data: { description: 'Challenge Stockfish 16.1 in a local game.' },
-        resolve: { seo: seoResolver },
+        redirectTo: 'study',
+        pathMatch: 'full',
       },
 
 

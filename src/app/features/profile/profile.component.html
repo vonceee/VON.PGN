@@ -46,40 +46,6 @@
 
       <!-- Ratings Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Bullet -->
-        <div class="bg-subtle rounded-4xl p-6 flex flex-col gap-2 hover:border-accent  ">
-          <span class="text-xs font-semibold text-muted">Bullet</span>
-          <div class="text-3xl  flex items-baseline gap-1">
-            {{ profile.ratings?.bullet?.rating ?? 1500 }}
-            @if (profile.ratings?.bullet?.prov) {
-            <span class="text-xl font-semibold">?</span>
-            }
-          </div>
-          <span class="text-xs  text-muted">{{ profile.ratings?.bullet?.games ?? 0 }} games</span>
-        </div>
-
-        <div class="bg-subtle rounded-4xl p-6 flex flex-col gap-2 hover:border-accent  ">
-          <span class="text-xs font-semibold text-muted">Blitz</span>
-          <div class="text-3xl  flex items-baseline gap-1">
-            {{ profile.ratings?.blitz?.rating ?? 1500 }}
-            @if (profile.ratings?.blitz?.prov) {
-            <span class="text-xl font-semibold">?</span>
-            }
-          </div>
-          <span class="text-xs  text-muted">{{ profile.ratings?.blitz?.games ?? 0 }} games</span>
-        </div>
-
-        <div class="bg-subtle rounded-4xl p-6 flex flex-col gap-2 hover:border-accent  ">
-          <span class="text-xs font-semibold text-muted">Rapid</span>
-          <div class="text-3xl  flex items-baseline gap-1">
-            {{ profile.ratings?.rapid?.rating ?? 1500 }}
-            @if (profile.ratings?.rapid?.prov) {
-            <span class="text-xl font-semibold">?</span>
-            }
-          </div>
-          <span class="text-xs  text-muted">{{ profile.ratings?.rapid?.games ?? 0 }} games</span>
-        </div>
-
         <div class="bg-subtle rounded-4xl p-6 flex flex-col gap-2 hover:border-accent  ">
           <span class="text-xs font-semibold text-muted">Tactics</span>
           <div class="text-3xl  flex items-baseline gap-1">
@@ -275,15 +241,7 @@
       </div>
     </div>
 
-    <!-- Game History -->
-    <div>
-      <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div class="flex-1">
-          <h2 class="text-4xl md:text-5xl mb-2">Game history</h2>
-        </div>
-      </header>
-      <app-game-history></app-game-history>
-    </div>
+
   </div>
 </div>
 } @else {

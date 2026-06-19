@@ -7,41 +7,16 @@ import { UserService, UserSearchResult } from '../../../../core/services/user.se
 import { AuthService } from '../../../../core/services/auth.service';
 import { GameService } from '../../../../core/services/game.service';
 import { ChatService } from '../../../../core/services/chat.service';
-import { ChallengeService } from '../../../../core/services/challenge.service';
+
 import { NotificationService } from '../../../../core/services/notification.service';
 import { environment } from 'environments/environment';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import {
-  heroChevronDown,
-  heroMagnifyingGlass,
-  heroSun,
-  heroMoon,
-  heroXMark,
-  heroBars3,
-  heroCheck,
-} from '@ng-icons/heroicons/outline';
 import { MobileMenuComponent } from './mobile-menu.component';
-import { heroTrophy, heroBell, heroCircleStack } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, NgIcon, MobileMenuComponent],
-  providers: [
-    provideIcons({
-      heroChevronDown,
-      heroMagnifyingGlass,
-      heroSun,
-      heroMoon,
-      heroXMark,
-      heroBars3,
-      heroTrophy,
-      heroBell,
-      heroCircleStack,
-      heroCheck,
-    }),
-  ],
+  imports: [CommonModule, RouterLink, FormsModule, MobileMenuComponent],
   templateUrl: './header.html',
   host: {
     class: 'block relative',
@@ -53,7 +28,7 @@ export class Header implements OnInit, OnDestroy {
   authService = inject(AuthService);
   gameService = inject(GameService);
   chatService = inject(ChatService);
-  challengeService = inject(ChallengeService);
+
   notificationService = inject(NotificationService);
   private router = inject(Router);
 

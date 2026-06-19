@@ -8,18 +8,14 @@ import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
 import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
-import { GameHistoryComponent } from '../profile/game-history/game-history.component';
-import { Dialog, DialogModule } from '@angular/cdk/dialog';
-import { ChallengeService } from '../../core/services/challenge.service';
-import { ChallengeUserDialogComponent } from '../play/challenge/challenge-user-dialog.component';
-import { ChallengeSettings } from '../../core/models/game.model';
+import { DialogModule } from '@angular/cdk/dialog';
 import { UserHovercardDirective } from '@shared/directives';
 import { FlagIconComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, ButtonComponent, GameHistoryComponent, DialogModule, UserHovercardDirective, FlagIconComponent],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, ButtonComponent, DialogModule, UserHovercardDirective, FlagIconComponent],
   templateUrl: './user-profile.component.html'
 })
 export class UserProfileComponent implements OnInit {
@@ -28,8 +24,6 @@ export class UserProfileComponent implements OnInit {
   private authService = inject(AuthService);
   private chatService = inject(ChatService);
   private router = inject(Router);
-  private dialog = inject(Dialog);
-  private challengeService = inject(ChallengeService);
 
   user = signal<UserProfile | null>(null);
   isLoading = signal(true);
@@ -143,22 +137,7 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  challengeUser() {
-    if (!this.isAuthenticated() || this.isOwnProfile()) return;
 
-    const profileUser = this.user();
-    if (!profileUser) return;
-
-    const dialogRef = this.dialog.open<ChallengeSettings>(ChallengeUserDialogComponent, {
-      data: { username: profileUser.username },
-    });
-
-    dialogRef.closed.subscribe((settings) => {
-      if (settings) {
-        this.challengeService.issueChallenge(parseInt(profileUser.uid), settings);
-      }
-    });
-  }
 
   setTab(tab: 'followers' | 'following') {
     this.activeTab.set(tab);

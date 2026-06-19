@@ -6,7 +6,6 @@ import { ToastService } from '../../core/services/toast.service';
 import { PaymentService } from '../../core/services/payment.service';
 import { FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
-import { GameHistoryComponent } from './game-history/game-history.component';
 import { LoadingComponent } from '@shared/feedback';
 import { FlagIconComponent } from '@shared/ui';
 
@@ -15,7 +14,7 @@ import { UserHovercardDirective } from '@shared/directives';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, GameHistoryComponent, LoadingComponent, UserHovercardDirective, FlagIconComponent],
+  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, UserHovercardDirective, FlagIconComponent],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {

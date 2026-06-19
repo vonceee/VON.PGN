@@ -1,20 +1,16 @@
 import { Component, Input, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserProfile } from '../../../core/models/user.model';
-import { ChessBoardComponent } from '../chess/chess-board/chess-board.component';
 import { FlagIconComponent } from '../ui/flag-icon/flag-icon.component';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroRocketLaunch, heroBolt, heroClock, heroPuzzlePiece } from '@ng-icons/heroicons/outline';
+import { heroPuzzlePiece } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-user-hovercard',
   standalone: true,
-  imports: [CommonModule, ChessBoardComponent, FlagIconComponent, NgIcon],
+  imports: [CommonModule, FlagIconComponent, NgIcon],
   providers: [
     provideIcons({
-      heroRocketLaunch,
-      heroBolt,
-      heroClock,
       heroPuzzlePiece,
     })
   ],
@@ -44,10 +40,11 @@ import { heroRocketLaunch, heroBolt, heroClock, heroPuzzlePiece } from '@ng-icon
         </div>
 
         <!-- Ratings Grid -->
-        <div class="flex items-center justify-between gap-2 mb-4 px-1">
+        <div class="flex items-center justify-start gap-2 mb-4 px-1">
           @for (type of ratingTypes; track type.id) {
             <div class="flex items-center gap-1.5" [title]="type.label">
               <ng-icon [name]="type.icon" class="text-base text-muted"></ng-icon>
+              <span class="text-xs text-muted">Tactics:</span>
               <span class="text-sm font-semibold text-content">
                 {{ getRating(type.id) }}
               </span>
@@ -61,39 +58,10 @@ import { heroRocketLaunch, heroBolt, heroClock, heroPuzzlePiece } from '@ng-icon
             <span>Joined {{ joinedDate() }}</span>
           </div>
         </div>
-
-        <!-- Active Game Preview -->
-        @if (user()!.active_game; as game) {
-          <div class="mt-4 pt-4 border-t border-border-base/50">
-            <div class="flex items-center justify-between mb-2 px-1">
-              <span class="text-xs font-semibold capitalize">Playing Now</span>
-              <span class="text-xs ">{{ game.time_control }}</span>
-            </div>
-            
-            <div class="relative rounded-xl overflow-hidden border border-border-base/50 aspect-square w-full board-container-parent">
-              <app-chess-board
-                [fen]="game.fen"
-                [interactive]="false"
-                [orientation]="game.white_player.id === user()!.uid ? 'white' : 'black'"
-                class="scale-105"
-              ></app-chess-board>
-              
-              <!-- Opponent Overlay -->
-              <div class="absolute bottom-0 left-0 right-0 p-2 bg-main/80 backdrop-blur-md border-t border-border-base/50 flex items-center justify-between">
-                <span class="text-xs font-semibold text-content truncate max-w-[120px]">
-                  vs {{ game.white_player.id === user()!.uid ? game.black_player.name : game.white_player.name }}
-                </span>
-              </div>
-            </div>
-          </div>
-        }
       } @else {
         <div class="flex flex-col gap-3 ">
           <div class="h-6 w-32 bg-subtle rounded-md"></div>
           <div class="flex items-center justify-between mb-1">
-            <div class="h-6 w-14 bg-subtle rounded-md"></div>
-            <div class="h-6 w-14 bg-subtle rounded-md"></div>
-            <div class="h-6 w-14 bg-subtle rounded-md"></div>
             <div class="h-6 w-14 bg-subtle rounded-md"></div>
           </div>
           <div class="h-4 w-48 bg-subtle rounded-md"></div>
@@ -117,10 +85,7 @@ export class UserHovercardComponent {
     this.user.set(value);
   }
 
-  ratingTypes: { id: 'bullet' | 'blitz' | 'rapid' | 'tactics', icon: string, label: string }[] = [
-    { id: 'bullet', icon: 'heroRocketLaunch', label: 'Bullet' },
-    { id: 'blitz', icon: 'heroBolt', label: 'Blitz' },
-    { id: 'rapid', icon: 'heroClock', label: 'Rapid' },
+  ratingTypes: { id: 'tactics', icon: string, label: string }[] = [
     { id: 'tactics', icon: 'heroPuzzlePiece', label: 'Tactics' },
   ];
 
@@ -131,15 +96,10 @@ export class UserHovercardComponent {
     return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   });
 
-  getRating(typeId: 'bullet' | 'blitz' | 'rapid' | 'tactics'): number {
+  getRating(typeId: 'tactics'): number {
     const userData = this.user();
     if (!userData) return 1500;
-
-    if (typeId === 'tactics') {
-      return userData.progress?.puzzleRating || 1500;
-    }
-
-    return userData.ratings?.[typeId]?.rating || 1500;
+    return userData.progress?.puzzleRating || 1500;
   }
 }
 
