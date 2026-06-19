@@ -6,7 +6,7 @@ The UI/UX layer for the VON.CHESS platform, built with Angular 21 and Tailwind C
 
 - **Gameplay Interface**: Real-time chess board using standard SVG/CSS rendering.
 - **Real-time Integration**: Direct Socket.io connection to the [chess-microservice](../chess-microservice/) for move broadcasting.
-- **Dashboard & Social**: User statistics, profile management, and chat.
+- **Dashboard & Social**: User statistics and profile management.
 - **Tactics Training**: Integrated tactics engine and board analysis.
 
 ## Project Structure

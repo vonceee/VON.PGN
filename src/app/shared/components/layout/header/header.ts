@@ -6,7 +6,6 @@ import { ThemeService } from '../../../../core/services/theme.service';
 import { UserService, UserSearchResult } from '../../../../core/services/user.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { GameService } from '../../../../core/services/game.service';
-import { ChatService } from '../../../../core/services/chat.service';
 
 import { NotificationService } from '../../../../core/services/notification.service';
 import { environment } from 'environments/environment';
@@ -27,7 +26,6 @@ export class Header implements OnInit, OnDestroy {
   userService = inject(UserService);
   authService = inject(AuthService);
   gameService = inject(GameService);
-  chatService = inject(ChatService);
 
   notificationService = inject(NotificationService);
   private router = inject(Router);
@@ -88,7 +86,6 @@ export class Header implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.authService.isAuthenticated()) {
-      this.chatService.loadUnreadCount();
       this.notificationService.getUnreadCount().subscribe();
     }
   }

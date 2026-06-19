@@ -117,6 +117,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/tactics']);
+      return;
+    }
     this.presenceService.subscribeToSiteStats();
     this.startHeroAnimation();
     this.lessonService.loadAllCourses().subscribe({

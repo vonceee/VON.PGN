@@ -3,7 +3,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
-import { ChatService } from '../../../../core/services/chat.service';
 import { ThemeService } from '../../../../core/services/theme.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroXMark, heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
@@ -129,31 +128,6 @@ import { Router } from '@angular/router';
 
             }
 
-            <a
-              routerLink="/bookmarks"
-              routerLinkActive="text-accent font-semibold"
-              [routerLinkActiveOptions]="{ exact: true }"
-              (click)="close.emit()"
-              class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
-            >
-              Bookmarks
-            </a>
-
-            <a
-              routerLink="/chat"
-              routerLinkActive="text-accent font-semibold"
-              [routerLinkActiveOptions]="{ exact: true }"
-              (click)="close.emit()"
-              class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all flex items-center justify-between gap-1"
-            >
-              <span>Messages</span>
-              @if (chatService.totalUnreadCount() > 0) {
-                <span class="min-w-4 h-4 px-1 flex items-center justify-center rounded-full bg-accent text-white text-[9px] font-bold shrink-0">
-                  {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
-                </span>
-              }
-            </a>
-
             @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
               <a
                 routerLink="/admin"
@@ -190,7 +164,6 @@ import { Router } from '@angular/router';
 export class MobileMenuComponent {
   authService = inject(AuthService);
   userService = inject(UserService);
-  chatService = inject(ChatService);
   themeService = inject(ThemeService);
   private router = inject(Router);
 
@@ -247,8 +220,6 @@ export class MobileMenuComponent {
       links: [
         { path: '/tactics', label: 'Tactics' },
         { path: '/study/drills', label: 'Opening drills' },
-        { path: '/explorer', label: 'Opening Explorer' },
-        { path: '/tactics/leaderboard', label: 'Leaderboard' },
       ],
     },
     {
@@ -264,7 +235,6 @@ export class MobileMenuComponent {
       title: 'Events',
       links: [
         { path: '/events', label: 'Tournaments' },
-        { path: '/broadcasts', label: 'Broadcasts' },
       ],
     },
   ];

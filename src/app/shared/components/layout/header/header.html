@@ -20,9 +20,6 @@
         <a appLink routerLink="/study/drills" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
           <span class="text-sm font-medium">Opening drills</span>
         </a>
-        <a appLink routerLink="/explorer" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Opening Explorer</span>
-        </a>
       </div>
     </div>
 
@@ -49,28 +46,12 @@
       </div>
     </div>
 
-    <!-- Events Dropdown -->
-    <div class="group relative">
-      <a appLink routerLink="/events"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
-        Events
-      </a>
-      <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col ">
-        <a appLink routerLink="/events" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Tournaments</span>
-        </a>
-        <a appLink routerLink="/broadcasts" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Broadcasts</span>
-        </a>
-      </div>
-    </div>
-
-    <!-- Leaderboard Link -->
-    <a appLink routerLink="/tactics/leaderboard"
+    <!-- Events Link -->
+    <a appLink routerLink="/events"
       class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium">
-      Leaderboard
+      Events
     </a>
+
   </div>
 
   <!-- Desktop Search Bar -->
@@ -196,20 +177,6 @@
           </a>
 
           }
-          <a appLink routerLink="/bookmarks" (click)="toggleProfileDropdown()"
-            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
-            Bookmarks
-          </a>
-          <a appLink routerLink="/chat" (click)="toggleProfileDropdown()"
-            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
-            Messages
-            @if (chatService.totalUnreadCount() > 0) {
-            <span
-              class="ml-auto min-w-5 h-5 px-1.5 flex items-center justify-center rounded-full bg-accent text-white text-xs ">
-              {{ chatService.totalUnreadCount() > 99 ? '99+' : chatService.totalUnreadCount() }}
-            </span>
-            }
-          </a>
 
           @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
           <div class="h-px w-full bg-border-base"></div>
@@ -218,30 +185,6 @@
             Admin Panel
           </a>
           }
-          <div class="h-px w-full bg-border-base my-1"></div>
-
-          <!-- Network Status -->
-          <div class="flex items-center justify-between px-4 py-2">
-            <div class="flex items-center gap-3">
-              <span class="text-sm font-medium">Network</span>
-            </div>
-            <div class="flex items-center gap-2">
-              @if (pingSignal() > 0) {
-              <span class="text-xs text-muted">{{ pingSignal() }}ms</span>
-              }
-              <div class="flex items-end gap-0.5 h-3.5">
-                <div class="w-1 rounded-sm  " [style.height]="getPingBarHeight(0)"
-                  [style.backgroundColor]="getPingColor()"></div>
-                <div class="w-1 rounded-sm  " [style.height]="getPingBarHeight(1)"
-                  [style.backgroundColor]="getPingColor()"></div>
-                <div class="w-1 rounded-sm  " [style.height]="getPingBarHeight(2)"
-                  [style.backgroundColor]="getPingColor()"></div>
-                <div class="w-1 rounded-sm  " [style.height]="getPingBarHeight(3)"
-                  [style.backgroundColor]="getPingColor()"></div>
-              </div>
-            </div>
-          </div>
-
           <div class="h-px w-full bg-border-base my-1"></div>
 
           <!-- Logout -->

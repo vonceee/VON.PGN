@@ -83,15 +83,30 @@
       <app-loading></app-loading>
     </div>
     } @else if (studies().length === 0) {
-    <div class="flex flex-col items-center justify-center py-20 text-center">
-      <h3 class="text-lg mb-2 text-content">No studies found</h3>
-      <p class="text-muted text-sm">
+    <div class="flex-1 flex flex-col items-center justify-center bg-main rounded-4xl p-16 text-center">
+      <div class="w-16 h-16 bg-accent/5 rounded-full flex items-center justify-center mb-6">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+        </svg>
+      </div>
+      <h3 class="text-2xl font-light text-content mb-2">
+        {{ searchQuery() ? 'No studies found' : (activeTab() === 'my' ? 'No studies created yet' : 'No public studies available') }}
+      </h3>
+      <p class="text-muted text-base max-w-md" [class.mb-8]="activeTab() === 'my' && !searchQuery() && isLoggedIn()">
         @if (searchQuery()) {
         Try adjusting your search terms.
         } @else {
-        There are no studies available.
+        {{ activeTab() === 'my'
+        ? 'Create a collaborative chess study to start analyzing and saving your games.'
+        : 'Be the first to create and publish a collaborative public study.' }}
         }
       </p>
+      @if (activeTab() === 'my' && !searchQuery() && isLoggedIn()) {
+      <button appButton variant="primary" class="mt-8" (click)="createNewStudy()">
+        Create a study
+      </button>
+      }
     </div>
     } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
-import { ChatService } from '../../core/services/chat.service';
 import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
 import { LoadingComponent } from '@shared/feedback';
@@ -22,7 +21,6 @@ export class UserProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private userService = inject(UserService);
   private authService = inject(AuthService);
-  private chatService = inject(ChatService);
   private router = inject(Router);
 
   user = signal<UserProfile | null>(null);
@@ -33,7 +31,6 @@ export class UserProfileComponent implements OnInit {
   followersCount = signal(0);
   followingCount = signal(0);
   isFollowLoading = signal(false);
-  isMessaging = signal(false);
 
   showFollowModal = signal(false);
   activeTab = signal<'followers' | 'following'>('followers');
@@ -117,27 +114,6 @@ export class UserProfileComponent implements OnInit {
       },
     });
   }
-
-  messageUser() {
-    if (!this.isAuthenticated() || this.isOwnProfile() || this.isMessaging()) return;
-
-    const userId = this.user()?.uid;
-    if (!userId) return;
-
-    this.isMessaging.set(true);
-
-    this.chatService.openConversationWith(parseInt(userId)).subscribe({
-      next: () => {
-        this.isMessaging.set(false);
-        this.router.navigate(['/chat']);
-      },
-      error: () => {
-        this.isMessaging.set(false);
-      },
-    });
-  }
-
-
 
   setTab(tab: 'followers' | 'following') {
     this.activeTab.set(tab);

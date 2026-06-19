@@ -31,15 +31,6 @@ export const serverRoutes: ServerRoute[] = [
     path: 'profile',
     renderMode: RenderMode.Server,
   },
-
-  {
-    path: 'bookmarks',
-    renderMode: RenderMode.Server,
-  },
-  {
-    path: 'chat',
-    renderMode: RenderMode.Server,
-  },
   {
     path: 'my-events',
     renderMode: RenderMode.Server,

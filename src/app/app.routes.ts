@@ -98,7 +98,7 @@ export const routes: Routes = [
       },
       {
         path: 'tv',
-        redirectTo: 'broadcasts',
+        redirectTo: 'study',
         pathMatch: 'full',
       },
       {
@@ -124,15 +124,7 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
 
-      {
-        path: 'bookmarks',
-        loadComponent: () =>
-          import('./features/bookmarks/bookmarks.component').then((m) => m.BookmarksComponent),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Bookmarks',
-        data: { description: 'View your bookmarked events for quick access.' },
-        resolve: { seo: seoResolver },
-      },
+
       {
         path: 'learn/:courseSlug',
         loadComponent: () =>
@@ -302,13 +294,8 @@ export const routes: Routes = [
       },
       {
         path: 'tactics/leaderboard',
-        loadComponent: () =>
-          import('./features/tactics/leaderboard/leaderboard.component').then(
-            (m) => m.LeaderboardComponent,
-          ),
-        title: 'Vonchess.net • Leaderboard',
-        data: { description: 'View the top tactical players and your ranking on vonchess.' },
-        resolve: { seo: seoResolver },
+        redirectTo: 'tactics',
+        pathMatch: 'full',
       },
       {
         path: 'tactics/woodpecker',
@@ -345,16 +332,8 @@ export const routes: Routes = [
       },
       {
         path: 'explorer',
-        loadComponent: () =>
-          import('./features/opening-explorer/opening-explorer.component').then(
-            (m) => m.OpeningExplorerComponent,
-          ),
-        title: 'Vonchess.net • Explorer',
-        data: {
-          description:
-            'Explore chess openings with an interactive database — study popular lines and variations.',
-        },
-        resolve: { seo: seoResolver },
+        redirectTo: 'study',
+        pathMatch: 'full',
       },
       {
         path: 'coaches',
@@ -397,17 +376,8 @@ export const routes: Routes = [
       },
       {
         path: 'broadcasts',
-        loadChildren: () =>
-          import('./features/broadcasts/broadcasts.routes').then((m) => m.BROADCASTS_ROUTES),
-        title: 'Vonchess.net • Broadcasts',
-      },
-      {
-        path: 'chat',
-        loadComponent: () => import('./features/chat/chat.component').then((m) => m.ChatComponent),
-        canActivate: [authGuard],
-        title: 'Vonchess.net • Messages',
-        data: { description: 'Send and receive messages with other vonchess players and coaches.' },
-        resolve: { seo: seoResolver },
+        redirectTo: 'study',
+        pathMatch: 'full',
       },
       {
         path: 'my-events',
