@@ -14,7 +14,7 @@
       }
 
       <!-- Center Column: Board -->
-      <div class="flex flex-col items-center justify-start relative" [class.overflow-hidden]="isThreeColumn()"
+      <div class="flex flex-col items-center justify-start relative pb-16" [class.overflow-hidden]="isThreeColumn()"
         [class.md:sticky]="!isThreeColumn()" [class.md:top-6]="!isThreeColumn()">
         <div class="w-full flex items-start justify-center min-h-0 relative board-container-parent"
           [class.flex-1]="isThreeColumn()" [class.overflow-hidden]="isThreeColumn()">
@@ -26,9 +26,90 @@
               [syncedShapes]="facade.mergedShapes()" [lastMove]="facade.lastMoveSquares()"
               [glyphs]="facade.activeGlyphs()" [layoutColumnsWidth]="otherColumnsWidth()"></app-chess-board>
           </div>
-
         </div>
 
+        <!-- Floating Toolbar -->
+        <div
+          class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-main rounded-full px-4 py-1.5 select-none">
+          <!-- Flip Board Button -->
+          <button (click)="flipBoard()" title="Flip Board"
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
+          </button>
+
+          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+          <!-- Navigation Buttons -->
+          <button (click)="goToFirst()" title="First Move"
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
+          </button>
+          <button (click)="facade.onPrevMove()" title="Previous Move"
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
+          </button>
+          <button (click)="facade.onNextMove()" title="Next Move"
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
+          </button>
+          <button (click)="goToLast()" title="Last Move"
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
+          </button>
+
+          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+          <!-- Metadata Button -->
+          <button (click)="openMetadataDialog()" title="Metadata"
+            class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center"
+            [class.text-accent]="isMetadataDialogOpen()" [class.bg-accent\/10]="isMetadataDialogOpen()"
+            [class.text-muted]="!isMetadataDialogOpen()">
+            <ng-icon name="heroTag" class="text-lg"></ng-icon>
+          </button>
+
+          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+          <!-- Viewer Count Button -->
+          <button (click)="openViewers()" title="Viewers"
+            class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center gap-1.5 text-muted hover:text-content hover:bg-subtle">
+            <ng-icon name="heroEye" class="text-lg"></ng-icon>
+            <span class="text-xs font-semibold tabular-nums leading-none">{{ facade.viewerCount() }}</span>
+          </button>
+
+          <!-- Classroom Actions & Status -->
+          @if (facade.isOwner()) {
+          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+          <button (click)="facade.toggleClassSession()"
+            [title]="facade.isClassActive() ? 'End Class Session' : 'Start Class Session'"
+            class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center"
+            [class.text-rose-500]="facade.isClassActive()" [class.bg-rose-500\/10]="facade.isClassActive()"
+            [class.text-muted]="!facade.isClassActive()">
+            <ng-icon [name]="facade.isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
+          </button>
+          } @else if (facade.isClassActive()) {
+          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+          @if (!facade.hasJoinedClass()) {
+          <button (click)="facade.joinClassSession()" title="Join Class"
+            class="px-3 py-1 rounded-full transition-colors cursor-pointer flex items-center gap-1.5 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 text-xs font-semibold">
+            <span class="relative flex h-1.5 w-1.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500"></span>
+            </span>
+            Join class
+          </button>
+          } @else {
+          <div
+            class="flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 text-emerald-700 text-xs font-bold uppercase tracking-wider">
+            <span class="relative flex h-1.5 w-1.5">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+            </span>
+            Active
+          </div>
+          }
+          }
+        </div>
       </div>
 
       <!-- Right Column: Notation & Info -->
@@ -44,7 +125,7 @@
 
             <app-move-notation class="flex-1 overflow-y-auto custom-scrollbar" layout="grid"
               [moveTree]="facade.moveTree()" [currentFen]="facade.currentFen()" [currentPly]="facade.currentPly()"
-              [initialPly]="facade.initialPly()" [showNavigation]="true"
+              [initialPly]="facade.initialPly()" [showNavigation]="false"
               [result]="facade.currentChapter()?.pgn_tags?.['Result']" (nodeClicked)="facade.onNodeClicked($event)"
               (navigate)="facade.onNavigateToPly($event)" (deleteFromHere)="facade.onDeleteFromHere($event)"
               (annotateMove)="facade.onAnnotateMove($event)"
@@ -80,71 +161,6 @@
             </div>
             }
             }
-
-            <!-- Bottom Toolbar inside Notation Card -->
-            <div class="p-4 flex items-center border-t border-border-base/50 shrink-0 select-none">
-              <!-- Flip Board Button -->
-              <button (click)="flipBoard()" title="Flip Board"
-                class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center gap-1.5">
-                <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
-                <span class="text-sm">Flip board</span>
-              </button>
-
-              <div class="h-5 w-px bg-muted/30 mx-1 shrink-0"></div>
-
-              <button (click)="openMetadataDialog()" title="Metadata"
-                class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-                [class.text-accent]="isMetadataDialogOpen()" [class.bg-accent\/10]="isMetadataDialogOpen()"
-                [class.text-muted]="!isMetadataDialogOpen()">
-                <ng-icon name="heroTag" class="text-lg"></ng-icon>
-                <span class="text-sm">Metadata</span>
-              </button>
-
-              <!-- Classroom Actions & Status -->
-              @if (facade.isOwner()) {
-              <div class="h-5 w-px bg-muted/30 mx-1 shrink-0"></div>
-              <button (click)="facade.toggleClassSession()"
-                [title]="facade.isClassActive() ? 'End Class Session' : 'Start Class Session'"
-                class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-                [class.text-rose-500]="facade.isClassActive()" [class.bg-rose-500\/10]="facade.isClassActive()"
-                [class.text-muted]="!facade.isClassActive()">
-                <ng-icon [name]="facade.isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
-                <span class="text-sm">{{ facade.isClassActive() ? 'End class' : 'Start class' }}</span>
-              </button>
-              } @else if (facade.isClassActive()) {
-              <div class="h-5 w-px bg-muted/30 mx-1 shrink-0"></div>
-              @if (!facade.hasJoinedClass()) {
-              <div class="flex items-center gap-3 animate-fadeIn select-none">
-                <div class="flex items-center gap-1.5 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20">
-                  <span class="relative flex h-1.5 w-1.5">
-                    <span
-                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
-                  </span>
-                  <span class="text-xs font-bold text-red-700 uppercase tracking-wider">Class ongoing</span>
-                </div>
-                <button (click)="facade.joinClassSession()"
-                  class="px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 text-muted">
-                  <ng-icon name="heroPlay" class="text-lg"></ng-icon>
-                  <span class="text-xs font-semibold">Join class</span>
-                </button>
-              </div>
-              } @else {
-              <div class="flex items-center gap-3 select-none">
-                <!-- Class Active Badge -->
-                <div
-                  class="flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                  <span class="relative flex h-1.5 w-1.5">
-                    <span
-                      class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                  </span>
-                  <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Class Active</span>
-                </div>
-              </div>
-              }
-              }
-            </div>
           </div>
         </div>
 

@@ -42,23 +42,22 @@
       <!-- Turn Row Container -->
       <div class="flex flex-col mb-1">
         <!-- Main Move Pair Row -->
-        <div class="grid grid-cols-[3rem_1fr_1fr] items-center">
+        <div class="grid grid-cols-[3rem_1fr_1fr] items-center bg-subtle rounded-4xl">
           <!-- Move Number -->
           <span class="text-sm font-medium text-muted select-none text-right pr-4">
             {{ turn.moveNumber }}.
           </span>
 
           <!-- White Move Column -->
-          <div [class.hover:cursor-pointer]="turn.white" [class.hover:bg-subtle]="turn.white"
-            class="flex items-center rounded-xl">
+          <div class="flex items-center w-full">
             @if (turn.white; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move underline bg-subtle font-medium'
+                        ? 'active-move bg-content text-main font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'next-move-static transition-all'
                           : 'hover:bg-subtle transition-colors'
-                    " class="text-leftselect-none active-move-target px-2 py-1">
+                    " class="w-full text-left select-none active-move-target px-3 py-1.5 rounded-4xl cursor-pointer">
               {{ node.san }}
               @if (node.glyphs && node.glyphs.length > 0) {
               @for (glyphId of node.glyphs; track glyphId) {
@@ -69,23 +68,22 @@
               }
             </button>
             } @else if (turn.showWhiteEllipsis) {
-            <span class="text-muted/50 select-none px-2 font-medium">...</span>
+            <span class="text-muted/50 select-none px-3 py-1.5 font-medium">...</span>
             } @else {
-            <span class="text-muted/30 select-none px-2">—</span>
+            <span class="text-muted/30 select-none px-3 py-1.5">—</span>
             }
           </div>
 
           <!-- Black Move Column -->
-          <div [class.hover:cursor-pointer]="turn.black" [class.hover:bg-subtle]="turn.black"
-            class="flex items-center rounded-xl">
+          <div class="flex items-center w-full">
             @if (turn.black; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move underline bg-subtle font-medium'
+                        ? 'active-move bg-content text-main font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'next-move-static transition-all'
                           : 'text-content hover:bg-subtle transition-colors'
-                    " class="text-left select-none active-move-target px-2 py-1">
+                    " class="w-full text-left select-none active-move-target px-3 py-1.5 rounded-4xl cursor-pointer">
               {{ node.san }}
               @if (node.glyphs && node.glyphs.length > 0) {
               @for (glyphId of node.glyphs; track glyphId) {
@@ -96,9 +94,9 @@
               }
             </button>
             } @else if (turn.showBlackEllipsis) {
-            <span class="text-muted/50 select-none px-2 font-medium">...</span>
+            <span class="text-muted/50 select-none px-3 py-1.5 font-medium">...</span>
             } @else {
-            <span class="text-muted/30 select-none px-2">—</span>
+            <span class="text-muted/30 select-none px-3 py-1.5">—</span>
             }
           </div>
         </div>
@@ -187,7 +185,7 @@
       <!-- Move Button -->
       <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, isMainline)" [class]="
             currentFen() === node.fen
-              ? (isMainline ? 'active-move underline bg-accent text-white font-medium' : 'active-move underline bg-subtle text-content font-medium')
+              ? 'active-move bg-content text-main font-medium'
               : activeContinuationSet().has(node.fen + '_' + node.ply)
                 ? 'next-move-static'
                 : (isMainline ? 'text-content hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle hover:text-content transition-colors')
@@ -246,8 +244,8 @@
       @for (option of nextOptions(); track option.fen) {
       <button (click)="onMoveClick(option)" [class]="
               selectedVariationIndex() === $index
-                ? 'bg-accent text-white rounded-2xl'
-                : 'bg-subtle rounded-2xl'
+                ? 'bg-accent text-white rounded-4xl'
+                : 'bg-subtle rounded-4xl'
             "
         class="px-3.5 py-1.5 font-medium text-sm  flex items-center gap-2.5 cursor-pointer hover:bg-accent hover:text-white">
         <span class="opacity-50 font-medium text-xs">{{
@@ -263,7 +261,6 @@
   <style>
     button.active-move-target {
       border: 1.5px solid transparent !important;
-      border-radius: 4px !important;
       box-sizing: border-box !important;
     }
 
@@ -316,7 +313,7 @@
 
   <!-- Premium Context Menu -->
   @if (contextMenuNode(); as node) {
-  <div class="fixed z-50 min-w-[200px] bg-surface rounded-2xl shadow-lg overflow-hidden"
+  <div class="fixed z-50 min-w-[200px] bg-main rounded-xl shadow-xl border overflow-hidden"
     [style.left.px]="contextMenuPos().x" [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()"
     (contextmenu)="$event.preventDefault()">
     <button (click)="onAnnotate()"

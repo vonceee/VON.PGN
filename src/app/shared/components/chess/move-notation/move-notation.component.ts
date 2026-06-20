@@ -49,6 +49,7 @@ export class MoveNotationComponent {
   initialPly = input<number>(0);
   result = input<string | null | undefined>(null);
   showNavigation = input<boolean>(false);
+  enableKeyboardNavigation = input<boolean>(true);
 
   // Outputs
   navigate = output<number>();
@@ -268,7 +269,7 @@ export class MoveNotationComponent {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (!this.showNavigation()) return;
+    if (!this.enableKeyboardNavigation()) return;
 
     const target = event.target as HTMLElement;
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;

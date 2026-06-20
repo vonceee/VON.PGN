@@ -1,6 +1,7 @@
-import { Component, inject, DestroyRef } from '@angular/core';
+import { Component, inject, DestroyRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { FormsModule } from '@angular/forms';
 import { StudyService } from '../../../core/services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -8,23 +9,25 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { ButtonComponent } from '@shared/ui';
+import { UserHovercardDirective } from '@shared/directives';
 import { StudyChapter } from '../../../core/models/study.model';
 import { AddChapterDialogComponent, AddChapterDialogResult } from '../dialogs/add-chapter-dialog/add-chapter-dialog.component';
 import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
 import { ViewersDialogComponent } from '../dialogs/viewers-dialog/viewers-dialog.component';
-import { StudyInfoDialogComponent } from '../dialogs/study-info-dialog/study-info-dialog.component';
+import { AddMemberDialogComponent, AddMemberResult } from '../dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
+import { StudySettingsDialogComponent } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
 import { StudyChatComponent } from '../study-chat/study-chat.component';
 import { WebrtcService } from '../../../core/services/webrtc.service';
 import { input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { heroEye, heroPhone, heroPhoneXMark } from '@ng-icons/heroicons/outline';
+import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-study-sidebar',
   standalone: true,
-  imports: [CommonModule, NgIconComponent, ButtonComponent, DialogModule, StudyChatComponent, DragDropModule],
-  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark })],
+  imports: [CommonModule, NgIconComponent, ButtonComponent, DialogModule, StudyChatComponent, DragDropModule, FormsModule, UserHovercardDirective],
+  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth })],
   templateUrl: './study-sidebar.component.html',
   host: {
     'class': 'block h-full overflow-hidden'
@@ -41,6 +44,43 @@ export class StudySidebarComponent {
   isClassActive = this.studyService.isClassActive;
   isOwner = this.studyService.isOwner;
   hasJoinedClass = this.studyService.hasJoinedClass;
+
+  isChatExpanded = signal(true);
+  isInfoExpanded = signal(false);
+  isMembersExpanded = signal(false);
+
+  toggleChat() {
+    this.isChatExpanded.update((v) => {
+      const next = !v;
+      if (next) {
+        this.isInfoExpanded.set(false);
+        this.isMembersExpanded.set(false);
+      }
+      return next;
+    });
+  }
+
+  toggleInfo() {
+    this.isInfoExpanded.update((v) => {
+      const next = !v;
+      if (next) {
+        this.isChatExpanded.set(false);
+        this.isMembersExpanded.set(false);
+      }
+      return next;
+    });
+  }
+
+  toggleMembers() {
+    this.isMembersExpanded.update((v) => {
+      const next = !v;
+      if (next) {
+        this.isChatExpanded.set(false);
+        this.isInfoExpanded.set(false);
+      }
+      return next;
+    });
+  }
 
   toggleVideoCall() {
     if (this.webrtc.isCallActive()) {
@@ -210,17 +250,144 @@ export class StudySidebarComponent {
     });
   }
 
-  openStudyInfo() {
-    this.dialog.open(StudyInfoDialogComponent, {
-      width: '500px',
+
+  addMember() {
+    if (!this.isOwner()) return;
+    const dialogRef = this.dialog.open<AddMemberResult>(AddMemberDialogComponent, {
+      width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/60'],
-      data: {
-        isOwner: this.isOwner(),
-        canEdit: this.canEdit(),
-        isSyncing: this.isSyncing()
+    });
+    dialogRef.closed.subscribe((result) => {
+      if (result) {
+        const canEdit = result.role === 'collaborator';
+        this.studyService.addCollaborator(this.study()!.id, result.user.uid, canEdit).subscribe({
+          next: () => {
+            const roleName = result.role === 'collaborator' ? 'Collaborator' : 'Member';
+            this.toastService.show(`${roleName} added successfully`, 'success');
+            this.studyService.getStudy(this.study()!.id);
+          }
+        });
       }
     });
+  }
+
+  removeMember(userId: string) {
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
+
+    const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
+      data: {
+        title: 'Remove member',
+        message: 'Are you sure you want to remove this member?',
+        confirmText: 'Remove'
+      }
+    });
+
+    confirmRef.closed.subscribe((confirmed) => {
+      if (confirmed) {
+        this.studyService.removeCollaborator(s.id, userId).subscribe({
+          next: () => {
+            this.toastService.show('Member removed successfully', 'success');
+            this.studyService.getStudy(s.id);
+          }
+        });
+      }
+    });
+  }
+
+  toggleMemberPermission(userId: string, canEdit: boolean) {
+    if (!this.isOwner()) return;
+    this.studyService.updateCollaboratorPermission(this.study()!.id, userId, canEdit).subscribe({
+      next: () => {
+        const roleName = canEdit ? 'Collaborator' : 'Member';
+        this.toastService.show(`Role updated to ${roleName}`, 'success');
+        this.studyService.getStudy(this.study()!.id);
+      }
+    });
+  }
+
+  openSettings() {
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
+
+    const dialogRef = this.dialog.open<any>(StudySettingsDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/60'],
+      data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility, category: s.category, orientation: s.orientation }
+    });
+
+    dialogRef.closed.subscribe((result) => {
+      if (!result) return;
+      if (result.action === 'save') {
+        this.studyService.updateStudy(s.id, {
+          name: result.name,
+          visibility: result.visibility,
+          engine_visibility: result.engine_visibility,
+          category: result.category,
+          orientation: result.orientation
+        }).subscribe({
+          next: () => {
+            this.toastService.show('Study settings updated', 'success');
+            this.studyService.getStudy(s.id);
+          }
+        });
+      } else if (result.action === 'clear_chat') {
+        this.studyService.clearStudyChat(s.id).subscribe({
+          next: () => {
+            this.studyService.emitClearChat();
+            this.toastService.show('Chat lobby cleared', 'success');
+          }
+        });
+      } else if (result.action === 'delete') {
+        this.onDeleteStudy();
+      }
+    });
+  }
+
+  onDeleteStudy() {
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
+
+    const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
+      data: {
+        title: 'Delete study',
+        message: 'Are you sure you want to delete this study? This will delete all chapters and comments forever.',
+        confirmText: 'Delete forever'
+      }
+    });
+
+    confirmRef.closed.subscribe((confirmed) => {
+      if (confirmed) {
+        this.studyService.deleteStudy(s.id).subscribe({
+          next: () => {
+            this.toastService.show('Study deleted successfully', 'success');
+            this.router.navigate(['/study']);
+          }
+        });
+      }
+    });
+  }
+
+  formatDate(dateStr: string): string {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  formatRelativeTime(dateStr: string): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+    return this.formatDate(dateStr);
   }
 
   onDrop(event: CdkDragDrop<StudyChapter[]>) {

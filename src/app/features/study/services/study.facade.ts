@@ -53,6 +53,7 @@ export class StudyFacade {
   currentChapter = this.studyService.currentChapter;
   isLoading = this.studyService.isLoading;
   viewerCount = this.studyService.viewerCount;
+  viewerNames = this.studyService.viewerNames;
 
   // Local States (Excluding Engine)
   currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');

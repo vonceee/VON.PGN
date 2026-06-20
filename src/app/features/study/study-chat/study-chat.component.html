@@ -21,10 +21,11 @@
 </div>
 
 <!-- Input Area -->
-<div class="flex-none px-4 py-3 border-t border-border-base/50">
-  <form (submit)="sendMessage(); $event.preventDefault()">
-    <input type="text" [(ngModel)]="newMessage" name="message" placeholder="send a message..."
-      class="w-full bg-transparent text-sm text-content placeholder:text-muted/40 focus:outline-none"
+<div class="flex-none px-4 pb-4 pt-2 select-none">
+  <form (submit)="sendMessage(); $event.preventDefault()"
+    class="flex items-center bg-subtle border border-border-base/50 rounded-full px-4 py-2.5">
+    <input type="text" [(ngModel)]="newMessage" name="message" placeholder="Send a message..."
+      class="w-full bg-transparent text-sm text-content placeholder:text-muted/50 focus:outline-none"
       autocomplete="off" />
   </form>
 </div>

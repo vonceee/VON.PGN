@@ -227,7 +227,17 @@ export class MobileMenuComponent {
       links: [
         { path: '/study', label: 'Study' },
         { path: '/roadmap', label: 'Roadmap' },
+      ],
+    },
+    {
+      title: 'Academy',
+      links: [
         { path: '/academy', label: 'Academy' },
+      ],
+    },
+    {
+      title: 'Coaches',
+      links: [
         { path: '/coaches', label: 'Coaches' },
       ],
     },

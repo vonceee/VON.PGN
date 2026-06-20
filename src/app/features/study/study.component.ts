@@ -23,6 +23,11 @@ import {
   heroPlay,
   heroStop,
   heroArrowsRightLeft,
+  heroChevronLeft,
+  heroChevronRight,
+  heroChevronDoubleLeft,
+  heroChevronDoubleRight,
+  heroEye,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -39,6 +44,7 @@ import { JoinClassDialogComponent } from './dialogs/join-class-dialog/join-class
 import { StudyMetadataComponent } from './study-metadata/study-metadata.component';
 import { StudyMetadataDialogComponent } from './dialogs/study-metadata-dialog/study-metadata-dialog.component';
 import { StartClassDialogComponent } from './dialogs/start-class-dialog/start-class-dialog.component';
+import { ViewersDialogComponent } from './dialogs/viewers-dialog/viewers-dialog.component';
 import { LayoutService } from '../../core/services/layout.service';
 import { StudyShortcutsService } from './services/study-shortcuts.service';
 import { StudyFacade } from './services/study.facade';
@@ -72,6 +78,11 @@ import { StudyFacade } from './services/study.facade';
       heroPlay,
       heroStop,
       heroArrowsRightLeft,
+      heroChevronLeft,
+      heroChevronRight,
+      heroChevronDoubleLeft,
+      heroChevronDoubleRight,
+      heroEye,
     }),
   ],
   templateUrl: './study.component.html',
@@ -191,6 +202,17 @@ export class StudyComponent implements OnInit, OnDestroy {
     );
   }
 
+  goToFirst() {
+    this.facade.onNavigateToPly(this.facade.initialPly());
+  }
+
+  goToLast() {
+    const tree = this.facade.moveTree();
+    if (tree.length > 0) {
+      this.facade.onNavigateToPly(tree[tree.length - 1].ply);
+    }
+  }
+
   onMoveMade(event: any) {
     this.facade.onMoveMade(event, () => {
       if (this.board) {
@@ -221,6 +243,18 @@ export class StudyComponent implements OnInit, OnDestroy {
       this.isMetadataDialogOpen.set(false);
       if (result && result.action === 'edit') {
         this.facade.onEditMetadata();
+      }
+    });
+  }
+
+  openViewers() {
+    this.dialog.open(ViewersDialogComponent, {
+      width: '450px',
+      maxWidth: '90vw',
+      backdropClass: ['bg-black/60'],
+      data: {
+        viewers: this.facade.viewerNames(),
+        count: this.facade.viewerCount()
       }
     });
   }
