@@ -1,282 +1,167 @@
-<div class="min-h-full w-full flex flex-col selection:bg-accent/30">
-  <!-- Hero Section -->
-  <section class="relative pt-24 pb-16 md:pt-40 md:pb-32 px-6 overflow-hidden">
-    <div class="relative z-10 mx-auto">
-      <header class="mb-10">
-        <h1 class="text-5xl md:text-8xl mb-4">Academy</h1>
-        <p class="text-muted text-xl md:text-2xl max-w-2xl">Learn chess from the best. A comprehensive journey from
-          beginner to intermediate mastery.</p>
-      </header>
-      <div class="flex flex-wrap gap-4">
-        <button appButton (click)="openEnrollment()" variant="primary">Enroll Now</button>
-        <button appButton (click)="scrollToOverview()" variant="ghost">Learn More</button>
+<div class="min-h-full w-full flex flex-col selection:bg-accent/30 py-16 space-y-24 max-w-7xl mx-auto px-6 lg:px-8">
+
+  <!-- 1. Hero Section -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center py-12 md:py-20">
+    <!-- Hero Left: Text & Action -->
+    <div class="lg:col-span-7 space-y-6">
+      <div
+        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 text-xs font-medium text-blue-600">
+        <span>Interactive online instruction</span>
       </div>
-    </div>
-  </section>
-
-  <!-- Program Details -->
-  <section id="academy-overview" class="py-20 px-6 bg-subtle">
-    <div class="mx-auto">
-      <header class="mb-12">
-        <h2 class="text-3xl md:text-5xl mb-2">The program overview</h2>
-        <p class="text-muted text-lg">A structured approach to mastering the game.</p>
-      </header>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Duration -->
-        <div class="p-8 rounded-3xl bg-white border border-border-base hover:border-accent/50  group">
-          <div
-            class="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center text-accent mb-6 group-hover:scale-110 ">
-            <ng-icon name="heroCalendar" class="w-7 h-7"></ng-icon>
-          </div>
-          <h3 class="text-xl font-semibold mb-2">Structured Program</h3>
-          <p>
-            Structured journey from absolute zero to a functional, competitive intermediate level.
-          </p>
-        </div>
-
-        <!-- Structure -->
-        <div class="p-8 rounded-3xl bg-white border border-border-base hover:border-accent/50  group">
-          <div
-            class="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 mb-6 group-hover:scale-110 ">
-            <ng-icon name="heroVideoCamera" class="w-7 h-7"></ng-icon>
-          </div>
-          <h3 class="text-xl font-semibold mb-2">Live Interaction</h3>
-          <p>
-            Interactive instruction via Google Meet and Lichess.org for hands-on learning.
-          </p>
-        </div>
-
-        <!-- Focus -->
-        <div class="p-8 rounded-3xl bg-white border border-border-base hover:border-accent/50  group">
-          <div
-            class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 mb-6 group-hover:scale-110 ">
-            <ng-icon name="heroViewfinderCircle" class="w-7 h-7"></ng-icon>
-          </div>
-          <h3 class="text-xl font-semibold mb-2">Core Focus</h3>
-          <p>
-            Logical calculation and board awareness through personalized live coaching.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Curriculum Section -->
-  <section class="py-24 px-6">
-    <div class="mx-auto">
-      <header class="mb-12">
-        <h2 class="text-3xl md:text-5xl mb-2">The curriculum</h2>
-        <p class="text-muted text-lg">A step-by-step guide from mechanics to advanced fundamentals.</p>
-      </header>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        <!-- Phase 1 -->
-        <div class="ui-panel p-6 md:p-12 rounded-[2rem] h-full">
-          <div class="flex items-center gap-4 mb-8">
-            <span class="text-4xl ">01</span>
-            <h3 class="text-lg md:text-3xl  uppercase  ">
-              The Mechanics
-            </h3>
-          </div>
-          <ul class="space-y-8">
-            <li class="flex gap-5">
-              <div>
-                <h4 class="font-semibold text-lg mb-1">Improve Move Accuracy</h4>
-                <p class=" text-sm">
-                  Mastering piece placement, captures, and special rules (Castling, En Passant).
-                </p>
-              </div>
-            </li>
-            <li class="flex gap-5">
-              <div>
-                <h4 class="font-semibold text-lg mb-1">The Goal</h4>
-                <p class=" text-sm">
-                  Being able to evaluate the position to avoid "winning" games ending in a draw or
-                  miss winning ideas.
-                </p>
-              </div>
-            </li>
-            <li class="flex gap-5">
-              <div>
-                <h4 class="font-semibold text-lg mb-1">Improve Board Sight</h4>
-                <p class=" text-sm">
-                  Learning to see the whole board and recognize thematic ideas.
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Phase 2 -->
-        <div class="ui-panel p-6 md:p-12 rounded-[2rem] h-full">
-          <div class="flex items-center gap-4 mb-8">
-            <span class="text-4xl ">02</span>
-            <h3 class="text-lg md:text-3xl  uppercase  ">
-              The Fundamentals
-            </h3>
-          </div>
-          <ul class="space-y-8">
-            <li class="flex gap-5">
-              <div class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-              </div>
-              <div>
-                <h4 class="font-semibold text-lg mb-1">Opening Principles</h4>
-                <p class=" text-sm">
-                  Controlling the center, developing pieces, and King safety.
-                </p>
-              </div>
-            </li>
-            <li class="flex gap-5">
-              <div class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-              </div>
-              <div>
-                <h4 class="font-semibold text-lg mb-1">The Big 3 Tactics</h4>
-                <p class=" text-sm">
-                  Identifying and executing Forks, Pins, and Skewers.
-                </p>
-              </div>
-            </li>
-            <li class="flex gap-5">
-              <div class="mt-1.5 w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-              </div>
-              <div>
-                <h4 class="font-semibold text-lg mb-1">Calculation</h4>
-                <p class=" text-sm">
-                  Learning to think 2 moves ahead before touching a piece.
-                </p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Academy Gallery -->
-  <section class="py-24 px-6 relative overflow-hidden">
-    <div class="mx-auto">
-      <header class="mb-12">
-        <h2 class="text-3xl md:text-5xl mb-2">Gallery</h2>
-        <p class="text-muted text-lg">Glimpses of our interactive training sessions and community.</p>
-      </header>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="ui-panel overflow-hidden rounded-3xl aspect-[4/3] group">
-          <img src="/assets/academy-gallery/PG-Design-1776074854486.webp" alt="Academy Training 1"
-            class="w-full h-full object-cover   group-hover:scale-110" />
-        </div>
-        <div class="ui-panel overflow-hidden rounded-3xl aspect-[4/3] group">
-          <img src="/assets/academy-gallery/PG-Design-1776075050131.webp" alt="Academy Training 2"
-            class="w-full h-full object-cover   group-hover:scale-110" />
-        </div>
-        <div class="ui-panel overflow-hidden rounded-3xl aspect-[4/3] group">
-          <img src="/assets/academy-gallery/PG-Design-1776075059723.webp" alt="Academy Training 3"
-            class="w-full h-full object-cover   group-hover:scale-110" />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Logistics & Pricing -->
-  <section class="py-24 px-6 bg-subtle relative overflow-hidden">
-    <div class="mx-auto flex flex-col lg:flex-row gap-16 items-center">
-      <div class="w-full lg:w-1/2">
-        <header class="mb-8">
-          <h2 class="text-3xl md:text-5xl mb-2">Class structure & logistics</h2>
-          <p class="text-muted text-lg">Everything you need to know about how we conduct our sessions.</p>
-        </header>
-        <div class="space-y-6">
-          <div class="flex items-start gap-4">
-            <ng-icon name="heroCheck" class="w-6 h-6 text-accent mt-1"></ng-icon>
-            <div>
-              <p class="font-semibold text-lg">Platform</p>
-              <p>
-                Google Meet + Lichess.org (Live interactive boards).
-              </p>
-            </div>
-          </div>
-          <div class="flex items-start gap-4">
-            <ng-icon name="heroUsers" class="w-6 h-6 text-accent mt-1"></ng-icon>
-            <div>
-              <p class="font-semibold text-lg">Class Size</p>
-              <p>
-                Strictly 7–10 students for personalized coaching.
-              </p>
-            </div>
-          </div>
-          <div class="flex items-start gap-4">
-            <ng-icon name="heroClock" class="w-6 h-6 text-accent mt-1"></ng-icon>
-            <div>
-              <p class="font-semibold text-lg">Duration</p>
-              <p>75 minutes per session.</p>
-            </div>
-          </div>
-          <div class="flex items-start gap-4">
-            <ng-icon name="heroAcademicCap" class="w-6 h-6 text-accent mt-1"></ng-icon>
-            <div>
-              <p class="font-semibold text-lg">Schedule</p>
-              <p>
-                5 Meetings + Graduation Mini-Tournament.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="w-full lg:w-1/2">
-        <div class="ui-panel relative p-10 md:p-16 rounded-[3rem] overflow-hidden">
-          <h3 class="text-2xl font-semibold mb-2">Promo Rate</h3>
-          <div class="flex items-baseline gap-2 mb-8">
-            <span class="text-3xl md:text-6xl ">₱1,200</span>
-            <span class=" font-semibold uppercase  text-sm">Full Course</span>
-          </div>
-          <div class="space-y-4 mb-10">
-            <p class=" font-semibold uppercase  text-xs">Includes:</p>
-            <ul class="space-y-3">
-              <li class="flex items-center gap-3">
-                <ng-icon name="heroCheck" class="w-5 h-5 text-accent"></ng-icon>
-                <span>All 5 Live Sessions</span>
-              </li>
-              <li class="flex items-center gap-3">
-                <ng-icon name="heroCheck" class="w-5 h-5 text-accent"></ng-icon>
-                <span>Tournament Entry</span>
-              </li>
-              <li class="flex items-center gap-3">
-                <ng-icon name="heroCheck" class="w-5 h-5 text-accent"></ng-icon>
-                <span>Certificate of Completion</span>
-              </li>
-            </ul>
-          </div>
-          <button appButton (click)="openEnrollment()" variant="primary">
-            Secure Your Slot
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-24 px-6">
-    <div class="max-w-4xl mx-auto">
-      <header class="mb-8">
-        <h2 class="text-3xl md:text-5xl mb-2">Start your winning journey today.</h2>
-        <p class="text-muted text-lg">Limited slots available for our next batch. Secure your spot now.</p>
-      </header>
-      <p class="text-xl  mb-12">
-        Limited to 10 students per batch to ensure quality coaching.
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-medium text-content leading-tight">
+        Master chess with world-class coaching
+      </h1>
+      <p class="text-muted text-lg sm:text-xl max-w-xl">
+        Personalized lessons from FIDE-titled coaches for players from beginner to tournament level.
       </p>
-      <div class="flex justify-center">
-        <button appButton (click)="openEnrollment()" variant="primary">
-          Inquire & Enroll
+      <div class="flex flex-wrap gap-4 pt-2">
+        <button appButton (click)="scrollToEnrollment()" variant="primary">
+          Book a trial class
+        </button>
+        <button appButton (click)="scrollToPrograms()" variant="outline">
+          View programs
         </button>
       </div>
     </div>
+
+    <!-- Hero Right: Chess Graphic -->
+    <div class="lg:col-span-5 flex justify-center">
+      <div class="relative w-full aspect-[4/3] rounded-3xl overflow-hidden border border-border-base bg-surface">
+        <img src="/assets/academy_hero.png" alt="Vonchess chess training" class="w-full h-full object-cover" />
+      </div>
+    </div>
   </section>
 
-  <app-academy-enrollment-modal *ngIf="showEnrollmentModal" (close)="closeEnrollment()"></app-academy-enrollment-modal>
+  <!-- 2. Stats Grid -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="p-8 rounded-2xl bg-surface border border-border-base text-center space-y-2">
+      <div class="text-4xl font-medium text-content">10+</div>
+      <div class="text-sm text-muted">Students enrolled</div>
+    </div>
+    <div class="p-8 rounded-2xl bg-surface border border-border-base text-center space-y-2">
+      <div class="text-4xl font-medium text-content">3</div>
+      <div class="text-sm text-muted">Dedicated coaches</div>
+    </div>
+    <div class="p-8 rounded-2xl bg-surface border border-border-base text-center space-y-2">
+      <div class="text-4xl font-medium text-content">1-on-1</div>
+      <div class="text-sm text-muted">Personalized sessions</div>
+    </div>
+    <div class="p-8 rounded-2xl bg-surface border border-border-base text-center space-y-2">
+      <div class="text-4xl font-medium text-content">10+ yrs</div>
+      <div class="text-sm text-muted">Combined coach experience</div>
+    </div>
+  </section>
 
+  <!-- 3. Programs Section -->
+  <section id="programs-section" class="py-12 border-t border-border-base space-y-8">
+    <header>
+      <h2 class="text-3xl font-medium text-content">Programs</h2>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Beginner Card -->
+      <div class="p-8 rounded-2xl bg-main border border-border-base flex flex-col justify-between min-h-[220px]">
+        <div class="space-y-4">
+          <div
+            class="w-10 h-10 rounded-xl bg-surface border border-border-base flex items-center justify-center text-muted">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-content">Beginner</h3>
+          <p class="text-sm text-muted">
+            1-on-1 sessions, rules to first tactics
+          </p>
+        </div>
+      </div>
+
+      <!-- Intermediate Card (Featured) -->
+      <div class="p-8 rounded-2xl bg-main border-2 border-blue-500 flex flex-col justify-between min-h-[220px]">
+        <div class="space-y-4">
+          <div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-medium uppercase tracking-wider">
+              Most popular
+            </span>
+          </div>
+          <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M11.48 3.499c.195-.558.978-.558 1.173 0l1.737 4.966a1.5 1.5 0 001.42 1.037h5.215c.594 0 .841.776.36 1.09l-4.218 2.738a1.5 1.5 0 00-.54 1.66l1.737 4.965c.195.558-.432 1.025-.92 1.09l-4.218-2.738a1.5 1.5 0 00-1.74 0l-4.218 2.738c-.488-.065-1.115-.532-.92-1.09l1.737-4.965a1.5 1.5 0 00-.54-1.66L3.92 10.592c-.48-.314-.233-1.09.36-1.09h5.216a1.5 1.5 0 001.42-1.037l1.737-4.966z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-content">Intermediate</h3>
+          <p class="text-sm text-muted">
+            1-on-1, strategy and openings
+          </p>
+        </div>
+      </div>
+
+      <!-- Tournament Prep Card -->
+      <div class="p-8 rounded-2xl bg-main border border-border-base flex flex-col justify-between min-h-[220px]">
+        <div class="space-y-4">
+          <div
+            class="w-10 h-10 rounded-xl bg-surface border border-border-base flex items-center justify-center text-muted">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.75V7.5h1.875c.621 0 1.125-.503 1.125-1.125V3.75a1.125 1.125 0 00-1.125-1.125h-9.75A1.125 1.125 0 005.625 3.75v2.625c0 .622.504 1.125 1.125 1.125h1.875v6.75h-.75A1.125 1.125 0 006.75 15.375v3.375M16.5 7.5V3.375m-9 4.125V3.375M12 9.75V12" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium text-content">Tournament prep</h3>
+          <p class="text-sm text-muted">
+            1-on-1 sessions, competition preparation
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Coaches Section -->
+  <section class="py-12 border-t border-border-base space-y-8">
+    <header>
+      <h2 class="text-3xl font-medium text-content">Coaches</h2>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      @for (coach of academyInstructors(); track coach.id) {
+      <div class="p-6 rounded-2xl bg-main border border-border-base flex items-center gap-4">
+        <div
+          class="w-14 h-14 rounded-full overflow-hidden bg-surface border border-border-base flex items-center justify-center shrink-0">
+          @if (coach.profilePicture) {
+          <img [src]="coach.profilePicture" [alt]="coach.name" class="w-full h-full object-cover" />
+          } @else {
+          <svg class="w-6 h-6 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+          </svg>
+          }
+        </div>
+        <div class="min-w-0 flex-1">
+          <h3 class="text-lg font-medium text-content truncate">{{ coach.name }}</h3>
+          <p class="text-sm text-muted truncate">{{ coach.title || 'Chess Instructor' }}</p>
+        </div>
+      </div>
+      }
+    </div>
+  </section>
+
+  <!-- 5. Callout Banner -->
+  <section class="py-6">
+    <div
+      class="p-8 md:p-12 rounded-2xl bg-surface border border-border-base flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="space-y-2">
+        <h2 class="text-2xl font-medium text-content">Ready to start?</h2>
+        <p class="text-sm text-muted">First trial class is free, no commitment.</p>
+      </div>
+      <button appButton (click)="scrollToEnrollment()" variant="primary">
+        Book free trial
+      </button>
+    </div>
+  </section>
+
+  <!-- 6. Inquiry Section -->
+  <section id="enrollment-section" class="py-12 border-t border-border-base">
+    <app-academy-enrollment-form></app-academy-enrollment-form>
+  </section>
 
 </div>
