@@ -277,6 +277,16 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'tactics/guess',
+        loadComponent: () =>
+          import('./features/tactics/guess-the-game/guess-the-game.component').then(
+            (m) => m.GuessTheGameComponent
+          ),
+        title: 'Vonchess.net • Guess the Game',
+        data: { description: 'Replay a popular chess game and guess whose game it was.' },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'tactics/practice/:theme',
         loadComponent: () =>
           import('./features/tactics/tactics.component').then((m) => m.TacticsComponent),

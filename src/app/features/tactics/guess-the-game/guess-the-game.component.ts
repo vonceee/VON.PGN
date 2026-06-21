@@ -1,0 +1,454 @@
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  signal,
+  computed,
+  effect,
+  ViewChild,
+  HostListener,
+  ChangeDetectionStrategy,
+  PLATFORM_ID
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Chess } from 'chess.js';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  heroPlay,
+  heroPause,
+  heroArrowsRightLeft,
+  heroChevronLeft,
+  heroChevronRight,
+  heroChevronDoubleLeft,
+  heroChevronDoubleRight,
+  heroTrophy,
+  heroEye,
+  heroLightBulb,
+  heroQuestionMarkCircle,
+} from '@ng-icons/heroicons/outline';
+import { fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { GuessTheGameService, GuessTheGameChallenge } from '../../../core/services/guess-the-game.service';
+import { AudioService } from '../../../core/services/audio.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { LayoutService } from '../../../core/services/layout.service';
+import { ChessBoardComponent, MoveNotationComponent } from '@shared/chess';
+import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
+import { ButtonComponent } from '@shared/ui';
+
+@Component({
+  selector: 'app-guess-the-game',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ChessBoardComponent,
+    MoveNotationComponent,
+    LoadingComponent,
+    NgIconComponent,
+    ButtonComponent
+  ],
+  providers: [
+    provideIcons({
+      heroPlay,
+      heroPause,
+      heroArrowsRightLeft,
+      heroChevronLeft,
+      heroChevronRight,
+      heroChevronDoubleLeft,
+      heroChevronDoubleRight,
+      heroTrophy,
+      heroEye,
+      heroLightBulb,
+      heroQuestionMarkCircle,
+    }),
+  ],
+  templateUrl: './guess-the-game.component.html',
+  styleUrls: ['./guess-the-game.component.css'],
+  host: { class: 'absolute inset-0 flex flex-col' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class GuessTheGameComponent implements OnInit, OnDestroy {
+  private guessGameService = inject(GuessTheGameService);
+  private audioService = inject(AudioService);
+  private toastService = inject(ToastService);
+  private layoutService = inject(LayoutService);
+  private platformId = inject(PLATFORM_ID);
+
+  @ViewChild('board') boardComponent!: ChessBoardComponent;
+
+  // Challenge State
+  challenge = signal<GuessTheGameChallenge | null>(null);
+  isLoading = signal(true);
+  isInitialized = signal(false);
+  errorMsg = signal<string | null>(null);
+
+  // Chess Navigation State
+  private chess = new Chess();
+  private initialFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+  moveHistory = signal<string[]>([]);
+  studyPositions: string[] = [];
+  currentPly = signal<number>(0);
+  displayFen = signal<string>('');
+  boardOrientation = signal<'white' | 'black'>('white');
+
+  // Autoplay State
+  isAutoplay = signal(false);
+  autoplaySpeed = signal(1200); // ms per move
+  private autoplayIntervalId: any = null;
+
+  // Guessing State
+  guessQuery = '';
+
+  correctWhite = signal(false);
+  correctBlack = signal(false);
+  isIncorrect = signal(false);
+
+  // Hint/Answer reveal states
+  revealYear = signal(false);
+  revealLocation = signal(false);
+  revealAnswer = signal(false);
+
+  showInstructions = signal(true);
+
+  // Layout States
+  boardSize = signal(600);
+  isLargeScreen = signal(false);
+  isThreeColumn = signal(false);
+  isTwoColumn = signal(false);
+
+  otherColumnsWidth = computed(() => {
+    if (this.isThreeColumn()) {
+      return 330 + 400 + 80; // Left sidebar (330px) + Right notation (400px) + Gaps/Paddings (80px)
+    } else if (this.isTwoColumn()) {
+      return 400 + 60; // Right notation (400px) + Gaps/Paddings (60px)
+    } else {
+      return 32; // Mobile padding
+    }
+  });
+
+  // Derived Completed State
+  isGameOver = computed(() => {
+    return (this.correctWhite() && this.correctBlack()) || this.revealAnswer();
+  });
+
+  // Derived Guessed Players
+  revealedWhiteName = computed(() => {
+    const game = this.challenge();
+    if (!game) return '';
+    return (this.correctWhite() || this.isGameOver()) ? game.white_player : '[ ? ]';
+  });
+
+  revealedBlackName = computed(() => {
+    const game = this.challenge();
+    if (!game) return '';
+    return (this.correctBlack() || this.isGameOver()) ? game.black_player : '[ ? ]';
+  });
+
+  constructor() {
+    effect(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
+      }
+    });
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.updateLayoutStates();
+      fromEvent(window, 'resize')
+        .pipe(takeUntilDestroyed(), debounceTime(100))
+        .subscribe(() => {
+          this.updateLayoutStates();
+        });
+    }
+  }
+
+  ngOnInit() {
+    this.layoutService.setFluid(true);
+    this.loadDailyChallenge();
+    if (isPlatformBrowser(this.platformId)) {
+      this.isInitialized.set(true);
+    }
+  }
+
+  ngOnDestroy() {
+    this.stopAutoplay();
+    this.layoutService.setFluid(false);
+  }
+
+  private updateLayoutStates() {
+    const width = window.innerWidth;
+    this.isLargeScreen.set(width >= 1024);
+    this.isThreeColumn.set(width >= 1280);
+    this.isTwoColumn.set(width >= 768 && width < 1280);
+  }
+
+  private loadDailyChallenge() {
+    this.isLoading.set(true);
+    this.challenge.set(null);
+    this.moveHistory.set([]);
+    this.studyPositions = [];
+    this.currentPly.set(0);
+    this.displayFen.set(this.initialFen);
+
+    this.guessGameService.getDailyChallenge().subscribe({
+      next: (res) => {
+        const game = res.data;
+        this.challenge.set(game);
+        this.initializeGame(game.pgn);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMsg.set('Could not fetch daily challenge. Please make sure admin has imported a challenge.');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  loadNextChallenge() {
+    this.stopAutoplay();
+    this.isLoading.set(true);
+    this.errorMsg.set(null);
+
+    const currentId = this.challenge()?.id;
+
+    // Reset guessing & hint states
+    this.guessQuery = '';
+
+    this.correctWhite.set(false);
+    this.correctBlack.set(false);
+    this.revealYear.set(false);
+    this.revealLocation.set(false);
+    this.revealAnswer.set(false);
+
+    // Clear active challenge & state to prevent UI ghosting/stale notation list
+    this.challenge.set(null);
+    this.moveHistory.set([]);
+    this.studyPositions = [];
+    this.currentPly.set(0);
+    this.displayFen.set(this.initialFen);
+
+    this.guessGameService.getNextChallenge(currentId).subscribe({
+      next: (res) => {
+        const game = res.data;
+        this.challenge.set(game);
+        this.initializeGame(game.pgn);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.errorMsg.set('Could not fetch the next challenge.');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  private initializeGame(pgn: string) {
+    try {
+      this.chess.loadPgn(pgn);
+      const history = this.chess.history();
+      this.moveHistory.set(history);
+
+      // Collect all FEN positions by undoing moves back to starting FEN
+      this.studyPositions = [];
+      while (true) {
+        this.studyPositions.unshift(this.chess.fen());
+        const move = this.chess.undo();
+        if (!move) break;
+      }
+
+      this.currentPly.set(0);
+      this.syncChessToCurrentPly();
+    } catch (e) {
+      console.error('Failed to parse PGN:', e);
+      this.errorMsg.set('Invalid PGN structure loaded for this challenge.');
+    }
+  }
+
+
+  private syncChessToCurrentPly() {
+    const fen = this.studyPositions[this.currentPly()] || this.initialFen;
+    this.displayFen.set(fen);
+  }
+
+  // Keyboard navigation
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.isLoading() || this.errorMsg()) return;
+
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+      return;
+    }
+
+    if (event.key === 'ArrowRight') {
+      this.nextMove();
+    } else if (event.key === 'ArrowLeft') {
+      this.prevMove();
+    }
+  }
+
+  flipBoard() {
+    this.boardOrientation.update(o => o === 'white' ? 'black' : 'white');
+  }
+
+  // Move navigation controls
+  goToMove(ply: number) {
+    this.currentPly.set(ply);
+    this.syncChessToCurrentPly();
+    this.stopAutoplay();
+  }
+
+  nextMove() {
+    const history = this.moveHistory();
+    if (this.currentPly() < history.length) {
+      this.currentPly.update(p => p + 1);
+      this.syncChessToCurrentPly();
+      this.audioService.playMoveSound(history[this.currentPly() - 1]);
+    } else {
+      this.stopAutoplay();
+    }
+  }
+
+  prevMove() {
+    if (this.currentPly() > 0) {
+      this.currentPly.update(p => p - 1);
+      this.syncChessToCurrentPly();
+    }
+  }
+
+  goToStart() {
+    this.goToMove(0);
+  }
+
+  goToEnd() {
+    this.goToMove(this.moveHistory().length);
+  }
+
+  // Autoplay functionality
+  toggleAutoplay() {
+    if (this.isAutoplay()) {
+      this.stopAutoplay();
+    } else {
+      this.startAutoplay();
+    }
+  }
+
+  private startAutoplay() {
+    this.stopAutoplay();
+    this.isAutoplay.set(true);
+
+    if (this.currentPly() >= this.moveHistory().length) {
+      this.currentPly.set(0);
+      this.syncChessToCurrentPly();
+    }
+
+    this.autoplayIntervalId = setInterval(() => {
+      this.nextMove();
+    }, this.autoplaySpeed());
+  }
+
+  private stopAutoplay() {
+    if (this.autoplayIntervalId) {
+      clearInterval(this.autoplayIntervalId);
+      this.autoplayIntervalId = null;
+    }
+    this.isAutoplay.set(false);
+  }
+
+  updateSpeed(speedMs: number) {
+    this.autoplaySpeed.set(speedMs);
+    if (this.isAutoplay()) {
+      this.startAutoplay();
+    }
+  }
+
+  // Guess checking
+  submitGuess() {
+    const query = this.guessQuery.trim().toLowerCase();
+    if (!query) return;
+
+    const game = this.challenge();
+    if (!game) return;
+
+    const whiteName = game.white_player.toLowerCase();
+    const blackName = game.black_player.toLowerCase();
+
+    const separators = /\s+(?:vs\.?|v\.?|and)\s+|\s*-\s*/i;
+    let matchedWhite = false;
+    let matchedBlack = false;
+
+    if (separators.test(query)) {
+      const parts = query.split(separators);
+      if (parts.length >= 2) {
+        const part1 = parts[0].trim();
+        const part2 = parts[1].trim();
+
+        if (part1 && part2) {
+          if (whiteName.includes(part1) && blackName.includes(part2)) {
+            matchedWhite = true;
+            matchedBlack = true;
+          } else if (blackName.includes(part1) && whiteName.includes(part2)) {
+            matchedWhite = true;
+            matchedBlack = true;
+          }
+        }
+      }
+    }
+
+    if (!matchedWhite && !matchedBlack) {
+      if (!this.correctWhite() && whiteName.includes(query)) {
+        matchedWhite = true;
+      }
+      if (!this.correctBlack() && blackName.includes(query)) {
+        matchedBlack = true;
+      }
+    }
+
+    if (matchedWhite || matchedBlack) {
+      if (matchedWhite) {
+        this.correctWhite.set(true);
+        this.toastService.show(`Correct! White player is ${game.white_player}`, 'success');
+      }
+      if (matchedBlack) {
+        this.correctBlack.set(true);
+        this.toastService.show(`Correct! Black player is ${game.black_player}`, 'success');
+      }
+
+      if (this.correctWhite() && this.correctBlack()) {
+        this.toastService.show('Amazing! You guessed both players correctly!', 'achievement', 5000);
+      }
+    } else {
+      this.toastService.show('Incorrect guess. Try again!', 'error');
+      this.isIncorrect.set(true);
+      setTimeout(() => {
+        this.isIncorrect.set(false);
+      }, 500);
+    }
+
+    this.guessQuery = '';
+  }
+
+  // Clues/Reveals
+  revealNextHint() {
+    if (!this.revealYear()) {
+      this.revealYear.set(true);
+      this.toastService.show('Hint unlocked: Year!', 'success');
+    } else if (!this.revealLocation()) {
+      this.revealLocation.set(true);
+      this.toastService.show('Hint unlocked: Location!', 'success');
+    }
+  }
+
+  revealFullMatchup() {
+    this.revealAnswer.set(true);
+  }
+
+  toggleInstructions() {
+    this.showInstructions.update(val => !val);
+  }
+}

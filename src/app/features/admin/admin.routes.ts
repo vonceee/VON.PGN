@@ -85,6 +85,12 @@ export const ADMIN_ROUTES: Routes = [
           import('./academy-enrollments/academy-enrollments.component').then((m) => m.AcademyEnrollmentsComponent),
         title: 'Academy Enrollments - CHESS.PGN',
       },
+      {
+        path: 'guess-game-import',
+        loadComponent: () =>
+          import('./guess-game-import/admin-guess-game-import.component').then((m) => m.AdminGuessGameImportComponent),
+        title: 'Guess the Game Import - CHESS.PGN',
+      },
     ],
   },
 ];

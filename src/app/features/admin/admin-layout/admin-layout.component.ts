@@ -53,6 +53,12 @@ import { filter, map, startWith } from 'rxjs';
                 <span>Courses</span>
               </a>
             </li>
+            <li>
+              <a routerLink="/admin/guess-game-import" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-subtle hover:text-blue-600 mx-2  ">
+                
+                <span>Guess the Game</span>
+              </a>
+            </li>
           </ul>
 
           <div class="px-4 mt-8 mb-2">
@@ -135,8 +141,7 @@ export class AdminLayoutComponent {
     else if (url.includes('/admin/courses')) this.pageTitle.set('Course Management');
     else if (url.includes('/admin/coaches')) this.pageTitle.set('Coach Management');
     else if (url.includes('/admin/coach/')) this.pageTitle.set('Coach Editor');
-
-
+    else if (url.includes('/admin/guess-game-import')) this.pageTitle.set('Guess the Game Import');
     else if (url.includes('/admin/academy-enrollments')) this.pageTitle.set('Academy Enrollments');
     else this.pageTitle.set('Dashboard Overview');
   }
