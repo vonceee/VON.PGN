@@ -29,7 +29,7 @@
           <label for="total_puzzles" class="text-base font-medium">Select puzzle count</label>
           <div class="relative w-full">
             <select id="total_puzzles" formControlName="total_puzzles"
-              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content appearance-none bg-no-repeat bg-right pr-8"
               style="
                 background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
                 background-position: right 0.5rem center;
@@ -43,37 +43,27 @@
         </div>
 
         <!-- Theme Selector Dropdown -->
-        <div class="flex flex-col gap-2 relative" #themeDropdownContainer>
-          <label class="text-base font-medium">Select tactical theme</label>
+        <div class="flex flex-col gap-2">
+          <label for="theme" class="text-base font-medium">Select tactical theme</label>
           <div class="relative w-full">
-            <button type="button" (click)="isThemeDropdownOpen.update(v => !v)"
-              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content text-left focus:outline-none focus:ring-2 focus:ring-accent/50 flex items-center justify-between cursor-pointer">
-              <span>{{ getSelectedThemeName() }}</span>
-              <svg class="fill-current h-4 w-4 text-muted transition-transform duration-200"
-                [class.rotate-180]="isThemeDropdownOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-              </svg>
-            </button>
-
-            @if (isThemeDropdownOpen()) {
-            <div
-              class="absolute top-full left-0 w-full bg-main border border-border-base rounded-xl py-2 mt-2 z-50 flex flex-col shadow-lg max-h-64 overflow-y-auto">
+            <select id="theme" formControlName="theme"
+              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content appearance-none bg-no-repeat bg-right pr-8"
+              style="
+                background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
+                background-position: right 0.5rem center;
+                background-size: 1.25rem;
+              ">
               @for (category of puzzleThemesHierarchy; track category.name) {
-              <div class="px-4 py-1.5 text-xs font-semibold text-muted uppercase bg-subtle/50 tracking-wider">
-                {{ category.name }}
-              </div>
-              @for (theme of category.themes; track theme.key) {
-              @let count = getThemeCount(theme.key);
-              <button type="button" (click)="selectTheme(theme.key)" [disabled]="count === 0"
-                class="w-full px-4 py-2 hover:bg-subtle flex items-center justify-between text-left cursor-pointer focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
-                <span class="text-sm text-content font-medium"
-                  [class.text-accent]="setupForm.get('theme')?.value === theme.key">{{ theme.name }}</span>
-                <span class="text-xs text-muted">({{ count | number }})</span>
-              </button>
+              <optgroup [label]="category.name | titlecase">
+                @for (theme of category.themes; track theme.key) {
+                @let count = getThemeCount(theme.key);
+                <option [value]="theme.key" [disabled]="count === 0 && theme.key !== 'mix'">
+                  {{ theme.name }} ({{ count | number }})
+                </option>
+                }
+              </optgroup>
               }
-              }
-            </div>
-            }
+            </select>
           </div>
         </div>
 
@@ -82,7 +72,7 @@
           <label for="rating_preset" class="text-base font-medium">Elo target range</label>
           <div class="relative w-full">
             <select id="rating_preset" [value]="getSelectedPresetValue()" (change)="onRatingPresetChange($event)"
-              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content appearance-none bg-no-repeat bg-right pr-8"
               style="
                 background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
                 background-position: right 0.5rem center;
@@ -103,7 +93,7 @@
             <div class="flex flex-col gap-2">
               <label for="rating_min" class="text-xs text-muted">Minimum Elo</label>
               <input type="number" id="rating_min" formControlName="rating_min"
-                class="px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium outline-none transition focus:ring-2 focus:ring-accent/20 focus:border-accent" />
+                class="px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium outline-none" />
               @if (setupForm.get('rating_min')?.touched && setupForm.get('rating_min')?.invalid) {
               <span class="text-xs text-red-500 mt-1">Must be between 0 and 4000.</span>
               }
@@ -112,7 +102,7 @@
             <div class="flex flex-col gap-2">
               <label for="rating_max" class="text-xs text-muted">Maximum Elo</label>
               <input type="number" id="rating_max" formControlName="rating_max"
-                class="px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium outline-none transition focus:ring-2 focus:ring-accent/20 focus:border-accent" />
+                class="px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium outline-none" />
               @if (setupForm.get('rating_max')?.touched && setupForm.get('rating_max')?.invalid) {
               <span class="text-xs text-red-500 mt-1">Must be between 0 and 4000.</span>
               }

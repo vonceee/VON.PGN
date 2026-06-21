@@ -1,0 +1,183 @@
+<div class="bg-main rounded-4xl shadow-lg w-full p-8 font-sans space-y-8 relative">
+  <div class="flex items-center justify-between">
+    <h2 class="text-2xl text-content">{{ activeTab() === 'editor' ? 'Board editor' : 'New chapter' }}</h2>
+  </div>
+
+  <!-- Body Content -->
+  @if (activeTab() !== 'editor') {
+    <div class="space-y-6">
+      <!-- Chapter Name & Orientation Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Chapter Name -->
+        <div class="flex flex-col gap-2" [class.md:col-span-2]="activeTab() === 'pgn'">
+          <label for="chapter_name" class="font-medium">Chapter name</label>
+          <input
+            type="text"
+            id="chapter_name"
+            [ngModel]="name()"
+            (ngModelChange)="name.set($event)"
+            placeholder="e.g. Opening Analysis"
+            class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main text-content outline-none placeholder:text-muted/50"
+            autofocus
+          />
+        </div>
+
+        <!-- Orientation (Hidden for PGN) -->
+        @if (activeTab() !== 'pgn') {
+          <div class="flex flex-col gap-2">
+            <label for="orientation" class="font-medium">Orientation</label>
+            <div class="relative w-full">
+              <select
+                id="orientation"
+                [value]="orientation()"
+                (change)="orientation.set($any($event.target).value)"
+                class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content appearance-none bg-no-repeat bg-right pr-8 focus:outline-none"
+                style="
+                  background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
+                  background-position: right 0.5rem center;
+                  background-size: 1.25rem;
+                "
+              >
+                <option value="white">White</option>
+                <option value="black">Black</option>
+              </select>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Tab Switcher (appButton Style) -->
+      <div class="flex flex-wrap gap-2 px-1">
+        @for (tab of tabs; track tab.id) {
+          <button
+            appButton
+            [variant]="activeTab() === tab.id ? 'primary' : 'outline'"
+            (click)="activeTab.set(tab.id)"
+            class="whitespace-nowrap"
+          >
+            {{ tab.label }}
+          </button>
+        }
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="min-h-[200px] bg-subtle/30 backdrop-blur-md relative rounded-2xl p-4 border border-border-base">
+        @if (activeTab() === 'fen') {
+          <div class="space-y-4 py-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-content ml-1">
+                  Paste FEN
+                </h3>
+              </div>
+              <input
+                type="text"
+                [ngModel]="fen()"
+                (ngModelChange)="fen.set($event)"
+                placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+                class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main text-content outline-none placeholder:text-muted/50"
+              />
+            </div>
+          </div>
+        }
+
+        @if (activeTab() === 'pgn') {
+          <div class="space-y-4 py-2">
+            <div class="space-y-3">
+              <div class="flex justify-between items-center px-1">
+                <input 
+                  #fileInput 
+                  type="file" 
+                  multiple 
+                  (change)="onFilesSelected($event)" 
+                  class="hidden" 
+                  accept=".pgn"
+                >
+              </div>
+              
+              <div class="relative group">
+                <textarea
+                  [ngModel]="pgn()"
+                  (ngModelChange)="pgn.set($event)"
+                  rows="4"
+                  placeholder="Paste PGN here..."
+                  class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main text-content outline-none resize-none custom-scrollbar placeholder:text-muted/50"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <button
+            class="hover:underline cursor-pointer ml-2 font-medium" 
+            (click)="fileInput.click()" 
+            [disabled]="isReadingFiles()"
+          >
+            @if (isReadingFiles()) {
+              <span class="w-3 h-3 border-2 border-accent/30 border-t-accent rounded-full animate-spin mr-2 inline-block"></span>
+              Reading...
+            } @else {
+              + Upload file
+            }
+          </button>
+          
+          @if (fileSummary()) {
+            <div class="absolute bottom-3 right-3 px-3 py-1 bg-surface border border-border-base rounded-lg text-xs font-semibold slide-in-from-bottom-2">
+              {{ fileSummary() }}
+            </div>
+          }
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Full-screen Editor View -->
+    <div>
+      <app-board-editor 
+        #editor
+        [fen]="fen()" 
+        (fenChange)="fen.set($event)"
+        [orientation]="orientation()"
+        [compact]="true"
+        [hideCoordinates]="true"
+      ></app-board-editor>
+    </div>
+  }
+
+  <!-- Footer Actions -->
+  <div class="pt-4 flex gap-4 w-full">
+    @if (activeTab() !== 'editor') {
+      <button appButton variant="outline" (click)="dialogRef.close()" class="flex-1">
+        <span>Cancel</span>
+      </button>
+      <button 
+        appButton 
+        variant="primary" 
+        (click)="onSubmit()" 
+        [disabled]="!isFormValid()"
+        class="flex-1"
+      >
+        <span>Create chapter</span>
+      </button>
+    } @else {
+      <button appButton variant="outline" (click)="activeTab.set('empty')" class="flex items-center gap-2 group flex-1">
+        <svg class="w-4 h-4 fill-current group-hover:-translate-x-1" viewBox="0 0 20 20"><path d="M11.707 5.293a1 1 0 010 1.414L8.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/></svg>
+        <span>Back</span>
+      </button>
+
+      <button appButton variant="outline" (click)="boardEditor?.resetToInitial()" class="flex-1">
+        <span>Reset Position</span>
+      </button>
+      <button appButton variant="outline" (click)="boardEditor?.clearBoard()" class="flex-1">
+        <span>Clear Board</span>
+      </button>
+      
+      <button 
+        appButton 
+        variant="primary" 
+        (click)="onSubmit()" 
+        [disabled]="!isFormValid()"
+        class="flex-1"
+      >
+        <span>Create Chapter</span>
+      </button>
+    }
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -92,35 +92,7 @@ export class WoodpeckerSetupComponent implements OnInit {
     }
   }
 
-  @ViewChild('themeDropdownContainer') themeDropdownContainer!: ElementRef;
 
-  isThemeDropdownOpen = signal(false);
-
-  selectTheme(key: string) {
-    this.setupForm.patchValue({ theme: key });
-    this.isThemeDropdownOpen.set(false);
-  }
-
-  getSelectedThemeName(): string {
-    const key = this.setupForm.get('theme')?.value || 'mix';
-    if (key === 'mix') return 'Recommended';
-    for (const category of this.puzzleThemesHierarchy) {
-      const theme = category.themes.find(t => t.key === key);
-      if (theme) return theme.name;
-    }
-    return 'Recommended';
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    if (
-      this.isThemeDropdownOpen() &&
-      this.themeDropdownContainer &&
-      !this.themeDropdownContainer.nativeElement.contains(event.target as Node)
-    ) {
-      this.isThemeDropdownOpen.set(false);
-    }
-  }
 
   ngOnInit() {
     this.tacticsService.getThemeCounts().subscribe({

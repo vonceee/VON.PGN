@@ -161,6 +161,25 @@
             </div>
             }
             }
+
+            @if (facade.isEngineVisible()) {
+              <app-study-analysis
+                [isEngineActive]="facade.isEngineActive()"
+                [isEngineError]="facade.isEngineError()"
+                [engineEval]="facade.engineEval()"
+                [engineDepth]="facade.engineDepth()"
+                [formattedNps]="facade.formattedNps()"
+                [showEngineSettings]="facade.showEngineSettings()"
+                [multiPvCount]="facade.multiPv()"
+                [searchMode]="facade.searchMode()"
+                [enginePvLines]="facade.pvLines()"
+                [currentPly]="facade.currentPly()"
+                (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
+                (retryEngine)="facade.engineService.restart()"
+                (toggleSettings)="facade.showEngineSettings.set(!facade.showEngineSettings())"
+                (multiPvChange)="facade.engineService.setMultiPv($event)"
+              ></app-study-analysis>
+            }
           </div>
         </div>
 

@@ -48,6 +48,7 @@ import { ViewersDialogComponent } from './dialogs/viewers-dialog/viewers-dialog.
 import { LayoutService } from '../../core/services/layout.service';
 import { StudyShortcutsService } from './services/study-shortcuts.service';
 import { StudyFacade } from './services/study.facade';
+import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 
 @Component({
   selector: 'app-study',
@@ -64,6 +65,7 @@ import { StudyFacade } from './services/study.facade';
     StudyMetadataComponent,
     StartClassDialogComponent,
     JoinClassDialogComponent,
+    StudyAnalysisComponent,
   ],
   providers: [
     StudyFacade,
@@ -175,8 +177,10 @@ export class StudyComponent implements OnInit, OnDestroy {
 
       this.shortcutsService.register({
         flipBoard: () => this.flipBoard(),
+        toggleEngine: () => this.facade.isEngineActive.set(!this.facade.isEngineActive()),
         nextChapter: () => this.facade.nextChapter(),
         prevChapter: () => this.facade.prevChapter(),
+        isEngineVisible: () => this.facade.isEngineVisible(),
         canEdit: () => this.facade.canEdit(),
         getCurrentNode: () => this.facade.currentNode(),
         annotateMove: (node) => this.facade.onAnnotateMove(node),

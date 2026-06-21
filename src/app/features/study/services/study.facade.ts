@@ -34,10 +34,12 @@ import { AnnotateMoveDialogComponent } from '../dialogs/annotate-move-dialog/ann
 import { RequestControlDialogComponent } from '../dialogs/request-control-dialog/request-control-dialog.component';
 import { ReceiveRequestDialogComponent } from '../dialogs/receive-request-dialog/receive-request-dialog.component';
 import { EditMetadataDialogComponent } from '../dialogs/edit-metadata-dialog/edit-metadata-dialog.component';
+import { EngineService } from '../../../core/services/engine.service';
 
 @Injectable()
 export class StudyFacade {
   private studyService = inject(StudyService);
+  public engineService = inject(EngineService);
   private authService = inject(AuthService);
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
@@ -55,7 +57,7 @@ export class StudyFacade {
   viewerCount = this.studyService.viewerCount;
   viewerNames = this.studyService.viewerNames;
 
-  // Local States (Excluding Engine)
+  // Local States (Including Engine)
   currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
   moveTree = signal<MoveNode[]>([]);
   currentNode = signal<MoveNode | null>(null);
@@ -63,6 +65,39 @@ export class StudyFacade {
   boardOrientation = signal<'white' | 'black'>('white');
   remoteShapes = signal<any[]>([]);
   activeTab = signal<'notation' | 'chapters' | 'chat'>('notation');
+
+  isEngineActive = signal(false);
+  showEngineSettings = signal(false);
+
+  // Expose engine signals for UI binding
+  engineDepth = this.engineService.engineDepth;
+  engineNodes = this.engineService.engineNodes;
+  engineNps = this.engineService.engineNps;
+  isEngineError = this.engineService.isError;
+  pvLines = this.engineService.pvLines;
+  multiPv = this.engineService.multiPv;
+  searchMode = this.engineService.searchMode;
+
+  formattedNps = computed(() => {
+    const nps = this.engineNps();
+    if (nps >= 1_000_000) return `${(nps / 1_000_000).toFixed(1)}M nps`;
+    if (nps >= 1_000) return `${(nps / 1_000).toFixed(0)}k nps`;
+    return nps > 0 ? `${nps} nps` : '';
+  });
+
+  engineEval = computed(() => {
+    const lines = this.pvLines();
+    return lines.length > 0 ? lines[0].eval : null;
+  });
+
+  isEngineVisible = computed(() => {
+    const s = this.study();
+    if (!s) return false;
+    if (s.engine_visibility === 'owner') {
+      return this.isOwner();
+    }
+    return true;
+  });
 
   showDeleteModal = signal(false);
   showStartClassDialog = signal(false);
@@ -140,6 +175,20 @@ export class StudyFacade {
   }
 
   private setupEffects() {
+    effect(() => {
+      const active = this.isEngineActive();
+      const fen = this.currentFen();
+      const isBrowser = isPlatformBrowser(this.platformId);
+
+      if (isBrowser) {
+        if (active && fen) {
+          this.engineService.startAnalysis(fen);
+        } else {
+          this.engineService.stop();
+        }
+      }
+    });
+
     effect(() => {
       const active = this.isClassActive();
       const isOwner = this.isOwner();
@@ -785,5 +834,6 @@ export class StudyFacade {
   cleanup() {
     this.studyService.disconnect();
     this.webrtc.leaveCall();
+    this.engineService.terminate();
   }
 }

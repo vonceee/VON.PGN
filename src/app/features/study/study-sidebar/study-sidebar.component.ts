@@ -8,7 +8,6 @@ import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { ButtonComponent } from '@shared/ui';
 import { UserHovercardDirective } from '@shared/directives';
 import { StudyChapter } from '../../../core/models/study.model';
 import { AddChapterDialogComponent, AddChapterDialogResult } from '../dialogs/add-chapter-dialog/add-chapter-dialog.component';
@@ -26,12 +25,18 @@ import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers,
 @Component({
   selector: 'app-study-sidebar',
   standalone: true,
-  imports: [CommonModule, NgIconComponent, ButtonComponent, DialogModule, StudyChatComponent, DragDropModule, FormsModule, UserHovercardDirective],
+  imports: [CommonModule, NgIconComponent, DialogModule, StudyChatComponent, DragDropModule, FormsModule, UserHovercardDirective],
   providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth })],
   templateUrl: './study-sidebar.component.html',
   host: {
     'class': 'block h-full overflow-hidden'
-  }
+  },
+  styles: [`
+    ::ng-deep .standalone-toolbar svg,
+    ::ng-deep .standalone-toolbar svg path {
+      stroke-width: 2px !important;
+    }
+  `]
 })
 export class StudySidebarComponent {
   private studyService = inject(StudyService);

@@ -49,36 +49,40 @@
 
   <!-- Standalone Toolbar -->
   @if (displayMode() !== 'chat') {
-  <div class="flex items-center bg-main rounded-full px-2 py-1.5 select-none">
+  <div class="flex items-center px-2 py-1.5 select-none standalone-toolbar">
     @if (canEdit()) {
     <!-- Add Chapter Button -->
     <button (click)="createChapter()" title="Add chapter"
-      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      class="flex-1 p-2 rounded-full cursor-pointer flex items-center justify-center">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
       </svg>
     </button>
+    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
     }
 
     <!-- Study Info Toggle -->
     <button (click)="toggleInfo()" title="Study info" [class.text-accent]="isInfoExpanded()"
       [class.bg-subtle]="isInfoExpanded()"
-      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+      class="flex-1 p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
       <ng-icon name="heroCog6Tooth" class="text-lg"></ng-icon>
     </button>
+
+    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
 
     <!-- Members Toggle -->
     <button (click)="toggleMembers()" title="Members" [class.text-accent]="isMembersExpanded()"
       [class.bg-subtle]="isMembersExpanded()"
-      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+      class="flex-1 p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
       <ng-icon name="heroUsers" class="text-lg"></ng-icon>
     </button>
 
     <!-- Chat Toggle -->
     @if (displayMode() === 'all') {
+    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
     <button (click)="toggleChat()" title="Chat" [class.text-accent]="isChatExpanded()"
       [class.bg-subtle]="isChatExpanded()"
-      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+      class="flex-1 p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
       <ng-icon name="heroChatBubbleLeftRight" class="text-lg"></ng-icon>
     </button>
     }
@@ -87,7 +91,7 @@
 
   @if (isInfoExpanded() && displayMode() !== 'chat') {
   <!-- Study Info Section -->
-  <div class="flex flex-col overflow-hidden bg-main rounded-4xl p-4 select-none gap-4">
+  <div class="flex flex-col overflow-hidden bg-main rounded-4xl p-8 select-none gap-4">
 
     <!-- Study Name + Settings -->
     <div class="flex items-start justify-between gap-3">
@@ -100,9 +104,8 @@
         </p>
       </div>
       @if (isOwner()) {
-      <button (click)="openSettings()" title="Study settings"
-        class="shrink-0 p-1.5 rounded-xl text-muted hover:text-content hover:bg-subtle cursor-pointer transition-colors">
-        <ng-icon name="heroCog6Tooth" class="text-base"></ng-icon>
+      <button (click)="openSettings()" class="text-xs cursor-pointer hover:underline shrink-0 ml-2 mt-1">
+        Edit
       </button>
       }
     </div>
@@ -126,16 +129,6 @@
   <!-- Members Section -->
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-4xl p-4 select-none">
     <div class="flex-1 flex flex-col min-h-0 overflow-hidden space-y-3">
-      <div class="flex items-center justify-between shrink-0">
-        @if (isOwner()) {
-        <button appButton variant="outline" (click)="addMember()">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-        </button>
-        }
-      </div>
-
       <div class="flex-1 overflow-y-auto min-h-0 custom-scrollbar space-y-2 pr-1">
         <!-- Owner -->
         <div
@@ -191,6 +184,15 @@
         @if (!isOwner()) {
         <div class="text-center py-4 text-xs text-muted">No other members.</div>
         }
+        }
+
+        @if (isOwner()) {
+        <button (click)="addMember()"
+          class="w-full flex items-center justify-center py-3.5 px-4 rounded-2xl bg-transparent border border-dashed border-border-base hover:border-accent hover:bg-accent/5 text-muted hover:text-accent transition-all duration-200 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+        </button>
         }
       </div>
     </div>
