@@ -37,6 +37,7 @@ export class StudyService {
   isClassActive = signal<boolean>(false);
   lockHolderId = signal<string | null>(null);
   hasJoinedClass = signal<boolean>(false);
+  classStartedAt = signal<string | null>(null);
 
   isOwner = computed(() => {
     const user = this.authService.currentUser();
@@ -186,6 +187,7 @@ export class StudyService {
         DevLogger.log(`[Study] Synced state received for study ${state.chapterId || 'unknown'}`);
         this.isClassActive.set(state.isClassActive || false);
         this.lockHolderId.set(state.lockHolderId || null);
+        this.classStartedAt.set(state.classStartedAt || null);
         this.lastRemoteState.set({
           chapterId: state.chapterId || state.currentChapterId,
           fen: state.fen,
@@ -242,6 +244,7 @@ export class StudyService {
         DevLogger.log(`[Study] Class started. Lock holder: ${payload.lockHolderId}`);
         this.isClassActive.set(payload.isClassActive);
         this.lockHolderId.set(payload.lockHolderId);
+        this.classStartedAt.set(payload.classStartedAt || null);
 
         const user = this.authService.currentUser();
         const myUid = user?.uid || user?.id;
@@ -263,6 +266,7 @@ export class StudyService {
         DevLogger.log('[Study] Class ended.');
         this.isClassActive.set(payload.isClassActive);
         this.lockHolderId.set(payload.lockHolderId);
+        this.classStartedAt.set(null);
         this.hasJoinedClass.set(false);
         this.toastService.show('Classroom session has ended. Free exploration restored.');
       });
@@ -633,6 +637,7 @@ export class StudyService {
   disconnect(): void {
     this.flushPendingSaves();
     this.socketService.disconnect();
+    this.classStartedAt.set(null);
     this.viewerNames.set([]);
     this.viewerCount.set(0);
   }

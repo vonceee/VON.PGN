@@ -35,8 +35,8 @@ export class StudySocketService {
   private shapesDrawnSubject = new Subject<StudyShapesDrawnPayload>();
   private chapterChangedSubject = new Subject<any>();
   private viewerListUpdateSubject = new Subject<{ studyId: string | number; viewers: StudyViewer[]; count: number }>();
-  private classSessionStartedSubject = new Subject<{ isClassActive: boolean; lockHolderId: string }>();
-  private classSessionEndedSubject = new Subject<{ isClassActive: boolean; lockHolderId: string | null }>();
+  private classSessionStartedSubject = new Subject<{ isClassActive: boolean; lockHolderId: string; classStartedAt?: string }>();
+  private classSessionEndedSubject = new Subject<{ isClassActive: boolean; lockHolderId: string | null; classStartedAt?: null }>();
   private boardControlUpdatedSubject = new Subject<{ lockHolderId: string }>();
   private membersUpdatedSubject = new Subject<{ collaborators: any[] }>();
   private chatMessageSubject = new Subject<any>();

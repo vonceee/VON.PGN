@@ -79,6 +79,12 @@
           <!-- Classroom Actions & Status -->
           @if (facade.isOwner()) {
           <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+          @if (facade.isClassActive()) {
+          <div class="text-xs font-semibold tabular-nums text-rose-500 px-1.5 py-0.5 rounded bg-rose-500/10 select-none flex items-center gap-1.5 shrink-0">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+            {{ facade.classDuration() }}
+          </div>
+          }
           <button (click)="facade.toggleClassSession()"
             [title]="facade.isClassActive() ? 'End Class Session' : 'Start Class Session'"
             class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center"
@@ -106,6 +112,9 @@
               <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
             </span>
             Active
+            <span class="ml-1 font-mono tracking-normal normal-case opacity-80 tabular-nums">
+              {{ facade.classDuration() }}
+            </span>
           </div>
           }
           }

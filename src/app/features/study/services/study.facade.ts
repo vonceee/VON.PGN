@@ -56,6 +56,7 @@ export class StudyFacade {
   isLoading = this.studyService.isLoading;
   viewerCount = this.studyService.viewerCount;
   viewerNames = this.studyService.viewerNames;
+  classStartedAt = this.studyService.classStartedAt;
 
   // Local States (Including Engine)
   currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
@@ -68,6 +69,8 @@ export class StudyFacade {
 
   isEngineActive = signal(false);
   showEngineSettings = signal(false);
+  classDuration = signal<string>('00:00');
+  private classTimerId: any = null;
 
   // Expose engine signals for UI binding
   engineDepth = this.engineService.engineDepth;
@@ -175,6 +178,48 @@ export class StudyFacade {
   }
 
   private setupEffects() {
+    effect(() => {
+      const startedAt = this.classStartedAt();
+      const isBrowser = isPlatformBrowser(this.platformId);
+
+      if (this.classTimerId) {
+        clearInterval(this.classTimerId);
+        this.classTimerId = null;
+      }
+
+      if (isBrowser && startedAt) {
+        const updateTimer = () => {
+          const start = new Date(startedAt).getTime();
+          const now = Date.now();
+          const diffSeconds = Math.max(0, Math.floor((now - start) / 1000));
+          const hours = Math.floor(diffSeconds / 3600);
+          const minutes = Math.floor((diffSeconds % 3600) / 60);
+          const seconds = diffSeconds % 60;
+
+          if (hours > 0) {
+            this.classDuration.set(
+              `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+            );
+          } else {
+            this.classDuration.set(
+              `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+            );
+          }
+        };
+
+        updateTimer();
+        this.ngZone.runOutsideAngular(() => {
+          this.classTimerId = setInterval(() => {
+            this.ngZone.run(() => {
+              updateTimer();
+            });
+          }, 1000);
+        });
+      } else {
+        this.classDuration.set('00:00');
+      }
+    });
+
     effect(() => {
       const active = this.isEngineActive();
       const fen = this.currentFen();
@@ -835,5 +880,9 @@ export class StudyFacade {
     this.studyService.disconnect();
     this.webrtc.leaveCall();
     this.engineService.terminate();
+    if (this.classTimerId) {
+      clearInterval(this.classTimerId);
+      this.classTimerId = null;
+    }
   }
 }
