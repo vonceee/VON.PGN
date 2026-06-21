@@ -5,6 +5,8 @@ import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
 import { TacticsService, WoodpeckerSession } from '../../../../core/services/tactics.service';
 import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpecker-explanation-modal.component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroInformationCircle } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-woodpecker-dashboard',
@@ -15,6 +17,10 @@ import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpe
     LoadingComponent,
     ButtonComponent,
     WoodpeckerExplanationModalComponent,
+    NgIconComponent,
+  ],
+  providers: [
+    provideIcons({ heroInformationCircle })
   ],
   templateUrl: './woodpecker-dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

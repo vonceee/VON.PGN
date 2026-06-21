@@ -1,150 +1,141 @@
-<div class="h-full w-full overflow-y-auto p-6 lg:p-8 flex flex-col">
+<div class="h-full w-full overflow-y-auto p-6 lg:p-8 flex flex-col mb-12">
   <div class="mx-auto w-full flex-1 flex flex-col">
 
     <!-- Standardized Premium Page Header -->
     <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div class="flex-1">
-        <h1 class="text-4xl md:text-5xl font-light text-content mb-2">Configure training session</h1>
+        <h1 class="text-4xl md:text-5xl mb-2">Configure training session</h1>
         <p class="text-muted text-lg">Define your puzzle count, rating filters, and tactical themes to lock in a new
           set.</p>
       </div>
     </header>
 
     <!-- Form Container -->
-    <form [formGroup]="setupForm" (ngSubmit)="onSubmit()" class="bg-subtle rounded-4xl p-8 flex flex-col gap-8">
+    <form [formGroup]="setupForm" (ngSubmit)="onSubmit()" class="bg-main rounded-4xl p-8 flex flex-col gap-8">
 
-      <!-- Session Name -->
-      <div class="flex flex-col gap-2">
-        <label for="name" class="text-base font-semibold">Session name</label>
-        <p class="text-xs text-muted mb-1">Give this training set a recognizable name so you can track it in your
-          dashboard.</p>
-        <input type="text" id="name" formControlName="name" placeholder="e.g. Fork & Pins Sprint"
-          class="w-full px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition" />
-        @if (setupForm.get('name')?.touched && setupForm.get('name')?.invalid) {
-        <span class="text-xs text-red-500 mt-1">Session name is required (max 50 chars).</span>
-        }
-      </div>
-
-      <!-- Puzzle Size Selector Grid -->
-      <div class="flex flex-col gap-3">
-        <label class="text-base font-semibold font-medium">Select puzzle count</label>
-        <p class="text-xs text-muted mb-2">Puzzles will be locked into a static set that you repeat over 4 cycles.</p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          @for (size of puzzleSizes; track size.value) {
-          <button type="button" appButton
-            [variant]="setupForm.get('total_puzzles')?.value === size.value ? 'primary' : 'outline'"
-            (click)="setupForm.patchValue({total_puzzles: size.value})"
-            class="h-auto p-4 flex-col items-start text-left w-full !rounded-xl">
-            <span class="block text-lg font-medium mb-1 w-full">{{ size.label }}</span>
-            <span class="block text-xs opacity-75 font-normal w-full">{{ size.desc }}</span>
-          </button>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Session Name -->
+        <div class="flex flex-col gap-2 md:col-span-2">
+          <label for="name" class="text-base font-medium">Session name</label>
+          <input type="text" id="name" formControlName="name" placeholder="e.g. Fork & Pins Sprint"
+            class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none" />
+          @if (setupForm.get('name')?.touched && setupForm.get('name')?.invalid) {
+          <span class="text-xs text-red-500 mt-1">Session name is required (max 50 chars).</span>
           }
         </div>
-      </div>
 
-      <!-- Theme Selector Grid -->
-      <div class="flex flex-col gap-3">
-        <label class="text-base font-semibold font-medium">Select tactical theme</label>
-        <p class="text-xs text-muted mb-2">Practice specific tactical motifs or choose Recommended Mix to challenge all
-          areas of your play.</p>
+        <!-- Puzzle Size Selector Dropdown -->
+        <div class="flex flex-col gap-2">
+          <label for="total_puzzles" class="text-base font-medium">Select puzzle count</label>
+          <div class="relative w-full">
+            <select id="total_puzzles" formControlName="total_puzzles"
+              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+              style="
+                background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
+                background-position: right 0.5rem center;
+                background-size: 1.25rem;
+              ">
+              @for (size of puzzleSizes; track size.value) {
+              <option [value]="size.value">{{ size.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
 
-        <div class="flex flex-col gap-6">
-          @for (category of puzzleThemesHierarchy; track category.name) {
-          <section class="flex flex-col gap-3">
-            <h3 class="text-lg font-medium text-content border-b border-border-base pb-1 capitalize">
-              {{ category.name }}
-            </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <!-- Theme Selector Dropdown -->
+        <div class="flex flex-col gap-2 relative" #themeDropdownContainer>
+          <label class="text-base font-medium">Select tactical theme</label>
+          <div class="relative w-full">
+            <button type="button" (click)="isThemeDropdownOpen.update(v => !v)"
+              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content text-left focus:outline-none focus:ring-2 focus:ring-accent/50 flex items-center justify-between cursor-pointer">
+              <span>{{ getSelectedThemeName() }}</span>
+              <svg class="fill-current h-4 w-4 text-muted transition-transform duration-200"
+                [class.rotate-180]="isThemeDropdownOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </button>
+
+            @if (isThemeDropdownOpen()) {
+            <div
+              class="absolute top-full left-0 w-full bg-main border border-border-base rounded-xl py-2 mt-2 z-50 flex flex-col shadow-lg max-h-64 overflow-y-auto">
+              @for (category of puzzleThemesHierarchy; track category.name) {
+              <div class="px-4 py-1.5 text-xs font-semibold text-muted uppercase bg-subtle/50 tracking-wider">
+                {{ category.name }}
+              </div>
               @for (theme of category.themes; track theme.key) {
               @let count = getThemeCount(theme.key);
-              @let isDisabled = count === 0;
-
-              <button type="button" appButton
-                [variant]="setupForm.get('theme')?.value === theme.key ? 'primary' : 'outline'"
-                [disabled]="isDisabled"
-                (click)="setupForm.patchValue({theme: theme.key})"
-                class="h-auto p-4 flex w-full gap-4 items-center justify-start text-left !rounded-xl">
-                
-                <!-- Icon -->
-                <div class="w-10 h-10 flex items-center justify-center rounded-lg border border-border-base shrink-0 bg-white">
-                  <img
-                    [src]="'assets/images/puzzle-themes/' + getIconName(theme.key) + '.svg'"
-                    alt=""
-                    class="w-5 h-5 object-contain"
-                  />
-                </div>
-
-                <!-- Text Info -->
-                <div class="flex-1 min-w-0">
-                  <span class="block text-base font-medium">{{ theme.name }}</span>
-                </div>
-
-                <!-- Counter -->
-                <div class="shrink-0 flex items-center justify-end">
-                  <span class="text-sm font-semibold opacity-75">
-                    {{ count | number }}
-                  </span>
-                </div>
+              <button type="button" (click)="selectTheme(theme.key)" [disabled]="count === 0"
+                class="w-full px-4 py-2 hover:bg-subtle flex items-center justify-between text-left cursor-pointer focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="text-sm text-content font-medium"
+                  [class.text-accent]="setupForm.get('theme')?.value === theme.key">{{ theme.name }}</span>
+                <span class="text-xs text-muted">({{ count | number }})</span>
               </button>
               }
+              }
             </div>
-          </section>
+            }
+          </div>
+        </div>
+
+        <!-- Elo Target Range Preset Dropdown -->
+        <div class="flex flex-col gap-2">
+          <label for="rating_preset" class="text-base font-medium">Elo target range</label>
+          <div class="relative w-full">
+            <select id="rating_preset" [value]="getSelectedPresetValue()" (change)="onRatingPresetChange($event)"
+              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+              style="
+                background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
+                background-position: right 0.5rem center;
+                background-size: 1.25rem;
+              ">
+              @for (preset of ratingPresets; track preset.label; let i = $index) {
+              <option [value]="i">{{ preset.label }}</option>
+              }
+              <option value="custom">Custom Range</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Custom Elo Range Inputs (visible only if custom) -->
+        <div class="flex flex-col justify-end">
+          @if (ratingRangeMode() === 'custom') {
+          <div class="grid grid-cols-2 gap-4 animate-fade-in">
+            <div class="flex flex-col gap-2">
+              <label for="rating_min" class="text-xs text-muted">Minimum Elo</label>
+              <input type="number" id="rating_min" formControlName="rating_min"
+                class="px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium outline-none transition focus:ring-2 focus:ring-accent/20 focus:border-accent" />
+              @if (setupForm.get('rating_min')?.touched && setupForm.get('rating_min')?.invalid) {
+              <span class="text-xs text-red-500 mt-1">Must be between 0 and 4000.</span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="rating_max" class="text-xs text-muted">Maximum Elo</label>
+              <input type="number" id="rating_max" formControlName="rating_max"
+                class="px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium outline-none transition focus:ring-2 focus:ring-accent/20 focus:border-accent" />
+              @if (setupForm.get('rating_max')?.touched && setupForm.get('rating_max')?.invalid) {
+              <span class="text-xs text-red-500 mt-1">Must be between 0 and 4000.</span>
+              }
+            </div>
+          </div>
           }
         </div>
       </div>
 
-      <!-- Rating Range Filters -->
-      <div class="flex flex-col gap-4">
-        <label class="text-base font-semibold font-medium">Elo target range</label>
-        <p class="text-xs text-muted mb-2">Filter puzzle difficulty to match your targeted training goals.</p>
-
-        <div class="flex flex-wrap gap-3 mb-2">
-          @for (preset of ratingPresets; track preset.label) {
-            <button type="button" appButton
-              [variant]="isPresetSelected(preset.min, preset.max) ? 'primary' : 'outline'"
-              (click)="selectPreset(preset.min, preset.max)">
-              {{ preset.label }}
-            </button>
-          }
-          <button type="button" appButton
-            [variant]="ratingRangeMode() === 'custom' ? 'primary' : 'outline'"
-            (click)="selectCustom()">
-            Custom Range
-          </button>
-        </div>
-
-        @if (ratingRangeMode() === 'custom') {
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 animate-fade-in">
-          <div class="flex flex-col gap-2">
-            <label for="rating_min" class="text-xs text-muted">Minimum Elo</label>
-            <input type="number" id="rating_min" formControlName="rating_min"
-              class="px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium outline-none transition focus:ring-2 focus:ring-accent/20 focus:border-accent" />
-            @if (setupForm.get('rating_min')?.touched && setupForm.get('rating_min')?.invalid) {
-            <span class="text-xs text-red-500 mt-1">Must be between 0 and 4000.</span>
-            }
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="rating_max" class="text-xs text-muted">Maximum Elo</label>
-            <input type="number" id="rating_max" formControlName="rating_max"
-              class="px-4 py-3 rounded-xl border border-border-base bg-main text-content font-medium outline-none transition focus:ring-2 focus:ring-accent/20 focus:border-accent" />
-            @if (setupForm.get('rating_max')?.touched && setupForm.get('rating_max')?.invalid) {
-            <span class="text-xs text-red-500 mt-1">Must be between 0 and 4000.</span>
-            }
-          </div>
-        </div>
-        }
+      @if (errorMessage()) {
+      <div class="p-4 rounded-xl bg-red-50 text-red-600 text-sm border border-red-150 font-medium">
+        {{ errorMessage() }}
       </div>
+      }
 
       <!-- Action Button Footer -->
-      <div class="border-t border-border-base pt-6 flex items-center justify-end gap-4">
-        <button type="button" appButton variant="outline" routerLink="/tactics/woodpecker"
-          class="px-6 py-3 font-semibold" [disabled]="isSubmitting()">
+      <div class="flex items-center justify-end gap-4">
+        <button type="button" appButton variant="outline" routerLink="/tactics/woodpecker" class="px-6 py-3 font-medium"
+          [disabled]="isSubmitting()">
           Cancel
         </button>
-        <button appButton variant="primary" type="submit" appButton
-          class="px-8 py-3 font-semibold flex items-center gap-2" [disabled]="isSubmitting() || setupForm.invalid">
+        <button appButton variant="primary" type="submit" class="px-8 py-3 font-medium flex items-center gap-2"
+          [disabled]="isSubmitting() || setupForm.invalid">
           @if (isSubmitting()) {
           <!-- Spinner -->
           <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">

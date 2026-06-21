@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -35,7 +35,9 @@ export class WoodpeckerSetupComponent implements OnInit {
     rating_max: [1600, [Validators.min(0), Validators.max(4000)]],
   });
 
-  puzzleThemesHierarchy = PUZZLE_THEMES_HIERARCHY;
+  puzzleThemesHierarchy = PUZZLE_THEMES_HIERARCHY.filter(
+    category => !['Origin', 'Lengths', 'Goals', 'Special Moves'].includes(category.name)
+  );
 
   puzzleSizes = [
     { value: 5, label: '5 Puzzles (Quick Demo)', desc: 'Perfect to test the system in minutes' },
@@ -70,6 +72,54 @@ export class WoodpeckerSetupComponent implements OnInit {
     return this.ratingRangeMode() === 'preset' &&
            this.setupForm.get('rating_min')?.value === min &&
            this.setupForm.get('rating_max')?.value === max;
+  }
+
+  getSelectedPresetValue(): string {
+    if (this.ratingRangeMode() === 'custom') return 'custom';
+    const min = this.setupForm.get('rating_min')?.value;
+    const max = this.setupForm.get('rating_max')?.value;
+    const index = this.ratingPresets.findIndex(p => p.min === min && p.max === max);
+    return index !== -1 ? String(index) : 'custom';
+  }
+
+  onRatingPresetChange(event: Event) {
+    const val = (event.target as HTMLSelectElement).value;
+    if (val === 'custom') {
+      this.selectCustom();
+    } else {
+      const preset = this.ratingPresets[Number(val)];
+      this.selectPreset(preset.min, preset.max);
+    }
+  }
+
+  @ViewChild('themeDropdownContainer') themeDropdownContainer!: ElementRef;
+
+  isThemeDropdownOpen = signal(false);
+
+  selectTheme(key: string) {
+    this.setupForm.patchValue({ theme: key });
+    this.isThemeDropdownOpen.set(false);
+  }
+
+  getSelectedThemeName(): string {
+    const key = this.setupForm.get('theme')?.value || 'mix';
+    if (key === 'mix') return 'Recommended';
+    for (const category of this.puzzleThemesHierarchy) {
+      const theme = category.themes.find(t => t.key === key);
+      if (theme) return theme.name;
+    }
+    return 'Recommended';
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    if (
+      this.isThemeDropdownOpen() &&
+      this.themeDropdownContainer &&
+      !this.themeDropdownContainer.nativeElement.contains(event.target as Node)
+    ) {
+      this.isThemeDropdownOpen.set(false);
+    }
   }
 
   ngOnInit() {
