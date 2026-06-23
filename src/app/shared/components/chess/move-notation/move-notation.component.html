@@ -58,17 +58,21 @@
                           ? 'bg-amber-500/10 transition-all'
                           : 'hover:bg-subtle transition-colors'
                     " class="w-full text-left select-none active-move-target px-3 py-1.5 rounded-4xl cursor-pointer">
-              <span class="inline-flex items-center gap-1">
-                {{ node.san }}
-                @if (node.glyphs && node.glyphs.length > 0) {
-                @for (glyphId of node.glyphs; track glyphId) {
-                @if (getGlyph(glyphId); as glyph) {
-                <span class="font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
-                }
-                }
-                }
+              <span class="flex items-center justify-between w-full gap-1.5 pr-12">
+                <span class="inline-flex items-center gap-1">
+                  {{ node.san }}
+                  @if (node.glyphs && node.glyphs.length > 0) {
+                  @for (glyphId of node.glyphs; track glyphId) {
+                  @if (getGlyph(glyphId); as glyph) {
+                  <span class="font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
+                  }
+                  }
+                  }
+                </span>
                 @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
-                <span [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')" title="Has annotation"></span>
+                <span
+                  [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')"
+                  title="Has annotation"></span>
                 }
               </span>
             </button>
@@ -89,17 +93,21 @@
                           ? 'bg-amber-500/10 !text-amber-800 transition-all'
                           : 'text-content hover:bg-subtle transition-colors'
                     " class="w-full text-left select-none active-move-target px-3 py-1.5 rounded-4xl cursor-pointer">
-              <span class="inline-flex items-center gap-1">
-                {{ node.san }}
-                @if (node.glyphs && node.glyphs.length > 0) {
-                @for (glyphId of node.glyphs; track glyphId) {
-                @if (getGlyph(glyphId); as glyph) {
-                <span class="font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
-                }
-                }
-                }
+              <span class="flex items-center justify-between w-full gap-1.5 pr-2">
+                <span class="inline-flex items-center gap-1">
+                  {{ node.san }}
+                  @if (node.glyphs && node.glyphs.length > 0) {
+                  @for (glyphId of node.glyphs; track glyphId) {
+                  @if (getGlyph(glyphId); as glyph) {
+                  <span class="font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
+                  }
+                  }
+                  }
+                </span>
                 @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
-                <span [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')" title="Has annotation"></span>
+                <span
+                  [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')"
+                  title="Has annotation"></span>
                 }
               </span>
             </button>
@@ -213,7 +221,9 @@
           }
           }
           @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
-          <span [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')" title="Has annotation"></span>
+          <span
+            [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')"
+            title="Has annotation"></span>
           }
         </span>
       </button>

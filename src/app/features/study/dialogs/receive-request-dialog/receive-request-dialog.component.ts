@@ -16,7 +16,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
 
       <!-- Body Content -->
       <div class="space-y-6">
-        <div class="flex items-center gap-4 bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/20 animate-fade-in">
+        <div class="flex items-center gap-4 bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/20">
           <!-- Pulse indicator -->
           <div class="relative flex h-3 w-3 shrink-0 ml-1">
             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>

@@ -10,7 +10,7 @@
   </div>
   } @else {
   @if (viewState() === 'active') {
-  <div class="w-full flex-1 flex flex-col lg:flex-row gap-8 items-stretch relative min-h-0 animate-fade-in">
+  <div class="w-full flex-1 flex flex-col lg:flex-row gap-8 items-stretch relative min-h-0">
     <!-- Left Column: Interactive Chess Board -->
     <div class="flex-1 flex items-center justify-center min-h-0 min-w-0">
       <div class="board-container-parent w-full h-full max-w-[620px] max-h-[620px] flex items-center justify-center">
@@ -104,7 +104,7 @@
   }
 
   @if (viewState() === 'success') {
-  <div class="flex-1 flex flex-col items-start justify-start max-w-4xl mx-auto py-8 w-full animate-fade-in pr-2">
+  <div class="flex-1 flex flex-col items-start justify-start max-w-4xl mx-auto py-8 w-full pr-2">
 
     <!-- Success Hero Header -->
     <div class="flex items-center gap-4 mb-6">

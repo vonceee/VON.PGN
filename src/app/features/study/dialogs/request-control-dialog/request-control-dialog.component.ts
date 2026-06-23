@@ -16,7 +16,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
 
       <!-- Body Content -->
       <div class="space-y-6">
-        <div class="flex items-center gap-4 bg-accent/5 p-4 rounded-2xl border border-accent/20 animate-fade-in">
+        <div class="flex items-center gap-4 bg-accent/5 p-4 rounded-2xl border border-accent/20">
           <!-- Icon -->
           <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">

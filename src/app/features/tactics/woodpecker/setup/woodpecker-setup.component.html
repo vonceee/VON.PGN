@@ -89,7 +89,7 @@
         <!-- Custom Elo Range Inputs (visible only if custom) -->
         <div class="flex flex-col justify-end">
           @if (ratingRangeMode() === 'custom') {
-          <div class="grid grid-cols-2 gap-4 animate-fade-in">
+          <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
               <label for="rating_min" class="text-xs text-muted">Minimum Elo</label>
               <input type="number" id="rating_min" formControlName="rating_min"
