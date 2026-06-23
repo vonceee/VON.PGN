@@ -80,7 +80,8 @@
           @if (facade.isOwner()) {
           <div class="h-4 w-px bg-muted/20 shrink-0"></div>
           @if (facade.isClassActive()) {
-          <div class="text-xs font-semibold tabular-nums text-rose-500 px-1.5 py-0.5 rounded bg-rose-500/10 select-none flex items-center gap-1.5 shrink-0">
+          <div
+            class="text-xs font-semibold tabular-nums text-rose-500 px-1.5 py-0.5 rounded bg-rose-500/10 select-none flex items-center gap-1.5 shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
             {{ facade.classDuration() }}
           </div>
@@ -144,7 +145,7 @@
             @if ((activeNode.comments && activeNode.comments.length > 0) || (activeNode.preComments &&
             activeNode.preComments.length > 0)) {
             <!-- Dedicated Commentary Section -->
-            <div class="px-5 py-4 border-t border-border-base/50 flex flex-col gap-2 shrink-0 select-text">
+            <div class="p-4 pr-0 bg-amber-500/10 flex flex-col gap-2 shrink-0 select-text">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="text-4xl font-medium">
@@ -172,22 +173,14 @@
             }
 
             @if (facade.isEngineVisible()) {
-              <app-study-analysis
-                [isEngineActive]="facade.isEngineActive()"
-                [isEngineError]="facade.isEngineError()"
-                [engineEval]="facade.engineEval()"
-                [engineDepth]="facade.engineDepth()"
-                [formattedNps]="facade.formattedNps()"
-                [showEngineSettings]="facade.showEngineSettings()"
-                [multiPvCount]="facade.multiPv()"
-                [searchMode]="facade.searchMode()"
-                [enginePvLines]="facade.pvLines()"
-                [currentPly]="facade.currentPly()"
-                (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
-                (retryEngine)="facade.engineService.restart()"
-                (toggleSettings)="facade.showEngineSettings.set(!facade.showEngineSettings())"
-                (multiPvChange)="facade.engineService.setMultiPv($event)"
-              ></app-study-analysis>
+            <app-study-analysis [isEngineActive]="facade.isEngineActive()" [isEngineError]="facade.isEngineError()"
+              [engineEval]="facade.engineEval()" [engineDepth]="facade.engineDepth()"
+              [formattedNps]="facade.formattedNps()" [showEngineSettings]="facade.showEngineSettings()"
+              [multiPvCount]="facade.multiPv()" [searchMode]="facade.searchMode()" [enginePvLines]="facade.pvLines()"
+              [currentPly]="facade.currentPly()" (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
+              (retryEngine)="facade.engineService.restart()"
+              (toggleSettings)="facade.showEngineSettings.set(!facade.showEngineSettings())"
+              (multiPvChange)="facade.engineService.setMultiPv($event)"></app-study-analysis>
             }
           </div>
         </div>

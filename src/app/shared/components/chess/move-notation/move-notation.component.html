@@ -55,17 +55,22 @@
                       currentFen() === node.fen
                         ? 'active-move bg-content text-main font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
-                          ? 'next-move-static transition-all'
+                          ? 'bg-amber-500/10 transition-all'
                           : 'hover:bg-subtle transition-colors'
                     " class="w-full text-left select-none active-move-target px-3 py-1.5 rounded-4xl cursor-pointer">
-              {{ node.san }}
-              @if (node.glyphs && node.glyphs.length > 0) {
-              @for (glyphId of node.glyphs; track glyphId) {
-              @if (getGlyph(glyphId); as glyph) {
-              <span class="ml-1 font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
-              }
-              }
-              }
+              <span class="inline-flex items-center gap-1">
+                {{ node.san }}
+                @if (node.glyphs && node.glyphs.length > 0) {
+                @for (glyphId of node.glyphs; track glyphId) {
+                @if (getGlyph(glyphId); as glyph) {
+                <span class="font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
+                }
+                }
+                }
+                @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
+                <span [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')" title="Has annotation"></span>
+                }
+              </span>
             </button>
             } @else if (turn.showWhiteEllipsis) {
             <span class="text-muted/50 select-none px-3 py-1.5 font-medium">...</span>
@@ -81,17 +86,22 @@
                       currentFen() === node.fen
                         ? 'active-move bg-content text-main font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
-                          ? 'next-move-static transition-all'
+                          ? 'bg-amber-500/10 !text-amber-800 transition-all'
                           : 'text-content hover:bg-subtle transition-colors'
                     " class="w-full text-left select-none active-move-target px-3 py-1.5 rounded-4xl cursor-pointer">
-              {{ node.san }}
-              @if (node.glyphs && node.glyphs.length > 0) {
-              @for (glyphId of node.glyphs; track glyphId) {
-              @if (getGlyph(glyphId); as glyph) {
-              <span class="ml-1 font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
-              }
-              }
-              }
+              <span class="inline-flex items-center gap-1">
+                {{ node.san }}
+                @if (node.glyphs && node.glyphs.length > 0) {
+                @for (glyphId of node.glyphs; track glyphId) {
+                @if (getGlyph(glyphId); as glyph) {
+                <span class="font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
+                }
+                }
+                }
+                @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
+                <span [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')" title="Has annotation"></span>
+                }
+              </span>
             </button>
             } @else if (turn.showBlackEllipsis) {
             <span class="text-muted/50 select-none px-3 py-1.5 font-medium">...</span>
@@ -187,19 +197,25 @@
             currentFen() === node.fen
               ? 'active-move bg-content text-main font-medium'
               : activeContinuationSet().has(node.fen + '_' + node.ply)
-                ? 'next-move-static'
+                ? 'bg-amber-500/10 !text-amber-800'
                 : (isMainline ? 'text-content hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle hover:text-content transition-colors')
           " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm]="!isMainline"
         class="text-left hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
-        {{ node.san }}
-        <!-- Glyph Rendering -->
-        @if (node.glyphs && node.glyphs.length > 0) {
-        @for (glyphId of node.glyphs; track glyphId) {
-        @if (getGlyph(glyphId); as glyph) {
-        <span class="ml-0.2 font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
-        }
-        }
-        }
+        <span class="inline-flex items-center gap-0.5">
+          {{ node.san }}
+          <!-- Glyph Rendering -->
+          @if (node.glyphs && node.glyphs.length > 0) {
+          @for (glyphId of node.glyphs; track glyphId) {
+          @if (getGlyph(glyphId); as glyph) {
+          <span class="font-medium text-xs leading-none" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol
+            }}</span>
+          }
+          }
+          }
+          @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
+          <span [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')" title="Has annotation"></span>
+          }
+        </span>
       </button>
     </span>
 
@@ -262,12 +278,6 @@
     button.active-move-target {
       border: 1.5px solid transparent !important;
       box-sizing: border-box !important;
-    }
-
-    .next-move-static {
-      background-color: hsla(45, 90%, 50%, 0.1);
-      border: 1.5px dashed hsla(45, 90%, 45%, 0.25) !important;
-      color: hsl(38, 85%, 32%) !important;
     }
 
     /* Chess Variation Tree styling */

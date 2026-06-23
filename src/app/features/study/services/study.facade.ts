@@ -743,6 +743,12 @@ export class StudyFacade {
           })
         );
 
+        // Update the current node reference so the UI commentary updates instantly
+        const updatedNode = findNodeRecursive(this.moveTree(), node.fen);
+        if (updatedNode && (!this.currentNode() || this.currentNode()?.fen === node.fen)) {
+          this.currentNode.set(updatedNode);
+        }
+
         this.studyService
           .emitMove(
             '',
