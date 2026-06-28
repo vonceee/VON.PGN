@@ -22,7 +22,11 @@ export class StudyAnalysisComponent {
   showEngineSettings = input.required<boolean>();
   multiPvCount = input.required<number>();
   searchMode = input.required<SearchMode>();
-  enginePvLines = input.required<{ eval: string; pv: string[]; pvIndex: number }[]>();
+  enginePvLines = input.required<{
+    eval: string;
+    pvIndex: number;
+    moves: { san: string; uci: string; moveNumber: number; showMoveNumber: boolean; isBlack: boolean }[];
+  }[]>();
   currentPly = input.required<number>();
 
   // Outputs

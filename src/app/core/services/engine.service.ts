@@ -90,7 +90,7 @@ export class EngineService {
     this.ngZone.runOutsideAngular(() => {
       try {
         // Use relative path for better compatibility with base href
-        this.worker = new Worker('assets/engine/stockfish.js');
+        this.worker = new Worker('assets/engine/stockfish-nnue-16-single.js');
         
         this.worker.onmessage = (e) => {
           this.handleEngineMessage(e.data);
@@ -143,6 +143,8 @@ export class EngineService {
           // Internal state update for barrier
           this.isReady.set(true);
           this.isError.set(false);
+          // Set engine options: Hash size (64MB) for stability and search depth optimization
+          this.sendCommand('setoption name Hash value 64');
           // Small delay to ensure internal state is propagated before flushing
           setTimeout(() => this.flushQueue(), 50);
         });
@@ -333,8 +335,9 @@ export class EngineService {
       this.isSessionStarted = true;
     }
 
-    // Set Multi-PV option
+    // Set Multi-PV and Hash options
     this.sendCommand(`setoption name MultiPV value ${this.multiPv()}`);
+    this.sendCommand('setoption name Hash value 64');
     
     this.sendCommand(`position fen ${fen}`);
 
@@ -371,6 +374,7 @@ export class EngineService {
     
     this.stop();
     this.sendCommand(`setoption name MultiPV value ${this.multiPv()}`);
+    this.sendCommand('setoption name Hash value 64');
     this.sendCommand(`position fen ${this.lastFenSent}`);
     this.sendCommand('go infinite');
   }

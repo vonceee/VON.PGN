@@ -66,23 +66,22 @@
       {{ line.eval }}
     </span>
     <div class="flex items-center gap-x-1.5 overflow-hidden min-w-0 flex-1 whitespace-nowrap">
-      @for (move of line.pv.slice(0, 10); track $index) {
+      @for (m of line.moves.slice(0, 10); track $index) {
       <div class="flex items-center gap-0.5">
-        @if ($index === 0 || (currentPly() + $index) % 2 === 0) {
-        <span class="text-xs  select-none">
-          {{ (currentPly() + $index) / 2 + 1 | number:'1.0-0' }}{{ ($index === 0 && currentPly() % 2 !== 0) ? '...' :
-          '.' }}
+        @if (m.showMoveNumber) {
+        <span class="text-xs select-none text-muted">
+          {{ m.moveNumber }}{{ m.isBlack ? '...' : '.' }}
         </span>
         }
         <span [class]="$index === 0 && line.pvIndex === 0 
-                ? 'text-xs ' 
-                : 'text-xs  cursor-default'">
-          {{ move }}
+                ? 'text-xs font-semibold text-content' 
+                : 'text-xs cursor-default text-muted'">
+          {{ m.san }}
         </span>
       </div>
       }
-      @if (line.pv.length > 4) {
-      <span class="text-xs self-center">...</span>
+      @if (line.moves.length > 10) {
+      <span class="text-xs self-center text-muted">...</span>
       }
     </div>
   </div>

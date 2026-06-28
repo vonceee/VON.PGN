@@ -176,7 +176,7 @@
             <app-study-analysis [isEngineActive]="facade.isEngineActive()" [isEngineError]="facade.isEngineError()"
               [engineEval]="facade.engineEval()" [engineDepth]="facade.engineDepth()"
               [formattedNps]="facade.formattedNps()" [showEngineSettings]="facade.showEngineSettings()"
-              [multiPvCount]="facade.multiPv()" [searchMode]="facade.searchMode()" [enginePvLines]="facade.pvLines()"
+              [multiPvCount]="facade.multiPv()" [searchMode]="facade.searchMode()" [enginePvLines]="facade.formattedPvLines()"
               [currentPly]="facade.currentPly()" (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
               (retryEngine)="facade.engineService.restart()"
               (toggleSettings)="facade.showEngineSettings.set(!facade.showEngineSettings())"

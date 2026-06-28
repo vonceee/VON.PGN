@@ -12,6 +12,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Chess } from 'chess.js';
 
 import { StudyService } from '../../../core/services/study.service';
 import { AudioService } from '../../../core/services/audio.service';
@@ -80,6 +81,53 @@ export class StudyFacade {
   pvLines = this.engineService.pvLines;
   multiPv = this.engineService.multiPv;
   searchMode = this.engineService.searchMode;
+
+  formattedPvLines = computed(() => {
+    const lines = this.pvLines();
+    const fen = this.currentFen();
+    if (lines.length === 0 || !fen) return [];
+
+    return lines.map((line) => {
+      const chess = new Chess(fen);
+      const moves: { san: string; uci: string; moveNumber: number; showMoveNumber: boolean; isBlack: boolean }[] = [];
+
+      for (let i = 0; i < line.pv.length; i++) {
+        const uci = line.pv[i];
+        const currentTurn = chess.turn();
+        const currentMoveNumber = chess.moveNumber();
+        const showMoveNumber = i === 0 || currentTurn === 'w';
+        const isBlack = i === 0 && currentTurn === 'b';
+
+        try {
+          const from = uci.substring(0, 2);
+          const to = uci.substring(2, 4);
+          const promotion = uci.length > 4 ? uci.substring(4, 5) : undefined;
+          const result = chess.move({ from, to, promotion });
+          moves.push({
+            san: result.san,
+            uci,
+            moveNumber: currentMoveNumber,
+            showMoveNumber,
+            isBlack,
+          });
+        } catch (e) {
+          // Fallback to raw UCI in case of parsing/move error
+          moves.push({
+            san: uci,
+            uci,
+            moveNumber: currentMoveNumber,
+            showMoveNumber,
+            isBlack,
+          });
+        }
+      }
+
+      return {
+        ...line,
+        moves,
+      };
+    });
+  });
 
   formattedNps = computed(() => {
     const nps = this.engineNps();
