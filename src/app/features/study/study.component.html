@@ -30,7 +30,7 @@
 
         <!-- Floating Toolbar -->
         <div
-          class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-main rounded-full px-4 py-1.5 select-none">
+          class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-main rounded-full border px-4 py-1.5 select-none">
           <!-- Flip Board Button -->
           <button (click)="flipBoard()" title="Flip Board"
             class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
@@ -61,7 +61,7 @@
 
           <!-- Metadata Button -->
           <button (click)="openMetadataDialog()" title="Metadata"
-            class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center"
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center"
             [class.text-accent]="isMetadataDialogOpen()" [class.bg-accent\/10]="isMetadataDialogOpen()"
             [class.text-muted]="!isMetadataDialogOpen()">
             <ng-icon name="heroTag" class="text-lg"></ng-icon>
@@ -69,26 +69,25 @@
 
           <div class="h-4 w-px bg-muted/20 shrink-0"></div>
 
-          <!-- Viewer Count Button -->
-          <button (click)="openViewers()" title="Viewers"
-            class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center gap-1.5 text-muted hover:text-content hover:bg-subtle">
+          <!-- Viewer Count Indicator -->
+          <div title="Viewers" class="p-2 rounded-full flex items-center justify-center gap-1.5 text-muted select-none">
             <ng-icon name="heroEye" class="text-lg"></ng-icon>
-            <span class="text-xs font-semibold tabular-nums leading-none">{{ facade.viewerCount() }}</span>
-          </button>
+            <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
+          </div>
 
           <!-- Classroom Actions & Status -->
           @if (facade.isOwner()) {
           <div class="h-4 w-px bg-muted/20 shrink-0"></div>
           @if (facade.isClassActive()) {
           <div
-            class="text-xs font-semibold tabular-nums text-rose-500 px-1.5 py-0.5 rounded bg-rose-500/10 select-none flex items-center gap-1.5 shrink-0">
+            class="text-xs font-medium text-rose-500 px-1.5 py-0.5 rounded select-none flex items-center gap-1.5 shrink-0">
             <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
             {{ facade.classDuration() }}
           </div>
           }
           <button (click)="facade.toggleClassSession()"
             [title]="facade.isClassActive() ? 'End Class Session' : 'Start Class Session'"
-            class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center"
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center"
             [class.text-rose-500]="facade.isClassActive()" [class.bg-rose-500\/10]="facade.isClassActive()"
             [class.text-muted]="!facade.isClassActive()">
             <ng-icon [name]="facade.isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
@@ -97,9 +96,9 @@
           <div class="h-4 w-px bg-muted/20 shrink-0"></div>
           @if (!facade.hasJoinedClass()) {
           <button (click)="facade.joinClassSession()" title="Join Class"
-            class="px-3 py-1 rounded-full transition-colors cursor-pointer flex items-center gap-1.5 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 text-xs font-semibold">
+            class="px-3 py-1 rounded-full transition-colors cursor-pointer flex items-center gap-1.5 text-rose-600 hover:bg-rose-500/20 text-xs font-semibold">
             <span class="relative flex h-1.5 w-1.5">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500"></span>
             </span>
             Join class
@@ -108,8 +107,7 @@
           <div
             class="flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 text-emerald-700 text-xs font-bold uppercase tracking-wider">
             <span class="relative flex h-1.5 w-1.5">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
             </span>
             Active
@@ -176,8 +174,9 @@
             <app-study-analysis [isEngineActive]="facade.isEngineActive()" [isEngineError]="facade.isEngineError()"
               [engineEval]="facade.engineEval()" [engineDepth]="facade.engineDepth()"
               [formattedNps]="facade.formattedNps()" [showEngineSettings]="facade.showEngineSettings()"
-              [multiPvCount]="facade.multiPv()" [searchMode]="facade.searchMode()" [enginePvLines]="facade.formattedPvLines()"
-              [currentPly]="facade.currentPly()" (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
+              [multiPvCount]="facade.multiPv()" [searchMode]="facade.searchMode()"
+              [enginePvLines]="facade.formattedPvLines()" [currentPly]="facade.currentPly()"
+              (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
               (retryEngine)="facade.engineService.restart()"
               (toggleSettings)="facade.showEngineSettings.set(!facade.showEngineSettings())"
               (multiPvChange)="facade.engineService.setMultiPv($event)"></app-study-analysis>

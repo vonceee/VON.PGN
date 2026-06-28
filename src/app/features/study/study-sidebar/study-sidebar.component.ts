@@ -13,7 +13,7 @@ import { StudyChapter } from '../../../core/models/study.model';
 import { AddChapterDialogComponent, AddChapterDialogResult } from '../dialogs/add-chapter-dialog/add-chapter-dialog.component';
 import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
-import { ViewersDialogComponent } from '../dialogs/viewers-dialog/viewers-dialog.component';
+
 import { AddMemberDialogComponent, AddMemberResult } from '../dialogs/add-collaborator-dialog/add-collaborator-dialog.component';
 import { StudySettingsDialogComponent } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
 import { StudyChatComponent } from '../study-chat/study-chat.component';
@@ -246,14 +246,7 @@ export class StudySidebarComponent {
       });
   }
 
-  openViewers() {
-    this.dialog.open(ViewersDialogComponent, {
-      data: {
-        viewers: this.viewerNames(),
-        count: this.viewerCount()
-      }
-    });
-  }
+
 
 
   addMember() {

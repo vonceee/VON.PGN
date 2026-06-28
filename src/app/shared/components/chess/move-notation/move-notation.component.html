@@ -35,7 +35,7 @@
   }
 
   <!-- Scrollable Move List -->
-  <div #scrollContainer class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-4 pt-0">
+  <div #scrollContainer class="move-list-scroll flex-1 overflow-y-auto custom-scrollbar p-4">
     @if (layout() === 'grid') {
     <div class="flex flex-col gap-1 w-full">
       @for (turn of mainlineTurns(); track turn.id) {
@@ -231,11 +231,10 @@
 
     <!-- Variations (Inline or Tree) -->
     @if (node.variations && node.variations.length > 0) {
-    @if (activeLayout() === 'tree') {
+    @if (activeLayout() === 'tree' || activeLayout() === 'grid') {
     <div class="variation-tree-block w-full flex flex-col gap-1 pl-4 my-2 relative">
       @for (variation of node.variations; track $index) {
       <div class="variation-branch-item relative pl-5 py-1 flex flex-wrap items-baseline">
-        <span class="text-xs font-bold mr-1.5 select-none uppercase">var</span>
         <ng-container *ngTemplateOutlet="
                         renderNodes;
                         context: { nodes: variation, isMainline: false }
