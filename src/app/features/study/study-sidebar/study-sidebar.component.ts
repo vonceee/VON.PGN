@@ -20,23 +20,17 @@ import { StudyChatComponent } from '../study-chat/study-chat.component';
 import { WebrtcService } from '../../../core/services/webrtc.service';
 import { input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth } from '@ng-icons/heroicons/outline';
+import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-study-sidebar',
   standalone: true,
   imports: [CommonModule, NgIconComponent, DialogModule, StudyChatComponent, DragDropModule, FormsModule, UserHovercardDirective],
-  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth })],
+  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus })],
   templateUrl: './study-sidebar.component.html',
   host: {
     'class': 'block h-full overflow-hidden'
-  },
-  styles: [`
-    ::ng-deep .standalone-toolbar svg,
-    ::ng-deep .standalone-toolbar svg path {
-      stroke-width: 2px !important;
-    }
-  `]
+  }
 })
 export class StudySidebarComponent {
   private studyService = inject(StudyService);

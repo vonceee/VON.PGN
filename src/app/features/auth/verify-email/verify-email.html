@@ -29,8 +29,7 @@
         you can close this tab after verification.
       </p>
       } @else {
-      <div
-        class="mb-8 p-4 bg-subtle/50 rounded-lg border border-border-base  text-left">
+      <div class="mb-8 p-4 bg-subtle/50 rounded-lg border border-border-base  text-left">
         <label class="block text-sm  mb-2">Update Email Address</label>
         <div class="flex gap-2">
           <input type="email" [(ngModel)]="newEmailInput"
@@ -54,7 +53,7 @@
       <p class="mt-12 text-sm ">
         Didn't receive the email? Check your spam folder or
         <button (click)="resendEmail()" [disabled]="isResending"
-          class="hover:text-content  underline underline-offset-2 bg-transparent border-none cursor-pointer text-inherit text-sm p-0">
+          class=" underline underline-offset-2 bg-transparent border-none cursor-pointer text-inherit text-sm p-0">
           {{ isResending ? 'sending...' : 'resend the link' }}</button>.
       </p>
 
@@ -65,8 +64,7 @@
   </div>
 
   <!-- Right Column: Branding Section -->
-  <div
-    class="hidden lg:flex flex-1 bg-content  text-white p-10 flex-col justify-between relative overflow-hidden">
+  <div class="hidden lg:flex flex-1 bg-content  text-white p-10 flex-col justify-between relative overflow-hidden">
     <!-- Abstract Chess Grid Pattern Background -->
     <div class="absolute inset-0 opacity-20 pointer-events-none">
       <div class="chess-grid h-full w-full"></div>

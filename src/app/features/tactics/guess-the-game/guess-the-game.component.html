@@ -28,7 +28,7 @@
           <div class="pb-2 border-b border-border-base/20 flex items-center justify-between">
             <h1 class="text-xl font-medium">Guess the game</h1>
             <button (click)="toggleInstructions()" title="Toggle Instructions"
-              class="p-1 rounded-lg hover:bg-subtle text-muted hover:text-content transition-colors flex items-center justify-center">
+              class="p-1 rounded-lg hover:bg-subtle text-muted transition-colors flex items-center justify-center">
               <ng-icon name="heroQuestionMarkCircle" class="text-xl"></ng-icon>
             </button>
           </div>
@@ -120,7 +120,7 @@
           class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-main rounded-full px-4 py-1.5 select-none">
           <!-- Flip Board -->
           <button (click)="flipBoard()" title="Flip Board"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
             <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
           </button>
 
@@ -128,26 +128,26 @@
 
           <!-- Navigation Controls -->
           <button (click)="goToStart()" title="First Move"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
             <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
           </button>
           <button (click)="prevMove()" title="Previous Move"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
             <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
           </button>
 
           <!-- Autoplay (Play/Pause) -->
           <button (click)="toggleAutoplay()" [title]="isAutoplay() ? 'Pause Autoplay' : 'Start Autoplay'"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
             <ng-icon [name]="isAutoplay() ? 'heroPause' : 'heroPlay'" class="text-lg"></ng-icon>
           </button>
 
           <button (click)="nextMove()" title="Next Move"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
             <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
           </button>
           <button (click)="goToEnd()" title="Last Move"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
             <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
           </button>
 
@@ -155,7 +155,7 @@
           <div class="h-4 w-px bg-muted/20 shrink-0"></div>
 
           <select [ngModel]="autoplaySpeed()" (ngModelChange)="updateSpeed($event)"
-            class="bg-transparent border-none outline-none text-xs text-muted hover:text-content font-medium pr-2 py-1 cursor-pointer">
+            class="bg-transparent border-none outline-none text-xs text-muted font-medium pr-2 py-1 cursor-pointer">
             <option [value]="2000">Slow</option>
             <option [value]="1200">Normal</option>
             <option [value]="600">Fast</option>
@@ -184,7 +184,7 @@
           <div class="select-none pb-2 border-b border-border-base/20 flex items-center justify-between">
             <h1 class="text-lg font-medium">Guess the game</h1>
             <button (click)="toggleInstructions()" title="Toggle Instructions"
-              class="p-1 rounded-lg hover:bg-subtle text-muted hover:text-content transition-colors flex items-center justify-center">
+              class="p-1 rounded-lg hover:bg-subtle text-muted transition-colors flex items-center justify-center">
               <ng-icon name="heroQuestionMarkCircle" class="text-lg"></ng-icon>
             </button>
           </div>
@@ -238,7 +238,7 @@
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
             <button (click)="revealNextHint()" [disabled]="revealLocation()" title="Hint"
-              class="p-2 rounded-xl transition-colors cursor-pointer text-muted hover:text-content hover:bg-subtle flex items-center justify-center">
+              class="p-2 rounded-xl transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
               <ng-icon name="heroLightBulb" class="text-lg"></ng-icon>
             </button>
             <button (click)="revealFullMatchup()" title="Reveal Answer"

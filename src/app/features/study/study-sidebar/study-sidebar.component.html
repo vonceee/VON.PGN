@@ -53,10 +53,8 @@
     @if (canEdit()) {
     <!-- Add Chapter Button -->
     <button (click)="createChapter()" title="Add chapter"
-      class="flex-1 p-2 rounded-full cursor-pointer flex items-center justify-center">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-      </svg>
+      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+      <ng-icon name="heroPlus" class="text-lg"></ng-icon>
     </button>
     <div class="h-4 w-px bg-muted/20 shrink-0"></div>
     }
@@ -64,7 +62,7 @@
     <!-- Study Info Toggle -->
     <button (click)="toggleInfo()" title="Study info" [class.text-accent]="isInfoExpanded()"
       [class.bg-subtle]="isInfoExpanded()"
-      class="flex-1 p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
+      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
       <ng-icon name="heroCog6Tooth" class="text-lg"></ng-icon>
     </button>
 
@@ -73,7 +71,7 @@
     <!-- Members Toggle -->
     <button (click)="toggleMembers()" title="Members" [class.text-accent]="isMembersExpanded()"
       [class.bg-subtle]="isMembersExpanded()"
-      class="flex-1 p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
+      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center-center justify-center">
       <ng-icon name="heroUsers" class="text-lg"></ng-icon>
     </button>
 
@@ -82,7 +80,7 @@
     <div class="h-4 w-px bg-muted/20 shrink-0"></div>
     <button (click)="toggleChat()" title="Chat" [class.text-accent]="isChatExpanded()"
       [class.bg-subtle]="isChatExpanded()"
-      class="flex-1 p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
+      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center-center justify-center">
       <ng-icon name="heroChatBubbleLeftRight" class="text-lg"></ng-icon>
     </button>
     }
@@ -93,7 +91,7 @@
     <button (click)="toggleVideoCall()" [title]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
       [class.text-rose-500]="webrtc.isCallActive()" [class.bg-subtle]="webrtc.isCallActive()"
       [class.text-muted]="!webrtc.isCallActive()"
-      class="flex-1 p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
+      class="flex-1 p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center-center justify-center">
       <ng-icon [name]="webrtc.isCallActive() ? 'heroPhoneXMark' : 'heroPhone'" class="text-lg"></ng-icon>
     </button>
     }
@@ -199,9 +197,7 @@
       @if (isOwner()) {
       <button (click)="addMember()"
         class="w-full flex items-center justify-center py-3.5 px-4 rounded-2xl bg-transparent border border-dashed border-border-base hover:border-accent hover:bg-accent/5 text-muted hover:text-accent transition-all duration-200 cursor-pointer">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-        </svg>
+        <ng-icon name="heroPlus" class="text-lg"></ng-icon>
       </button>
       }
     </div>

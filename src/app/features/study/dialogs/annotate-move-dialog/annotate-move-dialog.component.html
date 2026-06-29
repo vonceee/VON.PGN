@@ -3,8 +3,7 @@
   <div class="flex items-center justify-between">
     <h2 class="text-2xl text-content">Annotate {{ node.san }}</h2>
     <button (click)="openShortcuts()" title="Keyboard Shortcuts"
-      class="text-muted hover:text-content cursor-pointer transition-colors p-1 rounded-lg hover:bg-subtle shrink-0"
-      type="button">
+      class="text-muted cursor-pointer transition-colors p-1 rounded-lg hover:bg-subtle shrink-0" type="button">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round"
           d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
@@ -20,7 +19,7 @@
       <div class="flex items-center justify-between cursor-pointer select-none py-1 group"
         (click)="toggleGlyphsExpanded()">
         <div class="flex items-center gap-3">
-          <span class="text-sm font-medium text-muted group-hover:text-content transition-colors">(Glyphs)</span>
+          <span class="text-sm font-medium text-muted group-transition-colors">(Glyphs)</span>
           @if (!isGlyphsExpanded() && selectedGlyphs().length > 0) {
           <div class="flex gap-1.5">
             @for (glyphId of selectedGlyphs(); track glyphId) {
@@ -31,8 +30,7 @@
           </div>
           }
         </div>
-        <button type="button"
-          class="text-muted group-hover:text-content p-1 rounded hover:bg-subtle transition-colors shrink-0">
+        <button type="button" class="text-muted group-p-1 rounded hover:bg-subtle transition-colors shrink-0">
           @if (isGlyphsExpanded()) {
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />

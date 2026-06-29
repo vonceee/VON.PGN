@@ -42,7 +42,7 @@
       <!-- Turn Row Container -->
       <div class="flex flex-col mb-1">
         <!-- Main Move Pair Row -->
-        <div class="grid grid-cols-[3rem_1fr_1fr] items-center bg-subtle rounded-4xl">
+        <div class="grid grid-cols-[3rem_1fr_1fr] items-center bg-surface rounded-4xl">
           <!-- Move Number -->
           <span class="text-sm font-medium text-muted select-none text-right pr-4">
             {{ turn.moveNumber }}.
@@ -206,7 +206,7 @@
               ? 'active-move bg-content text-main font-medium'
               : activeContinuationSet().has(node.fen + '_' + node.ply)
                 ? 'bg-amber-500/10 !text-amber-800'
-                : (isMainline ? 'text-content hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle hover:text-content transition-colors')
+                : (isMainline ? 'text-content hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle transition-colors')
           " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm]="!isMainline"
         class="text-left hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
         <span class="inline-flex items-center gap-0.5">

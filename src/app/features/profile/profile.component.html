@@ -12,7 +12,7 @@
     <!-- Followers/Following Modal -->
     @if (showFollowModal()) {
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="closeFollowModal()">
-      <div class="bg-white rounded-2xl w-full max-w-lg mx-4 border border-border-base max-h-[80vh] flex flex-col"
+      <div class="bg-white rounded-2xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col"
         (click)="$event.stopPropagation()">
         <!-- Modal Header -->
         <div class="flex items-center justify-between px-5 pt-5 pb-0">
@@ -42,7 +42,7 @@
 
         <!-- Search -->
         <div class="px-5 pt-4 pb-0">
-          <div class="flex items-center border border-border-base rounded-lg px-3 py-2">
+          <div class="flex items-center rounded-lg px-3 py-2">
             <input type="text" [value]="tabSearchQuery()" (input)="onTabSearch($event)"
               [placeholder]="'Search ' + activeTab() + '...'"
               class="ml-2 bg-transparent outline-none text-sm placeholder:text-muted/60 w-full" />
@@ -54,7 +54,7 @@
           @if (tabLoading()) {
           <app-loading></app-loading>
           } @else if (tabUsers().length === 0) {
-          <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border border-border-base">
+          <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border-border-base">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1"
               stroke="currentColor" class="w-10 h-10 text-muted">
               <path stroke-linecap="round" stroke-linejoin="round"
@@ -79,7 +79,7 @@
             <div class="flex items-center gap-3 p-3 rounded-xl group">
               <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
                 [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
-                class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center border border-border-base text-sm font-medium text-muted uppercase shrink-0">
+                class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center text-sm font-medium text-muted uppercase shrink-0">
                 {{ userItem.username.charAt(0) || 'U' }}
               </a>
               <div class="flex-1 min-w-0">
@@ -129,17 +129,17 @@
   <div class="flex flex-col lg:flex-row gap-8">
     <!-- Left column: Profile Details Sidebar -->
     <div class="w-full lg:w-72 shrink-0 flex flex-col gap-4">
-      <div class="bg-main border border-border-base rounded-3xl p-6 flex flex-col items-center text-center">
+      <div class="bg-main rounded-4xl p-6 flex flex-col items-center text-center">
         <!-- Username & Flag -->
         <div class="flex items-center gap-2 mb-2 justify-center">
-          <span class="text-xl font-medium text-content">{{ profile.username }}</span>
+          <span class="text-2xl font-medium">{{ profile.username }}</span>
           <app-flag-icon [countryCode]="profile.country_code" shape="circle"></app-flag-icon>
         </div>
 
         <!-- Verified Organizer Badge (if applicable) -->
         @if (profile.verified_organizer) {
         <div
-          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-xs font-medium text-accent mb-4">
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent/10 border-accent/20 text-xs font-medium text-accent mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
             <path fill-rule="evenodd"
               d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.446-5.188a.75.75 0 00-1.06-1.06l-3.72 3.72-1.47-1.47a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.25-4.25z"
@@ -153,13 +153,13 @@
         <div class="w-full border-t border-b border-border-base/50 py-4 flex justify-around text-sm mb-4">
           <button (click)="openFollowModal('followers')"
             class="hover:text-accent cursor-pointer flex flex-col items-center">
-            <span class="font-medium text-content text-base">{{ formattedFollowersCount() }}</span>
+            <span class="font-medium text-base">{{ formattedFollowersCount() }}</span>
             <span class="text-xs text-muted">Followers</span>
           </button>
           <div class="w-px h-8 bg-border-base/50"></div>
           <button (click)="openFollowModal('following')"
             class="hover:text-accent cursor-pointer flex flex-col items-center">
-            <span class="font-medium text-content text-base">{{ formattedFollowingCount() }}</span>
+            <span class="font-medium text-base">{{ formattedFollowingCount() }}</span>
             <span class="text-xs text-muted">Following</span>
           </button>
         </div>
@@ -179,15 +179,10 @@
     <!-- Right column: Studies & Bookmarked Events Widgets -->
     <div class="flex-1 flex flex-col gap-6">
       <!-- Studies Card -->
-      <div class="bg-main border border-border-base rounded-3xl p-6 flex flex-col gap-4">
+      <div class="bg-main rounded-4xl p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <!-- Book icon -->
-            <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
-            <h2 class="text-lg font-medium text-content">My active studies</h2>
+            <h2 class="text-2xl font-medium">My active studies</h2>
           </div>
           <a routerLink="/study" class="text-xs font-medium text-accent hover:underline">View all</a>
         </div>
@@ -202,7 +197,7 @@
                 d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
-          <h3 class="text-2xl font-light text-content mb-2">No active studies yet</h3>
+          <h3 class="text-2xl font-light mb-2">No active studies yet</h3>
           <p class="text-muted text-base max-w-sm mb-8">Create a collaborative chess study to start analyzing and saving
             your games.</p>
           <a appButton variant="primary" routerLink="/study">Create a study</a>
@@ -210,32 +205,24 @@
         } @else {
         <div class="grid grid-cols-1 gap-3">
           @for (study of studies(); track study.id) {
-          <div
-            class="flex items-center justify-between p-4 rounded-2xl border border-border-base hover:border-accent hover:bg-surface transition-all duration-200">
+          <a [routerLink]="'/study/' + study.id"
+            class="flex items-center justify-between p-4 rounded-2xl bg-subtle no-underline text-inherit cursor-pointer">
             <div class="flex flex-col min-w-0">
-              <span class="font-medium text-content truncate">{{ study.name }}</span>
+              <span class="font-medium truncate">{{ study.name }}</span>
               <span class="text-xs text-muted mt-0.5">{{ study.chapters_count }} Chapters &middot; Updated {{
                 formatRelativeTime(study.updated_at) }}</span>
             </div>
-            <a appButton variant="outline" class="text-xs shrink-0 ml-4" [routerLink]="'/study/' + study.id">
-              Open
-            </a>
-          </div>
+          </a>
           }
         </div>
         }
       </div>
 
       <!-- Bookmarks Card -->
-      <div class="bg-main border border-border-base rounded-3xl p-6 flex flex-col gap-4">
+      <div class="bg-main rounded-4xl p-6 flex flex-col gap-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <!-- Calendar icon -->
-            <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <h2 class="text-lg font-medium text-content">Bookmarked events</h2>
+            <h2 class="text-2xl font-medium">Bookmarked events</h2>
           </div>
           <a routerLink="/events" class="text-xs font-medium text-accent hover:underline">Browse events</a>
         </div>
@@ -250,17 +237,16 @@
                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 class="text-2xl font-light text-content mb-2">No bookmarked tournaments</h3>
+          <h3 class="text-2xl font-light mb-2">No bookmarked tournaments</h3>
           <p class="text-muted text-base max-w-sm mb-8">Browse current tournaments and save them here.</p>
           <a appButton variant="primary" routerLink="/events">Find tournaments</a>
         </div>
         } @else {
         <div class="grid grid-cols-1 gap-3">
           @for (tournament of tournaments(); track tournament.id) {
-          <div
-            class="flex items-center justify-between p-4 rounded-2xl border border-border-base hover:border-accent hover:bg-surface transition-all duration-200">
+          <div class="flex items-center justify-between p-4 rounded-2xl ">
             <div class="flex flex-col min-w-0">
-              <span class="font-medium text-content truncate">{{ tournament.name }}</span>
+              <span class="font-medium truncate">{{ tournament.name }}</span>
               <span class="text-xs text-muted mt-0.5">{{ tournament.location }} &middot; {{
                 formatDate(tournament.dates.start) }}</span>
             </div>

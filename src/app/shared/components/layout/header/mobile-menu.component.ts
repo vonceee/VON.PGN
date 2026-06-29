@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
         <button
           (click)="close.emit()"
           aria-label="Close menu"
-          class="p-1.5 cursor-pointer relative group text-muted hover:text-content transition-colors flex items-center justify-center rounded-lg hover:bg-subtle"
+          class="p-1.5 cursor-pointer relative group text-muted transition-colors flex items-center justify-center rounded-lg hover:bg-subtle"
         >
           <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -79,7 +79,7 @@ import { Router } from '@angular/router';
                     routerLinkActive="text-accent font-semibold"
                     [routerLinkActiveOptions]="{ exact: link.path === '/play' || link.path === '/study' || link.path === '/events' }"
                     (click)="close.emit()"
-                    class="py-1 text-sm font-medium text-muted hover:text-content hover:underline transition-all flex items-center justify-between"
+                    class="py-1 text-sm font-medium text-muted hover:underline transition-all flex items-center justify-between"
                   >
                     <span>{{ link.label }}</span>
                   </a>
@@ -107,7 +107,7 @@ import { Router } from '@angular/router';
               routerLinkActive="text-accent font-semibold"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="close.emit()"
-              class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
+              class="py-1 text-xs font-medium text-muted hover:underline transition-all"
             >
               Profile
             </a>
@@ -120,7 +120,7 @@ import { Router } from '@angular/router';
                 routerLinkActive="text-accent font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
+                class="py-1 text-xs font-medium text-muted hover:underline transition-all"
               >
                 My Tournaments
               </a>
@@ -134,7 +134,7 @@ import { Router } from '@angular/router';
                 routerLinkActive="text-accent font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="py-1 text-xs font-medium text-muted hover:text-content hover:underline transition-all"
+                class="py-1 text-xs font-medium text-muted hover:underline transition-all"
               >
                 Admin Panel
               </a>
