@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy, PLATFORM_ID, ElementRef, ViewChild, HostListener } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -25,11 +25,8 @@ export class OpeningDrillsComponent implements OnInit {
   private apiUrl = environment.apiUrl;
   private platformId = inject(PLATFORM_ID);
 
-  @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
-
   isLoading = signal(false);
   activeTab = signal<'my' | 'public'>('my');
-  isDropdownOpen = signal(false);
 
   // Selection list
   openingRepertoires = signal<Study[]>([]);
@@ -68,7 +65,6 @@ export class OpeningDrillsComponent implements OnInit {
 
   setTab(tab: 'my' | 'public') {
     this.activeTab.set(tab);
-    this.isDropdownOpen.set(false);
     this.fetchRepertoires();
   }
 
@@ -83,16 +79,5 @@ export class OpeningDrillsComponent implements OnInit {
 
   clearSearch() {
     this.searchQuery.set('');
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    if (
-      this.isDropdownOpen() &&
-      this.dropdownContainer &&
-      !this.dropdownContainer.nativeElement.contains(event.target as Node)
-    ) {
-      this.isDropdownOpen.set(false);
-    }
   }
 }

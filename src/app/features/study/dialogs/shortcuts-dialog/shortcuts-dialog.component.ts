@@ -28,7 +28,7 @@ import { DialogRef } from '@angular/cdk/dialog';
                 </span>
                 <div class="flex items-center gap-2">
                   @if (item.symbol) {
-                    <span class="text-xs text-muted/60 bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
+                    <span class="text-xs text-muted bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                   }
                   <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-xs font-semibold">{{ item.key }}</kbd>
                 </div>
@@ -46,7 +46,7 @@ import { DialogRef } from '@angular/cdk/dialog';
                   {{ item.label }}
                 </span>
                 <div class="flex items-center gap-2">
-                  <span class="text-xs text-muted/60 bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
+                  <span class="text-xs text-muted bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                   <div class="flex items-center gap-1">
                     <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-xs font-semibold text-muted">Shift</kbd>
                     <span class="text-xs">+</span>

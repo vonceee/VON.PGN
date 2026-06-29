@@ -90,7 +90,7 @@
 
             <!-- Puzzle History Strip -->
             @if (currentUser() && recentPuzzleHistory().length > 0) {
-            <div class="p-4 flex flex-wrap gap-2 shrink-0 border-t border-border-base/50">
+            <div class="p-4 flex flex-wrap gap-2 shrink-0">
               @for (attempt of recentPuzzleHistory(); track attempt.id) {
               <button (click)="selectHistoryPuzzle(attempt.puzzle_id)" [class.bg-green-100]="attempt.rating_change >= 0"
                 [class.text-green-700]="attempt.rating_change >= 0" [class.bg-red-100]="attempt.rating_change < 0"

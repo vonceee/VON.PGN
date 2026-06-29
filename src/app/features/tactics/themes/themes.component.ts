@@ -71,11 +71,4 @@ export class PuzzleThemesComponent implements OnInit {
     }
     return this.themeCounts()[key] ?? 0;
   }
-
-  getIconName(key: string): string {
-    if (key.startsWith('mateIn')) {
-      return 'mate';
-    }
-    return key;
-  }
 }

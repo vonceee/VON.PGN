@@ -15,7 +15,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
   providers: [],
   template: `
-    <div class="coach-editor max-w-5xl mx-auto space-y-8">
+    <div class="coach-editor mx-auto space-y-8">
       <!-- Top Bar -->
       <div class="flex items-center justify-between">
         <button (click)="location.back()" class=" hover: font-semibold">
@@ -281,11 +281,11 @@ export class CoachEditorComponent implements OnInit {
         // Clear arrays
         while (this.playingExperience.length) this.playingExperience.removeAt(0);
         while (this.teachingExperience.length) this.teachingExperience.removeAt(0);
-        
+
         // Add values back to arrays
         coach.playingExperience?.forEach(exp => this.playingExperience.push(this.fb.control(exp)));
         coach.teachingExperience?.forEach(exp => this.teachingExperience.push(this.fb.control(exp)));
-        
+
         this.coachForm.patchValue(coach as any);
         if (coach.profilePicture) {
           this.imagePreview.set(coach.profilePicture);
@@ -309,7 +309,7 @@ export class CoachEditorComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.coachForm.patchValue({ profilePicture: file });
-      
+
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview.set(reader.result as string);
@@ -327,13 +327,13 @@ export class CoachEditorComponent implements OnInit {
 
     this.saving.set(true);
     const data = this.coachForm.value;
-    
+
     // Filter out empty strings from arrays
     data.playingExperience = (data.playingExperience as string[]).filter(x => !!x);
     data.teachingExperience = (data.teachingExperience as string[]).filter(x => !!x);
     data.teachingMethods = (data.teachingMethods as string[]).filter(x => !!x);
 
-    const obs = this.isEditing() 
+    const obs = this.isEditing()
       ? this.coachService.updateCoach(this.coachId()!, data as any)
       : this.coachService.createCoach(data as any);
 

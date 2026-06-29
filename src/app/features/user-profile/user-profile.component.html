@@ -37,20 +37,21 @@
               <!-- Action Buttons -->
               @if (isAuthenticated() && !isOwnProfile()) {
               <div class="flex items-center gap-2 shrink-0">
-                <button appButton [variant]="isFollowing() ? 'outline' : 'primary'" (click)="toggleFollow()" [loading]="isFollowLoading()">
+                <button appButton [variant]="isFollowing() ? 'outline' : 'primary'" (click)="toggleFollow()"
+                  [loading]="isFollowLoading()">
                   @if (!isFollowLoading()) {
-                    @if (isFollowing()) {
-                      <!-- Check Circle icon for Following -->
-                      <ng-icon name="heroCheckCircle" class="w-4 h-4 group-hover:hidden"></ng-icon>
-                      <!-- X Circle icon for Unfollow on hover -->
-                      <ng-icon name="heroXCircle" class="w-4 h-4 hidden group-hover:inline text-red-500"></ng-icon>
-                      <span class="group-hover:hidden">Following</span>
-                      <span class="hidden group-hover:inline text-red-500">Unfollow</span>
-                    } @else {
-                      <!-- User Plus icon for Follow -->
-                      <ng-icon name="heroUserPlus" class="w-4 h-4"></ng-icon>
-                      Follow
-                    }
+                  @if (isFollowing()) {
+                  <!-- Check Circle icon for Following -->
+                  <ng-icon name="heroCheckCircle" class="w-4 h-4 group-hover:hidden"></ng-icon>
+                  <!-- X Circle icon for Unfollow on hover -->
+                  <ng-icon name="heroXCircle" class="w-4 h-4 hidden group-hover:inline text-red-500"></ng-icon>
+                  <span class="group-hover:hidden">Following</span>
+                  <span class="hidden group-hover:inline text-red-500">Unfollow</span>
+                  } @else {
+                  <!-- User Plus icon for Follow -->
+                  <ng-icon name="heroUserPlus" class="w-4 h-4"></ng-icon>
+                  Follow
+                  }
                   }
                 </button>
               </div>
@@ -145,7 +146,7 @@
         <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 shrink-0"></ng-icon>
         <input type="text" [value]="tabSearchQuery()" (input)="onTabSearch($event)"
           [placeholder]="'Search ' + activeTab() + '...'"
-          class="ml-2 bg-transparent outline-none text-sm   placeholder:text-muted/60  w-full" />
+          class="ml-2 bg-transparent outline-none text-sm   placeholder:text-muted  w-full" />
       </div>
     </div>
 
