@@ -84,7 +84,7 @@
     <!-- Search Results Dropdown -->
     @if (isSearchOpen()) {
     @if (searchResults().length > 0) {
-    <div class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50 shadow-lg">
+    <div class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50">
       @for (user of searchResults(); track user.uid) {
       <a [routerLink]="['/user', user.username]" target="_blank" rel="noopener noreferrer"
         (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
@@ -114,7 +114,7 @@
         </svg>
         @if (notificationService.unreadCount() > 0) {
         <span
-          class="absolute top-1.5 right-1.5 px-1 py-0.5 min-w-[1rem] h-4 flex items-center justify-center bg-rose-600 text-white text-[9px] font-bold rounded-full border border-[var(--color-main)] shadow-xs leading-none">
+          class="absolute top-1.5 right-1.5 px-1 py-0.5 min-w-[1rem] h-4 flex items-center justify-center bg-rose-600 text-white text-[9px] font-bold rounded-full border border-[var(--color-main)]">
           {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
         </span>
         }

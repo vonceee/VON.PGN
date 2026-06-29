@@ -29,7 +29,7 @@ import { AuthService } from '../../../core/services/auth.service';
     })
   ],
   template: `
-    <div class="flex flex-col h-full min-h-0 overflow-hidden" [ngClass]="webrtc.isDetached() ? 'bg-surface/95 text-content p-4 rounded-2xl border border-border-base/50 shadow-2xl backdrop-blur-md' : 'bg-transparent text-content p-3'">
+    <div class="flex flex-col h-full min-h-0 overflow-hidden" [ngClass]="webrtc.isDetached() ? 'bg-surface/95 text-content p-4 rounded-2xl border border-border-base/50 backdrop-blur-md' : 'bg-transparent text-content p-3'">
       <!-- Scrollable Videos Container -->
       <div class="flex flex-col gap-3 flex-1 overflow-y-auto min-h-0 mb-4 custom-scrollbar">
         
@@ -46,7 +46,7 @@ import { AuthService } from '../../../core/services/auth.service';
             ></video>
             @if (isCameraOff()) {
               <div class="absolute inset-0 bg-subtle flex flex-col items-center justify-center">
-                <div class="w-12 h-12 rounded-full bg-surface border border-border-base flex items-center justify-center mb-1.5 shadow-inner">
+                <div class="w-12 h-12 rounded-full bg-surface border border-border-base flex items-center justify-center mb-1.5">
                   <ng-icon name="heroUser" class="w-6 h-6 text-muted"></ng-icon>
                 </div>
                 <span class="text-xstext-muted font-medium">Camera Off</span>

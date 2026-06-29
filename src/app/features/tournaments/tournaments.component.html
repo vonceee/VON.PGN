@@ -28,8 +28,7 @@
         </button>
 
         @if (isTabDropdownOpen()) {
-        <div
-          class="absolute top-full left-0 mt-1 bg-main border border-border-base rounded-xl shadow-lg z-20 overflow-hidden">
+        <div class="absolute top-full left-0 mt-1 bg-main border border-border-base rounded-xl z-20 overflow-hidden">
           <button (click)="setTab('upcoming')"
             class="w-full flex items-center px-4 py-3 text-sm font-semibold hover:bg-subtle "
             [ngClass]="{ 'text-accent': activeTab() === 'upcoming' }">

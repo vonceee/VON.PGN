@@ -90,7 +90,7 @@ import { AudioService } from '../../../../core/services/audio.service';
                 [class.bg-[var(--color-annotation-interesting)]]="g.class === 'interesting' || g.class === 'dubious' || g.class === 'only-move' || g.class === 'zugzwang'"
                 [style]="getGlyphStyle(g.square)"
               >
-                <span class="text-[14px] leading-none  [text-shadow:_0_1px_2px_rgba(0,0,0,0.2)]">
+                <span class="text-[14px]  [text-shadow:_0_1px_2px_rgba(0,0,0,0.2)]">
                   {{ g.symbol }}
                 </span>
               </div>

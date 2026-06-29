@@ -9,7 +9,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
-    <div class="bg-main rounded-4xl shadow-lg w-full p-8 font-sans space-y-8 relative">
+    <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative">
       <div class="flex items-center justify-between">
         <h2 class="text-2xl text-content">Edit game metadata</h2>
       </div>

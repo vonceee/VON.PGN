@@ -215,7 +215,7 @@
           @if (node.glyphs && node.glyphs.length > 0) {
           @for (glyphId of node.glyphs; track glyphId) {
           @if (getGlyph(glyphId); as glyph) {
-          <span class="font-medium text-xs leading-none" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol
+          <span class="font-medium text-xs" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol
             }}</span>
           }
           }
@@ -332,9 +332,8 @@
 
   <!-- Premium Context Menu -->
   @if (contextMenuNode(); as node) {
-  <div class="fixed z-50 min-w-[200px] bg-main rounded-xl shadow-xl border overflow-hidden"
-    [style.left.px]="contextMenuPos().x" [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()"
-    (contextmenu)="$event.preventDefault()">
+  <div class="fixed z-50 min-w-[200px] bg-main rounded-xl border overflow-hidden" [style.left.px]="contextMenuPos().x"
+    [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()" (contextmenu)="$event.preventDefault()">
     <button (click)="onAnnotate()"
       class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium text-content cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

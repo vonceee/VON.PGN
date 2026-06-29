@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   template: `
     <div class="lg:hidden fixed inset-0 z-40 bg-black/40" (click)="close.emit()"></div>
     <div
-      class="lg:hidden fixed top-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] h-full bg-main border-l border-border-base flex flex-col overflow-y-auto shadow-2xl transition-transform duration-300"
+      class="lg:hidden fixed top-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] h-full bg-main border-l border-border-base flex flex-col overflow-y-auto transition-transform duration-300"
     >
       <!-- Menu Header -->
       <div class="flex items-center justify-end shrink-0 h-16 px-4">

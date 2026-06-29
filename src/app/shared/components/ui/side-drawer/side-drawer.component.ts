@@ -37,12 +37,12 @@ import { animate, style, transition, trigger } from '@angular/animations';
         (click)="close.emit()"
       ></div>
       <div
-        class="fixed top-0 right-0 z-[101] w-full max-w-sm h-full bg-main border-l border-border-base shadow-2xl flex flex-col overflow-hidden"
+        class="fixed top-0 right-0 z-[101] w-full max-w-sm h-full bg-main border-l border-border-base flex flex-col overflow-hidden"
         [@drawerAnimation]
       >
         <!-- Header -->
         <div class="flex items-center justify-between px-6 py-5 border-b border-border-base">
-          <h2 class="text-xl font-bold text-content leading-none">{{ title() }}</h2>
+          <h2 class="text-xl font-bold text-content">{{ title() }}</h2>
           <button
             (click)="close.emit()"
             class="p-2 rounded-full hover:bg-subtle text-muted transition-all"
