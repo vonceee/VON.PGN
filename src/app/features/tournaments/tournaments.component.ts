@@ -7,12 +7,34 @@ import { Tournament, TournamentStatus } from '../../core/models/tournament.model
 import { ButtonComponent  } from '@shared/ui';
 import { LoadingComponent  } from '@shared/feedback';
 
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  heroChevronDown,
+  heroMagnifyingGlass,
+  heroXMark,
+  heroCalendar,
+  heroStar,
+  heroChevronLeft,
+  heroChevronRight,
+} from '@ng-icons/heroicons/outline';
+
 const ITEMS_PER_PAGE = 9;
 
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent, NgIconComponent],
+  providers: [
+    provideIcons({
+      heroChevronDown,
+      heroMagnifyingGlass,
+      heroXMark,
+      heroCalendar,
+      heroStar,
+      heroChevronLeft,
+      heroChevronRight,
+    }),
+  ],
   templateUrl: './tournaments.component.html',
   styleUrl: './tournaments.component.css'
 })

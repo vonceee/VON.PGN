@@ -13,7 +13,7 @@
         Practice
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col">
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-sm">
         <a appLink routerLink="/tactics" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
           <span class="text-sm font-medium">Tactics</span>
         </a>
@@ -33,7 +33,7 @@
         Learn
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col ">
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-sm">
         <a appLink routerLink="/study" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
           <span class="text-sm font-medium">Study</span>
         </a>
@@ -84,7 +84,7 @@
     <!-- Search Results Dropdown -->
     @if (isSearchOpen()) {
     @if (searchResults().length > 0) {
-    <div class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50">
+    <div class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50 shadow-sm">
       @for (user of searchResults(); track user.uid) {
       <a [routerLink]="['/user', user.username]" target="_blank" rel="noopener noreferrer"
         (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
@@ -122,7 +122,7 @@
 
       @if (isNotificationsOpen()) {
       <div
-        class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl  z-50 overflow-hidden flex flex-col">
+        class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl z-50 overflow-hidden flex flex-col shadow-sm">
         <div class="px-4 py-3 border-b border-border-base flex items-center justify-between">
           <span class="text-sm">Notifications</span>
           @if (notificationService.unreadCount() > 0) {
@@ -170,40 +170,31 @@
 
       <!-- Desktop Profile Dropdown -->
       <div [class.hidden]="!isProfileDropdownOpen()"
-        class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl  z-50 overflow-hidden origin-top-right ">
-        <!-- Navigation Links -->
-        <div class="flex flex-col py-1">
-          <a appLink [routerLink]="['/profile']" (click)="toggleProfileDropdown()"
-            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
-            Profile
-          </a>
+        class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl z-50 flex flex-col py-2 origin-top-right shadow-sm">
+        <a appLink [routerLink]="['/profile']" (click)="toggleProfileDropdown()"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item text-content">
+          <span class="text-sm font-medium">Profile</span>
+        </a>
 
-          <div class="h-px w-full bg-border-base"></div>
+        @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
+        <a appLink routerLink="/my-events" (click)="toggleProfileDropdown()"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item text-content">
+          <span class="text-sm font-medium">My Tournaments</span>
+        </a>
+        }
 
+        @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
+        <a appLink routerLink="/admin" (click)="toggleProfileDropdown()"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item text-content">
+          <span class="text-sm font-medium">Admin Panel</span>
+        </a>
+        }
 
-          @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
-          <a appLink routerLink="/my-events" (click)="toggleProfileDropdown()"
-            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm  text-content ">
-            My Tournaments
-          </a>
-
-          }
-
-          @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
-          <div class="h-px w-full bg-border-base"></div>
-          <a routerLink="/admin" (click)="toggleProfileDropdown()"
-            class="flex items-center gap-3 px-4 py-2 hover:bg-subtle text-sm ">
-            Admin Panel
-          </a>
-          }
-          <div class="h-px w-full bg-border-base my-1"></div>
-
-          <!-- Logout -->
-          <button (click)="logout()"
-            class="w-full text-left flex items-center gap-3 px-4 py-2 hover:bg-red-50  text-red-600  text-sm ">
-            Logout
-          </button>
-        </div>
+        <!-- Logout -->
+        <button (click)="logout()"
+          class="w-full text-left px-4 py-2.5 hover:bg-red-50/50 flex items-center group/item text-red-600 cursor-pointer">
+          <span class="text-sm font-medium">Logout</span>
+        </button>
       </div>
     </div>
     } @else {

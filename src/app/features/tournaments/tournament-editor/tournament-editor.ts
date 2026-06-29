@@ -48,6 +48,9 @@ import { TournamentMapsService } from './services/tournament-maps.service';
 import { TournamentPosterHandler } from './handlers/tournament-poster.handler';
 import { BackLinkComponent } from '@shared/ui';
 
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroXMark } from '@ng-icons/heroicons/outline';
+
 @Component({
   selector: 'app-tournament-editor',
   standalone: true,
@@ -67,6 +70,12 @@ import { BackLinkComponent } from '@shared/ui';
     ReviewSectionComponent,
     PosterPreviewComponent,
     BackLinkComponent,
+    NgIconComponent,
+  ],
+  providers: [
+    provideIcons({
+      heroXMark,
+    }),
   ],
   templateUrl: './tournament-editor.html'
 })

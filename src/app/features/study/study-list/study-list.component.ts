@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed, PLATFORM_ID, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { StudyService } from '../../../core/services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -26,22 +26,22 @@ export class StudyListComponent implements OnInit {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private dialog = inject(Dialog);
-  
-  @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
+  private route = inject(ActivatedRoute);
   
   activeTab = signal<'all' | 'my'>('all');
   isLoggedIn = signal(false);
-  isDropdownOpen = signal(false);
   isLoading = signal(false);
   searchQuery = signal('');
   sortBy = signal<'last_updated' | 'alphabetical'>('last_updated');
-
+  categoryFilter = signal<'all' | 'general' | 'opening_repertoire'>('all');
+ 
   queryParams = computed(() => ({
     isMyStudies: this.activeTab() === 'my',
     search: this.searchQuery(),
-    sort: this.sortBy()
+    sort: this.sortBy(),
+    category: this.categoryFilter(),
   }));
-
+ 
   private studiesResult = toSignal(
     toObservable(this.queryParams).pipe(
       debounceTime(300),
@@ -50,10 +50,11 @@ export class StudyListComponent implements OnInit {
         if (!isPlatformBrowser(this.platformId)) {
           return of({ data: [] });
         }
-        const forceRefresh = !!(params.search || params.sort !== 'last_updated');
+        const forceRefresh = !!(params.search || params.sort !== 'last_updated' || params.category !== 'all');
+        const categoryVal = params.category === 'all' ? undefined : params.category;
         return this.studyService.getStudies(
           params.isMyStudies,
-          undefined,
+          categoryVal,
           forceRefresh,
           params.search,
           params.sort
@@ -64,9 +65,9 @@ export class StudyListComponent implements OnInit {
       tap(() => this.isLoading.set(false))
     )
   );
-
+ 
   studies = computed(() => this.studiesResult()?.data || []);
-
+ 
   constructor() {
     effect(() => {
       this.isLoggedIn.set(!!this.authService.currentUser());
@@ -75,26 +76,39 @@ export class StudyListComponent implements OnInit {
       }
     });
   }
-
+ 
   ngOnInit() {
-    // Initial load is handled reactively by queryParams computed signal
+    this.route.queryParams.subscribe(params => {
+      const category = params['category'];
+      if (category === 'opening_repertoire' || category === 'general') {
+        this.categoryFilter.set(category);
+      }
+      const tab = params['tab'];
+      if (tab === 'all' || tab === 'my') {
+        this.activeTab.set(tab);
+      }
+    });
   }
-
+ 
   setTab(tab: 'all' | 'my') {
     this.activeTab.set(tab);
-    this.isDropdownOpen.set(false);
   }
-
+ 
   onSearchInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
   }
-
+ 
   onSortChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value as 'last_updated' | 'alphabetical';
     this.sortBy.set(value);
   }
 
+  onCategoryFilterChange(event: Event) {
+    const value = (event.target as HTMLSelectElement).value as 'all' | 'general' | 'opening_repertoire';
+    this.categoryFilter.set(value);
+  }
+ 
   clearSearch() {
     this.searchQuery.set('');
   }
@@ -136,17 +150,6 @@ export class StudyListComponent implements OnInit {
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 30) return `${diffDays}d ago`;
     return this.formatDate(dateStr);
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
-    if (
-      this.isDropdownOpen() &&
-      this.dropdownContainer &&
-      !this.dropdownContainer.nativeElement.contains(event.target as Node)
-    ) {
-      this.isDropdownOpen.set(false);
-    }
   }
 }
 

@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Params } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroArrowRight } from '@ng-icons/heroicons/outline';
 
@@ -11,12 +11,13 @@ import { heroArrowRight } from '@ng-icons/heroicons/outline';
   template: `
     <a
       [routerLink]="link()"
-      class="inline-flex items-center gap-2 font-semibold hover:text-accent  group"
+      [queryParams]="queryParams()"
+      class="inline-flex items-center gap-2 font-medium"
     >
       {{ text() }}
       <ng-icon
         name="heroArrowRight"
-        class="w-4 h-4  group-hover:translate-x-1"
+        class="w-4 h-4"
       ></ng-icon>
     </a>
   `,
@@ -24,4 +25,5 @@ import { heroArrowRight } from '@ng-icons/heroicons/outline';
 export class ArrowLinkComponent {
   link = input.required<string>();
   text = input.required<string>();
+  queryParams = input<Params | null>(null);
 }

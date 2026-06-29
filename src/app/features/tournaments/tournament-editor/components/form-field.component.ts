@@ -1,10 +1,12 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroExclamationCircle } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-form-field',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgIconComponent],
   styleUrls: ['./form-field.component.css'],
   template: `
     <div class="field-group">
@@ -120,11 +122,7 @@ import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@a
 
       @if (errorMessage) {
         <div class="field-error">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-3.5 h-3.5">
-            <path fill-rule="evenodd"
-              d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-              clip-rule="evenodd" />
-          </svg>
+          <ng-icon name="heroExclamationCircle" class="w-3.5 h-3.5"></ng-icon>
           {{ errorMessage }}
         </div>
       }
@@ -135,6 +133,9 @@ import { ReactiveFormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@a
     </div>
   `,
   providers: [
+    provideIcons({
+      heroExclamationCircle,
+    }),
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => FormFieldComponent),

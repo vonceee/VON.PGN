@@ -1,25 +1,17 @@
 <div class="w-full flex flex-col relative overflow-x-hidden">
-
-  <!-- ═══════════════════════════════════════════════ -->
-  <!-- HERO — Split Layout                              -->
-  <!-- ═══════════════════════════════════════════════ -->
   <section class="w-full py-10 md:py-24 px-4 md:px-16 relative overflow-hidden">
     <div class="relative z-10 flex flex-col md:flex-row items-center gap-12 md:gap-16 mx-auto">
       <!-- Left: Copy & Search -->
       <div class="flex-1 text-left">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 leading-tight">Learn to play<br />chess</h1>
-        <p class="text-muted text-lg md:text-xl max-w-lg mb-6 md:mb-10">
-          Handcrafted study tools, tactics puzzles, hands-on drills, and roadmaps to accelerate your growth.
+        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4">Chess Sanctum</h1>
+        <p class="text-muted text-lg md:text-xl max-w-md mb-6 md:mb-10">
+          is a minimalist, data-driven toolkit designed to optimize your chess game.
         </p>
 
         <!-- Search Bar -->
-        <div class="hidden md:block relative w-full max-w-lg mb-6">
+        <div class="hidden md:block relative w-full max-w-lg mb-4">
           <div class="flex items-center px-4 py-3 md:px-5 md:py-4 bg-white border border-border-base rounded-4xl">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-muted shrink-0" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-4.35-4.35m1.85-5.4a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <ng-icon name="heroMagnifyingGlass" class="w-5 h-5 text-muted shrink-0"></ng-icon>
             <input type="text" [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)"
               (keydown.enter)="onSearch()" placeholder="Search tutorials, e.g. Sicilian Defense"
               class="flex-1 mx-4 bg-transparent outline-none placeholder-gray-400 text-base" />
@@ -38,8 +30,8 @@
           </div>
           }
         </div>
-        <p class="hidden md:block text-muted text-md md:text-lg max-w-lg mb-4">
-          Not sure where to start? View our
+        <p class="hidden md:block text-muted text-center text-sm md:text-md max-w-lg ">
+          not sure where to start? check our
           <a appLink routerLink="/roadmap" class="text-accent hover:underline">
             learning roadmap
           </a>
@@ -49,173 +41,43 @@
       <!-- Right: Live chess board — Sicilian Najdorf opening replay -->
       <div class="flex-1 flex items-center justify-center w-full max-w-[320px] md:max-w-sm lg:max-w-md mx-auto">
         <div class="relative w-full max-w-[320px] md:max-w-[420px]">
-          <!-- Decorative glow -->
-          <div class="absolute inset-0 rounded-3xl blur-2xl scale-110 -z-10"></div>
-
-          <!-- Board wrapper — board-container-parent tells ChessBoardComponent where to observe -->
           <div class="board-container-parent w-full aspect-square overflow-hidden">
             <app-chess-board [fen]="heroFen()" [lastMove]="heroLastMove()" [interactive]="false" [resizable]="false"
               [hideCoordinates]="true" [fluid]="true" />
           </div>
-
-
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════ -->
-  <!-- STATS BAR                                        -->
-  <!-- ═══════════════════════════════════════════════ -->
-  <section class="hidden md:block w-full px-4 md:px-16 py-6">
-    <div class="mx-auto flex flex-row items-center justify-between">
-      <div class="flex items-center gap-3">
-        <svg class="w-10 h-10 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" />
-        </svg>
-        <div>
-          <div class="font-semibold text-content">10,000+ Puzzles</div>
-          <div class="text-xs text-muted">Tactics training</div>
-        </div>
-      </div>
-
-      <div class="w-px h-8 bg-border-base"></div>
-
-      <div class="flex items-center gap-3">
-        <svg class="w-10 h-10 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
-        <div>
-          <div class="font-semibold text-content">50+ Courses</div>
-          <div class="text-xs text-muted">Free to learn</div>
-        </div>
-      </div>
-
-      <div class="w-px h-8 bg-border-base"></div>
-
-      <div class="flex items-center gap-3">
-        <svg class="w-10 h-10 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <div>
-          <div class="font-semibold text-content">Global Community</div>
-          <div class="text-xs text-muted">Players worldwide</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════ -->
-  <!-- ACADEMY — Card with illustration                 -->
-  <!-- ═══════════════════════════════════════════════ -->
-  <section class="hidden md:block w-full py-24 px-16">
-    <div class="mx-auto">
-      <div class="bg-main rounded-4xl overflow-hidden flex md:flex-row items-stretch">
-        <!-- Left: Content -->
-        <div class="flex-1 p-12 flex flex-col justify-center">
-          <h2 class="text-3xl md:text-5xl mb-3">Vonchess academy</h2>
-          <p class="text-muted text-lg max-w-md mb-8">
-            Complete beginner-to-intermediate training for kids and aspiring players.
-          </p>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M15 10l4.553-2.276A1 1 0 0121 8.632V15.5a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
-                </svg>
-              </div>
-              <div>
-                <div class="font-medium text-md">Live Teaching</div>
-                <div class="text-sm text-muted">Google Meet + Board</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <div class="font-medium text-md">Structured Curriculum</div>
-                <div class="text-sm text-muted">Beginner to Intermediate</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <div>
-                <div class="font-medium text-md">Small Groups</div>
-                <div class="text-sm text-muted">Personalized attention</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-                <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-              <div>
-                <div class="font-medium text-md">Practice Puzzles</div>
-                <div class="text-sm text-muted">Weekly assignments</div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <a appButton routerLink="/academy" variant="primary">Enroll in Academy</a>
-          </div>
-        </div>
-
-        <!-- Right: Illustration -->
-        <div class="md:w-2/5 relative overflow-hidden bg-subtle">
-          <img src="assets/images/4d9ec34b-38ac-41fd-9108-c57213bdff2d.jpg"
-            alt="Students learning chess online in the Vonchess academy"
-            class="absolute inset-0 w-full h-full object-cover" />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════ -->
-  <!-- OPENINGS — Visual mini-cards                     -->
-  <!-- ═══════════════════════════════════════════════ -->
   <section class="w-full py-10 md:py-24 px-4 md:px-16">
     <div class="mx-auto">
-      <header class="mb-8 md:mb-12">
-        <h2 class="text-3xl md:text-5xl mb-2">Explore openings</h2>
-        <p class="text-muted text-lg max-w-2xl">Learn the theory behind the most popular chess openings and start your
-          games with a clear advantage.</p>
-      </header>
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
+        <header>
+          <h2 class="text-3xl md:text-5xl mb-4">Explore openings</h2>
+          <p class="text-muted text-lg max-w-2xl">Learn the theory behind the most popular chess openings.</p>
+        </header>
+        <app-arrow-link link="/study" [queryParams]="{ category: 'opening_repertoire' }"
+          text="Browse all openings"></app-arrow-link>
+      </div>
 
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8 md:mb-10">
-        @for (opening of popularOpenings; track opening.slug) {
-        <div
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 md:mb-10">
+        @for (study of studiesList(); track study.id) {
+        <div [routerLink]="['/study', study.id]"
           class="home-opening-card group bg-white border border-border-base rounded-2xl overflow-hidden cursor-pointer">
           <!-- Mini chess board thumbnail -->
           <div class="board-container-parent aspect-square bg-surface relative overflow-hidden pointer-events-none">
             <div class="w-full h-full">
-              <app-chess-board [fen]="getOpeningFrame(opening).fen"
-                [lastMove]="getOpeningFrame(opening).lastMove ?? undefined" [interactive]="false" [resizable]="false"
-                [hideCoordinates]="true" [fluid]="true" />
+              <app-chess-board [fen]="getStudyFrame(study).fen" [lastMove]="getStudyFrame(study).lastMove ?? undefined"
+                [interactive]="false" [resizable]="false" [hideCoordinates]="true" [fluid]="true" />
             </div>
             <div class="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent z-10"></div>
           </div>
           <!-- Content -->
           <div class="p-3 md:p-4 flex items-center justify-between">
             <div class="min-w-0 flex-1">
-              <h4 class="font-semibold text-content text-sm md:text-base truncate">{{ opening.title }}</h4>
-              <p class="text-xsmd:text-xs text-muted mt-0.5 truncate">{{ opening.description }}</p>
+              <h4 class="font-semibold text-content text-sm md:text-base truncate">{{ study.name }}</h4>
+              <p class="text-xs md:text-xs text-muted mt-0.5 truncate">by {{ study.owner?.name || 'Me' }}</p>
             </div>
             <svg class="hidden sm:block w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -224,33 +86,29 @@
         </div>
         }
       </div>
-
-      <app-arrow-link link="/learn" text="Browse all openings"></app-arrow-link>
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════ -->
-  <!-- TACTICS — Puzzle photo split                     -->
-  <!-- ═══════════════════════════════════════════════ -->
   <section class="w-full py-10 md:py-24 px-4 md:px-16">
     <div class="mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-16">
-      <!-- Left: Puzzle image card -->
-      <div class="flex-1 relative w-full">
-        <div class="relative rounded-4xl overflow-hidden">
-          <img src="assets/images/tactics-preview.png" alt="A complex chess tactical puzzle position"
-            class="w-full h-full object-cover" />
+      <!-- Left: Tactics Preview Board -->
+      <div class="flex-1 relative w-full aspect-square max-w-[460px] mx-auto md:mx-0">
+        <div
+          class="board-container-parent aspect-square bg-surface relative overflow-hidden pointer-events-none rounded-4xl border border-border-base">
+          <div class="w-full h-full">
+            <app-chess-board [fen]="tacticsPreviewFen()" [interactive]="false" [resizable]="false"
+              [hideCoordinates]="true" [fluid]="true" />
+          </div>
         </div>
       </div>
 
       <!-- Right: Copy -->
       <div class="flex-1 text-left">
-        <h2 class="text-3xl md:text-5xl mb-4">Train your tactics</h2>
+        <h2 class="text-3xl md:text-5xl mb-4">Tactics training</h2>
         <p class="text-muted text-lg max-w-md mb-6">
-          Develop pattern recognition with thousands of puzzles curated for your level — from fork finders to king
-          hunts.
+          Develop pattern recognition with thousands of puzzles curated for your level.
         </p>
 
-        <!-- List items (hidden on mobile) -->
         <div class="hidden md:block space-y-3 mb-10">
           <div class="flex items-center gap-3">
             <div class="w-2 h-2 rounded-full bg-accent shrink-0"></div>
@@ -279,7 +137,7 @@
       <!-- Left: copy -->
       <div class="md:w-1/3 flex flex-col">
         <header class="mb-6 md:mb-8">
-          <h2 class="text-3xl md:text-5xl mb-2">Read our courses</h2>
+          <h2 class="text-3xl md:text-5xl mb-4">Read our courses</h2>
           <p class="text-muted text-lg">Learn from handcrafted courses for players of all levels.</p>
         </header>
         <app-arrow-link link="/roadmap" text="View all courses"></app-arrow-link>
@@ -337,7 +195,7 @@
     <div class="mx-auto">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
         <header>
-          <h2 class="text-3xl md:text-5xl mb-2">Find your coach</h2>
+          <h2 class="text-3xl md:text-5xl mb-4">Find your coach</h2>
           <p class="text-muted text-lg max-w-xl">Accelerate your progress with personalized 1-on-1 lessons from titled
             players and trainers.</p>
         </header>
@@ -378,7 +236,7 @@
     <div class="mx-auto">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
         <header>
-          <h2 class="text-3xl md:text-5xl mb-2">Follow OTB events</h2>
+          <h2 class="text-3xl md:text-5xl mb-4">Follow OTB events</h2>
           <p class="text-muted text-lg max-w-xl">Discover chess tournaments and OTB events worldwide.</p>
         </header>
         <app-arrow-link link="/events" text="Browse events"></app-arrow-link>
@@ -394,7 +252,7 @@
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
-        <h3 class="text-2xl font-medium mb-2">Coming soon</h3>
+        <h3 class="text-2xl font-medium mb-4">Coming soon</h3>
       </div>
       }
     </div>

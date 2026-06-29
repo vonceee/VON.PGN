@@ -1,11 +1,16 @@
 import { Component, inject, OnInit, signal, computed, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { LessonService } from '../../core/services/lesson.service';
 import { PresenceService } from '../../core/services/presence.service';
+import { StudyApiService } from '../../core/services/study-api.service';
+import { TacticsService } from '../../core/services/tactics.service';
+import { Study, MoveNode } from '../../core/models/study.model';
+import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 
-import { ButtonComponent, ArrowLinkComponent } from '@shared/ui';
+import { ArrowLinkComponent } from '@shared/ui';
 import { ChessBoardComponent } from '@shared/chess';
 import { Chess } from 'chess.js';
 import type { Key } from 'chessground/types';
@@ -32,6 +37,26 @@ function buildOpeningFens(moves: string[]): { fen: string; lastMove: Key[] | nul
   return frames;
 }
 
+function buildFramesFromMoveNodes(nodes: MoveNode[], initialFen: string, defaultLabel: string): { fen: string; lastMove: Key[] | null; label: string }[] {
+  const frames: { fen: string; lastMove: Key[] | null; label: string }[] = [
+    { fen: initialFen, lastMove: null, label: defaultLabel },
+  ];
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    let lastMove: Key[] | null = null;
+    if (node.uci && node.uci.length >= 4) {
+      lastMove = [node.uci.substring(0, 2) as Key, node.uci.substring(2, 4) as Key];
+    }
+    const colorLabel = node.ply % 2 === 1 ? 'White' : 'Black';
+    frames.push({
+      fen: node.fen,
+      lastMove,
+      label: `${colorLabel}: ${node.san}`,
+    });
+  }
+  return frames;
+}
+
 const OPENING_FRAMES = buildOpeningFens(HERO_OPENING_MOVES);
 
 const SICILIAN_MOVES = ['e4', 'c5', 'Nf3', 'd6', 'd4', 'cxd4', 'Nxd4', 'Nf6', 'Nc3', 'a6'];
@@ -39,17 +64,40 @@ const QUEENS_GAMBIT_MOVES = ['d4', 'd5', 'c4', 'e6', 'Nc3', 'Nf6', 'Nf3', 'Be7']
 const KINGS_INDIAN_MOVES = ['d4', 'Nf6', 'c4', 'g6', 'Nc3', 'Bg7', 'e4', 'd6'];
 const RUY_LOPEZ_MOVES = ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5', 'a6', 'Ba4', 'Nf6'];
 
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  heroMagnifyingGlass,
+  heroCheckBadge,
+  heroBookOpen,
+  heroGlobeAlt,
+  heroVideoCamera,
+  heroCheckCircle,
+  heroUsers,
+  heroClipboardDocument,
+} from '@ng-icons/heroicons/outline';
+
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     CommonModule,
     RouterModule,
-    ButtonComponent,
     ArrowLinkComponent,
     ChessBoardComponent,
+    NgIconComponent,
   ],
-  providers: [],
+  providers: [
+    provideIcons({
+      heroMagnifyingGlass,
+      heroCheckBadge,
+      heroBookOpen,
+      heroGlobeAlt,
+      heroVideoCamera,
+      heroCheckCircle,
+      heroUsers,
+      heroClipboardDocument,
+    }),
+  ],
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit, OnDestroy {
@@ -57,19 +105,58 @@ export class HomeComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   authService = inject(AuthService);
   presenceService = inject(PresenceService);
+  private studyApiService = inject(StudyApiService);
+  private tacticsService = inject(TacticsService);
+
+  tacticsPreviewFen = signal<string>('3r2k1/p4ppp/1p2pb2/1q6/8/PN2B1P1/1P2QP1P/3R2K1 b - - 0 24');
 
   // ── Animation ────────────────────────────────────────────────────────────
   /** Global tick for animations */
   globalAnimationTick = signal(0);
 
-  /** FEN string fed into the hero chess board component. */
-  heroFen = computed(() => OPENING_FRAMES[this.globalAnimationTick() % OPENING_FRAMES.length].fen);
+  /** Dynamic study openings list from backend */
+  studiesList = signal<any[]>([]);
 
-  /** Last-move keys for chessground highlighting (typed as Key[] for compatibility). */
-  heroLastMove = computed(() => OPENING_FRAMES[this.globalAnimationTick() % OPENING_FRAMES.length].lastMove ?? undefined);
+  /** Dynamic hero frames derived from chapter 1 of the first Opening Repertoire study, falling back to Najdorf. */
+  heroFrames = computed(() => {
+    const studies = this.studiesList();
+    if (studies.length === 0) {
+      return OPENING_FRAMES;
+    }
+    const firstStudy = studies[0];
+    const chapters = firstStudy.chapters || [];
+    if (chapters.length === 0) {
+      return OPENING_FRAMES;
+    }
+    const firstChapter = chapters[0];
+    const rawMoves = firstChapter.moves || [];
+    const initialFen = firstChapter.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    
+    const parsedTree = buildTreeFromMoves(rawMoves, initialFen);
+    if (parsedTree.length === 0) {
+      return [{ fen: initialFen, lastMove: null, label: firstChapter.name || firstStudy.name }];
+    }
+    
+    return buildFramesFromMoveNodes(parsedTree, initialFen, firstChapter.name || firstStudy.name);
+  });
+
+  /** FEN string fed into the hero chess board component. */
+  heroFen = computed(() => {
+    const frames = this.heroFrames();
+    return frames[this.globalAnimationTick() % frames.length].fen;
+  });
+
+  /** Last-move keys for chessground highlighting. */
+  heroLastMove = computed(() => {
+    const frames = this.heroFrames();
+    return frames[this.globalAnimationTick() % frames.length].lastMove ?? undefined;
+  });
 
   /** Human-readable label shown in the floating badge. */
-  heroOpeningLabel = computed(() => OPENING_FRAMES[this.globalAnimationTick() % OPENING_FRAMES.length].label);
+  heroOpeningLabel = computed(() => {
+    const frames = this.heroFrames();
+    return frames[this.globalAnimationTick() % frames.length].label;
+  });
 
   private heroInterval: ReturnType<typeof setInterval> | null = null;
 
@@ -79,18 +166,25 @@ export class HomeComponent implements OnInit, OnDestroy {
     }, 1400);
   }
 
-  // ── Openings list ─────────────────────────────────────────────────────────
-  popularOpenings = [
-    { title: 'Sicilian Defense',      description: 'The most popular response to e4.',        slug: 'sicilian',      frames: buildOpeningFens(SICILIAN_MOVES) },
-    { title: "Queen's Gambit",        description: 'Dynamic and strategically rich.',          slug: 'queens-gambit', frames: buildOpeningFens(QUEENS_GAMBIT_MOVES) },
-    { title: "King's Indian Defense", description: 'A hypermodern fighting defense.',          slug: 'kings-indian',  frames: buildOpeningFens(KINGS_INDIAN_MOVES) },
-    { title: 'Ruy Lopez',             description: 'The Spanish opening, a timeless classic.', slug: 'ruy-lopez',     frames: buildOpeningFens(RUY_LOPEZ_MOVES) },
-  ];
-
-  getOpeningFrame(opening: typeof this.popularOpenings[0]) {
+  // ── Dynamic Repertoire Openings List ──────────────────────────────────────
+  getStudyFrame(study: any) {
+    const chapters = study.chapters || [];
+    if (chapters.length === 0) {
+      return { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', lastMove: null };
+    }
+    const firstChapter = chapters[0];
+    const rawMoves = firstChapter.moves || [];
+    const initialFen = firstChapter.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    
+    const parsedTree = buildTreeFromMoves(rawMoves, initialFen);
+    if (parsedTree.length === 0) {
+      return { fen: initialFen, lastMove: null };
+    }
+    
+    const frames = buildFramesFromMoveNodes(parsedTree, initialFen, firstChapter.name || study.name);
     const tick = this.globalAnimationTick();
-    const index = Math.min(tick, opening.frames.length - 1);
-    return opening.frames[index];
+    const index = Math.min(tick, frames.length - 1);
+    return frames[index];
   }
 
   /** Static coach preview cards — visual anchors on the landing page. */
@@ -117,15 +211,48 @@ export class HomeComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/tactics']);
-      return;
-    }
     this.presenceService.subscribeToSiteStats();
     this.startHeroAnimation();
     this.lessonService.loadAllCourses().subscribe({
       next:  () => this.isLoading.set(false),
       error: () => this.isLoading.set(false),
+    });
+
+    // Fetch a daily puzzle position to display in the Tactics Preview section
+    this.tacticsService.getDailyPuzzle().subscribe({
+      next: (res) => {
+        if (res.data && res.data.fen) {
+          this.tacticsPreviewFen.set(res.data.fen);
+        }
+      }
+    });
+
+    // Load Opening Repertoire studies dynamically
+    this.studyApiService.getStudies(false, 'opening_repertoire').subscribe({
+      next: (res) => {
+        const summaryList = (res.data || [])
+          .filter((s: Study) => s.category === 'opening_repertoire' && s.owner?.name?.toLowerCase() === 'vonchess')
+          .slice(0, 3);
+        if (summaryList.length === 0) {
+          this.studiesList.set([]);
+          return;
+        }
+        
+        // Fetch detailed study objects for chapter information
+        const detailRequests = summaryList.map((s: Study) => this.studyApiService.getStudyRaw(s.id));
+        forkJoin(detailRequests).subscribe({
+          next: (detailsResList: any) => {
+            const detailedStudies = detailsResList.map((r: any) => r.data);
+            this.studiesList.set(detailedStudies);
+          },
+          error: (err) => {
+            console.error('Failed to load detailed studies for preview:', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Failed to fetch public opening repertoires:', err);
+      }
     });
   }
 

@@ -11,10 +11,44 @@ import { DialogModule } from '@angular/cdk/dialog';
 import { UserHovercardDirective } from '@shared/directives';
 import { FlagIconComponent } from '@shared/ui';
 
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  heroUser,
+  heroCheckBadge,
+  heroCheckCircle,
+  heroXCircle,
+  heroUserPlus,
+  heroXMark,
+  heroMagnifyingGlass,
+  heroUsers,
+} from '@ng-icons/heroicons/outline';
+
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, LoadingComponent, ButtonComponent, DialogModule, UserHovercardDirective, FlagIconComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    LoadingComponent,
+    ButtonComponent,
+    DialogModule,
+    UserHovercardDirective,
+    FlagIconComponent,
+    NgIconComponent,
+  ],
+  providers: [
+    provideIcons({
+      heroUser,
+      heroCheckBadge,
+      heroCheckCircle,
+      heroXCircle,
+      heroUserPlus,
+      heroXMark,
+      heroMagnifyingGlass,
+      heroUsers,
+    }),
+  ],
   templateUrl: './user-profile.component.html'
 })
 export class UserProfileComponent implements OnInit {

@@ -35,7 +35,7 @@ import { AudioService } from '../../../../core/services/audio.service';
   encapsulation: ViewEncapsulation.None,
   template: `
     <div class="board-resize-wrapper" [class.fluid]="fluid">
-      <div class="board-container-wrapper relative">
+      <div class="board-container-wrapper relative" [class.no-coords]="hideCoordinates">
         <div class="board-tiles-container relative w-full h-full">
           <div #boardEl class="board-container">
             <div class="absolute inset-0 flex items-center justify-center text-muted opacity-20 pointer-events-none">
@@ -116,12 +116,16 @@ import { AudioService } from '../../../../core/services/audio.service';
         width: 100%;
         height: auto;
       }
-      .board-container-wrapper {
+       .board-container-wrapper {
         width: 100%;
         aspect-ratio: 1 / 1;
         box-sizing: border-box;
         padding-left: 20px;
         padding-bottom: 20px;
+      }
+      .board-container-wrapper.no-coords {
+        padding-left: 0;
+        padding-bottom: 0;
       }
       .board-tiles-container {
         width: 100%;

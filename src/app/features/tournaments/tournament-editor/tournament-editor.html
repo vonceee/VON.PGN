@@ -147,12 +147,9 @@
     <div class="ui-panel bg-main w-full max-w-4xl max-h-[90vh] flex flex-col relative   "
       (click)="$event.stopPropagation()">
       <button
-        class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500   z-10"
+        class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500 z-10"
         (click)="closeReviewModal()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-          class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <ng-icon name="heroXMark" class="w-6 h-6"></ng-icon>
       </button>
 
       <div class="p-10 overflow-y-auto flex-1 custom-scrollbar">

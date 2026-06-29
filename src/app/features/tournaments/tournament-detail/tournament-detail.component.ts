@@ -11,10 +11,56 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Tournament } from '../../../core/models/tournament.model';
 import { UserHovercardDirective } from '@shared/directives';
 
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  heroUser,
+  heroEye,
+  heroBookmark,
+  heroShare,
+  heroClipboard,
+  heroInformationCircle,
+  heroUsers,
+  heroMapPin,
+  heroClipboardDocument,
+  heroShieldCheck,
+  heroCheck,
+  heroTrophy,
+  heroXMark,
+  heroEnvelope,
+  heroLink,
+} from '@ng-icons/heroicons/outline';
+
 @Component({
   selector: 'app-tournament-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, BackLinkComponent, PosterPreviewComponent, ReactiveFormsModule, UserHovercardDirective],
+  imports: [
+    CommonModule,
+    RouterModule,
+    BackLinkComponent,
+    PosterPreviewComponent,
+    ReactiveFormsModule,
+    UserHovercardDirective,
+    NgIconComponent,
+  ],
+  providers: [
+    provideIcons({
+      heroUser,
+      heroEye,
+      heroBookmark,
+      heroShare,
+      heroClipboard,
+      heroInformationCircle,
+      heroUsers,
+      heroMapPin,
+      heroClipboardDocument,
+      heroShieldCheck,
+      heroCheck,
+      heroTrophy,
+      heroXMark,
+      heroEnvelope,
+      heroLink,
+    }),
+  ],
   templateUrl: './tournament-detail.component.html'
 })
 export class TournamentDetailComponent implements OnInit {
