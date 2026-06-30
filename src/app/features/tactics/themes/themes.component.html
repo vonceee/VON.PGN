@@ -3,7 +3,7 @@
     <!-- Standardized Page Header (Inline) -->
     <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 pb-0 shrink-0">
       <div class="flex-1">
-        <h1 class="text-4xl md:text-5xl mb-2 text-content">Puzzle themes</h1>
+        <h1 class="text-4xl md:text-5xl mb-2">Puzzle themes</h1>
         <p class="text-muted text-lg">Practice specific motifs, phases, or checkmate patterns.</p>
       </div>
     </header>
@@ -18,7 +18,7 @@
             clip-rule="evenodd" />
         </svg>
         <input type="text" [formControl]="searchControl" placeholder="Search themes..."
-          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
         @if (searchControl.value) {
         <button (click)="searchControl.setValue('')"
           class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted hover:text-content">

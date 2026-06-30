@@ -42,7 +42,7 @@ import { Router } from '@angular/router';
             placeholder="Search players..."
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
-            class="bg-transparent outline-none flex-1 text-sm text-content placeholder-muted"
+            class="bg-transparent outline-none flex-1 text-sm placeholder-muted"
           />
           @if (isSearching()) {
             <div class="w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
@@ -53,7 +53,7 @@ import { Router } from '@angular/router';
             @for (user of searchResults(); track user.uid) {
               <button
                 (click)="viewUserProfile(user)"
-                class="w-full flex items-center px-4 py-2 text-sm text-content hover:bg-subtle text-left transition-colors cursor-pointer"
+                class="w-full flex items-center px-4 py-2 text-sm hover:bg-subtle text-left transition-colors cursor-pointer"
               >
                 <span class="font-medium truncate">{{ user.username }}</span>
               </button>
@@ -69,7 +69,7 @@ import { Router } from '@angular/router';
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
           @for (group of linkGroups; track group.title) {
             <div class="flex flex-col gap-2">
-              <span class="text-sm font-bold text-content uppercase tracking-wider pb-1.5 border-b border-border-base/50 block">
+              <span class="text-sm font-bold uppercase tracking-wider pb-1.5 border-b border-border-base/50 block">
                 {{ group.title }}
               </span>
               <div class="flex flex-col gap-1 pl-1">
@@ -95,7 +95,7 @@ import { Router } from '@angular/router';
         @if (authService.isAuthenticated()) {
           <!-- User Profile Label -->
           <div class="px-3 py-2 mb-3">
-            <span class="text-sm font-semibold text-content block">
+            <span class="text-sm font-semibold block">
               {{ userService.currentUser()?.username || 'User' }}
             </span>
           </div>

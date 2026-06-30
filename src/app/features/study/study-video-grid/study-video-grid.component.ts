@@ -29,7 +29,7 @@ import { AuthService } from '../../../core/services/auth.service';
     })
   ],
   template: `
-    <div class="flex flex-col h-full min-h-0 overflow-hidden" [ngClass]="webrtc.isDetached() ? 'bg-surface/95 text-content p-4 rounded-2xl border border-border-base/50 backdrop-blur-md' : 'bg-transparent text-content p-3'">
+    <div class="flex flex-col h-full min-h-0 overflow-hidden" [ngClass]="webrtc.isDetached() ? 'bg-surface/95 p-4 rounded-2xl border border-border-base/50 backdrop-blur-md' : 'bg-transparent p-3'">
       <!-- Scrollable Videos Container -->
       <div class="flex flex-col gap-3 flex-1 overflow-y-auto min-h-0 mb-4 custom-scrollbar">
         
@@ -61,7 +61,7 @@ import { AuthService } from '../../../core/services/auth.service';
             </div>
           }
           <!-- Label Overlay -->
-          <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold text-content border border-border-base/50 shadow-sm flex items-center gap-1.5">
+          <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold border border-border-base/50 shadow-sm flex items-center gap-1.5">
             <span>You</span>
             @if (isMuted()) {
               <div class="relative flex items-center justify-center">
@@ -82,7 +82,7 @@ import { AuthService } from '../../../core/services/auth.service';
               class="w-full h-full object-cover"
             ></video>
             <!-- Label Overlay -->
-            <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold text-content border border-border-base/50 shadow-sm flex items-center gap-1.5">
+            <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold border border-border-base/50 shadow-sm flex items-center gap-1.5">
               <span>{{ peer.userName }}</span>
             </div>
           </div>
@@ -121,7 +121,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <!-- Dock/Undock Toggle -->
         <button 
           (click)="toggleDetached()" 
-          class="w-9 h-9 rounded-full bg-subtle text-content hover:bg-border-base/50 border border-border-base flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
+          class="w-9 h-9 rounded-full bg-subtle hover:bg-border-base/50 border border-border-base flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           [title]="webrtc.isDetached() ? 'Dock to Sidebar' : 'Pop Out Video Call'"
         >
           <ng-icon [name]="webrtc.isDetached() ? 'heroArrowDownLeft' : 'heroArrowUpRight'" class="w-4 h-4"></ng-icon>

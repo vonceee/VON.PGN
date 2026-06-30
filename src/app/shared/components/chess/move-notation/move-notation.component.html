@@ -91,7 +91,7 @@
                         ? 'active-move bg-content text-main font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'bg-amber-500/10 !text-amber-800 transition-all'
-                          : 'text-content hover:bg-subtle transition-colors'
+                          : 'hover:bg-subtle transition-colors'
                     " class="w-full text-left select-none active-move-target px-3 py-1.5 rounded-4xl cursor-pointer">
               <span class="flex items-center justify-between w-full gap-1.5 pr-2">
                 <span class="inline-flex items-center gap-1">
@@ -206,7 +206,7 @@
               ? 'active-move bg-content text-main font-medium'
               : activeContinuationSet().has(node.fen + '_' + node.ply)
                 ? 'bg-amber-500/10 !text-amber-800'
-                : (isMainline ? 'text-content hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle transition-colors')
+                : (isMainline ? 'hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle transition-colors')
           " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm]="!isMainline"
         class="text-left hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
         <span class="inline-flex items-center gap-0.5">
@@ -335,7 +335,7 @@
   <div class="fixed z-50 min-w-[200px] bg-main rounded-xl border overflow-hidden" [style.left.px]="contextMenuPos().x"
     [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()" (contextmenu)="$event.preventDefault()">
     <button (click)="onAnnotate()"
-      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium text-content cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -344,7 +344,7 @@
     </button>
     @if (!isContextMenuNodeMainline()) {
     <button (click)="onPromoteToMainline()"
-      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium text-content cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
       </svg>
@@ -352,7 +352,7 @@
     </button>
     }
     <button (click)="onDeleteFromHere()"
-      class="w-full text-left px-4 py-2.5 text-sm text-red-500 flex items-center gap-3 font-medium text-content cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm text-red-500 flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

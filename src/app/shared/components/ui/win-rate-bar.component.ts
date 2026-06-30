@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="flex h-full w-full rounded-sm overflow-hidden text-xs font-semibold text-white shadow-sm">
       <div 
-        class="bg-subtle text-content flex items-center justify-center  " 
+        class="bg-subtle flex items-center justify-center  " 
         [style.width.%]="stats().white"
         [title]="stats().white + '% White wins'"
       >
@@ -48,9 +48,9 @@ export class WinRateBarComponent {
     const d = this.draws();
     const b = this.black();
     const total = w + d + b;
-    
+
     if (total === 0) return { white: 33.3, draws: 33.4, black: 33.3 };
-    
+
     return {
       white: Math.round((w / total) * 100),
       draws: Math.round((d / total) * 100),

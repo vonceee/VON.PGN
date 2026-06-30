@@ -62,7 +62,7 @@
   @for (line of enginePvLines(); track line.pvIndex) {
   <div class="flex items-start gap-2 px-4 py-1.5" [class.border-t]="line.pvIndex > 0"
     [class.border-border-base]="line.pvIndex > 0">
-    <span class="text-xs font-semibold min-w-[36px] text-left shrink-0 mt-px text-content">
+    <span class="text-xs font-semibold min-w-[36px] text-left shrink-0 mt-px">
       {{ line.eval }}
     </span>
     <div class="flex items-center gap-x-1.5 overflow-hidden min-w-0 flex-1 whitespace-nowrap">
@@ -74,7 +74,7 @@
         </span>
         }
         <span [class]="$index === 0 && line.pvIndex === 0 
-                ? 'text-xs font-semibold text-content' 
+                ? 'text-xs font-semibold' 
                 : 'text-xs cursor-default text-muted'">
           {{ m.san }}
         </span>

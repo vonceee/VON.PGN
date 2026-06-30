@@ -3,8 +3,7 @@
   <div class="flex-1 flex flex-col justify-center px-6 py-8 lg:px-20 xl:px-32 overflow-y-auto lg:overflow-y-hidden">
     <div class="mx-auto w-full text-center">
       <div class="mb-8 flex justify-center">
-        <div
-          class="h-20 w-20 bg-subtle  text-content  rounded-full flex items-center justify-center border border-border-base ">
+        <div class="h-20 w-20 bg-subtle   rounded-full flex items-center justify-center border border-border-base ">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-10 h-10 text-accent">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -20,7 +19,7 @@
       @if (!isEditingEmail) {
       <p class="text-muted  mb-8 ">
         we've sent a link to
-        <span class="font-semibold text-content ">{{
+        <span class="font-semibold ">{{
           unverifiedEmail() || 'your email address'
           }}</span>.
         <button (click)="startEditEmail()"
@@ -40,7 +39,7 @@
             {{ isUpdatingEmail ? 'Saving...' : 'Save' }}
           </button>
           <button (click)="cancelEditEmail()" [disabled]="isUpdatingEmail"
-            class="px-4 py-2 bg-subtle hover:bg-subtle   text-content  rounded-lg text-sm font-semibold disabled:opacity-50 ">
+            class="px-4 py-2 bg-subtle hover:bg-subtle    rounded-lg text-sm font-semibold disabled:opacity-50 ">
             Cancel
           </button>
         </div>

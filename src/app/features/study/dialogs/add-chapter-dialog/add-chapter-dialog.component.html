@@ -1,6 +1,6 @@
 <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative">
   <div class="flex items-center justify-between">
-    <h2 class="text-2xl text-content">{{ activeTab() === 'editor' ? 'Board editor' : 'New chapter' }}</h2>
+    <h2 class="text-2xl">{{ activeTab() === 'editor' ? 'Board editor' : 'New chapter' }}</h2>
   </div>
 
   <!-- Body Content -->
@@ -13,7 +13,7 @@
         <label for="chapter_name" class="font-medium">Chapter name</label>
         <input type="text" id="chapter_name" [ngModel]="name()" (ngModelChange)="name.set($event)"
           placeholder="e.g. Opening Analysis"
-          class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main text-content outline-none placeholder:text-muted/50"
+          class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main outline-none placeholder:text-muted/50"
           autofocus />
       </div>
 
@@ -23,7 +23,7 @@
         <label for="orientation" class="font-medium">Orientation</label>
         <div class="relative w-full">
           <select id="orientation" [value]="orientation()" (change)="orientation.set($any($event.target).value)"
-            class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content appearance-none bg-no-repeat bg-right pr-8 focus:outline-none"
+            class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm appearance-none bg-no-repeat bg-right pr-8 focus:outline-none"
             style="
                   background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
                   background-position: right 0.5rem center;
@@ -53,13 +53,13 @@
       <div class="space-y-4 py-4">
         <div class="space-y-3">
           <div class="flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-content ml-1">
+            <h3 class="text-sm font-semibold ml-1">
               Paste FEN
             </h3>
           </div>
           <input type="text" [ngModel]="fen()" (ngModelChange)="fen.set($event)"
             placeholder="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-            class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main text-content outline-none placeholder:text-muted/50" />
+            class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main outline-none placeholder:text-muted/50" />
         </div>
       </div>
       }
@@ -73,7 +73,7 @@
 
           <div class="relative group">
             <textarea [ngModel]="pgn()" (ngModelChange)="pgn.set($event)" rows="4" placeholder="Paste PGN here..."
-              class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main text-content outline-none resize-none custom-scrollbar placeholder:text-muted/50"></textarea>
+              class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main outline-none resize-none custom-scrollbar placeholder:text-muted/50"></textarea>
           </div>
         </div>
       </div>

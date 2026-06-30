@@ -14,7 +14,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
       >
         <!-- Header -->
         <div class="flex items-center justify-between">
-          <h2 class="text-2xl text-content">
+          <h2 class="text-2xl">
             Join class session
           </h2>
         </div>
@@ -25,11 +25,11 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
           <ul class="space-y-3">
             <li class="flex items-start gap-3">
               <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-              <span class="text-sm text-content/85">Synchronized board: follow every move and annotation live.</span>
+              <span class="text-sm/85">Synchronized board: follow every move and annotation live.</span>
             </li>
             <li class="flex items-start gap-3">
               <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-              <span class="text-sm text-content/85">Interactive mode: request board control to demonstrate moves.</span>
+              <span class="text-sm/85">Interactive mode: request board control to demonstrate moves.</span>
             </li>
           </ul>
         </div>

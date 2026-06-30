@@ -1,73 +1,58 @@
-<div
-  class="w-full h-[560px] rounded-xl overflow-hidden border border-border-base flex flex-col p-4 gap-4"
->
+<div class="w-full h-[560px] rounded-xl overflow-hidden border border-border-base flex flex-col p-4 gap-4">
   <div class="w-full h-28 overflow-hidden rounded-lg border border-border-base">
     @if (isLoading()) {
-      <div class="h-full p-3  space-y-3">
-        <div class="h-4 bg-subtle  rounded w-3/4"></div>
-        <div class="h-4 bg-subtle  rounded w-full"></div>
-        <div class="h-4 bg-subtle  rounded w-5/6"></div>
-        <div class="h-4 bg-subtle  rounded w-2/3"></div>
-      </div>
+    <div class="h-full p-3  space-y-3">
+      <div class="h-4 bg-subtle  rounded w-3/4"></div>
+      <div class="h-4 bg-subtle  rounded w-full"></div>
+      <div class="h-4 bg-subtle  rounded w-5/6"></div>
+      <div class="h-4 bg-subtle  rounded w-2/3"></div>
+    </div>
     } @else {
-      <div
-        class="h-full overflow-y-auto p-3 text-sm  text-content "
-      >
-        <p>
-          {{ studyInstructions[currentPly()] }}
-        </p>
-      </div>
+    <div class="h-full overflow-y-auto p-3 text-sm  ">
+      <p>
+        {{ studyInstructions[currentPly()] }}
+      </p>
+    </div>
     }
   </div>
 
   <div class="flex flex-1 gap-6 overflow-hidden">
     <div class="flex-1 flex flex-col items-center justify-center">
       @if (isLoading()) {
-        <div
-          class="board-resize-wrapper resize-x overflow-hidden aspect-square w-full max-w-[22rem] min-w-[18rem] rounded-sm bg-subtle/70 /70"
-        >
-          <div class="h-full w-full "></div>
-        </div>
+      <div
+        class="board-resize-wrapper resize-x overflow-hidden aspect-square w-full max-w-[22rem] min-w-[18rem] rounded-sm bg-subtle/70 /70">
+        <div class="h-full w-full "></div>
+      </div>
       } @else {
-        <div class="w-full flex justify-center">
-          <app-chess-board
-            #board
-            [fen]="displayFen()"
-            [interactive]="true"
-            [configOverride]="cgConfig()"
-            (moveMade)="onUserMove($event)"
-          ></app-chess-board>
-        </div>
+      <div class="w-full flex justify-center">
+        <app-chess-board #board [fen]="displayFen()" [interactive]="true" [configOverride]="cgConfig()"
+          (moveMade)="onUserMove($event)"></app-chess-board>
+      </div>
       }
     </div>
 
     <div class="w-80 h-full flex flex-col rounded-lg overflow-hidden">
       @if (isLoading()) {
-        <div class="flex flex-col h-full">
-          <div class="flex items-center justify-center gap-2 p-2">
-            <div class="h-8 w-14 rounded-lg bg-subtle  "></div>
-            <div class="h-8 w-14 rounded-lg bg-subtle  "></div>
-            <div class="h-8 w-14 rounded-lg bg-subtle  "></div>
-            <div class="h-8 w-14 rounded-lg bg-subtle  "></div>
-          </div>
-          <div class="flex-1 overflow-hidden p-2 space-y-2">
-            <div class="h-10 rounded-lg bg-subtle  "></div>
-            <div class="h-10 rounded-lg bg-subtle  "></div>
-            <div class="h-10 rounded-lg bg-subtle  "></div>
-            <div class="h-10 rounded-lg bg-subtle  "></div>
-            <div class="h-10 rounded-lg bg-subtle  "></div>
-          </div>
+      <div class="flex flex-col h-full">
+        <div class="flex items-center justify-center gap-2 p-2">
+          <div class="h-8 w-14 rounded-lg bg-subtle  "></div>
+          <div class="h-8 w-14 rounded-lg bg-subtle  "></div>
+          <div class="h-8 w-14 rounded-lg bg-subtle  "></div>
+          <div class="h-8 w-14 rounded-lg bg-subtle  "></div>
         </div>
+        <div class="flex-1 overflow-hidden p-2 space-y-2">
+          <div class="h-10 rounded-lg bg-subtle  "></div>
+          <div class="h-10 rounded-lg bg-subtle  "></div>
+          <div class="h-10 rounded-lg bg-subtle  "></div>
+          <div class="h-10 rounded-lg bg-subtle  "></div>
+          <div class="h-10 rounded-lg bg-subtle  "></div>
+        </div>
+      </div>
       } @else if (studyPositions.length > 0) {
-        <div class="flex flex-col h-full min-h-0 overflow-hidden">
-          <app-move-notation
-            class="flex-1"
-            [moves]="pgnMoves()"
-            [currentPly]="currentPly()"
-            [showNavigation]="true"
-            (navigate)="goToMove($event)"
-          ></app-move-notation>
-        </div>
+      <div class="flex flex-col h-full min-h-0 overflow-hidden">
+        <app-move-notation class="flex-1" [moves]="pgnMoves()" [currentPly]="currentPly()" [showNavigation]="true"
+          (navigate)="goToMove($event)"></app-move-notation>
+      </div>
       }
     </div>
   </div>

@@ -12,7 +12,7 @@ import { ToastService } from '../../../core/services/toast.service';
     <div class="max-w-[800px] mx-auto space-y-8 p-6">
       <header class="mb-8 flex flex-col justify-between gap-4">
         <div>
-          <h1 class="text-3xl mb-2 text-content font-medium">Import Guess the Game</h1>
+          <h1 class="text-3xl mb-2 font-medium">Import Guess the Game</h1>
           <p class="text-muted text-base">Paste a standard PGN of a popular chess game.</p>
         </div>
       </header>
@@ -20,12 +20,12 @@ import { ToastService } from '../../../core/services/toast.service';
       <div class="bg-main border border-border-base rounded-2xl p-8 space-y-6 shadow-sm">
 
         <div class="space-y-2">
-          <label class="block text-sm font-medium text-content">Chess PGN data</label>
+          <label class="block text-sm font-medium">Chess PGN data</label>
           <textarea
             rows="12"
             [(ngModel)]="pgn"
             placeholder="[Event &quot;Wijk aan Zee&quot;]&#10;[Date &quot;1999.01.20&quot;]&#10;[White &quot;Kasparov, Garry&quot;]&#10;[Black &quot;Topalov, Veselin&quot;]&#10;[Result &quot;1-0&quot;]&#10;&#10;1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6..."
-            class="w-full p-4 bg-subtle border border-border-base rounded-xl text-content outline-none font-mono text-sm transition-all focus:border-accent resize-y"
+            class="w-full p-4 bg-subtle border border-border-base rounded-xl outline-none font-mono text-sm transition-all focus:border-accent resize-y"
           ></textarea>
         </div>
 
@@ -33,7 +33,7 @@ import { ToastService } from '../../../core/services/toast.service';
           <button
             (click)="resetForm()"
             [disabled]="isSubmitting()"
-            class="px-5 py-3 border border-border-base text-content hover:bg-subtle rounded-xl text-sm font-medium active:scale-95 transition-all"
+            class="px-5 py-3 border border-border-base hover:bg-subtle rounded-xl text-sm font-medium active:scale-95 transition-all"
           >
             Clear form
           </button>

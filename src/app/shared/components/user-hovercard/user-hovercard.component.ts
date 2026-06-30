@@ -24,7 +24,7 @@ import { heroPuzzlePiece } from '@ng-icons/heroicons/outline';
               <a 
                 [href]="'/user/' + user()!.username" 
                 target="_blank"
-                class="text-lg text-content truncate hover:underline flex items-center gap-2"
+                class="text-lg truncate hover:underline flex items-center gap-2"
               >
                 {{ user()!.username }}
                 <app-flag-icon [countryCode]="user()!.country_code" shape="circle"></app-flag-icon>
@@ -45,7 +45,7 @@ import { heroPuzzlePiece } from '@ng-icons/heroicons/outline';
             <div class="flex items-center gap-1.5" [title]="type.label">
               <ng-icon [name]="type.icon" class="text-base text-muted"></ng-icon>
               <span class="text-xs text-muted">Tactics:</span>
-              <span class="text-sm font-semibold text-content">
+              <span class="text-sm font-semibold">
                 {{ getRating(type.id) }}
               </span>
             </div>

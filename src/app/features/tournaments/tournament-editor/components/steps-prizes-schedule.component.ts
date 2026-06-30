@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormArray, FormControl } from '@angular/forms';
-import { ButtonComponent  } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 
 // Step 7: Prizes
 @Component({
@@ -18,7 +18,7 @@ import { ButtonComponent  } from '@shared/ui';
         @for (cat of categoriesArray.controls; track $index; let ci = $index) {
         <div class="p-6 bg-subtle/50 rounded-xl border border-border-base">
           <div class="flex justify-between items-center mb-6">
-            <h3 class="font-semibold text-lg text-content ">Category {{ ci + 1 }}</h3>
+            <h3 class="font-semibold text-lg ">Category {{ ci + 1 }}</h3>
             <button
               appButton
               variant="danger"
@@ -216,7 +216,7 @@ export class StepPrizesComponent implements OnInit {
   @Output() addSpecialAward = new EventEmitter<number>();
   @Output() removeSpecialAward = new EventEmitter<{ ci: number, ai: number }>();
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   categoryGroup(index: number): FormGroup { return this.categoriesArray.at(index) as FormGroup; }
   getCategorySpecialAwards(catIndex: number): FormArray { return this.categoriesArray.at(catIndex).get('specialAwards') as FormArray; }
@@ -311,7 +311,7 @@ export class StepScheduleComponent implements OnInit {
   @Output() addScheduleEvent = new EventEmitter<number>();
   @Output() removeScheduleEvent = new EventEmitter<{ di: number, ei: number }>();
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   scheduleDayGroup(index: number): FormGroup { return this.scheduleDaysArray.at(index) as FormGroup; }
   getScheduleEvents(dayIndex: number): FormArray { return this.scheduleDaysArray.at(dayIndex).get('events') as FormArray; }

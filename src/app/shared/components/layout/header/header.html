@@ -14,11 +14,11 @@
       </a>
       <div
         class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-sm">
-        <a appLink routerLink="/tactics" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Tactics</span>
-        </a>
         <a appLink routerLink="/study/drills" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
           <span class="text-sm font-medium">Opening drills</span>
+        </a>
+        <a appLink routerLink="/tactics" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
+          <span class="text-sm font-medium">Tactics</span>
         </a>
         <a appLink routerLink="/tactics/guess" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
           <span class="text-sm font-medium">Guess the game</span>
@@ -172,20 +172,20 @@
       <div [class.hidden]="!isProfileDropdownOpen()"
         class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl z-50 flex flex-col py-2 origin-top-right shadow-sm">
         <a appLink [routerLink]="['/profile']" (click)="toggleProfileDropdown()"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item text-content">
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
           <span class="text-sm font-medium">Profile</span>
         </a>
 
         @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
         <a appLink routerLink="/my-events" (click)="toggleProfileDropdown()"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item text-content">
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
           <span class="text-sm font-medium">My Tournaments</span>
         </a>
         }
 
         @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
         <a appLink routerLink="/admin" (click)="toggleProfileDropdown()"
-          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item text-content">
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
           <span class="text-sm font-medium">Admin Panel</span>
         </a>
         }

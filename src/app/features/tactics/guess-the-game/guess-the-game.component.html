@@ -46,13 +46,13 @@
           <div class="space-y-4">
             <div class="flex justify-between items-center text-sm">
               <span class="text-muted select-none">White</span>
-              <span class="capitalize text-content" [class.text-emerald-600]="correctWhite() || isGameOver()">
+              <span class="capitalize" [class.text-emerald-600]="correctWhite() || isGameOver()">
                 {{ revealedWhiteName() }}
               </span>
             </div>
             <div class="flex justify-between items-center text-sm">
               <span class="text-muted select-none">Black</span>
-              <span class="capitalize text-content" [class.text-emerald-600]="correctBlack() || isGameOver()">
+              <span class="capitalize" [class.text-emerald-600]="correctBlack() || isGameOver()">
                 {{ revealedBlackName() }}
               </span>
             </div>
@@ -68,7 +68,7 @@
             </div>
             <div class="flex justify-between items-center text-sm">
               <span class="text-muted select-none">Location</span>
-              <span class="text-content truncate max-w-[180px]" [title]="game.event">
+              <span class="truncate max-w-[180px]" [title]="game.event">
                 {{ revealLocation() ? game.event : '••••' }}
               </span>
             </div>
@@ -203,27 +203,25 @@
           <div class="grid grid-cols-2 gap-4 py-2 border-b border-border-base/20 pb-4">
             <div class="flex flex-col gap-0.5">
               <span class="text-xs text-muted">White</span>
-              <span class="text-sm capitalize truncate text-content"
-                [class.text-emerald-600]="correctWhite() || isGameOver()">
+              <span class="text-sm capitalize truncate" [class.text-emerald-600]="correctWhite() || isGameOver()">
                 {{ revealedWhiteName() }}
               </span>
             </div>
             <div class="flex flex-col gap-0.5">
               <span class="text-xs text-muted">Black</span>
-              <span class="text-sm capitalize truncate text-content"
-                [class.text-emerald-600]="correctBlack() || isGameOver()">
+              <span class="text-sm capitalize truncate" [class.text-emerald-600]="correctBlack() || isGameOver()">
                 {{ revealedBlackName() }}
               </span>
             </div>
             <div class="flex flex-col gap-0.5">
               <span class="text-xs text-muted">Year</span>
-              <span class="text-sm text-content">
+              <span class="text-sm">
                 {{ revealYear() ? game.year : '••••' }}
               </span>
             </div>
             <div class="flex flex-col gap-0.5">
               <span class="text-xs text-muted">Location</span>
-              <span class="text-sm truncate text-content" [title]="game.event">
+              <span class="text-sm truncate" [title]="game.event">
                 {{ revealLocation() ? game.event : '••••' }}
               </span>
             </div>

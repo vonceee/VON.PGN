@@ -22,7 +22,7 @@
           clip-rule="evenodd" />
       </svg>
       <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search studies..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
@@ -35,7 +35,7 @@
 
     <div class="relative w-36 shrink-0">
       <select [value]="activeTab()" (change)="setTab($any($event.target).value)"
-        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
         style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
@@ -50,7 +50,7 @@
 
     <div class="relative w-48 shrink-0">
       <select [value]="categoryFilter()" (change)="onCategoryFilterChange($event)"
-        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
         style="
             background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
             background-position: right 0.5rem center;
@@ -64,7 +64,7 @@
 
     @if (activeTab() === 'my') {
     <select [value]="sortBy()" (change)="onSortChange($event)"
-      class="w-44 px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm text-content focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+      class="w-44 px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
       style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
@@ -89,7 +89,7 @@
             d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
         </svg>
       </div>
-      <h3 class="text-2xl text-content mb-2">
+      <h3 class="text-2xl mb-2">
         {{ searchQuery() ? 'No studies found' : (activeTab() === 'my' ? 'No studies created yet' : 'No public studies
         available') }}
       </h3>

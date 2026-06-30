@@ -9,7 +9,7 @@ import { DialogRef } from '@angular/cdk/dialog';
   template: `
     <div class="bg-main rounded-4xl w-full p-8 relative max-w-2xl w-[95vw] sm:w-[600px] mx-auto flex flex-col max-h-[90vh] md:max-h-[85vh]">
       <div class="flex items-center justify-between pb-6 flex-none">
-        <h2 class="text-2xl text-content">Keyboard shortcuts</h2>
+        <h2 class="text-2xl">Keyboard shortcuts</h2>
         <button (click)="dialogRef.close()" class="text-muted cursor-pointer transition-colors" title="Close">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -23,7 +23,7 @@ import { DialogRef } from '@angular/cdk/dialog';
           <div class="space-y-2">
             @for (item of moveShortcuts; track item.key) {
               <div class="flex items-center justify-between py-1.5 border-b border-border-base/50 last:border-0 group">
-                <span class="text-sm text-content/80 group-hover:text-content">
+                <span class="text-sm/80 group-hover:text-content">
                   {{ item.label }}
                 </span>
                 <div class="flex items-center gap-2">
@@ -42,7 +42,7 @@ import { DialogRef } from '@angular/cdk/dialog';
           <div class="space-y-2">
             @for (item of posShortcuts; track item.key) {
               <div class="flex items-center justify-between py-1.5 border-b border-border-base/50 last:border-0 group">
-                <span class="text-sm text-content/80 group-hover:text-content">
+                <span class="text-sm/80 group-hover:text-content">
                   {{ item.label }}
                 </span>
                 <div class="flex items-center gap-2">
@@ -63,7 +63,7 @@ import { DialogRef } from '@angular/cdk/dialog';
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2">
             @for (item of otherShortcuts; track item.label) {
               <div class="flex items-center justify-between py-1.5 group">
-                <span class="text-sm text-content/80 group-hover:text-content">
+                <span class="text-sm/80 group-hover:text-content">
                   {{ item.label }}
                 </span>
                 <div class="flex items-center gap-1">

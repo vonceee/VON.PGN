@@ -59,7 +59,7 @@ import { AudioService } from '../../../../core/services/audio.service';
                     (click)="selectPromotion(piece.type)"
                     class="w-20 h-20 flex items-center justify-center rounded-xl bg-subtle hover:bg-surface border border-border-base  active:scale-90"
                   >
-                    <span class="text-3xl  text-content uppercase">{{ piece.type }}</span>
+                    <span class="text-3xl  uppercase">{{ piece.type }}</span>
                   </button>
                 }
               </div>

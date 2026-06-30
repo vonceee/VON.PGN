@@ -17,7 +17,7 @@ export interface ConfirmDeleteDialogData {
     <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative">
       <!-- Header -->
       <div class="flex items-center justify-between">
-        <h2 class="text-2xl text-content">{{ data.title || 'Confirm Deletion' }}</h2>
+        <h2 class="text-2xl">{{ data.title || 'Confirm Deletion' }}</h2>
       </div>
 
       <!-- Body Content -->

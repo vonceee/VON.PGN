@@ -4,7 +4,7 @@
     <!-- Left Column: Contact Details -->
     <div class="lg:col-span-5 flex flex-col justify-between space-y-8">
       <div class="space-y-4">
-        <h2 class="text-3xl font-medium text-content">Get in touch</h2>
+        <h2 class="text-3xl font-medium">Get in touch</h2>
         <p class="text-muted text-sm leading-relaxed">
           Questions about programs or coaches? Send a message and we'll reply within one business day.
         </p>
@@ -20,7 +20,7 @@
           </div>
           <div>
             <p class="text-xs font-medium text-muted">Email</p>
-            <a [href]="'mailto:' + contactEmail" class="text-content text-sm font-medium hover:underline">{{
+            <a [href]="'mailto:' + contactEmail" class="text-sm font-medium hover:underline">{{
               contactEmail }}</a>
           </div>
         </div>
@@ -43,7 +43,7 @@
           </svg>
         </div>
         <div class="space-y-2">
-          <h3 class="text-2xl font-medium text-content">Message sent successfully</h3>
+          <h3 class="text-2xl font-medium">Message sent successfully</h3>
           <p class="text-muted text-sm">
             Thank you for reaching out. We will get in touch with you shortly.
           </p>
@@ -59,13 +59,13 @@
             <div>
               <label class="block text-xs font-medium text-muted mb-2">First name</label>
               <input type="text" formControlName="first_name"
-                class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-content text-sm"
+                class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm"
                 placeholder="Juan" />
             </div>
             <div>
               <label class="block text-xs font-medium text-muted mb-2">Last name</label>
               <input type="text" formControlName="last_name"
-                class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-content text-sm"
+                class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm"
                 placeholder="Dela Cruz" />
             </div>
           </div>
@@ -74,7 +74,7 @@
           <div>
             <label class="block text-xs font-medium text-muted mb-2">Email address</label>
             <input type="email" formControlName="email"
-              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-content text-sm"
+              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm"
               placeholder="juan@example.com" />
           </div>
 
@@ -82,7 +82,7 @@
           <div>
             <label class="block text-xs font-medium text-muted mb-2">Phone number</label>
             <input type="text" formControlName="contact_number"
-              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-content text-sm"
+              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm"
               placeholder="+63 912 345 6789" />
           </div>
 
@@ -90,7 +90,7 @@
           <div>
             <label class="block text-xs font-medium text-muted mb-2">Player level</label>
             <select formControlName="chess_level"
-              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-content text-sm appearance-none bg-no-repeat bg-[right_1rem_center]"
+              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm appearance-none bg-no-repeat bg-[right_1rem_center]"
               style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22 stroke-width=%222%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M19 9l-7 7-7-7%22 /></svg>'); background-size: 1.25rem;">
               <option value="New to chess">New to chess</option>
               <option value="Beginner">Beginner</option>
@@ -103,7 +103,7 @@
           <div>
             <label class="block text-xs font-medium text-muted mb-2">Message</label>
             <textarea formControlName="experience" rows="4"
-              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-content text-sm resize-none"
+              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm resize-none"
               placeholder="Tell us about your chess goals..."></textarea>
           </div>
 
@@ -116,7 +116,7 @@
             <div class="text-xs text-muted">
               <label for="agreed_to_policy_form">
                 I agree to the
-                <a routerLink="/privacy-policy" target="_blank" class="text-content font-medium hover:underline">Privacy
+                <a routerLink="/privacy-policy" target="_blank" class="font-medium hover:underline">Privacy
                   Policy</a>.
               </label>
               <p *ngIf="enrollmentForm.get('agreed_to_policy')?.touched && enrollmentForm.get('agreed_to_policy')?.errors?.['required']"

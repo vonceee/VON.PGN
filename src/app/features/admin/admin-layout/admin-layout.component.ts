@@ -12,9 +12,9 @@ import { filter, map, startWith } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
   providers: [],
   template: `
-    <div class="flex min-h-screen bg-subtle text-content">
+    <div class="flex min-h-screen bg-subtle">
       <!-- Sidebar -->
-      <aside class="w-80 bg-main text-content fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-border-base">
+      <aside class="w-80 bg-main fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-border-base">
         <div class="p-8 border-b border-border-base">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-content rounded flex items-center justify-center text-white font-semibold">
@@ -87,7 +87,7 @@ import { filter, map, startWith } from 'rxjs';
         <!-- Header -->
         <header class="sticky top-0 right-0 w-full z-40 bg-main border-b border-border-base px-8 h-20 flex items-center justify-between">
           <div class="flex items-center gap-8">
-            <h2 class="text-lg font-semibold text-content ">{{ pageTitle() }}</h2>
+            <h2 class="text-lg font-semibold ">{{ pageTitle() }}</h2>
           </div>
 
           <div class="flex items-center gap-4">
@@ -102,7 +102,7 @@ import { filter, map, startWith } from 'rxjs';
                 }
               </div>
               <div class="hidden sm:block text-left">
-                <div class="text-sm font-semibold text-content mb-1">{{ user()?.name }}</div>
+                <div class="text-sm font-semibold mb-1">{{ user()?.name }}</div>
                 <div class="text-xs font-semibold text-muted uppercase ">Super Admin</div>
               </div>
               
