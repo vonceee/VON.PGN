@@ -1,13 +1,8 @@
 <!-- Message List -->
-<div #scrollContainer class="flex-1 overflow-y-auto min-h-0 custom-scrollbar" style="flex-basis: 0;">
-  @if (isLoadingHistory()) {
-  <div class="flex items-center justify-center h-full">
-    <div class="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
-  </div>
-  } @else {
+<div #scrollContainer class="flex-1 overflow-y-auto min-h-0" style="flex-basis: 0;">
   @for (msg of messages(); track msg.timestamp + msg.senderId) {
-  <div class="relative flex items-baseline gap-2 px-4 py-1 pr-14 hover:bg-border-base/20 group">
-    <span class="text-xs font-semibold shrink-0">
+  <div class="relative flex items-baseline gap-2 p-4 group">
+    <span class="text-xs font-medium shrink-0">
       {{ msg.senderName }}:
     </span>
     <span class="text-sm break-words min-w-0">{{ msg.text }}</span>
@@ -17,14 +12,13 @@
     </span>
   </div>
   }
-  }
 </div>
 
 <!-- Input Area -->
-<div class="flex-none px-4 pb-4 pt-2 select-none">
+<div class="flex-none select-none">
   <form (submit)="sendMessage(); $event.preventDefault()"
-    class="flex items-center bg-subtle border border-border-base/50 rounded-full px-4 py-2.5">
-    <input type="text" [(ngModel)]="newMessage" name="message" placeholder="Send a message..."
+    class="flex border-t border-border-base items-center px-4 py-2.5">
+    <input type="text" [(ngModel)]="newMessage" name="message" placeholder="send a message..."
       class="w-full bg-transparent text-sm placeholder:text-muted/50 focus:outline-none" autocomplete="off" />
   </form>
 </div>

@@ -1,6 +1,6 @@
 <div class="h-full w-full flex flex-col p-8">
   @if (user(); as profile) {
-  <div class="flex-1 overflow-y-auto custom-scrollbar">
+  <div class="flex-1 overflow-y-auto">
     <!-- Standard Header -->
     <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div class="flex-1">
@@ -50,7 +50,7 @@
         </div>
 
         <!-- User List -->
-        <div class="flex-1 overflow-y-auto px-5 py-4 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto px-5 py-4">
           @if (tabLoading()) {
           <app-loading></app-loading>
           } @else if (tabUsers().length === 0) {

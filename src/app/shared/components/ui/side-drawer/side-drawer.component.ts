@@ -53,7 +53,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
         </div>
 
         <!-- Body -->
-        <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-6">
           <ng-content></ng-content>
         </div>
         

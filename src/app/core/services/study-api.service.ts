@@ -17,7 +17,8 @@ export class StudyApiService {
     category?: string,
     forceRefresh = false,
     search?: string,
-    sort?: string
+    sort?: string,
+    include?: string
   ): Observable<any> {
     let params = my ? 'my=1' : '';
     if (category) {
@@ -29,8 +30,11 @@ export class StudyApiService {
     if (sort) {
       params += params ? `&sort=${sort}` : `sort=${sort}`;
     }
+    if (include) {
+      params += params ? `&include=${include}` : `include=${include}`;
+    }
     const queryString = params ? `?${params}` : '';
-    const cacheKey = `${my}_${category || 'all'}_${search || ''}_${sort || ''}`;
+    const cacheKey = `${my}_${category || 'all'}_${search || ''}_${sort || ''}_${include || ''}`;
 
     const apiCall = this.http.get<any>(`${this.apiUrl}/studies${queryString}`).pipe(
       tap((res) => this.studiesCache.set(cacheKey, res))

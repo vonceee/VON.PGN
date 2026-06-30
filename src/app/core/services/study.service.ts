@@ -296,8 +296,8 @@ export class StudyService {
 
   // ── HTTP Proxy Methods ────────────────────────────────────────
 
-  getStudies(my: boolean = false, category?: string, forceRefresh = false, search?: string, sort?: string): Observable<any> {
-    return this.api.getStudies(my, category, forceRefresh, search, sort);
+  getStudies(my: boolean = false, category?: string, forceRefresh = false, search?: string, sort?: string, include?: string): Observable<any> {
+    return this.api.getStudies(my, category, forceRefresh, search, sort, include);
   }
 
   clearCache(): void {

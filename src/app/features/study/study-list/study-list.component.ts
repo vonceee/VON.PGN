@@ -27,21 +27,21 @@ export class StudyListComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private dialog = inject(Dialog);
   private route = inject(ActivatedRoute);
-  
+
   activeTab = signal<'all' | 'my'>('all');
   isLoggedIn = signal(false);
   isLoading = signal(false);
   searchQuery = signal('');
   sortBy = signal<'last_updated' | 'alphabetical'>('last_updated');
   categoryFilter = signal<'all' | 'general' | 'opening_repertoire'>('all');
- 
+
   queryParams = computed(() => ({
     isMyStudies: this.activeTab() === 'my',
     search: this.searchQuery(),
     sort: this.sortBy(),
     category: this.categoryFilter(),
   }));
- 
+
   private studiesResult = toSignal(
     toObservable(this.queryParams).pipe(
       debounceTime(300),
@@ -65,9 +65,9 @@ export class StudyListComponent implements OnInit {
       tap(() => this.isLoading.set(false))
     )
   );
- 
+
   studies = computed(() => this.studiesResult()?.data || []);
- 
+
   constructor() {
     effect(() => {
       this.isLoggedIn.set(!!this.authService.currentUser());
@@ -76,7 +76,7 @@ export class StudyListComponent implements OnInit {
       }
     });
   }
- 
+
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const category = params['category'];
@@ -89,16 +89,16 @@ export class StudyListComponent implements OnInit {
       }
     });
   }
- 
+
   setTab(tab: 'all' | 'my') {
     this.activeTab.set(tab);
   }
- 
+
   onSearchInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
   }
- 
+
   onSortChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value as 'last_updated' | 'alphabetical';
     this.sortBy.set(value);
@@ -108,7 +108,7 @@ export class StudyListComponent implements OnInit {
     const value = (event.target as HTMLSelectElement).value as 'all' | 'general' | 'opening_repertoire';
     this.categoryFilter.set(value);
   }
- 
+
   clearSearch() {
     this.searchQuery.set('');
   }

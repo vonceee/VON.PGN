@@ -12,7 +12,7 @@ import { filter } from 'rxjs/operators';
   template: `
     <div class="h-screen w-full flex flex-col">
       <app-header class="w-full shrink-0 z-50"></app-header>
-      <main class="flex-1 overflow-y-auto w-full custom-scrollbar relative">
+      <main class="flex-1 overflow-y-auto w-full relative">
         <div class="flex flex-col min-h-full bg-subtle">
           <div 
             class="w-full flex-1 mx-auto relative"

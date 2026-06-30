@@ -1,112 +1,98 @@
 @if (course) {
-  <aside class="flex flex-col h-full min-h-0">
-    <!-- Back to Roadmap -->
-    <div class="px-2 mb-2">
-      <app-back-link link="/roadmap" text="Back to Roadmap"></app-back-link>
-    </div>
+<aside class="flex flex-col h-full min-h-0">
+  <!-- Back to Roadmap -->
+  <div class="px-2 mb-2">
+    <app-back-link link="/roadmap" text="Back to Roadmap"></app-back-link>
+  </div>
 
-    <div>
-      <h2
-        class="px-5 py-2 mt-2  select-none cursor-pointer hover:text-accent/80"
-        (click)="onSelect('')"
-      >
-        {{ course.title }}
-      </h2>
-    </div>
+  <div>
+    <h2 class="px-5 py-2 mt-2  select-none cursor-pointer hover:text-accent/80" (click)="onSelect('')">
+      {{ course.title }}
+    </h2>
+  </div>
 
-    <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-      @for (chapter of course.chapters; track chapter.id) {
-        <details open class="group marker:content-['']">
-          <summary
-            class="px-5 py-2  cursor-pointer select-none flex items-center justify-between"
-          >
-            {{ chapter.title }}
-            <ng-icon
-              name="heroChevronRight"
-              class="w-3.5 h-3.5 transform  group-open:rotate-90 "
-            ></ng-icon>
-          </summary>
+  <nav class="flex flex-col flex-1 overflow-y-auto min-h-0">
+    @for (chapter of course.chapters; track chapter.id) {
+    <details open class="group marker:content-['']">
+      <summary class="px-5 py-2  cursor-pointer select-none flex items-center justify-between">
+        {{ chapter.title }}
+        <ng-icon name="heroChevronRight" class="w-3.5 h-3.5 transform  group-open:rotate-90 "></ng-icon>
+      </summary>
 
-          <ul class="flex flex-col mt-1 mb-2">
-            @for (lesson of chapter.lessons; track lesson.id) {
-              <li
-                class="relative flex items-center justify-between py-2 px-4 mx-2 my-0.5 cursor-pointer rounded-lg  
+      <ul class="flex flex-col mt-1 mb-2">
+        @for (lesson of chapter.lessons; track lesson.id) {
+        <li class="relative flex items-center justify-between py-2 px-4 mx-2 my-0.5 cursor-pointer rounded-lg  
                 {{
                   activeLessonId === lesson.id
                     ? 'bg-subtle /10'
                     : ' '
-                }}"
-                (click)="onSelect(lesson.id)"
-              >
-                <!-- Active Line Indicator -->
-                @if (activeLessonId === lesson.id) {
-                  <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-accent"></div>
-                }
+                }}" (click)="onSelect(lesson.id)">
+          <!-- Active Line Indicator -->
+          @if (activeLessonId === lesson.id) {
+          <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-accent"></div>
+          }
 
-                <span class="text-sm ml-2">{{ lesson.title }}</span>
+          <span class="text-sm ml-2">{{ lesson.title }}</span>
 
-                <div class="flex items-center gap-2">
-                  <!-- Completed Indicator -->
-                  @if (lesson.isCompleted) {
-                    <div class="w-1.5 h-1.5 rounded-full bg-accent "></div>
-                  }
-                </div>
-              </li>
+          <div class="flex items-center gap-2">
+            <!-- Completed Indicator -->
+            @if (lesson.isCompleted) {
+            <div class="w-1.5 h-1.5 rounded-full bg-accent "></div>
             }
-          </ul>
-        </details>
-      }
-    </nav>
-  </aside>
+          </div>
+        </li>
+        }
+      </ul>
+    </details>
+    }
+  </nav>
+</aside>
 } @else {
-  <aside class="flex flex-col h-full min-h-0  mt-2">
-    <div class="shrink-0 px-4 py-3 border-b border-border-base">
-      <a
-        routerLink="/roadmap"
-        class="group flex items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer text-sm "
-      >
-        <ng-icon name="heroArrowLeft" class="w-4 h-4"></ng-icon>
-        Back to Roadmap
-      </a>
-    </div>
+<aside class="flex flex-col h-full min-h-0  mt-2">
+  <div class="shrink-0 px-4 py-3 border-b border-border-base">
+    <a routerLink="/roadmap" class="group flex items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer text-sm ">
+      <ng-icon name="heroArrowLeft" class="w-4 h-4"></ng-icon>
+      Back to Roadmap
+    </a>
+  </div>
 
-    <div class="px-5 py-2 mt-2">
-      <div class="h-6 bg-subtle /80 rounded w-2/3"></div>
-    </div>
+  <div class="px-5 py-2 mt-2">
+    <div class="h-6 bg-subtle /80 rounded w-2/3"></div>
+  </div>
 
-    <div class="flex flex-col flex-1 mt-4 space-y-6">
-      <!-- Skeleton Chapter 1 -->
-      <div>
-        <div class="px-5 py-2">
-          <div class="h-5 bg-subtle /80 rounded w-3/4"></div>
-        </div>
-        <ul class="flex flex-col mt-1 mb-2 space-y-1">
-          <li class="py-2 px-4 mx-2">
-            <div class="h-4 bg-subtle /80 rounded w-5/6 ml-2"></div>
-          </li>
-          <li class="py-2 px-4 mx-2">
-            <div class="h-4 bg-subtle /80 rounded w-4/5 ml-2"></div>
-          </li>
-          <li class="py-2 px-4 mx-2">
-            <div class="h-4 bg-subtle /80 rounded w-11/12 ml-2"></div>
-          </li>
-        </ul>
+  <div class="flex flex-col flex-1 mt-4 space-y-6">
+    <!-- Skeleton Chapter 1 -->
+    <div>
+      <div class="px-5 py-2">
+        <div class="h-5 bg-subtle /80 rounded w-3/4"></div>
       </div>
-
-      <!-- Skeleton Chapter 2 -->
-      <div>
-        <div class="px-5 py-2">
-          <div class="h-5 bg-subtle /80 rounded w-2/3"></div>
-        </div>
-        <ul class="flex flex-col mt-1 mb-2 space-y-1">
-          <li class="py-2 px-4 mx-2">
-            <div class="h-4 bg-subtle /80 rounded w-4/5 ml-2"></div>
-          </li>
-          <li class="py-2 px-4 mx-2">
-            <div class="h-4 bg-subtle /80 rounded w-full ml-2"></div>
-          </li>
-        </ul>
-      </div>
+      <ul class="flex flex-col mt-1 mb-2 space-y-1">
+        <li class="py-2 px-4 mx-2">
+          <div class="h-4 bg-subtle /80 rounded w-5/6 ml-2"></div>
+        </li>
+        <li class="py-2 px-4 mx-2">
+          <div class="h-4 bg-subtle /80 rounded w-4/5 ml-2"></div>
+        </li>
+        <li class="py-2 px-4 mx-2">
+          <div class="h-4 bg-subtle /80 rounded w-11/12 ml-2"></div>
+        </li>
+      </ul>
     </div>
-  </aside>
+
+    <!-- Skeleton Chapter 2 -->
+    <div>
+      <div class="px-5 py-2">
+        <div class="h-5 bg-subtle /80 rounded w-2/3"></div>
+      </div>
+      <ul class="flex flex-col mt-1 mb-2 space-y-1">
+        <li class="py-2 px-4 mx-2">
+          <div class="h-4 bg-subtle /80 rounded w-4/5 ml-2"></div>
+        </li>
+        <li class="py-2 px-4 mx-2">
+          <div class="h-4 bg-subtle /80 rounded w-full ml-2"></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</aside>
 }

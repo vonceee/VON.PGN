@@ -11,6 +11,8 @@ import { Study, StudyChapter, MoveNode } from '../../../../core/models/study.mod
 import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
 import { ChessBoardComponent } from '@shared/chess';
 import { ButtonComponent } from '@shared/ui';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroInformationCircle } from '@ng-icons/heroicons/outline';
 
 export interface MovePath {
   id: string;
@@ -32,7 +34,8 @@ export interface PracticeMistake {
 @Component({
   selector: 'app-opening-drill-solve',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ChessBoardComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ChessBoardComponent, ButtonComponent, NgIconComponent],
+  providers: [provideIcons({ heroInformationCircle })],
   templateUrl: './opening-drill-solve.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -97,6 +100,25 @@ export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
   // Mistake tracker
   lastMistake = signal<{ played: string; correct: string; studyId: number; chapterId: number; chapterName: string } | null>(null);
   drillMistakes = signal<PracticeMistake[]>([]);
+  showExplanation = signal(true);
+  walkthroughStep = signal(2);
+
+  nextStep() {
+    const current = this.walkthroughStep();
+    if (current < 7) {
+      this.walkthroughStep.set(current + 1);
+    } else {
+      this.showExplanation.set(false);
+      this.walkthroughStep.set(0);
+    }
+  }
+
+  prevStep() {
+    const current = this.walkthroughStep();
+    if (current > 1) {
+      this.walkthroughStep.set(current - 1);
+    }
+  }
 
   // Statistics
   attemptsCount = signal(0);
@@ -389,6 +411,8 @@ export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
    *   This removes the invalid entry from the chess.js engine, preventing illegal destination crashes.
    */
   onStudentMove(event: { move: any; fen: string }) {
+    this.showExplanation.set(false);
+    this.walkthroughStep.set(0);
     const path = this.currentPath();
     if (!path) return;
 
@@ -433,9 +457,9 @@ export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
 
       const study = this.selectedStudy();
       const chapter = this.currentChapter();
-      
+
       const preMistakeFen = idx === 0 ? (chapter?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
-                                      : path.moves[idx - 1].fen;
+        : path.moves[idx - 1].fen;
 
       const movesBefore = path.moves.slice(0, idx).map(m => m.san);
 
@@ -549,14 +573,14 @@ export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
 
     // AI-GENERATED WORKAROUND: Hijacks isRetryMode and active signal coordinates to target an isolated mistake variation.
     this.isRetryMode.set(true);
-    
+
     // Set active training parameters to point exactly to this mistake's context
     this.currentChapterIndex.set(mistake.chapterIndex);
-    
+
     // Reset chapter's path and moves tree
     const chapter = this.chapters()[mistake.chapterIndex];
     if (!chapter) return;
-    
+
     // Auto-detect orientation
     let orientation: 'white' | 'black' = 'white';
     const pgnOrientation = chapter.pgn_tags?.['Orientation'] || chapter.pgn_tags?.['orientation'];
@@ -572,17 +596,17 @@ export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
     const parsedTree = buildTreeFromMoves(rawMoves, initialFen);
     const paths = this.compilePaths(parsedTree);
     this.drillPaths.set(paths);
-    
+
     // Point to the specific path and move index of the mistake
     this.currentPathIndex.set(mistake.pathIndex);
     this.currentIndex.set(mistake.moveIndex);
     this.boardFen.set(mistake.preMistakeFen);
-    
+
     // Load moves drilled context so far
     const path = paths[mistake.pathIndex];
     const sequence: { san: string; playedBy: 'student' | 'opponent'; correct: boolean }[] = [];
     const studentColor = orientation.toLowerCase();
-    
+
     for (let i = 0; i < mistake.moveIndex; i++) {
       const moveNode = path.moves[i];
       const moveColor = this.getMoveColor(moveNode);
@@ -596,7 +620,7 @@ export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
 
     // Switch view back to active drilling
     this.viewState.set('active');
-    
+
     // Start opponent thinking timer if it is opponent's turn, otherwise set interactive
     setTimeout(() => this.checkNextTurn(), 300);
   }

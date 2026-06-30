@@ -30,21 +30,27 @@ footer {
   transition-timing-function: ease;
 }
 
-/* Minimalist Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
+/* Minimalist Scrollbar (Applied Globally) */
+::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--color-muted), transparent 70%);
   border-radius: 10px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--color-muted), transparent 40%);
+}
+
+/* W3C Standard Scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-muted), transparent 70%) transparent;
 }

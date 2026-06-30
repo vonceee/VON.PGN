@@ -11,7 +11,7 @@
     </div>
   </div>
   } @else if (user(); as profile) {
-  <div class="flex-1 overflow-y-auto custom-scrollbar">
+  <div class="flex-1 overflow-y-auto">
     <div class="mx-auto px-12 py-10 flex flex-col gap-8">
       <!-- Top Banner: Identity + XP + Follow -->
       <div class="relative rounded-4xl bg-subtle">
@@ -151,7 +151,7 @@
     </div>
 
     <!-- User List -->
-    <div class="flex-1 overflow-y-auto px-5 py-4 custom-scrollbar">
+    <div class="flex-1 overflow-y-auto px-5 py-4">
       @if (tabLoading()) {
       <app-loading></app-loading>
       } @else if (tabUsers().length === 0) {

@@ -17,7 +17,7 @@ import { DialogRef } from '@angular/cdk/dialog';
         </button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1 overflow-y-auto custom-scrollbar pr-2 min-h-0">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1 overflow-y-auto pr-2 min-h-0">
         <!-- Move Annotations -->
         <div class="space-y-4">
           <div class="space-y-2">

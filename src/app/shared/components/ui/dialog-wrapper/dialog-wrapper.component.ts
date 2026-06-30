@@ -14,7 +14,7 @@ import { provideIcons } from '@ng-icons/core';
       </div>
 
       <!-- Body -->
-      <div [class]="'p-8 overflow-y-auto custom-scrollbar flex-1 ' + bodyClass()">
+      <div [class]="'p-8 overflow-y-auto flex-1 ' + bodyClass()">
         <ng-content></ng-content>
       </div>
 

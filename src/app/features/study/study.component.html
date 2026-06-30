@@ -1,5 +1,5 @@
 <div class="absolute inset-0 flex flex-col" [class.overflow-hidden]="isThreeColumn()"
-  [class.overflow-y-auto]="!isThreeColumn()" [class.custom-scrollbar]="!isThreeColumn()">
+  [class.overflow-y-auto]="!isThreeColumn()">
   @if (facade.study(); as s) {
   <!-- Main Content Grid Wrapper -->
   <div class="flex-1 w-full max-w-[1850px] mx-auto p-2 lg:p-4 xl:p-6" [class.overflow-hidden]="isThreeColumn()">
@@ -30,7 +30,7 @@
 
         <!-- Floating Toolbar -->
         <div
-          class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-main rounded-full border px-4 py-1.5 select-none">
+          class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-main rounded-md border border-border-base shadow-sm px-4 py-1.5 select-none">
           <!-- Flip Board Button -->
           <button (click)="flipBoard()" title="Flip Board"
             class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
@@ -121,8 +121,8 @@
       </div>
 
       <!-- Right Column: Notation & Info -->
-      <div class="flex flex-col gap-4 custom-scrollbar pr-1" [class.h-full]="isThreeColumn()"
-        [class.overflow-y-auto]="isThreeColumn()" [class.md:overflow-hidden]="isThreeColumn()">
+      <div class="flex flex-col gap-4 max-h-[500px]" [class.overflow-y-auto]="isThreeColumn()"
+        [class.md:overflow-hidden]="isThreeColumn()">
 
         <!-- Notation & Commentary Card -->
         <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0" [class.h-[450px]]="!isThreeColumn()"
@@ -131,12 +131,11 @@
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             <app-study-metadata [chapter]="facade.currentChapter()"></app-study-metadata>
 
-            <app-move-notation class="flex-1 overflow-y-auto custom-scrollbar" layout="grid"
-              [moveTree]="facade.moveTree()" [currentFen]="facade.currentFen()" [currentPly]="facade.currentPly()"
-              [initialPly]="facade.initialPly()" [showNavigation]="false"
-              [result]="facade.currentChapter()?.pgn_tags?.['Result']" (nodeClicked)="facade.onNodeClicked($event)"
-              (navigate)="facade.onNavigateToPly($event)" (deleteFromHere)="facade.onDeleteFromHere($event)"
-              (annotateMove)="facade.onAnnotateMove($event)"
+            <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moveTree]="facade.moveTree()"
+              [currentFen]="facade.currentFen()" [currentPly]="facade.currentPly()" [initialPly]="facade.initialPly()"
+              [showNavigation]="false" [result]="facade.currentChapter()?.pgn_tags?.['Result']"
+              (nodeClicked)="facade.onNodeClicked($event)" (navigate)="facade.onNavigateToPly($event)"
+              (deleteFromHere)="facade.onDeleteFromHere($event)" (annotateMove)="facade.onAnnotateMove($event)"
               (promoteToMainline)="facade.onPromoteToMainline($event)"></app-move-notation>
 
             @if (facade.currentNode(); as activeNode) {
@@ -152,7 +151,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto custom-scrollbar pr-1">
+              <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto pr-1">
                 <!-- Pre-move comments -->
                 @if (activeNode.preComments && activeNode.preComments.length > 0) {
                 <div class="text-md text-muted pl-3 py-0.5">

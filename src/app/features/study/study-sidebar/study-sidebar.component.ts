@@ -45,25 +45,12 @@ export class StudySidebarComponent {
   hasJoinedClass = this.studyService.hasJoinedClass;
 
   isChatExpanded = signal(true);
-  isInfoExpanded = signal(false);
   isMembersExpanded = signal(false);
 
   toggleChat() {
     this.isChatExpanded.update((v) => {
       const next = !v;
       if (next) {
-        this.isInfoExpanded.set(false);
-        this.isMembersExpanded.set(false);
-      }
-      return next;
-    });
-  }
-
-  toggleInfo() {
-    this.isInfoExpanded.update((v) => {
-      const next = !v;
-      if (next) {
-        this.isChatExpanded.set(false);
         this.isMembersExpanded.set(false);
       }
       return next;
@@ -75,7 +62,6 @@ export class StudySidebarComponent {
       const next = !v;
       if (next) {
         this.isChatExpanded.set(false);
-        this.isInfoExpanded.set(false);
       }
       return next;
     });

@@ -79,26 +79,33 @@
     <!-- Repertoires Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of filteredRepertoires(); track study.id) {
-      <div (click)="selectRepertoire(study)"
-        class="bg-main rounded-4xl p-6 flex flex-col justify-between cursor-pointer">
-        <div>
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-xs font-semibold">
-              {{ study.chapters_count || 0 }} {{ (study.chapters_count === 1) ? 'Variation' : 'Variations' }}
-            </span>
+      <div class="bg-main rounded-md border border-border-base shadow-sm flex flex-col md:flex-row overflow-hidden">
+        <!-- Chess Board Preview Container -->
+        <div
+          class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">
+          <div class="w-full h-full">
+            <app-chess-board [fen]="getStudyFinalPosition(study).fen"
+              [lastMove]="getStudyFinalPosition(study).lastMove ?? undefined" [interactive]="false" [resizable]="false"
+              [hideCoordinates]="true" [fluid]="true" />
           </div>
-          <h3 class="text-xl font-medium mb-2 group-hover:text-accent transition-colors">
-            {{ study.name }}
-          </h3>
-          <p class="text-muted text-sm">
-            by {{ study.owner.name || 'Me' }}
-          </p>
         </div>
 
-        <div class="mt-8 flex justify-end">
-          <button appButton variant="primary">
-            Start practice
-          </button>
+        <!-- Content -->
+        <div class="flex-1 p-6 flex flex-col justify-between min-w-0">
+          <div>
+            <h3 class="text-xl font-medium mb-2 truncate">
+              {{ study.name }}
+            </h3>
+            <p class="text-md mb-2 truncate">
+              by {{ study.owner.name || 'Me' }}
+            </p>
+          </div>
+
+          <div class="mt-4 flex justify-end">
+            <button appButton variant="primary" (click)="selectRepertoire(study)">
+              Practice opening
+            </button>
+          </div>
         </div>
       </div>
       }

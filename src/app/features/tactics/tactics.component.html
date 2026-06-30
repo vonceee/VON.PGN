@@ -81,7 +81,7 @@
             <!-- Middle Section: Puzzle moves notation (Hidden on mobile) -->
             <div class="hidden md:flex flex-1 flex-col min-h-0 overflow-hidden">
               @if (pgnMoves().length > 0) {
-              <app-move-notation class="flex-1 overflow-y-auto custom-scrollbar" layout="grid" [moves]="pgnMoves()"
+              <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moves]="pgnMoves()"
                 [currentFen]="currentFen()" [currentPly]="currentPly()" [initialFen]="currentPuzzle()?.fen || ''"
                 [initialPly]="puzzleStartPly()" [showNavigation]="true"
                 (navigate)="goToMove($event)"></app-move-notation>

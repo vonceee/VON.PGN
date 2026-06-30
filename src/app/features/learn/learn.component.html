@@ -21,7 +21,7 @@
       (lessonSelected)="onLessonSelected($event)" class="h-full w-80 z-10 shrink-0">
     </app-sidebar>
 
-    <div class="flex-1 overflow-y-auto w-full relative custom-scrollbar pl-4">
+    <div class="flex-1 overflow-y-auto w-full relative pl-4">
       @if (isLoadingCourse()) {
       <app-loading></app-loading>
       } @else if (course()) {
