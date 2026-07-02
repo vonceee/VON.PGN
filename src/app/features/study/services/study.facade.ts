@@ -369,6 +369,7 @@ export class StudyFacade {
                 maxWidth: '90vw',
                 data: { userName: payload.userName },
                 backdropClass: ['bg-black/5'],
+                disableClose: true,
               }
             );
 

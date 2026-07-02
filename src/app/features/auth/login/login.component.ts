@@ -2,10 +2,9 @@ import { Component, inject, DestroyRef, signal, computed } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { TypewriterTextComponent  } from '@shared/ui';
-import { BackLinkComponent  } from '@shared/ui';
-import { ButtonComponent  } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 import { AuthBrandingComponent } from '../components/auth-branding/auth-branding';
+import { Header } from '@shared/layout';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 60_000;
@@ -13,7 +12,7 @@ const LOCKOUT_DURATION_MS = 60_000;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, BackLinkComponent, ButtonComponent, AuthBrandingComponent],
+  imports: [ReactiveFormsModule, RouterLink, ButtonComponent, AuthBrandingComponent, Header],
   templateUrl: './login.html',
 })
 export class LoginComponent {

@@ -1,87 +1,88 @@
-<div class="h-screen flex flex-col lg:flex-row selection:bg-accent/30 overflow-hidden bg-white/40 ">
-  <!-- Left Column: Form Section -->
-  <div class="lg:basis-2/5 flex flex-col px-6 overflow-y-auto h-full">
-    <div class="mx-auto my-auto w-full xl:max-w-md py-8">
-      <app-back-link></app-back-link>
+<div class="h-screen flex flex-col bg-white">
+  <app-header class="w-full shrink-0 z-50"></app-header>
+  <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+    <!-- Left Column: Form Section -->
+    <div class="lg:basis-2/5 flex flex-col px-6 overflow-y-auto h-full">
+      <div class="mx-auto my-auto w-full xl:max-w-md py-8">
+        <header class="mb-8">
+          <h1 class="text-4xl md:text-5xl mb-2">Log in to vonchess</h1>
+        </header>
 
-      <header class="mb-8">
-        <h1 class="text-4xl md:text-5xl mb-2">Log in to vonchess</h1>
-      </header>
-
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
-        <!-- Email Field -->
-        <div class="space-y-2">
-          <label for="email" class="text-sm lg:text-base font-semibold"> Email </label>
-          <input id="email" type="email" formControlName="email" placeholder="hello@email.com" (input)="clearError()"
-            class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   " />
-        </div>
-
-        <!-- Password Field -->
-        <div class="space-y-2">
-          <label for="password" class="text-sm lg:text-base font-semibold"> Password </label>
-          <div class="relative">
-            <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
-              placeholder="••••••••" (input)="clearError()"
-              class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   pr-12 " />
-            <button type="button" (click)="showPassword.set(!showPassword())"
-              class="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-muted   focus:outline-none">
-              @if (showPassword()) {
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
-                </path>
-                <line x1="1" y1="1" x2="23" y2="23"></line>
-              </svg>
-              } @else {
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-              }
-            </button>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <!-- Email Field -->
+          <div class="space-y-2">
+            <label for="email" class="text-sm lg:text-base font-semibold"> Email </label>
+            <input id="email" type="email" formControlName="email" placeholder="hello@email.com" (input)="clearError()"
+              class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   " />
           </div>
-          <a routerLink="/forgot-password" class="text-xs lg:text-sm  text-muted  ">forgot
-            password?</a>
-        </div>
 
-        <!-- Error Message -->
-        @if (errorMessage()) {
-        <div class="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg">
-          {{ errorMessage() }}
-        </div>
-        }
+          <!-- Password Field -->
+          <div class="space-y-2">
+            <label for="password" class="text-sm lg:text-base font-semibold"> Password </label>
+            <div class="relative">
+              <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+                placeholder="••••••••" (input)="clearError()"
+                class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   pr-12 " />
+              <button type="button" (click)="showPassword.set(!showPassword())"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-muted   focus:outline-none">
+                @if (showPassword()) {
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                  </path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+                } @else {
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                }
+              </button>
+            </div>
+            <a routerLink="/forgot-password" class="text-xs lg:text-sm  text-muted  ">forgot
+              password?</a>
+          </div>
 
-        <!-- Submit Button -->
-        <button appButton type="submit" variant="primary" [loading]="isLoading()"
-          [disabled]="loginForm.invalid || isLockedOut()" class="w-full block">
-          @if (isLockedOut()) {
-          Try again in {{ lockoutSecondsRemaining() }}s
-          } @else {
-          Continue
+          <!-- Error Message -->
+          @if (errorMessage()) {
+          <div class="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20 rounded-lg">
+            {{ errorMessage() }}
+          </div>
           }
-        </button>
-      </form>
 
-      <p class="mt-6 text-center text-sm">
-        Don't have an account?
-        <a routerLink="/register" class="font-semibold hover:underline underline-offset-4 decoration-accent">
-          Sign up
-        </a>
-      </p>
+          <!-- Submit Button -->
+          <button appButton type="submit" variant="primary" [loading]="isLoading()"
+            [disabled]="loginForm.invalid || isLockedOut()" class="w-full block">
+            @if (isLockedOut()) {
+            Try again in {{ lockoutSecondsRemaining() }}s
+            } @else {
+            Continue
+            }
+          </button>
+        </form>
 
-      <p class="mt-8 text-center text-xs ">
-        By signing in, you agree to our <br />
-        <a routerLink="/terms-of-service" target="_blank" rel="noopener noreferrer"
-          class=" underline underline-offset-2">Terms of Service</a>
-        and
-        <a routerLink="/privacy-policy" target="_blank" rel="noopener noreferrer"
-          class=" underline underline-offset-2">Privacy Policy</a>
-      </p>
+        <p class="mt-6 text-center text-sm">
+          Don't have an account?
+          <a routerLink="/register" class="font-semibold hover:underline underline-offset-4 decoration-accent">
+            Sign up
+          </a>
+        </p>
+
+        <p class="mt-8 text-center text-xs ">
+          By signing in, you agree to our <br />
+          <a routerLink="/terms-of-service" target="_blank" rel="noopener noreferrer"
+            class=" underline underline-offset-2">Terms of Service</a>
+          and
+          <a routerLink="/privacy-policy" target="_blank" rel="noopener noreferrer"
+            class=" underline underline-offset-2">Privacy Policy</a>
+        </p>
+      </div>
     </div>
-  </div>
 
-  <!-- Right Column: Branding Section -->
-  <app-auth-branding class="contents"></app-auth-branding>
+    <!-- Right Column: Branding Section -->
+    <app-auth-branding class="contents"></app-auth-branding>
+  </div>
 </div>

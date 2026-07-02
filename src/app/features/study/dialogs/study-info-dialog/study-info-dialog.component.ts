@@ -75,7 +75,7 @@ export class StudyInfoDialogComponent implements OnInit {
     const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
       data: {
         title: 'Remove member',
-        message: 'Are you sure you want to remove this member?',
+        message: 'Are you sure you want to remove this member? This action cannot be undone',
         confirmText: 'Remove'
       }
     });

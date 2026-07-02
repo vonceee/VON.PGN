@@ -212,16 +212,16 @@
 
         <!-- Mistake Warning and Chapter Review Link -->
         @if (lastMistake(); as mistake) {
-        <div class="bg-main rounded-4xl p-5 flex flex-col gap-3">
+        <div class="bg-main rounded-4xl p-5 flex flex-col gap-3 bg-red-500/10 ring-red-500 ring-offset-2">
           <div class="flex gap-2.5 items-start">
             <div class="flex-1">
               <p class="text-sm">
-                You played the wrong continuation.
+                Oops! You played the wrong continuation.
               </p>
             </div>
           </div>
           <div class="pt-2.5 flex items-center justify-between">
-            <span class="text-xs text-muted">Review</span>
+            <span class="text-xs">Review opening</span>
             <a [routerLink]="['/study', mistake.studyId]" [queryParams]="{ chapter: mistake.chapterId }" target="_blank"
               class="text-xs hover:underline flex items-center gap-1">
               {{ mistake.chapterName }}

@@ -16,13 +16,13 @@ export interface ConfirmDeleteDialogData {
   template: `
     <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative">
       <!-- Header -->
-      <div class="flex items-center justify-between">
+      <div class="pb-4 flex items-center justify-between">
         <h2 class="text-2xl">{{ data.title || 'Confirm Deletion' }}</h2>
       </div>
 
       <!-- Body Content -->
-      <div class="space-y-4">
-        <p>
+      <div class="space-y-6 max-w-xl">
+        <p class="pl-2">
           {{ data.message || 'Are you sure you want to delete this item? This action cannot be undone.' }}
         </p>
       </div>
@@ -30,7 +30,7 @@ export interface ConfirmDeleteDialogData {
       <!-- Footer Actions -->
       <div class="pt-4 flex gap-4 w-full">
         <button appButton variant="outline" class="flex-1" (click)="dialogRef.close(false)">Cancel</button>
-        <button appButton variant="primary" class="flex-1 !bg-rose-600 !hover:bg-rose-700 !border-rose-600/20 text-white" (click)="dialogRef.close(true)">
+        <button appButton variant="primary" class="flex-1 !bg-red-500 !border-red-500/20 text-white" (click)="dialogRef.close(true)">
           {{ data.confirmText || 'Delete' }}
         </button>
       </div>

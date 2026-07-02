@@ -1,11 +1,12 @@
 import { Component, inject, signal, computed, effect, linkedSignal } from '@angular/core';
 import { toSignal, rxResource } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, ValidationErrors } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { TypewriterTextComponent, BackLinkComponent, ButtonComponent } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 import { AuthBrandingComponent } from '../components/auth-branding/auth-branding';
+import { Header } from '@shared/layout';
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -20,13 +21,12 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, BackLinkComponent, ButtonComponent, AuthBrandingComponent],
+  imports: [ReactiveFormsModule, RouterLink, ButtonComponent, AuthBrandingComponent, Header],
   templateUrl: './register.html',
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  private router = inject(Router);
 
   // Form State
   showPassword = signal(false);
@@ -103,7 +103,7 @@ export class RegisterComponent {
       if (!err) return;
 
       console.error('Registration error:', err);
-      
+
       if (err.status === 429) {
         this.errorMessage.set(err.error?.message || 'Too many attempts. Please try again later.');
         return;
@@ -121,7 +121,7 @@ export class RegisterComponent {
         const otherErrors = Object.keys(errors)
           .filter(key => key !== 'email' && key !== 'username')
           .map(key => Array.isArray(errors[key]) ? errors[key][0] : errors[key]);
-        
+
         if (otherErrors.length > 0) {
           this.errorMessage.set(otherErrors[0]);
         } else if (!errors.email && !errors.username) {

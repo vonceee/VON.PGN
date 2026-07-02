@@ -11,7 +11,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   template: `
     <div class="bg-main rounded-4xl w-full max-h-[90vh] flex flex-col relative overflow-hidden">
       <!-- Dialog Header -->
-      <div class="p-8 pb-4 flex items-center justify-between shrink-0 border-b border-border-base/30">
+      <div class="p-8 pb-4 flex items-center justify-between shrink-0">
         <h2 class="text-2xl font-sans">Edit game metadata</h2>
       </div>
 
@@ -152,7 +152,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
       </div>
 
       <!-- Dialog Footer -->
-      <div class="p-8 pt-4 flex gap-4 w-full shrink-0 border-t border-border-base/50 bg-main">
+      <div class="p-8 pt-4 flex gap-4 w-full shrink-0">
         <button appButton variant="outline" (click)="dialogRef.close()" class="flex-1">
           Cancel
         </button>
