@@ -13,7 +13,6 @@ import { effect } from '@angular/core';
 import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ChessBoardComponent } from '@shared/chess';
-import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 import { Study } from '../../../core/models/study.model';
 import type { Key } from 'chessground/types';
 
@@ -61,8 +60,7 @@ export class StudyListComponent implements OnInit {
           categoryVal,
           forceRefresh,
           params.search,
-          params.sort,
-          'chapters'
+          params.sort
         ).pipe(
           catchError(() => of({ data: [] }))
         );
@@ -158,27 +156,14 @@ export class StudyListComponent implements OnInit {
   }
 
   getStudyFinalPosition(study: Study): { fen: string; lastMove: Key[] | null } {
-    const chapters = study.chapters || [];
-    if (chapters.length === 0) {
-      return { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', lastMove: null };
-    }
-    const firstChapter = chapters[0];
-    const rawMoves = firstChapter.moves || [];
-    const initialFen = firstChapter.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-
-    const parsedTree = buildTreeFromMoves(rawMoves, initialFen);
-    if (parsedTree.length === 0) {
-      return { fen: initialFen, lastMove: null };
-    }
-
-    const lastNode = parsedTree[parsedTree.length - 1];
     let lastMove: Key[] | null = null;
-    if (lastNode.uci && lastNode.uci.length >= 4) {
-      lastMove = [lastNode.uci.substring(0, 2) as Key, lastNode.uci.substring(2, 4) as Key];
+    const uci = study.preview_last_move;
+    if (uci && uci.length >= 4) {
+      lastMove = [uci.substring(0, 2) as Key, uci.substring(2, 4) as Key];
     }
 
     return {
-      fen: lastNode.fen,
+      fen: study.preview_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
       lastMove
     };
   }

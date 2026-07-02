@@ -116,9 +116,15 @@
         <div
           class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">
           <div class="w-full h-full">
-            <app-chess-board [fen]="getStudyFinalPosition(study).fen"
-              [lastMove]="getStudyFinalPosition(study).lastMove ?? undefined" [interactive]="false" [resizable]="false"
-              [hideCoordinates]="true" [fluid]="true" />
+            @defer (on viewport) {
+              <app-chess-board [fen]="getStudyFinalPosition(study).fen"
+                [lastMove]="getStudyFinalPosition(study).lastMove ?? undefined" [interactive]="false" [resizable]="false"
+                [hideCoordinates]="true" [fluid]="true" />
+            } @placeholder {
+              <div class="w-full h-full flex items-center justify-center bg-subtle">
+                <div class="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            }
           </div>
         </div>
 

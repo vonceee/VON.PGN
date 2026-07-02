@@ -20,6 +20,8 @@ export interface Study {
   collaborators?: StudyCollaborator[];
   chapters_count: number;
   chapters?: StudyChapter[];
+  preview_fen?: string;
+  preview_last_move?: string;
   created_at: string;
   updated_at: string;
 }
