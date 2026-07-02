@@ -23,23 +23,23 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
           </div>
           <div>
-            <p class="text-sm font-semibold">Incoming Request</p>
+            <p class="text-sm font-medium">Incoming Request</p>
             <p class="text-xs text-muted">A student wants to interact with the board.</p>
           </div>
         </div>
 
-        <p class="text-sm/90 font-medium">
+        <p class="text-sm font-medium">
           <span class="text-accent font-bold">{{ data.userName }}</span> is requesting temporary board control to demonstrate moves and draw shapes.
         </p>
 
         <ul class="space-y-3">
           <li class="flex items-start gap-3">
             <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-            <span class="text-sm/80">Granting control allows them to sync moves and drawings to the classroom.</span>
+            <span class="text-sm opacity-80">Granting control allows them to sync moves and drawings to the classroom.</span>
           </li>
           <li class="flex items-start gap-3">
             <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-            <span class="text-sm/80">You can revoke control at any time by clicking "Revoke" on the board.</span>
+            <span class="text-sm opacity-80">You can revoke control at any time by clicking "Revoke" on the board.</span>
           </li>
         </ul>
       </div>
