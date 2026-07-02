@@ -26,6 +26,7 @@ import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
 import { Key, MoveMetadata, Piece } from 'chessground/types';
 import { AudioService } from '../../../../core/services/audio.service';
+import { BoardThemeService } from '../../../../core/services/board-theme.service';
 
 @Component({
   selector: 'app-chess-board',
@@ -59,7 +60,11 @@ import { AudioService } from '../../../../core/services/audio.service';
                     (click)="selectPromotion(piece.type)"
                     class="w-20 h-20 flex items-center justify-center rounded-xl bg-subtle hover:bg-surface border border-border-base  active:scale-90"
                   >
-                    <span class="text-3xl  uppercase">{{ piece.type }}</span>
+                    <img
+                      [src]="getPromotionPieceUrl(piece.type, p.color)"
+                      [alt]="piece.label"
+                      class="w-16 h-16 object-contain"
+                    />
                   </button>
                 }
               </div>
@@ -234,6 +239,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
   private el = inject(ElementRef);
+  private boardThemeService = inject(BoardThemeService);
 
   // Promotion state
   pendingPromotion = signal<{ from: Key; to: Key; color: 'w' | 'b' } | null>(null);
@@ -617,6 +623,12 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       this.completeMove(p.from, p.to, type);
       this.pendingPromotion.set(null);
     }
+  }
+
+  getPromotionPieceUrl(type: string, color: 'w' | 'b'): string {
+    const pieceSet = this.boardThemeService.pieceSet();
+    const typeUpper = type.toUpperCase();
+    return `/pieces/${pieceSet}/${color}${typeUpper}.svg`;
   }
 
   cancelPromotion() {

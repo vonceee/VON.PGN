@@ -111,32 +111,44 @@
     } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of studies(); track study.id) {
-      <div class="bg-main rounded-4xl overflow-hidden flex flex-col h-full relative group cursor-default">
-        <!-- Card Body -->
-        <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <div class="flex flex-col gap-1">
-              <h2 class="text-base md:text-2xl font-semibold">{{ study.name }}</h2>
-            </div>
-            @if (study.updated_at) {
-            <span class="text-xs whitespace-nowrap shrink-0 mt-1" [title]="formatDate(study.updated_at)">
-              {{ formatRelativeTime(study.updated_at) }}
-            </span>
-            }
+      <div class="bg-main rounded-md border border-border-base shadow-sm flex flex-col md:flex-row-reverse overflow-hidden">
+        <!-- Chess Board Preview Container -->
+        <div
+          class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">
+          <div class="w-full h-full">
+            <app-chess-board [fen]="getStudyFinalPosition(study).fen"
+              [lastMove]="getStudyFinalPosition(study).lastMove ?? undefined" [interactive]="false" [resizable]="false"
+              [hideCoordinates]="true" [fluid]="true" />
           </div>
+        </div>
 
-          <div class="space-y-2 text-sm font-medium text-muted mb-4">
-            <div class="flex items-center gap-2">
-              {{ study.chapters_count }} Chapters
+        <!-- Content -->
+        <div class="flex-1 p-5 flex flex-col justify-between min-w-0">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h2 class="text-xl font-semibold truncate" [title]="study.name">
+                {{ study.name }}
+              </h2>
+              @if (study.updated_at) {
+              <span class="text-xs text-muted whitespace-nowrap shrink-0 mt-1" [title]="formatDate(study.updated_at)">
+                {{ formatRelativeTime(study.updated_at) }}
+              </span>
+              }
             </div>
 
-            <div class="flex items-center gap-2">
-              <span>Created by <span class="font-semibold">{{ study.owner.name }}</span></span>
+            <div class="space-y-1 text-sm font-medium text-muted mb-4">
+              <div class="flex items-center gap-2">
+                {{ study.chapters_count }} {{ study.chapters_count === 1 ? 'Chapter' : 'Chapters' }}
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span>Created by <span class="font-semibold">{{ study.owner.name }}</span></span>
+              </div>
             </div>
           </div>
 
           <!-- Bottom Row -->
-          <div class="mt-auto flex items-center justify-end">
+          <div class="mt-4 flex items-center justify-start">
             <a appButton variant="primary" [routerLink]="'/study/' + study.id">
               View study
             </a>

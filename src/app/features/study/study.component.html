@@ -96,25 +96,13 @@
           <div class="h-4 w-px bg-muted/20 shrink-0"></div>
           @if (!facade.hasJoinedClass()) {
           <button (click)="facade.joinClassSession()" title="Join Class"
-            class="px-3 py-1 rounded-full transition-colors cursor-pointer flex items-center gap-1.5 text-rose-600 hover:bg-rose-500/20 text-xs font-semibold">
-            <span class="relative flex h-1.5 w-1.5">
-              <span class="absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+            class="p-2 rounded-full transition-colors cursor-pointer text-rose-500 hover:bg-rose-500/10 flex items-center justify-center relative">
+            <ng-icon name="heroUserPlus" class="text-lg"></ng-icon>
+            <span class="absolute top-1 right-1 flex h-1.5 w-1.5">
+              <span class="absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75 animate-ping"></span>
               <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500"></span>
             </span>
-            Join class
           </button>
-          } @else {
-          <div
-            class="flex items-center gap-1.5 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 text-emerald-700 text-xs font-bold uppercase tracking-wider">
-            <span class="relative flex h-1.5 w-1.5">
-              <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-            </span>
-            Active
-            <span class="ml-1 font-mono tracking-normal normal-case opacity-80 tabular-nums">
-              {{ facade.classDuration() }}
-            </span>
-          </div>
           }
           }
         </div>
@@ -211,6 +199,11 @@
   @if (facade.showStartClassDialog()) {
   <app-start-class-dialog (confirm)="facade.onStartClassConfirmed()"
     (cancel)="facade.onStartClassCancelled()"></app-start-class-dialog>
+  }
+
+  @if (facade.showEndClassDialog()) {
+  <app-end-class-dialog (confirm)="facade.onEndClassConfirmed()"
+    (cancel)="facade.onEndClassCancelled()"></app-end-class-dialog>
   }
 
   @if (facade.showJoinClassDialog()) {

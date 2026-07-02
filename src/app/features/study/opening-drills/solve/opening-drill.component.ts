@@ -32,11 +32,11 @@ export interface PracticeMistake {
 }
 
 @Component({
-  selector: 'app-opening-drill-solve',
+  selector: 'app-opening-drill',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, ChessBoardComponent, ButtonComponent, NgIconComponent],
   providers: [provideIcons({ heroInformationCircle })],
-  templateUrl: './opening-drill-solve.component.html',
+  templateUrl: './opening-drill.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class.absolute]': "viewState() === 'active'",
@@ -47,7 +47,7 @@ export interface PracticeMistake {
     '[class.block]': 'true',
   },
 })
-export class OpeningDrillSolveComponent implements OnInit, OnDestroy {
+export class OpeningDrillComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private router = inject(Router);
   private route = inject(ActivatedRoute);

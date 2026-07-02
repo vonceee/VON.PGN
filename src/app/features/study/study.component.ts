@@ -28,6 +28,7 @@ import {
   heroChevronDoubleLeft,
   heroChevronDoubleRight,
   heroEye,
+  heroUserPlus,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -44,6 +45,7 @@ import { JoinClassDialogComponent } from './dialogs/join-class-dialog/join-class
 import { StudyMetadataComponent } from './study-metadata/study-metadata.component';
 import { StudyMetadataDialogComponent } from './dialogs/study-metadata-dialog/study-metadata-dialog.component';
 import { StartClassDialogComponent } from './dialogs/start-class-dialog/start-class-dialog.component';
+import { EndClassDialogComponent } from './dialogs/end-class-dialog/end-class-dialog.component';
 
 import { LayoutService } from '../../core/services/layout.service';
 import { StudyShortcutsService } from './services/study-shortcuts.service';
@@ -64,6 +66,7 @@ import { StudyAnalysisComponent } from './study-analysis/study-analysis.componen
     StudySidebarComponent,
     StudyMetadataComponent,
     StartClassDialogComponent,
+    EndClassDialogComponent,
     JoinClassDialogComponent,
     StudyAnalysisComponent,
   ],
@@ -85,6 +88,7 @@ import { StudyAnalysisComponent } from './study-analysis/study-analysis.componen
       heroChevronDoubleLeft,
       heroChevronDoubleRight,
       heroEye,
+      heroUserPlus,
     }),
   ],
   templateUrl: './study.component.html',

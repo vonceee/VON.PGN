@@ -11,7 +11,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
     <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative">
       <!-- Header -->
       <div class="flex items-center justify-between">
-        <h2 class="text-2xl">Request board control</h2>
+        <h2 class="text-2xl font-medium">Request board control</h2>
       </div>
 
       <!-- Body Content -->
@@ -25,18 +25,13 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
           </div>
           <div>
             <p class="text-sm font-semibold">Board is Locked</p>
-            <p class="text-xs text-muted">The tutor currently has exclusive board control.</p>
           </div>
         </div>
 
         <ul class="space-y-3">
           <li class="flex items-start gap-3">
             <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-            <span class="text-sm/85">Ask your tutor for permission to demonstrate your chess ideas live.</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-            <span class="text-sm/85">Once granted, your moves and drawings will be synced in real time.</span>
+            <span class="text-sm">Request permission to interact with the chessboard?</span>
           </li>
         </ul>
       </div>

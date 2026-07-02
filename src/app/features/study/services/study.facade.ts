@@ -152,6 +152,7 @@ export class StudyFacade {
 
   showDeleteModal = signal(false);
   showStartClassDialog = signal(false);
+  showEndClassDialog = signal(false);
   showJoinClassDialog = signal(false);
   isDeleting = signal(false);
   isActionInProgress = signal(false);
@@ -407,7 +408,7 @@ export class StudyFacade {
 
   toggleClassSession() {
     if (this.isClassActive()) {
-      this.studyService.endClass();
+      this.showEndClassDialog.set(true);
       return;
     }
     this.showStartClassDialog.set(true);
@@ -420,6 +421,15 @@ export class StudyFacade {
 
   onStartClassCancelled() {
     this.showStartClassDialog.set(false);
+  }
+
+  onEndClassConfirmed() {
+    this.showEndClassDialog.set(false);
+    this.studyService.endClass();
+  }
+
+  onEndClassCancelled() {
+    this.showEndClassDialog.set(false);
   }
 
   joinClassSession() {

@@ -79,7 +79,7 @@
     <!-- Repertoires Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of filteredRepertoires(); track study.id) {
-      <div class="bg-main rounded-md border border-border-base shadow-sm flex flex-col md:flex-row overflow-hidden">
+      <div class="bg-main rounded-md border border-border-base shadow-sm flex flex-col md:flex-row-reverse overflow-hidden">
         <!-- Chess Board Preview Container -->
         <div
           class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">
@@ -101,7 +101,7 @@
             </p>
           </div>
 
-          <div class="mt-4 flex justify-end">
+          <div class="mt-4 flex justify-start">
             <button appButton variant="primary" (click)="selectRepertoire(study)">
               Practice opening
             </button>

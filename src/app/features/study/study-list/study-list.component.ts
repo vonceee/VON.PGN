@@ -12,12 +12,16 @@ import { LoadingComponent } from '@shared/feedback';
 import { effect } from '@angular/core';
 import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { ChessBoardComponent } from '@shared/chess';
+import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
+import { Study } from '../../../core/models/study.model';
+import type { Key } from 'chessground/types';
 
 
 @Component({
   selector: 'app-study-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ButtonComponent, DialogModule, LoadingComponent],
+  imports: [CommonModule, RouterModule, FormsModule, ButtonComponent, DialogModule, LoadingComponent, ChessBoardComponent],
   templateUrl: './study-list.component.html',
 })
 export class StudyListComponent implements OnInit {
@@ -57,7 +61,8 @@ export class StudyListComponent implements OnInit {
           categoryVal,
           forceRefresh,
           params.search,
-          params.sort
+          params.sort,
+          'chapters'
         ).pipe(
           catchError(() => of({ data: [] }))
         );
@@ -150,6 +155,32 @@ export class StudyListComponent implements OnInit {
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 30) return `${diffDays}d ago`;
     return this.formatDate(dateStr);
+  }
+
+  getStudyFinalPosition(study: Study): { fen: string; lastMove: Key[] | null } {
+    const chapters = study.chapters || [];
+    if (chapters.length === 0) {
+      return { fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', lastMove: null };
+    }
+    const firstChapter = chapters[0];
+    const rawMoves = firstChapter.moves || [];
+    const initialFen = firstChapter.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+    const parsedTree = buildTreeFromMoves(rawMoves, initialFen);
+    if (parsedTree.length === 0) {
+      return { fen: initialFen, lastMove: null };
+    }
+
+    const lastNode = parsedTree[parsedTree.length - 1];
+    let lastMove: Key[] | null = null;
+    if (lastNode.uci && lastNode.uci.length >= 4) {
+      lastMove = [lastNode.uci.substring(0, 2) as Key, lastNode.uci.substring(2, 4) as Key];
+    }
+
+    return {
+      fen: lastNode.fen,
+      lastMove
+    };
   }
 }
 

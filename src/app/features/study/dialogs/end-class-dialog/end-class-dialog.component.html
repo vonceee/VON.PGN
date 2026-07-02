@@ -1,0 +1,30 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="cancel.emit()">
+  <div class="bg-main rounded-4xl w-full max-w-md mx-4" (click)="$event.stopPropagation()">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-medium">End class session?</h2>
+      </div>
+
+      <!-- Content -->
+      <div class="space-y-3 mb-6">
+        <p class="text-md">
+          Confirm end class?
+        </p>
+        <li class="flex items-start gap-3">
+          <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
+          <span class="text-sm">All students will be disconnected from this session</span>
+        </li>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-3 px-6 pb-6">
+      <button appButton variant="outline" class="flex-1" (click)="cancel.emit()">
+        Cancel
+      </button>
+      <button appButton variant="danger" class="flex-1" (click)="confirm.emit()">
+        End session
+      </button>
+    </div>
+  </div>
+</div>

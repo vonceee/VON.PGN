@@ -16,7 +16,7 @@ import { filter } from 'rxjs/operators';
         <div class="flex flex-col min-h-full bg-subtle">
           <div 
             class="w-full flex-1 mx-auto relative"
-            [ngClass]="layoutService.isFluid() ? 'max-w-[1800px]' : 'max-w-7xl'"
+            [ngClass]="layoutService.isFluid() ? 'max-w-[1800px]' : 'max-w-8xl'"
           >
             <router-outlet></router-outlet>
           </div>

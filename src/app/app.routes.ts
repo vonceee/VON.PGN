@@ -147,7 +147,7 @@ export const routes: Routes = [
       {
         path: 'study/drills',
         loadComponent: () =>
-          import('./features/study/opening-drills/opening-drills.component').then((m) => m.OpeningDrillsComponent),
+          import('./features/study/opening-drills/opening_drill-list.component').then((m) => m.OpeningDrillListComponent),
         canActivate: [authGuard],
         title: 'Vonchess.net • Opening Drills',
         data: { description: 'Build opening muscle memory by practicing your repertoires against an automated opponent.' },
@@ -156,7 +156,7 @@ export const routes: Routes = [
       {
         path: 'study/drills/solve/:id',
         loadComponent: () =>
-          import('./features/study/opening-drills/solve/opening-drill-solve.component').then((m) => m.OpeningDrillSolveComponent),
+          import('./features/study/opening-drills/solve/opening-drill.component').then((m) => m.OpeningDrillComponent),
         canActivate: [authGuard],
         title: 'Vonchess.net • Repertoire Drill',
         data: { description: 'Build opening muscle memory by practicing your repertoires against an automated opponent.' },

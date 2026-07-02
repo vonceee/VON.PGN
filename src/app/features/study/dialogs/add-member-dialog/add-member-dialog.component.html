@@ -1,0 +1,67 @@
+<div class="bg-main rounded-4xl w-full max-w-md p-8 space-y-6 relative">
+  <!-- Dialog Header -->
+  <div class="flex items-center justify-between">
+    <h2 class="text-2xl font-medium">Add study member</h2>
+  </div>
+
+  <!-- Search & Results Section -->
+  <div class="relative space-y-4">
+    <div
+      class="flex items-center h-11 w-full px-4 rounded-full bg-subtle border border-border-base focus-within:border-accent/40 focus-within:ring-1 focus-within:ring-accent/40 transition-all">
+      <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)"
+        placeholder="search players..." autofocus
+        class="bg-transparent outline-none text-sm font-medium placeholder-muted w-full" />
+
+      @if (isSearching()) {
+      <div class="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
+      }
+    </div>
+
+    <!-- Search Results Dropdown List -->
+    @if (results().length > 0) {
+    <div class="w-full bg-subtle rounded-3xl py-2 max-h-48 overflow-y-auto">
+      @for (user of results(); track user.uid) {
+      <button (click)="selectUser(user)"
+        class="w-full flex items-center gap-3 px-5 py-3 text-left cursor-pointer transition-all border-b border-border-base/50 last:border-0"
+        [class.bg-accent/10]="selectedUser()?.uid === user.uid" [class.text-accent]="selectedUser()?.uid === user.uid"
+        [class.hover:bg-main]="selectedUser()?.uid !== user.uid"
+        [class.hover:text-accent]="selectedUser()?.uid !== user.uid">
+        <div class="flex flex-col min-w-0">
+          <span class="text-sm font-medium truncate">{{ user.username }}</span>
+        </div>
+      </button>
+      }
+    </div>
+    } @else if (searchQuery().length >= 2 && !isSearching()) {
+    <div class="text-center py-6 text-sm text-muted bg-subtle rounded-3xl">
+      user not found.
+    </div>
+    }
+  </div>
+
+  <!-- Selected User Preview -->
+  @if (selectedUser(); as selected) {
+  <div class="flex items-center justify-between bg-accent/5 px-4 py-2.5 rounded-2xl border border-accent/20">
+    <div class="flex flex-col">
+      <span class="text-xs text-muted">add user?</span>
+      <span class="text-sm font-semibold">{{ selected.username }}</span>
+    </div>
+    <button (click)="clearSelection()" class="text-muted hover:text-rose-500 transition-colors p-1"
+      title="Clear selection">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  }
+
+  <!-- Actions -->
+  <div class="flex gap-4">
+    <button appButton variant="outline" class="flex-1" (click)="dialogRef.close()">
+      Cancel
+    </button>
+    <button appButton variant="primary" class="flex-1" [disabled]="!selectedUser()" (click)="addMember()">
+      Add member
+    </button>
+  </div>
+</div>

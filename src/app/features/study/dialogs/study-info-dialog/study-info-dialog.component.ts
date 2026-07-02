@@ -8,7 +8,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 import { UserHovercardDirective } from '@shared/directives';
-import { AddMemberDialogComponent, AddMemberResult } from '../add-collaborator-dialog/add-collaborator-dialog.component';
+import { AddMemberDialogComponent, AddMemberResult } from '../add-member-dialog/add-member-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
 import { StudySettingsDialogComponent } from '../study-settings-dialog/study-settings-dialog.component';
 

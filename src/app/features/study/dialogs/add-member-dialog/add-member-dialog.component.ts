@@ -6,6 +6,7 @@ import { UserService, UserSearchResult } from '../../../../core/services/user.se
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ButtonComponent } from '@shared/ui';
 
 export interface AddMemberResult {
   user: UserSearchResult;
@@ -15,8 +16,8 @@ export interface AddMemberResult {
 @Component({
   selector: 'app-add-member-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './add-collaborator-dialog.component.html',
+  imports: [CommonModule, FormsModule, ButtonComponent],
+  templateUrl: './add-member-dialog.component.html',
   styles: [`
     :host {
       display: block;
@@ -29,6 +30,7 @@ export class AddMemberDialogComponent {
 
   searchQuery = signal('');
   results = signal<UserSearchResult[]>([]);
+  selectedUser = signal<UserSearchResult | null>(null);
   isSearching = signal(false);
 
   private searchSubject = new Subject<string>();
@@ -67,9 +69,20 @@ export class AddMemberDialogComponent {
   }
 
   selectUser(user: UserSearchResult) {
-    this.dialogRef.close({
-      user,
-      role: 'member'
-    });
+    this.selectedUser.set(user);
+  }
+
+  clearSelection() {
+    this.selectedUser.set(null);
+  }
+
+  addMember() {
+    const selected = this.selectedUser();
+    if (selected) {
+      this.dialogRef.close({
+        user: selected,
+        role: 'member'
+      });
+    }
   }
 }

@@ -29,12 +29,12 @@ import { AuthService } from '../../../core/services/auth.service';
     })
   ],
   template: `
-    <div class="flex flex-col h-full min-h-0 overflow-hidden" [ngClass]="webrtc.isDetached() ? 'bg-surface/95 p-4 rounded-2xl border border-border-base/50 backdrop-blur-md' : 'bg-transparent p-3'">
+    <div class="flex flex-col h-full min-h-0 overflow-hidden" [ngClass]="webrtc.isDetached() ? 'bg-surface/95 p-4 rounded-2xl backdrop-blur-md' : 'bg-transparent p-3'">
       <!-- Scrollable Videos Container -->
       <div class="flex flex-col gap-3 flex-1 overflow-y-auto min-h-0 mb-4">
         
         <!-- Local Stream Video Box -->
-        <div class="relative bg-subtle rounded-xl overflow-hidden border border-border-base/50 aspect-video flex items-center justify-center shadow-sm">
+        <div class="relative bg-subtle rounded-xl overflow-hidden aspect-video flex items-center justify-center shadow-sm">
           @if (localStream()) {
             <video 
               #localVideo 
@@ -54,14 +54,14 @@ import { AuthService } from '../../../core/services/auth.service';
             }
           } @else {
             <div class="text-muted text-xs flex flex-col items-center">
-              <div class="w-10 h-10 rounded-full bg-surface border border-border-base/50 flex items-center justify-center mb-2">
+              <div class="w-10 h-10 rounded-full bg-surface flex items-center justify-center mb-2">
                 <ng-icon name="heroVideoCameraSlash" class="w-5 h-5 text-muted"></ng-icon>
               </div>
               <span class="text-xsfont-medium">Connecting camera...</span>
             </div>
           }
           <!-- Label Overlay -->
-          <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold border border-border-base/50 shadow-sm flex items-center gap-1.5">
+          <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold shadow-sm flex items-center gap-1.5">
             <span>You</span>
             @if (isMuted()) {
               <div class="relative flex items-center justify-center">
@@ -74,7 +74,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
         <!-- Remote Stream Video Boxes -->
         @for (peer of remoteStreamsList(); track peer.id) {
-          <div class="relative bg-subtle rounded-xl overflow-hidden border border-border-base/50 aspect-video flex items-center justify-center shadow-sm">
+          <div class="relative bg-subtle rounded-xl overflow-hidden aspect-video flex items-center justify-center shadow-sm">
             <video 
               [srcObject]="peer.stream" 
               autoplay 
@@ -82,7 +82,7 @@ import { AuthService } from '../../../core/services/auth.service';
               class="w-full h-full object-cover"
             ></video>
             <!-- Label Overlay -->
-            <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold border border-border-base/50 shadow-sm flex items-center gap-1.5">
+            <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold shadow-sm flex items-center gap-1.5">
               <span>{{ peer.userName }}</span>
             </div>
           </div>
@@ -90,7 +90,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
 
       <!-- Controls Panel (Light Mode) -->
-      <div class="flex items-center justify-center gap-4 bg-surface py-2 px-4 rounded-xl border border-border-base/50 shadow-sm shrink-0">
+      <div class="flex items-center justify-center gap-4 bg-surface py-2 px-4 rounded-xl shadow-sm shrink-0">
         <!-- Mic Toggle -->
         <button 
           (click)="toggleMic()" 

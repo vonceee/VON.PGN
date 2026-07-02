@@ -13,14 +13,14 @@ import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 import type { Key } from 'chessground/types';
 
 @Component({
-  selector: 'app-opening-drills',
+  selector: 'app-opening-drill-list',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, ButtonComponent, ChessBoardComponent],
-  templateUrl: './opening-drills.component.html',
+  templateUrl: './opening_drill-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block h-full w-full' }
 })
-export class OpeningDrillsComponent implements OnInit {
+export class OpeningDrillListComponent implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
   private studyService = inject(StudyService);
