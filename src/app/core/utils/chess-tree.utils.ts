@@ -63,6 +63,9 @@ function normalizeMoveNode(node: any): MoveNode {
     comments: Array.isArray(node.comments) ? node.comments.map(String) : [],
     preComments: Array.isArray(node.preComments) ? node.preComments.map(String) : [],
     glyphs: Array.isArray(node.glyphs) ? (node.glyphs.map(Number) as GlyphId[]) : [],
+    shapes: Array.isArray(node.shapes) ? node.shapes : undefined,
+    eval: node.eval,
+    forceVariation: node.forceVariation,
   };
 }
 
@@ -153,7 +156,7 @@ export function buildTreeFromMoves(moves: any, initialFen?: string): MoveNode[] 
   ) {
     const pgnString = preprocessPgn(processedMoves.pgn as string);
     try {
-      const pgnBody = pgnString.replace(/\[.*?\]/g, '').trim();
+      const pgnBody = pgnString.replace(/^\[.*\]\r?\n?/gm, '').trim();
       const tokens = tokenizePgn(pgnBody);
       return parsePgnToNodes(tokens, initialFen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
     } catch (e) {
@@ -259,6 +262,10 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
       if (lastNode) {
         if (!lastNode.comments) lastNode.comments = [];
         lastNode.comments.push(comment);
+        const shapes = parseShapesFromComment(comment);
+        if (shapes.length > 0) {
+          lastNode.shapes = [...(lastNode.shapes || []), ...shapes];
+        }
       } else {
         preComment = comment;
       }
@@ -446,4 +453,44 @@ export function findVariationBranch(
     }
   }
   return null;
+}
+
+function parseShapesFromComment(comment: string): any[] {
+  const shapes: any[] = [];
+  const cslMatch = comment.match(/\[%csl\s+([^\]]+)\]/);
+  if (cslMatch) {
+    const items = cslMatch[1].split(',');
+    for (let item of items) {
+      item = item.trim();
+      if (item.length >= 3) {
+        const colorCode = item.charAt(0);
+        const square = item.substring(1, 3);
+        shapes.push({ orig: square, brush: getBrushColor(colorCode) });
+      }
+    }
+  }
+  const calMatch = comment.match(/\[%cal\s+([^\]]+)\]/);
+  if (calMatch) {
+    const items = calMatch[1].split(',');
+    for (let item of items) {
+      item = item.trim();
+      if (item.length >= 5) {
+        const colorCode = item.charAt(0);
+        const orig = item.substring(1, 3);
+        const dest = item.substring(3, 5);
+        shapes.push({ orig, dest, brush: getBrushColor(colorCode) });
+      }
+    }
+  }
+  return shapes;
+}
+
+function getBrushColor(code: string): string {
+  switch (code.toUpperCase()) {
+    case 'G': return 'green';
+    case 'R': return 'red';
+    case 'Y': return 'yellow';
+    case 'B': return 'blue';
+    default: return 'green';
+  }
 }

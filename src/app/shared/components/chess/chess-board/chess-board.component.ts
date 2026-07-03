@@ -236,6 +236,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private cgApi!: Api;
   private chess = new Chess();
   private initialized = false;
+  private isProgrammaticSet = false;
   private platformId = inject(PLATFORM_ID);
   private audioService = inject(AudioService);
   private el = inject(ElementRef);
@@ -410,7 +411,12 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         this.cgApi.set({ orientation: this.orientation });
       }
       if (changes['syncedShapes'] && !changes['syncedShapes'].isFirstChange()) {
-        this.cgApi.set({ drawable: { shapes: this.syncedShapes } });
+        this.isProgrammaticSet = true;
+        try {
+          this.cgApi.set({ drawable: { shapes: this.syncedShapes } });
+        } finally {
+          this.isProgrammaticSet = false;
+        }
       }
       if (changes['interactive']) {
         this.syncBoard();
@@ -458,7 +464,11 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
           deleteOnDropOff: this.isEditor
         },
         selectable: { enabled: this.interactive },
-        drawable: { enabled: true, onChange: () => this.onShapesChanged() },
+        drawable: {
+          enabled: true,
+          shapes: this.syncedShapes,
+          onChange: () => this.onShapesChanged()
+        },
         events: {
           change: () => this.onBoardChange()
         }
@@ -506,22 +516,30 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       }
     }
 
-    this.cgApi.set({
-      fen: fenToUse,
-      lastMove: lastMoveToSet as any,
-      turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
-      movable: {
-        free: this.isEditor,
-        color: this.interactive ? 'both' : undefined,
-        dests: (this.interactive && !this.isEditor) ? this.getLegalMoves() : new Map(),
-        showDests: !this.isEditor,
-      },
-      selectable: { enabled: this.interactive },
-      draggable: {
-        enabled: this.interactive,
-        deleteOnDropOff: this.isEditor
-      },
-    });
+    this.isProgrammaticSet = true;
+    try {
+      this.cgApi.set({
+        fen: fenToUse,
+        lastMove: lastMoveToSet as any,
+        turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
+        movable: {
+          free: this.isEditor,
+          color: this.interactive ? 'both' : undefined,
+          dests: (this.interactive && !this.isEditor) ? this.getLegalMoves() : new Map(),
+          showDests: !this.isEditor,
+        },
+        selectable: { enabled: this.interactive },
+        draggable: {
+          enabled: this.interactive,
+          deleteOnDropOff: this.isEditor
+        },
+        drawable: {
+          shapes: this.syncedShapes
+        }
+      });
+    } finally {
+      this.isProgrammaticSet = false;
+    }
 
     if (this.configOverride) {
       this.applyConfigOverride(this.configOverride);
@@ -636,9 +654,27 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     this.syncBoard();
   }
 
+  private shapesAreEqual(a: any[] | undefined, b: any[] | undefined): boolean {
+    if (!a || !b) return a === b;
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      const s1 = a[i];
+      const s2 = b[i];
+      if (s1.orig !== s2.orig || s1.dest !== s2.dest || s1.brush !== s2.brush) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private onShapesChanged() {
+    if (this.isProgrammaticSet) return;
     if (this.cgApi) {
-      this.shapeDrawn.emit(this.cgApi.state.drawable.shapes);
+      const shapes = this.cgApi.state.drawable.shapes;
+      if (this.shapesAreEqual(shapes, this.syncedShapes)) {
+        return;
+      }
+      this.shapeDrawn.emit(shapes);
     }
   }
 

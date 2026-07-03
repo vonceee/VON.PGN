@@ -161,8 +161,12 @@ export class StudyFacade {
   private lastChapterId: number | null = null;
   private lastChapterOrientation: 'white' | 'black' | null = null;
 
-  // Computed properties
-  mergedShapes = computed(() => this.remoteShapes());
+  mergedShapes = computed(() => {
+    const remote = this.remoteShapes();
+    if (remote && remote.length > 0) return remote;
+    const node = this.currentNode();
+    return node?.shapes || [];
+  });
 
   initialPly = computed(() => {
     const chapter = this.currentChapter();
@@ -836,7 +840,33 @@ export class StudyFacade {
   }
 
   onShapeDrawn(shapes: any[]) {
-    if (this.canEdit()) this.studyService.emitShapes(shapes);
+    if (!this.canEdit()) return;
+    this.studyService.emitShapes(shapes);
+
+    const node = this.currentNode();
+    if (node) {
+      this.moveTree.update((tree) =>
+        updateNodeInTree(tree, node.fen, node.ply, {
+          shapes: shapes,
+        })
+      );
+
+      this.currentNode.set({
+        ...node,
+        shapes: shapes
+      });
+
+      this.studyService
+        .emitMove(
+          '',
+          this.currentFen(),
+          this.moveTree(),
+          this.boardOrientation(),
+          this.isSyncing(),
+          false
+        )
+        .subscribe();
+    }
   }
 
   onSaveMetadata(tags: Record<string, string>) {
