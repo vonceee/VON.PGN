@@ -8,14 +8,14 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   template: `
-    <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative">
+    <div class="bg-main rounded-4xl max-w-xl max-h-[90vh] flex flex-col relative overflow-hidden">
       <!-- Header -->
-      <div class="flex justify-between">
+      <div class="p-8 pb-0 flex items-center justify-between shrink-0">
         <h2 class="text-2xl">Board control request</h2>
       </div>
 
       <!-- Body Content -->
-      <div class="space-y-6">
+      <div class="flex-1 overflow-y-auto p-8 space-y-6">
         <div class="flex items-center gap-4 bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/20">
           <div>
             <p class="text-sm font-medium">Incoming Request</p>
@@ -40,12 +40,12 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
       </div>
 
       <!-- Footer Actions -->
-      <div class="pt-4 flex gap-4 w-full">
-        <button appButton variant="outline" class="flex-1 !text-rose-500 hover:!bg-rose-500/10" (click)="dialogRef.close('decline')">
+      <div class="p-8 pt-4 flex gap-4 w-full shrink-0">
+        <button appButton variant="danger" class="flex-1" (click)="dialogRef.close('decline')">
           Decline
         </button>
         <button appButton variant="primary" class="flex-1" (click)="dialogRef.close('grant')">
-          Grant Control
+          Grant control
         </button>
       </div>
     </div>

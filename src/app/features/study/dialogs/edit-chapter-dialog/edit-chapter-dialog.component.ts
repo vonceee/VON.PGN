@@ -23,7 +23,7 @@ export interface EditChapterDialogData {
   template: `
     <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative mx-auto">
       <!-- Header -->
-      <div class="flex items-center justify-between">
+      <div class="flex justify-between">
         <h2 class="text-2xl font-sans">Edit chapter</h2>
       </div>
 

@@ -17,7 +17,7 @@ import { ToastService } from '../../../core/services/toast.service';
   template: `
     <div class="coach-editor mx-auto space-y-8">
       <!-- Top Bar -->
-      <div class="flex items-center justify-between">
+      <div class="flex justify-between">
         <button (click)="location.back()" class=" hover: font-semibold">
           <span>&larr; Back to List</span>
         </button>
@@ -86,7 +86,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
             <!-- Playing Experience -->
             <div class="space-y-3">
-              <div class="flex items-center justify-between">
+              <div class="flex justify-between">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">Playing Experience</label>
                 <button type="button" (click)="addPlayingExp()" class="text-xs font-semibold text-blue-500 hover:text-blue-600">+ Add Line</button>
               </div>
@@ -104,7 +104,7 @@ import { ToastService } from '../../../core/services/toast.service';
 
             <!-- Teaching Experience -->
             <div class="space-y-3 mt-6">
-              <div class="flex items-center justify-between">
+              <div class="flex justify-between">
                 <label class="text-xs font-semibold  uppercase  mb-1 px-1">Teaching Experience</label>
                 <button type="button" (click)="addTeachingExp()" class="text-xs font-semibold text-blue-500 hover:text-blue-600">+ Add Line</button>
               </div>

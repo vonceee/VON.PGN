@@ -120,7 +120,7 @@ export class StudyListComponent implements OnInit {
     const dialogRef = this.dialog.open<{ name: string; visibility: string; category: string; orientation?: string }>(CreateStudyDialogComponent, {
       width: '450px',
       maxWidth: '95vw',
-      backdropClass: ['bg-black/5'],
+      backdropClass: ['bg-black/50'],
     });
 
     dialogRef.closed.subscribe((result) => {

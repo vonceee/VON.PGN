@@ -94,7 +94,7 @@
           [class.z-40]="showExplanation() && walkthroughStep() === 3"
           [class.bg-main]="showExplanation() && walkthroughStep() === 3">
           <div>
-            <h2 class="text-2xl font-medium">{{ selectedStudy()?.name }}</h2>
+            <h2 class="text-2xl">{{ selectedStudy()?.name }}</h2>
             <div class="flex items-center gap-2 mt-2">
               <span class="text-sm font-medium text-muted">{{ currentChapter()?.name }}</span>
             </div>
@@ -277,39 +277,35 @@
   }
 
   @if (viewState() === 'success') {
-  <div class="flex-1 flex flex-col items-start justify-start max-w-4xl mx-auto py-8 w-full pr-2">
+  <div class="flex-1 flex flex-col items-start justify-start mx-auto">
 
     <!-- Success Hero Header -->
     <div class="flex items-center gap-4 mb-6">
       <div>
-        <h1 class="text-3xl md:text-4xl">Repertoire practice finished!</h1>
+        <h1 class="text-4xl md:text-4xl">Repertoire practice finished!</h1>
       </div>
     </div>
 
-    <p class="text-muted text-base mb-8 max-w-2xl">
+    <p class="text-muted text-base mb-8">
       Practice session complete for <strong class="font-medium">{{ selectedStudy()?.name }}</strong>.
-      Review your training summary and practice your weak spots below.
     </p>
 
     <!-- Stats Card Grid -->
-    <div class="bg-subtle rounded-4xl p-6 w-full mb-10">
-      <h3 class="text-xs font-medium text-muted mb-4">Drill diagnostic summary</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-main rounded-2xl p-5/50">
+    <div class="bg-main rounded-4xl p-6 w-full mb-10">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+        <div>
           <span class="text-xs text-muted block mb-1">Accuracy</span>
-          <span class="text-3xl font-medium transition-colors" [class.text-emerald-600]="drillAccuracy() >= 85"
-            [class.text-orange-500]="drillAccuracy() >= 60 && drillAccuracy() < 85"
-            [class.text-rose-500]="drillAccuracy() < 60">
+          <span class="text-4xl font-medium transition-colors">
             {{ drillAccuracy() }}%
           </span>
         </div>
-        <div class="bg-main rounded-2xl p-5/50">
+        <div>
           <span class="text-xs text-muted block mb-1">Correct moves</span>
-          <span class="text-3xl font-semibold">{{ correctCount() }}</span>
+          <span class="text-4xl font-medium">{{ correctCount() }}</span>
         </div>
-        <div class="bg-main rounded-2xl p-5/50">
+        <div>
           <span class="text-xs text-muted block mb-1">Incorrect moves</span>
-          <span class="text-3xl font-medium font-medium" [class.text-rose-600]="drillMistakes().length > 0"
+          <span class="text-4xl font-medium font-medium" [class.text-rose-600]="drillMistakes().length > 0"
             [class.text-emerald-600]="drillMistakes().length === 0">
             {{ drillMistakes().length }}
           </span>
@@ -321,9 +317,9 @@
     <div class="w-full text-left mb-10">
       <h3 class="text-xl font-medium mb-6 flex items-center gap-2">
         @if (drillMistakes().length === 0) {
-        <span class="font-normal text-lg">Flawless performance</span>
+        <span class="text-lg">Flawless performance</span>
         } @else {
-        <span class="font-normal text-lg">Weak spots to review ({{ drillMistakes().length }})</span>
+        <span class="text-lg">Weak spots to review ({{ drillMistakes().length }})</span>
         }
       </h3>
 

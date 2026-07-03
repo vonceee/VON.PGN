@@ -368,7 +368,7 @@ export class StudyFacade {
                 width: '450px',
                 maxWidth: '90vw',
                 data: { userName: payload.userName },
-                backdropClass: ['bg-black/5'],
+                backdropClass: ['bg-black/50'],
                 disableClose: true,
               }
             );
@@ -531,7 +531,7 @@ export class StudyFacade {
       const dialogRef = this.dialog.open<boolean>(RequestControlDialogComponent, {
         width: '450px',
         maxWidth: '90vw',
-        backdropClass: ['bg-black/5'],
+        backdropClass: ['bg-black/50'],
       });
 
       dialogRef.closed.subscribe((requested) => {
@@ -720,7 +720,7 @@ export class StudyFacade {
       if (this.canEdit()) {
         this.studyService.emitNavigation(
           this.currentChapter()?.initial_fen ||
-            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+          'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
           this.moveTree(),
           this.boardOrientation(),
           this.isSyncing()
@@ -757,7 +757,7 @@ export class StudyFacade {
       if (this.canEdit()) {
         this.studyService.emitNavigation(
           this.currentChapter()?.initial_fen ||
-            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+          'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
           this.moveTree(),
           this.boardOrientation(),
           this.isSyncing()
