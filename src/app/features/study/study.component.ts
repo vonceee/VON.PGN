@@ -162,7 +162,21 @@ export class StudyComponent implements OnInit, OnDestroy {
     }
   });
 
+  isMobileLayout = computed(() => !this.isThreeColumn() && !this.isTwoColumn());
+
   isMetadataDialogOpen = signal(false);
+
+  windowWidth = signal(1200);
+  windowHeight = signal(800);
+  maxBoardSize = computed(() => {
+    const width = this.windowWidth();
+    const height = this.windowHeight();
+    const maxHeight = height - 120;
+    const otherWidth = this.otherColumnsWidth();
+    const maxWidth = width - otherWidth;
+    const maxPossible = Math.min(maxWidth, maxHeight);
+    return Math.max(400, Math.min(1000, maxPossible));
+  });
 
   constructor() {
     effect(() => {
@@ -172,6 +186,8 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
 
     if (isPlatformBrowser(this.platformId)) {
+      this.windowWidth.set(window.innerWidth);
+      this.windowHeight.set(window.innerHeight);
       this.updateLayoutStates();
       fromEvent(window, 'resize')
         .pipe(takeUntilDestroyed(), debounceTime(100))
@@ -195,6 +211,9 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   private updateLayoutStates() {
     const width = window.innerWidth;
+    const height = window.innerHeight;
+    this.windowWidth.set(width);
+    this.windowHeight.set(height);
     this.isLargeScreen.set(width >= 1024);
     this.isThreeColumn.set(width >= 1280);
     this.isTwoColumn.set(width >= 768 && width < 1280);

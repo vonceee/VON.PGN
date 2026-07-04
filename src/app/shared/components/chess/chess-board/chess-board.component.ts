@@ -17,6 +17,7 @@ import {
   signal,
   NO_ERRORS_SCHEMA,
   ViewEncapsulation,
+  NgZone,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
@@ -225,6 +226,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   public isResizing = signal(false);
   private lastScrollTime = 0;
   private readonly SCROLL_THROTTLE = 80;
+  private saveTimeout: any;
 
   public get api(): Api { return this.cgApi; }
 
@@ -238,6 +240,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private initialized = false;
   private isProgrammaticSet = false;
   private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
   private audioService = inject(AudioService);
   private el = inject(ElementRef);
   private boardThemeService = inject(BoardThemeService);
@@ -268,28 +271,23 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   private setupResizeObserver() {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Look for the closest stable boundary container
-    let parent = this.el.nativeElement.parentElement;
-    while (parent && !parent.classList.contains('board-container-parent')) {
-      parent = parent.parentElement;
-    }
-
-    // Fallback to immediate parent if no boundary class found
-    if (!parent) parent = this.el.nativeElement.parentElement;
+    const parent = this.el.nativeElement.parentElement;
     if (!parent) return;
 
-    this.resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        this.containerSize = {
-          width: Math.max(0, width),
-          height: Math.max(0, height)
-        };
-        this.updateBoardSize();
-      }
-    });
+    this.ngZone.runOutsideAngular(() => {
+      this.resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          this.containerSize = {
+            width: Math.max(0, width),
+            height: Math.max(0, height)
+          };
+          this.updateBoardSize();
+        }
+      });
 
-    this.resizeObserver.observe(parent);
+      this.resizeObserver.observe(parent);
+    });
   }
 
   private updateBoardSize() {
@@ -321,6 +319,9 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
 
     // Direct DOM update for performance
     if (!this.fluid) {
+      if (isPlatformBrowser(this.platformId)) {
+        document.documentElement.style.setProperty('--board-size', `${totalSize}px`);
+      }
       this.el.nativeElement.style.setProperty('--board-size', `${totalSize}px`);
     } else {
       this.el.nativeElement.style.removeProperty('--board-size');
@@ -331,6 +332,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
       this.boardSize = boardSize;
       this.sizeChange.emit(this.boardSize);
 
+      this.saveBoardSize(boardSize);
+
       // Notify Chessground to redraw
       if (this.cgApi) {
         requestAnimationFrame(() => {
@@ -338,6 +341,17 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
         });
       }
     }
+  }
+
+  private saveBoardSize(size: number) {
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+    }
+    this.saveTimeout = setTimeout(() => {
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem(this.STORAGE_KEY, size.toString());
+      }
+    }, 250);
   }
 
   @HostListener('window:mousemove', ['$event'])

@@ -179,22 +179,6 @@ export class StudyFacade {
     return [node.uci.slice(0, 2), node.uci.slice(2, 4)] as any[];
   });
 
-  activeGlyphs = computed(() => {
-    const node = this.currentNode();
-    if (!node || !node.glyphs || node.glyphs.length === 0 || !node.uci) return [];
-
-    const destSquare = node.uci.slice(2, 4);
-    const boardGlyphIds = [1, 2, 3, 4, 5, 6, 7, 22];
-
-    return node.glyphs
-      .filter((id) => boardGlyphIds.includes(id))
-      .map((id) => {
-        const g = GLYPH_MAPPING[id];
-        return g ? { square: destSquare, symbol: g.symbol, class: g.class } : null;
-      })
-      .filter((g): g is { square: string; symbol: string; class: string } => !!g);
-  });
-
   isOwner = this.studyService.isOwner;
 
   canEdit = computed(() => {

@@ -29,7 +29,7 @@ import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers,
   providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash })],
   templateUrl: './study-sidebar.component.html',
   host: {
-    'class': 'block h-full overflow-hidden'
+    'class': 'flex flex-col min-h-0 overflow-hidden'
   }
 })
 export class StudySidebarComponent {
