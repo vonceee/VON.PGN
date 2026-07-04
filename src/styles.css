@@ -51,3 +51,9 @@
 .theme-transparent main {
   backdrop-filter: blur(8px);
 }
+
+@media (min-width: 768px) {
+  .sync-board-height {
+    height: var(--board-size) !important;
+  }
+}

@@ -190,7 +190,7 @@ import { BoardThemeService } from '../../../../core/services/board-theme.service
     'class': 'block h-full'
   },
 })
-export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
+export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('boardEl') boardEl!: ElementRef<HTMLDivElement>;
 
   @Input() fen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
@@ -221,12 +221,10 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
   boardSize: number = 400;
   private containerSize: { width: number; height: number } = { width: 800, height: 800 };
   private resizeObserver: ResizeObserver | null = null;
-  private readonly STORAGE_KEY = 'von-chess.board-size';
   public manualSize = signal<number | null>(null);
   public isResizing = signal(false);
   private lastScrollTime = 0;
   private readonly SCROLL_THROTTLE = 80;
-  private saveTimeout: any;
 
   public get api(): Api { return this.cgApi; }
 
@@ -254,14 +252,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     { type: 'n', label: 'Knight' },
   ];
 
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      const saved = localStorage.getItem(this.STORAGE_KEY);
-      if (saved) {
-        this.manualSize.set(parseInt(saved, 10));
-      }
-    }
-  }
+
 
   ngAfterViewInit() {
     this.initBoard();
@@ -312,16 +303,16 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     const maxPossible = Math.max(this.minSize, Math.min(maxWidth, maxHeight));
 
     // Use manual size if set, otherwise fit to parent
-    const targetSize = this.manualSize() || maxPossible;
+    const targetSize = this.fluid ? this.containerSize.width : (this.manualSize() || maxPossible);
 
     // Clamp to global min/max and stable screen limits
     const totalSize = Math.max(this.minSize + GUTTER, Math.min(this.maxSize, targetSize, maxPossible));
 
     // Direct DOM update for performance
+    if (isPlatformBrowser(this.platformId)) {
+      document.documentElement.style.setProperty('--board-size', `${totalSize}px`);
+    }
     if (!this.fluid) {
-      if (isPlatformBrowser(this.platformId)) {
-        document.documentElement.style.setProperty('--board-size', `${totalSize}px`);
-      }
       this.el.nativeElement.style.setProperty('--board-size', `${totalSize}px`);
     } else {
       this.el.nativeElement.style.removeProperty('--board-size');
@@ -330,9 +321,8 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     const boardSize = totalSize - GUTTER;
     if (this.boardSize !== boardSize) {
       this.boardSize = boardSize;
+      this.manualSize.set(boardSize);
       this.sizeChange.emit(this.boardSize);
-
-      this.saveBoardSize(boardSize);
 
       // Notify Chessground to redraw
       if (this.cgApi) {
@@ -343,16 +333,7 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     }
   }
 
-  private saveBoardSize(size: number) {
-    if (this.saveTimeout) {
-      clearTimeout(this.saveTimeout);
-    }
-    this.saveTimeout = setTimeout(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem(this.STORAGE_KEY, size.toString());
-      }
-    }, 250);
-  }
+
 
   @HostListener('window:mousemove', ['$event'])
   @HostListener('window:touchmove', ['$event'])
@@ -368,10 +349,6 @@ export class ChessBoardComponent implements AfterViewInit, OnInit, OnChanges, On
     if (newSize !== this.manualSize()) {
       this.manualSize.set(newSize);
       this.updateBoardSize();
-
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem(this.STORAGE_KEY, newSize.toString());
-      }
     }
   }
 

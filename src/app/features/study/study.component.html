@@ -7,7 +7,7 @@
 
       <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
       @if (isThreeColumn()) {
-      <app-study-sidebar class="overflow-hidden" [isLargeScreen]="isLargeScreen()"
+      <app-study-sidebar class="overflow-hidden sync-board-height" [isLargeScreen]="isLargeScreen()"
         [isSyncing]="facade.isSyncing()" [canEdit]="facade.canEdit()"></app-study-sidebar>
       }
 
@@ -32,7 +32,7 @@
       </div>
 
       <!-- Right Column: Notation & Info -->
-      <div class="flex flex-col gap-4 min-h-0 overflow-hidden">
+      <div class="flex flex-col gap-4 overflow-hidden sync-board-height">
 
         <!-- Notation & Commentary Card -->
         <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
