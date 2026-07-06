@@ -69,7 +69,7 @@ import { Router } from '@angular/router';
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
           @for (group of linkGroups; track group.title) {
             <div class="flex flex-col gap-2">
-              <span class="text-sm font-bold uppercase tracking-wider pb-1.5 border-b border-border-base/50 block">
+              <span class="text-sm font-bold uppercase pb-1.5 border-b border-border-base/50 block">
                 {{ group.title }}
               </span>
               <div class="flex flex-col gap-1 pl-1">

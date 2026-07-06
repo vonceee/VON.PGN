@@ -21,56 +21,65 @@
 
       <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
       @if (isThreeColumn()) {
-      <div class="h-full overflow-hidden flex flex-col justify-between bg-main rounded-4xl p-6">
+      <div class="bg-main rounded-4xl p-6 xl:my-auto flex flex-col gap-6 shrink-0">
 
         <!-- Upper part: Info rows -->
-        <div class="space-y-4 flex-1 overflow-y-auto pr-1 select-none">
-          <div class="pb-2 border-b border-border-base/20 flex items-center justify-between">
-            <h1 class="text-xl font-medium">Guess the game</h1>
-            <button (click)="toggleInstructions()" title="Toggle Instructions"
-              class="p-1 rounded-lg hover:bg-subtle text-muted transition-colors flex items-center justify-center">
-              <ng-icon name="heroQuestionMarkCircle" class="text-xl"></ng-icon>
-            </button>
+        <div class="space-y-4 pr-1 select-none">
+          <div class="flex items-center justify-between">
+            <h1 class="text-xl">Guess the game</h1>
           </div>
-
-          <!-- Instructions (Collapsible inline) -->
-          @if (showInstructions()) {
-          <div class="text-sm space-y-2">
-            <p>Type answer and press <strong>Enter</strong>. You can guess one player (e.g. <code>morphy</code>) or
-              both (e.g. <code>morphy vs duke</code>).</p>
-            <p>Use the hint button for clues and the reveal button to reveal the answer.</p>
-          </div>
-          }
 
           <!-- Matchup Rows -->
-          <div class="space-y-4">
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-muted select-none">White</span>
-              <span class="capitalize" [class.text-emerald-600]="correctWhite() || isGameOver()">
-                {{ revealedWhiteName() }}
+          <div class="space-y-3">
+            <!-- White Player Row -->
+            <div class="flex items-center justify-between text-sm p-2 rounded-xl bg-subtle">
+              <div class="flex items-center gap-2 min-w-0">
+                <span
+                  class="w-2.5 h-2.5 rounded-full bg-white border border-border-base/50 shrink-0 select-none"></span>
+                @if (correctWhite() || isGameOver()) {
+                <span class="capitalize truncate">{{ game.white_player }}</span>
+                @if (game.white_rating) {
+                <span class="text-xs text-muted">({{ game.white_rating }})</span>
+                }
+                } @else {
+                <span class="font-medium text-muted">_</span>
+                }
+              </div>
+              @if (correctWhite() || isGameOver()) {
+              @if (getPlayerResult(game.result, 'white'); as resVal) {
+              @if (resVal) {
+              <span
+                class="px-1.5 py-0.5 rounded bg-main border border-border-base/50 text-xs shrink-0 select-none font-medium">
+                {{ resVal }}
               </span>
+              }
+              }
+              }
             </div>
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-muted select-none">Black</span>
-              <span class="capitalize" [class.text-emerald-600]="correctBlack() || isGameOver()">
-                {{ revealedBlackName() }}
-              </span>
-            </div>
-          </div>
 
-          <!-- Hint Rows -->
-          <div class="space-y-4">
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-muted select-none">Year</span>
-              <span class="text-content">
-                {{ revealYear() ? game.year : '••••' }}
+            <!-- Black Player Row -->
+            <div class="flex items-center justify-between text-sm p-2 rounded-xl bg-subtle">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0 select-none"></span>
+                @if (correctBlack() || isGameOver()) {
+                <span class="capitalize truncate">{{ game.black_player }}</span>
+                @if (game.black_rating) {
+                <span class="text-xs text-muted">({{ game.black_rating }})</span>
+                }
+                } @else {
+                <span class="font-medium text-muted">_</span>
+                }
+              </div>
+              @if (correctBlack() || isGameOver()) {
+              @if (getPlayerResult(game.result, 'black'); as resVal) {
+              @if (resVal) {
+              <span
+                class="px-1.5 py-0.5 rounded bg-main border border-border-base/50 text-xs shrink-0 select-none font-medium">
+                {{ resVal }}
               </span>
-            </div>
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-muted select-none">Location</span>
-              <span class="truncate max-w-[180px]" [title]="game.event">
-                {{ revealLocation() ? game.event : '••••' }}
-              </span>
+              }
+              }
+              }
             </div>
           </div>
         </div>
@@ -79,24 +88,35 @@
         <div class="shrink-0">
           @if (!isGameOver()) {
           <div class="flex gap-2">
-            <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()" placeholder="enter answer..."
-              class="px-2 py-2 bg-main border rounded-xl outline-none text-sm font-medium transition-all duration-200"
+            <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()"
+              placeholder="e.g Magnus vs Hikaru"
+              class="flex-1 px-4 py-2 bg-main border rounded-xl outline-none text-sm font-medium transition-all duration-200"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
-            <button (click)="revealNextHint()" [disabled]="revealLocation()" title="Hint"
-              class="p-2 rounded-xl cursor-pointer text-muted flex items-center justify-center">
-              <ng-icon name="heroLightBulb" class="text-lg"></ng-icon>
-            </button>
             <button (click)="revealFullMatchup()" title="Reveal Answer"
-              class="p-2 rounded-xl transition-colors cursor-pointer text-rose-500 flex items-center justify-center">
+              class="p-2 rounded-xl transition-colors cursor-pointer text-rose-500 hover:bg-rose-50 flex items-center justify-center">
               <ng-icon name="heroEye" class="text-lg"></ng-icon>
             </button>
           </div>
           } @else {
-          <button appButton variant="primary" class="w-full" (click)="loadNextChallenge()">
-            Next game
-          </button>
+          <div class="flex gap-2">
+            @if (getAnalysisLinkInfo(game); as linkInfo) {
+              @if (linkInfo.url) {
+                <a appButton variant="outline" [href]="linkInfo.url" target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
+                  <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
+                </a>
+              } @else if (linkInfo.route) {
+                <a appButton variant="outline" [routerLink]="linkInfo.route"
+                  [queryParams]="linkInfo.queryParams" target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
+                  <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
+                </a>
+              }
+            }
+            <button appButton variant="primary" class="flex-1" (click)="loadNextChallenge()">
+              Next
+            </button>
+          </div>
           }
         </div>
       </div>
@@ -164,13 +184,10 @@
       </div>
 
       <!-- Right Column: Notation & Guess panel -->
-      <div class="flex flex-col gap-4 pr-1" [class.h-full]="isThreeColumn()" [class.overflow-y-auto]="isThreeColumn()"
-        [class.md:overflow-hidden]="isThreeColumn()">
+      <div class="flex flex-col gap-4 pr-1 xl:my-auto shrink-0">
 
         <!-- Move Notation Card -->
-        <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0" [class.h-[320px]]="!isThreeColumn()"
-          [class.h-[300px]]="isThreeColumn()" [class.md:h-0]="isThreeColumn()" [class.md:flex-1]="isThreeColumn()"
-          [class.md:min-h-0]="isThreeColumn()">
+        <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0 h-[320px] xl:h-[450px]">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             <app-move-notation layout="grid" [moves]="moveHistory()" [currentPly]="currentPly()"
               [currentFen]="displayFen()" [initialFen]="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'"
@@ -181,49 +198,61 @@
         <!-- Guess Panel Card (Only for 2-column or mobile layouts) -->
         @if (!isThreeColumn()) {
         <div class="bg-main rounded-4xl p-5 flex flex-col shrink-0 space-y-4">
-          <div class="select-none pb-2 border-b border-border-base/20 flex items-center justify-between">
+          <div class="select-none flex items-center justify-between">
             <h1 class="text-lg font-medium">Guess the game</h1>
-            <button (click)="toggleInstructions()" title="Toggle Instructions"
-              class="p-1 rounded-lg hover:bg-subtle text-muted transition-colors flex items-center justify-center">
-              <ng-icon name="heroQuestionMarkCircle" class="text-lg"></ng-icon>
-            </button>
           </div>
 
-          <!-- Instructions (Collapsible inline) -->
-          @if (showInstructions()) {
-          <div class="p-4 text-xs space-y-2">
-            <p>1. Play through the moves using the navigation controls under the board or arrow keys.</p>
-            <p>2. Analyze the opening lines, plans, and player styles.</p>
-            <p>3. Type a guess and press <strong>Enter</strong>. You can guess one player (e.g. <code>morphy</code>) or
-              both (e.g. <code>morphy vs duke</code>).</p>
-            <p>4. Use the 💡 button for clues and the 👁️ button to reveal the answer.</p>
-          </div>
-          }
-          <!-- If NOT in 3-column mode, render target cards and hints inline here! -->
-          <div class="grid grid-cols-2 gap-4 py-2 border-b border-border-base/20 pb-4">
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-muted">White</span>
-              <span class="text-sm capitalize truncate" [class.text-emerald-600]="correctWhite() || isGameOver()">
-                {{ revealedWhiteName() }}
+          <!-- If NOT in 3-column mode, render target cards inline here! -->
+          <div class="grid grid-cols-2 gap-3 pb-2 select-none">
+            <!-- White Player Card -->
+            <div class="flex items-center justify-between text-sm p-2 rounded-xl bg-subtle min-w-0">
+              <div class="flex items-center gap-2 min-w-0">
+                <span
+                  class="w-2.5 h-2.5 rounded-full bg-white border border-border-base/50 shrink-0 select-none"></span>
+                @if (correctWhite() || isGameOver()) {
+                <span class="capitalize font-medium truncate">{{ game.white_player }}</span>
+                @if (game.white_rating) {
+                <span class="text-xs text-muted">({{ game.white_rating }})</span>
+                }
+                } @else {
+                <span class="font-medium text-muted">_</span>
+                }
+              </div>
+              @if (correctWhite() || isGameOver()) {
+              @if (getPlayerResult(game.result, 'white'); as resVal) {
+              @if (resVal) {
+              <span
+                class="px-1.5 py-0.5 rounded bg-main border border-border-base/50 text-xs shrink-0 select-none font-medium">
+                {{ resVal }}
               </span>
+              }
+              }
+              }
             </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-muted">Black</span>
-              <span class="text-sm capitalize truncate" [class.text-emerald-600]="correctBlack() || isGameOver()">
-                {{ revealedBlackName() }}
+
+            <!-- Black Player Card -->
+            <div class="flex items-center justify-between text-sm p-2 rounded-xl bg-subtle min-w-0">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0 select-none"></span>
+                @if (correctBlack() || isGameOver()) {
+                <span class="capitalize font-medium truncate">{{ game.black_player }}</span>
+                @if (game.black_rating) {
+                <span class="text-xs text-muted">({{ game.black_rating }})</span>
+                }
+                } @else {
+                <span class="font-medium text-muted">_</span>
+                }
+              </div>
+              @if (correctBlack() || isGameOver()) {
+              @if (getPlayerResult(game.result, 'black'); as resVal) {
+              @if (resVal) {
+              <span
+                class="px-1.5 py-0.5 rounded bg-main border border-border-base/50 text-xs shrink-0 select-none font-medium">
+                {{ resVal }}
               </span>
-            </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-muted">Year</span>
-              <span class="text-sm">
-                {{ revealYear() ? game.year : '••••' }}
-              </span>
-            </div>
-            <div class="flex flex-col gap-0.5">
-              <span class="text-xs text-muted">Location</span>
-              <span class="text-sm truncate" [title]="game.event">
-                {{ revealLocation() ? game.event : '••••' }}
-              </span>
+              }
+              }
+              }
             </div>
           </div>
 
@@ -235,19 +264,29 @@
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
-            <button (click)="revealNextHint()" [disabled]="revealLocation()" title="Hint"
-              class="p-2 rounded-xl transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-              <ng-icon name="heroLightBulb" class="text-lg"></ng-icon>
-            </button>
             <button (click)="revealFullMatchup()" title="Reveal Answer"
               class="p-2 rounded-xl transition-colors cursor-pointer text-rose-500 hover:bg-rose-50 flex items-center justify-center">
               <ng-icon name="heroEye" class="text-lg"></ng-icon>
             </button>
           </div>
           } @else {
-          <button appButton variant="primary" class="w-full" (click)="loadNextChallenge()">
-            Next game
-          </button>
+          <div class="flex gap-2">
+            @if (getAnalysisLinkInfo(game); as linkInfo) {
+              @if (linkInfo.url) {
+                <a appButton variant="outline" [href]="linkInfo.url" target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
+                  <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
+                </a>
+              } @else if (linkInfo.route) {
+                <a appButton variant="outline" [routerLink]="linkInfo.route"
+                  [queryParams]="linkInfo.queryParams" target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
+                  <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
+                </a>
+              }
+            }
+            <button appButton variant="primary" class="flex-1" (click)="loadNextChallenge()">
+              Next
+            </button>
+          </div>
           }
         </div>
         }

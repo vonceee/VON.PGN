@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Chess } from 'chess.js';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -27,6 +28,7 @@ import {
   heroEye,
   heroLightBulb,
   heroQuestionMarkCircle,
+  heroBookOpen,
 } from '@ng-icons/heroicons/outline';
 import { fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -46,6 +48,7 @@ import { ButtonComponent } from '@shared/ui';
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     ChessBoardComponent,
     MoveNotationComponent,
     LoadingComponent,
@@ -65,10 +68,10 @@ import { ButtonComponent } from '@shared/ui';
       heroEye,
       heroLightBulb,
       heroQuestionMarkCircle,
+      heroBookOpen,
     }),
   ],
   templateUrl: './guess-the-game.component.html',
-  styleUrls: ['./guess-the-game.component.css'],
   host: { class: 'absolute inset-0 flex flex-col' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -108,12 +111,8 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
   correctBlack = signal(false);
   isIncorrect = signal(false);
 
-  // Hint/Answer reveal states
-  revealYear = signal(false);
-  revealLocation = signal(false);
+  // Answer reveal state
   revealAnswer = signal(false);
-
-  showInstructions = signal(true);
 
   // Layout States
   boardSize = signal(600);
@@ -140,13 +139,13 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
   revealedWhiteName = computed(() => {
     const game = this.challenge();
     if (!game) return '';
-    return (this.correctWhite() || this.isGameOver()) ? game.white_player : '[ ? ]';
+    return (this.correctWhite() || this.isGameOver()) ? game.white_player : '_';
   });
 
   revealedBlackName = computed(() => {
     const game = this.challenge();
     if (!game) return '';
-    return (this.correctBlack() || this.isGameOver()) ? game.black_player : '[ ? ]';
+    return (this.correctBlack() || this.isGameOver()) ? game.black_player : '_';
   });
 
   constructor() {
@@ -221,8 +220,6 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
 
     this.correctWhite.set(false);
     this.correctBlack.set(false);
-    this.revealYear.set(false);
-    this.revealLocation.set(false);
     this.revealAnswer.set(false);
 
     // Clear active challenge & state to prevent UI ghosting/stale notation list
@@ -433,22 +430,44 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
     this.guessQuery = '';
   }
 
-  // Clues/Reveals
-  revealNextHint() {
-    if (!this.revealYear()) {
-      this.revealYear.set(true);
-      this.toastService.show('Hint unlocked: Year!', 'success');
-    } else if (!this.revealLocation()) {
-      this.revealLocation.set(true);
-      this.toastService.show('Hint unlocked: Location!', 'success');
-    }
-  }
-
   revealFullMatchup() {
     this.revealAnswer.set(true);
   }
 
-  toggleInstructions() {
-    this.showInstructions.update(val => !val);
+  getPlayerResult(result: string, color: 'white' | 'black'): string {
+    if (result === '1-0') return color === 'white' ? '1' : '0';
+    if (result === '0-1') return color === 'white' ? '0' : '1';
+    if (result === '1/2-1/2') return '½';
+    return '';
+  }
+
+  getAnalysisLinkInfo(game: GuessTheGameChallenge): { url?: string; route?: any[]; queryParams?: any } | null {
+    if (game.study_link) {
+      const link = game.study_link.trim();
+      if (link.startsWith('http://') || link.startsWith('https://')) {
+        return { url: link };
+      }
+      if (/^\d+$/.test(link)) {
+        return { route: ['/study', link] };
+      }
+      if (link.includes('/study/')) {
+        const parts = link.split('?');
+        const pathParts = parts[0].split('/study/');
+        const studyId = pathParts[pathParts.length - 1];
+        const queryParams: any = {};
+        if (parts[1]) {
+          const params = new URLSearchParams(parts[1]);
+          params.forEach((val, key) => {
+            queryParams[key] = val;
+          });
+        }
+        return { route: ['/study', studyId], queryParams };
+      }
+      return { route: ['/study', link] };
+    }
+    if (game.study_id) {
+      return { route: ['/study', game.study_id], queryParams: { chapter: game.id } };
+    }
+    return null;
   }
 }

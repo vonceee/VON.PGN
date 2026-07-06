@@ -11,8 +11,8 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   template: `
     <div class="bg-main rounded-4xl w-full max-h-[90vh] flex flex-col relative overflow-hidden">
       <!-- Dialog Header -->
-      <div class="p-8 pb-4 flex items-center justify-between shrink-0">
-        <h2 class="text-2xl font-sans">Edit game metadata</h2>
+      <div class="p-8 pb-0 flex items-center justify-between shrink-0">
+        <h2 class="text-2xl">Edit game metadata</h2>
       </div>
 
       <!-- Dialog Body (scrollable) -->
@@ -21,100 +21,100 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- Tournament / Event -->
           <div class="md:col-span-3 space-y-2">
-            <label class="text-sm font-semibold ml-1">Tournament / Event</label>
+            <label class="text-sm font-medium ml-1">Tournament / Event</label>
             <input
               type="text"
               [(ngModel)]="tags['Event']"
               placeholder="e.g. World Chess Championship"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
           <!-- Date -->
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">Date</label>
+            <label class="text-sm font-medium ml-1">Date</label>
             <input
               type="text"
               [(ngModel)]="tags['Date']"
               placeholder="YYYY.MM.DD"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
           
           <!-- White Player -->
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">White Title</label>
+            <label class="text-sm font-medium ml-1">White Title</label>
             <input
               type="text"
               [(ngModel)]="tags['WhiteTitle']"
               placeholder="GM"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
           <div class="md:col-span-2 space-y-2">
-            <label class="text-sm font-semibold ml-1">White Player</label>
+            <label class="text-sm font-medium ml-1">White Player</label>
             <input
               type="text"
               [(ngModel)]="tags['White']"
               placeholder="Full Name"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">White Elo</label>
+            <label class="text-sm font-medium ml-1">White Elo</label>
             <input
               type="text"
               [(ngModel)]="tags['WhiteElo']"
               placeholder="Rating"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
 
           <!-- Black Player -->
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">Black Title</label>
+            <label class="text-sm font-medium ml-1">Black Title</label>
             <input
               type="text"
               [(ngModel)]="tags['BlackTitle']"
               placeholder="GM"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
           <div class="md:col-span-2 space-y-2">
-            <label class="text-sm font-semibold ml-1">Black Player</label>
+            <label class="text-sm font-medium ml-1">Black Player</label>
             <input
               type="text"
               [(ngModel)]="tags['Black']"
               placeholder="Full Name"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">Black Elo</label>
+            <label class="text-sm font-medium ml-1">Black Elo</label>
             <input
               type="text"
               [(ngModel)]="tags['BlackElo']"
               placeholder="Rating"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
 
           <!-- Round -->
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">Round</label>
+            <label class="text-sm font-medium ml-1">Round</label>
             <input
               type="text"
               [(ngModel)]="tags['Round']"
               placeholder="e.g. 1.1"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
           <!-- Result -->
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">Result</label>
+            <label class="text-sm font-medium ml-1">Result</label>
             <div class="relative">
               <select
                 [(ngModel)]="tags['Result']"
-                class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none appearance-none cursor-pointer pr-10"
+                class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none appearance-none cursor-pointer pr-10"
               >
                 <option value="*">* (Ongoing/Unknown)</option>
                 <option value="1-0">1-0 (White Wins)</option>
@@ -130,22 +130,33 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
           </div>
           <!-- ECO Code -->
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">ECO Code</label>
+            <label class="text-sm font-medium ml-1">ECO Code</label>
             <input
               type="text"
               [(ngModel)]="tags['ECO']"
               placeholder="e.g. E15"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
           <!-- Site -->
           <div class="md:col-span-1 space-y-2">
-            <label class="text-sm font-semibold ml-1">Site</label>
+            <label class="text-sm font-medium ml-1">Site</label>
             <input
               type="text"
               [(ngModel)]="tags['Site']"
               placeholder="e.g. London, ENG"
-              class="w-full px-4 py-2.5 bg-subtle border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
+            />
+          </div>
+
+          <!-- Analysis Study Link Override -->
+          <div class="md:col-span-4 space-y-2">
+            <label class="text-sm font-medium ml-1">Analysis Study Link Override</label>
+            <input
+              type="text"
+              [(ngModel)]="tags['StudyLink']"
+              placeholder="e.g. 12 or https://vonchess.com/study/12"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm outline-none placeholder:text-muted/50"
             />
           </div>
         </div>

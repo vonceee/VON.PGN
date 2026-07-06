@@ -29,6 +29,7 @@ import {
   insertNodeDeep,
   deleteFromHereRecursive,
   findVariationBranch,
+  findPathToFen,
 } from '../../../core/utils/chess-tree.utils';
 
 import { AnnotateMoveDialogComponent } from '../dialogs/annotate-move-dialog/annotate-move-dialog.component';
@@ -67,6 +68,89 @@ export class StudyFacade {
   boardOrientation = signal<'white' | 'black'>('white');
   remoteShapes = signal<any[]>([]);
   activeTab = signal<'notation' | 'chapters' | 'chat'>('notation');
+
+  // Computed player tags, results, active path, and clock states
+  tags = computed(() => this.currentChapter()?.pgn_tags || {});
+  result = computed(() => this.tags()['Result'] || '*');
+
+  whitePlayer = computed(() => {
+    const name = this.tags()['White'] || 'White';
+    const elo = this.tags()['WhiteElo'];
+    const title = this.tags()['WhiteTitle'];
+    return { name, elo, title };
+  });
+
+  blackPlayer = computed(() => {
+    const name = this.tags()['Black'] || 'Black';
+    const elo = this.tags()['BlackElo'];
+    const title = this.tags()['BlackTitle'];
+    return { name, elo, title };
+  });
+
+  activePath = computed(() => {
+    const tree = this.moveTree();
+    const fen = this.currentFen();
+    if (!tree || !fen) return [];
+    return findPathToFen(tree, fen) || [];
+  });
+
+  whiteClock = computed(() => {
+    const path = this.activePath();
+    for (let i = path.length - 1; i >= 0; i--) {
+      const node = path[i];
+      if (node.ply % 2 !== 0 && node.clk) {
+        return node.clk;
+      }
+    }
+    return undefined;
+  });
+
+  blackClock = computed(() => {
+    const path = this.activePath();
+    for (let i = path.length - 1; i >= 0; i--) {
+      const node = path[i];
+      if (node.ply % 2 === 0 && node.clk) {
+        return node.clk;
+      }
+    }
+    return undefined;
+  });
+
+  activeColor = computed(() => {
+    const fen = this.currentFen();
+    if (!fen) return 'w';
+    const parts = fen.split(' ');
+    return parts[1] || 'w';
+  });
+
+  topPlayerColor = computed(() => this.boardOrientation() === 'white' ? 'black' : 'white');
+  bottomPlayerColor = computed(() => this.boardOrientation() === 'white' ? 'white' : 'black');
+
+  topPlayer = computed(() => this.topPlayerColor() === 'white' ? this.whitePlayer() : this.blackPlayer());
+  bottomPlayer = computed(() => this.bottomPlayerColor() === 'white' ? this.whitePlayer() : this.blackPlayer());
+
+  topClock = computed(() => this.topPlayerColor() === 'white' ? this.whiteClock() : this.blackClock());
+  bottomClock = computed(() => this.bottomPlayerColor() === 'white' ? this.whiteClock() : this.blackClock());
+
+  isTopPlayerTurn = computed(() => {
+    const active = this.activeColor();
+    const color = this.topPlayerColor();
+    return (active === 'w' && color === 'white') || (active === 'b' && color === 'black');
+  });
+
+  isBottomPlayerTurn = computed(() => {
+    const active = this.activeColor();
+    const color = this.bottomPlayerColor();
+    return (active === 'w' && color === 'white') || (active === 'b' && color === 'black');
+  });
+
+  getPlayerResult(color: 'white' | 'black'): string {
+    const r = this.result();
+    if (r === '1-0') return color === 'white' ? '1' : '0';
+    if (r === '0-1') return color === 'white' ? '0' : '1';
+    if (r === '1/2-1/2') return '½';
+    return '';
+  }
 
   isEngineActive = signal(false);
   showEngineSettings = signal(false);

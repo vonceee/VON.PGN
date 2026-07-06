@@ -79,6 +79,7 @@ export interface MoveNode {
   eval?: MoveEval;
   shapes?: any[]; // chessground shapes
   forceVariation?: boolean; // Forced variation display
+  clk?: string;
 }
 
 export interface StudyChapter {

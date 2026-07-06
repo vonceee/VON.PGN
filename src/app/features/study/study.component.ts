@@ -42,8 +42,6 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { StudySidebarComponent } from './study-sidebar/study-sidebar.component';
 import { JoinClassDialogComponent } from './dialogs/join-class-dialog/join-class-dialog.component';
-import { StudyMetadataComponent } from './study-metadata/study-metadata.component';
-import { StudyMetadataDialogComponent } from './dialogs/study-metadata-dialog/study-metadata-dialog.component';
 import { StartClassDialogComponent } from './dialogs/start-class-dialog/start-class-dialog.component';
 import { EndClassDialogComponent } from './dialogs/end-class-dialog/end-class-dialog.component';
 
@@ -64,7 +62,6 @@ import { StudyAnalysisComponent } from './study-analysis/study-analysis.componen
     DialogModule,
     ConfirmDeleteModalComponent,
     StudySidebarComponent,
-    StudyMetadataComponent,
     StartClassDialogComponent,
     EndClassDialogComponent,
     JoinClassDialogComponent,
@@ -164,8 +161,6 @@ export class StudyComponent implements OnInit, OnDestroy {
 
   isMobileLayout = computed(() => !this.isThreeColumn() && !this.isTwoColumn());
 
-  isMetadataDialogOpen = signal(false);
-
   windowWidth = signal(1200);
   windowHeight = signal(800);
   maxBoardSize = computed(() => {
@@ -254,25 +249,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
   }
 
-  openMetadataDialog() {
-    this.isMetadataDialogOpen.set(true);
-    const dialogRef = this.dialog.open(StudyMetadataDialogComponent, {
-      width: '500px',
-      maxWidth: '95vw',
-      backdropClass: ['bg-black/60'],
-      data: {
-        chapter: this.facade.currentChapter(),
-        canEdit: this.facade.canEdit()
-      }
-    });
-
-    dialogRef.closed.subscribe((result: any) => {
-      this.isMetadataDialogOpen.set(false);
-      if (result && result.action === 'edit') {
-        this.facade.onEditMetadata();
-      }
-    });
-  }
+  // Removed openMetadataDialog as metadata has been moved inline to the sidebar.
 
 
 

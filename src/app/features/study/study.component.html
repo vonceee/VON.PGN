@@ -11,9 +11,11 @@
         [isSyncing]="facade.isSyncing()" [canEdit]="facade.canEdit()"></app-study-sidebar>
       }
 
-      <!-- Center Column: Board -->
+      <!-- Center Column: Board & Player Info -->
       <div class="flex flex-col items-center justify-start relative" [class.md:sticky]="!isThreeColumn()"
         [class.md:top-6]="!isThreeColumn()">
+
+        <!-- Board Wrapper -->
         <div class="resize-x overflow-hidden aspect-square min-w-[400px] flex items-center justify-center gap-0 mx-auto"
           [style.width.px]="boardSize()" [style.maxWidth.px]="maxBoardSize()" [style.maxHeight.px]="maxBoardSize()">
           <app-chess-board #board [fluid]="true" [resizable]="false" [fen]="facade.currentFen()"
@@ -37,8 +39,6 @@
         <!-- Notation & Commentary Card -->
         <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
-            <app-study-metadata [chapter]="facade.currentChapter()"></app-study-metadata>
-
             <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moveTree]="facade.moveTree()"
               [currentFen]="facade.currentFen()" [currentPly]="facade.currentPly()" [initialPly]="facade.initialPly()"
               [showNavigation]="false" [result]="facade.currentChapter()?.pgn_tags?.['Result']"
@@ -139,7 +139,7 @@
 
 <!-- Reusable Toolbar Template -->
 <ng-template #toolbarTemplate>
-  <div class="p-2 flex items-center justify-between bg-main rounded-4xl select-none w-full shrink-0 px-6">
+  <div class="p-2 flex items-center justify-between bg-main rounded-4xl select-none w-full shrink-0 px-4">
     <!-- Flip Board Button -->
     <button (click)="flipBoard()" title="Flip Board"
       class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
@@ -167,16 +167,6 @@
         <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
       </button>
     </div>
-
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-
-    <!-- Metadata Button -->
-    <button (click)="openMetadataDialog()" title="Metadata"
-      class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center"
-      [class.text-accent]="isMetadataDialogOpen()" [class.bg-accent\/10]="isMetadataDialogOpen()"
-      [class.text-muted]="!isMetadataDialogOpen()">
-      <ng-icon name="heroTag" class="text-lg"></ng-icon>
-    </button>
 
     <div class="h-4 w-px bg-muted/20 shrink-0"></div>
 

@@ -3,7 +3,7 @@
 
   <!-- Standalone Toolbar -->
   @if (displayMode() !== 'chat') {
-  <div class="p-2 flex items-center justify-between bg-main rounded-4xl select-none w-full shrink-0 px-6">
+  <div class="p-2 flex items-center justify-between bg-main rounded-4xl select-none w-full shrink-0">
     @if (canEdit()) {
     <!-- Add Chapter Button -->
     <button (click)="createChapter()" title="Add chapter"
@@ -32,6 +32,15 @@
       [class.bg-subtle]="isMembersExpanded()"
       class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
       <ng-icon name="heroUsers" class="text-lg"></ng-icon>
+    </button>
+
+    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+    <!-- Metadata Toggle -->
+    <button (click)="toggleMetadata()" title="Game metadata" [class.text-accent]="isMetadataExpanded()"
+      [class.bg-subtle]="isMetadataExpanded()"
+      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+      <ng-icon name="heroTag" class="text-lg"></ng-icon>
     </button>
 
     <!-- Chat Toggle -->
@@ -280,6 +289,104 @@
   <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl">
     <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
       <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
+    </div>
+  </div>
+  }
+
+  @if (isMetadataExpanded() && displayMode() !== 'chat') {
+  <!-- Metadata / Game Info Section -->
+  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl select-none p-4">
+    <div class="flex items-center justify-between border-b border-border-base pb-2 mb-4 text-sm select-none">
+      <span>Game metadata</span>
+      @if (canEdit()) {
+      <button (click)="editMetadata()" class="text-xs cursor-pointer hover:underline">Edit</button>
+      }
+    </div>
+
+    <div class="flex-1 overflow-y-auto min-h-0 pr-1 space-y-4">
+
+      <!-- Player Info & Clocks -->
+      <div class="flex flex-col gap-2">
+        <!-- White Player Row -->
+        <div class="flex items-center justify-between p-2 rounded-xl bg-subtle">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-full bg-white shrink-0"></span>
+            @if (facade.whitePlayer().title) {
+            <span class="text-xs font-medium text-accent-foreground shrink-0">
+              {{ facade.whitePlayer().title }}
+            </span>
+            }
+            <span class="text-xs truncate">{{ facade.whitePlayer().name }}</span>
+            @if (facade.whitePlayer().elo) {
+            <span class="text-xs text-muted">({{ facade.whitePlayer().elo }})</span>
+            }
+            @if (facade.result() !== '*' && facade.result() !== '') {
+            @if (facade.getPlayerResult('white'); as resVal) {
+            @if (resVal) {
+            <span class="px-1.5 py-0.5 rounded bg-main text-xs shrink-0 ml-1">
+              {{ resVal }}
+            </span>
+            }
+            }
+            }
+          </div>
+          <!-- Clock -->
+          @if (facade.whiteClock()) {
+          <span class="px-1.5 py-0.5 rounded text-xs" [class.bg-sky-500/10]="facade.activeColor() === 'w'"
+            [class.text-sky-600]="facade.activeColor() === 'w'" [class.border-sky-500/30]="facade.activeColor() === 'w'"
+            [class.bg-main]="facade.activeColor() !== 'w'" [class.text-muted]="facade.activeColor() !== 'w'"
+            [class.border-border-base/50]="facade.activeColor() !== 'w'">
+            {{ facade.whiteClock() }}
+          </span>
+          }
+        </div>
+
+        <!-- Black Player Row -->
+        <div class="flex items-center justify-between p-2 rounded-xl bg-subtle">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0"></span>
+            @if (facade.blackPlayer().title) {
+            <span class="text-xs font-medium text-accent-foreground shrink-0">
+              {{ facade.blackPlayer().title }}
+            </span>
+            }
+            <span class="text-xs truncate">{{ facade.blackPlayer().name }}</span>
+            @if (facade.blackPlayer().elo) {
+            <span class="text-xs text-muted">({{ facade.blackPlayer().elo }})</span>
+            }
+            @if (facade.result() !== '*' && facade.result() !== '') {
+            @if (facade.getPlayerResult('black'); as resVal) {
+            @if (resVal) {
+            <span class="px-1.5 py-0.5 rounded bg-main text-xs shrink-0 ml-1">
+              {{ resVal }}
+            </span>
+            }
+            }
+            }
+          </div>
+          <!-- Clock -->
+          @if (facade.blackClock()) {
+          <span class="px-1.5 py-0.5 rounded text-xs" [class.bg-sky-500/10]="facade.activeColor() === 'b'"
+            [class.text-sky-600]="facade.activeColor() === 'b'" [class.border-sky-500/30]="facade.activeColor() === 'b'"
+            [class.bg-main]="facade.activeColor() !== 'b'" [class.text-muted]="facade.activeColor() !== 'b'"
+            [class.border-border-base/50]="facade.activeColor() !== 'b'">
+            {{ facade.blackClock() }}
+          </span>
+          }
+        </div>
+      </div>
+
+      <!-- Other PGN Metadata -->
+      @if (metadataItems().length > 0) {
+      <div class="flex flex-col gap-2">
+        @for (item of metadataItems(); track item.label) {
+        <div class="flex items-center justify-between select-none">
+          <span class="text-xs" [title]="item.value">{{ item.value }}</span>
+        </div>
+        }
+      </div>
+      }
+
     </div>
   </div>
   }

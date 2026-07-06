@@ -7,11 +7,16 @@ export interface GuessTheGameChallenge {
   id: number;
   white_player: string;
   black_player: string;
+  white_rating?: string | null;
+  black_rating?: string | null;
   event: string;
   year: number;
   eco?: string | null;
   result: string;
   pgn: string;
+  is_study_chapter?: boolean;
+  study_id?: number | null;
+  study_link?: string | null;
   active_date?: string | null;
   created_at?: string;
   updated_at?: string;

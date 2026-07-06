@@ -18,9 +18,10 @@ import { AddMemberDialogComponent, AddMemberResult } from '../dialogs/add-member
 import { StudySettingsDialogComponent } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
 import { StudyChatComponent } from '../study-chat/study-chat.component';
 import { WebrtcService } from '../../../core/services/webrtc.service';
+import { StudyFacade } from '../services/study.facade';
 import { input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash, heroShare, heroXMark, heroDocumentArrowDown } from '@ng-icons/heroicons/outline';
+import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash, heroShare, heroXMark, heroDocumentArrowDown, heroTag } from '@ng-icons/heroicons/outline';
 
 import { ButtonComponent } from '@shared/ui';
 
@@ -28,7 +29,7 @@ import { ButtonComponent } from '@shared/ui';
   selector: 'app-study-sidebar',
   standalone: true,
   imports: [CommonModule, NgIconComponent, DialogModule, StudyChatComponent, DragDropModule, FormsModule, UserHovercardDirective, ButtonComponent],
-  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash, heroShare, heroXMark, heroDocumentArrowDown })],
+  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash, heroShare, heroXMark, heroDocumentArrowDown, heroTag })],
   templateUrl: './study-sidebar.component.html',
   host: {
     'class': 'flex flex-col min-h-0 overflow-hidden'
@@ -41,6 +42,7 @@ export class StudySidebarComponent {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   public webrtc = inject(WebrtcService);
+  public facade = inject(StudyFacade);
 
   isClassActive = this.studyService.isClassActive;
   isOwner = this.studyService.isOwner;
@@ -49,6 +51,7 @@ export class StudySidebarComponent {
   isChatExpanded = signal(true);
   isMembersExpanded = signal(false);
   isExportExpanded = signal(false);
+  isMetadataExpanded = signal(false);
   exportOption = signal<'current' | 'all' | 'selected'>('current');
   selectedChapterIds = signal<Set<number>>(new Set());
 
@@ -61,12 +64,39 @@ export class StudySidebarComponent {
     return true;
   });
 
+  metadataItems = computed(() => {
+    const t = this.facade.tags() || {};
+    const items: { label: string; value: string }[] = [];
+
+    const mapping = [
+      { label: 'Tournament', key: 'Event' },
+      { label: 'Site', key: 'Site' },
+      { label: 'Date', key: 'Date' },
+      { label: 'Round', key: 'Round' },
+      { label: 'ECO Code', key: 'ECO' },
+    ];
+
+    mapping.forEach(m => {
+      const value = t[m.key];
+      if (value && value !== '?') {
+        items.push({ label: m.label, value });
+      }
+    });
+
+    return items;
+  });
+
+  editMetadata() {
+    this.facade.onEditMetadata();
+  }
+
   toggleChat() {
     this.isChatExpanded.update((v) => {
       const next = !v;
       if (next) {
         this.isMembersExpanded.set(false);
         this.isExportExpanded.set(false);
+        this.isMetadataExpanded.set(false);
       }
       return next;
     });
@@ -78,6 +108,7 @@ export class StudySidebarComponent {
       if (next) {
         this.isChatExpanded.set(false);
         this.isExportExpanded.set(false);
+        this.isMetadataExpanded.set(false);
       }
       return next;
     });
@@ -89,8 +120,21 @@ export class StudySidebarComponent {
       if (next) {
         this.isMembersExpanded.set(false);
         this.isChatExpanded.set(false);
+        this.isMetadataExpanded.set(false);
         this.exportOption.set('current');
         this.selectedChapterIds.set(new Set());
+      }
+      return next;
+    });
+  }
+
+  toggleMetadata() {
+    this.isMetadataExpanded.update((v) => {
+      const next = !v;
+      if (next) {
+        this.isMembersExpanded.set(false);
+        this.isChatExpanded.set(false);
+        this.isExportExpanded.set(false);
       }
       return next;
     });

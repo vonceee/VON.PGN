@@ -66,6 +66,7 @@ function normalizeMoveNode(node: any): MoveNode {
     shapes: Array.isArray(node.shapes) ? node.shapes : undefined,
     eval: node.eval,
     forceVariation: node.forceVariation,
+    clk: node.clk ? String(node.clk) : undefined,
   };
 }
 
@@ -113,7 +114,7 @@ function preprocessPgn(pgn: string): string {
 
   // 3. Fix missing spaces after move numbers: "1.d4" -> "1. d4", "1...Nf6" -> "1... Nf6"
   // This helps the tokenizer separate move numbers from actual SAN moves.
-  cleaned = cleaned.replace(/(\d+\.{1,3})([^\s])/g, '$1 $2');
+  cleaned = cleaned.replace(/(\d+\.{1,3})([^\s\.])/g, '$1 $2');
 
   // 4. Ensure a blank line between the last tag and the first move/comment
   // PGN tags end with ] and the body starts with either { or a move like 1.
@@ -253,21 +254,43 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
   const chess = new Chess(initialFen);
   let lastNode: MoveNode | null = null;
   let preComment: string | null = null;
+  let preClk: string | null = null;
 
   while (tokens.length > 0) {
     const token = tokens.shift()!;
 
     if (token.startsWith('{')) {
-      const comment = token.slice(1, -1).trim();
+      const rawComment = token.slice(1, -1).trim();
+      let clk: string | undefined;
+      const clkMatch = rawComment.match(/\[%clk\s+([^\]]+)\]/i);
+      if (clkMatch) {
+        clk = clkMatch[1].trim();
+      }
+
+      const comment = rawComment
+        .replace(/\[%clk\s+[^\]]+\]/gi, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
       if (lastNode) {
-        if (!lastNode.comments) lastNode.comments = [];
-        lastNode.comments.push(comment);
-        const shapes = parseShapesFromComment(comment);
+        if (clk) {
+          lastNode.clk = clk;
+        }
+        if (comment) {
+          if (!lastNode.comments) lastNode.comments = [];
+          lastNode.comments.push(comment);
+        }
+        const shapes = parseShapesFromComment(rawComment);
         if (shapes.length > 0) {
           lastNode.shapes = [...(lastNode.shapes || []), ...shapes];
         }
       } else {
-        preComment = comment;
+        if (clk) {
+          preClk = clk;
+        }
+        if (comment) {
+          preComment = comment;
+        }
       }
     } else if (token === '(') {
       let depth = 1;
@@ -331,6 +354,10 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
             preComments: preComment ? [preComment] : [],
             glyphs: []
           };
+          if (preClk) {
+            node.clk = preClk;
+            preClk = null;
+          }
 
           if (glyphMatch) {
             const sym = glyphMatch[0];
@@ -493,4 +520,28 @@ function getBrushColor(code: string): string {
     case 'B': return 'blue';
     default: return 'green';
   }
+}
+
+export function findPathToFen(
+  nodes: MoveNode[],
+  targetFen: string,
+  currentPath: MoveNode[] = []
+): MoveNode[] | null {
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    const path = [...currentPath, node];
+    if (node.fen === targetFen) {
+      return path;
+    }
+    
+    if (node.variations) {
+      for (const variation of node.variations) {
+        const varPath = findPathToFen(variation, targetFen, currentPath);
+        if (varPath) return varPath;
+      }
+    }
+    
+    currentPath = [...currentPath, node];
+  }
+  return null;
 }
