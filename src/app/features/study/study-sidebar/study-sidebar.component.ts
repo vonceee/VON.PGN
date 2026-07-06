@@ -1,4 +1,4 @@
-import { Component, inject, DestroyRef, signal } from '@angular/core';
+import { Component, inject, DestroyRef, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
@@ -51,6 +51,15 @@ export class StudySidebarComponent {
   isExportExpanded = signal(false);
   exportOption = signal<'current' | 'all' | 'selected'>('current');
   selectedChapterIds = signal<Set<number>>(new Set());
+
+  isExportAllowed = computed(() => {
+    const s = this.study();
+    if (!s) return false;
+    if (s.export_visibility === 'owner') {
+      return this.isOwner();
+    }
+    return true;
+  });
 
   toggleChat() {
     this.isChatExpanded.update((v) => {
@@ -364,7 +373,7 @@ export class StudySidebarComponent {
       width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/60'],
-      data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility, category: s.category, orientation: s.orientation }
+      data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility, export_visibility: s.export_visibility, category: s.category, orientation: s.orientation }
     });
 
     dialogRef.closed.subscribe((result) => {
@@ -374,6 +383,7 @@ export class StudySidebarComponent {
           name: result.name,
           visibility: result.visibility,
           engine_visibility: result.engine_visibility,
+          export_visibility: result.export_visibility,
           category: result.category,
           orientation: result.orientation
         }).subscribe({

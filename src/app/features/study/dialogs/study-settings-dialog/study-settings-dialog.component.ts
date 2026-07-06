@@ -22,6 +22,7 @@ export class StudySettingsDialogComponent implements OnInit {
   name = signal('');
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
   engineVisibility = signal<'everyone' | 'owner'>('everyone');
+  exportVisibility = signal<'everyone' | 'owner'>('owner');
   category = signal<'general' | 'opening_repertoire'>('general');
   orientation = signal<'white' | 'black'>('white');
 
@@ -30,6 +31,7 @@ export class StudySettingsDialogComponent implements OnInit {
       this.name.set(this.data.name || '');
       this.visibility.set(this.data.visibility || 'public');
       this.engineVisibility.set(this.data.engine_visibility || 'everyone');
+      this.exportVisibility.set(this.data.export_visibility || 'owner');
       this.category.set(this.data.category || 'general');
       this.orientation.set(this.data.orientation || 'white');
     }
@@ -42,6 +44,7 @@ export class StudySettingsDialogComponent implements OnInit {
         name: this.name().trim(),
         visibility: this.visibility(),
         engine_visibility: this.engineVisibility(),
+        export_visibility: this.exportVisibility(),
         category: this.category(),
         orientation: this.category() === 'opening_repertoire' ? this.orientation() : 'white'
       });

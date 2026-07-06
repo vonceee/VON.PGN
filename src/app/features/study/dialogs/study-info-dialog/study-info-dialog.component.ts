@@ -112,7 +112,7 @@ export class StudyInfoDialogComponent implements OnInit {
       width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/60'],
-      data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility, category: s.category, orientation: s.orientation }
+      data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility, export_visibility: s.export_visibility, category: s.category, orientation: s.orientation }
     });
 
     dialogRef.closed.subscribe((result) => {
@@ -122,6 +122,7 @@ export class StudyInfoDialogComponent implements OnInit {
           name: result.name,
           visibility: result.visibility,
           engine_visibility: result.engine_visibility,
+          export_visibility: result.export_visibility,
           category: result.category,
           orientation: result.orientation
         }).subscribe({
