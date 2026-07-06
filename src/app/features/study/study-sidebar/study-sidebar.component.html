@@ -44,6 +44,14 @@
     </button>
     }
 
+    <!-- Share/Export PGN Toggle -->
+    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+    <button (click)="toggleExport()" title="Export PGN" [class.text-accent]="isExportExpanded()"
+      [class.bg-subtle]="isExportExpanded()"
+      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+      <ng-icon name="heroShare" class="text-lg"></ng-icon>
+    </button>
+
     <!-- Voice Call Toggle -->
     @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
     <div class="h-4 w-px bg-muted/20 shrink-0"></div>
@@ -57,9 +65,91 @@
   </div>
   }
 
+  @if (isExportExpanded()) {
+  <!-- Export Options Section -->
+  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl p-4 select-none">
+    <div class="flex-1 flex flex-col min-h-0 overflow-y-auto pr-1">
+      <!-- Radio Options -->
+      <div class="flex flex-col gap-2 mb-4">
+        <label
+          class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
+          [class.bg-subtle]="exportOption() === 'current'" [class.border-accent]="exportOption() === 'current'">
+          <input type="radio" name="exportOption" value="current" [ngModel]="exportOption()"
+            (ngModelChange)="exportOption.set($event)"
+            class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
+          <div class="flex flex-col">
+            <span class="text-sm font-medium">Current chapter</span>
+            <span class="text-xs text-muted mt-0.5">Export only "{{ currentChapter()?.name }}"</span>
+          </div>
+        </label>
+
+        <label
+          class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
+          [class.bg-subtle]="exportOption() === 'all'" [class.border-accent]="exportOption() === 'all'">
+          <input type="radio" name="exportOption" value="all" [ngModel]="exportOption()"
+            (ngModelChange)="exportOption.set($event)"
+            class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
+          <div class="flex flex-col">
+            <span class="text-sm font-medium">All chapters</span>
+            <span class="text-xs text-muted mt-0.5">Export all {{ s.chapters?.length }} chapters</span>
+          </div>
+        </label>
+
+        <label
+          class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
+          [class.bg-subtle]="exportOption() === 'selected'" [class.border-accent]="exportOption() === 'selected'">
+          <input type="radio" name="exportOption" value="selected" [ngModel]="exportOption()"
+            (ngModelChange)="exportOption.set($event)"
+            class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
+          <div class="flex flex-col">
+            <span class="text-sm font-medium">Selected chapters</span>
+            <span class="text-xs text-muted mt-0.5">Select custom chapters to export</span>
+          </div>
+        </label>
+      </div>
+
+      <!-- Chapter Checklist (only shown when exportOption === 'selected') -->
+      @if (exportOption() === 'selected') {
+      <div class="flex-1 flex flex-col rounded-xl p-4 mb-4">
+        <div
+          class="flex items-center justify-between border-b border-border-base pb-2 mb-2 text-sm font-medium text-muted select-none">
+          <span>Select chapters</span>
+          <div class="flex gap-2">
+            <button (click)="selectAllChapters(true)"
+              class="hover:text-accent transition-colors cursor-pointer">All</button>
+            <span>|</span>
+            <button (click)="selectAllChapters(false)"
+              class="hover:text-accent transition-colors cursor-pointer">None</button>
+          </div>
+        </div>
+        <div class="flex-1 overflow-y-auto space-y-1 pr-1">
+          @for (chap of s.chapters; track chap.id; let idx = $index) {
+          <label
+            class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-subtle cursor-pointer select-none transition-colors"
+            [class.bg-surface]="selectedChapterIds().has(chap.id)">
+            <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
+              (change)="toggleChapterSelection(chap.id)"
+              class="w-4 h-4 rounded text-accent border-border-base focus:ring-accent bg-transparent">
+            <span class="text-sm font-medium text-muted tabular-nums">{{ idx + 1 }}.</span>
+            <span class="text-sm font-medium truncate flex-1">{{ chap.name }}</span>
+          </label>
+          }
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Action Button -->
+    <button appButton variant="primary" (click)="performExport()"
+      [disabled]="exportOption() === 'selected' && selectedChapterIds().size === 0" class="w-full shrink-0">
+      <ng-icon name="heroDocumentArrowDown" class="text-md"></ng-icon>
+      <span>Export PGN</span>
+    </button>
+  </div>
+  } @else {
   @if (displayMode() === 'all' || displayMode() === 'chapters') {
   <!-- Chapters Section -->
-  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-4xl">
+  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl">
     <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 p-1">
       <div class="flex-1 flex flex-col gap-0.5" cdkDropList (cdkDropListDropped)="onDrop($event)"
         [cdkDropListDisabled]="!canEdit()">
@@ -86,7 +176,7 @@
             </span>
           </div>
 
-          <div class="flex items-center gap-3 shrink-0 ml-2">
+          <div class="flex items-center gap-4 shrink-0 ml-2">
             @if (chap.pgn_tags?.['Result'] && chap.pgn_tags?.['Result'] !== '*') {
             <span class="text-xs font-medium opacity-70 tabular-nums select-none">
               {{ chap.pgn_tags?.['Result'] }}
@@ -103,16 +193,13 @@
   </div>
   }
 
-
-
   @if (isMembersExpanded() && displayMode() !== 'chat') {
   <!-- Members Section -->
-  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-4xl select-none">
+  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl select-none">
     <div class="flex-1 overflow-y-auto min-h-0 space-y-2 p-4">
       <!-- Owner -->
-      <div
-        class="flex items-center justify-between p-2.5 px-4 rounded-2xl bg-subtle border border-border-base/5 hover:border-border-base/30 transition-colors">
-        <div class="flex items-center gap-3 min-w-0">
+      <div class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-subtle">
+        <div class="flex items-center gap-4 min-w-0">
           <div
             class="w-8 h-8 rounded-full bg-main border border-border-base/50 flex items-center justify-center text-muted shrink-0">
             <ng-icon name="heroUser" class="text-sm"></ng-icon>
@@ -130,8 +217,8 @@
       <!-- Collaborators/Members List -->
       @for (collab of s.collaborators; track collab.uid) {
       <div
-        class="flex items-center justify-between p-2.5 px-4 rounded-2xl bg-subtle border border-border-base/5 hover:border-border-base/30 transition-all">
-        <div class="flex items-center gap-3 min-w-0">
+        class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-subtle border border-border-base/5 hover:border-border-base/30 transition-all">
+        <div class="flex items-center gap-4 min-w-0">
           <div
             class="w-8 h-8 rounded-full bg-main border border-border-base/50 flex items-center justify-center text-muted shrink-0">
             <ng-icon name="heroUser" class="text-sm"></ng-icon>
@@ -178,7 +265,7 @@
 
       @if (isOwner()) {
       <button (click)="addMember()"
-        class="w-full flex items-center justify-center py-3.5 px-4 rounded-2xl bg-transparent border border-dashed border-border-base hover:border-accent hover:bg-accent/5 text-muted hover:text-accent transition-all duration-200 cursor-pointer">
+        class="w-full flex items-center justify-center py-3.5 px-4 rounded-4xl bg-transparent border border-dashed border-border-base hover:border-accent hover:bg-accent/5 text-muted hover:text-accent transition-all duration-200 cursor-pointer">
         <ng-icon name="heroPlus" class="text-lg"></ng-icon>
       </button>
       }
@@ -188,11 +275,12 @@
 
   @if (displayMode() === 'chat' || (displayMode() === 'all' && isChatExpanded())) {
   <!-- Chat Section -->
-  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-4xl">
+  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl">
     <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
       <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
     </div>
   </div>
+  }
   }
 
 

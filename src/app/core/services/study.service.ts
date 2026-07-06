@@ -420,14 +420,34 @@ export class StudyService {
     return this.api.importPgn(studyId, pgn);
   }
 
-  exportPgn(studyId: number): void {
-    this.api.exportPgnBlob(studyId).subscribe(blob => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `study_${studyId}.pgn`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+  exportPgn(studyId: number, chapterIds?: number[]): void {
+    this.api.exportPgnBlob(studyId, chapterIds).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        
+        let filename = `study_${studyId}`;
+        const study = this.currentStudy();
+        if (study) {
+          filename = study.name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+        }
+        
+        if (chapterIds && chapterIds.length === 1) {
+          const chap = study?.chapters?.find(c => String(c.id) === String(chapterIds[0]));
+          if (chap) {
+            filename += `_${chap.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
+          }
+        }
+        
+        a.download = `${filename}.pgn`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Failed to export PGN:', err);
+        this.toastService.show('Failed to export PGN file.', 'error');
+      }
     });
   }
 

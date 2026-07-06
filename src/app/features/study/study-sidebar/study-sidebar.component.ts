@@ -20,13 +20,15 @@ import { StudyChatComponent } from '../study-chat/study-chat.component';
 import { WebrtcService } from '../../../core/services/webrtc.service';
 import { input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash } from '@ng-icons/heroicons/outline';
+import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash, heroShare, heroXMark, heroDocumentArrowDown } from '@ng-icons/heroicons/outline';
+
+import { ButtonComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-study-sidebar',
   standalone: true,
-  imports: [CommonModule, NgIconComponent, DialogModule, StudyChatComponent, DragDropModule, FormsModule, UserHovercardDirective],
-  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash })],
+  imports: [CommonModule, NgIconComponent, DialogModule, StudyChatComponent, DragDropModule, FormsModule, UserHovercardDirective, ButtonComponent],
+  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash, heroShare, heroXMark, heroDocumentArrowDown })],
   templateUrl: './study-sidebar.component.html',
   host: {
     'class': 'flex flex-col min-h-0 overflow-hidden'
@@ -46,12 +48,16 @@ export class StudySidebarComponent {
 
   isChatExpanded = signal(true);
   isMembersExpanded = signal(false);
+  isExportExpanded = signal(false);
+  exportOption = signal<'current' | 'all' | 'selected'>('current');
+  selectedChapterIds = signal<Set<number>>(new Set());
 
   toggleChat() {
     this.isChatExpanded.update((v) => {
       const next = !v;
       if (next) {
         this.isMembersExpanded.set(false);
+        this.isExportExpanded.set(false);
       }
       return next;
     });
@@ -62,9 +68,72 @@ export class StudySidebarComponent {
       const next = !v;
       if (next) {
         this.isChatExpanded.set(false);
+        this.isExportExpanded.set(false);
       }
       return next;
     });
+  }
+
+  toggleExport() {
+    this.isExportExpanded.update((v) => {
+      const next = !v;
+      if (next) {
+        this.isMembersExpanded.set(false);
+        this.isChatExpanded.set(false);
+        this.exportOption.set('current');
+        this.selectedChapterIds.set(new Set());
+      }
+      return next;
+    });
+  }
+
+  toggleChapterSelection(chapterId: number) {
+    this.selectedChapterIds.update((set) => {
+      const newSet = new Set(set);
+      if (newSet.has(chapterId)) {
+        newSet.delete(chapterId);
+      } else {
+        newSet.add(chapterId);
+      }
+      return newSet;
+    });
+  }
+
+  selectAllChapters(select: boolean) {
+    const s = this.study();
+    if (!s || !s.chapters) return;
+
+    if (select) {
+      this.selectedChapterIds.set(new Set(s.chapters.map((c) => c.id)));
+    } else {
+      this.selectedChapterIds.set(new Set());
+    }
+  }
+
+  performExport() {
+    const s = this.study();
+    if (!s) return;
+
+    const option = this.exportOption();
+    if (option === 'current') {
+      const current = this.currentChapter();
+      if (current) {
+        this.studyService.exportPgn(s.id, [current.id]);
+      } else {
+        this.toastService.show('No active chapter to export', 'error');
+      }
+    } else if (option === 'all') {
+      this.studyService.exportPgn(s.id);
+    } else if (option === 'selected') {
+      const ids = Array.from(this.selectedChapterIds());
+      if (ids.length > 0) {
+        this.studyService.exportPgn(s.id, ids);
+      } else {
+        this.toastService.show('Please select at least one chapter to export', 'error');
+      }
+    }
+
+    this.isExportExpanded.set(false);
   }
 
   toggleVideoCall() {

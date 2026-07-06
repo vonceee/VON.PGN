@@ -138,8 +138,12 @@ export class StudyApiService {
     );
   }
 
-  exportPgnBlob(studyId: number): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/studies/${studyId}/export-pgn`, { 
+  exportPgnBlob(studyId: number, chapterIds?: number[]): Observable<Blob> {
+    let params = '';
+    if (chapterIds && chapterIds.length > 0) {
+      params = `?chapter_ids=${chapterIds.join(',')}`;
+    }
+    return this.http.get(`${this.apiUrl}/studies/${studyId}/export-pgn${params}`, { 
       responseType: 'blob' 
     });
   }
