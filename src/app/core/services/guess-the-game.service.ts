@@ -36,10 +36,4 @@ export class GuessTheGameService {
     return this.http.get<{ data: GuessTheGameChallenge }>(url);
   }
 
-  importChallenge(pgn: string, activeDate?: string | null): Observable<{ success: boolean; data: GuessTheGameChallenge; overwritten?: boolean }> {
-    return this.http.post<{ success: boolean; data: GuessTheGameChallenge; overwritten?: boolean }>(
-      `${this.apiUrl}/admin/guess-the-game/import`,
-      { pgn, active_date: activeDate }
-    );
-  }
 }

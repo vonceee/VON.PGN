@@ -203,7 +203,7 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error(err);
-        this.errorMsg.set('Could not fetch daily challenge. Please make sure admin has imported a challenge.');
+        this.errorMsg.set(err.error?.error || err.error?.message || 'Could not fetch daily challenge. Please make sure the study exists.');
         this.isLoading.set(false);
       }
     });
@@ -241,7 +241,7 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error(err);
-        this.errorMsg.set('Could not fetch the next challenge.');
+        this.errorMsg.set(err.error?.error || err.error?.message || 'Could not fetch the next challenge.');
         this.isLoading.set(false);
       }
     });
