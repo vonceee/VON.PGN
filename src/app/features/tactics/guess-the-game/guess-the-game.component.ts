@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { Chess } from 'chess.js';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -81,6 +81,7 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private layoutService = inject(LayoutService);
   private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
 
   @ViewChild('board') boardComponent!: ChessBoardComponent;
 
@@ -92,7 +93,7 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
 
   // Chess Navigation State
   private chess = new Chess();
-  private initialFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+  initialFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   moveHistory = signal<string[]>([]);
   studyPositions: string[] = [];
   currentPly = signal<number>(0);
@@ -167,7 +168,9 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.layoutService.setFluid(true);
-    this.loadDailyChallenge();
+    const idParam = this.route.snapshot.queryParams['challenge_id'] || this.route.snapshot.queryParams['id'];
+    const challengeId = idParam ? parseInt(idParam, 10) : undefined;
+    this.loadDailyChallenge(challengeId);
     if (isPlatformBrowser(this.platformId)) {
       this.isInitialized.set(true);
     }
@@ -185,19 +188,20 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
     this.isTwoColumn.set(width >= 768 && width < 1280);
   }
 
-  private loadDailyChallenge() {
+  private loadDailyChallenge(challengeId?: number) {
     this.isLoading.set(true);
     this.challenge.set(null);
     this.moveHistory.set([]);
     this.studyPositions = [];
     this.currentPly.set(0);
+    this.initialFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
     this.displayFen.set(this.initialFen);
 
     this.guessGameService.getDailyChallenge().subscribe({
       next: (res) => {
         const game = res.data;
         this.challenge.set(game);
-        this.initializeGame(game.pgn);
+        this.initializeGame(game);
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -227,13 +231,14 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
     this.moveHistory.set([]);
     this.studyPositions = [];
     this.currentPly.set(0);
+    this.initialFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
     this.displayFen.set(this.initialFen);
 
     this.guessGameService.getNextChallenge(currentId).subscribe({
       next: (res) => {
         const game = res.data;
         this.challenge.set(game);
-        this.initializeGame(game.pgn);
+        this.initializeGame(game);
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -244,9 +249,19 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
     });
   }
 
-  private initializeGame(pgn: string) {
+  private initializeGame(game: GuessTheGameChallenge) {
     try {
-      this.chess.loadPgn(pgn);
+      this.initialFen = game.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+      let pgnToLoad = game.pgn || '';
+      // Strip trailing triple dots if present
+      pgnToLoad = pgnToLoad.replace(/\s*\.\.\.\s*$/, '');
+
+      if (game.initial_fen && game.initial_fen !== 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1') {
+        pgnToLoad = `[FEN "${game.initial_fen}"]\n\n${pgnToLoad}`;
+      }
+
+      this.chess.loadPgn(pgnToLoad);
       const history = this.chess.history();
       this.moveHistory.set(history);
 
@@ -258,7 +273,12 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
         if (!move) break;
       }
 
-      this.currentPly.set(0);
+      let startPly = 0;
+      if (game.start_ply !== undefined && game.start_ply !== null) {
+        startPly = Math.min(game.start_ply, history.length);
+      }
+
+      this.currentPly.set(startPly);
       this.syncChessToCurrentPly();
     } catch (e) {
       console.error('Failed to parse PGN:', e);

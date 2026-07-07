@@ -20,6 +20,8 @@ export interface GuessTheGameChallenge {
   active_date?: string | null;
   created_at?: string;
   updated_at?: string;
+  initial_fen?: string | null;
+  start_ply?: number | null;
 }
 
 @Injectable({ providedIn: 'root' })

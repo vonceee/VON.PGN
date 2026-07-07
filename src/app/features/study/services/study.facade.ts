@@ -254,7 +254,21 @@ export class StudyFacade {
 
   initialPly = computed(() => {
     const chapter = this.currentChapter();
-    return getPlyFromFen(chapter?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    const fenPly = getPlyFromFen(chapter?.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    if (chapter?.pgn_tags) {
+      const tags = chapter.pgn_tags;
+      for (const key of Object.keys(tags)) {
+        const lowerKey = key.toLowerCase();
+        if (lowerKey === 'startply' || lowerKey === 'guessstartply') {
+          const val = parseInt(tags[key], 10);
+          if (!isNaN(val)) return Math.max(fenPly, val);
+        } else if (lowerKey === 'startmove' || lowerKey === 'guessstartmove') {
+          const val = parseInt(tags[key], 10);
+          if (!isNaN(val)) return Math.max(fenPly, (val - 1) * 2);
+        }
+      }
+    }
+    return fenPly;
   });
 
   lastMoveSquares = computed(() => {
