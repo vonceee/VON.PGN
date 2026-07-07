@@ -73,11 +73,12 @@ import { Router } from '@angular/router';
                 {{ group.title }}
               </span>
               <div class="flex flex-col gap-1 pl-1">
-                @for (link of group.links; track link.path) {
+                @for (link of group.links; track link.label) {
                   <a
                     [routerLink]="link.path"
+                    [queryParams]="link.queryParams"
                     routerLinkActive="text-accent font-semibold"
-                    [routerLinkActiveOptions]="{ exact: link.path === '/play' || link.path === '/study' || link.path === '/events' }"
+                    [routerLinkActiveOptions]="{ exact: !link.queryParams }"
                     (click)="close.emit()"
                     class="py-1 text-sm font-medium text-muted hover:underline transition-all flex items-center justify-between"
                   >
@@ -216,17 +217,19 @@ export class MobileMenuComponent {
 
   linkGroups = [
     {
+      title: 'Learn',
+      links: [
+        { path: '/study', label: 'Opening', queryParams: { category: 'opening_repertoire' } },
+        { path: '/study', label: 'Middlegame', queryParams: { category: 'middlegame' } },
+        { path: '/study', label: 'Endgame', queryParams: { category: 'endgame' } },
+        { path: '/roadmap', label: 'Roadmap' },
+      ],
+    },
+    {
       title: 'Practice',
       links: [
         { path: '/tactics', label: 'Tactics' },
         { path: '/study/drills', label: 'Opening drills' },
-      ],
-    },
-    {
-      title: 'Learn',
-      links: [
-        { path: '/study', label: 'Study' },
-        { path: '/roadmap', label: 'Roadmap' },
       ],
     },
     {

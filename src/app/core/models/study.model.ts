@@ -11,7 +11,7 @@ export interface Study {
   visibility: 'public' | 'private' | 'unlisted';
   engine_visibility: 'everyone' | 'owner';
   export_visibility: 'everyone' | 'owner';
-  category?: 'general' | 'opening_repertoire';
+  category?: 'general' | 'opening_repertoire' | 'middlegame' | 'endgame';
   orientation?: 'white' | 'black';
   user_id: number;
   owner: {

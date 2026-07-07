@@ -23,7 +23,7 @@ export class StudySettingsDialogComponent implements OnInit {
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
   engineVisibility = signal<'everyone' | 'owner'>('everyone');
   exportVisibility = signal<'everyone' | 'owner'>('owner');
-  category = signal<'general' | 'opening_repertoire'>('general');
+  category = signal<'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>('general');
   orientation = signal<'white' | 'black'>('white');
 
   ngOnInit() {

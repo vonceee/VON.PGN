@@ -36,7 +36,7 @@ export class StudyListComponent implements OnInit {
   isLoading = signal(false);
   searchQuery = signal('');
   sortBy = signal<'last_updated' | 'alphabetical'>('last_updated');
-  categoryFilter = signal<'all' | 'general' | 'opening_repertoire'>('all');
+  categoryFilter = signal<'all' | 'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>('all');
 
   queryParams = computed(() => ({
     isMyStudies: this.activeTab() === 'my',
@@ -83,7 +83,7 @@ export class StudyListComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const category = params['category'];
-      if (category === 'opening_repertoire' || category === 'general') {
+      if (category === 'opening_repertoire' || category === 'general' || category === 'middlegame' || category === 'endgame') {
         this.categoryFilter.set(category);
       }
       const tab = params['tab'];
@@ -108,7 +108,7 @@ export class StudyListComponent implements OnInit {
   }
 
   onCategoryFilterChange(event: Event) {
-    const value = (event.target as HTMLSelectElement).value as 'all' | 'general' | 'opening_repertoire';
+    const value = (event.target as HTMLSelectElement).value as 'all' | 'general' | 'opening_repertoire' | 'middlegame' | 'endgame';
     this.categoryFilter.set(value);
   }
 

@@ -15,7 +15,7 @@ export class CreateStudyDialogComponent {
 
   name = signal('');
   visibility = signal<'public' | 'private' | 'unlisted'>('public');
-  category = signal<'general' | 'opening_repertoire'>('general');
+  category = signal<'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>('general');
   orientation = signal<'white' | 'black'>('white');
 
   onSubmit() {
