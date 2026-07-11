@@ -172,6 +172,40 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'blog',
+        loadComponent: () =>
+          import('./features/blog/blog-list/blog-list.component').then((m) => m.BlogListComponent),
+        title: 'Vonchess.net • Blog',
+        data: { description: 'Read chess articles, tutorials, and community blogs.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'blog/new',
+        loadComponent: () =>
+          import('./features/blog/blog-editor/blog-editor.component').then((m) => m.BlogEditorComponent),
+        canActivate: [adminGuard],
+        title: 'Vonchess.net • Create Blog',
+        data: { description: 'Write a new blog post.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'blog/:slug',
+        loadComponent: () =>
+          import('./features/blog/blog-detail/blog-detail.component').then((m) => m.BlogDetailComponent),
+        title: 'Vonchess.net • Blog Post',
+        data: { description: 'Read this blog post on Vonchess.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'blog/:slug/edit',
+        loadComponent: () =>
+          import('./features/blog/blog-editor/blog-editor.component').then((m) => m.BlogEditorComponent),
+        canActivate: [adminGuard],
+        title: 'Vonchess.net • Edit Blog',
+        data: { description: 'Edit your blog post.' },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'documentation',
         loadComponent: () =>
           import('./features/documentation/documentation.component').then(

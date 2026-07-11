@@ -8,7 +8,7 @@ import { DialogRef } from '@angular/cdk/dialog';
   imports: [CommonModule],
   template: `
     <div class="bg-main rounded-4xl max-w-xl max-h-[90vh] flex flex-col relative overflow-hidden">
-      <div class="p-8 pb-0 flex items-center justify-between shrink-0">
+      <div class="p-6 pb-0 flex items-center justify-between shrink-0">
         <h2 class="text-2xl">Keyboard shortcuts</h2>
         <button (click)="dialogRef.close()" class="text-muted cursor-pointer transition-colors" title="Close">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

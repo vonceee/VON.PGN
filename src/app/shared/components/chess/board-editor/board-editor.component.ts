@@ -16,116 +16,249 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
   imports: [CommonModule, FormsModule, ChessBoardComponent, ButtonComponent],
   providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark })],
   template: `
-        <!-- 2-Column Compact Layout with Left-Side Pieces -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full ">
-          
-          <!-- Column 1: Pieces + Board (8/12) -->
-          <div class="lg:col-span-8 flex flex-row gap-6 items-start">
-            
-            <!-- Pieces (Left of Board) -->
-            <div class="flex flex-col gap-8 shrink-0">
-              <!-- Black Pieces -->
-              <div class="space-y-2">
-                <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
-                  @for (role of pieceRoles; track role) {
-                    <button 
-                      class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
-                      [class.bg-accent]="isToolSelected('black', role)"
-                      [class.border-accent]="isToolSelected('black', role)"
-                      [class.border-transparent]="!isToolSelected('black', role)"
-                      (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
-                      (click)="selectTool({color: 'black', role})"
-                    >
-                      <div [class]="getPieceClass('black', role)" class="w-8 h-8 pointer-events-none  group-hover:scale-110"></div>
-                    </button>
-                  }
-                </div>
-              </div>
-
-              <!-- White Pieces -->
-              <div class="space-y-2">
-                <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
-                  @for (role of pieceRoles; track role) {
-                    <button 
-                      class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
-                      [class.bg-accent]="isToolSelected('white', role)"
-                      [class.border-accent]="isToolSelected('white', role)"
-                      [class.border-transparent]="!isToolSelected('white', role)"
-                      (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
-                      (click)="selectTool({color: 'white', role})"
-                    >
-                      <div [class]="getPieceClass('white', role)" class="w-8 h-8 pointer-events-none  group-hover:scale-110"></div>
-                    </button>
-                  }
-                </div>
-              </div>
-            </div>
-
-            <!-- Board Area -->
-            <div 
-              class="relative aspect-square w-full board-container-parent z-10 overflow-hidden"
-              [style.cursor]="getBoardCursor()"
-              (mousedown)="onBoardMouseDown($event)"
-              (mousemove)="onBoardMouseMove($event)"
-              (mouseup)="onBoardMouseUp()"
-              (mouseleave)="onBoardMouseUp()"
-            >
-              <app-chess-board
-                #board
-                [fen]="displayFen()"
-                [orientation]="orientation"
-                [interactive]="true"
-                [isEditor]="true"
-                [hideCoordinates]="hideCoordinates"
-                (fenChange)="onBoardFenChange($event)"
-              ></app-chess-board>
+    @if (mainBoard) {
+      <!-- Dedicated Right-Column Editor Tools Stack -->
+      <div class="flex flex-col gap-6 w-full p-6 bg-main rounded-xl border border-border-base/40 h-full overflow-y-auto select-none">        
+        <!-- Pieces Palette -->
+        <div class="flex flex-col gap-4">
+          <!-- Black Pieces -->
+          <div class="space-y-1.5">
+            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-subtle/30 border border-border-base/50 rounded-xl">
+              @for (role of pieceRoles; track role) {
+                <button 
+                  class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
+                  [class.bg-accent]="isToolSelected('black', role)"
+                  [class.border-accent]="isToolSelected('black', role)"
+                  [class.border-transparent]="!isToolSelected('black', role)"
+                  (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
+                  (click)="selectTool({color: 'black', role})"
+                >
+                  <div [class]="getPieceClass('black', role)" class="w-8 h-8 pointer-events-none group-hover:scale-110"></div>
+                </button>
+              }
             </div>
           </div>
 
-          <!-- Column 2: Tools (4/12) -->
-          <div class="lg:col-span-4 flex flex-col gap-8 pt-6">
-            
-            <!-- Editor Tools -->
-            <div class="space-y-3">
-              <div class="grid grid-cols-2 gap-2">
+          <!-- White Pieces -->
+          <div class="space-y-1.5">
+            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-subtle/30 border border-border-base/50 rounded-xl">
+              @for (role of pieceRoles; track role) {
                 <button 
-                  appButton
-                  [variant]="selectedTool() === 'hand' ? 'primary' : 'outline'"
-                  (click)="selectTool('hand')"
-                >Move</button>
-                <button 
-                  appButton
-                  [variant]="selectedTool() === 'trash' ? 'primary' : 'outline'"
-                  (click)="selectTool('trash')"
-                >Delete</button>
-              </div>
+                  class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
+                  [class.bg-accent]="isToolSelected('white', role)"
+                  [class.border-accent]="isToolSelected('white', role)"
+                  [class.border-transparent]="!isToolSelected('white', role)"
+                  (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
+                  (click)="selectTool({color: 'white', role})"
+                >
+                  <div [class]="getPieceClass('white', role)" class="w-8 h-8 pointer-events-none group-hover:scale-110"></div>
+                </button>
+              }
             </div>
-
-            <!-- Turn Selection -->
-            <div class="space-y-3">
-              <button 
-                appButton
-                [variant]="turn() === 'w' ? 'primary' : 'ghost'"
-                (click)="setTurn('w')"
-                [class.shadow-md]="turn() === 'w'"
-              >White to move</button>
-              <button 
-                appButton
-                [variant]="turn() === 'b' ? 'primary' : 'ghost'"
-                (click)="setTurn('b')"
-                [class.shadow-md]="turn() === 'b'"
-              >Black to move</button>
-            </div>
-
-            <!-- Spacer to push content up -->
-            <div class="flex-1"></div>
           </div>
         </div>
+
+        <!-- Editor Brush Action (Move / Delete) -->
+        <div class="flex flex-col gap-2">
+          <div class="grid grid-cols-2 gap-2">
+            <button 
+              appButton
+              [variant]="selectedTool() === 'hand' ? 'primary' : 'outline'"
+              (click)="selectTool('hand')"
+              class="w-full text-sm"
+            >
+              Move / Select
+            </button>
+            <button 
+              appButton
+              [variant]="selectedTool() === 'trash' ? 'primary' : 'outline'"
+              (click)="selectTool('trash')"
+              class="w-full text-sm"
+            >
+              Eraser
+            </button>
+          </div>
+        </div>
+
+        <!-- Turn Selection -->
+        <div class="flex flex-col gap-2">
+          <div class="grid grid-cols-2 gap-2">
+            <button 
+              appButton
+              [variant]="turn() === 'w' ? 'primary' : 'outline'"
+              (click)="setTurn('w')"
+              class="w-full text-sm"
+            >
+              White to move
+            </button>
+            <button 
+              appButton
+              [variant]="turn() === 'b' ? 'primary' : 'outline'"
+              (click)="setTurn('b')"
+              class="w-full text-sm"
+            >
+              Black to move
+            </button>
+          </div>
+        </div>
+
+        <!-- Castling rights -->
+        <div class="flex flex-col gap-2">
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-subtle/30 border border-border-base/50 rounded-xl">
+            <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
+              <input type="checkbox" [ngModel]="whiteKingside()" (ngModelChange)="whiteKingside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
+              <span>White O-O</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
+              <input type="checkbox" [ngModel]="whiteQueenside()" (ngModelChange)="whiteQueenside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
+              <span>White O-O-O</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
+              <input type="checkbox" [ngModel]="blackKingside()" (ngModelChange)="blackKingside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
+              <span>Black O-O</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
+              <input type="checkbox" [ngModel]="blackQueenside()" (ngModelChange)="blackQueenside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
+              <span>Black O-O-O</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Board Actions -->
+        <div class="flex flex-col gap-2">
+          <div class="grid grid-cols-2 gap-2">
+            <button 
+              appButton
+              variant="outline"
+              (click)="clearBoard()"
+              class="w-full text-sm"
+            >
+              Clear board
+            </button>
+            <button 
+              appButton
+              variant="outline"
+              (click)="resetToInitial()"
+              class="w-full text-sm"
+            >
+              Reset board
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- 2-Column Compact Layout with Left-Side Pieces -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full ">
+        
+        <!-- Column 1: Pieces + Board (8/12) -->
+        <div class="lg:col-span-8 flex flex-row gap-6 items-start">
+          
+          <!-- Pieces (Left of Board) -->
+          <div class="flex flex-col gap-8 shrink-0">
+            <!-- Black Pieces -->
+            <div class="space-y-2">
+              <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
+                @for (role of pieceRoles; track role) {
+                  <button 
+                    class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
+                    [class.bg-accent]="isToolSelected('black', role)"
+                    [class.border-accent]="isToolSelected('black', role)"
+                    [class.border-transparent]="!isToolSelected('black', role)"
+                    (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
+                    (click)="selectTool({color: 'black', role})"
+                  >
+                    <div [class]="getPieceClass('black', role)" class="w-8 h-8 pointer-events-none  group-hover:scale-110"></div>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- White Pieces -->
+            <div class="space-y-2">
+              <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
+                @for (role of pieceRoles; track role) {
+                  <button 
+                    class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
+                    [class.bg-accent]="isToolSelected('white', role)"
+                    [class.border-accent]="isToolSelected('white', role)"
+                    [class.border-transparent]="!isToolSelected('white', role)"
+                    (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
+                    (click)="selectTool({color: 'white', role})"
+                  >
+                    <div [class]="getPieceClass('white', role)" class="w-8 h-8 pointer-events-none  group-hover:scale-110"></div>
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Board Area -->
+          <div 
+            class="relative aspect-square w-full board-container-parent z-10 overflow-hidden"
+            [style.cursor]="getBoardCursor()"
+            (mousedown)="onBoardMouseDown($event)"
+            (mousemove)="onBoardMouseMove($event)"
+            (mouseup)="onBoardMouseUp()"
+            (mouseleave)="onBoardMouseUp()"
+          >
+            <app-chess-board
+              #board
+              [fen]="displayFen()"
+              [orientation]="orientation"
+              [interactive]="true"
+              [isEditor]="true"
+              [hideCoordinates]="hideCoordinates"
+              (fenChange)="onBoardFenChange($event)"
+            ></app-chess-board>
+          </div>
+        </div>
+
+        <!-- Column 2: Tools (4/12) -->
+        <div class="lg:col-span-4 flex flex-col gap-8 pt-6">
+          
+          <!-- Editor Tools -->
+          <div class="space-y-3">
+            <div class="grid grid-cols-2 gap-2">
+              <button 
+                appButton
+                [variant]="selectedTool() === 'hand' ? 'primary' : 'outline'"
+                (click)="selectTool('hand')"
+              >Move</button>
+              <button 
+                appButton
+                [variant]="selectedTool() === 'trash' ? 'primary' : 'outline'"
+                (click)="selectTool('trash')"
+              >Delete</button>
+            </div>
+          </div>
+
+          <!-- Turn Selection -->
+          <div class="space-y-3">
+            <button 
+              appButton
+              [variant]="turn() === 'w' ? 'primary' : 'ghost'"
+              (click)="setTurn('w')"
+              [class.shadow-md]="turn() === 'w'"
+            >White to move</button>
+            <button 
+              appButton
+              [variant]="turn() === 'b' ? 'primary' : 'ghost'"
+              (click)="setTurn('b')"
+              [class.shadow-md]="turn() === 'b'"
+            >Black to move</button>
+          </div>
+
+          <!-- Spacer to push content up -->
+          <div class="flex-1"></div>
+        </div>
+      </div>
+    }
   `,
   styles: [`
     :host {
       display: block;
       width: 100%;
+      height: 100%;
     }
     .piece-slot div {
       width: 100%;
@@ -153,7 +286,12 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
   `]
 })
 export class BoardEditorComponent implements AfterViewInit {
-  @ViewChild('board') boardComponent!: ChessBoardComponent;
+  @Input() mainBoard?: ChessBoardComponent;
+  @ViewChild('board') private innerBoardComponent?: ChessBoardComponent;
+
+  get boardComponent(): ChessBoardComponent | undefined {
+    return this.mainBoard || this.innerBoardComponent;
+  }
 
   @Input() set fen(value: string) {
     if (value && value !== this.fullFen()) {
@@ -167,7 +305,7 @@ export class BoardEditorComponent implements AfterViewInit {
 
   boardFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR');
   turn = signal<'w' | 'b'>('w');
-  
+
   // Castling Rights
   whiteKingside = signal(true);
   whiteQueenside = signal(true);
@@ -181,7 +319,7 @@ export class BoardEditorComponent implements AfterViewInit {
   pieceRoles: Role[] = ['king', 'queen', 'rook', 'bishop', 'knight', 'pawn'];
 
   displayFen = computed(() => this.boardFen());
-  
+
   fullFen = computed(() => {
     let castling = '';
     if (this.whiteKingside()) castling += 'K';
@@ -189,11 +327,11 @@ export class BoardEditorComponent implements AfterViewInit {
     if (this.blackKingside()) castling += 'k';
     if (this.blackQueenside()) castling += 'q';
     if (!castling) castling = '-';
-    
+
     return `${this.boardFen()} ${this.turn()} ${castling} - 0 1`;
   });
 
-  private emitChange() {
+  public emitChange() {
     this.fenChange.emit(this.fullFen());
   }
 
@@ -214,7 +352,7 @@ export class BoardEditorComponent implements AfterViewInit {
     const parts = fen.trim().split(/\s+/);
     if (parts[0]) this.boardFen.set(parts[0]);
     if (parts[1]) this.turn.set(parts[1] as 'w' | 'b');
-    
+
     if (parts[2]) {
       const castling = parts[2];
       this.whiteKingside.set(castling.includes('K'));
@@ -244,14 +382,14 @@ export class BoardEditorComponent implements AfterViewInit {
 
   onPiecePaletteMouseDown(event: MouseEvent, color: Color, role: Role) {
     if (!this.boardComponent?.api) return;
-    
+
     this.selectTool('hand'); // Temporarily revert to hand for the drag
     dragNewPiece(this.boardComponent.api.state, { color, role }, event, true);
-    
+
     // Chessground's dragNewPiece doesn't trigger change event automatically in all cases
     // We listen for the end of the drag to ensure FEN is updated
     const upListener = () => {
-      this.boardComponent.onBoardChange();
+      this.boardComponent?.onBoardChange();
       window.removeEventListener('mouseup', upListener);
       this.selectTool({ color, role });
     };
@@ -273,7 +411,7 @@ export class BoardEditorComponent implements AfterViewInit {
   private updateBoardConfig() {
     if (!this.boardComponent?.api) return;
     const tool = this.selectedTool();
-    
+
     this.boardComponent.api.set({
       draggable: {
         enabled: tool === 'hand'
@@ -313,23 +451,23 @@ export class BoardEditorComponent implements AfterViewInit {
 
     const pos: [number, number] = [event.clientX, event.clientY];
     const key = api.getKeyAtDomPos(pos);
-    
+
     if (key && key !== this.lastKey) {
       this.lastKey = key;
       const tool = this.selectedTool();
-      
+
       if (tool === 'trash') {
-        this.boardComponent.setPieces(new Map([[key, undefined]]));
+        this.boardComponent?.setPieces(new Map([[key, undefined]]));
       } else if (typeof tool === 'object') {
         const existingPiece = api.state.pieces.get(key);
-        const isSamePiece = existingPiece && 
-                           existingPiece.color === tool.color && 
-                           existingPiece.role === tool.role;
-        
+        const isSamePiece = existingPiece &&
+          existingPiece.color === tool.color &&
+          existingPiece.role === tool.role;
+
         if (isSamePiece) {
-          this.boardComponent.setPieces(new Map([[key, undefined]]));
+          this.boardComponent?.setPieces(new Map([[key, undefined]]));
         } else {
-          this.boardComponent.setPieces(new Map([[key, { color: tool.color, role: tool.role }]]));
+          this.boardComponent?.setPieces(new Map([[key, { color: tool.color, role: tool.role }]]));
         }
       }
     }

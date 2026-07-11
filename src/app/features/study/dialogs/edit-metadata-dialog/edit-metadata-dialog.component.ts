@@ -11,12 +11,12 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   template: `
     <div class="bg-main rounded-4xl w-full max-h-[90vh] flex flex-col relative overflow-hidden">
       <!-- Dialog Header -->
-      <div class="p-8 pb-0 flex items-center justify-between shrink-0">
+      <div class="p-6 pb-0 flex items-center justify-between shrink-0">
         <h2 class="text-2xl">Edit game metadata</h2>
       </div>
 
       <!-- Dialog Body (scrollable) -->
-      <div class="flex-1 overflow-y-auto p-8 py-6 space-y-6 min-h-0">
+      <div class="flex-1 overflow-y-auto p-6 py-6 space-y-6 min-h-0">
         <!-- Form Grid -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- Tournament / Event -->

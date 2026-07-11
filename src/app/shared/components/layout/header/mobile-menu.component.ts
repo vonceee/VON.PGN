@@ -219,6 +219,7 @@ export class MobileMenuComponent {
     {
       title: 'Learn',
       links: [
+        { path: '/study', label: 'Study' },
         { path: '/study', label: 'Opening', queryParams: { category: 'opening_repertoire' } },
         { path: '/study', label: 'Middlegame', queryParams: { category: 'middlegame' } },
         { path: '/study', label: 'Endgame', queryParams: { category: 'endgame' } },
@@ -250,7 +251,14 @@ export class MobileMenuComponent {
         { path: '/events', label: 'Tournaments' },
       ],
     },
+    {
+      title: 'Blog',
+      links: [
+        { path: '/blog', label: 'Chess blogs' },
+      ],
+    },
   ];
+
 
 
 }

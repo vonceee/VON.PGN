@@ -1,398 +1,171 @@
 @if (study(); as s) {
-<aside class="flex-1 flex flex-col min-h-0 overflow-hidden gap-4">
+@if (displayMode() === 'all') {
+<!-- Left side: Vertical Menu Dock -->
+<aside
+  class="fixed left-0 top-0 bottom-0 w-20 bg-main border-r border-border-base flex flex-col items-center pt-20 pb-6 gap-4 shrink-0 justify-between select-none z-20">
+  <div class="flex flex-col items-center gap-3">
+    <!-- Chapters Section Button -->
+    <button (click)="selectSection('chapters')" title="Chapters"
+      [class.text-accent]="activeSection() === 'chapters' && !splitSection()"
+      [class.bg-subtle]="activeSection() === 'chapters' && !splitSection()"
+      [class.rounded-full]="activeSection() === 'chapters' && !splitSection()"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      <ng-icon name="heroBookOpen" class="text-xl"></ng-icon>
+    </button>
 
-  <!-- Standalone Toolbar -->
-  @if (displayMode() !== 'chat') {
-  <div class="p-2 flex items-center justify-between bg-main rounded-4xl select-none w-full shrink-0">
     @if (canEdit()) {
     <!-- Add Chapter Button -->
-    <button (click)="createChapter()" title="Add chapter"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-      <ng-icon name="heroPlus" class="text-lg"></ng-icon>
+    <button (click)="selectSection('add-chapter')" title="Add chapter"
+      [class.text-accent]="activeSection() === 'add-chapter'" [class.bg-subtle]="activeSection() === 'add-chapter'"
+      [class.rounded-full]="activeSection() === 'add-chapter'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      <ng-icon name="heroPlus" class="text-xl"></ng-icon>
     </button>
     }
 
     @if (isOwner()) {
-    @if (canEdit()) {
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-    }
     <!-- Study Settings Button -->
-    <button (click)="openSettings()" title="Study settings"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-      <ng-icon name="heroCog6Tooth" class="text-lg"></ng-icon>
+    <button (click)="selectSection('settings')" title="Study settings"
+      [class.text-accent]="activeSection() === 'settings'" [class.bg-subtle]="activeSection() === 'settings'"
+      [class.rounded-full]="activeSection() === 'settings'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      <ng-icon name="heroCog6Tooth" class="text-xl"></ng-icon>
     </button>
     }
 
-    @if (canEdit() || isOwner()) {
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-    }
+    <div class="h-px w-8 bg-muted/20 my-1"></div>
 
     <!-- Members Toggle -->
-    <button (click)="toggleMembers()" title="Members" [class.text-accent]="isMembersExpanded()"
-      [class.bg-subtle]="isMembersExpanded()"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-      <ng-icon name="heroUsers" class="text-lg"></ng-icon>
+    <button (click)="selectSection('members')" title="Members" [class.text-accent]="activeSection() === 'members'"
+      [class.bg-subtle]="activeSection() === 'members'" [class.rounded-full]="activeSection() === 'members'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      <ng-icon name="heroUsers" class="text-xl"></ng-icon>
     </button>
 
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-
     <!-- Metadata Toggle -->
-    <button (click)="toggleMetadata()" title="Game metadata" [class.text-accent]="isMetadataExpanded()"
-      [class.bg-subtle]="isMetadataExpanded()"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-      <ng-icon name="heroTag" class="text-lg"></ng-icon>
+    <button (click)="selectSection('metadata')" title="Game metadata"
+      [class.text-accent]="splitSection() === 'metadata'" [class.bg-subtle]="splitSection() === 'metadata'"
+      [class.rounded-full]="splitSection() === 'metadata'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      <ng-icon name="heroTag" class="text-xl"></ng-icon>
     </button>
 
     <!-- Chat Toggle -->
-    @if (displayMode() === 'all') {
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-    <button (click)="toggleChat()" title="Chat" [class.text-accent]="isChatExpanded()"
-      [class.bg-subtle]="isChatExpanded()"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-      <ng-icon name="heroChatBubbleLeftRight" class="text-lg"></ng-icon>
+    <button (click)="selectSection('chat')" title="Chat" [class.text-accent]="splitSection() === 'chat'"
+      [class.bg-subtle]="splitSection() === 'chat'" [class.rounded-full]="splitSection() === 'chat'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      <ng-icon name="heroChatBubbleLeftRight" class="text-xl"></ng-icon>
     </button>
-    }
 
     <!-- Share/Export PGN Toggle -->
     @if (isExportAllowed()) {
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-    <button (click)="toggleExport()" title="Export PGN" [class.text-accent]="isExportExpanded()"
-      [class.bg-subtle]="isExportExpanded()"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-      <ng-icon name="heroShare" class="text-lg"></ng-icon>
-    </button>
-    }
-
-    <!-- Voice Call Toggle -->
-    @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-    <button (click)="toggleVideoCall()" [title]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
-      [class.text-rose-500]="webrtc.isCallActive()" [class.bg-subtle]="webrtc.isCallActive()"
-      [class.text-muted]="!webrtc.isCallActive()"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-      <ng-icon [name]="webrtc.isCallActive() ? 'heroPhoneXMark' : 'heroPhone'" class="text-lg"></ng-icon>
+    <button (click)="selectSection('export')" title="Export PGN" [class.text-accent]="activeSection() === 'export'"
+      [class.bg-subtle]="activeSection() === 'export'" [class.rounded-full]="activeSection() === 'export'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      <ng-icon name="heroShare" class="text-xl"></ng-icon>
     </button>
     }
   </div>
+
+  <!-- Voice Call Toggle (Bottom of Menu Dock) -->
+  @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
+  <button (click)="toggleVideoCall()" [title]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
+    [class.text-rose-500]="webrtc.isCallActive()" [class.bg-subtle]="webrtc.isCallActive()"
+    [class.rounded-full]="webrtc.isCallActive()" [class.text-muted]="!webrtc.isCallActive()"
+    class="p-2.5 rounded-xl transition-all cursor-pointer hover:bg-subtle flex items-center justify-center">
+    <ng-icon [name]="webrtc.isCallActive() ? 'heroPhoneXMark' : 'heroPhone'" class="text-xl"></ng-icon>
+  </button>
   }
-
-  @if (isExportAllowed() && isExportExpanded()) {
-  <!-- Export Options Section -->
-  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl p-4 select-none">
-    <div class="flex-1 flex flex-col min-h-0 overflow-y-auto pr-1">
-      <!-- Radio Options -->
-      <div class="flex flex-col gap-2 mb-4">
-        <label
-          class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
-          [class.bg-subtle]="exportOption() === 'current'" [class.border-accent]="exportOption() === 'current'">
-          <input type="radio" name="exportOption" value="current" [ngModel]="exportOption()"
-            (ngModelChange)="exportOption.set($event)"
-            class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
-          <div class="flex flex-col">
-            <span class="text-sm font-medium">Current chapter</span>
-            <span class="text-xs text-muted mt-0.5">Export only "{{ currentChapter()?.name }}"</span>
-          </div>
-        </label>
-
-        <label
-          class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
-          [class.bg-subtle]="exportOption() === 'all'" [class.border-accent]="exportOption() === 'all'">
-          <input type="radio" name="exportOption" value="all" [ngModel]="exportOption()"
-            (ngModelChange)="exportOption.set($event)"
-            class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
-          <div class="flex flex-col">
-            <span class="text-sm font-medium">All chapters</span>
-            <span class="text-xs text-muted mt-0.5">Export all {{ s.chapters?.length }} chapters</span>
-          </div>
-        </label>
-
-        <label
-          class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
-          [class.bg-subtle]="exportOption() === 'selected'" [class.border-accent]="exportOption() === 'selected'">
-          <input type="radio" name="exportOption" value="selected" [ngModel]="exportOption()"
-            (ngModelChange)="exportOption.set($event)"
-            class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
-          <div class="flex flex-col">
-            <span class="text-sm font-medium">Selected chapters</span>
-            <span class="text-xs text-muted mt-0.5">Select custom chapters to export</span>
-          </div>
-        </label>
-      </div>
-
-      <!-- Chapter Checklist (only shown when exportOption === 'selected') -->
-      @if (exportOption() === 'selected') {
-      <div class="flex-1 flex flex-col rounded-xl p-4 mb-4">
-        <div
-          class="flex items-center justify-between border-b border-border-base pb-2 mb-2 text-sm font-medium text-muted select-none">
-          <span>Select chapters</span>
-          <div class="flex gap-2">
-            <button (click)="selectAllChapters(true)"
-              class="hover:text-accent transition-colors cursor-pointer">All</button>
-            <span>|</span>
-            <button (click)="selectAllChapters(false)"
-              class="hover:text-accent transition-colors cursor-pointer">None</button>
-          </div>
-        </div>
-        <div class="flex-1 overflow-y-auto space-y-1 pr-1">
-          @for (chap of s.chapters; track chap.id; let idx = $index) {
-          <label
-            class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-subtle cursor-pointer select-none transition-colors"
-            [class.bg-surface]="selectedChapterIds().has(chap.id)">
-            <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
-              (change)="toggleChapterSelection(chap.id)"
-              class="w-4 h-4 rounded text-accent border-border-base focus:ring-accent bg-transparent">
-            <span class="text-sm font-medium text-muted tabular-nums">{{ idx + 1 }}.</span>
-            <span class="text-sm font-medium truncate flex-1">{{ chap.name }}</span>
-          </label>
-          }
-        </div>
-      </div>
-      }
-    </div>
-
-    <!-- Action Button -->
-    <button appButton variant="primary" (click)="performExport()"
-      [disabled]="exportOption() === 'selected' && selectedChapterIds().size === 0" class="w-full shrink-0">
-      <ng-icon name="heroDocumentArrowDown" class="text-md"></ng-icon>
-      <span>Export PGN</span>
-    </button>
-  </div>
-  } @else {
-  @if (displayMode() === 'all' || displayMode() === 'chapters') {
-  <!-- Chapters Section -->
-  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl">
-    <nav class="flex flex-col flex-1 overflow-y-auto min-h-0 p-1">
-      <div class="flex-1 flex flex-col gap-0.5" cdkDropList (cdkDropListDropped)="onDrop($event)"
-        [cdkDropListDisabled]="!canEdit()">
-        @for (chap of s.chapters; track chap.id; let idx = $index) {
-        <button (click)="selectChapter(chap)" cdkDrag [cdkDragDisabled]="!canEdit()" class="relative flex items-center justify-between py-2 px-4 cursor-pointer group text-left
-                {{
-                  currentChapter()?.id === chap.id
-                    ? 'bg-subtle rounded-md'
-                    : 'hover:bg-surface'
-                }}">
-          <!-- Drag Placeholder -->
-          <div *cdkDragPlaceholder class="h-10 bg-subtle/50 border-2 border-border-accent/30 rounded-lg mx-2 my-0.5">
-          </div>
-
-          @if (currentChapter()?.id === chap.id) {
-          <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-accent"></div>
-          }
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="text-xs font-medium text-muted tabular-nums shrink-0 group-active:cursor-grabbing cursor-grab">
-              {{ idx + 1 }}.
-            </span>
-            <span [class]="'text-sm truncate ' + (currentChapter()?.id === chap.id ? 'text-accent' : 'text-content')">
-              {{ chap.name }}
-            </span>
-          </div>
-
-          <div class="flex items-center gap-4 shrink-0 ml-2">
-            @if (chap.pgn_tags?.['Result'] && chap.pgn_tags?.['Result'] !== '*') {
-            <span class="text-xs font-medium opacity-70 tabular-nums select-none">
-              {{ chap.pgn_tags?.['Result'] }}
-            </span>
-            }
-            @if (canEdit()) {
-            <button (click)="onEditChapter($event, chap)" class="text-xs cursor-pointer hover:underline">Edit</button>
-            }
-          </div>
-        </button>
-        }
-      </div>
-    </nav>
-  </div>
-  }
-
-  @if (isMembersExpanded() && displayMode() !== 'chat') {
-  <!-- Members Section -->
-  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl select-none">
-    <div class="flex-1 overflow-y-auto min-h-0 space-y-2 p-4">
-      <!-- Owner -->
-      <div class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-subtle">
-        <div class="flex items-center gap-4 min-w-0">
-          <div
-            class="w-8 h-8 rounded-full bg-main border border-border-base/50 flex items-center justify-center text-muted shrink-0">
-            <ng-icon name="heroUser" class="text-sm"></ng-icon>
-          </div>
-          <div class="flex flex-col min-w-0">
-            <span class="text-sm font-medium cursor-pointer hover:underline hover:text-accent truncate"
-              [appUserHovercard]="s.owner.name">
-              {{ s.owner.name }}
-            </span>
-            <span class="text-xs text-muted font-medium mt-0.5">Owner</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Collaborators/Members List -->
-      @for (collab of s.collaborators; track collab.uid) {
-      <div
-        class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-subtle border border-border-base/5 hover:border-border-base/30 transition-all">
-        <div class="flex items-center gap-4 min-w-0">
-          <div
-            class="w-8 h-8 rounded-full bg-main border border-border-base/50 flex items-center justify-center text-muted shrink-0">
-            <ng-icon name="heroUser" class="text-sm"></ng-icon>
-          </div>
-          <div class="flex flex-col min-w-0">
-            <span class="text-sm font-medium cursor-pointer hover:underline hover:text-accent truncate"
-              [appUserHovercard]="collab.username">
-              {{ collab.username }}
-            </span>
-            <span class="text-xs text-muted font-medium mt-0.5">{{ collab.can_edit ? 'Collaborator' : 'Member' }}</span>
-          </div>
-        </div>
-
-        @if (isOwner()) {
-        <div class="flex items-center gap-2 shrink-0">
-          <!-- Role selection dropdown -->
-          <div class="relative min-w-[105px]">
-            <select [ngModel]="collab.can_edit ? 'collaborator' : 'member'"
-              (ngModelChange)="toggleMemberPermission(collab.uid, $event === 'collaborator')"
-              class="w-full px-2.5 py-1 bg-main border border-border-base rounded-full text-xs font-medium outline-none cursor-pointer appearance-none pr-7 focus:border-accent focus:ring-1 focus:ring-accent transition-all">
-              <option value="member">Member</option>
-              <option value="collaborator">Collaborator</option>
-            </select>
-            <div class="absolute inset-y-0 right-2.5 flex items-center pointer-events-none text-muted">
-              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-              </svg>
-            </div>
-          </div>
-
-          <button (click)="removeMember(collab.uid)"
-            class="p-1.5 rounded-full transition-colors cursor-pointer text-muted hover:text-rose-600 hover:bg-rose-500/10 flex items-center justify-center"
-            title="Remove member">
-            <ng-icon name="heroTrash" class="text-md"></ng-icon>
-          </button>
-        </div>
-        }
-      </div>
-      } @empty {
-      @if (!isOwner()) {
-      <div class="text-center py-4 text-xs text-muted">No other members.</div>
-      }
-      }
-
-      @if (isOwner()) {
-      <button (click)="addMember()"
-        class="w-full flex items-center justify-center py-3.5 px-4 rounded-4xl bg-transparent border border-dashed border-border-base hover:border-accent hover:bg-accent/5 text-muted hover:text-accent transition-all duration-200 cursor-pointer">
-        <ng-icon name="heroPlus" class="text-lg"></ng-icon>
-      </button>
-      }
-    </div>
-  </div>
-  }
-
-  @if (displayMode() === 'chat' || (displayMode() === 'all' && isChatExpanded())) {
-  <!-- Chat Section -->
-  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl">
-    <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
-      <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
-    </div>
-  </div>
-  }
-
-  @if (isMetadataExpanded() && displayMode() !== 'chat') {
-  <!-- Metadata / Game Info Section -->
-  <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main rounded-xl select-none p-4">
-    <div class="flex items-center justify-between border-b border-border-base pb-2 mb-4 text-sm select-none">
-      <span>Game metadata</span>
-      @if (canEdit()) {
-      <button (click)="editMetadata()" class="text-xs cursor-pointer hover:underline">Edit</button>
-      }
-    </div>
-
-    <div class="flex-1 overflow-y-auto min-h-0 pr-1 space-y-4">
-
-      <!-- Player Info & Clocks -->
-      <div class="flex flex-col gap-2">
-        <!-- White Player Row -->
-        <div class="flex items-center justify-between p-2 rounded-xl bg-subtle">
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="w-2.5 h-2.5 rounded-full bg-white shrink-0"></span>
-            @if (facade.whitePlayer().title) {
-            <span class="text-xs font-medium text-accent-foreground shrink-0">
-              {{ facade.whitePlayer().title }}
-            </span>
-            }
-            <span class="text-xs truncate">{{ facade.whitePlayer().name }}</span>
-            @if (facade.whitePlayer().elo) {
-            <span class="text-xs text-muted">({{ facade.whitePlayer().elo }})</span>
-            }
-            @if (facade.result() !== '*' && facade.result() !== '') {
-            @if (facade.getPlayerResult('white'); as resVal) {
-            @if (resVal) {
-            <span class="px-1.5 py-0.5 rounded bg-main text-xs shrink-0 ml-1">
-              {{ resVal }}
-            </span>
-            }
-            }
-            }
-          </div>
-          <!-- Clock -->
-          @if (facade.whiteClock()) {
-          <span class="px-1.5 py-0.5 rounded text-xs" [class.bg-sky-500/10]="facade.activeColor() === 'w'"
-            [class.text-sky-600]="facade.activeColor() === 'w'" [class.border-sky-500/30]="facade.activeColor() === 'w'"
-            [class.bg-main]="facade.activeColor() !== 'w'" [class.text-muted]="facade.activeColor() !== 'w'"
-            [class.border-border-base/50]="facade.activeColor() !== 'w'">
-            {{ facade.whiteClock() }}
-          </span>
-          }
-        </div>
-
-        <!-- Black Player Row -->
-        <div class="flex items-center justify-between p-2 rounded-xl bg-subtle">
-          <div class="flex items-center gap-2 min-w-0">
-            <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0"></span>
-            @if (facade.blackPlayer().title) {
-            <span class="text-xs font-medium text-accent-foreground shrink-0">
-              {{ facade.blackPlayer().title }}
-            </span>
-            }
-            <span class="text-xs truncate">{{ facade.blackPlayer().name }}</span>
-            @if (facade.blackPlayer().elo) {
-            <span class="text-xs text-muted">({{ facade.blackPlayer().elo }})</span>
-            }
-            @if (facade.result() !== '*' && facade.result() !== '') {
-            @if (facade.getPlayerResult('black'); as resVal) {
-            @if (resVal) {
-            <span class="px-1.5 py-0.5 rounded bg-main text-xs shrink-0 ml-1">
-              {{ resVal }}
-            </span>
-            }
-            }
-            }
-          </div>
-          <!-- Clock -->
-          @if (facade.blackClock()) {
-          <span class="px-1.5 py-0.5 rounded text-xs" [class.bg-sky-500/10]="facade.activeColor() === 'b'"
-            [class.text-sky-600]="facade.activeColor() === 'b'" [class.border-sky-500/30]="facade.activeColor() === 'b'"
-            [class.bg-main]="facade.activeColor() !== 'b'" [class.text-muted]="facade.activeColor() !== 'b'"
-            [class.border-border-base/50]="facade.activeColor() !== 'b'">
-            {{ facade.blackClock() }}
-          </span>
-          }
-        </div>
-      </div>
-
-      <!-- Other PGN Metadata -->
-      @if (metadataItems().length > 0) {
-      <div class="flex flex-col gap-2">
-        @for (item of metadataItems(); track item.label) {
-        <div class="flex items-center justify-between select-none">
-          <span class="text-xs" [title]="item.value">{{ item.value }}</span>
-        </div>
-        }
-      </div>
-      }
-
-    </div>
-  </div>
-  }
-  }
-
-
-
 </aside>
+
+<!-- Tablet landscape backdrop -->
+@if (isExpanded() && isCollapsed()) {
+<div class="fixed inset-0 bg-black/10 z-20" (click)="isExpanded.set(false)"></div>
+}
+
+<!-- Right side: Section view area -->
+<div [class.hidden]="isCollapsed() && !isExpanded()"
+  [class]="isCollapsed() ? 'flex flex-col min-h-0 overflow-hidden bg-main rounded-xl border border-border-base fixed left-[88px] top-20 bottom-6 w-80 z-30 shadow-2xl' : 'h-full w-full flex flex-col min-h-0 bg-main rounded-xl'">
+  <!-- View content pane -->
+  <div class="flex-1 min-h-0 flex flex-col overflow-hidden relative">
+    @if (isExpanded() && isCollapsed()) {
+    <div class="flex items-center justify-end p-2 border-b border-border-base shrink-0">
+      <button (click)="isExpanded.set(false)" class="p-1 hover:bg-subtle rounded-lg cursor-pointer text-muted">
+        <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    }
+
+    @switch (activeSection()) {
+    @case ('chapters') {
+    <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s"
+      [currentChapter]="currentChapter()" [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
+      (chapterEditClicked)="onEditChapter($event.event, $event.chapter)" (orderChanged)="onDrop($event)">
+    </app-study-chapters-list>
+
+    <!-- Bottom Split Panel -->
+    @if (splitSection(); as split) {
+    <div class="flex-1 flex flex-col min-h-[220px] overflow-hidden border-t border-border-base bg-main">
+      <div class="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+        @if (split === 'chat') {
+        <app-study-chat class="flex-1 overflow-hidden min-h-0 rounded-lg"></app-study-chat>
+        } @else if (split === 'metadata') {
+        <app-study-metadata [canEdit]="canEdit()" (editMetadataClicked)="editMetadata()">
+        </app-study-metadata>
+        }
+      </div>
+    </div>
+    }
+    }
+    @case ('add-chapter') {
+    <app-study-add-chapter class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [canEdit]="canEdit()"
+      [(newChapterActiveTab)]="newChapterActiveTab" [(newChapterOrientation)]="newChapterOrientation"
+      [(newChapterFen)]="newChapterFen" (chapterCreated)="handleChapterCreated($event)">
+    </app-study-add-chapter>
+    }
+    @case ('settings') {
+    <app-study-settings class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
+      (settingsSaved)="handleSettingsSaved($event)" (chatCleared)="handleChatCleared()"
+      (studyDeleted)="handleStudyDeleted()" (cancelled)="selectSection('chapters')">
+    </app-study-settings>
+    }
+    @case ('members') {
+    <app-study-members class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
+      (addMemberClicked)="addMember()" (removeMemberClicked)="removeMember($event)"
+      (permissionChanged)="toggleMemberPermission($event.userId, $event.canEdit)">
+    </app-study-members>
+    }
+    @case ('metadata') {
+    <app-study-metadata class="flex-1 flex flex-col min-h-0 min-w-0" [canEdit]="canEdit()"
+      (editMetadataClicked)="editMetadata()">
+    </app-study-metadata>
+    }
+    @case ('chat') {
+    <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main">
+      <app-study-chat class="flex-1 overflow-hidden min-h-0 rounded-lg"></app-study-chat>
+    </div>
+    }
+    @case ('export') {
+    <app-study-export class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
+      [currentChapter]="currentChapter()" (exportPerformed)="handleExport($event)">
+    </app-study-export>
+    }
+    }
+  </div>
+</div>
+} @else {
+<!-- Mobile/Tabbed Layout: keep backwards compatible mode -->
+<aside class="flex-1 flex flex-col min-h-0 overflow-hidden gap-4">
+  @if (displayMode() === 'chat') {
+  <app-study-chat class="flex-1 overflow-hidden min-h-0 rounded-lg"></app-study-chat>
+  } @else if (displayMode() === 'chapters') {
+  <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [currentChapter]="currentChapter()"
+    [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
+    (chapterEditClicked)="onEditChapter($event.event, $event.chapter)" (orderChanged)="onDrop($event)">
+  </app-study-chapters-list>
+  }
+</aside>
+}
 }

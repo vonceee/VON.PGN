@@ -1,35 +1,71 @@
-import { Component, inject, DestroyRef, signal, computed } from '@angular/core';
+import { Component, inject, DestroyRef, signal, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { FormsModule } from '@angular/forms';
-import { StudyService } from '../../../core/services/study.service';
-import { AuthService } from '../../../core/services/auth.service';
-import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
-import { ToastService } from '../../../core/services/toast.service';
+import { Dialog, DialogModule } from '@angular/cdk/dialog';
+import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { UserHovercardDirective } from '@shared/directives';
-import { StudyChapter } from '../../../core/models/study.model';
-import { AddChapterDialogComponent, AddChapterDialogResult } from '../dialogs/add-chapter-dialog/add-chapter-dialog.component';
-import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
-import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import {
+  heroEye,
+  heroPhone,
+  heroPhoneXMark,
+  heroChatBubbleLeftRight,
+  heroUsers,
+  heroCog6Tooth,
+  heroPlus,
+  heroShare,
+  heroTag
+} from '@ng-icons/heroicons/outline';
 
-import { AddMemberDialogComponent, AddMemberResult } from '../dialogs/add-member-dialog/add-member-dialog.component';
-import { StudySettingsDialogComponent } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
-import { StudyChatComponent } from '../study-chat/study-chat.component';
+import { StudyService } from '../../../core/services/study.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { WebrtcService } from '../../../core/services/webrtc.service';
 import { StudyFacade } from '../services/study.facade';
-import { input } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash, heroShare, heroXMark, heroDocumentArrowDown, heroTag } from '@ng-icons/heroicons/outline';
+import { StudyChapter } from '../../../core/models/study.model';
 
-import { ButtonComponent } from '@shared/ui';
+import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
+import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
+import { AddMemberDialogComponent, AddMemberResult } from '../dialogs/add-member-dialog/add-member-dialog.component';
+
+// Import newly created sub-components
+import { ChaptersListComponent } from './components/chapters-list/chapters-list.component';
+import { AddChapterComponent, ChapterTab } from './components/add-chapter/add-chapter.component';
+import { StudySettingsComponent } from './components/study-settings/study-settings.component';
+import { GameMetadataComponent } from './components/game-metadata/game-metadata.component';
+import { StudyMembersComponent } from './components/study-members/study-members.component';
+import { StudyExportComponent } from './components/study-export/study-export.component';
+import { StudyChatComponent } from '../study-chat/study-chat.component';
+
+export type SidebarSection = 'chapters' | 'add-chapter' | 'settings' | 'members' | 'metadata' | 'chat' | 'export';
 
 @Component({
   selector: 'app-study-sidebar',
   standalone: true,
-  imports: [CommonModule, NgIconComponent, DialogModule, StudyChatComponent, DragDropModule, FormsModule, UserHovercardDirective, ButtonComponent],
-  providers: [provideIcons({ heroEye, heroPhone, heroPhoneXMark, heroChatBubbleLeftRight, heroUsers, heroCog6Tooth, heroPlus, heroUser, heroTrash, heroShare, heroXMark, heroDocumentArrowDown, heroTag })],
+  imports: [
+    CommonModule,
+    NgIconComponent,
+    DialogModule,
+    StudyChatComponent,
+    ChaptersListComponent,
+    AddChapterComponent,
+    StudySettingsComponent,
+    GameMetadataComponent,
+    StudyMembersComponent,
+    StudyExportComponent
+  ],
+  providers: [
+    provideIcons({
+      heroEye,
+      heroPhone,
+      heroPhoneXMark,
+      heroChatBubbleLeftRight,
+      heroUsers,
+      heroCog6Tooth,
+      heroPlus,
+      heroShare,
+      heroTag
+    })
+  ],
   templateUrl: './study-sidebar.component.html',
   host: {
     'class': 'flex flex-col min-h-0 overflow-hidden'
@@ -48,12 +84,17 @@ export class StudySidebarComponent {
   isOwner = this.studyService.isOwner;
   hasJoinedClass = this.studyService.hasJoinedClass;
 
-  isChatExpanded = signal(true);
-  isMembersExpanded = signal(false);
-  isExportExpanded = signal(false);
-  isMetadataExpanded = signal(false);
-  exportOption = signal<'current' | 'all' | 'selected'>('current');
-  selectedChapterIds = signal<Set<number>>(new Set());
+  // Sidebar navigation state
+  activeSection = signal<SidebarSection>('chapters');
+  splitSection = signal<'chat' | 'metadata' | null>(null);
+  isExpanded = signal(false);
+
+  // Expose signals for Board Sync in StudyComponent template
+  newChapterFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  newChapterOrientation = signal<'white' | 'black'>('white');
+  newChapterActiveTab = signal<ChapterTab>('empty');
+
+  isBoardEditorActive = computed(() => this.activeSection() === 'add-chapter' && this.newChapterActiveTab() === 'editor');
 
   isExportAllowed = computed(() => {
     const s = this.study();
@@ -64,147 +105,13 @@ export class StudySidebarComponent {
     return true;
   });
 
-  metadataItems = computed(() => {
-    const t = this.facade.tags() || {};
-    const items: { label: string; value: string }[] = [];
-
-    const mapping = [
-      { label: 'Tournament', key: 'Event' },
-      { label: 'Site', key: 'Site' },
-      { label: 'Date', key: 'Date' },
-      { label: 'Round', key: 'Round' },
-      { label: 'ECO Code', key: 'ECO' },
-    ];
-
-    mapping.forEach(m => {
-      const value = t[m.key];
-      if (value && value !== '?') {
-        items.push({ label: m.label, value });
-      }
-    });
-
-    return items;
-  });
-
-  editMetadata() {
-    this.facade.onEditMetadata();
-  }
-
-  toggleChat() {
-    this.isChatExpanded.update((v) => {
-      const next = !v;
-      if (next) {
-        this.isMembersExpanded.set(false);
-        this.isExportExpanded.set(false);
-        this.isMetadataExpanded.set(false);
-      }
-      return next;
-    });
-  }
-
-  toggleMembers() {
-    this.isMembersExpanded.update((v) => {
-      const next = !v;
-      if (next) {
-        this.isChatExpanded.set(false);
-        this.isExportExpanded.set(false);
-        this.isMetadataExpanded.set(false);
-      }
-      return next;
-    });
-  }
-
-  toggleExport() {
-    this.isExportExpanded.update((v) => {
-      const next = !v;
-      if (next) {
-        this.isMembersExpanded.set(false);
-        this.isChatExpanded.set(false);
-        this.isMetadataExpanded.set(false);
-        this.exportOption.set('current');
-        this.selectedChapterIds.set(new Set());
-      }
-      return next;
-    });
-  }
-
-  toggleMetadata() {
-    this.isMetadataExpanded.update((v) => {
-      const next = !v;
-      if (next) {
-        this.isMembersExpanded.set(false);
-        this.isChatExpanded.set(false);
-        this.isExportExpanded.set(false);
-      }
-      return next;
-    });
-  }
-
-  toggleChapterSelection(chapterId: number) {
-    this.selectedChapterIds.update((set) => {
-      const newSet = new Set(set);
-      if (newSet.has(chapterId)) {
-        newSet.delete(chapterId);
-      } else {
-        newSet.add(chapterId);
-      }
-      return newSet;
-    });
-  }
-
-  selectAllChapters(select: boolean) {
-    const s = this.study();
-    if (!s || !s.chapters) return;
-
-    if (select) {
-      this.selectedChapterIds.set(new Set(s.chapters.map((c) => c.id)));
-    } else {
-      this.selectedChapterIds.set(new Set());
-    }
-  }
-
-  performExport() {
-    const s = this.study();
-    if (!s) return;
-
-    const option = this.exportOption();
-    if (option === 'current') {
-      const current = this.currentChapter();
-      if (current) {
-        this.studyService.exportPgn(s.id, [current.id]);
-      } else {
-        this.toastService.show('No active chapter to export', 'error');
-      }
-    } else if (option === 'all') {
-      this.studyService.exportPgn(s.id);
-    } else if (option === 'selected') {
-      const ids = Array.from(this.selectedChapterIds());
-      if (ids.length > 0) {
-        this.studyService.exportPgn(s.id, ids);
-      } else {
-        this.toastService.show('Please select at least one chapter to export', 'error');
-      }
-    }
-
-    this.isExportExpanded.set(false);
-  }
-
-  toggleVideoCall() {
-    if (this.webrtc.isCallActive()) {
-      this.webrtc.leaveCall();
-    } else {
-      this.webrtc.joinCall().catch(err => {
-        console.error('[StudySidebarComponent] Error joining video call:', err);
-      });
-    }
-  }
-
   // Inputs
   isLargeScreen = input.required<boolean>();
   isSyncing = input.required<boolean>();
   canEdit = input.required<boolean>();
   isTabMode = input<boolean>(false);
   displayMode = input<'all' | 'chapters' | 'chat'>('all');
+  isCollapsed = input<boolean>(false);
 
   // Signals from service
   study = this.studyService.currentStudy;
@@ -212,16 +119,59 @@ export class StudySidebarComponent {
   viewerCount = this.studyService.viewerCount;
   viewerNames = this.studyService.viewerNames;
 
-  /**
-   * Switches the active chapter for the current user.
-   *
-   * WHY: Chapter navigation is intentionally ungated for view-only members and
-   * guests. Blocking it (the old `isSyncing() && !canEdit()` guard) prevented
-   * non-editors from reading any chapter other than the one the owner was on,
-   * making the study effectively unusable for viewers. Chapter selection is a
-   * read-only local operation; only the subsequent `emitChapterChange` call
-   * (which is canEdit-gated) affects other connected clients.
-   */
+  editMetadata() {
+    this.facade.onEditMetadata();
+  }
+
+  toggleSplit(section: 'chat' | 'metadata') {
+    if (this.splitSection() === section) {
+      this.splitSection.set(null);
+    } else {
+      this.splitSection.set(section);
+    }
+  }
+
+  selectSection(section: SidebarSection) {
+    if (this.displayMode() !== 'all') {
+      this.activeSection.set(section);
+      return;
+    }
+
+    const isCollapsed = this.isCollapsed();
+
+    if (section === 'chat' || section === 'metadata') {
+      if (this.splitSection() === section) {
+        this.splitSection.set(null);
+        if (isCollapsed) this.isExpanded.set(false);
+      } else {
+        this.splitSection.set(section);
+        this.activeSection.set('chapters');
+        if (isCollapsed) this.isExpanded.set(true);
+      }
+      return;
+    }
+
+    this.splitSection.set(null);
+
+    if (section === 'add-chapter') {
+      const s = this.study();
+      this.newChapterActiveTab.set('empty');
+      this.newChapterOrientation.set('white');
+      this.newChapterFen.set('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+    }
+
+    if (isCollapsed) {
+      if (this.activeSection() === section && this.isExpanded()) {
+        this.isExpanded.set(false);
+      } else {
+        this.activeSection.set(section);
+        this.isExpanded.set(true);
+      }
+    } else {
+      this.activeSection.set(section);
+    }
+  }
+
   selectChapter(chap: StudyChapter) {
     if (this.currentChapter()?.id === chap.id) return;
 
@@ -238,47 +188,23 @@ export class StudySidebarComponent {
     }
   }
 
-  createChapter() {
+  onDrop(event: any) {
     if (!this.canEdit()) return;
     const s = this.study();
-    if (!s) return;
+    if (!s || !s.chapters) return;
 
-    const dialogRef = this.dialog.open<AddChapterDialogResult>(AddChapterDialogComponent, {
-      width: '450px',
-      maxWidth: '95vw',
-      backdropClass: ['bg-black/60'],
-      data: {
-        defaultName: `Chapter ${(s.chapters?.length ?? 0) + 1}`,
+    const chapters = [...s.chapters];
+    moveItemInArray(chapters, event.previousIndex, event.currentIndex);
+
+    this.studyService.currentStudy.update(curr => curr ? { ...curr, chapters } : null);
+
+    const chapterIds = chapters.map(c => c.id);
+    this.studyService.reorderChapters(s.id, chapterIds).subscribe({
+      error: () => {
+        this.toastService.show('Failed to save new order', 'error');
+        this.studyService.getStudy(s.id); // Revert on error
       }
     });
-
-    dialogRef.closed
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((result) => {
-        if (!result) return;
-
-        if (result.type === 'pgn' && result.pgn) {
-          this.studyService.importPgn(s.id, result.pgn).subscribe({
-            next: (res) => {
-              const firstNewChapter = (res.data?.chapters || res.chapters)?.[0];
-              this.studyService.getStudy(s.id, firstNewChapter?.id);
-              this.toastService.show(res.message || 'Import successful!', 'success');
-            },
-            error: (err) => {
-              console.error('Import failed:', err);
-              this.toastService.show(err.error?.message || 'Failed to import PGN.', 'error');
-            }
-          });
-        } else {
-          this.studyService.addChapter(s.id, result.name, result.fen, result.orientation).subscribe({
-            next: (res) => {
-              const newChapter = res?.data || res;
-              this.studyService.getStudy(s.id, newChapter.id);
-              this.toastService.show('Chapter created successfully!', 'success');
-            },
-          });
-        }
-      });
   }
 
   onEditChapter(event: MouseEvent, chap: StudyChapter) {
@@ -348,8 +274,84 @@ export class StudySidebarComponent {
       });
   }
 
+  handleChapterCreated(payload: { name: string; type: ChapterTab; fen: string; pgn: string; orientation: 'white' | 'black' }) {
+    const s = this.study();
+    if (!s) return;
 
+    if (payload.type === 'pgn' && payload.pgn) {
+      this.studyService.importPgn(s.id, payload.pgn).subscribe({
+        next: (res) => {
+          const firstNewChapter = (res.data?.chapters || res.chapters)?.[0];
+          this.studyService.getStudy(s.id, firstNewChapter?.id);
+          this.toastService.show(res.message || 'Import successful!', 'success');
+          this.selectSection('chapters');
+        },
+        error: (err) => {
+          console.error('Import failed:', err);
+          this.toastService.show(err.error?.message || 'Failed to import PGN.', 'error');
+        }
+      });
+    } else {
+      this.studyService.addChapter(s.id, payload.name, payload.fen, payload.orientation).subscribe({
+        next: (res) => {
+          const newChapter = res?.data || res;
+          this.studyService.getStudy(s.id, newChapter.id);
+          this.toastService.show('Chapter created successfully!', 'success');
+          this.selectSection('chapters');
+        },
+      });
+    }
+  }
 
+  handleSettingsSaved(payload: { name: string; visibility: string; engine_visibility: string; export_visibility: string; category: string; orientation: string }) {
+    const s = this.study();
+    if (!s) return;
+
+    this.studyService.updateStudy(s.id, payload).subscribe({
+      next: () => {
+        this.toastService.show('Study settings updated', 'success');
+        this.studyService.getStudy(s.id);
+        this.selectSection('chapters');
+      },
+      error: () => this.toastService.show('Failed to update settings', 'error')
+    });
+  }
+
+  handleChatCleared() {
+    const s = this.study();
+    if (!s) return;
+    this.studyService.clearStudyChat(s.id).subscribe({
+      next: () => {
+        this.studyService.emitClearChat();
+        this.toastService.show('Chat lobby cleared', 'success');
+      }
+    });
+  }
+
+  handleStudyDeleted() {
+    if (!this.isOwner()) return;
+    const s = this.study();
+    if (!s) return;
+
+    const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
+      data: {
+        title: 'Delete study',
+        message: 'Are you sure you want to delete this study? This will delete all chapters and comments forever.',
+        confirmText: 'Delete forever'
+      }
+    });
+
+    confirmRef.closed.subscribe((confirmed) => {
+      if (confirmed) {
+        this.studyService.deleteStudy(s.id).subscribe({
+          next: () => {
+            this.toastService.show('Study deleted successfully', 'success');
+            this.router.navigate(['/study']);
+          }
+        });
+      }
+    });
+  }
 
   addMember() {
     if (!this.isOwner()) return;
@@ -408,107 +410,38 @@ export class StudySidebarComponent {
     });
   }
 
-  openSettings() {
-    if (!this.isOwner()) return;
+  handleExport(payload: { option: 'current' | 'all' | 'selected'; selectedIds: Set<number> }) {
     const s = this.study();
     if (!s) return;
 
-    const dialogRef = this.dialog.open<any>(StudySettingsDialogComponent, {
-      width: '450px',
-      maxWidth: '95vw',
-      backdropClass: ['bg-black/60'],
-      data: { name: s.name, visibility: s.visibility, engine_visibility: s.engine_visibility, export_visibility: s.export_visibility, category: s.category, orientation: s.orientation }
-    });
-
-    dialogRef.closed.subscribe((result) => {
-      if (!result) return;
-      if (result.action === 'save') {
-        this.studyService.updateStudy(s.id, {
-          name: result.name,
-          visibility: result.visibility,
-          engine_visibility: result.engine_visibility,
-          export_visibility: result.export_visibility,
-          category: result.category,
-          orientation: result.orientation
-        }).subscribe({
-          next: () => {
-            this.toastService.show('Study settings updated', 'success');
-            this.studyService.getStudy(s.id);
-          }
-        });
-      } else if (result.action === 'clear_chat') {
-        this.studyService.clearStudyChat(s.id).subscribe({
-          next: () => {
-            this.studyService.emitClearChat();
-            this.toastService.show('Chat lobby cleared', 'success');
-          }
-        });
-      } else if (result.action === 'delete') {
-        this.onDeleteStudy();
+    if (payload.option === 'current') {
+      const current = this.currentChapter();
+      if (current) {
+        this.studyService.exportPgn(s.id, [current.id]);
+      } else {
+        this.toastService.show('No active chapter to export', 'error');
       }
-    });
+    } else if (payload.option === 'all') {
+      this.studyService.exportPgn(s.id);
+    } else if (payload.option === 'selected') {
+      const ids = Array.from(payload.selectedIds);
+      if (ids.length > 0) {
+        this.studyService.exportPgn(s.id, ids);
+      } else {
+        this.toastService.show('Please select at least one chapter to export', 'error');
+      }
+    }
+
+    this.selectSection('chapters');
   }
 
-  onDeleteStudy() {
-    if (!this.isOwner()) return;
-    const s = this.study();
-    if (!s) return;
-
-    const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
-      data: {
-        title: 'Delete study',
-        message: 'Are you sure you want to delete this study? This will delete all chapters and comments forever.',
-        confirmText: 'Delete forever'
-      }
-    });
-
-    confirmRef.closed.subscribe((confirmed) => {
-      if (confirmed) {
-        this.studyService.deleteStudy(s.id).subscribe({
-          next: () => {
-            this.toastService.show('Study deleted successfully', 'success');
-            this.router.navigate(['/study']);
-          }
-        });
-      }
-    });
-  }
-
-  formatDate(dateStr: string): string {
-    if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  }
-
-  formatRelativeTime(dateStr: string): string {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
-    if (diff < 60) return 'just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
-    return this.formatDate(dateStr);
-  }
-
-  onDrop(event: CdkDragDrop<StudyChapter[]>) {
-    if (!this.canEdit()) return;
-    const s = this.study();
-    if (!s || !s.chapters) return;
-
-    // Local update for instant feedback
-    const chapters = [...s.chapters];
-    moveItemInArray(chapters, event.previousIndex, event.currentIndex);
-
-    this.studyService.currentStudy.update(curr => curr ? { ...curr, chapters } : null);
-
-    // Persist to backend
-    const chapterIds = chapters.map(c => c.id);
-    this.studyService.reorderChapters(s.id, chapterIds).subscribe({
-      error: () => {
-        this.toastService.show('Failed to save new order', 'error');
-        this.studyService.getStudy(s.id); // Revert on error
-      }
-    });
+  toggleVideoCall() {
+    if (this.webrtc.isCallActive()) {
+      this.webrtc.leaveCall();
+    } else {
+      this.webrtc.joinCall().catch(err => {
+        console.error('[StudySidebarComponent] Error joining video call:', err);
+      });
+    }
   }
 }

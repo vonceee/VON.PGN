@@ -24,7 +24,7 @@ export interface EditChapterDialogData {
     <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative mx-auto">
       <!-- Header -->
       <div class="flex justify-between">
-        <h2 class="text-2xl font-sans">Edit chapter</h2>
+        <h2 class="text-2xl">Edit chapter</h2>
       </div>
 
       <!-- Body Content -->

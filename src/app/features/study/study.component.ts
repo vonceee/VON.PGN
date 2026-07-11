@@ -49,6 +49,7 @@ import { LayoutService } from '../../core/services/layout.service';
 import { StudyShortcutsService } from './services/study-shortcuts.service';
 import { StudyFacade } from './services/study.facade';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
+import { BoardEditorComponent } from '../../shared/components/chess/board-editor/board-editor.component';
 
 @Component({
   selector: 'app-study',
@@ -66,6 +67,7 @@ import { StudyAnalysisComponent } from './study-analysis/study-analysis.componen
     EndClassDialogComponent,
     JoinClassDialogComponent,
     StudyAnalysisComponent,
+    BoardEditorComponent,
   ],
   providers: [
     StudyFacade,
@@ -140,6 +142,8 @@ export class StudyComponent implements OnInit, OnDestroy {
   private shortcutsService = inject(StudyShortcutsService);
 
   @ViewChild('board') board!: ChessBoardComponent;
+  @ViewChild(StudySidebarComponent) sidebar?: StudySidebarComponent;
+  @ViewChild('rightEditor') rightEditor?: BoardEditorComponent;
 
   id = input.required<string>();
   chapterId = input<string | undefined>(undefined, { alias: 'chapter' });
@@ -148,18 +152,27 @@ export class StudyComponent implements OnInit, OnDestroy {
   boardSize = signal(600);
   isLargeScreen = signal(false);
   isThreeColumn = signal(false);
-  isTwoColumn = signal(false);
+  isSidebarCollapsed = computed(() => {
+    const width = this.windowWidth();
+    return width >= 768 && width < 1024;
+  });
+
   otherColumnsWidth = computed(() => {
     if (this.isThreeColumn()) {
+      const width = this.windowWidth();
+      if (this.isSidebarCollapsed()) {
+        return 80 + 320 + 60; // Left menu dock (80px) + Right notation (320px) + Gaps/Paddings (60px)
+      }
+      if (width < 1280) {
+        return 260 + 320 + 60; // Narrow inline Left sidebar (260px) + Right notation (320px) + Gaps/Paddings (60px)
+      }
       return 330 + 400 + 80; // Left sidebar (330px) + Right notation (400px) + Gaps/Paddings (80px)
-    } else if (this.isTwoColumn()) {
-      return 400 + 60; // Right notation (400px) + Gaps/Paddings (60px)
     } else {
       return 32; // Mobile padding
     }
   });
 
-  isMobileLayout = computed(() => !this.isThreeColumn() && !this.isTwoColumn());
+  isMobileLayout = computed(() => !this.isThreeColumn());
 
   windowWidth = signal(1200);
   windowHeight = signal(800);
@@ -210,8 +223,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     this.windowWidth.set(width);
     this.windowHeight.set(height);
     this.isLargeScreen.set(width >= 1024);
-    this.isThreeColumn.set(width >= 1280);
-    this.isTwoColumn.set(width >= 768 && width < 1280);
+    this.isThreeColumn.set(width >= 768);
 
     if (this.isThreeColumn() && (this.facade.activeTab() === 'chapters' || this.facade.activeTab() === 'chat')) {
       this.facade.activeTab.set('notation');

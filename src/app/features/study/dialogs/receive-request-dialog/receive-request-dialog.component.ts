@@ -10,7 +10,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   template: `
     <div class="bg-main rounded-4xl max-w-xl max-h-[90vh] flex flex-col relative overflow-hidden">
       <!-- Header -->
-      <div class="p-8 pb-0 flex items-center justify-between shrink-0">
+      <div class="p-6 pb-0 flex items-center justify-between shrink-0">
         <h2 class="text-2xl">Board control request</h2>
       </div>
 

@@ -1,25 +1,41 @@
-<div class="absolute inset-0 flex flex-col overflow-y-auto">
+<div class="absolute inset-0 flex flex-col">
   @if (facade.study(); as s) {
   <!-- Main Content Grid Wrapper -->
-  <div class="w-full max-w-[1850px] mx-auto p-2 lg:p-4 xl:p-6">
-    <div
-      class="grid justify-center grid-cols-1 md:grid-cols-[auto_400px] xl:grid-cols-[330px_auto_400px] gap-3 lg:gap-4 xl:gap-6">
+  <div class="w-full max-w-[1850px] mx-auto pt-6 md:p-6 md:pl-25 2xl:pl-15" [class.pl-24]="isSidebarCollapsed()">
+    <div class="grid justify-center lg:justify-start gap-4 2xl:gap-8" [class.grid-cols-1]="!isThreeColumn()"
+      [class.md:grid-cols-[auto_320px]]="isThreeColumn() && isSidebarCollapsed()"
+      [class.lg:grid-cols-[260px_auto_320px]]="isThreeColumn() && !isSidebarCollapsed() && windowWidth() < 1280"
+      [class.xl:grid-cols-[320px_auto_400px]]="isThreeColumn() && !isSidebarCollapsed() && windowWidth() >= 1280 && windowWidth() < 1536"
+      [class.2xl:grid-cols-[400px_auto_440px]]="isThreeColumn() && !isSidebarCollapsed() && windowWidth() >= 1536">
 
       <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
       @if (isThreeColumn()) {
-      <app-study-sidebar class="overflow-hidden sync-board-height" [isLargeScreen]="isLargeScreen()"
+      <app-study-sidebar #sidebar [isCollapsed]="isSidebarCollapsed()" [class.fixed]="isSidebarCollapsed()"
+        [class.left-0]="isSidebarCollapsed()" [class.top-0]="isSidebarCollapsed()"
+        [class.bottom-0]="isSidebarCollapsed()" [class.w-20]="isSidebarCollapsed()" [class.z-30]="isSidebarCollapsed()"
+        [class.sticky]="!isSidebarCollapsed()" [class.top-2]="!isSidebarCollapsed() && windowWidth() < 1280"
+        [class.xl:top-6]="!isSidebarCollapsed() && windowWidth() >= 1280" [class.self-start]="!isSidebarCollapsed()"
+        [class.sync-board-height]="!isSidebarCollapsed()" class="overflow-hidden" [isLargeScreen]="isLargeScreen()"
         [isSyncing]="facade.isSyncing()" [canEdit]="facade.canEdit()"></app-study-sidebar>
       }
 
       <!-- Center Column: Board & Player Info -->
-      <div class="flex flex-col items-center justify-start relative" [class.md:sticky]="!isThreeColumn()"
-        [class.md:top-6]="!isThreeColumn()">
+      <div class="flex flex-col items-center justify-start relative">
 
         <!-- Board Wrapper -->
         <div class="resize-x overflow-hidden aspect-square min-w-[400px] flex items-center justify-center gap-0 mx-auto"
-          [style.width.px]="boardSize()" [style.maxWidth.px]="maxBoardSize()" [style.maxHeight.px]="maxBoardSize()">
-          <app-chess-board #board [fluid]="true" [resizable]="false" [fen]="facade.currentFen()"
-            [orientation]="facade.boardOrientation()" [interactive]="facade.boardInteractive()"
+          [style.width.px]="boardSize()" [style.maxWidth.px]="maxBoardSize()" [style.maxHeight.px]="maxBoardSize()"
+          [style.cursor]="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.getBoardCursor() || 'default' : 'default'"
+          (mousedown)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseDown($event) : null"
+          (mousemove)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseMove($event) : null"
+          (mouseup)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseUp() : null"
+          (mouseleave)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseUp() : null">
+          <app-chess-board #board [fluid]="true" [resizable]="false"
+            [fen]="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.newChapterFen() || '' : facade.currentFen()"
+            [orientation]="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.newChapterOrientation() || 'white' : facade.boardOrientation()"
+            [interactive]="(sidebar && sidebar.isBoardEditorActive()) ? true : facade.boardInteractive()"
+            [isEditor]="(sidebar && sidebar.isBoardEditorActive()) || false"
+            (fenChange)="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.newChapterFen.set($event) : null"
             (moveMade)="onMoveMade($event)" (shapeDrawn)="facade.onShapeDrawn($event)" (prevMove)="facade.onPrevMove()"
             (nextMove)="facade.onNextMove()" [syncedShapes]="facade.mergedShapes()"
             [lastMove]="facade.lastMoveSquares()"></app-chess-board>
@@ -35,7 +51,11 @@
 
       <!-- Right Column: Notation & Info -->
       <div class="flex flex-col gap-4 overflow-hidden sync-board-height">
-
+        @if (sidebar && sidebar.isBoardEditorActive()) {
+        <app-board-editor #rightEditor [mainBoard]="board" [fen]="sidebar.newChapterFen() || ''"
+          (fenChange)="sidebar ? sidebar.newChapterFen.set($event) : null"
+          [orientation]="sidebar.newChapterOrientation() || 'white'"></app-board-editor>
+        } @else {
         <!-- Notation & Commentary Card -->
         <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
@@ -90,6 +110,7 @@
             }
           </div>
         </div>
+        }
 
         <!-- Outside Notation: Chapters & Chat (only when NOT in 3-column layout) -->
         @if (!isThreeColumn()) {

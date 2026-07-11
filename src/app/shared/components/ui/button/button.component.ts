@@ -29,17 +29,17 @@ export class ButtonComponent {
   }
 
   variantClasses = computed(() => {
-    const base = `group flex items-center justify-center gap-2 border px-5 py-2.5 text-md font-medium cursor-pointer`;
+    const base = `group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer`;
 
     switch (this.variant()) {
       case 'primary':
         return `${base} bg-content text-main rounded-full`;
       case 'danger':
-        return `${base} bg-transparent border-red rounded-full text-red-500 underline underline-offset-4`;
+        return `${base} bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors`;
       case 'ghost':
         return `${base} bg-transparent hover:bg-accent/10 border-transparent text-muted`;
       default:
-        return `${base} bg-transparent border rounded-full hover:bg-accent/10 hover:underline`;
+        return `${base} bg-surface rounded-full hover:bg-accent/10`;
     }
   });
 

@@ -4,3 +4,5 @@ export * from './move-notation/move-notation.component';
 export * from './seek-board/seek-board.component';
 export * from './tactics-board/tactics-board.component';
 export * from './eval-bar/eval-bar.component';
+export * from './blog-game-viewer/blog-game-viewer.component';
+
