@@ -18,7 +18,7 @@ import { Study } from '../../../../../core/models/study.model';
     })
   ],
   template: `
-    <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main select-none p-4 rounded-lg">
+    <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-surface select-none p-4">
       <div class="flex-1 overflow-y-auto min-h-0 space-y-2 pr-1">
         <!-- Owner -->
         <div class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-subtle">

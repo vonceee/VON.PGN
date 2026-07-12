@@ -255,6 +255,7 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
   let lastNode: MoveNode | null = null;
   let preComment: string | null = null;
   let preClk: string | null = null;
+  let preShapes: any[] = [];
 
   while (tokens.length > 0) {
     const token = tokens.shift()!;
@@ -268,7 +269,7 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
       }
 
       const comment = rawComment
-        .replace(/\[%clk\s+[^\]]+\]/gi, '')
+        .replace(/\[%[^\]]*\]/gi, '')
         .replace(/\s+/g, ' ')
         .trim();
 
@@ -290,6 +291,10 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
         }
         if (comment) {
           preComment = comment;
+        }
+        const shapes = parseShapesFromComment(rawComment);
+        if (shapes.length > 0) {
+          preShapes = [...preShapes, ...shapes];
         }
       }
     } else if (token === '(') {
@@ -357,6 +362,10 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
           if (preClk) {
             node.clk = preClk;
             preClk = null;
+          }
+          if (preShapes.length > 0) {
+            node.shapes = preShapes;
+            preShapes = [];
           }
 
           if (glyphMatch) {

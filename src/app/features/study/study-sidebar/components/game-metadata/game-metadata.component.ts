@@ -18,7 +18,7 @@ import { StudyFacade } from '../../../services/study.facade';
     })
   ],
   template: `
-    <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main select-none p-4 rounded-lg">
+    <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-surface select-none p-4">
       @if (canEdit()) {
       <div class="flex mb-4 text-sm select-none">
         <button (click)="editMetadata()" class="text-xs cursor-pointer hover:underline">Edit</button>
