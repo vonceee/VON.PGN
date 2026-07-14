@@ -118,7 +118,7 @@
             <div class="flex flex-col gap-2">
               <label class="text-xs font-semibold uppercase ">Voice Selection</label>
               <select
-                class="text-xs text-black bg-white border border-border-base rounded-md px-3 py-2 w-full cursor-pointer appearance-none"
+                class="text-xs text-black bg-white border border-border-base rounded-lg px-3 py-2 w-full cursor-pointer appearance-none"
                 [value]="selectedVoiceURI()" (change)="onVoiceChange($event)">
                 @for (voice of availableVoices(); track voice.voiceURI) {
                 <option [value]="voice.voiceURI" class="bg-white text-black text-xs">
@@ -130,7 +130,7 @@
             <div class="flex flex-col gap-2">
               <label class="text-xs font-semibold uppercase ">Playback Speed</label>
               <select
-                class="text-xs text-black bg-white border border-border-base rounded-md px-3 py-2 w-full cursor-pointer appearance-none"
+                class="text-xs text-black bg-white border border-border-base rounded-lg px-3 py-2 w-full cursor-pointer appearance-none"
                 [value]="playbackRate()" (change)="onRateChange($event)">
                 @for (rate of playbackRates; track rate) {
                 <option [value]="rate" class="bg-white text-black text-xs">

@@ -14,7 +14,8 @@ import {
   heroCog6Tooth,
   heroPlus,
   heroShare,
-  heroTag
+  heroTag,
+  heroPencilSquare
 } from '@ng-icons/heroicons/outline';
 
 import { StudyService } from '../../../core/services/study.service';
@@ -35,8 +36,9 @@ import { GameMetadataComponent } from './components/game-metadata/game-metadata.
 import { StudyMembersComponent } from './components/study-members/study-members.component';
 import { StudyExportComponent } from './components/study-export/study-export.component';
 import { StudyChatComponent } from '../study-chat/study-chat.component';
+import { StudyAnnotateComponent } from './components/study-annotate/study-annotate.component';
 
-export type SidebarSection = 'chapters' | 'add-chapter' | 'settings' | 'members' | 'metadata' | 'chat' | 'export';
+export type SidebarSection = 'chapters' | 'add-chapter' | 'settings' | 'members' | 'metadata' | 'chat' | 'export' | 'annotate';
 
 @Component({
   selector: 'app-study-sidebar',
@@ -51,7 +53,8 @@ export type SidebarSection = 'chapters' | 'add-chapter' | 'settings' | 'members'
     StudySettingsComponent,
     GameMetadataComponent,
     StudyMembersComponent,
-    StudyExportComponent
+    StudyExportComponent,
+    StudyAnnotateComponent
   ],
   providers: [
     provideIcons({
@@ -63,7 +66,8 @@ export type SidebarSection = 'chapters' | 'add-chapter' | 'settings' | 'members'
       heroCog6Tooth,
       heroPlus,
       heroShare,
-      heroTag
+      heroTag,
+      heroPencilSquare
     })
   ],
   templateUrl: './study-sidebar.component.html',
@@ -85,8 +89,8 @@ export class StudySidebarComponent {
   hasJoinedClass = this.studyService.hasJoinedClass;
 
   // Sidebar navigation state
-  activeSection = signal<SidebarSection>('chapters');
-  splitSection = signal<'chat' | 'metadata' | null>(null);
+  activeSection = this.facade.activeSection;
+  splitSection = this.facade.splitSection;
   isExpanded = signal(false);
 
   // Expose signals for Board Sync in StudyComponent template
@@ -242,34 +246,20 @@ export class StudySidebarComponent {
             error: () => this.toastService.show('Failed to update chapter', 'error')
           });
         } else if (result.action === 'delete') {
-          const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
-            data: {
-              title: 'Delete Chapter',
-              message: `Are you sure you want to delete "${chap.name}"?`,
-              confirmText: 'Delete'
+          this.studyService.deleteChapter(s.id, chap.id).subscribe({
+            next: () => {
+              this.toastService.show('Chapter deleted', 'success');
+              if (this.currentChapter()?.id === chap.id) {
+                const remaining = s.chapters?.filter(c => c.id !== chap.id) || [];
+                if (remaining.length > 0) {
+                  this.selectChapter(remaining[0]);
+                } else {
+                  this.router.navigate(['/study']);
+                }
+              }
+              this.studyService.getStudy(s.id);
             }
           });
-
-          confirmRef.closed
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((confirmed) => {
-              if (confirmed) {
-                this.studyService.deleteChapter(s.id, chap.id).subscribe({
-                  next: () => {
-                    this.toastService.show('Chapter deleted', 'success');
-                    if (this.currentChapter()?.id === chap.id) {
-                      const remaining = s.chapters?.filter(c => c.id !== chap.id) || [];
-                      if (remaining.length > 0) {
-                        this.selectChapter(remaining[0]);
-                      } else {
-                        this.router.navigate(['/study']);
-                      }
-                    }
-                    this.studyService.getStudy(s.id);
-                  }
-                });
-              }
-            });
         }
       });
   }
@@ -323,7 +313,6 @@ export class StudySidebarComponent {
     this.studyService.clearStudyChat(s.id).subscribe({
       next: () => {
         this.studyService.emitClearChat();
-        this.toastService.show('Chat lobby cleared', 'success');
       }
     });
   }
@@ -333,22 +322,10 @@ export class StudySidebarComponent {
     const s = this.study();
     if (!s) return;
 
-    const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
-      data: {
-        title: 'Delete study',
-        message: 'Are you sure you want to delete this study? This will delete all chapters and comments forever.',
-        confirmText: 'Delete forever'
-      }
-    });
-
-    confirmRef.closed.subscribe((confirmed) => {
-      if (confirmed) {
-        this.studyService.deleteStudy(s.id).subscribe({
-          next: () => {
-            this.toastService.show('Study deleted successfully', 'success');
-            this.router.navigate(['/study']);
-          }
-        });
+    this.studyService.deleteStudy(s.id).subscribe({
+      next: () => {
+        this.toastService.show('Study deleted successfully', 'success');
+        this.router.navigate(['/study']);
       }
     });
   }
@@ -408,6 +385,14 @@ export class StudySidebarComponent {
         this.studyService.getStudy(this.study()!.id);
       }
     });
+  }
+
+  grantBoardControl(userId: string) {
+    this.studyService.grantBoardControl(userId);
+  }
+
+  revokeBoardControl() {
+    this.studyService.revokeBoardControl();
   }
 
   handleExport(payload: { option: 'current' | 'all' | 'selected'; selectedIds: Set<number> }) {

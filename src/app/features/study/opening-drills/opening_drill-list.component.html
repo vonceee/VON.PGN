@@ -79,19 +79,20 @@
     <!-- Repertoires Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of filteredRepertoires(); track study.id) {
-      <div class="bg-main rounded-md border border-border-base shadow-sm flex flex-col md:flex-row-reverse overflow-hidden">
+      <div
+        class="bg-main rounded-lg border border-border-base shadow-sm flex flex-col md:flex-row-reverse overflow-hidden">
         <!-- Chess Board Preview Container -->
         <div
           class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">
           <div class="w-full h-full">
             @defer (on viewport) {
-              <app-chess-board [fen]="getStudyFinalPosition(study).fen"
-                [lastMove]="getStudyFinalPosition(study).lastMove ?? undefined" [interactive]="false" [resizable]="false"
-                [hideCoordinates]="true" [fluid]="true" />
+            <app-chess-board [fen]="getStudyFinalPosition(study).fen"
+              [lastMove]="getStudyFinalPosition(study).lastMove ?? undefined" [interactive]="false" [resizable]="false"
+              [hideCoordinates]="true" [fluid]="true" />
             } @placeholder {
-              <div class="w-full h-full flex items-center justify-center bg-subtle">
-                <div class="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
-              </div>
+            <div class="w-full h-full flex items-center justify-center bg-subtle">
+              <div class="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+            </div>
             }
           </div>
         </div>

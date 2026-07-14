@@ -48,6 +48,8 @@ export class StudyFacade {
   isSyncing = this.nav.isSyncing;
   isActionInProgress = this.nav.isActionInProgress;
   activeTab = this.nav.activeTab;
+  activeSection = this.nav.activeSection;
+  splitSection = this.nav.splitSection;
 
   tags = this.nav.tags;
   result = this.nav.result;
@@ -173,6 +175,10 @@ export class StudyFacade {
 
   onAnnotateMove(node: MoveNode) {
     this.nav.onAnnotateMove(node);
+  }
+
+  saveAnnotation(node: MoveNode, comment: string, glyphs: number[]) {
+    this.nav.saveAnnotation(node, comment, glyphs);
   }
 
   onShapeDrawn(shapes: any[]) {

@@ -45,7 +45,7 @@
     <span class="text-xs font-semibold uppercase  text-muted">Lines</span>
     <div class="flex gap-1">
       @for (n of [1,2,3]; track n) {
-      <button (click)="onMultiPvChange(n)" class="w-7 h-7 rounded-md text-xs   " [class]="multiPvCount() === n
+      <button (click)="onMultiPvChange(n)" class="w-7 h-7 rounded-lg text-xs   " [class]="multiPvCount() === n
               ? 'bg-accent/20 border border-accent/30'
               : 'bg-subtle text-muted border border-transparent hover:bg-surface'">
         {{ n }}

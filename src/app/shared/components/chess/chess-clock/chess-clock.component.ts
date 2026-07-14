@@ -19,7 +19,7 @@ import { AudioService } from '../../../../core/services/audio.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="font-semibold tabular-nums text-center"
+      class="font-semibold text-center"
       [class.text-red-500]="displayTime() < 20000"
       [class.text-accent]="isActive() && displayTime() >= 20000"
       [ngClass]="sizeClasses()"

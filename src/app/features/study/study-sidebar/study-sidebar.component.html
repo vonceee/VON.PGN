@@ -5,75 +5,123 @@
   class="fixed left-0 top-0 bottom-0 w-20 bg-main border-r border-border-base flex flex-col items-center pt-20 pb-6 gap-4 shrink-0 justify-between select-none z-20">
   <div class="flex flex-col items-center gap-3">
     <!-- Chapters Section Button -->
-    <button (click)="selectSection('chapters')" title="Chapters"
+    <button (click)="selectSection('chapters')" [attr.aria-label]="'Chapters'"
       [class.text-accent]="activeSection() === 'chapters' && !splitSection()"
       [class.bg-subtle]="activeSection() === 'chapters' && !splitSection()"
       [class.rounded-full]="activeSection() === 'chapters' && !splitSection()"
-      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle flex items-center justify-center relative group">
       <ng-icon name="heroBookOpen" class="text-xl"></ng-icon>
+      <div
+        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+        Chapters
+      </div>
     </button>
 
     @if (canEdit()) {
     <!-- Add Chapter Button -->
-    <button (click)="selectSection('add-chapter')" title="Add chapter"
+    <button (click)="selectSection('add-chapter')" [attr.aria-label]="'Add chapter'"
       [class.text-accent]="activeSection() === 'add-chapter'" [class.bg-subtle]="activeSection() === 'add-chapter'"
       [class.rounded-full]="activeSection() === 'add-chapter'"
-      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle flex items-center justify-center relative group">
       <ng-icon name="heroPlus" class="text-xl"></ng-icon>
+      <div
+        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+        Add Chapter
+      </div>
     </button>
     }
 
     @if (isOwner()) {
     <!-- Study Settings Button -->
-    <button (click)="selectSection('settings')" title="Study settings"
+    <button (click)="selectSection('settings')" [attr.aria-label]="'Study settings'"
       [class.text-accent]="activeSection() === 'settings'" [class.bg-subtle]="activeSection() === 'settings'"
       [class.rounded-full]="activeSection() === 'settings'"
-      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle flex items-center justify-center relative group">
       <ng-icon name="heroCog6Tooth" class="text-xl"></ng-icon>
+      <div
+        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+        Settings
+      </div>
     </button>
     }
 
     <div class="h-px w-8 bg-muted/20 my-1"></div>
 
     <!-- Members Toggle -->
-    <button (click)="selectSection('members')" title="Members" [class.text-accent]="activeSection() === 'members'"
-      [class.bg-subtle]="activeSection() === 'members'" [class.rounded-full]="activeSection() === 'members'"
-      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+    <button (click)="selectSection('members')" [attr.aria-label]="'Members'"
+      [class.text-accent]="activeSection() === 'members'" [class.bg-subtle]="activeSection() === 'members'"
+      [class.rounded-full]="activeSection() === 'members'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle flex items-center justify-center relative group">
       <ng-icon name="heroUsers" class="text-xl"></ng-icon>
+      <div
+        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+        Members
+      </div>
     </button>
 
     <!-- Metadata Toggle -->
-    <button (click)="selectSection('metadata')" title="Game metadata"
+    <button (click)="selectSection('metadata')" [attr.aria-label]="'Game metadata'"
       [class.text-accent]="splitSection() === 'metadata'" [class.bg-subtle]="splitSection() === 'metadata'"
       [class.rounded-full]="splitSection() === 'metadata'"
-      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle flex items-center justify-center relative group">
       <ng-icon name="heroTag" class="text-xl"></ng-icon>
+      <div
+        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+        Metadata
+      </div>
     </button>
 
+    <!-- Annotate Toggle -->
+    @if (canEdit()) {
+    <button (click)="selectSection('annotate')" [attr.aria-label]="'Annotate move'"
+      [class.text-accent]="activeSection() === 'annotate'" [class.bg-subtle]="activeSection() === 'annotate'"
+      [class.rounded-full]="activeSection() === 'annotate'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle flex items-center justify-center relative group">
+      <ng-icon name="heroPencilSquare" class="text-xl"></ng-icon>
+      <div
+        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+        Annotate Move
+      </div>
+    </button>
+    }
+
     <!-- Chat Toggle -->
-    <button (click)="selectSection('chat')" title="Chat" [class.text-accent]="splitSection() === 'chat'"
+    <button (click)="selectSection('chat')" [attr.aria-label]="'Chat'" [class.text-accent]="splitSection() === 'chat'"
       [class.bg-subtle]="splitSection() === 'chat'" [class.rounded-full]="splitSection() === 'chat'"
-      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle flex items-center justify-center relative group">
       <ng-icon name="heroChatBubbleLeftRight" class="text-xl"></ng-icon>
+      <div
+        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+        Chat
+      </div>
     </button>
 
     <!-- Share/Export PGN Toggle -->
     @if (isExportAllowed()) {
-    <button (click)="selectSection('export')" title="Export PGN" [class.text-accent]="activeSection() === 'export'"
-      [class.bg-subtle]="activeSection() === 'export'" [class.rounded-full]="activeSection() === 'export'"
-      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle hover:text-accent flex items-center justify-center">
+    <button (click)="selectSection('export')" [attr.aria-label]="'Export PGN'"
+      [class.text-accent]="activeSection() === 'export'" [class.bg-subtle]="activeSection() === 'export'"
+      [class.rounded-full]="activeSection() === 'export'"
+      class="p-2.5 rounded-xl transition-all cursor-pointer text-muted hover:bg-subtle flex items-center justify-center relative group">
       <ng-icon name="heroShare" class="text-xl"></ng-icon>
+      <div
+        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+        Export PGN
+      </div>
     </button>
     }
   </div>
 
   <!-- Voice Call Toggle (Bottom of Menu Dock) -->
   @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
-  <button (click)="toggleVideoCall()" [title]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
+  <button (click)="toggleVideoCall()" [attr.aria-label]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
     [class.text-rose-500]="webrtc.isCallActive()" [class.bg-subtle]="webrtc.isCallActive()"
     [class.rounded-full]="webrtc.isCallActive()" [class.text-muted]="!webrtc.isCallActive()"
-    class="p-2.5 rounded-xl transition-all cursor-pointer hover:bg-subtle flex items-center justify-center">
+    class="p-2.5 rounded-xl transition-all cursor-pointer hover:bg-subtle flex items-center justify-center relative group">
     <ng-icon [name]="webrtc.isCallActive() ? 'heroPhoneXMark' : 'heroPhone'" class="text-xl"></ng-icon>
+    <div
+      class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface rounded-lg text-md text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
+      {{ webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call' }}
+    </div>
   </button>
   }
 </aside>
@@ -85,9 +133,9 @@
 
 <!-- Right side: Section view area -->
 <div [class.hidden]="isCollapsed() && !isExpanded()"
-  [class]="isCollapsed() ? 'flex flex-col min-h-0 overflow-hidden bg-main rounded-xl border border-border-base fixed left-[88px] top-20 bottom-6 w-80 z-30 shadow-2xl' : 'h-full w-full flex flex-col min-h-0 bg-main rounded-xl'">
+  [class]="isCollapsed() ? 'flex flex-col min-h-0 overflow-hidden bg-main rounded-xl fixed left-[88px] top-20 bottom-6 w-80 z-30 shadow-2xl' : 'w-full flex flex-col min-h-0 bg-main rounded-xl'">
   <!-- View content pane -->
-  <div class="flex-1 min-h-0 flex flex-col overflow-hidden relative">
+  <div class="flex-1 min-h-0 flex flex-col relative">
     @if (isExpanded() && isCollapsed()) {
     <div class="flex items-center justify-end p-2 border-b border-border-base shrink-0">
       <button (click)="isExpanded.set(false)" class="p-1 hover:bg-subtle rounded-lg cursor-pointer text-muted">
@@ -100,7 +148,7 @@
 
     @switch (activeSection()) {
     @case ('chapters') {
-    <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s"
+    <app-study-chapters-list class="flex-1 flex flex-col min-h-[220px] min-w-0" [study]="s"
       [currentChapter]="currentChapter()" [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
       (chapterEditClicked)="onEditChapter($event.event, $event.chapter)" (orderChanged)="onDrop($event)">
     </app-study-chapters-list>
@@ -133,8 +181,10 @@
     }
     @case ('members') {
     <app-study-members class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
+      [viewers]="viewerNames()" [isClassActive]="isClassActive()" [lockHolderId]="facade.lockHolderId()"
       (addMemberClicked)="addMember()" (removeMemberClicked)="removeMember($event)"
-      (permissionChanged)="toggleMemberPermission($event.userId, $event.canEdit)">
+      (permissionChanged)="toggleMemberPermission($event.userId, $event.canEdit)"
+      (grantControlClicked)="grantBoardControl($event)" (revokeControlClicked)="revokeBoardControl()">
     </app-study-members>
     }
     @case ('metadata') {
@@ -151,6 +201,9 @@
     <app-study-export class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
       [currentChapter]="currentChapter()" (exportPerformed)="handleExport($event)">
     </app-study-export>
+    }
+    @case ('annotate') {
+    <app-study-annotate class="flex-1 flex flex-col min-h-0 min-w-0"></app-study-annotate>
     }
     }
   </div>

@@ -31,8 +31,6 @@ import {
   findPathToFen,
 } from '../../../core/utils/chess-tree.utils';
 
-import { AnnotateMoveDialogComponent } from '../dialogs/annotate-move-dialog/annotate-move-dialog.component';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -43,7 +41,6 @@ export class StudyNavigationFacade {
   private ngZone = inject(NgZone);
   private audioService = inject(AudioService);
   private router = inject(Router);
-  private dialog = inject(Dialog);
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
 
@@ -61,6 +58,8 @@ export class StudyNavigationFacade {
   isSyncing = signal(true);
   isActionInProgress = signal(false);
   activeTab = signal<'notation' | 'chapters' | 'chat'>('notation');
+  activeSection = signal<'chapters' | 'add-chapter' | 'settings' | 'members' | 'metadata' | 'chat' | 'export' | 'annotate'>('chapters');
+  splitSection = signal<'chat' | 'metadata' | null>(null);
 
   private lastChapterId: number | null = null;
   private lastChapterOrientation: 'white' | 'black' | null = null;
@@ -611,40 +610,35 @@ export class StudyNavigationFacade {
 
   onAnnotateMove(node: MoveNode) {
     if (!this.canEdit()) return;
+    this.updateCurrentPosition(node);
+    this.activeSection.set('annotate');
+  }
 
-    const dialogRef = this.dialog.open(AnnotateMoveDialogComponent, {
-      width: '600px',
-      maxWidth: '95vw',
-      backdropClass: ['bg-black/60'],
-      data: node,
-    });
+  saveAnnotation(node: MoveNode, comment: string, glyphs: number[]) {
+    if (!this.canEdit()) return;
 
-    dialogRef.closed.subscribe((result: any) => {
-      if (result) {
-        this.moveTree.update((tree) =>
-          updateNodeInTree(tree, node.fen, node.ply, {
-            comments: result.comment ? [result.comment] : [],
-            glyphs: result.glyphs,
-          })
-        );
+    this.moveTree.update((tree) =>
+      updateNodeInTree(tree, node.fen, node.ply, {
+        comments: comment.trim() ? [comment.trim()] : [],
+        glyphs: glyphs,
+      })
+    );
 
-        const updatedNode = findNodeRecursive(this.moveTree(), node.fen);
-        if (updatedNode && (!this.currentNode() || this.currentNode()?.fen === node.fen)) {
-          this.currentNode.set(updatedNode);
-        }
+    const updatedNode = findNodeRecursive(this.moveTree(), node.fen);
+    if (updatedNode && (!this.currentNode() || this.currentNode()?.fen === node.fen)) {
+      this.currentNode.set(updatedNode);
+    }
 
-        this.studyService
-          .emitMove(
-            '',
-            this.currentFen(),
-            this.moveTree(),
-            this.boardOrientation(),
-            this.isSyncing(),
-            true
-          )
-          .subscribe();
-      }
-    });
+    this.studyService
+      .emitMove(
+        '',
+        this.currentFen(),
+        this.moveTree(),
+        this.boardOrientation(),
+        this.isSyncing(),
+        true
+      )
+      .subscribe();
   }
 
   onShapeDrawn(shapes: any[]) {

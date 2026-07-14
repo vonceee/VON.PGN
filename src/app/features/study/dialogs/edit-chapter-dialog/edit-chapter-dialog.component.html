@@ -1,0 +1,85 @@
+<div class="bg-main rounded-4xl w-full p-8 space-y-6 relative mx-auto">
+  <!-- Header -->
+  <h2 class="text-2xl">Edit chapter</h2>
+
+  <!-- Body Content -->
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Chapter Name -->
+      <div class="flex flex-col gap-2">
+        <label for="chapter_name" class="font-medium">Chapter name</label>
+        <input type="text" id="chapter_name" [ngModel]="name()" (ngModelChange)="name.set($event)"
+          placeholder="Chapter Name"
+          class="w-full px-3 py-2.5 rounded-xl text-sm border border-border-base bg-main outline-none placeholder:text-muted"
+          autofocus (keyup.enter)="onSave()" />
+      </div>
+
+      <!-- Orientation -->
+      <div class="flex flex-col gap-2">
+        <label for="orientation" class="font-medium">Orientation</label>
+        <div class="relative w-full">
+          <select id="orientation" [value]="orientation()" (change)="orientation.set($any($event.target).value)"
+            class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm appearance-none bg-no-repeat bg-right pr-8 focus:outline-none"
+            style="
+              background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
+              background-position: right 0.5rem center;
+              background-size: 1.25rem;
+            ">
+            <option value="white">White</option>
+            <option value="black">Black</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    @if (!data.isLastChapter) {
+    <div class="border-t border-border-base pt-4 space-y-4">
+      <p class="text-sm text-muted">
+        Permanently delete this chapter, including all commentary and moves. This action cannot be undone.
+      </p>
+
+      @if (!isConfirmingDelete()) {
+      <button
+        class="whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+        (click)="isConfirmingDelete.set(true)">
+        Delete chapter
+      </button>
+      } @else {
+      <div class="flex flex-col gap-2.5">
+        <label for="delete_confirm_input" class="text-sm text-muted">
+          Type <strong class="select-all">{{ data.currentName }}</strong> to
+          confirm deletion:
+        </label>
+        <input type="text" id="delete_confirm_input" [ngModel]="deleteConfirmText()"
+          (ngModelChange)="deleteConfirmText.set($event)" placeholder="Enter chapter name"
+          class="w-full px-3 py-2 rounded-xl text-sm border border-border-base bg-main outline-none focus:border-red-500" autofocus />
+        <div class="flex gap-2">
+          <button
+            class="flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+            [disabled]="deleteConfirmText() !== data.currentName" (click)="onDelete()">
+            Confirm delete
+          </button>
+          <button
+            class="flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-surface hover:bg-subtle rounded-full"
+            (click)="isConfirmingDelete.set(false)">
+            Cancel
+          </button>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="pt-4 flex gap-4 w-full">
+    <button (click)="dialogRef.close()"
+      class="flex-1 group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-surface rounded-full hover:bg-subtle">
+      Cancel
+    </button>
+    <button (click)="onSave()" [disabled]="!name().trim()"
+      class="flex-1 whitespace-nowrap group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-content text-main rounded-full">
+      Save changes
+    </button>
+  </div>
+</div>

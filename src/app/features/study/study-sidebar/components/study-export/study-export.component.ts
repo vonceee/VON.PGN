@@ -79,7 +79,7 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
               <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
                 (change)="toggleChapterSelection(chap.id)"
                 class="w-4 h-4 rounded text-accent border-border-base focus:ring-accent bg-transparent">
-              <span class="text-sm font-medium text-muted tabular-nums">{{ idx + 1 }}.</span>
+              <span class="text-sm font-medium text-muted">{{ idx + 1 }}.</span>
               <span class="text-sm font-medium truncate flex-1 text-content">{{ chap.name }}</span>
             </label>
             }

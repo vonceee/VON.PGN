@@ -48,7 +48,7 @@ import { ButtonComponent } from '@shared/ui';
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), 'champion')"
                     placeholder="P50,000 + trophy"
-                    class="w-full p-2.5 text-sm border border-border-base rounded-md focus:outline-none focus:border-accent "
+                    class="w-full p-2.5 text-sm border border-border-base rounded-lg focus:outline-none focus:border-accent "
                   />
                 </div>
                 <div class="space-y-1.5">
@@ -57,7 +57,7 @@ import { ButtonComponent } from '@shared/ui';
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), '2nd_place')"
                     placeholder="Prize value"
-                    class="w-full p-2.5 text-sm border border-border-base rounded-md focus:outline-none focus:border-accent "
+                    class="w-full p-2.5 text-sm border border-border-base rounded-lg focus:outline-none focus:border-accent "
                   />
                 </div>
                 <div class="space-y-1.5">
@@ -66,7 +66,7 @@ import { ButtonComponent } from '@shared/ui';
                     type="text"
                     [formControl]="getControl(categoryGroup(ci), '3rd_place')"
                     placeholder="Prize value"
-                    class="w-full p-2.5 text-sm border border-border-base rounded-md focus:outline-none focus:border-accent "
+                    class="w-full p-2.5 text-sm border border-border-base rounded-lg focus:outline-none focus:border-accent "
                   />
                 </div>
               </div>
@@ -81,7 +81,7 @@ import { ButtonComponent } from '@shared/ui';
                         type="text"
                         [formControl]="getControl(extraPrizeGroup(ci, ei), 'label')"
                         placeholder="Place name (e.g. 4th - 10th)"
-                        class="flex-1 p-2 text-sm border border-border-base rounded-md focus:outline-none focus:border-accent "
+                        class="flex-1 p-2 text-sm border border-border-base rounded-lg focus:outline-none focus:border-accent "
                       />
                       <button
                         appButton
@@ -95,7 +95,7 @@ import { ButtonComponent } from '@shared/ui';
                         type="text" 
                         [formControl]="getControl(extraPrizeGroup(ci, ei), 'value')" 
                         placeholder="Prize value"
-                        class="w-full p-2 text-sm border border-border-base rounded-md focus:outline-none focus:border-accent " 
+                        class="w-full p-2 text-sm border border-border-base rounded-lg focus:outline-none focus:border-accent " 
                       />
                   </div>
                 </div>
@@ -123,11 +123,11 @@ import { ButtonComponent } from '@shared/ui';
                          type="text"
                          [formControl]="getControl(specialAwardGroup(ci, ai), 'name')"
                          placeholder="e.g. Top Senior"
-                         class="flex-1 p-2.5 text-sm border border-border-base rounded-md focus:outline-none focus:border-accent "
+                         class="flex-1 p-2.5 text-sm border border-border-base rounded-lg focus:outline-none focus:border-accent "
                        />
                       <select 
                         [formControl]="getControl(specialAwardGroup(ci, ai), 'type')"
-                        class="p-2.5 text-sm border border-border-base rounded-md focus:outline-none focus:border-accent bg-white  "
+                        class="p-2.5 text-sm border border-border-base rounded-lg focus:outline-none focus:border-accent bg-white  "
                       >
                       <option value="simple">Simple</option>
                       <option value="nested">1st/2nd/3rd Style</option>
@@ -145,7 +145,7 @@ import { ButtonComponent } from '@shared/ui';
                       type="text" 
                       [formControl]="getControl(specialAwardGroup(ci, ai), 'value')" 
                       placeholder="Prize value"
-                      class="w-full p-2.5 text-sm border border-border-base rounded-md focus:outline-none focus:border-accent " 
+                      class="w-full p-2.5 text-sm border border-border-base rounded-lg focus:outline-none focus:border-accent " 
                     />
                   } @else {
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
