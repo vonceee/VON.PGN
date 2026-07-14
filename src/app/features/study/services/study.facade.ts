@@ -73,6 +73,8 @@ export class StudyFacade {
   isOwner = this.nav.isOwner;
   canEdit = this.nav.canEdit;
   boardInteractive = this.nav.boardInteractive;
+  openingName = this.nav.openingName;
+  openingEco = this.nav.openingEco;
 
   // Engine states (delegated from StudyEngineFacade)
   isEngineActive = this.engine.isEngineActive;

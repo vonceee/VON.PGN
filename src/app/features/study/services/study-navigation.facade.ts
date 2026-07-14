@@ -18,6 +18,7 @@ import { StudyService } from '../../../core/services/study.service';
 import { AudioService } from '../../../core/services/audio.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { OpeningService } from '../../../core/services/opening.service';
 import { MoveNode, StudyChapter } from '../../../core/models/study.model';
 import {
   buildTreeFromMoves,
@@ -43,6 +44,7 @@ export class StudyNavigationFacade {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
+  private openingService = inject(OpeningService);
 
   // Expose Study Service States
   study = this.studyService.currentStudy;
@@ -50,6 +52,45 @@ export class StudyNavigationFacade {
 
   // Local States
   currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+
+  // Derived chess opening information based on current FEN position
+  // TRADEOFF: Traverses backwards through the active moves path to find the nearest matching opening
+  // to ensure that once an opening is identified, it remains visible as the user continues playing moves.
+  openingInfo = computed(() => {
+    const map = this.openingService.openingsMap();
+    if (!map) return null;
+
+    // 1. Check current FEN for a direct book match
+    const fen = this.currentFen();
+    const normCurrentFen = this.openingService.normalizeFen(fen);
+    const directMatch = map[normCurrentFen];
+    if (directMatch) return directMatch;
+
+    // 2. If no direct match, traverse backwards through the active move path to find the nearest matching opening
+    const path = this.activePath();
+    for (let i = path.length - 1; i >= 0; i--) {
+      const node = path[i];
+      if (node.fen) {
+        const normFen = this.openingService.normalizeFen(node.fen);
+        const match = map[normFen];
+        if (match) return match;
+      }
+    }
+
+    // 3. Fallback: check the initial FEN of the chapter
+    const initialFen = this.currentChapter()?.initial_fen;
+    if (initialFen) {
+      const normInitialFen = this.openingService.normalizeFen(initialFen);
+      const match = map[normInitialFen];
+      if (match) return match;
+    }
+
+    return null;
+  });
+
+  openingName = computed(() => this.openingInfo()?.name || null);
+  openingEco = computed(() => this.openingInfo()?.eco || null);
+
   moveTree = signal<MoveNode[]>([]);
   currentNode = signal<MoveNode | null>(null);
   currentPly = signal(0);

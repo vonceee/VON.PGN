@@ -45,6 +45,7 @@
     </button>
     }
 
+    @if (isOwner()) {
     <div class="h-px w-8 bg-muted/20 my-1"></div>
 
     <!-- Members Toggle -->
@@ -58,6 +59,7 @@
         Members
       </div>
     </button>
+    }
 
     <!-- Metadata Toggle -->
     <button (click)="selectSection('metadata')" [attr.aria-label]="'Game metadata'"

@@ -59,6 +59,20 @@
         <!-- Notation & Commentary Card -->
         <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
+            @if (facade.openingName(); as name) {
+            <!-- Opening Name Header -->
+            <div
+              class="px-4 py-2 border-b border-border-base bg-main flex items-center justify-between shrink-0 select-text">
+              <div class="flex items-center gap-2 overflow-hidden">
+                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-subtle text-muted uppercase shrink-0">
+                  {{ facade.openingEco() || 'ECO' }}
+                </span>
+                <span class="text-sm font-medium truncate" [title]="name">
+                  {{ name }}
+                </span>
+              </div>
+            </div>
+            }
             <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moveTree]="facade.moveTree()"
               [currentFen]="facade.currentFen()" [currentPly]="facade.currentPly()" [initialPly]="facade.initialPly()"
               [showNavigation]="false" [result]="facade.currentChapter()?.pgn_tags?.['Result']"
@@ -192,10 +206,18 @@
     <div class="h-4 w-px bg-muted/20 shrink-0"></div>
 
     <!-- Viewer Count Indicator -->
+    @if (facade.isOwner()) {
+    <button (click)="sidebar?.selectSection('members')" title="Viewers"
+      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center gap-1.5 select-none animate-none">
+      <ng-icon name="heroEye" class="text-lg"></ng-icon>
+      <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
+    </button>
+    } @else {
     <div title="Viewers" class="p-2 rounded-full flex items-center justify-center gap-1.5 text-muted select-none">
       <ng-icon name="heroEye" class="text-lg"></ng-icon>
       <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
     </div>
+    }
 
     <!-- Classroom Actions & Status -->
     @if (facade.isOwner()) {
