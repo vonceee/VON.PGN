@@ -35,14 +35,14 @@ export const GLYPH_MAPPING: Record<number, { symbol: string; name: string; class
   2: { symbol: '?', name: 'Mistake', class: 'mistake' },
   3: { symbol: '!!', name: 'Brilliant move', class: 'brilliant' },
   4: { symbol: '??', name: 'Blunder', class: 'blunder' },
-  5: { symbol: '!?', name: 'Interesting move', class: 'interesting' },
+  5: { symbol: '!?', name: 'Interesting', class: 'interesting' },
   6: { symbol: '?!', name: 'Dubious move', class: 'dubious' },
   7: { symbol: '□', name: 'Only move', class: 'only-move' },
   22: { symbol: '⊙', name: 'Zugzwang', class: 'zugzwang' },
 
   // Positional Evaluations
-  10: { symbol: '=', name: 'Equal position', class: 'equal' },
-  13: { symbol: '∞', name: 'Unclear position', class: 'unclear' },
+  10: { symbol: '=', name: 'Equal', class: 'equal' },
+  13: { symbol: '∞', name: 'Unclear', class: 'unclear' },
   14: { symbol: '⩲', name: 'White is slightly better', class: 'white-slightly-better' },
   15: { symbol: '⩱', name: 'Black is slightly better', class: 'black-slightly-better' },
   16: { symbol: '±', name: 'White is better', class: 'white-better' },
@@ -57,7 +57,7 @@ export const GLYPH_MAPPING: Record<number, { symbol: string; name: string; class
   40: { symbol: '→', name: 'Attack', class: 'attack' },
   132: { symbol: '⇆', name: 'Counterplay', class: 'counterplay' },
   138: { symbol: '⊕', name: 'Time trouble', class: 'time-trouble' },
-  44: { symbol: '=∞', name: 'With compensation', class: 'compensation' },
+  44: { symbol: '=∞', name: 'Compensation', class: 'compensation' },
   140: { symbol: 'Δ', name: 'With the idea', class: 'idea' },
 };
 
