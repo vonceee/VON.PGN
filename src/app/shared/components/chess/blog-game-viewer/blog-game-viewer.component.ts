@@ -41,7 +41,7 @@ import { MoveNode } from '../../../../core/models/study.model';
     }),
   ],
   template: `
-    <div class="ui-panel bg-main rounded-xl border border-border-base shadow-sm overflow-hidden flex flex-col md:grid md:grid-cols-[1.2fr_1fr] h-[550px] max-w-4xl mx-auto my-6">
+    <div class="ui-panel bg-main rounded-xl border border-border-base overflow-hidden flex flex-col md:grid md:grid-cols-[1.2fr_1fr] h-[550px] max-w-4xl mx-auto my-6">
       
       <!-- Left Column: Chess Board & Bottom Controls -->
       <div class="flex flex-col justify-between p-6 border-b md:border-b-0 md:border-r border-border-base bg-subtle/10">
@@ -124,7 +124,7 @@ import { MoveNode } from '../../../../core/models/study.model';
       <!-- Right Column: Move Notation / List -->
       <div class="flex flex-col h-full overflow-hidden bg-main">
         <div class="flex-none p-4 border-b border-border-base bg-subtle/25">
-          <span class="text-xs font-semibold uppercase tracking-wider text-muted">Moves list</span>
+          <span class="text-xs font-semibold text-muted">Moves list</span>
         </div>
         <div class="flex-1 overflow-y-auto">
           <app-move-notation
@@ -190,7 +190,7 @@ export class BlogGameViewerComponent {
       const chess = new Chess();
       // Load PGN into chess.js
       chess.loadPgn(pgn);
-      
+
       const parsedHeaders = chess.header();
       this.headers.set(parsedHeaders);
 

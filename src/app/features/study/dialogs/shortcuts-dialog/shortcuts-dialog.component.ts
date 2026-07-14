@@ -23,15 +23,15 @@ import { DialogRef } from '@angular/cdk/dialog';
           <div class="space-y-4">
             <div class="space-y-2">
               @for (item of moveShortcuts; track item.key) {
-                <div class="flex items-center justify-between py-1.5 border-b border-border-base/50 last:border-0 group">
-                  <span class="text-sm opacity-80 group-hover:text-content">
+                <div class="flex items-center justify-between py-1.5 border-b border-border-base last:border-0 group">
+                  <span class="text-sm/6 opacity-80 group-hover:text-content">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
                     @if (item.symbol) {
                       <span class="text-xs text-muted bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     }
-                    <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-xs font-semibold">{{ item.key }}</kbd>
+                    <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold">{{ item.key }}</kbd>
                   </div>
                 </div>
               }
@@ -42,16 +42,16 @@ import { DialogRef } from '@angular/cdk/dialog';
           <div class="space-y-4">
             <div class="space-y-2">
               @for (item of posShortcuts; track item.key) {
-                <div class="flex items-center justify-between py-1.5 border-b border-border-base/50 last:border-0 group">
-                  <span class="text-sm opacity-80 group-hover:text-content">
+                <div class="flex items-center justify-between py-1.5 border-b border-border-base last:border-0 group">
+                  <span class="text-sm/6 opacity-80 group-hover:text-content">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
                     <span class="text-xs text-muted bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     <div class="flex items-center gap-1">
-                      <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-xs font-semibold text-muted">Shift</kbd>
+                      <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold text-muted">Shift</kbd>
                       <span class="text-xs">+</span>
-                      <kbd class="w-6 h-6 flex items-center justify-center bg-surface border border-border-base rounded shadow-sm text-xs font-semibold">{{ item.key }}</kbd>
+                      <kbd class="w-6 h-6 flex items-center justify-center bg-surface border border-border-base rounded text-xs font-semibold">{{ item.key }}</kbd>
                     </div>
                   </div>
                 </div>
@@ -64,12 +64,12 @@ import { DialogRef } from '@angular/cdk/dialog';
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2">
               @for (item of otherShortcuts; track item.label) {
                 <div class="flex items-center justify-between py-1.5 group">
-                  <span class="text-sm opacity-80 group-hover:text-content">
+                  <span class="text-sm/6 opacity-80 group-hover:text-content">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-1">
                     @for (key of item.keys; track $index) {
-                       <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded shadow-sm text-xs font-semibold text-muted">{{ key }}</kbd>
+                       <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold text-muted">{{ key }}</kbd>
                        @if (!$last) { <span class="text-xs mx-0.5">/</span> }
                     }
                   </div>

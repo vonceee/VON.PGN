@@ -28,14 +28,14 @@ import { ToastService } from '../../../core/services/toast.service';
       <!-- Filters & Stats -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="bg-white rounded border border-border-base p-6 flex flex-col justify-between">
-          <span class="text-xs font-semibold  uppercase ">Total Coaches</span>
+          <span class="text-xs font-semibold  ">Total Coaches</span>
           <div class="flex items-end justify-between mt-2">
             <span class="text-3xl font-semibold ">{{ coaches().length }}</span>
             <span class="text-xs font-semibold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">+1 this month</span>
           </div>
         </div>
         <div class="bg-white rounded border border-border-base p-6 flex flex-col justify-between">
-          <span class="text-xs font-semibold  uppercase ">Academy Instructors</span>
+          <span class="text-xs font-semibold  ">Academy Instructors</span>
           <div class="flex items-end justify-between mt-2">
             <span class="text-3xl font-semibold ">{{ academyInstructorsCount() }}</span>
             <span class="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-1 rounded">Top Tier</span>
@@ -59,8 +59,8 @@ import { ToastService } from '../../../core/services/toast.service';
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-border-base">
-                <th class="px-6 py-4 text-xs font-semibold  uppercase ">Coach</th>
-                <th class="px-6 py-4 text-xs font-semibold  uppercase  text-right">Actions</th>
+                <th class="px-6 py-4 text-xs font-semibold  ">Coach</th>
+                <th class="px-6 py-4 text-xs font-semibold   text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -69,7 +69,7 @@ import { ToastService } from '../../../core/services/toast.service';
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       @if (coach.title) {
-                        <span class="px-1.5 py-0.5 bg-red-600 text-white text-xs font-semibold rounded uppercase shrink-0">
+                        <span class="px-1.5 py-0.5 bg-red-600 text-white text-xs font-semibold rounded shrink-0">
                           {{ coach.title }}
                         </span>
                       }
@@ -81,10 +81,10 @@ import { ToastService } from '../../../core/services/toast.service';
                   </td>
                   <td class="px-6 py-4 text-right">
                     <div class="flex items-center justify-end gap-4">
-                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-semibold text-blue-600 hover:text-blue-700  uppercase ">
+                      <a [routerLink]="['/admin/coach', coach.id]" class="text-xs font-semibold text-blue-600 hover:text-blue-700  ">
                         Edit
                       </a>
-                      <button (click)="deleteCoach(coach)" class="text-xs font-semibold text-rose-600 hover:underline  uppercase ">
+                      <button (click)="deleteCoach(coach)" class="text-xs font-semibold text-rose-600 hover:underline  ">
                         Delete
                       </button>
                     </div>
@@ -104,22 +104,22 @@ export class CoachManagementComponent {
   private coachService = inject(CoachService);
   private toastService = inject(ToastService);
 
-  
+
   coaches = this.coachService.coaches;
   searchTerm = signal('');
 
   filteredCoaches = computed(() => {
     const term = this.searchTerm().toLowerCase();
     if (!term) return this.coaches();
-    
-    return this.coaches().filter(c => 
-      c.name.toLowerCase().includes(term) || 
-      c.title.toLowerCase().includes(term) || 
+
+    return this.coaches().filter(c =>
+      c.name.toLowerCase().includes(term) ||
+      c.title.toLowerCase().includes(term) ||
       c.location.toLowerCase().includes(term)
     );
   });
 
-  academyInstructorsCount = computed(() => 
+  academyInstructorsCount = computed(() =>
     this.coaches().filter(c => c.isAcademyInstructor).length
   );
 

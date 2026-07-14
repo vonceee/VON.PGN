@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, signal, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FormFieldComponent } from './form-field.component';
-import { ButtonComponent  } from '@shared/ui';
+import { ButtonComponent } from '@shared/ui';
 
 // Step 1: Basic Info
 @Component({
@@ -70,7 +70,7 @@ export class StepBasicInfoComponent {
                 [ngModelOptions]="{ standalone: true }"
                 class="w-4 h-4 text-accent bg-content border-border-base rounded focus:ring-accent focus:ring-2"
               />
-              <span class="text-sm ">1-day tournament</span>
+              <span class="text-sm/6 ">1-day tournament</span>
             </label>
           </div>
         </div>
@@ -94,7 +94,7 @@ export class StepBasicInfoComponent {
       ></app-form-field>
 
       <div class="space-y-1.5">
-        <label class="field-label block text-sm  text-muted ">Google Maps Link <span class=" font-normal">(Optional)</span></label>
+        <label class="field-label block text-sm/6  text-muted ">Google Maps Link <span class=" font-normal">(Optional)</span></label>
         <div class="flex gap-2">
           <input
             type="text"

@@ -18,23 +18,23 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
       <div class="flex-1 overflow-y-auto p-8 space-y-6">
         <div class="flex items-center gap-4 bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/20">
           <div>
-            <p class="text-sm font-medium">Incoming Request</p>
+            <p class="text-sm/6 font-medium">Incoming Request</p>
             <p class="text-xs text-muted">A student wants to interact with the board.</p>
           </div>
         </div>
 
-        <p class="text-sm font-medium">
-          <span class="text-accent font-bold">{{ data.userName }}</span> is requesting temporary board control to demonstrate moves and draw shapes.
+        <p class="text-sm/6 font-medium">
+          <span class="text-accent font-medium">{{ data.userName }}</span> is requesting temporary board control to demonstrate moves and draw shapes.
         </p>
 
         <ul class="space-y-3">
           <li class="flex items-start gap-3">
             <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-            <span class="text-sm opacity-80">Granting control allows them to sync moves and drawings to the classroom.</span>
+            <span class="text-sm/6 opacity-80">Granting control allows them to sync moves and drawings to the classroom.</span>
           </li>
           <li class="flex items-start gap-3">
             <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-            <span class="text-sm opacity-80">You can revoke control at any time by clicking "Revoke" on the viewers tab.</span>
+            <span class="text-sm/6 opacity-80">You can revoke control at any time by clicking "Revoke" on the viewers tab.</span>
           </li>
         </ul>
       </div>

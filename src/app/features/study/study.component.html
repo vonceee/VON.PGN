@@ -57,17 +57,16 @@
           [orientation]="sidebar.newChapterOrientation() || 'white'"></app-board-editor>
         } @else {
         <!-- Notation & Commentary Card -->
-        <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
+        <div class="flex flex-col overflow-hidden bg-main rounded-xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             @if (facade.openingName(); as name) {
             <!-- Opening Name Header -->
-            <div
-              class="px-4 py-2 border-b border-border-base bg-main flex items-center justify-between shrink-0 select-text">
+            <div class="p-2 border-b border-border-base bg-main flex items-center justify-between shrink-0 select-text">
               <div class="flex items-center gap-2 overflow-hidden">
-                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-subtle text-muted uppercase shrink-0">
+                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-subtle text-muted shrink-0">
                   {{ facade.openingEco() || 'ECO' }}
                 </span>
-                <span class="text-sm font-medium truncate" [title]="name">
+                <span class="text-sm/6 font-medium truncate" [title]="name">
                   {{ name }}
                 </span>
               </div>
@@ -217,6 +216,15 @@
       <ng-icon name="heroEye" class="text-lg"></ng-icon>
       <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
     </div>
+    }
+
+    <!-- Edit Metadata Button -->
+    @if (facade.canEdit()) {
+    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+    <button (click)="facade.onEditMetadata()" title="Edit Game Metadata"
+      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+      <ng-icon name="heroPencil" class="text-lg"></ng-icon>
+    </button>
     }
 
     <!-- Classroom Actions & Status -->

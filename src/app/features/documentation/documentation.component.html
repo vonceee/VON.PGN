@@ -4,13 +4,13 @@
   <aside
     class="w-full md:w-64 lg:w-72 shrink-0 border-r border-border-base  md:sticky md:top-16 md:h-[calc(100vh-4rem)] overflow-y-auto px-6 py-8 bg-white ">
     <div class="mb-8">
-      <h2 class="text-xs font-semibold uppercase    mb-4 px-3">Documentation</h2>
+      <h2 class="text-xs font-semibold    mb-4 px-3">Documentation</h2>
       <nav class="space-y-1">
         <button *ngFor="let section of sections" (click)="scrollTo(section.id)"
           [class.text-accent/80]="activeSection === section.id" [class.bg-accent]="activeSection === section.id"
           [class.]="activeSection === section.id" [class.]="activeSection === section.id"
           [class.text-muted]="activeSection !== section.id" [class.]="activeSection !== section.id"
-          class="w-full text-left px-3 py-2.5 text-sm  rounded-lg  hover:bg-subtle ">
+          class="w-full text-left px-3 py-2.5 text-sm/6  rounded-lg  hover:bg-subtle ">
           {{ section.title }}
         </button>
       </nav>
@@ -34,7 +34,7 @@
             <p class="text-lg ">{{ section.content }}</p>
 
             <!-- Placeholder for future content blocks -->
-            <div class="mt-8 p-6 rounded-2xl bg-white  border border-border-base  shadow-sm ">
+            <div class="mt-8 p-6 rounded-2xl bg-white  border border-border-base  ">
               <div class="flex items-center gap-4 mb-3">
                 <div class="w-10 h-10 rounded-full bg-accent  flex items-center justify-center flex-shrink-0">
                   <svg class="w-5 h-5 text-accent/80 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,7 +44,7 @@
                 </div>
                 <h3 class="text-xl font-semibold   m-0">Content Under Construction</h3>
               </div>
-              <p class="text-sm md:text-base   md:ml-14">
+              <p class="text-sm/6 md:text-base   md:ml-14">
                 We are currently expanding our documentation. Stay tuned for a comprehensive guide on {{ section.title |
                 lowercase }}.
               </p>

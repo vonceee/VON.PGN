@@ -8,7 +8,7 @@
     <button (click)="onRetryEngine()"
       class="flex items-center gap-1 px-2 py-1 rounded bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 "
       title="Retry Engine">
-      <span class="text-xs font-semibold uppercase ">Retry</span>
+      <span class="text-xs font-semibold ">Retry</span>
     </button>
     }
 
@@ -42,7 +42,7 @@
 @if (showEngineSettings() && isEngineActive()) {
 <div class="px-4 py-3 border-b border-border-base bg-surface     flex flex-col gap-3">
   <div class="flex justify-between">
-    <span class="text-xs font-semibold uppercase  text-muted">Lines</span>
+    <span class="text-xs font-semibold  text-muted">Lines</span>
     <div class="flex gap-1">
       @for (n of [1,2,3]; track n) {
       <button (click)="onMultiPvChange(n)" class="w-7 h-7 rounded-lg text-xs   " [class]="multiPvCount() === n

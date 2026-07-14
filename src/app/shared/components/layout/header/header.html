@@ -9,25 +9,28 @@
     <!-- Learn Dropdown -->
     <div class="group relative">
       <a appLink routerLink="/study"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         Learn
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-sm">
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col">
         <a appLink routerLink="/study" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Study</span>
+          <span class="text-sm/6 font-medium">Study</span>
         </a>
-        <a appLink routerLink="/study" [queryParams]="{ category: 'opening_repertoire' }" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Opening</span>
+        <a appLink routerLink="/study" [queryParams]="{ category: 'opening_repertoire' }"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
+          <span class="text-sm/6 font-medium">Opening</span>
         </a>
-        <a appLink routerLink="/study" [queryParams]="{ category: 'middlegame' }" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Middlegame</span>
+        <a appLink routerLink="/study" [queryParams]="{ category: 'middlegame' }"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
+          <span class="text-sm/6 font-medium">Middlegame</span>
         </a>
-        <a appLink routerLink="/study" [queryParams]="{ category: 'endgame' }" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Endgame</span>
+        <a appLink routerLink="/study" [queryParams]="{ category: 'endgame' }"
+          class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
+          <span class="text-sm/6 font-medium">Endgame</span>
         </a>
         <a appLink routerLink="/roadmap" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Roadmap</span>
+          <span class="text-sm/6 font-medium">Roadmap</span>
         </a>
       </div>
     </div>
@@ -35,44 +38,44 @@
     <!-- Practice Dropdown -->
     <div class="group relative">
       <a appLink routerLink="/tactics"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base text-muted font-medium after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         Practice
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-sm">
+        class="absolute top-full left-0 min-w-48 bg-main border border-border-base rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col">
         <a appLink routerLink="/study/drills" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Opening drills</span>
+          <span class="text-sm/6 font-medium">Opening drills</span>
         </a>
         <a appLink routerLink="/tactics" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Tactics</span>
+          <span class="text-sm/6 font-medium">Tactics</span>
         </a>
         <a appLink routerLink="/tactics/guess" class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Guess the game</span>
+          <span class="text-sm/6 font-medium">Guess the game</span>
         </a>
       </div>
     </div>
 
     <!-- Academy Link -->
     <a appLink routerLink="/academy"
-      class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium">
+      class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base text-muted font-medium">
       Academy
     </a>
 
     <!-- Coaches Link -->
     <a appLink routerLink="/coaches"
-      class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium">
+      class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base text-muted font-medium">
       Coaches
     </a>
 
     <!-- Events Link -->
     <a appLink routerLink="/events"
-      class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium">
+      class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base text-muted font-medium">
       Events
     </a>
 
     <!-- Blog Link -->
     <a appLink routerLink="/blog"
-      class="relative flex items-center gap-1.5 cursor-pointer text-sm lg:text-base text-muted font-medium">
+      class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base text-muted font-medium">
       Blog
     </a>
 
@@ -84,7 +87,7 @@
     <div class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-surface/50 border border-border-base">
       <input #searchInput type="text" placeholder="search players..." [value]="searchQuery()"
         (input)="onSearchInput($event)" (focus)="isSearchOpen.set(true)"
-        class="bg-transparent outline-none text-sm font-medium placeholder-muted w-full " />
+        class="bg-transparent outline-none text-sm/6 font-medium placeholder-muted w-full " />
 
       <!-- Keyboard Hint instead of Icon -->
       <div class="hidden lg:flex items-center gap-1  group-focus-within/search:opacity-0  pointer-events-none">
@@ -100,13 +103,13 @@
     <!-- Search Results Dropdown -->
     @if (isSearchOpen()) {
     @if (searchResults().length > 0) {
-    <div class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50 shadow-sm">
+    <div class="absolute right-0 top-full mt-2 w-64 bg-main rounded-xl border border-border-base py-2 z-50">
       @for (user of searchResults(); track user.uid) {
       <a [routerLink]="['/user', user.username]" target="_blank" rel="noopener noreferrer"
         (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
         class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-subtle text-left  cursor-pointer">
         <div class="flex flex-col min-w-0">
-          <span class="text-sm font-medium truncate">{{
+          <span class="text-sm/6 font-medium truncate">{{
             user.username
             }}</span>
         </div>
@@ -130,7 +133,7 @@
         </svg>
         @if (notificationService.unreadCount() > 0) {
         <span
-          class="absolute top-1.5 right-1.5 px-1 py-0.5 min-w-[1rem] h-4 flex items-center justify-center bg-rose-600 text-white text-[9px] font-bold rounded-full border border-[var(--color-main)]">
+          class="absolute top-1.5 right-1.5 px-1 py-0.5 min-w-[1rem] h-4 flex items-center justify-center bg-rose-600 text-white text-[9px] font-medium rounded-full border border-[var(--color-main)]">
           {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
         </span>
         }
@@ -138,9 +141,9 @@
 
       @if (isNotificationsOpen()) {
       <div
-        class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl z-50 overflow-hidden flex flex-col shadow-sm">
+        class="absolute right-0 top-full mt-2 w-80 bg-main border border-border-base rounded-xl z-50 overflow-hidden flex flex-col">
         <div class="px-4 py-3 border-b border-border-base flex items-center justify-between">
-          <span class="text-sm">Notifications</span>
+          <span class="text-sm/6">Notifications</span>
           @if (notificationService.unreadCount() > 0) {
           <button (click)="notificationService.markAllAsRead().subscribe()" class="text-xs hover:underline ">Mark all as
             read</button>
@@ -150,13 +153,13 @@
         <div class="max-h-96 overflow-y-auto">
           <!-- Notifications -->
           @if (notificationService.isLoading() && notificationService.notifications().length === 0) {
-          <div class="px-4 py-8 text-center text-muted text-sm italic">Loading...</div>
+          <div class="px-4 py-8 text-center text-muted text-sm/6 italic">Loading...</div>
           } @else {
           @for (n of notificationService.notifications(); track n.id) {
           <div class="px-4 py-3 hover:bg-subtle  cursor-pointer border-b border-border-base last:border-0"
             [class.bg-accent/5]="!n.read_at" (click)="navigateToNotification(n)">
             <div class="flex flex-col gap-1">
-              <p class="text-sm font-medium ">{{ n.data.message }}</p>
+              <p class="text-sm/6 font-medium ">{{ n.data.message }}</p>
               <span class="text-xs text-muted">{{ n.created_at | date:'short' }}</span>
             </div>
           </div>
@@ -178,7 +181,7 @@
               d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <!-- Username Text (hidden on tablet, visible on desktop) -->
-          <span class="hidden lg:inline text-sm lg:text-base text-muted font-medium hover:underline cursor-pointer">
+          <span class="hidden lg:inline text-sm/6 lg:text-base text-muted font-medium hover:underline cursor-pointer">
             {{ userService.currentUser()?.username || 'User' }}
           </span>
         </div>
@@ -186,30 +189,30 @@
 
       <!-- Desktop Profile Dropdown -->
       <div [class.hidden]="!isProfileDropdownOpen()"
-        class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl z-50 flex flex-col py-2 origin-top-right shadow-sm">
+        class="absolute right-0 top-full mt-2 w-64 bg-main border border-border-base rounded-xl z-50 flex flex-col py-2 origin-top-right">
         <a appLink [routerLink]="['/profile']" (click)="toggleProfileDropdown()"
           class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Profile</span>
+          <span class="text-sm/6 font-medium">Profile</span>
         </a>
 
         @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
         <a appLink routerLink="/my-events" (click)="toggleProfileDropdown()"
           class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">My Tournaments</span>
+          <span class="text-sm/6 font-medium">My Tournaments</span>
         </a>
         }
 
         @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
         <a appLink routerLink="/admin" (click)="toggleProfileDropdown()"
           class="px-4 py-2.5 hover:bg-subtle flex items-center group/item">
-          <span class="text-sm font-medium">Admin Panel</span>
+          <span class="text-sm/6 font-medium">Admin Panel</span>
         </a>
         }
 
         <!-- Logout -->
         <button (click)="logout()"
           class="w-full text-left px-4 py-2.5 hover:bg-red-50/50 flex items-center group/item text-red-600 cursor-pointer">
-          <span class="text-sm font-medium">Logout</span>
+          <span class="text-sm/6 font-medium">Logout</span>
         </button>
       </div>
     </div>

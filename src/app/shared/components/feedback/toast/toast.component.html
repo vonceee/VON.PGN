@@ -9,7 +9,7 @@
             ? 'bg-linear-to-r from-red-950 to-slate-900 border-red-500/50 text-red-50'
             : 'bg-white  border-border-base  '
       ">
-    <span class="font-semibold text-sm">{{ toast.message }}</span>
+    <span class="font-semibold text-sm/6">{{ toast.message }}</span>
 
     <button (click)="toastService.remove(toast.id)" class="ml-2  hover:text-white">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">

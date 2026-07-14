@@ -1,11 +1,11 @@
-<div class="w-full ui-panel p-8 md:p-12 rounded-[2.5rem] bg-white border border-border-base shadow-sm">
+<div class="w-full ui-panel p-8 md:p-12 rounded-[2.5rem] bg-white border border-border-base">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
 
     <!-- Left Column: Contact Details -->
     <div class="lg:col-span-5 flex flex-col justify-between space-y-8">
       <div class="space-y-4">
         <h2 class="text-3xl font-medium">Get in touch</h2>
-        <p class="text-muted text-sm leading-relaxed">
+        <p class="text-muted text-sm/6 leading-relaxed">
           Questions about programs or coaches? Send a message and we'll reply within one business day.
         </p>
       </div>
@@ -20,21 +20,21 @@
           </div>
           <div>
             <p class="text-xs font-medium text-muted">Email</p>
-            <a [href]="'mailto:' + contactEmail" class="text-sm font-medium hover:underline">{{
+            <a [href]="'mailto:' + contactEmail" class="text-sm/6 font-medium hover:underline">{{
               contactEmail }}</a>
           </div>
         </div>
       </div>
 
       <!-- Social Media placeholders -->
-      <div class="flex gap-4 text-muted pt-4 border-t border-border-base/50">
+      <div class="flex gap-4 text-muted pt-4 border-t border-border-base">
         <a href="https://www.facebook.com/profile.php?id=61585149598227" target="_blank"
           class="hover:text-accent text-xs font-medium">Facebook</a>
       </div>
     </div>
 
     <!-- Right Column: Inquiry Form -->
-    <div class="lg:col-span-7 border-t lg:border-t-0 lg:border-l border-border-base/50 pt-8 lg:pt-0 lg:pl-12">
+    <div class="lg:col-span-7 border-t lg:border-t-0 lg:border-l border-border-base pt-8 lg:pt-0 lg:pl-12">
       <!-- Success State -->
       <div *ngIf="isSuccess()" class="text-center py-16 space-y-6">
         <div class="w-16 h-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto">
@@ -44,7 +44,7 @@
         </div>
         <div class="space-y-2">
           <h3 class="text-2xl font-medium">Message sent successfully</h3>
-          <p class="text-muted text-sm">
+          <p class="text-muted text-sm/6">
             Thank you for reaching out. We will get in touch with you shortly.
           </p>
         </div>
@@ -59,13 +59,13 @@
             <div>
               <label class="block text-xs font-medium text-muted mb-2">First name</label>
               <input type="text" formControlName="first_name"
-                class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm"
+                class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm/6"
                 placeholder="Juan" />
             </div>
             <div>
               <label class="block text-xs font-medium text-muted mb-2">Last name</label>
               <input type="text" formControlName="last_name"
-                class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm"
+                class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm/6"
                 placeholder="Dela Cruz" />
             </div>
           </div>
@@ -74,7 +74,7 @@
           <div>
             <label class="block text-xs font-medium text-muted mb-2">Email address</label>
             <input type="email" formControlName="email"
-              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm"
+              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm/6"
               placeholder="juan@example.com" />
           </div>
 
@@ -82,7 +82,7 @@
           <div>
             <label class="block text-xs font-medium text-muted mb-2">Phone number</label>
             <input type="text" formControlName="contact_number"
-              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm"
+              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm/6"
               placeholder="+63 912 345 6789" />
           </div>
 
@@ -90,7 +90,7 @@
           <div>
             <label class="block text-xs font-medium text-muted mb-2">Player level</label>
             <select formControlName="chess_level"
-              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm appearance-none bg-no-repeat bg-[right_1rem_center]"
+              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm/6 appearance-none bg-no-repeat bg-[right_1rem_center]"
               style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22 stroke-width=%222%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M19 9l-7 7-7-7%22 /></svg>'); background-size: 1.25rem;">
               <option value="New to chess">New to chess</option>
               <option value="Beginner">Beginner</option>
@@ -103,7 +103,7 @@
           <div>
             <label class="block text-xs font-medium text-muted mb-2">Message</label>
             <textarea formControlName="experience" rows="4"
-              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm resize-none"
+              class="w-full px-4 py-3 bg-subtle border border-border-base rounded-xl focus:ring-1 focus:ring-accent outline-none text-sm/6 resize-none"
               placeholder="Tell us about your chess goals..."></textarea>
           </div>
 

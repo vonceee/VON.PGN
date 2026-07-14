@@ -42,7 +42,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
       >
         <!-- Header -->
         <div class="flex items-center justify-between px-6 py-5 border-b border-border-base">
-          <h2 class="text-xl font-bold">{{ title() }}</h2>
+          <h2 class="text-xl font-medium">{{ title() }}</h2>
           <button
             (click)="close.emit()"
             class="p-2 rounded-full hover:bg-subtle text-muted transition-all"

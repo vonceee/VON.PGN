@@ -29,6 +29,7 @@ import {
   heroChevronDoubleRight,
   heroEye,
   heroUserPlus,
+  heroPencil,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -88,6 +89,7 @@ import { BoardEditorComponent } from '../../shared/components/chess/board-editor
       heroChevronDoubleRight,
       heroEye,
       heroUserPlus,
+      heroPencil,
     }),
   ],
   templateUrl: './study.component.html',

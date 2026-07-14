@@ -1,7 +1,7 @@
 <div class="overflow-hidden flex flex-col h-full">
   <!-- Navigation Controls -->
   @if (showNavigation()) {
-  <div class="flex-none flex items-center justify-between p-4 border-b border-border-base/50">
+  <div class="flex-none flex items-center justify-between p-4 border-b border-border-base">
     <div class="flex items-center gap-4">
       <button appButton (click)="navigate.emit(initialPly())" [disabled]="currentPly() <= initialPly()">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -44,7 +44,7 @@
         <!-- Main Move Pair Row -->
         <div class="grid grid-cols-[3rem_1fr_1fr] items-center bg-surface rounded-4xl">
           <!-- Move Number -->
-          <span class="text-sm font-medium text-muted select-none text-right pr-4">
+          <span class="text-sm/6 font-medium text-muted select-none text-right pr-4">
             {{ turn.moveNumber }}.
           </span>
 
@@ -157,8 +157,8 @@
       }
 
       @if (result() && result() !== '*') {
-      <div class="text-center py-2 border-t border-border-base/50 mt-2">
-        <span class="text-sm font-medium text-muted select-text">
+      <div class="text-center py-2 border-t border-border-base mt-2">
+        <span class="text-sm/6 font-medium text-muted select-text">
           {{ result() }}
         </span>
       </div>
@@ -174,8 +174,8 @@
             "></ng-container>
       </div>
       @if (result() && result() !== '*') {
-      <div class="text-center py-2 border-t border-border-base/50 mt-2">
-        <span class="text-sm font-medium text-muted select-text">
+      <div class="text-center py-2 border-t border-border-base mt-2">
+        <span class="text-sm/6 font-medium text-muted select-text">
           {{ result() }}
         </span>
       </div>
@@ -193,11 +193,11 @@
       <!-- Move Number -->
       @if (node.ply % 2 !== 0) {
       <span class="text-xs select-none text-muted mr-0.5 ml-0.5" [class.text-base]="isMainline"
-        [class.text-sm]="!isMainline">{{ (node.ply + 1) / 2 }}.</span>
+        [class.text-sm/6]="!isMainline">{{ (node.ply + 1) / 2 }}.</span>
       } @else if ($firstNode || (i > 0 && ((nodes[i-1].comments && nodes[i-1].comments.length > 0) || (activeLayout()
       === 'tree' && nodes[i-1].variations && nodes[i-1].variations.length > 0)))) {
       <span class="text-xs select-none text-muted mr-0.5 ml-0.5" [class.text-base]="isMainline"
-        [class.text-sm]="!isMainline">{{ node.ply / 2 }}...</span>
+        [class.text-sm/6]="!isMainline">{{ node.ply / 2 }}...</span>
       }
 
       <!-- Move Button -->
@@ -207,7 +207,7 @@
               : activeContinuationSet().has(node.fen + '_' + node.ply)
                 ? 'bg-amber-500/10 !text-amber-800'
                 : (isMainline ? 'hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle transition-colors')
-          " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm]="!isMainline"
+          " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm/6]="!isMainline"
         class="text-left hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
         <span class="inline-flex items-center gap-0.5">
           {{ node.san }}
@@ -264,7 +264,7 @@
 
   <!-- Variation Selector -->
   @if (nextOptions().length > 1) {
-  <div class="flex-none p-3 border-t border-border-base/50">
+  <div class="flex-none p-3 border-t border-border-base">
     <div class="flex flex-wrap gap-2">
       @for (option of nextOptions(); track option.fen) {
       <button (click)="onMoveClick(option)" [class]="
@@ -272,7 +272,7 @@
                 ? 'bg-accent text-white rounded-4xl'
                 : 'bg-subtle rounded-4xl'
             "
-        class="px-3.5 py-1.5 font-medium text-sm  flex items-center gap-2.5 cursor-pointer hover:bg-accent hover:text-white">
+        class="px-3.5 py-1.5 font-medium text-sm/6  flex items-center gap-2.5 cursor-pointer hover:bg-accent hover:text-white">
         <span class="opacity-50 font-medium text-xs">{{
           option.ply % 2 !== 0 ? (option.ply + 1) / 2 : option.ply / 2 + '...'
           }}</span>
@@ -336,7 +336,7 @@
     [style.left.px]="contextMenuPos().x" [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()"
     (contextmenu)="$event.preventDefault()">
     <button (click)="onAnnotate()"
-      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm/6 flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -345,7 +345,7 @@
     </button>
     @if (!isContextMenuNodeMainline()) {
     <button (click)="onPromoteToMainline()"
-      class="w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm/6 flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
       </svg>
@@ -353,7 +353,7 @@
     </button>
     }
     <button (click)="onDeleteFromHere()"
-      class="w-full text-left px-4 py-2.5 text-sm text-red-500 flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
+      class="w-full text-left px-4 py-2.5 text-sm/6 text-red-500 flex items-center gap-3 font-medium cursor-pointer hover:bg-subtle">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

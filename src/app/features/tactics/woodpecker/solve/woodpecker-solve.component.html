@@ -25,7 +25,7 @@
           @for (cycle of session()?.cycles; track cycle.id) {
           <div class="bg-subtle rounded-xl p-4 border border-slate-100">
             <span class="text-md font-medium block mb-1">Cycle {{ cycle.cycle_number }}</span>
-            <span class="text-xl font-bold block mb-1">
+            <span class="text-xl font-medium block mb-1">
               {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}%
             </span>
             <span class="text-md font-medium">{{ formatTime(cycle.total_time_seconds) }}</span>
@@ -61,7 +61,7 @@
         <div class="border-b border-slate-100 pb-4 flex justify-between items-start">
           <div>
             <div class="flex items-center gap-2 mb-1">
-              <span class="text-sm font-medium">
+              <span class="text-sm/6 font-medium">
                 Cycle {{ session()?.current_cycle_number }} of 4
               </span>
             </div>
@@ -78,12 +78,12 @@
         <div class="bg-subtle rounded-xl p-4 border border-slate-100 flex items-center justify-between">
           <div>
             <span class="text-xs text-muted block mb-0.5">Cycle timer</span>
-            <span class="text-3xl font-bold">{{ formatTime(cycleTimeElapsed()) }}</span>
+            <span class="text-3xl font-medium">{{ formatTime(cycleTimeElapsed()) }}</span>
           </div>
           <div class="text-right">
             <span class="text-xs text-muted block mb-0.5">Puzzle Index</span>
-            <span class="text-2xl font-bold">
-              {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-muted text-sm font-normal">/
+            <span class="text-2xl font-medium">
+              {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-muted text-sm/6 font-normal">/
                 {{ session()?.total_puzzles }}</span>
             </span>
           </div>
@@ -180,7 +180,7 @@
         <!-- Celebration Title -->
         <div>
           <h3 class="text-2xl font-semibold mb-1">Cycle completed!</h3>
-          <p class="text-sm text-muted">You finished all puzzles in Cycle {{ stats.cycleNumber }}.</p>
+          <p class="text-sm/6 text-muted">You finished all puzzles in Cycle {{ stats.cycleNumber }}.</p>
         </div>
 
 
@@ -189,13 +189,13 @@
         <div class="grid grid-cols-2 gap-4 w-full bg-subtle border border-slate-100 rounded-2xl p-4 text-left">
           <div>
             <span class="text-xs text-muted block mb-0.5">Accuracy</span>
-            <span class="text-lg font-bold">{{ stats.accuracy }}%</span>
+            <span class="text-lg font-medium">{{ stats.accuracy }}%</span>
             <span class="text-xs block">{{ stats.totalCorrect }} / {{ stats.totalPuzzles }}
               correct</span>
           </div>
           <div>
             <span class="text-xs text-muted block mb-0.5">Total Time</span>
-            <span class="text-lg font-bold">{{ formatTime(stats.totalTime) }}</span>
+            <span class="text-lg font-medium">{{ formatTime(stats.totalTime) }}</span>
             <span class="text-xs block">Avg {{ Math.round(stats.totalTime / stats.totalPuzzles) }}s
               per puzzle</span>
           </div>

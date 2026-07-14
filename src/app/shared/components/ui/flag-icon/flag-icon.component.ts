@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
         [src]="flagUrl()"
         [alt]="code()"
         [title]="countryName()"
-        class="inline-block shadow-sm align-baseline opacity-90 hover:opacity-100"
+        class="inline-block align-baseline opacity-90 hover:opacity-100"
         [class.h-3.5]="shape() === 'rectangle'"
         [class.w-auto]="shape() === 'rectangle'"
         [class.max-w-[20px]]="shape() === 'rectangle'"

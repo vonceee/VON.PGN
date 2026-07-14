@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="flex h-full w-full rounded-sm overflow-hidden text-xs font-semibold text-white shadow-sm">
+    <div class="flex h-full w-full rounded-sm overflow-hidden text-xs font-semibold text-white">
       <div 
         class="bg-subtle flex items-center justify-center  " 
         [style.width.%]="stats().white"

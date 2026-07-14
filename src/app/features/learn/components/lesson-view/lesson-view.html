@@ -1,7 +1,7 @@
 <main class="w-full mx-auto p-8 min-h-full flex flex-col mb-20">
   @if (courseData) {
   <!-- Breadcrumbs -->
-  <nav aria-label="breadcrumb" class="text-sm">
+  <nav aria-label="breadcrumb" class="text-sm/6">
     <ul class="flex items-center gap-1">
       <li>
         <a routerLink="/roadmap" class="cursor-pointer hover:underline hover:text-accent">
@@ -29,7 +29,7 @@
         <h1 class="text-3xl ">{{ courseData.title }}</h1>
       </div>
     </div>
-    <div class="mt-4 flex flex-col gap-4 text-sm">
+    <div class="mt-4 flex flex-col gap-4 text-sm/6">
       <div class="flex flex-wrap items-center gap-3">
         <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-muted ">
           <span class="font-semibold  ">Estimated time:</span>
@@ -44,7 +44,7 @@
         <div class="flex flex-wrap gap-2">
           @for (prereq of prerequisites; track prereq) {
           <span
-            class="inline-flex items-center rounded-full border border-border-base  bg-white  px-3 py-1 text-sm text-muted ">
+            class="inline-flex items-center rounded-full border border-border-base  bg-white  px-3 py-1 text-sm/6 text-muted ">
             {{ prereq }}
           </span>
           }
@@ -62,7 +62,7 @@
         @for (chap of chapters; track chap.id) {
         <div class="p-4 border border-border-base rounded-lg">
           <div class="text-lg ">{{ chap.order }}. {{ chap.title }}</div>
-          <div class="text-sm">{{ chap.lessons.length }} lessons</div>
+          <div class="text-sm/6">{{ chap.lessons.length }} lessons</div>
         </div>
         }
       </div>
@@ -82,7 +82,7 @@
       <!-- Read Aloud + Navigation -->
       <div class="flex flex-wrap items-center gap-3">
         <button
-          class="group flex items-center gap-2 px-4 py-2 text-sm font-semibold hover:text-accent hover:cursor-pointer  "
+          class="group flex items-center gap-2 px-4 py-2 text-sm/6 font-semibold hover:text-accent hover:cursor-pointer  "
           [class.text-accent]="isSpeaking() && !isPaused()" (click)="toggleReadAloud()">
           @if (isSpeaking() && !isPaused()) {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
@@ -116,7 +116,7 @@
             class="absolute right-0 sm:left-auto mt-2 w-56 bg-white  border border-border-base rounded-lg  z-50 p-4 flex flex-col gap-4"
             [style.top]="'100%'">
             <div class="flex flex-col gap-2">
-              <label class="text-xs font-semibold uppercase ">Voice Selection</label>
+              <label class="text-xs font-semibold ">Voice Selection</label>
               <select
                 class="text-xs text-black bg-white border border-border-base rounded-lg px-3 py-2 w-full cursor-pointer appearance-none"
                 [value]="selectedVoiceURI()" (change)="onVoiceChange($event)">
@@ -128,7 +128,7 @@
               </select>
             </div>
             <div class="flex flex-col gap-2">
-              <label class="text-xs font-semibold uppercase ">Playback Speed</label>
+              <label class="text-xs font-semibold ">Playback Speed</label>
               <select
                 class="text-xs text-black bg-white border border-border-base rounded-lg px-3 py-2 w-full cursor-pointer appearance-none"
                 [value]="playbackRate()" (change)="onRateChange($event)">
@@ -210,7 +210,7 @@
       </button>
 
       @if (!isLoggedIn) {
-      <div class="text-sm   text-center">login to track progress.</div>
+      <div class="text-sm/6   text-center">login to track progress.</div>
       } @else {
       <div class="w-4 sm:w-5"></div>
       }
@@ -230,7 +230,7 @@
           <h4 class="font-semibold text-lg mb-2 group-hover:text-accent">
             {{ course.title }}
           </h4>
-          <p class="text-sm  ">
+          <p class="text-sm/6  ">
             {{ getStripedDescription(course.description) }}
           </p>
         </a>

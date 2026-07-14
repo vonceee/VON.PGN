@@ -28,7 +28,7 @@ interface ContentBlock {
       
       <!-- Back to Blogs -->
       <div class="mb-8">
-        <a routerLink="/blog" class="text-sm font-medium text-muted hover:text-content hover:underline flex items-center gap-1">
+        <a routerLink="/blog" class="text-sm/6 font-medium text-muted hover:text-content hover:underline flex items-center gap-1">
           ← Back to blogs
         </a>
       </div>
@@ -41,7 +41,7 @@ interface ContentBlock {
       <!-- Error State -->
       <div *ngIf="!isLoading() && errorMsg()" class="ui-panel bg-main rounded-xl border border-red-200 p-8 text-center my-8">
         <h3 class="text-lg font-medium text-red-500 mb-2">Error loading post</h3>
-        <p class="text-muted text-sm mb-4">{{ errorMsg() }}</p>
+        <p class="text-muted text-sm/6 mb-4">{{ errorMsg() }}</p>
         <a routerLink="/blog" appButton variant="outline">Back to blogs</a>
       </div>
 
@@ -57,32 +57,32 @@ interface ContentBlock {
             >
               Draft
             </span>
-            <span class="text-sm text-muted">
+            <span class="text-sm/6 text-muted">
               {{ post.published_at ? formatDate(post.published_at) : 'Not published' }}
             </span>
           </div>
 
-          <h1 class="text-4xl md:text-5xl font-normal text-content leading-tight mb-4">
+          <h1 class="text-4xl md:text-5xl font-normal leading-tight mb-4">
             {{ post.title }}
           </h1>
 
           <div class="flex flex-wrap items-center justify-between gap-4 mt-6">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center font-semibold text-content border border-border-base">
+              <div class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center font-semibold border border-border-base">
                 {{ post.author.name.charAt(0) }}
               </div>
               <div>
-                <p class="text-sm font-medium text-content">{{ post.author.name }}</p>
+                <p class="text-sm/6 font-medium">{{ post.author.name }}</p>
                 <p class="text-xs text-muted">Author</p>
               </div>
             </div>
             
             <!-- Admin Edit Controls -->
             <div *ngIf="isAdmin()" class="flex items-center gap-2">
-              <a [routerLink]="['/blog', post.slug, 'edit']" appButton variant="outline" class="text-sm">
+              <a [routerLink]="['/blog', post.slug, 'edit']" appButton variant="outline" class="text-sm/6">
                 Edit post
               </a>
-              <button (click)="deletePost(post.id!)" appButton variant="outline" class="text-sm border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300">
+              <button (click)="deletePost(post.id!)" appButton variant="outline" class="text-sm/6 border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300">
                 Delete
               </button>
             </div>
@@ -95,7 +95,7 @@ interface ContentBlock {
         </div>
 
         <!-- Render Content Blocks (Inline Games and Text) -->
-        <div class="prose prose-slate max-w-none text-content text-base md:text-lg space-y-6">
+        <div class="prose prose-slate max-w-none text-base md:text-lg space-y-6">
           @for (block of blocks(); track $index) {
             @if (block.type === 'text') {
               <div [innerHTML]="parseMarkdown(block.content || '')" class="markdown-body"></div>
@@ -107,7 +107,7 @@ interface ContentBlock {
 
         <!-- Remaining/Non-Inline Games Section -->
         <section *ngIf="remainingGames().length > 0" class="mt-12 pt-8 border-t border-border-base">
-          <h2 class="text-2xl font-normal text-content mb-6">Interactive games</h2>
+          <h2 class="text-2xl font-normal mb-6">Interactive games</h2>
           
           <div class="space-y-8">
             <div *ngFor="let g of remainingGames()" class="ui-panel bg-main rounded-xl border border-border-base p-4">
@@ -118,12 +118,12 @@ interface ContentBlock {
 
         <!-- Author Bio Footer -->
         <footer *ngIf="post.author.bio" class="mt-16 p-8 rounded-2xl bg-subtle/25 border border-border-base flex flex-col md:flex-row gap-6 items-start">
-          <div class="w-16 h-16 rounded-full bg-subtle flex items-center justify-center font-bold text-xl text-content border border-border-base shrink-0">
+          <div class="w-16 h-16 rounded-full bg-subtle flex items-center justify-center font-medium text-xl border border-border-base shrink-0">
             {{ post.author.name.charAt(0) }}
           </div>
           <div>
-            <h4 class="text-lg font-semibold text-content mb-2">About {{ post.author.name }}</h4>
-            <p class="text-muted text-sm leading-relaxed">{{ post.author.bio }}</p>
+            <h4 class="text-lg font-semibold mb-2">About {{ post.author.name }}</h4>
+            <p class="text-muted text-sm/6 leading-relaxed">{{ post.author.bio }}</p>
           </div>
         </footer>
 
@@ -271,7 +271,7 @@ export class BlogDetailComponent implements OnInit {
 
   parseMarkdown(md: string): string {
     if (!md) return '';
-    
+
     // Simple HTML encoding to protect against injections
     let html = md
       .replace(/&/g, '&amp;')
@@ -296,14 +296,14 @@ export class BlogDetailComponent implements OnInit {
     const paragraphs = html.split(/\n{2,}/);
     html = paragraphs.map(p => {
       if (p.trim().startsWith('<h')) return p.trim();
-      
+
       // Basic bullet points support
       if (p.trim().startsWith('* ') || p.trim().startsWith('- ')) {
         const items = p.trim().split(/\n[*|-]\s+/);
         const listHtml = items.map(item => `<li class="ml-6 list-disc mb-1">${item.replace(/^[*|-]\s+/, '')}</li>`).join('');
         return `<ul class="mb-4">${listHtml}</ul>`;
       }
-      
+
       return `<p class="mb-4 leading-relaxed">${p.trim().replace(/\n/g, '<br>')}</p>`;
     }).join('');
 

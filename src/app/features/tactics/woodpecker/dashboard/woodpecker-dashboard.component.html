@@ -59,7 +59,7 @@
             <!-- Card Top Headers -->
             <div class="flex justify-between items-start mb-4">
               <div>
-                <span class="text-sm font-medium block mb-1">
+                <span class="text-sm/6 font-medium block mb-1">
                   Cycle {{ session.current_cycle_number }} of 4
                 </span>
                 <h3 class="text-xl font-medium">{{ session.name }}</h3>
@@ -87,7 +87,7 @@
 
             <!-- Progress Bar -->
             <div class="mb-6">
-              <div class="flex justify-between items-center text-sm font-medium text-muted mb-1.5">
+              <div class="flex justify-between items-center text-sm/6 font-medium text-muted mb-1.5">
                 <span>Puzzles solved</span>
                 <span>{{ getProgressPercentage(session) }}%</span>
               </div>
@@ -153,7 +153,7 @@
               <h3 class="text-xl font-medium">{{ session.name }}</h3>
             </div>
 
-            <div class="flex flex-wrap items-center gap-6 text-sm">
+            <div class="flex flex-wrap items-center gap-6 text-sm/6">
               <span class="text-muted">Theme: <strong class="font-medium">{{
                   getThemeDisplayName(session.theme) }}</strong></span>
               <span class="text-muted">Puzzles: <strong class="font-medium">{{ session.total_puzzles
@@ -170,7 +170,7 @@
 
           <!-- Cycle Progress Side-By-Side Grid -->
           <div>
-            <h4 class="text-sm font-semibold mb-4">Repetition cycles analytics
+            <h4 class="text-sm/6 font-semibold mb-4">Repetition cycles analytics
             </h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               @for (cycle of session.cycles; track cycle.id) {
@@ -182,19 +182,19 @@
                 </div>
 
                 <div class="space-y-2">
-                  <div class="flex justify-between text-sm">
+                  <div class="flex justify-between text-sm/6">
                     <span class="text-muted">Accuracy:</span>
                     <span class="font-medium">
                       {{ getCycleAccuracy(cycle) }}%
                     </span>
                   </div>
-                  <div class="flex justify-between text-sm">
+                  <div class="flex justify-between text-sm/6">
                     <span class="text-muted">Time Spent:</span>
                     <span class="font-medium">
                       {{ formatTime(cycle.total_time_seconds) }}
                     </span>
                   </div>
-                  <div class="flex justify-between text-sm">
+                  <div class="flex justify-between text-sm/6">
                     <span class="text-muted">Correct:</span>
                     <span class="font-medium">{{ cycle.total_correct }} / {{ cycle.total_solved }}</span>
                   </div>

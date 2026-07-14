@@ -24,13 +24,13 @@
             <div (click)="navigateToCourse(course.id)"
               class="px-6 py-3 cursor-pointer hover:bg-surface border-b border-border-base last:border-0 transition-colors">
               <div class="font-semibold">{{ course.title }}</div>
-              <div class="text-sm text-muted">{{ course.description }}</div>
+              <div class="text-sm/6 text-muted">{{ course.description }}</div>
             </div>
             }
           </div>
           }
         </div>
-        <p class="hidden md:block text-muted text-center text-sm md:text-md max-w-lg ">
+        <p class="hidden md:block text-muted text-center text-sm/6 md:text-md max-w-lg ">
           not sure where to start? check our
           <a appLink routerLink="/roadmap" class="text-accent hover:underline">
             learning roadmap
@@ -75,7 +75,7 @@
           <!-- Content -->
           <div class="p-3 md:p-4 flex items-center justify-between">
             <div class="min-w-0 flex-1">
-              <h4 class="font-semibold text-sm md:text-base truncate">{{ study.name }}</h4>
+              <h4 class="font-semibold text-sm/6 md:text-base truncate">{{ study.name }}</h4>
               <p class="text-xs md:text-xs text-muted mt-0.5 truncate">by {{ study.owner?.name || 'Me' }}</p>
             </div>
             <svg class="hidden sm:block w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -96,12 +96,12 @@
           <div>
             <h2 class="text-2xl">{{ selectedStudy()?.name }}</h2>
             <div class="flex items-center gap-2 mt-2">
-              <span class="text-sm font-medium text-muted">{{ currentChapter()?.name }}</span>
+              <span class="text-sm/6 font-medium text-muted">{{ currentChapter()?.name }}</span>
             </div>
             @if (selectedStudy(); as study) {
             <div class="mt-2.5">
               <a [routerLink]="['/study', study.id]"
-                class="text-sm text-muted underline flex items-center gap-1 font-medium w-max">
+                class="text-sm/6 text-muted underline flex items-center gap-1 font-medium w-max">
                 {{ selectedStudy()?.name }}
               </a>
             </div>
@@ -148,7 +148,7 @@
           <div class="text-right">
             <span class="text-xs text-muted block">Variations</span>
             <span class="text-4xl font-medium">
-              {{ currentPathIndex() + 1 }} <span class="text-muted text-sm">/ {{ drillPaths().length
+              {{ currentPathIndex() + 1 }} <span class="text-muted text-sm/6">/ {{ drillPaths().length
                 }}</span>
             </span>
           </div>
@@ -215,7 +215,7 @@
         <div class="bg-main rounded-4xl p-5 flex flex-col gap-3 bg-red-500/10 ring-red-500 ring-offset-2">
           <div class="flex gap-2.5 items-start">
             <div class="flex-1">
-              <p class="text-sm">
+              <p class="text-sm/6">
                 Oops! You played the wrong continuation.
               </p>
             </div>
@@ -325,7 +325,7 @@
 
       @if (drillMistakes().length === 0) {
       <div
-        class="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-8 text-center text-emerald-800 text-sm w-full">
+        class="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-8 text-center text-emerald-800 text-sm/6 w-full">
         <p class="font-medium text-base mb-1 text-emerald-950">Perfect run!</p>
         <p class="text-emerald-700/90">You didn't make a single mistake in this repertoire training run. Your opening
           muscle memory is in top shape!</p>

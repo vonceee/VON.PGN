@@ -29,7 +29,7 @@
           <label for="total_puzzles" class="text-base font-medium">Select puzzle count</label>
           <div class="relative w-full">
             <select id="total_puzzles" formControlName="total_puzzles"
-              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm appearance-none bg-no-repeat bg-right pr-8"
+              class="w-full px-3 py-2 bg-surface border border-border-base rounded-md text-sm/6 appearance-none bg-no-repeat bg-right pr-8 focus:outline-none cursor-pointer"
               style="
                 background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
                 background-position: right 0.5rem center;
@@ -47,7 +47,7 @@
           <label for="theme" class="text-base font-medium">Select tactical theme</label>
           <div class="relative w-full">
             <select id="theme" formControlName="theme"
-              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm appearance-none bg-no-repeat bg-right pr-8"
+              class="w-full px-3 py-2 bg-surface border border-border-base rounded-md text-sm/6 appearance-none bg-no-repeat bg-right pr-8 focus:outline-none cursor-pointer"
               style="
                 background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
                 background-position: right 0.5rem center;
@@ -72,7 +72,7 @@
           <label for="rating_preset" class="text-base font-medium">Elo target range</label>
           <div class="relative w-full">
             <select id="rating_preset" [value]="getSelectedPresetValue()" (change)="onRatingPresetChange($event)"
-              class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm appearance-none bg-no-repeat bg-right pr-8"
+              class="w-full px-3 py-2 bg-surface border border-border-base rounded-md text-sm/6 appearance-none bg-no-repeat bg-right pr-8 focus:outline-none cursor-pointer"
               style="
                 background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
                 background-position: right 0.5rem center;
@@ -113,7 +113,7 @@
       </div>
 
       @if (errorMessage()) {
-      <div class="p-4 rounded-xl bg-red-50 text-red-600 text-sm border border-red-150 font-medium">
+      <div class="p-4 rounded-xl bg-red-50 text-red-600 text-sm/6 border border-red-150 font-medium">
         {{ errorMessage() }}
       </div>
       }

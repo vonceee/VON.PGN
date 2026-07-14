@@ -24,14 +24,14 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
             </svg>
           </div>
           <div>
-            <p class="text-sm font-semibold">Board is Locked</p>
+            <p class="text-sm/6 font-semibold">Board is Locked</p>
           </div>
         </div>
 
         <ul class="space-y-3">
           <li class="flex items-start gap-3">
             <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-            <span class="text-sm">Request permission to interact with the chessboard?</span>
+            <span class="text-sm/6">Request permission to interact with the chessboard?</span>
           </li>
         </ul>
       </div>

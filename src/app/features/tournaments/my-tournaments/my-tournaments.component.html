@@ -10,86 +10,60 @@
   </header>
 
   @if (loading()) {
-    <app-loading></app-loading>
+  <app-loading></app-loading>
   } @else if (tournaments().length === 0) {
-    <div class="text-center py-20">
-      <div class="flex flex-col items-center gap-4">
-        <ng-icon
-          name="heroTrophy"
-          class="w-16 h-16 text-muted"
-        ></ng-icon>
-        <div>
-          <p class="text-lg font-semibold text-muted ">No events yet</p>
-          <p class="text-sm  mt-1">Create your first event to get started</p>
-        </div>
+  <div class="text-center py-20">
+    <div class="flex flex-col items-center gap-4">
+      <ng-icon name="heroTrophy" class="w-16 h-16 text-muted"></ng-icon>
+      <div>
+        <p class="text-lg font-semibold text-muted ">No events yet</p>
+        <p class="text-sm/6  mt-1">Create your first event to get started</p>
       </div>
     </div>
+  </div>
   } @else {
-    <div class="flex flex-col gap-4">
-      @for (tournament of tournaments(); track tournament.id) {
-        <div
-          class="border border-border-base rounded-2xl p-6 flex justify-between items-center hover:border-accent/30 "
-        >
-          <div class="flex flex-col">
-            <div class="flex items-center gap-3 mb-1">
-              <h3 class="text-xl font-semibold  ">
-                {{ tournament.name }}
-              </h3>
-              <span
-                class="px-2.5 py-0.5 text-xs font-semibold rounded-full"
-                [class.bg-green-500/10]="tournament.status === 'ongoing'"
-                [class.text-green-500]="tournament.status === 'ongoing'"
-                [class.bg-blue-500/10]="tournament.status === 'upcoming'"
-                [class.text-blue-500]="tournament.status === 'upcoming'"
-                [class.bg-subtle0/10]="tournament.status === 'past'"
-                [class.]="tournament.status === 'past'"
-              >
-                {{ tournament.status }}
-              </span>
-            </div>
-            <p class="text-sm  ">
-              {{ formatDate(tournament.dates.start) }} - {{ formatDate(tournament.dates.end) }}
-              @if (tournament.location) {
-                &middot; {{ tournament.location }}
-              }
-            </p>
-          </div>
-          <div class="flex gap-2">
-            <a
-              appButton
-              variant="outline"
-              [routerLink]="'/events/' + tournament.id"
-            >
-              View
-            </a>
-            <a
-              appButton
-              variant="primary"
-              [routerLink]="'/my-events/' + tournament.id"
-            >
-              Edit
-            </a>
-            <button
-              appButton
-              variant="danger"
-              (click)="requestDelete(tournament)"
-            >
-              Delete
-            </button>
-          </div>
+  <div class="flex flex-col gap-4">
+    @for (tournament of tournaments(); track tournament.id) {
+    <div class="border border-border-base rounded-2xl p-6 flex justify-between items-center hover:border-accent/30 ">
+      <div class="flex flex-col">
+        <div class="flex items-center gap-3 mb-1">
+          <h3 class="text-xl font-semibold  ">
+            {{ tournament.name }}
+          </h3>
+          <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full"
+            [class.bg-green-500/10]="tournament.status === 'ongoing'"
+            [class.text-green-500]="tournament.status === 'ongoing'"
+            [class.bg-blue-500/10]="tournament.status === 'upcoming'"
+            [class.text-blue-500]="tournament.status === 'upcoming'"
+            [class.bg-subtle0/10]="tournament.status === 'past'" [class.]="tournament.status === 'past'">
+            {{ tournament.status }}
+          </span>
         </div>
-      }
+        <p class="text-sm/6  ">
+          {{ formatDate(tournament.dates.start) }} - {{ formatDate(tournament.dates.end) }}
+          @if (tournament.location) {
+          &middot; {{ tournament.location }}
+          }
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <a appButton variant="outline" [routerLink]="'/events/' + tournament.id">
+          View
+        </a>
+        <a appButton variant="primary" [routerLink]="'/my-events/' + tournament.id">
+          Edit
+        </a>
+        <button appButton variant="danger" (click)="requestDelete(tournament)">
+          Delete
+        </button>
+      </div>
     </div>
+    }
+  </div>
   }
 </div>
 
 @if (deleteTarget()) {
-  <app-confirm-delete-modal
-    [itemName]="deleteTarget()!.name"
-    itemType="event"
-    [loading]="deleting()"
-    (confirm)="confirmDelete()"
-    (cancel)="cancelDelete()"
-  />
+<app-confirm-delete-modal [itemName]="deleteTarget()!.name" itemType="event" [loading]="deleting()"
+  (confirm)="confirmDelete()" (cancel)="cancelDelete()" />
 }
-

@@ -1,31 +1,27 @@
-<div 
-  class="fixed bottom-0 left-0 z-toast flex items-center h-10 px-4 font-semibold text-sm transition-all duration-500 transform shadow-lg rounded-tr-md pointer-events-none"
-  [class.translate-y-full]="!isVisible()"
-  [class.opacity-0]="!isVisible()"
-  [class.translate-y-0]="isVisible()"
-  [class.opacity-100]="isVisible()"
-  [class.bg-red-600]="state() === 'offline'"
-  [class.bg-amber-600]="state() === 'reconnecting'"
-  [class.bg-emerald-600]="state() === 'online' && wasOffline()"
-  [class.text-white]="true"
->
+<div
+  class="fixed bottom-0 left-0 z-toast flex items-center h-10 px-4 font-semibold text-sm/6 transition-all duration-500 transform shadow-lg rounded-tr-md pointer-events-none"
+  [class.translate-y-full]="!isVisible()" [class.opacity-0]="!isVisible()" [class.translate-y-0]="isVisible()"
+  [class.opacity-100]="isVisible()" [class.bg-red-600]="state() === 'offline'"
+  [class.bg-amber-600]="state() === 'reconnecting'" [class.bg-emerald-600]="state() === 'online' && wasOffline()"
+  [class.text-white]="true">
   <div class="flex items-center pointer-events-auto">
     @if (state() === 'offline') {
-      <!-- Offline Icon (Disconnected Antenna/Slash) -->
-      <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-3.536 4.978 4.978 0 011.414-3.536m0 0L11.3 11.3M8.464 15.536L3 21M8.464 8.464L5.636 5.636" />
-      </svg>
-      <span>Offline</span>
+    <!-- Offline Icon (Disconnected Antenna/Slash) -->
+    <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+        d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-3.536 4.978 4.978 0 011.414-3.536m0 0L11.3 11.3M8.464 15.536L3 21M8.464 8.464L5.636 5.636" />
+    </svg>
+    <span>Offline</span>
     } @else if (state() === 'reconnecting') {
-      <!-- Reconnecting Spinner -->
-      <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0 mr-2"></div>
-      <span>Reconnecting</span>
+    <!-- Reconnecting Spinner -->
+    <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0 mr-2"></div>
+    <span>Reconnecting</span>
     } @else if (state() === 'online' && wasOffline()) {
-      <!-- Reconnected Icon (Success Checkmark) -->
-      <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-      </svg>
-      <span>Connected</span>
+    <!-- Reconnected Icon (Success Checkmark) -->
+    <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+    </svg>
+    <span>Connected</span>
     }
   </div>
 </div>

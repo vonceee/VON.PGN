@@ -28,7 +28,7 @@ interface EditorGame {
       
       <!-- Back Link -->
       <div class="mb-8">
-        <a routerLink="/blog" class="text-sm font-medium text-muted hover:text-content hover:underline flex items-center gap-1">
+        <a routerLink="/blog" class="text-sm/6 font-medium text-muted hover:text-content hover:underline flex items-center gap-1">
           ← Back to blogs
         </a>
       </div>
@@ -58,7 +58,7 @@ interface EditorGame {
             
             <!-- Title -->
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-content">Title</label>
+              <label class="text-sm/6 font-semibold">Title</label>
               <input
                 type="text"
                 [(ngModel)]="title"
@@ -69,19 +69,19 @@ interface EditorGame {
 
             <!-- Summary / Excerpt -->
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-semibold text-content">Summary (optional)</label>
+              <label class="text-sm/6 font-semibold">Summary (optional)</label>
               <textarea
                 [(ngModel)]="summary"
                 placeholder="Brief excerpt shown in the list feed..."
                 rows="2"
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none focus:border-accent text-sm resize-none"
+                class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none focus:border-accent text-sm/6 resize-none"
               ></textarea>
             </div>
 
             <!-- Editor Body with Markdown Toolbar -->
             <div class="flex flex-col gap-2">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border-base pb-3">
-                <label class="text-sm font-semibold text-content">Body content (Markdown)</label>
+                <label class="text-sm/6 font-semibold">Body content (Markdown)</label>
                 
                 <!-- Toolbar Helpers -->
                 <div class="flex items-center gap-1 bg-subtle/50 border border-border-base rounded-full p-1 text-xs">
@@ -94,7 +94,7 @@ interface EditorGame {
                     <button class="px-2.5 py-1 rounded-full hover:bg-main font-medium cursor-pointer">Insert game</button>
                     <!-- Dropdown for games -->
                     <div class="absolute bottom-full right-0 mb-2 w-48 bg-main border border-border-base rounded-xl shadow-lg p-2 invisible group-hover/insert:visible opacity-0 group-hover/insert:opacity-100 transition-all z-10 flex flex-col gap-1">
-                      <span *ngIf="games().length === 0" class="text-[10px] text-muted text-center py-2">No games added yet</span>
+                      <span *ngIf="games().length === 0" class="text-sm/6 text-muted text-center py-2">No games added yet</span>
                       <button
                         *ngFor="let g of games(); let idx = index"
                         (click)="insertGameTag(idx)"
@@ -118,12 +118,12 @@ interface EditorGame {
             </div>
             
             <!-- Status & Action Buttons -->
-            <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border-base/50">
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border-base">
               <div class="flex items-center gap-4">
-                <label class="text-sm font-semibold text-content">Status:</label>
+                <label class="text-sm/6 font-semibold">Status:</label>
                 <select
                   [(ngModel)]="status"
-                  class="px-3 py-2 rounded-xl border border-border-base bg-main text-sm outline-none focus:border-accent"
+                  class="px-3 py-2 rounded-xl border border-border-base bg-main text-sm/6 outline-none focus:border-accent"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
@@ -161,7 +161,7 @@ interface EditorGame {
             <h3 class="text-lg font-semibold border-b border-border-base pb-2">PGN games manager</h3>
             
             <!-- Game adding inputs -->
-            <div class="space-y-3 p-4 bg-subtle/25 rounded-xl border border-border-base/50">
+            <div class="space-y-3 p-4 bg-subtle/25 rounded-xl border border-border-base">
               <h4 class="text-xs font-semibold text-muted uppercase">Add a chess game</h4>
               
               <div class="flex flex-col gap-1.5">
@@ -169,7 +169,7 @@ interface EditorGame {
                   type="text"
                   [(ngModel)]="newGameTitle"
                   placeholder="Game title (e.g. Kasparov vs Deep Blue)"
-                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-main text-sm outline-none focus:border-accent"
+                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-main text-sm/6 outline-none focus:border-accent"
                 />
               </div>
               
@@ -178,7 +178,7 @@ interface EditorGame {
                   [(ngModel)]="newGamePgn"
                   placeholder="Paste PGN string here..."
                   rows="4"
-                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-main text-xs outline-none focus:border-accent resize-none font-mono"
+                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-main text-xs outline-none focus:border-accent resize-none"
                 ></textarea>
               </div>
 
@@ -196,19 +196,19 @@ interface EditorGame {
             <div class="space-y-2">
               <h4 class="text-xs font-semibold text-muted uppercase">Games in this post</h4>
               
-              <div *ngIf="games().length === 0" class="text-sm text-muted text-center py-4 border border-dashed border-border-base rounded-xl">
+              <div *ngIf="games().length === 0" class="text-sm/6 text-muted text-center py-4 border border-dashed border-border-base rounded-xl">
                 No games added yet.
               </div>
 
               <div *ngFor="let g of games(); let idx = index" class="flex items-center justify-between p-3 rounded-xl border border-border-base bg-subtle/10 gap-3">
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-accent text-main shrink-0">
+                    <span class="text-sm/6 font-medium px-1.5 py-0.5 rounded-full bg-accent text-main shrink-0">
                       [game:{{ idx }}]
                     </span>
-                    <span class="text-sm font-semibold truncate">{{ g.title || 'Untitled Game' }}</span>
+                    <span class="text-sm/6 font-semibold truncate">{{ g.title || 'Untitled Game' }}</span>
                   </div>
-                  <p class="text-[10px] text-muted truncate mt-1 max-w-[250px]">{{ g.pgn.substring(0, 40) }}...</p>
+                  <p class="text-sm/6 text-muted truncate mt-1 max-w-[250px]">{{ g.pgn.substring(0, 40) }}...</p>
                 </div>
                 <button
                   (click)="removeGame(idx)"
@@ -225,26 +225,26 @@ interface EditorGame {
             <h3 class="text-lg font-semibold border-b border-border-base pb-2">Live preview</h3>
             
             <div class="space-y-4">
-              <h1 class="text-2xl md:text-3xl font-medium text-content">{{ title() || 'Post Title' }}</h1>
+              <h1 class="text-2xl md:text-3xl font-medium">{{ title() || 'Post Title' }}</h1>
               
-              <div *ngIf="summary()" class="p-4 bg-subtle/25 border-l-4 border-accent rounded-r-xl text-muted text-sm italic">
+              <div *ngIf="summary()" class="p-4 bg-subtle/25 border-l-4 border-accent rounded-r-xl text-muted text-sm/6 italic">
                 {{ summary() }}
               </div>
 
               <!-- Preview Render Blocks -->
-              <div class="prose max-w-none text-content text-sm md:text-base leading-relaxed space-y-4">
+              <div class="prose max-w-none text-sm/6 md:text-base leading-relaxed space-y-4">
                 @for (block of previewBlocks(); track $index) {
                   @if (block.type === 'text') {
                     <div [innerHTML]="parseMarkdown(block.content || '')" class="preview-markdown"></div>
                   } @else if (block.type === 'game') {
                     <div class="my-4 p-4 rounded-xl border border-dashed border-border-base bg-subtle/20 flex flex-col items-center justify-center min-h-[120px] text-center">
-                      <div class="w-8 h-8 rounded-full bg-accent text-main flex items-center justify-center font-bold text-xs mb-2">
+                      <div class="w-8 h-8 rounded-full bg-accent text-main flex items-center justify-center font-medium text-xs mb-2">
                         ♞
                       </div>
-                      <span class="text-xs font-semibold text-content">
+                      <span class="text-xs font-semibold">
                         [Interactive Chessboard: Game #{{ block.index }}]
                       </span>
-                      <span class="text-[10px] text-muted mt-1 truncate max-w-[300px]">
+                      <span class="text-sm/6 text-muted mt-1 truncate max-w-[300px]">
                         {{ games()[block.index!]?.title || 'Untitled Game' }}
                       </span>
                     </div>
@@ -396,7 +396,7 @@ export class BlogEditorComponent implements OnInit {
     }
 
     this.content.set(text.substring(0, start) + replacement + text.substring(end));
-    
+
     // Restore focus and selection
     setTimeout(() => {
       textarea.focus();
@@ -507,13 +507,13 @@ export class BlogEditorComponent implements OnInit {
     const paragraphs = html.split(/\n{2,}/);
     html = paragraphs.map(p => {
       if (p.trim().startsWith('<h')) return p.trim();
-      
+
       if (p.trim().startsWith('* ') || p.trim().startsWith('- ')) {
         const items = p.trim().split(/\n[*|-]\s+/);
         const listHtml = items.map(item => `<li class="ml-4 list-disc mb-0.5">${item.replace(/^[*|-]\s+/, '')}</li>`).join('');
         return `<ul class="mb-2">${listHtml}</ul>`;
       }
-      
+
       return `<p class="mb-2 leading-relaxed">${p.trim().replace(/\n/g, '<br>')}</p>`;
     }).join('');
 

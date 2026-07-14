@@ -22,7 +22,7 @@
           clip-rule="evenodd" />
       </svg>
       <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search studies..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
@@ -35,7 +35,7 @@
 
     <div class="relative w-36 shrink-0">
       <select [value]="activeTab()" (change)="setTab($any($event.target).value)"
-        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
         style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
@@ -50,7 +50,7 @@
 
     <div class="relative w-48 shrink-0">
       <select [value]="categoryFilter()" (change)="onCategoryFilterChange($event)"
-        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
         style="
             background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
             background-position: right 0.5rem center;
@@ -66,7 +66,7 @@
 
     @if (activeTab() === 'my') {
     <select [value]="sortBy()" (change)="onSortChange($event)"
-      class="w-44 px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
+      class="w-44 px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8"
       style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
@@ -113,8 +113,7 @@
     } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of studies(); track study.id) {
-      <div
-        class="bg-main rounded-lg border border-border-base shadow-sm flex flex-col md:flex-row-reverse overflow-hidden">
+      <div class="bg-main rounded-lg border border-border-base flex flex-col md:flex-row-reverse overflow-hidden">
         <!-- Chess Board Preview Container -->
         <div
           class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">
@@ -140,7 +139,7 @@
               </h2>
             </div>
 
-            <div class="space-y-1 text-sm font-medium text-muted mb-4">
+            <div class="space-y-1 text-sm/6 font-medium text-muted mb-4">
               <div class="flex items-center gap-2">
                 {{ study.chapters_count }} {{ study.chapters_count === 1 ? 'Chapter' : 'Chapters' }}
               </div>

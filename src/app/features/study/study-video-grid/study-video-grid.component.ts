@@ -34,7 +34,7 @@ import { AuthService } from '../../../core/services/auth.service';
       <div class="flex flex-col gap-3 flex-1 overflow-y-auto min-h-0 mb-4">
         
         <!-- Local Stream Video Box -->
-        <div class="relative bg-subtle rounded-xl overflow-hidden aspect-video flex items-center justify-center shadow-sm">
+        <div class="relative bg-subtle rounded-xl overflow-hidden aspect-video flex items-center justify-center">
           @if (localStream()) {
             <video 
               #localVideo 
@@ -61,7 +61,7 @@ import { AuthService } from '../../../core/services/auth.service';
             </div>
           }
           <!-- Label Overlay -->
-          <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold shadow-sm flex items-center gap-1.5">
+          <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-sm/6 font-semibold flex items-center gap-1.5">
             <span>You</span>
             @if (isMuted()) {
               <div class="relative flex items-center justify-center">
@@ -74,7 +74,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
         <!-- Remote Stream Video Boxes -->
         @for (peer of remoteStreamsList(); track peer.id) {
-          <div class="relative bg-subtle rounded-xl overflow-hidden aspect-video flex items-center justify-center shadow-sm">
+          <div class="relative bg-subtle rounded-xl overflow-hidden aspect-video flex items-center justify-center">
             <video 
               [srcObject]="peer.stream" 
               autoplay 
@@ -82,7 +82,7 @@ import { AuthService } from '../../../core/services/auth.service';
               class="w-full h-full object-cover"
             ></video>
             <!-- Label Overlay -->
-            <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-[10px] font-semibold shadow-sm flex items-center gap-1.5">
+            <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-sm/6 font-semibold flex items-center gap-1.5">
               <span>{{ peer.userName }}</span>
             </div>
           </div>
@@ -90,7 +90,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
 
       <!-- Controls Panel (Light Mode) -->
-      <div class="flex items-center justify-center gap-4 bg-surface py-2 px-4 rounded-xl shadow-sm shrink-0">
+      <div class="flex items-center justify-center gap-4 bg-surface py-2 px-4 rounded-xl shrink-0">
         <!-- Mic Toggle -->
         <button 
           (click)="toggleMic()" 
@@ -130,7 +130,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <!-- Hang Up -->
         <button 
           (click)="leaveCall()" 
-          class="w-9 h-9 rounded-full bg-rose-500 hover:bg-rose-600 border-0 flex items-center justify-center text-white shadow-sm transition-all duration-200 active:scale-95 cursor-pointer"
+          class="w-9 h-9 rounded-full bg-rose-500 hover:bg-rose-600 border-0 flex items-center justify-center text-white transition-all duration-200 active:scale-95 cursor-pointer"
           title="Leave Call"
         >
           <ng-icon name="heroPhoneXMark" class="w-4 h-4"></ng-icon>

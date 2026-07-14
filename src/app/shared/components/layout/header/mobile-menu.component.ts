@@ -42,7 +42,7 @@ import { Router } from '@angular/router';
             placeholder="Search players..."
             [value]="searchQuery()"
             (input)="onSearchInput($event)"
-            class="bg-transparent outline-none flex-1 text-sm placeholder-muted"
+            class="bg-transparent outline-none flex-1 text-sm/6 placeholder-muted"
           />
           @if (isSearching()) {
             <div class="w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
@@ -53,7 +53,7 @@ import { Router } from '@angular/router';
             @for (user of searchResults(); track user.uid) {
               <button
                 (click)="viewUserProfile(user)"
-                class="w-full flex items-center px-4 py-2 text-sm hover:bg-subtle text-left transition-colors cursor-pointer"
+                class="w-full flex items-center px-4 py-2 text-sm/6 hover:bg-subtle text-left transition-colors cursor-pointer"
               >
                 <span class="font-medium truncate">{{ user.username }}</span>
               </button>
@@ -69,7 +69,7 @@ import { Router } from '@angular/router';
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
           @for (group of linkGroups; track group.title) {
             <div class="flex flex-col gap-2">
-              <span class="text-sm font-bold uppercase pb-1.5 border-b border-border-base/50 block">
+              <span class="text-sm/6 font-medium pb-1.5 border-b border-border-base block">
                 {{ group.title }}
               </span>
               <div class="flex flex-col gap-1 pl-1">
@@ -80,7 +80,7 @@ import { Router } from '@angular/router';
                     routerLinkActive="text-accent font-semibold"
                     [routerLinkActiveOptions]="{ exact: !link.queryParams }"
                     (click)="close.emit()"
-                    class="py-1 text-sm font-medium text-muted hover:underline transition-all flex items-center justify-between"
+                    class="py-1 text-sm/6 font-medium text-muted hover:underline transition-all flex items-center justify-between"
                   >
                     <span>{{ link.label }}</span>
                   </a>
@@ -96,7 +96,7 @@ import { Router } from '@angular/router';
         @if (authService.isAuthenticated()) {
           <!-- User Profile Label -->
           <div class="px-3 py-2 mb-3">
-            <span class="text-sm font-semibold block">
+            <span class="text-sm/6 font-semibold block">
               {{ userService.currentUser()?.username || 'User' }}
             </span>
           </div>
@@ -153,7 +153,7 @@ import { Router } from '@angular/router';
           <a
             routerLink="/login"
             (click)="close.emit()"
-            class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-white bg-accent hover:bg-accent/90 shadow-sm transition-colors text-center cursor-pointer"
+            class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm/6 font-semibold text-white bg-accent hover:bg-accent/90 transition-colors text-center cursor-pointer"
           >
             Log in
           </a>

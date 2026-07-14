@@ -32,10 +32,9 @@
           <!-- Matchup Rows -->
           <div class="space-y-3">
             <!-- White Player Row -->
-            <div class="flex items-center justify-between text-sm p-2 rounded-xl bg-subtle">
+            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle">
               <div class="flex items-center gap-2 min-w-0">
-                <span
-                  class="w-2.5 h-2.5 rounded-full bg-white border border-border-base/50 shrink-0 select-none"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-white border border-border-base shrink-0 select-none"></span>
                 @if (correctWhite() || isGameOver()) {
                 <span class="capitalize truncate">{{ game.white_player }}</span>
                 @if (game.white_rating) {
@@ -49,7 +48,7 @@
               @if (getPlayerResult(game.result, 'white'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-main border border-border-base/50 text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-main border border-border-base text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -58,7 +57,7 @@
             </div>
 
             <!-- Black Player Row -->
-            <div class="flex items-center justify-between text-sm p-2 rounded-xl bg-subtle">
+            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle">
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0 select-none"></span>
                 @if (correctBlack() || isGameOver()) {
@@ -74,7 +73,7 @@
               @if (getPlayerResult(game.result, 'black'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-main border border-border-base/50 text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-main border border-border-base text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -90,7 +89,7 @@
           <div class="flex gap-2">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()"
               placeholder="e.g Magnus vs Hikaru"
-              class="flex-1 px-4 py-2 bg-main border rounded-xl outline-none text-sm font-medium transition-all duration-200"
+              class="flex-1 px-4 py-2 bg-main border rounded-xl outline-none text-sm/6 font-medium transition-all duration-200"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
@@ -102,16 +101,17 @@
           } @else {
           <div class="flex gap-2">
             @if (getAnalysisLinkInfo(game); as linkInfo) {
-              @if (linkInfo.url) {
-                <a appButton variant="outline" [href]="linkInfo.url" target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
-                  <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
-                </a>
-              } @else if (linkInfo.route) {
-                <a appButton variant="outline" [routerLink]="linkInfo.route"
-                  [queryParams]="linkInfo.queryParams" target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
-                  <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
-                </a>
-              }
+            @if (linkInfo.url) {
+            <a appButton variant="outline" [href]="linkInfo.url" target="_blank"
+              class="flex-1 flex items-center justify-center" title="Study analysis">
+              <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
+            </a>
+            } @else if (linkInfo.route) {
+            <a appButton variant="outline" [routerLink]="linkInfo.route" [queryParams]="linkInfo.queryParams"
+              target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
+              <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
+            </a>
+            }
             }
             <button appButton variant="primary" class="flex-1" (click)="loadNextChallenge()">
               Next
@@ -190,8 +190,8 @@
         <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0 h-[320px] xl:h-[450px]">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             <app-move-notation layout="grid" [moves]="moveHistory()" [currentPly]="currentPly()"
-              [currentFen]="displayFen()" [initialFen]="initialFen"
-              [showNavigation]="false" (navigate)="goToMove($event)"></app-move-notation>
+              [currentFen]="displayFen()" [initialFen]="initialFen" [showNavigation]="false"
+              (navigate)="goToMove($event)"></app-move-notation>
           </div>
         </div>
 
@@ -205,10 +205,9 @@
           <!-- If NOT in 3-column mode, render target cards inline here! -->
           <div class="grid grid-cols-2 gap-3 pb-2 select-none">
             <!-- White Player Card -->
-            <div class="flex items-center justify-between text-sm p-2 rounded-xl bg-subtle min-w-0">
+            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle min-w-0">
               <div class="flex items-center gap-2 min-w-0">
-                <span
-                  class="w-2.5 h-2.5 rounded-full bg-white border border-border-base/50 shrink-0 select-none"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-white border border-border-base shrink-0 select-none"></span>
                 @if (correctWhite() || isGameOver()) {
                 <span class="capitalize font-medium truncate">{{ game.white_player }}</span>
                 @if (game.white_rating) {
@@ -222,7 +221,7 @@
               @if (getPlayerResult(game.result, 'white'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-main border border-border-base/50 text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-main border border-border-base text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -231,7 +230,7 @@
             </div>
 
             <!-- Black Player Card -->
-            <div class="flex items-center justify-between text-sm p-2 rounded-xl bg-subtle min-w-0">
+            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle min-w-0">
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0 select-none"></span>
                 @if (correctBlack() || isGameOver()) {
@@ -247,7 +246,7 @@
               @if (getPlayerResult(game.result, 'black'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-main border border-border-base/50 text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-main border border-border-base text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -260,7 +259,7 @@
           @if (!isGameOver()) {
           <div class="flex gap-2">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()" placeholder="Type answer..."
-              class="flex-1 px-4 py-2 bg-main border rounded-xl outline-none text-sm font-medium transition-all duration-200"
+              class="flex-1 px-4 py-2 bg-main border rounded-xl outline-none text-sm/6 font-medium transition-all duration-200"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
@@ -272,16 +271,17 @@
           } @else {
           <div class="flex gap-2">
             @if (getAnalysisLinkInfo(game); as linkInfo) {
-              @if (linkInfo.url) {
-                <a appButton variant="outline" [href]="linkInfo.url" target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
-                  <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
-                </a>
-              } @else if (linkInfo.route) {
-                <a appButton variant="outline" [routerLink]="linkInfo.route"
-                  [queryParams]="linkInfo.queryParams" target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
-                  <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
-                </a>
-              }
+            @if (linkInfo.url) {
+            <a appButton variant="outline" [href]="linkInfo.url" target="_blank"
+              class="flex-1 flex items-center justify-center" title="Study analysis">
+              <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
+            </a>
+            } @else if (linkInfo.route) {
+            <a appButton variant="outline" [routerLink]="linkInfo.route" [queryParams]="linkInfo.queryParams"
+              target="_blank" class="flex-1 flex items-center justify-center" title="Study analysis">
+              <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
+            </a>
+            }
             }
             <button appButton variant="primary" class="flex-1" (click)="loadNextChallenge()">
               Next

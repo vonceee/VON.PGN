@@ -41,7 +41,7 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
             [class.text-content]="activeTab() === 'all'"
             [class.border-transparent]="activeTab() !== 'all'"
             [class.text-muted]="activeTab() !== 'all'"
-            class="pb-4 text-sm font-medium border-b-2 cursor-pointer transition-colors"
+            class="pb-4 text-sm/6 font-medium border-b-2 cursor-pointer transition-colors"
           >
             All blogs
           </button>
@@ -51,7 +51,7 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
             [class.text-content]="activeTab() === 'my'"
             [class.border-transparent]="activeTab() !== 'my'"
             [class.text-muted]="activeTab() !== 'my'"
-            class="pb-4 text-sm font-medium border-b-2 cursor-pointer transition-colors"
+            class="pb-4 text-sm/6 font-medium border-b-2 cursor-pointer transition-colors"
           >
             My drafts & posts
           </button>
@@ -69,7 +69,7 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
         class="ui-panel bg-main rounded-xl border border-border-base p-12 text-center my-8"
       >
         <h3 class="text-lg font-medium mb-2">No blog posts found</h3>
-        <p class="text-muted text-sm mb-6">Check back later or check another tab.</p>
+        <p class="text-muted text-sm/6 mb-6">Check back later or check another tab.</p>
         <a
           *ngIf="isAdmin()"
           routerLink="/blog/new"
@@ -87,7 +87,7 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
       >
         <article
           *ngFor="let blog of blogs()"
-          class="ui-panel bg-main rounded-xl border border-border-base shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col justify-between h-full"
+          class="ui-panel bg-main rounded-xl border border-border-base hover:shadow-md transition-shadow p-6 flex flex-col justify-between h-full"
         >
           <div>
             <div class="flex items-center gap-2 mb-3">
@@ -108,12 +108,12 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
               </a>
             </h2>
 
-            <p class="text-muted text-sm mb-6 line-clamp-3 leading-relaxed">
+            <p class="text-muted text-sm/6 mb-6 line-clamp-3 leading-relaxed">
               {{ blog.summary || truncateText(blog.content, 120) }}
             </p>
           </div>
 
-          <div class="flex items-center justify-between mt-auto pt-4 border-t border-border-base/50">
+          <div class="flex items-center justify-between mt-auto pt-4 border-t border-border-base">
             <span class="text-xs text-muted">By {{ blog.author.name }}</span>
             <a
               [routerLink]="['/blog', blog.slug]"
@@ -138,7 +138,7 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
         >
           Previous
         </button>
-        <span class="text-sm text-muted">Page {{ currentPage() }} of {{ totalPages() }}</span>
+        <span class="text-sm/6 text-muted">Page {{ currentPage() }} of {{ totalPages() }}</span>
         <button
           appButton
           variant="outline"

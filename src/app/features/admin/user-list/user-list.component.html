@@ -1,8 +1,8 @@
 <div class="space-y-6">
 
-  <div class="bg-main rounded-xl border border-border-base overflow-hidden shadow-sm">
+  <div class="bg-main rounded-xl border border-border-base overflow-hidden">
     <!-- Filters -->
-    <div class="p-5 border-b border-border-base/50 flex flex-wrap items-center gap-4 bg-subtle/50">
+    <div class="p-5 border-b border-border-base flex flex-wrap items-center gap-4 bg-subtle/50">
       <div class="relative flex-1 min-w-[240px]">
         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -12,11 +12,11 @@
           </svg>
         </span>
         <input type="text" [formControl]="searchControl" placeholder="Search by username, name or email..."
-          class="w-full pl-10 pr-4 py-2 bg-main border border-border-base rounded-lg text-sm outline-none  ">
+          class="w-full pl-10 pr-4 py-2 bg-main border border-border-base rounded-lg text-sm/6 outline-none  ">
       </div>
 
       <select [formControl]="roleFilter"
-        class="px-4 py-2 bg-main border border-border-base rounded-lg text-sm outline-none  ">
+        class="px-4 py-2 bg-main border border-border-base rounded-lg text-sm/6 outline-none  ">
         <option value="">All Roles</option>
         <option value="admin">Admin</option>
         <option value="coach">Coach</option>
@@ -27,7 +27,7 @@
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-subtle text-muted uppercase text-xs font-semibold ">
+          <tr class="bg-subtle text-muted text-xs font-semibold ">
             <th class="px-6 py-4">User</th>
             <th class="px-6 py-4">Status</th>
             <th class="px-6 py-4">Ratings</th>
@@ -41,7 +41,7 @@
             <td colspan="5" class="px-6 py-20 text-center">
               <div class="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4">
               </div>
-              <span class="text-sm text-muted ">Loading users...</span>
+              <span class="text-sm/6 text-muted ">Loading users...</span>
             </td>
           </tr>
           } @else if (users().length === 0) {
@@ -89,12 +89,12 @@
             <td class="px-6 py-4">
               <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-2 text-xs">
-                  <span class="text-muted uppercase font-semibold er">Tactics</span>
+                  <span class="text-muted font-semibold er">Tactics</span>
                   <span class="font-semibold">{{ user.ratings.tactics }}</span>
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4 text-sm">
+            <td class="px-6 py-4 text-sm/6">
               <span
                 class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-subtle text-muted capitalize border border-border-base">
                 {{ user.role }}
@@ -123,7 +123,7 @@
       </table>
     </div>
 
-    <div class="p-5 border-t border-border-base/50 bg-subtle/30 flex items-center justify-between">
+    <div class="p-5 border-t border-border-base bg-subtle/30 flex items-center justify-between">
       <span class="text-xs text-muted ">Showing {{ users().length }} users</span>
     </div>
   </div>

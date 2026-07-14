@@ -10,7 +10,7 @@
       class="flex items-center h-11 w-full px-4 rounded-full bg-subtle border border-border-base focus-within:border-accent/40 focus-within:ring-1 focus-within:ring-accent/40 transition-all">
       <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)"
         placeholder="search players..." autofocus
-        class="bg-transparent outline-none text-sm font-medium placeholder-muted w-full" />
+        class="bg-transparent outline-none text-sm/6 font-medium placeholder-muted w-full" />
 
       @if (isSearching()) {
       <div class="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
@@ -22,18 +22,18 @@
     <div class="w-full bg-subtle rounded-3xl py-2 max-h-48 overflow-y-auto">
       @for (user of results(); track user.uid) {
       <button (click)="selectUser(user)"
-        class="w-full flex items-center gap-3 px-5 py-3 text-left cursor-pointer transition-all border-b border-border-base/50 last:border-0"
+        class="w-full flex items-center gap-3 px-5 py-3 text-left cursor-pointer transition-all border-b border-border-base last:border-0"
         [class.bg-accent/10]="selectedUser()?.uid === user.uid" [class.text-accent]="selectedUser()?.uid === user.uid"
         [class.hover:bg-main]="selectedUser()?.uid !== user.uid"
         [class.hover:text-accent]="selectedUser()?.uid !== user.uid">
         <div class="flex flex-col min-w-0">
-          <span class="text-sm font-medium truncate">{{ user.username }}</span>
+          <span class="text-sm/6 font-medium truncate">{{ user.username }}</span>
         </div>
       </button>
       }
     </div>
     } @else if (searchQuery().length >= 2 && !isSearching()) {
-    <div class="text-center py-6 text-sm text-muted bg-subtle rounded-3xl">
+    <div class="text-center py-6 text-sm/6 text-muted bg-subtle rounded-3xl">
       user not found.
     </div>
     }
@@ -44,7 +44,7 @@
   <div class="flex items-center justify-between bg-accent/5 px-4 py-2.5 rounded-2xl border border-accent/20">
     <div class="flex flex-col">
       <span class="text-xs text-muted">add user?</span>
-      <span class="text-sm font-semibold">{{ selected.username }}</span>
+      <span class="text-sm/6 font-semibold">{{ selected.username }}</span>
     </div>
     <button (click)="clearSelection()" class="text-muted hover:text-rose-500 transition-colors p-1"
       title="Clear selection">

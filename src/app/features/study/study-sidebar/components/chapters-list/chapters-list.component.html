@@ -19,7 +19,7 @@
         <span class="text-xs font-medium text-muted shrink-0 group-active:cursor-grabbing cursor-grab">
           {{ idx + 1 }}.
         </span>
-        <span [class]="'text-sm truncate ' + (currentChapter()?.id === chap.id ? 'text-accent' : 'text-content')">
+        <span [class]="'text-sm/6 truncate ' + (currentChapter()?.id === chap.id ? 'text-accent' : 'text-content')">
           {{ chap.name }}
         </span>
       </div>

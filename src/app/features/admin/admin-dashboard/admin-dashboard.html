@@ -1,9 +1,9 @@
 <div class="space-y-12">
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="p-6 rounded-xl bg-main border border-border-base shadow-sm">
+    <div class="p-6 rounded-xl bg-main border border-border-base">
       <div class="flex justify-between">
-        <div class="text-xs font-semibold text-muted uppercase ">Courses</div>
+        <div class="text-xs font-semibold text-muted ">Courses</div>
         <span class="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">+12%</span>
       </div>
       <div class="mt-4">
@@ -11,18 +11,18 @@
       </div>
     </div>
 
-    <div class="p-6 rounded-xl bg-main border border-border-base shadow-sm">
+    <div class="p-6 rounded-xl bg-main border border-border-base">
       <div class="flex justify-between">
-        <div class="text-xs font-semibold text-muted uppercase ">Coaches</div>
+        <div class="text-xs font-semibold text-muted ">Coaches</div>
       </div>
       <div class="mt-4">
         <div class="text-3xl font-semibold">{{ coachesCount() }}</div>
       </div>
     </div>
 
-    <div class="p-6 rounded-xl bg-main border border-border-base shadow-sm">
+    <div class="p-6 rounded-xl bg-main border border-border-base">
       <div class="flex justify-between">
-        <div class="text-xs font-semibold text-muted uppercase ">Active Users</div>
+        <div class="text-xs font-semibold text-muted ">Active Users</div>
         <span class="text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">Live</span>
       </div>
       <div class="mt-4">
@@ -33,13 +33,13 @@
 
   <div class="grid grid-cols-1 gap-8">
     <!-- Recent Activity Section -->
-    <div class="p-8 rounded-2xl bg-main border border-border-base shadow-sm">
+    <div class="p-8 rounded-2xl bg-main border border-border-base">
       <div class="flex items-center justify-between mb-8">
         <div>
           <h2 class="text-xl font-semibold">Recent Enrollments</h2>
-          <p class="text-sm text-muted mt-1">Latest academy students waiting for review.</p>
+          <p class="text-sm/6 text-muted mt-1">Latest academy students waiting for review.</p>
         </div>
-        <a routerLink="/admin/academy-enrollments" class="text-sm font-semibold hover:underline">
+        <a routerLink="/admin/academy-enrollments" class="text-sm/6 font-semibold hover:underline">
           View All
         </a>
       </div>
@@ -48,10 +48,10 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="border-b border-border-base">
-              <th class="pb-4 text-xs  uppercase  text-muted">Student</th>
-              <th class="pb-4 text-xs  uppercase  text-muted">Level</th>
-              <th class="pb-4 text-xs  uppercase  text-muted">Status</th>
-              <th class="pb-4 text-xs  uppercase  text-muted text-right">Date</th>
+              <th class="pb-4 text-xs   text-muted">Student</th>
+              <th class="pb-4 text-xs   text-muted">Level</th>
+              <th class="pb-4 text-xs   text-muted">Status</th>
+              <th class="pb-4 text-xs   text-muted text-right">Date</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border-base/50">
@@ -67,7 +67,7 @@
                 </span>
               </td>
               <td class="py-4">
-                <span [class]="'text-xs  uppercase  px-2.5 py-1 rounded-lg ' + getStatusClass(item.status)">
+                <span [class]="'text-xs   px-2.5 py-1 rounded-lg ' + getStatusClass(item.status)">
                   {{ item.status }}
                 </span>
               </td>

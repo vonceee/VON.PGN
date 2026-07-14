@@ -7,7 +7,7 @@
     </div>
 
     <select [(ngModel)]="statusFilter" (ngModelChange)="loadEnrollments()"
-      class="px-4 py-2 bg-white border border-border-base rounded  outline-none text-sm">
+      class="px-4 py-2 bg-white border border-border-base rounded  outline-none text-sm/6">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
       <option value="contacted">Contacted</option>
@@ -23,19 +23,19 @@
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="border-b border-border-base">
-            <th class="px-6 py-4 text-xs  uppercase  ">
+            <th class="px-6 py-4 text-xs   ">
               Student Info
             </th>
-            <th class="px-6 py-4 text-xs  uppercase  ">
+            <th class="px-6 py-4 text-xs   ">
               Chess Level
             </th>
-            <th class="px-6 py-4 text-xs  uppercase  ">
+            <th class="px-6 py-4 text-xs   ">
               Experience
             </th>
-            <th class="px-6 py-4 text-xs  uppercase  ">
+            <th class="px-6 py-4 text-xs   ">
               Status
             </th>
-            <th class="px-6 py-4 text-xs  uppercase   text-right">
+            <th class="px-6 py-4 text-xs    text-right">
               Actions
             </th>
           </tr>
@@ -60,7 +60,7 @@
               </span>
             </td>
             <td class="px-6 py-6 max-w-xs">
-              <p class="text-sm  " [title]="item.experience">
+              <p class="text-sm/6  " [title]="item.experience">
                 {{ item.experience || 'No experience provided' }}
               </p>
             </td>

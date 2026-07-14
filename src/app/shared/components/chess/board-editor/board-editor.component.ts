@@ -23,7 +23,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         <div class="flex flex-col gap-4">
           <!-- Black Pieces -->
           <div class="space-y-1.5">
-            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-subtle/30 border border-border-base/50 rounded-xl">
+            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-subtle/30 border border-border-base rounded-xl">
               @for (role of pieceRoles; track role) {
                 <button 
                   class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
@@ -41,7 +41,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
           <!-- White Pieces -->
           <div class="space-y-1.5">
-            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-subtle/30 border border-border-base/50 rounded-xl">
+            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-subtle/30 border border-border-base rounded-xl">
               @for (role of pieceRoles; track role) {
                 <button 
                   class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
@@ -65,7 +65,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               appButton
               [variant]="selectedTool() === 'hand' ? 'primary' : 'outline'"
               (click)="selectTool('hand')"
-              class="w-full text-sm"
+              class="w-full text-sm/6"
             >
               Move / Select
             </button>
@@ -73,7 +73,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               appButton
               [variant]="selectedTool() === 'trash' ? 'primary' : 'outline'"
               (click)="selectTool('trash')"
-              class="w-full text-sm"
+              class="w-full text-sm/6"
             >
               Eraser
             </button>
@@ -87,7 +87,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               appButton
               [variant]="turn() === 'w' ? 'primary' : 'outline'"
               (click)="setTurn('w')"
-              class="w-full text-sm"
+              class="w-full text-sm/6"
             >
               White to move
             </button>
@@ -95,7 +95,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               appButton
               [variant]="turn() === 'b' ? 'primary' : 'outline'"
               (click)="setTurn('b')"
-              class="w-full text-sm"
+              class="w-full text-sm/6"
             >
               Black to move
             </button>
@@ -104,7 +104,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
         <!-- Castling rights -->
         <div class="flex flex-col gap-2">
-          <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-subtle/30 border border-border-base/50 rounded-xl">
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-subtle/30 border border-border-base rounded-xl">
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
               <input type="checkbox" [ngModel]="whiteKingside()" (ngModelChange)="whiteKingside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
               <span>White O-O</span>
@@ -131,7 +131,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               appButton
               variant="outline"
               (click)="clearBoard()"
-              class="w-full text-sm"
+              class="w-full text-sm/6"
             >
               Clear board
             </button>
@@ -139,7 +139,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               appButton
               variant="outline"
               (click)="resetToInitial()"
-              class="w-full text-sm"
+              class="w-full text-sm/6"
             >
               Reset board
             </button>

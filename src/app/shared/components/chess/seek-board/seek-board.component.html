@@ -38,17 +38,17 @@
       </div>
 
       <!-- Username -->
-      <span class="overflow-hidden text-ellipsis whitespace-nowrap text-sm ">
+      <span class="overflow-hidden text-ellipsis whitespace-nowrap text-sm/6 ">
         {{ seek.username }}
       </span>
 
       <!-- Rating -->
-      <span class="text-center text-sm font-semibold whitespace-nowrap">
+      <span class="text-center text-sm/6 font-semibold whitespace-nowrap">
         {{ formatElo(seek.elo) }}
       </span>
 
       <!-- Time control -->
-      <span class="text-right text-sm font-semibold whitespace-nowrap">
+      <span class="text-right text-sm/6 font-semibold whitespace-nowrap">
         {{ getTimeControlLabel(seek.time_control) }}
       </span>
     </div>

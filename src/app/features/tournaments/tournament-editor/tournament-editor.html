@@ -22,7 +22,8 @@
             activeSection() === section.id
               ? 'bg-accent'
               : 'hover:bg-subtle '
-          " class="flex items-center px-4 py-3 rounded-lg text-sm font-semibold text-left border-none cursor-pointer">
+          "
+        class="flex items-center px-4 py-3 rounded-lg text-sm/6 font-semibold text-left border-none cursor-pointer">
         {{ section.label }}
       </button>
       }
@@ -122,7 +123,7 @@
     <!-- Sticky Footer Actions -->
     <footer class="ui-sticky-footer px-8 py-4">
       <div class="max-w-[1600px] mx-auto w-full flex justify-between items-center">
-        <span class="text-sm  hidden md:inline">
+        <span class="text-sm/6  hidden md:inline">
           {{
           tournamentId()
           ? 'Editing: ' + tournamentForm.get('name')?.value

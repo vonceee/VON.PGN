@@ -36,19 +36,19 @@
   <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <div class="p-8 rounded-2xl bg-surface border border-border-base text-center space-y-2">
       <div class="text-4xl font-medium">10+</div>
-      <div class="text-sm text-muted">Students enrolled</div>
+      <div class="text-sm/6 text-muted">Students enrolled</div>
     </div>
     <div class="p-8 rounded-2xl bg-surface border border-border-base text-center space-y-2">
       <div class="text-4xl font-medium">3</div>
-      <div class="text-sm text-muted">Dedicated coaches</div>
+      <div class="text-sm/6 text-muted">Dedicated coaches</div>
     </div>
     <div class="p-8 rounded-2xl bg-surface border border-border-base text-center space-y-2">
       <div class="text-4xl font-medium">1-on-1</div>
-      <div class="text-sm text-muted">Personalized sessions</div>
+      <div class="text-sm/6 text-muted">Personalized sessions</div>
     </div>
     <div class="p-8 rounded-2xl bg-surface border border-border-base text-center space-y-2">
       <div class="text-4xl font-medium">10+ yrs</div>
-      <div class="text-sm text-muted">Combined coach experience</div>
+      <div class="text-sm/6 text-muted">Combined coach experience</div>
     </div>
   </section>
 
@@ -70,7 +70,7 @@
             </svg>
           </div>
           <h3 class="text-xl font-medium">Beginner</h3>
-          <p class="text-sm text-muted">
+          <p class="text-sm/6 text-muted">
             1-on-1 sessions, rules to first tactics
           </p>
         </div>
@@ -81,7 +81,7 @@
         <div class="space-y-4">
           <div>
             <span
-              class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-medium uppercase">
+              class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 text-sm/6 font-medium uppercase">
               Most popular
             </span>
           </div>
@@ -92,7 +92,7 @@
             </svg>
           </div>
           <h3 class="text-xl font-medium">Intermediate</h3>
-          <p class="text-sm text-muted">
+          <p class="text-sm/6 text-muted">
             1-on-1, strategy and openings
           </p>
         </div>
@@ -109,7 +109,7 @@
             </svg>
           </div>
           <h3 class="text-xl font-medium">Tournament prep</h3>
-          <p class="text-sm text-muted">
+          <p class="text-sm/6 text-muted">
             1-on-1 sessions, competition preparation
           </p>
         </div>
@@ -139,7 +139,7 @@
         </div>
         <div class="min-w-0 flex-1">
           <h3 class="text-lg font-medium truncate">{{ coach.name }}</h3>
-          <p class="text-sm text-muted truncate">{{ coach.title || 'Chess Instructor' }}</p>
+          <p class="text-sm/6 text-muted truncate">{{ coach.title || 'Chess Instructor' }}</p>
         </div>
       </div>
       }
@@ -152,7 +152,7 @@
       class="p-8 md:p-12 rounded-2xl bg-surface border border-border-base flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
       <div class="space-y-2">
         <h2 class="text-2xl">Ready to start?</h2>
-        <p class="text-sm text-muted">First trial class is free, no commitment.</p>
+        <p class="text-sm/6 text-muted">First trial class is free, no commitment.</p>
       </div>
       <button appButton (click)="scrollToEnrollment()" variant="primary">
         Book free trial

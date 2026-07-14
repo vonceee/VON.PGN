@@ -27,7 +27,7 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
               (ngModelChange)="exportOption.set($event)"
               class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
             <div class="flex flex-col">
-              <span class="text-sm font-medium text-content">Current chapter</span>
+              <span class="text-sm/6 font-medium">Current chapter</span>
               <span class="text-xs text-muted mt-0.5">Export only current chapter</span>
             </div>
           </label>
@@ -39,7 +39,7 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
               (ngModelChange)="exportOption.set($event)"
               class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
             <div class="flex flex-col">
-              <span class="text-sm font-medium text-content">All chapters</span>
+              <span class="text-sm/6 font-medium">All chapters</span>
               <span class="text-xs text-muted mt-0.5">Export all {{ study()?.chapters?.length }} chapters</span>
             </div>
           </label>
@@ -51,7 +51,7 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
               (ngModelChange)="exportOption.set($event)"
               class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
             <div class="flex flex-col">
-              <span class="text-sm font-medium text-content">Selected chapters</span>
+              <span class="text-sm/6 font-medium">Selected chapters</span>
               <span class="text-xs text-muted mt-0.5">Select custom chapters to export</span>
             </div>
           </label>
@@ -61,7 +61,7 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
         @if (exportOption() === 'selected') {
         <div class="flex-1 flex flex-col rounded-xl p-4 mb-4">
           <div
-            class="flex items-center justify-between border-b border-border-base pb-2 mb-2 text-sm font-medium text-muted select-none">
+            class="flex items-center justify-between border-b border-border-base pb-2 mb-2 text-sm/6 font-medium text-muted select-none">
             <span>Select chapters</span>
             <div class="flex gap-2">
               <button (click)="selectAllChapters(true)"
@@ -79,8 +79,8 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
               <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
                 (change)="toggleChapterSelection(chap.id)"
                 class="w-4 h-4 rounded text-accent border-border-base focus:ring-accent bg-transparent">
-              <span class="text-sm font-medium text-muted">{{ idx + 1 }}.</span>
-              <span class="text-sm font-medium truncate flex-1 text-content">{{ chap.name }}</span>
+              <span class="text-sm/6 font-medium text-muted">{{ idx + 1 }}.</span>
+              <span class="text-sm/6 font-medium truncate flex-1">{{ chap.name }}</span>
             </label>
             }
           </div>

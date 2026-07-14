@@ -100,7 +100,7 @@ export class StudyNavigationFacade {
   isActionInProgress = signal(false);
   activeTab = signal<'notation' | 'chapters' | 'chat'>('notation');
   activeSection = signal<'chapters' | 'add-chapter' | 'settings' | 'members' | 'metadata' | 'chat' | 'export' | 'annotate'>('chapters');
-  splitSection = signal<'chat' | 'metadata' | null>(null);
+  splitSection = signal<'chat' | 'metadata' | null>('metadata');
 
   private lastChapterId: number | null = null;
   private lastChapterOrientation: 'white' | 'black' | null = null;
