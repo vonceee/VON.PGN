@@ -9,11 +9,7 @@ import {
   DestroyRef,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
-import { Dialog } from '@angular/cdk/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Chess } from 'chess.js';
-
 import { StudyService } from '../../../core/services/study.service';
 import { AudioService } from '../../../core/services/audio.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -41,7 +37,6 @@ export class StudyNavigationFacade {
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private audioService = inject(AudioService);
-  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
   private openingService = inject(OpeningService);
@@ -271,15 +266,7 @@ export class StudyNavigationFacade {
       }
     });
 
-    effect(() => {
-      const studyId = this.router.url.split('/study/')[1]?.split('?')[0]?.split('#')[0];
-      const chapId = this.router.url.split('chapter=')[1]?.split('&')[0];
-      if (studyId && isPlatformBrowser(this.platformId)) {
-        if (!this.study() || String(this.study()?.id) !== String(studyId)) {
-          this.studyService.getStudy(Number(studyId), chapId ? Number(chapId) : undefined);
-        }
-      }
-    });
+
 
     effect(() => {
       const s = this.study();

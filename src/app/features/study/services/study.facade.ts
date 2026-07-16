@@ -210,6 +210,10 @@ export class StudyFacade {
     this.nav.quickAnnotate(node, glyphId);
   }
 
+  loadStudy(studyId: number | string, chapterId?: number) {
+    this.studyService.getStudy(studyId, chapterId);
+  }
+
   selectChapter(chap: StudyChapter) {
     this.nav.selectChapter(chap);
   }

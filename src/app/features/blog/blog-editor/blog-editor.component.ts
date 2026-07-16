@@ -34,7 +34,7 @@ interface EditorGame {
       </div>
 
       <!-- Standardized Page Header (Inline) -->
-      <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div class="flex-1">
           <h1 class="text-4xl md:text-5xl mb-2 font-normal">
             {{ isEditMode() ? 'Edit blog post' : 'Create new blog post' }}

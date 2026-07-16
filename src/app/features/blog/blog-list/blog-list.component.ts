@@ -14,7 +14,7 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
     <div class="max-w-7xl mx-auto px-4 py-8">
       
       <!-- Standardized Page Header (Inline) -->
-      <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div class="flex-1">
           <h1 class="text-4xl md:text-5xl mb-2 font-normal">Chess blogs</h1>
           <p class="text-muted text-lg">Insights, tutorials, and game analyses from the community.</p>

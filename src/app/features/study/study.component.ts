@@ -195,6 +195,15 @@ export class StudyComponent implements OnInit, OnDestroy {
       }
     });
 
+    effect(() => {
+      const studyId = this.id();
+      const chapId = this.chapterId();
+      if (studyId && isPlatformBrowser(this.platformId)) {
+        this.facade.cleanup();
+        this.facade.loadStudy(studyId, chapId ? Number(chapId) : undefined);
+      }
+    });
+
     if (isPlatformBrowser(this.platformId)) {
       this.windowWidth.set(window.innerWidth);
       this.windowHeight.set(window.innerHeight);

@@ -1,5 +1,5 @@
 import { Component, inject, signal, HostListener, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ThemeService } from '../../../../core/services/theme.service';
@@ -15,7 +15,7 @@ import { MobileMenuComponent } from './mobile-menu.component';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, MobileMenuComponent],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule, MobileMenuComponent],
   templateUrl: './header.html',
   host: {
     class: 'block relative',

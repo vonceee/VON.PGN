@@ -167,7 +167,7 @@ export class StudySocketService {
     });
   }
 
-  emitJoinStudy(studyId: number, ownerId: any, collaboratorIds: string[], initialState: any): void {
+  emitJoinStudy(studyId: number | string, ownerId: any, collaboratorIds: string[], initialState: any): void {
     this.socket?.emit('join_study', {
       studyId,
       ownerId,
@@ -180,19 +180,19 @@ export class StudySocketService {
     this.socket?.emit('study_move', payload);
   }
 
-  emitShapes(studyId: number, shapes: any[]): void {
+  emitShapes(studyId: number | string, shapes: any[]): void {
     this.socket?.emit('study_draw_shapes', { studyId, shapes });
   }
 
-  emitSendChat(studyId: number, text: string): void {
+  emitSendChat(studyId: number | string, text: string): void {
     this.socket?.emit('study_send_chat', { studyId, text });
   }
 
-  emitClearChat(studyId: number): void {
+  emitClearChat(studyId: number | string): void {
     this.socket?.emit('study_clear_chat', { studyId });
   }
 
-  emitMembersUpdate(studyId: number, collaborators: any[]): void {
+  emitMembersUpdate(studyId: number | string, collaborators: any[]): void {
     this.socket?.emit('update_members', { studyId, collaborators });
   }
 
@@ -200,43 +200,43 @@ export class StudySocketService {
     this.socket?.emit('study_change_chapter', payload);
   }
 
-  emitStartClass(studyId: number): void {
+  emitStartClass(studyId: number | string): void {
     this.socket?.emit('start_class', { studyId });
   }
 
-  emitEndClass(studyId: number): void {
+  emitEndClass(studyId: number | string): void {
     this.socket?.emit('end_class', { studyId });
   }
 
-  emitGrantBoardControl(studyId: number, targetUserId: string): void {
+  emitGrantBoardControl(studyId: number | string, targetUserId: string): void {
     this.socket?.emit('grant_board_control', { studyId, targetUserId });
   }
 
-  emitRevokeBoardControl(studyId: number): void {
+  emitRevokeBoardControl(studyId: number | string): void {
     this.socket?.emit('revoke_board_control', { studyId });
   }
 
-  emitRequestMovePermission(studyId: number, userId: string, userName: string): void {
+  emitRequestMovePermission(studyId: number | string, userId: string, userName: string): void {
     this.socket?.emit('request_move_permission', { studyId, userId, userName });
   }
 
-  emitDeclineMovePermission(studyId: number, targetUserId: string): void {
+  emitDeclineMovePermission(studyId: number | string, targetUserId: string): void {
     this.socket?.emit('decline_move_permission', { studyId, targetUserId });
   }
 
-  emitLeaveStudy(studyId: number): void {
+  emitLeaveStudy(studyId: number | string): void {
     this.socket?.emit('leave_study', studyId);
   }
 
-  emitJoinCall(studyId: number): void {
+  emitJoinCall(studyId: number | string): void {
     this.socket?.emit('join_call', { studyId });
   }
 
-  emitLeaveCall(studyId: number): void {
+  emitLeaveCall(studyId: number | string): void {
     this.socket?.emit('leave_call', { studyId });
   }
 
-  emitWebrtcSignal(studyId: number, targetUserId: string, signalData: any): void {
+  emitWebrtcSignal(studyId: number | string, targetUserId: string, signalData: any): void {
     this.socket?.emit('webrtc_signal', { studyId, targetUserId, signalData });
   }
 

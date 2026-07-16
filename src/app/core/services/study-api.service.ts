@@ -66,23 +66,23 @@ export class StudyApiService {
     );
   }
 
-  updateStudy(id: number, data: any): Observable<any> {
+  updateStudy(id: number | string, data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/studies/${id}`, data).pipe(
       tap(() => this.clearCache())
     );
   }
 
-  deleteStudy(id: number): Observable<any> {
+  deleteStudy(id: number | string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/studies/${id}`).pipe(
       tap(() => this.clearCache())
     );
   }
 
-  getStudyRaw(id: number): Observable<{ data: Study }> {
+  getStudyRaw(id: number | string): Observable<{ data: Study }> {
     return this.http.get<{ data: Study }>(`${this.apiUrl}/studies/${id}`);
   }
 
-  addChapter(studyId: number, name: string, fen?: string, orientation?: 'white' | 'black'): Observable<any> {
+  addChapter(studyId: number | string, name: string, fen?: string, orientation?: 'white' | 'black'): Observable<any> {
     return this.http.post(`${this.apiUrl}/studies/${studyId}/chapters`, { 
       name, 
       initial_fen: fen,
@@ -90,21 +90,21 @@ export class StudyApiService {
     });
   }
 
-  updateChapter(studyId: number, chapterId: number, data: any): Observable<any> {
+  updateChapter(studyId: number | string, chapterId: number, data: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`, data);
   }
 
-  deleteChapter(studyId: number, chapterId: number): Observable<any> {
+  deleteChapter(studyId: number | string, chapterId: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`);
   }
   
-  reorderChapters(studyId: number, chapterIds: number[]): Observable<any> {
+  reorderChapters(studyId: number | string, chapterIds: number[]): Observable<any> {
     return this.http.post(`${this.apiUrl}/studies/${studyId}/chapters/reorder`, { 
       chapter_ids: chapterIds 
     });
   }
 
-  addCollaborator(studyId: number, userId: string, canEdit?: boolean): Observable<any> {
+  addCollaborator(studyId: number | string, userId: string, canEdit?: boolean): Observable<any> {
     const body: any = { user_id: userId };
     if (canEdit !== undefined) {
       body.can_edit = canEdit;
@@ -112,33 +112,33 @@ export class StudyApiService {
     return this.http.post(`${this.apiUrl}/studies/${studyId}/collaborators`, body);
   }
 
-  removeCollaborator(studyId: number, userId: string): Observable<any> {
+  removeCollaborator(studyId: number | string, userId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/studies/${studyId}/collaborators/${userId}`);
   }
 
-  updateCollaboratorPermission(studyId: number, userId: string, canEdit: boolean): Observable<any> {
+  updateCollaboratorPermission(studyId: number | string, userId: string, canEdit: boolean): Observable<any> {
     return this.http.put(`${this.apiUrl}/studies/${studyId}/collaborators/${userId}`, { can_edit: canEdit });
   }
 
-  getStudyMessages(studyId: number): Observable<any[]> {
+  getStudyMessages(studyId: number | string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/studies/${studyId}/messages`);
   }
 
-  sendMessageToDb(studyId: number, body: string): Observable<any> {
+  sendMessageToDb(studyId: number | string, body: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/studies/${studyId}/messages`, { body });
   }
 
-  clearStudyChat(studyId: number): Observable<any> {
+  clearStudyChat(studyId: number | string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/studies/${studyId}/messages`);
   }
 
-  importPgn(studyId: number, pgn: string): Observable<any> {
+  importPgn(studyId: number | string, pgn: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/studies/${studyId}/import-pgn`, { pgn }).pipe(
       tap(() => this.clearCache())
     );
   }
 
-  exportPgnBlob(studyId: number, chapterIds?: number[]): Observable<Blob> {
+  exportPgnBlob(studyId: number | string, chapterIds?: number[]): Observable<Blob> {
     let params = '';
     if (chapterIds && chapterIds.length > 0) {
       params = `?chapter_ids=${chapterIds.join(',')}`;

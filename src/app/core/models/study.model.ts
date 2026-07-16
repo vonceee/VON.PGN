@@ -6,7 +6,7 @@ export interface StudyCollaborator extends UserProfile {
 }
 
 export interface Study {
-  id: number;
+  id: string | number;
   name: string;
   visibility: 'public' | 'private' | 'unlisted';
   engine_visibility: 'everyone' | 'owner';
@@ -84,7 +84,7 @@ export interface MoveNode {
 
 export interface StudyChapter {
   id: number;
-  study_id: number;
+  study_id: string | number;
   name: string;
   initial_fen: string;
   current_fen: string;

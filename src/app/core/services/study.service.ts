@@ -77,7 +77,7 @@ export class StudyService {
   }>({ chapterId: null, fen: null, moves: null });
 
   private dbSaveSubject = new Subject<{
-    studyId: number;
+    studyId: number | string;
     chapterId: number;
     fen: string;
     moves: any[];
@@ -86,7 +86,7 @@ export class StudyService {
   }>();
 
   private pendingSavePayload: {
-    studyId: number;
+    studyId: number | string;
     chapterId: number;
     fen: string;
     moves: any[];
@@ -308,15 +308,15 @@ export class StudyService {
     return this.api.createStudy(name, description, visibility, category, orientation);
   }
 
-  updateStudy(id: number, data: any): Observable<any> {
+  updateStudy(id: number | string, data: any): Observable<any> {
     return this.api.updateStudy(id, data);
   }
 
-  deleteStudy(id: number): Observable<any> {
+  deleteStudy(id: number | string): Observable<any> {
     return this.api.deleteStudy(id);
   }
 
-  getStudy(id: number, targetChapterId?: number): void {
+  getStudy(id: number | string, targetChapterId?: number): void {
     this.isLoading.set(true);
     this.api.getStudyRaw(id).subscribe({
       next: (res) => {
@@ -376,51 +376,51 @@ export class StudyService {
     });
   }
 
-  addChapter(studyId: number, name: string, fen?: string, orientation?: 'white' | 'black'): Observable<any> {
+  addChapter(studyId: number | string, name: string, fen?: string, orientation?: 'white' | 'black'): Observable<any> {
     return this.api.addChapter(studyId, name, fen, orientation);
   }
 
-  updateChapter(studyId: number, chapterId: number, data: any): Observable<any> {
+  updateChapter(studyId: number | string, chapterId: number, data: any): Observable<any> {
     return this.api.updateChapter(studyId, chapterId, data);
   }
 
-  deleteChapter(studyId: number, chapterId: number): Observable<any> {
+  deleteChapter(studyId: number | string, chapterId: number): Observable<any> {
     return this.api.deleteChapter(studyId, chapterId);
   }
 
-  reorderChapters(studyId: number, chapterIds: number[]): Observable<any> {
+  reorderChapters(studyId: number | string, chapterIds: number[]): Observable<any> {
     return this.api.reorderChapters(studyId, chapterIds);
   }
 
-  addCollaborator(studyId: number, userId: string, canEdit?: boolean): Observable<any> {
+  addCollaborator(studyId: number | string, userId: string, canEdit?: boolean): Observable<any> {
     return this.api.addCollaborator(studyId, userId, canEdit);
   }
 
-  removeCollaborator(studyId: number, userId: string): Observable<any> {
+  removeCollaborator(studyId: number | string, userId: string): Observable<any> {
     return this.api.removeCollaborator(studyId, userId);
   }
 
-  updateCollaboratorPermission(studyId: number, userId: string, canEdit: boolean): Observable<any> {
+  updateCollaboratorPermission(studyId: number | string, userId: string, canEdit: boolean): Observable<any> {
     return this.api.updateCollaboratorPermission(studyId, userId, canEdit);
   }
 
-  getStudyMessages(studyId: number): Observable<any[]> {
+  getStudyMessages(studyId: number | string): Observable<any[]> {
     return this.api.getStudyMessages(studyId);
   }
 
-  sendMessageToDb(studyId: number, body: string): Observable<any> {
+  sendMessageToDb(studyId: number | string, body: string): Observable<any> {
     return this.api.sendMessageToDb(studyId, body);
   }
 
-  clearStudyChat(studyId: number): Observable<any> {
+  clearStudyChat(studyId: number | string): Observable<any> {
     return this.api.clearStudyChat(studyId);
   }
 
-  importPgn(studyId: number, pgn: string): Observable<any> {
+  importPgn(studyId: number | string, pgn: string): Observable<any> {
     return this.api.importPgn(studyId, pgn);
   }
 
-  exportPgn(studyId: number, chapterIds?: number[]): void {
+  exportPgn(studyId: number | string, chapterIds?: number[]): void {
     this.api.exportPgnBlob(studyId, chapterIds).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -561,11 +561,11 @@ export class StudyService {
     this.socketService.emitClearChat(study.id);
   }
 
-  emitMembersUpdate(studyId: number, collaborators: any[]): void {
+  emitMembersUpdate(studyId: number | string, collaborators: any[]): void {
     this.socketService.emitMembersUpdate(studyId, collaborators);
   }
 
-  emitChapterChange(studyId: number, chapterId: number, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
+  emitChapterChange(studyId: number | string, chapterId: number, fen: string, moves: any[], orientation?: 'white' | 'black', broadcast: boolean = true): void {
     this.flushPendingSaves();
     this.lastRemoteState.set({
       chapterId,
@@ -660,5 +660,7 @@ export class StudyService {
     this.classStartedAt.set(null);
     this.viewerNames.set([]);
     this.viewerCount.set(0);
+    this.currentStudy.set(null);
+    this.currentChapter.set(null);
   }
 }

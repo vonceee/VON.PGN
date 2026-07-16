@@ -98,7 +98,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
   movesDrilled = signal<{ san: string; playedBy: 'student' | 'opponent'; correct: boolean }[]>([]);
 
   // Mistake tracker
-  lastMistake = signal<{ played: string; correct: string; studyId: number; chapterId: number; chapterName: string } | null>(null);
+  lastMistake = signal<{ played: string; correct: string; studyId: number | string; chapterId: number; chapterName: string } | null>(null);
   drillMistakes = signal<PracticeMistake[]>([]);
   showExplanation = signal(false);
   walkthroughStep = signal(2);
