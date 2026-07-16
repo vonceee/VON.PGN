@@ -8,7 +8,6 @@ import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { CreateStudyDialogComponent } from '../dialogs/create-study-dialog/create-study-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '@shared/ui';
-import { LoadingComponent } from '@shared/feedback';
 import { effect } from '@angular/core';
 import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -20,7 +19,7 @@ import type { Key } from 'chessground/types';
 @Component({
   selector: 'app-study-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ButtonComponent, DialogModule, LoadingComponent, ChessBoardComponent],
+  imports: [CommonModule, RouterModule, FormsModule, ButtonComponent, DialogModule, ChessBoardComponent],
   templateUrl: './study-list.component.html',
 })
 export class StudyListComponent implements OnInit {

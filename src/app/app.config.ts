@@ -10,6 +10,7 @@ import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { httpErrorInterceptor } from './core/interceptors/http-error-interceptor';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -21,7 +22,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withPreloading(PreloadAllModules)),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor, httpErrorInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor, httpErrorInterceptor, loadingInterceptor])),
     provideAppInitializer(() => {
       const authService = inject(AuthService);
       // initAuth() returns an Observable; Angular subscribes and waits for it to complete before the first route is activated.

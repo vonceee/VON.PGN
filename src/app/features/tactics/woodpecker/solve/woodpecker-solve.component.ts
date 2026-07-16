@@ -4,7 +4,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TacticsService, Puzzle, WoodpeckerSession, WoodpeckerCycle } from '../../../../core/services/tactics.service';
 import { Chess } from 'chess.js';
 import { TacticsBoardComponent } from '@shared/chess';
-import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
 import { DevLogger } from '../../../../core/utils/dev-logger';
 import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpecker-explanation-modal.component';
@@ -16,7 +15,6 @@ import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpe
     CommonModule,
     RouterLink,
     TacticsBoardComponent,
-    LoadingComponent,
     ButtonComponent,
     WoodpeckerExplanationModalComponent,
   ],

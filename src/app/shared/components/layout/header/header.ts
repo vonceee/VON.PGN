@@ -11,7 +11,6 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { environment } from 'environments/environment';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { MobileMenuComponent } from './mobile-menu.component';
-
 @Component({
   selector: 'app-header',
   standalone: true,

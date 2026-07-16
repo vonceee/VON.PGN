@@ -23,7 +23,7 @@
 
     <div class="flex-1 overflow-y-auto w-full relative pl-4">
       @if (isLoadingCourse()) {
-      <app-loading></app-loading>
+      
       } @else if (course()) {
       <app-lesson-view [courseData]="course()" [lessonData]="activeLesson()" (startCourse)="onLessonSelected($event)"
         (nextLesson)="onNextLesson()" (prevLesson)="onPrevLesson()" (backToCourse)="onLessonSelected('')"

@@ -4,7 +4,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BlogService, Blog } from '../../../core/services/blog.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonComponent } from '@shared/ui';
-import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
 import { BlogGameViewerComponent } from '@shared/chess';
 
 interface ContentBlock {
@@ -20,7 +19,6 @@ interface ContentBlock {
     CommonModule,
     RouterLink,
     ButtonComponent,
-    LoadingComponent,
     BlogGameViewerComponent,
   ],
   template: `
@@ -35,7 +33,6 @@ interface ContentBlock {
 
       <!-- Loading State -->
       <div *ngIf="isLoading()" class="min-h-96 flex items-center justify-center">
-        <app-loading></app-loading>
       </div>
 
       <!-- Error State -->

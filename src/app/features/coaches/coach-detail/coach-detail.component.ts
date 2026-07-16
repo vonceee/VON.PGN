@@ -7,7 +7,6 @@ import { SeoService } from '../../../core/services/seo.service';
 import { Coach } from '../models/coach.model';
 
 import { BackLinkComponent  } from '@shared/ui';
-
 @Component({
   selector: 'app-coach-detail',
   standalone: true,

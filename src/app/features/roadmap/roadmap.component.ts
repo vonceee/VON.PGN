@@ -3,12 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LessonService } from '../../core/services/lesson.service';
 import { ServerMaintenanceComponent  } from '@shared/feedback';
-import { LoadingComponent  } from '@shared/feedback';
-
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, RouterModule, ServerMaintenanceComponent, LoadingComponent],
+  imports: [CommonModule, RouterModule, ServerMaintenanceComponent],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css',
 })

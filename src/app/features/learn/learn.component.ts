@@ -4,12 +4,10 @@ import { LessonService } from '../../core/services/lesson.service';
 import { SeoService } from '../../core/services/seo.service';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { LessonView } from './components/lesson-view/lesson-view';
-import { LoadingComponent } from '../../shared/components/feedback/loading/loading.component';
-
 @Component({
   selector: 'app-learn',
   standalone: true,
-  imports: [SidebarComponent, LessonView, LoadingComponent],
+  imports: [SidebarComponent, LessonView],
   templateUrl: './learn.component.html',
 })
 export class LearnComponent implements OnInit {

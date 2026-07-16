@@ -1,3 +1,10 @@
+<div 
+  *ngIf="loadingService.isLoading()" 
+  class="fixed top-0 left-0 right-0 h-[3px] z-[10000] overflow-hidden bg-accent/10 pointer-events-none"
+>
+  <div class="h-full bg-accent animate-loading-bar origin-left"></div>
+</div>
+
 <app-toast></app-toast>
 <router-outlet></router-outlet>
 <app-network-status></app-network-status>

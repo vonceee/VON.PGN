@@ -5,8 +5,6 @@ import { TournamentService } from '../../core/services/tournament.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Tournament, TournamentStatus } from '../../core/models/tournament.model';
 import { ButtonComponent  } from '@shared/ui';
-import { LoadingComponent  } from '@shared/feedback';
-
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroChevronDown,
@@ -23,7 +21,7 @@ const ITEMS_PER_PAGE = 9;
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent, LoadingComponent, NgIconComponent],
+  imports: [CommonModule, RouterModule, ButtonComponent, NgIconComponent],
   providers: [
     provideIcons({
       heroChevronDown,

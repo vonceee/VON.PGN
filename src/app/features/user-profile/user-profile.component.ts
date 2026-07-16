@@ -5,7 +5,6 @@ import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { UserProfile, FollowUser } from '../../core/models/user.model';
 import { FormsModule } from '@angular/forms';
-import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '../../shared/components/ui/button/button.component';
 import { DialogModule } from '@angular/cdk/dialog';
 import { UserHovercardDirective } from '@shared/directives';
@@ -30,7 +29,6 @@ import {
     CommonModule,
     RouterLink,
     FormsModule,
-    LoadingComponent,
     ButtonComponent,
     DialogModule,
     UserHovercardDirective,

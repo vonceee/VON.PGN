@@ -4,7 +4,6 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { ToastService } from '../../core/services/toast.service';
 import { FollowUser } from '../../core/models/user.model';
-import { LoadingComponent } from '@shared/feedback';
 import { FlagIconComponent, ButtonComponent } from '@shared/ui';
 import { StudyService } from '../../core/services/study.service';
 import { TournamentService } from '../../core/services/tournament.service';
@@ -16,7 +15,7 @@ import { UserHovercardDirective } from '@shared/directives';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, LoadingComponent, UserHovercardDirective, FlagIconComponent, ButtonComponent],
+  imports: [CommonModule, RouterLink, UserHovercardDirective, FlagIconComponent, ButtonComponent],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {

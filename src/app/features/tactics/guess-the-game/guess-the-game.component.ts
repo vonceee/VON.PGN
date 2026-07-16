@@ -39,7 +39,6 @@ import { AudioService } from '../../../core/services/audio.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { LayoutService } from '../../../core/services/layout.service';
 import { ChessBoardComponent, MoveNotationComponent } from '@shared/chess';
-import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
 import { ButtonComponent } from '@shared/ui';
 
 @Component({
@@ -51,7 +50,6 @@ import { ButtonComponent } from '@shared/ui';
     RouterLink,
     ChessBoardComponent,
     MoveNotationComponent,
-    LoadingComponent,
     NgIconComponent,
     ButtonComponent
   ],

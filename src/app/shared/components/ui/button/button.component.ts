@@ -1,6 +1,5 @@
 import { Component, input, ElementRef, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 type ButtonVariant = 'outline' | 'primary' | 'danger' | 'ghost';
 
 @Component({

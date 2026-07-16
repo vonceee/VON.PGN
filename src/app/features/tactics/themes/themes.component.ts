@@ -5,16 +5,13 @@ import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { TacticsService } from '../../../core/services/tactics.service';
 import { UserService } from '../../../core/services/user.service';
 import { PUZZLE_THEMES_HIERARCHY, PuzzleThemeCategory, PuzzleThemeDef } from './puzzle-themes.config';
-import { LoadingComponent } from '@shared/feedback';
-
 @Component({
   selector: 'app-puzzle-themes',
   standalone: true,
   imports: [
     CommonModule,
     RouterLink,
-    ReactiveFormsModule,
-    LoadingComponent
+    ReactiveFormsModule
   ],
   templateUrl: './themes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -18,7 +18,6 @@ import { UserService } from '../../core/services/user.service';
 import { Chess, Move } from 'chess.js';
 import { MoveNotationComponent } from '@shared/chess';
 import { TacticsBoardComponent } from '@shared/chess';
-import { LoadingComponent } from '@shared/feedback';
 import { ButtonComponent } from '@shared/ui';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { getPlyFromFen } from '../../core/utils/chess-tree.utils';
@@ -30,7 +29,6 @@ import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
   imports: [
     CommonModule,
     TacticsBoardComponent,
-    LoadingComponent,
     ButtonComponent,
     MoveNotationComponent,
   ],

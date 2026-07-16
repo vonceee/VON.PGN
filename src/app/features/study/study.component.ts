@@ -6,6 +6,7 @@ import {
   signal,
   computed,
   effect,
+  untracked,
   PLATFORM_ID,
   input,
   ChangeDetectionStrategy,
@@ -199,8 +200,10 @@ export class StudyComponent implements OnInit, OnDestroy {
       const studyId = this.id();
       const chapId = this.chapterId();
       if (studyId && isPlatformBrowser(this.platformId)) {
-        this.facade.cleanup();
-        this.facade.loadStudy(studyId, chapId ? Number(chapId) : undefined);
+        untracked(() => {
+          this.facade.cleanup();
+          this.facade.loadStudy(studyId, chapId ? Number(chapId) : undefined);
+        });
       }
     });
 

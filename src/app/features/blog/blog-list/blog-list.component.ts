@@ -4,12 +4,10 @@ import { RouterLink, RouterModule } from '@angular/router';
 import { BlogService, Blog } from '../../../core/services/blog.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonComponent } from '@shared/ui';
-import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
-
 @Component({
   selector: 'app-blog-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule, ButtonComponent, LoadingComponent],
+  imports: [CommonModule, RouterLink, RouterModule, ButtonComponent],
   template: `
     <div class="max-w-7xl mx-auto px-4 py-8">
       
@@ -60,7 +58,6 @@ import { LoadingComponent } from '../../../shared/components/feedback/loading/lo
 
       <!-- Loading State -->
       <div *ngIf="isLoading()" class="min-h-96 flex items-center justify-center">
-        <app-loading></app-loading>
       </div>
 
       <!-- Empty State -->

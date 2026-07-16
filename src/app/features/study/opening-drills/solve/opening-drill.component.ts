@@ -13,7 +13,6 @@ import { ChessBoardComponent } from '@shared/chess';
 import { ButtonComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroInformationCircle } from '@ng-icons/heroicons/outline';
-
 export interface MovePath {
   id: string;
   moves: MoveNode[];

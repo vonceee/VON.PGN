@@ -52,7 +52,7 @@
         <!-- User List -->
         <div class="flex-1 overflow-y-auto px-5 py-4">
           @if (tabLoading()) {
-          <app-loading></app-loading>
+          
           } @else if (tabUsers().length === 0) {
           <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border-border-base">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1"
@@ -111,8 +111,7 @@
             <button (click)="loadMoreTabUsers()" [disabled]="isLoadingMore()"
               class="px-4 py-2 text-sm/6 font-medium text-accent hover:text-accent/80 cursor-pointer disabled:opacity-50">
               @if (isLoadingMore()) {
-              <div class="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto">
-              </div>
+               Loading...
               } @else {
               Load more
               }
@@ -276,7 +275,7 @@
 </div>
 } @else {
 <div class="flex-1 flex items-center justify-center">
-  <app-loading></app-loading>
+  
 </div>
 }
 </div>

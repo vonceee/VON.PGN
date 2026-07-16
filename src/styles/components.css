@@ -9,4 +9,21 @@
     border-radius: 1.5rem;
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
+
+  /* Premium horizontal line loader animation */
+  .animate-loading-bar {
+    animation: loading-bar-progress 2s infinite linear;
+  }
+}
+
+@keyframes loading-bar-progress {
+  0% {
+    transform: scaleX(0) translateX(0);
+  }
+  50% {
+    transform: scaleX(0.4) translateX(100%);
+  }
+  100% {
+    transform: scaleX(0) translateX(250%);
+  }
 }

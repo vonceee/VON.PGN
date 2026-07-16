@@ -4,8 +4,6 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BlogService, Blog, BlogGame } from '../../../core/services/blog.service';
 import { ButtonComponent } from '@shared/ui';
-import { LoadingComponent } from '../../../shared/components/feedback/loading/loading.component';
-
 interface EditorGame {
   id?: number;
   title: string;
@@ -21,7 +19,6 @@ interface EditorGame {
     RouterLink,
     FormsModule,
     ButtonComponent,
-    LoadingComponent,
   ],
   template: `
     <div class="max-w-7xl mx-auto px-4 py-8">
@@ -46,7 +43,6 @@ interface EditorGame {
       </header>
 
       <div *ngIf="isLoading() && isEditMode()" class="min-h-96 flex items-center justify-center">
-        <app-loading></app-loading>
       </div>
 
       <!-- Main Editor Container (Side by Side layout on desktop) -->
