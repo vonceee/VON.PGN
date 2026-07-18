@@ -108,6 +108,16 @@
               </div>
             </div>
             }
+            } @else if (facade.moveTree().length > 0 && facade.moveTree()[0].preComments && facade.moveTree()[0].preComments!.length > 0) {
+            <!-- Start Position Commentary Section (Introduction) -->
+            <div class="p-4 bg-amber-500/10 flex flex-col gap-2 shrink-0 select-text">
+              <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto pr-1">
+                <div class="text-md font-semibold text-amber-800 dark:text-amber-300">Introduction</div>
+                <div class="text-md">
+                  {{ facade.moveTree()[0].preComments![0] }}
+                </div>
+              </div>
+            </div>
             }
 
             @if (facade.isEngineVisible()) {

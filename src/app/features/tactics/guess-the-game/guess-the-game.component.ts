@@ -14,8 +14,8 @@ import {
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { Chess } from 'chess.js';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 import {
   heroPlay,
   heroPause,
@@ -90,7 +90,6 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
   errorMsg = signal<string | null>(null);
 
   // Chess Navigation State
-  private chess = new Chess();
   initialFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   moveHistory = signal<string[]>([]);
   studyPositions: string[] = [];
@@ -118,6 +117,8 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
   isLargeScreen = signal(false);
   isThreeColumn = signal(false);
   isTwoColumn = signal(false);
+  windowWidth = signal(1200);
+  windowHeight = signal(800);
 
   otherColumnsWidth = computed(() => {
     if (this.isThreeColumn()) {
@@ -127,6 +128,16 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
     } else {
       return 32; // Mobile padding
     }
+  });
+
+  maxBoardSize = computed(() => {
+    const width = this.windowWidth();
+    const height = this.windowHeight();
+    const maxHeight = height - 120;
+    const otherWidth = this.otherColumnsWidth();
+    const maxWidth = width - otherWidth;
+    const maxPossible = Math.min(maxWidth, maxHeight);
+    return Math.max(400, Math.min(1000, maxPossible));
   });
 
   // Derived Completed State
@@ -155,6 +166,8 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
     });
 
     if (isPlatformBrowser(this.platformId)) {
+      this.windowWidth.set(window.innerWidth);
+      this.windowHeight.set(window.innerHeight);
       this.updateLayoutStates();
       fromEvent(window, 'resize')
         .pipe(takeUntilDestroyed(), debounceTime(100))
@@ -181,6 +194,9 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
 
   private updateLayoutStates() {
     const width = window.innerWidth;
+    const height = window.innerHeight;
+    this.windowWidth.set(width);
+    this.windowHeight.set(height);
     this.isLargeScreen.set(width >= 1024);
     this.isThreeColumn.set(width >= 1280);
     this.isTwoColumn.set(width >= 768 && width < 1280);
@@ -251,25 +267,11 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
     try {
       this.initialFen = game.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
-      let pgnToLoad = game.pgn || '';
-      // Strip trailing triple dots if present
-      pgnToLoad = pgnToLoad.replace(/\s*\.\.\.\s*$/, '');
-
-      if (game.initial_fen && game.initial_fen !== 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1') {
-        pgnToLoad = `[FEN "${game.initial_fen}"]\n\n${pgnToLoad}`;
-      }
-
-      this.chess.loadPgn(pgnToLoad);
-      const history = this.chess.history();
+      const nodes = buildTreeFromMoves({ pgn: game.pgn || '' }, this.initialFen);
+      const history = nodes.map(n => n.san);
       this.moveHistory.set(history);
 
-      // Collect all FEN positions by undoing moves back to starting FEN
-      this.studyPositions = [];
-      while (true) {
-        this.studyPositions.unshift(this.chess.fen());
-        const move = this.chess.undo();
-        if (!move) break;
-      }
+      this.studyPositions = [this.initialFen, ...nodes.map(n => n.fen)];
 
       let startPly = 0;
       if (game.start_ply !== undefined && game.start_ply !== null) {

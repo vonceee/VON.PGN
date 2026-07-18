@@ -183,6 +183,10 @@ export class StudyFacade {
     this.nav.saveAnnotation(node, comment, glyphs);
   }
 
+  saveStartComment(comment: string) {
+    this.nav.saveStartComment(comment);
+  }
+
   onShapeDrawn(shapes: any[]) {
     this.nav.onShapeDrawn(shapes);
   }

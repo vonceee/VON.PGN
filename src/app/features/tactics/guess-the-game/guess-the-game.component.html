@@ -3,7 +3,7 @@
 
   @if (isLoading() || !isInitialized()) {
   <div class="flex-1 flex items-center justify-center min-h-[500px]">
-    
+
   </div>
   } @else if (errorMsg()) {
   <div class="flex-1 flex items-center justify-center p-6">
@@ -16,33 +16,37 @@
   } @else if (challenge(); as game) {
   <div class="flex-1 w-full max-w-[1850px] mx-auto p-2 lg:p-4 xl:p-6" [class.overflow-hidden]="isThreeColumn()">
     <div
-      class="grid justify-center grid-cols-1 md:grid-cols-[var(--board-size)_400px] xl:grid-cols-[330px_var(--board-size)_400px] gap-3 lg:gap-4 xl:gap-6"
+      class="grid justify-center grid-cols-1 md:grid-cols-[auto_400px] xl:grid-cols-[330px_auto_400px] gap-3 lg:gap-4 xl:gap-6"
       [class.h-full]="isThreeColumn()" [class.overflow-hidden]="isThreeColumn()">
 
       <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
       @if (isThreeColumn()) {
-      <div class="bg-main rounded-4xl p-6 xl:my-auto flex flex-col gap-6 shrink-0">
+      <div class="bg-main rounded-xl p-6 xl:self-start flex flex-col gap-6 shrink-0 sync-board-height overflow-hidden">
 
         <!-- Upper part: Info rows -->
-        <div class="space-y-4 pr-1 select-none">
-          <div class="flex items-center justify-between">
-            <h1 class="text-xl">Guess the game</h1>
-          </div>
-
+        <div class="flex-1 flex flex-col gap-4 pr-1 min-h-0 select-none overflow-hidden">
           <!-- Matchup Rows -->
-          <div class="space-y-3">
+          <div class="flex flex-col">
             <!-- White Player Row -->
-            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle">
-              <div class="flex items-center gap-2 min-w-0">
+            <div class="flex items-center gap-2">
+              <div class="flex-1 flex items-center gap-3 min-w-0 p-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-white border border-border-base shrink-0 select-none"></span>
-                @if (correctWhite() || isGameOver()) {
-                <span class="capitalize truncate">{{ game.white_player }}</span>
-                @if (game.white_rating) {
-                <span class="text-xs text-muted">({{ game.white_rating }})</span>
-                }
-                } @else {
-                <span class="font-medium text-muted">_</span>
-                }
+                <div class="flex flex-col min-w-0">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    @if (correctWhite() || isGameOver()) {
+                    <span class="capitalize text-sm/6 truncate font-medium">{{ game.white_player }}</span>
+                    } @else {
+                    <span class="text-sm/6 truncate font-medium text-muted">---</span>
+                    }
+                  </div>
+                  @if (correctWhite() || isGameOver()) {
+                  @if (game.white_rating) {
+                  <span class="text-xs text-muted font-medium mt-1">{{ game.white_rating }}</span>
+                  }
+                  } @else {
+                  <span class="text-xs text-muted font-medium mt-1">(?)</span>
+                  }
+                </div>
               </div>
               @if (correctWhite() || isGameOver()) {
               @if (getPlayerResult(game.result, 'white'); as resVal) {
@@ -57,17 +61,25 @@
             </div>
 
             <!-- Black Player Row -->
-            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle">
-              <div class="flex items-center gap-2 min-w-0">
+            <div class="flex items-center gap-2">
+              <div class="flex-1 flex items-center gap-3 min-w-0 p-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0 select-none"></span>
-                @if (correctBlack() || isGameOver()) {
-                <span class="capitalize truncate">{{ game.black_player }}</span>
-                @if (game.black_rating) {
-                <span class="text-xs text-muted">({{ game.black_rating }})</span>
-                }
-                } @else {
-                <span class="font-medium text-muted">_</span>
-                }
+                <div class="flex flex-col min-w-0">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    @if (correctBlack() || isGameOver()) {
+                    <span class="capitalize text-sm/6 truncate font-medium">{{ game.black_player }}</span>
+                    } @else {
+                    <span class="text-sm/6 truncate font-medium text-muted">---</span>
+                    }
+                  </div>
+                  @if (correctBlack() || isGameOver()) {
+                  @if (game.black_rating) {
+                  <span class="text-xs text-muted font-medium mt-1">{{ game.black_rating }}</span>
+                  }
+                  } @else {
+                  <span class="text-xs text-muted font-medium mt-1">(?)</span>
+                  }
+                </div>
               </div>
               @if (correctBlack() || isGameOver()) {
               @if (getPlayerResult(game.result, 'black'); as resVal) {
@@ -81,6 +93,15 @@
               }
             </div>
           </div>
+
+          <!-- Context / Description -->
+          @if (isGameOver() && game.description) {
+          <div class="flex-1 min-h-0 overflow-y-auto border-t border-border-base mt-2 pt-2 pr-1 select-text">
+            <p class="text-sm/6 text-muted">
+              {{ game.description }}
+            </p>
+          </div>
+          }
         </div>
 
         <!-- Lower part: Controls & Actions -->
@@ -89,7 +110,7 @@
           <div class="flex gap-2">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()"
               placeholder="e.g Magnus vs Hikaru"
-              class="flex-1 px-4 py-2 bg-main border rounded-xl outline-none text-sm/6 font-medium transition-all duration-200"
+              class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-muted"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
@@ -123,71 +144,26 @@
       }
 
       <!-- Center Column: Board -->
-      <div class="flex flex-col items-center justify-start relative pb-16" [class.overflow-hidden]="isThreeColumn()"
+      <div class="flex flex-col items-center justify-start relative" [class.overflow-hidden]="isThreeColumn()"
         [class.md:sticky]="!isThreeColumn()" [class.md:top-6]="!isThreeColumn()">
 
         <div class="w-full flex items-start justify-center min-h-0 relative board-container-parent"
           [class.flex-1]="isThreeColumn()" [class.overflow-hidden]="isThreeColumn()">
-          <div class="flex items-center justify-center gap-0 max-h-full w-full max-w-6xl mx-auto">
-            <app-chess-board #board [minSize]="400" [fen]="displayFen()" [orientation]="boardOrientation()"
-              [interactive]="false" [layoutColumnsWidth]="otherColumnsWidth()" (sizeChange)="boardSize.set($event)"
+          <div
+            class="resize-x overflow-hidden aspect-square min-w-[400px] flex items-center justify-center gap-0 mx-auto"
+            [style.width.px]="boardSize()" [style.maxWidth.px]="maxBoardSize()" [style.maxHeight.px]="maxBoardSize()">
+            <app-chess-board #board [fluid]="true" [resizable]="false" [fen]="displayFen()"
+              [orientation]="boardOrientation()" [interactive]="false" (sizeChange)="boardSize.set($event)"
               (nextMove)="nextMove()" (prevMove)="prevMove()"></app-chess-board>
           </div>
-        </div>
-
-        <!-- Floating Toolbar (Resembles study floating toolbar) -->
-        <div
-          class="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 bg-main rounded-full px-4 py-1.5 select-none">
-          <!-- Flip Board -->
-          <button (click)="flipBoard()" title="Flip Board"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-            <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
-          </button>
-
-          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-
-          <!-- Navigation Controls -->
-          <button (click)="goToStart()" title="First Move"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-            <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
-          </button>
-          <button (click)="prevMove()" title="Previous Move"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-            <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
-          </button>
-
-          <!-- Autoplay (Play/Pause) -->
-          <button (click)="toggleAutoplay()" [title]="isAutoplay() ? 'Pause Autoplay' : 'Start Autoplay'"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-            <ng-icon [name]="isAutoplay() ? 'heroPause' : 'heroPlay'" class="text-lg"></ng-icon>
-          </button>
-
-          <button (click)="nextMove()" title="Next Move"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-            <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
-          </button>
-          <button (click)="goToEnd()" title="Last Move"
-            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
-            <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
-          </button>
-
-          <!-- Autoplay speed selector dropdown inline -->
-          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-
-          <select [ngModel]="autoplaySpeed()" (ngModelChange)="updateSpeed($event)"
-            class="bg-transparent border-none outline-none text-xs text-muted font-medium pr-2 py-1 cursor-pointer">
-            <option [value]="2000">Slow</option>
-            <option [value]="1200">Normal</option>
-            <option [value]="600">Fast</option>
-          </select>
         </div>
       </div>
 
       <!-- Right Column: Notation & Guess panel -->
-      <div class="flex flex-col gap-4 pr-1 xl:my-auto shrink-0">
+      <div class="flex flex-col gap-4 pr-1 xl:self-start shrink-0 sync-board-height overflow-hidden">
 
         <!-- Move Notation Card -->
-        <div class="flex flex-col overflow-hidden bg-main rounded-4xl shrink-0 h-[320px] xl:h-[450px]">
+        <div class="flex-1 flex flex-col overflow-hidden bg-main rounded-xl min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             <app-move-notation layout="grid" [moves]="moveHistory()" [currentPly]="currentPly()"
               [currentFen]="displayFen()" [initialFen]="initialFen" [showNavigation]="false"
@@ -197,25 +173,29 @@
 
         <!-- Guess Panel Card (Only for 2-column or mobile layouts) -->
         @if (!isThreeColumn()) {
-        <div class="bg-main rounded-4xl p-5 flex flex-col shrink-0 space-y-4">
-          <div class="select-none flex items-center justify-between">
-            <h1 class="text-lg font-medium">Guess the game</h1>
-          </div>
-
+        <div class="bg-main rounded-xl p-5 flex flex-col shrink-0 space-y-4">
           <!-- If NOT in 3-column mode, render target cards inline here! -->
           <div class="grid grid-cols-2 gap-3 pb-2 select-none">
             <!-- White Player Card -->
             <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle min-w-0">
-              <div class="flex items-center gap-2 min-w-0">
+              <div class="flex-1 flex items-center gap-3 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full bg-white border border-border-base shrink-0 select-none"></span>
-                @if (correctWhite() || isGameOver()) {
-                <span class="capitalize font-medium truncate">{{ game.white_player }}</span>
-                @if (game.white_rating) {
-                <span class="text-xs text-muted">({{ game.white_rating }})</span>
-                }
-                } @else {
-                <span class="font-medium text-muted">_</span>
-                }
+                <div class="flex flex-col min-w-0">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    @if (correctWhite() || isGameOver()) {
+                    <span class="capitalize text-sm/6 truncate font-medium">{{ game.white_player }}</span>
+                    } @else {
+                    <span class="text-sm/6 truncate font-medium text-muted">---</span>
+                    }
+                  </div>
+                  @if (correctWhite() || isGameOver()) {
+                  @if (game.white_rating) {
+                  <span class="text-xs text-muted font-medium mt-1">{{ game.white_rating }}</span>
+                  }
+                  } @else {
+                  <span class="text-xs text-muted font-medium mt-1">(?)</span>
+                  }
+                </div>
               </div>
               @if (correctWhite() || isGameOver()) {
               @if (getPlayerResult(game.result, 'white'); as resVal) {
@@ -231,16 +211,24 @@
 
             <!-- Black Player Card -->
             <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle min-w-0">
-              <div class="flex items-center gap-2 min-w-0">
+              <div class="flex-1 flex items-center gap-3 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0 select-none"></span>
-                @if (correctBlack() || isGameOver()) {
-                <span class="capitalize font-medium truncate">{{ game.black_player }}</span>
-                @if (game.black_rating) {
-                <span class="text-xs text-muted">({{ game.black_rating }})</span>
-                }
-                } @else {
-                <span class="font-medium text-muted">_</span>
-                }
+                <div class="flex flex-col min-w-0">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    @if (correctBlack() || isGameOver()) {
+                    <span class="capitalize text-sm/6 truncate font-medium">{{ game.black_player }}</span>
+                    } @else {
+                    <span class="text-sm/6 truncate font-medium text-muted">---</span>
+                    }
+                  </div>
+                  @if (correctBlack() || isGameOver()) {
+                  @if (game.black_rating) {
+                  <span class="text-xs text-muted font-medium mt-1">{{ game.black_rating }}</span>
+                  }
+                  } @else {
+                  <span class="text-xs text-muted font-medium mt-1">(?)</span>
+                  }
+                </div>
               </div>
               @if (correctBlack() || isGameOver()) {
               @if (getPlayerResult(game.result, 'black'); as resVal) {
@@ -254,6 +242,15 @@
               }
             </div>
           </div>
+
+          <!-- Context / Description -->
+          @if (isGameOver() && game.description) {
+          <div class="overflow-y-auto border-t border-border-base mt-2 pt-2 pr-1 select-text">
+            <p class="text-sm/6 text-muted">
+              {{ game.description }}
+            </p>
+          </div>
+          }
 
           <!-- Controls or Next game button -->
           @if (!isGameOver()) {
@@ -290,6 +287,54 @@
           }
         </div>
         }
+
+        <!-- Toolbar (Below notation / guess panel) -->
+        <div class="p-2 flex items-center justify-between bg-main rounded-xl select-none w-full shrink-0 px-4">
+          <!-- Flip Board Button -->
+          <button (click)="flipBoard()" title="Flip Board"
+            class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+            <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
+          </button>
+
+          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+          <!-- Navigation Buttons Group -->
+          <div class="flex items-center gap-1.5">
+            <button (click)="goToStart()" title="First Move"
+              class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+              <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
+            </button>
+            <button (click)="prevMove()" title="Previous Move"
+              class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+              <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
+            </button>
+
+            <!-- Autoplay (Play/Pause) -->
+            <button (click)="toggleAutoplay()" [title]="isAutoplay() ? 'Pause Autoplay' : 'Start Autoplay'"
+              class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+              <ng-icon [name]="isAutoplay() ? 'heroPause' : 'heroPlay'" class="text-lg"></ng-icon>
+            </button>
+
+            <button (click)="nextMove()" title="Next Move"
+              class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+              <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
+            </button>
+            <button (click)="goToEnd()" title="Last Move"
+              class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+              <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
+            </button>
+          </div>
+
+          <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+          <!-- Autoplay speed selector dropdown inline -->
+          <select [ngModel]="autoplaySpeed()" (ngModelChange)="updateSpeed($event)"
+            class="bg-transparent border-none outline-none text-xs text-muted font-medium pr-2 py-1 cursor-pointer">
+            <option [value]="2000">Slow</option>
+            <option [value]="1200">Normal</option>
+            <option [value]="600">Fast</option>
+          </select>
+        </div>
 
       </div>
     </div>

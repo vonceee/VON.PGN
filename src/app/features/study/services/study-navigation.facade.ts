@@ -669,6 +669,31 @@ export class StudyNavigationFacade {
       .subscribe();
   }
 
+  saveStartComment(comment: string) {
+    if (!this.canEdit()) return;
+
+    this.moveTree.update((tree) => {
+      if (tree.length > 0) {
+        tree[0] = {
+          ...tree[0],
+          preComments: comment.trim() ? [comment.trim()] : [],
+        };
+      }
+      return [...tree];
+    });
+
+    this.studyService
+      .emitMove(
+        '',
+        this.currentFen(),
+        this.moveTree(),
+        this.boardOrientation(),
+        this.isSyncing(),
+        true
+      )
+      .subscribe();
+  }
+
   onShapeDrawn(shapes: any[]) {
     if (!this.canEdit()) return;
     this.studyService.emitShapes(shapes);

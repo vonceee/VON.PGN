@@ -14,6 +14,7 @@ export interface GuessTheGameChallenge {
   eco?: string | null;
   result: string;
   pgn: string;
+  description?: string | null;
   is_study_chapter?: boolean;
   study_id?: number | null;
   study_link?: string | null;

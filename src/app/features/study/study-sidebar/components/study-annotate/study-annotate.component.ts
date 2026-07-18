@@ -35,7 +35,8 @@ export class StudyAnnotateComponent {
         this.comment.set(activeNode.comments && activeNode.comments.length > 0 ? activeNode.comments[0] : '');
         this.selectedGlyphs.set(activeNode.glyphs ? [...activeNode.glyphs] : []);
       } else {
-        this.comment.set('');
+        const firstMove = this.facade.moveTree()[0];
+        this.comment.set(firstMove && firstMove.preComments && firstMove.preComments.length > 0 ? firstMove.preComments[0] : '');
         this.selectedGlyphs.set([]);
       }
     });
@@ -54,10 +55,13 @@ export class StudyAnnotateComponent {
   }
 
   onSave() {
+    if (!this.canEdit()) return;
     const activeNode = this.node();
-    if (!activeNode || !this.canEdit()) return;
-
-    this.facade.saveAnnotation(activeNode, this.comment(), this.selectedGlyphs());
+    if (activeNode) {
+      this.facade.saveAnnotation(activeNode, this.comment(), this.selectedGlyphs());
+    } else if (this.facade.moveTree().length > 0) {
+      this.facade.saveStartComment(this.comment());
+    }
   }
 
   onCancel() {
@@ -65,6 +69,10 @@ export class StudyAnnotateComponent {
     if (activeNode) {
       this.comment.set(activeNode.comments && activeNode.comments.length > 0 ? activeNode.comments[0] : '');
       this.selectedGlyphs.set(activeNode.glyphs ? [...activeNode.glyphs] : []);
+    } else {
+      const firstMove = this.facade.moveTree()[0];
+      this.comment.set(firstMove && firstMove.preComments && firstMove.preComments.length > 0 ? firstMove.preComments[0] : '');
+      this.selectedGlyphs.set([]);
     }
     this.facade.activeSection.set('chapters');
   }
