@@ -1,7 +1,7 @@
 @if (loading()) {
 <div class="flex items-center justify-center h-64">
     <div class="flex flex-col items-center gap-4">
-        
+
         <p>Loading coach profile...</p>
     </div>
 </div>
@@ -9,7 +9,7 @@
 <div class="mx-auto px-8 py-10">
     <app-back-link link="/coaches" text="Back to Coaches" class="mb-8 block" />
 
-    <div class="ui-panel rounded-2xl p-8 mb-8 flex flex-col md:flex-row gap-8 items-start">
+    <div class="rounded-2xl p-8 mb-8 flex flex-col md:flex-row gap-8 items-start">
         <img [src]="coach()!.profilePicture" [alt]="coach()!.name"
             class="w-32 h-32 rounded-2xl border-4 border-accent/20 object-cover">
 
@@ -144,7 +144,7 @@
 
         <div class="space-y-6">
 
-            <div class="ui-panel rounded-xl p-5 mb-6">
+            <div class="rounded-xl p-5 mb-6">
                 <h3 class="font-semibold mb-2 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-4 h-4 text-accent">
@@ -156,7 +156,7 @@
                 <p class="text-sm/6">{{ coach()!.availability }}</p>
             </div>
 
-            <div class="ui-panel rounded-xl p-5">
+            <div class="rounded-xl p-5">
                 <h3 class="font-semibold mb-3 flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor" class="w-4 h-4 text-accent">

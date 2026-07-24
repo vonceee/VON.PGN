@@ -14,7 +14,7 @@ import { ButtonComponent } from '@shared/ui';
       <!-- Standardized Page Header (Inline) -->
       <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div class="flex-1">
-          <h1 class="text-4xl md:text-5xl mb-2 font-normal">Chess blogs</h1>
+          <h1 class="text-4xl md:text-5xl mb-2">Chess blogs</h1>
           <p class="text-muted text-lg">Insights, tutorials, and game analyses from the community.</p>
         </div>
         <div class="flex items-center gap-4">
@@ -63,7 +63,7 @@ import { ButtonComponent } from '@shared/ui';
       <!-- Empty State -->
       <div
         *ngIf="!isLoading() && blogs().length === 0"
-        class="ui-panel bg-main rounded-xl border border-border-base p-12 text-center my-8"
+        class="bg-main rounded-xl border border-border-base p-12 text-center my-8"
       >
         <h3 class="text-lg font-medium mb-2">No blog posts found</h3>
         <p class="text-muted text-sm/6 mb-6">Check back later or check another tab.</p>
@@ -84,40 +84,47 @@ import { ButtonComponent } from '@shared/ui';
       >
         <article
           *ngFor="let blog of blogs()"
-          class="ui-panel bg-main rounded-xl border border-border-base hover:shadow-md transition-shadow p-6 flex flex-col justify-between h-full"
+          class="bg-main rounded-xl border border-border-base hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between h-full group"
         >
-          <div>
-            <div class="flex items-center gap-2 mb-3">
-              <span
-                *ngIf="blog.status === 'draft'"
-                class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800"
-              >
-                Draft
-              </span>
-              <span class="text-xs text-muted">
-                {{ blog.published_at ? formatDate(blog.published_at) : 'Not published' }}
-              </span>
-            </div>
-
-            <h2 class="text-xl font-semibold mb-2 line-clamp-2">
-              <a [routerLink]="['/blog', blog.slug]" class="hover:text-accent transition-colors">
-                {{ blog.title }}
-              </a>
-            </h2>
-
-            <p class="text-muted text-sm/6 mb-6 line-clamp-3 leading-relaxed">
-              {{ blog.summary || truncateText(blog.content, 120) }}
-            </p>
+          <!-- Thumbnail Cover Image -->
+          <div *ngIf="blog.cover_image" class="w-full h-48 bg-subtle border-b border-border-base overflow-hidden relative">
+            <img [src]="blog.cover_image" [alt]="blog.title" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300" />
           </div>
 
-          <div class="flex items-center justify-between mt-auto pt-4 border-t border-border-base">
-            <span class="text-xs text-muted">By {{ blog.author.name }}</span>
-            <a
-              [routerLink]="['/blog', blog.slug]"
-              class="text-xs font-semibold text-accent hover:underline flex items-center gap-1"
-            >
-              Read article
-            </a>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <span
+                  *ngIf="blog.status === 'draft'"
+                  class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800"
+                >
+                  Draft
+                </span>
+                <span class="text-xs text-muted">
+                  {{ blog.published_at ? formatDate(blog.published_at) : 'Not published' }}
+                </span>
+              </div>
+
+              <h2 class="text-xl font-semibold mb-2 line-clamp-2">
+                <a [routerLink]="['/blog', blog.slug]" class="hover:text-accent transition-colors">
+                  {{ blog.title }}
+                </a>
+              </h2>
+
+              <p class="text-muted text-sm/6 mb-6 line-clamp-3 leading-relaxed">
+                {{ blog.summary || truncateText(blog.content, 120) }}
+              </p>
+            </div>
+
+            <div class="flex items-center justify-between mt-auto pt-4 border-t border-border-base">
+              <span class="text-xs text-muted">By {{ blog.author.name }}</span>
+              <a
+                [routerLink]="['/blog', blog.slug]"
+                class="text-xs font-semibold text-accent hover:underline flex items-center gap-1"
+              >
+                Read article
+              </a>
+            </div>
           </div>
         </article>
       </div>

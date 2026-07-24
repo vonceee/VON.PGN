@@ -206,6 +206,37 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'monikers',
+        loadComponent: () =>
+          import('./features/monikers/monikers.component').then((m) => m.MonikersComponent),
+        title: 'Vonchess.net • Player Monikers',
+        data: { description: 'Explore famous nicknames, titles, and epithets of legendary chess grandmasters.' },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'moniker',
+        redirectTo: 'monikers',
+        pathMatch: 'full',
+      },
+      {
+        path: 'world-championships',
+        loadComponent: () =>
+          import('./features/world-championships/world-championships.component').then(
+            (m) => m.WorldChampionshipsComponent,
+          ),
+        title: 'Vonchess.net • World Chess Championships',
+        data: {
+          description:
+            'Explore all World Chess Championship matchups from 1886 to present, complete with scores, venues, key highlights, and interactive studies.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'wcc',
+        redirectTo: 'world-championships',
+        pathMatch: 'full',
+      },
+      {
         path: 'documentation',
         loadComponent: () =>
           import('./features/documentation/documentation.component').then(

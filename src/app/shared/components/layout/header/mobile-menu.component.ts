@@ -252,6 +252,14 @@ export class MobileMenuComponent {
       ],
     },
     {
+      title: 'Museum',
+      links: [
+        { path: '/monikers', label: 'Player monikers' },
+        { path: '/world-championships', label: 'World Championships' },
+        { path: '/tactics/guess', label: 'Guess the game' },
+      ],
+    },
+    {
       title: 'Blog',
       links: [
         { path: '/blog', label: 'Chess blogs' },

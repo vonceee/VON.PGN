@@ -1,0 +1,321 @@
+<div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- Page Header -->
+  <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div class="flex-1">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-subtle border border-border-base text-xs text-muted mb-3 font-medium">
+        <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+        </svg>
+        Historical Chess Archives
+      </div>
+      <h1 class="text-4xl md:text-5xl mb-2 text-content font-normal tracking-tight">
+        World Chess Championships
+      </h1>
+      <p class="text-muted text-base md:text-lg max-w-3xl">
+        Explore every official World Chess Championship match from 1886 to present. Study iconic duels, match statistics, and interactive analysis created by <span class="text-content font-medium">vonchess</span>.
+      </p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="flex flex-wrap items-center gap-4 bg-main border border-border-base p-4 rounded-2xl shadow-sm">
+      <div class="px-3 border-r border-border-base">
+        <span class="text-xs text-muted block uppercase font-semibold">Total Matches</span>
+        <span class="text-2xl font-bold text-content">{{ stats().totalMatches }}</span>
+      </div>
+      <div class="px-3 border-r border-border-base">
+        <span class="text-xs text-muted block uppercase font-semibold">Reigning Champ</span>
+        <span class="text-sm font-semibold text-content block truncate max-w-[140px]">{{ stats().reigningChampion }}</span>
+      </div>
+      <div class="px-3">
+        <span class="text-xs text-muted block uppercase font-semibold">Interactive Studies</span>
+        <span class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{{ stats().linkedStudies }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filter & Search Toolbar -->
+  <div class="mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-subtle p-4 rounded-2xl border border-border-base">
+    <!-- Search Bar -->
+    <div class="relative flex-1">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+      </div>
+      <input
+        type="text"
+        [value]="searchQuery()"
+        (input)="onSearch($event)"
+        placeholder="Search champion, challenger, year, venue, or keyword..."
+        class="w-full pl-10 pr-10 py-2.5 bg-main border border-border-base rounded-xl text-content placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all text-sm"
+      />
+      @if (searchQuery()) {
+        <button
+          (click)="searchQuery.set('')"
+          class="absolute inset-y-0 right-0 pr-3 flex items-center text-muted hover:text-content"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- Era Filter Buttons -->
+    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+      @for (era of eras; track era) {
+        <button
+          (click)="onEraChange(era)"
+          [class.bg-main]="selectedEra() === era"
+          [class.shadow-sm]="selectedEra() === era"
+          [class.text-content]="selectedEra() === era"
+          [class.font-semibold]="selectedEra() === era"
+          [class.text-muted]="selectedEra() !== era"
+          class="px-3.5 py-2 rounded-xl text-xs whitespace-nowrap transition-all border border-transparent hover:bg-main/60 hover:text-content"
+        >
+          {{ era }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Results Count -->
+  <div class="mb-6 flex items-center justify-between text-sm text-muted">
+    <div>
+      Showing <span class="font-semibold text-content">{{ filteredMatches().length }}</span> championship matchup{{ filteredMatches().length === 1 ? '' : 's' }}
+    </div>
+    @if (searchQuery() || selectedEra() !== 'All') {
+      <button
+        (click)="clearFilters()"
+        class="text-xs font-medium text-slate-600 hover:text-slate-900 underline underline-offset-4"
+      >
+        Clear filters
+      </button>
+    }
+  </div>
+
+  <!-- Matchup Cards Grid -->
+  @if (filteredMatches().length > 0) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (match of filteredMatches(); track match.id) {
+        <div
+          (click)="openDetailsModal(match)"
+          class="group bg-main border border-border-base hover:border-slate-400 rounded-2xl p-6 transition-all duration-200 hover:shadow-md cursor-pointer flex flex-col justify-between relative overflow-hidden"
+        >
+          <!-- Top Badge Bar -->
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-4">
+              <span class="px-2.5 py-1 rounded-lg bg-subtle text-content font-bold text-sm border border-border-base">
+                {{ match.year }}
+              </span>
+              <span class="text-xs text-muted font-medium truncate max-w-[170px]">
+                {{ match.era.split(' ')[0] }} Era
+              </span>
+            </div>
+
+            <!-- Title & Matchup -->
+            <h2 class="text-xl font-medium text-content mb-3 group-hover:text-slate-900 transition-colors">
+              {{ match.title }}
+            </h2>
+
+            <!-- Opponents Duel Card -->
+            <div class="bg-subtle/70 rounded-xl p-3.5 border border-border-base/60 mb-4 space-y-2">
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full" [class.bg-emerald-500]="match.winner === match.champion" [class.bg-slate-300]="match.winner !== match.champion"></span>
+                  <span [class.font-bold]="match.winner === match.champion" [class.text-content]="match.winner === match.champion" class="text-muted">
+                    {{ match.champion }}
+                  </span>
+                </div>
+                <span class="text-xs text-muted uppercase">Defender</span>
+              </div>
+
+              <div class="border-t border-border-base/40 my-1"></div>
+
+              <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full" [class.bg-emerald-500]="match.winner === match.challenger" [class.bg-slate-300]="match.winner !== match.challenger"></span>
+                  <span [class.font-bold]="match.winner === match.challenger" [class.text-content]="match.winner === match.challenger" class="text-muted">
+                    {{ match.challenger }}
+                  </span>
+                </div>
+                <span class="text-xs text-muted uppercase">Challenger</span>
+              </div>
+            </div>
+
+            <!-- Match Score & Venue -->
+            <div class="space-y-1.5 text-xs text-muted mb-4">
+              <div class="flex items-center justify-between">
+                <span>Score / Result:</span>
+                <span class="font-semibold text-content">{{ match.score }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>Winner:</span>
+                <span class="font-semibold text-emerald-700 dark:text-emerald-400">{{ match.winner }}</span>
+              </div>
+              <div class="flex items-center justify-between truncate">
+                <span>Location:</span>
+                <span class="truncate max-w-[180px]" [title]="match.location">{{ match.location }}</span>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="text-xs text-muted line-clamp-2 mb-4">
+              {{ match.description }}
+            </p>
+          </div>
+
+          <!-- Bottom Actions -->
+          <div class="pt-4 border-t border-border-base flex items-center justify-between gap-3">
+            <span class="text-xs text-slate-500 font-medium group-hover:text-slate-800 transition-colors flex items-center gap-1">
+              Details
+              <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            </span>
+
+            <button
+              (click)="openStudy(match, $event)"
+              [class.bg-emerald-50]="match.studyId"
+              [class.text-emerald-700]="match.studyId"
+              [class.border-emerald-200]="match.studyId"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border-base bg-subtle text-content hover:bg-main transition-all flex items-center gap-1.5 shrink-0"
+            >
+              <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
+              </svg>
+              {{ match.studyId ? 'View Study' : 'Study Match' }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <div class="bg-main border border-border-base rounded-2xl p-12 text-center max-w-md mx-auto my-12">
+      <div class="w-12 h-12 rounded-2xl bg-subtle text-muted flex items-center justify-center mx-auto mb-4">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-content mb-1">No matchups found</h3>
+      <p class="text-sm text-muted mb-6">No World Chess Championship match matches your search criteria.</p>
+      <button
+        (click)="clearFilters()"
+        class="px-4 py-2 bg-subtle hover:bg-main border border-border-base rounded-xl text-sm font-medium text-content transition-all"
+      >
+        Reset filters
+      </button>
+    </div>
+  }
+</div>
+
+<!-- Match Details Modal -->
+@if (selectedMatch(); as match) {
+  <div
+    class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in"
+    (click)="closeDetailsModal()"
+  >
+    <div
+      class="bg-main border border-border-base rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-xl max-h-[90vh] overflow-y-auto relative text-content"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Close Button -->
+      <button
+        (click)="closeDetailsModal()"
+        class="absolute top-6 right-6 p-2 text-muted hover:text-content hover:bg-subtle rounded-xl transition-all"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Modal Content Header -->
+      <div class="mb-6">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="px-2.5 py-0.5 rounded-md bg-subtle text-content font-bold text-xs border border-border-base">
+            {{ match.year }}
+          </span>
+          <span class="text-xs text-muted font-medium">{{ match.era }}</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-medium text-content">{{ match.title }}</h2>
+      </div>
+
+      <!-- Duel Overview -->
+      <div class="grid grid-cols-2 gap-4 bg-subtle p-4 rounded-xl border border-border-base mb-6">
+        <div>
+          <span class="text-xs text-muted block mb-1">Champion / Defender</span>
+          <div class="font-semibold text-content text-base">{{ match.champion }}</div>
+        </div>
+        <div>
+          <span class="text-xs text-muted block mb-1">Challenger</span>
+          <div class="font-semibold text-content text-base">{{ match.challenger }}</div>
+        </div>
+        <div class="pt-2 border-t border-border-base/60">
+          <span class="text-xs text-muted block mb-1">Match Winner</span>
+          <div class="font-bold text-emerald-600 dark:text-emerald-400 text-base">{{ match.winner }}</div>
+        </div>
+        <div class="pt-2 border-t border-border-base/60">
+          <span class="text-xs text-muted block mb-1">Final Score</span>
+          <div class="font-bold text-content text-base">{{ match.score }}</div>
+        </div>
+      </div>
+
+      <!-- Match Metadata -->
+      <div class="space-y-2 text-sm text-muted mb-6">
+        <div class="flex justify-between border-b border-border-base/40 pb-2">
+          <span class="font-medium text-content">Format:</span>
+          <span>{{ match.format }}</span>
+        </div>
+        <div class="flex justify-between border-b border-border-base/40 pb-2">
+          <span class="font-medium text-content">Venue / Location:</span>
+          <span>{{ match.location }}</span>
+        </div>
+      </div>
+
+      <!-- Summary Description -->
+      <div class="mb-6">
+        <h3 class="text-sm font-semibold text-content uppercase tracking-wider mb-2">Match Historical Overview</h3>
+        <p class="text-sm text-muted leading-relaxed">
+          {{ match.description }}
+        </p>
+      </div>
+
+      <!-- Key Highlights -->
+      @if (match.keyHighlights && match.keyHighlights.length > 0) {
+        <div class="mb-8">
+          <h3 class="text-sm font-semibold text-content uppercase tracking-wider mb-3">Key Highlights</h3>
+          <ul class="space-y-2">
+            @for (item of match.keyHighlights; track item) {
+              <li class="flex items-start gap-2.5 text-sm text-muted">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+                <span>{{ item }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Modal Footer Action -->
+      <div class="flex items-center justify-end gap-3 pt-4 border-t border-border-base">
+        <button
+          (click)="closeDetailsModal()"
+          class="px-4 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all"
+        >
+          Close
+        </button>
+        <button
+          (click)="openStudy(match)"
+          class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all flex items-center gap-2"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
+          </svg>
+          Open Interactive Study
+        </button>
+      </div>
+    </div>
+  </div>
+}

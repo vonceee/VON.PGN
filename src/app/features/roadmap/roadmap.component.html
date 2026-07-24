@@ -15,7 +15,7 @@
     <!-- Skeleton Loading -->
     @else if (isLoading()) {
     <div class="flex-1 flex items-center justify-center">
-      
+
     </div>
     } @else if (allCourses().length === 0) {
     <div class="flex-1 flex items-center justify-center">
@@ -29,7 +29,7 @@
           <button type="button" (click)="selectCourse(course.id)"
             class="flex items-center gap-3 w-full text-left rounded-lg px-3 py-2    ">
             <div class="flex-1 min-w-0">
-              <span class=" font-normal mr-1.5">Learn</span>
+              <span class=" mr-1.5">Learn</span>
               <span class="font-semibold text-md truncate">{{ course.title }}</span>
             </div>
           </button>

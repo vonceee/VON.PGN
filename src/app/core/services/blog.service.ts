@@ -1,7 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { MONIKER_BLOGS_DATA } from '../data/moniker-blogs.data';
 
 export interface BlogGame {
   id?: number;
@@ -26,6 +28,7 @@ export interface Blog {
     name: string;
     bio?: string;
   };
+  cover_image?: string;
   games?: BlogGame[];
 }
 
@@ -37,7 +40,31 @@ export class BlogService {
   private apiUrl = environment.apiUrl;
 
   getBlogs(page = 1): Observable<any> {
-    return this.http.get(`${this.apiUrl}/blogs?page=${page}`);
+    const hardcodedList = Object.values(MONIKER_BLOGS_DATA);
+
+    return this.http.get<any>(`${this.apiUrl}/blogs?page=${page}`).pipe(
+      map((res) => {
+        const apiBlogs = res?.data || [];
+        // Prevent duplicates by slug
+        const apiSlugs = new Set(apiBlogs.map((b: Blog) => b.slug));
+        const missingHardcoded = hardcodedList.filter((b) => !apiSlugs.has(b.slug));
+
+        return {
+          ...res,
+          data: [...apiBlogs, ...missingHardcoded],
+        };
+      }),
+      catchError(() => {
+        // If API fails, return hardcoded moniker blogs feed
+        return of({
+          data: hardcodedList,
+          current_page: 1,
+          last_page: 1,
+          prev_page_url: null,
+          next_page_url: null,
+        });
+      })
+    );
   }
 
   getMyBlogs(page = 1): Observable<any> {
@@ -45,7 +72,17 @@ export class BlogService {
   }
 
   getBlog(slug: string): Observable<{ data: Blog }> {
-    return this.http.get<{ data: Blog }>(`${this.apiUrl}/blogs/${slug}`);
+    // Check hardcoded moniker blogs dictionary first
+    if (MONIKER_BLOGS_DATA[slug]) {
+      return of({ data: MONIKER_BLOGS_DATA[slug] });
+    }
+
+    return this.http.get<{ data: Blog }>(`${this.apiUrl}/blogs/${slug}`).pipe(
+      catchError((err) => {
+        console.error('Error fetching blog from API:', err);
+        throw err;
+      })
+    );
   }
 
   createBlog(data: {

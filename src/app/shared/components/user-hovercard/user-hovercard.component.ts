@@ -15,7 +15,7 @@ import { heroPuzzlePiece } from '@ng-icons/heroicons/outline';
     })
   ],
   template: `
-    <div class="ui-panel p-4 w-80 overflow-hidden zoom-in">
+    <div class="p-4 w-80 overflow-hidden zoom-in">
       @if (user()) {
         <!-- Header -->
         <div class="flex items-start justify-between mb-4">

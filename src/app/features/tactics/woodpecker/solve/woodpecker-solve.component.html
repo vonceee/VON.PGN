@@ -3,7 +3,7 @@
 
     @if (isLoading()) {
     <div class="flex-1 flex items-center justify-center">
-      
+
     </div>
     } @else if (isFinished()) {
     <!-- Session Finished Screen -->
@@ -83,7 +83,7 @@
           <div class="text-right">
             <span class="text-xs text-muted block mb-0.5">Puzzle Index</span>
             <span class="text-2xl font-medium">
-              {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-muted text-sm/6 font-normal">/
+              {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-muted text-sm/6">/
                 {{ session()?.total_puzzles }}</span>
             </span>
           </div>

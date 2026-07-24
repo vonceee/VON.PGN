@@ -1,133 +1,269 @@
-<div class="w-full flex flex-col relative overflow-x-hidden">
-  <section class="w-full py-10 md:py-24 px-4 md:px-16 relative overflow-hidden">
-    <div class="relative z-10 flex flex-col md:flex-row items-center gap-12 md:gap-16 mx-auto">
-      <!-- Left: Copy & Search -->
-      <div class="flex-1 text-left">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4">Chess Sanctum</h1>
-        <p class="text-muted text-lg md:text-xl max-w-md mb-6 md:mb-10">
-          is a minimalist, data-driven toolkit designed to optimize your chess game.
-        </p>
+<div class="w-full min-h-screen bg-main text-content relative py-8 px-4 md:px-12 lg:px-16 max-w-7xl mx-auto">
+  <!-- Top Header & Category Filter Tabs -->
+  <header class="mb-8 md:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <!-- Category Filter Tabs -->
+    <div
+      class="inline-flex items-center p-1 bg-subtle border border-border-base rounded-full text-xs font-medium self-start md:self-auto shrink-0">
+      <button type="button" (click)="activeCategory.set('all')"
+        [class]="activeCategory() === 'all' ? 'bg-white text-content shadow-xs font-semibold' : 'text-muted hover:text-content'"
+        class="px-4 py-2 rounded-full transition-all cursor-pointer">
+        All
+      </button>
+      <button type="button" (click)="activeCategory.set('openings')"
+        [class]="activeCategory() === 'openings' ? 'bg-white text-content shadow-xs font-semibold' : 'text-muted hover:text-content'"
+        class="px-4 py-2 rounded-full transition-all cursor-pointer">
+        Openings
+      </button>
+      <button type="button" (click)="activeCategory.set('tactics')"
+        [class]="activeCategory() === 'tactics' ? 'bg-white text-content shadow-xs font-semibold' : 'text-muted hover:text-content'"
+        class="px-4 py-2 rounded-full transition-all cursor-pointer">
+        Tactics
+      </button>
+      <button type="button" (click)="activeCategory.set('analysis')"
+        [class]="activeCategory() === 'analysis' ? 'bg-white text-content shadow-xs font-semibold' : 'text-muted hover:text-content'"
+        class="px-4 py-2 rounded-full transition-all cursor-pointer">
+        Analysis
+      </button>
+      <button type="button" (click)="activeCategory.set('tournaments')"
+        [class]="activeCategory() === 'tournaments' ? 'bg-white text-content shadow-xs font-semibold' : 'text-muted hover:text-content'"
+        class="px-4 py-2 rounded-full transition-all cursor-pointer">
+        Tournaments
+      </button>
+    </div>
+  </header>
 
-        <!-- Search Bar -->
-        <div class="hidden md:block relative w-full max-w-lg mb-4">
-          <div class="flex items-center px-4 py-3 md:px-5 md:py-4 bg-white border border-border-base rounded-4xl">
-            <ng-icon name="heroMagnifyingGlass" class="w-5 h-5 text-muted shrink-0"></ng-icon>
-            <input type="text" [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)"
-              (keydown.enter)="onSearch()" placeholder="Search tutorials, e.g. Sicilian Defense"
-              class="flex-1 mx-4 bg-transparent outline-none placeholder-gray-400 text-base" />
-          </div>
-
-          @if (searchResults().length > 0) {
+  <!-- Google AI Studio Style Workbench Feature Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+    <!-- Card 1: Opening Repertoire -->
+    @if (activeCategory() === 'all' || activeCategory() === 'openings') {
+    <div routerLink="/study" [queryParams]="{ category: 'opening_repertoire' }"
+      class="bg-white border border-border-base rounded-2xl md:rounded-3xl p-6 md:p-7 hover:border-slate-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-56 md:h-64 group">
+      <div>
+        <div class="flex items-center justify-between mb-4">
           <div
-            class="absolute top-full left-0 right-0 mt-2 bg-white border border-border-base rounded-4xl max-h-72 overflow-y-auto z-50 text-left">
-            @for (course of searchResults(); track course.id) {
-            <div (click)="navigateToCourse(course.id)"
-              class="px-6 py-3 cursor-pointer hover:bg-surface border-b border-border-base last:border-0 transition-colors">
-              <div class="font-semibold">{{ course.title }}</div>
-              <div class="text-sm/6 text-muted">{{ course.description }}</div>
-            </div>
-            }
+            class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center shrink-0">
+            <ng-icon name="heroBookOpen" class="w-5 h-5"></ng-icon>
           </div>
-          }
+          <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-subtle text-muted">Featured</span>
         </div>
-        <p class="hidden md:block text-muted text-center text-sm/6 md:text-md max-w-lg ">
-          not sure where to start? check our
-          <a appLink routerLink="/roadmap" class="text-accent hover:underline">
-            learning roadmap
-          </a>
+        <h3 class="text-xl font-medium mb-2 group-hover:text-accent transition-colors">Opening Theory</h3>
+        <p class="text-muted text-sm leading-relaxed">
+          Master grandmaster repertoire trees, interactive variations, and opening line drills.
         </p>
       </div>
+      <div class="flex items-center text-xs font-semibold pt-4 border-t border-border-base/50">
+        <span>Explore openings →</span>
+      </div>
+    </div>
+    }
 
-      <!-- Right: Live chess board — Sicilian Najdorf opening replay -->
-      <div class="flex-1 flex items-center justify-center w-full max-w-[320px] md:max-w-sm lg:max-w-md mx-auto">
-        <div class="relative w-full max-w-[320px] md:max-w-[420px]">
-          <div class="board-container-parent w-full aspect-square overflow-hidden">
-            <app-chess-board [fen]="heroFen()" [lastMove]="heroLastMove()" [interactive]="false" [resizable]="false"
-              [hideCoordinates]="true" [fluid]="true" />
+    <!-- Card 2: Tactics & Puzzles -->
+    @if (activeCategory() === 'all' || activeCategory() === 'tactics') {
+    <div routerLink="/tactics"
+      class="bg-white border border-border-base rounded-2xl md:rounded-3xl p-6 md:p-7 hover:border-slate-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-56 md:h-64 group">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200/60 flex items-center justify-center shrink-0">
+            <ng-icon name="heroPuzzlePiece" class="w-5 h-5"></ng-icon>
           </div>
+          <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-subtle text-muted">Training</span>
+        </div>
+        <h3 class="text-xl font-medium mb-2 group-hover:text-accent transition-colors">Tactics & Puzzles
+        </h3>
+        <p class="text-muted text-sm leading-relaxed">
+          Build pattern recognition with rated puzzles, themed drills, and Woodpecker spaced repetition.
+        </p>
+      </div>
+      <div class="flex items-center text-xs font-semibold pt-4 border-t border-border-base/50">
+        <span>Start tactics →</span>
+      </div>
+    </div>
+    }
+
+    <!-- Card 3: Guess the Game -->
+    @if (activeCategory() === 'all' || activeCategory() === 'tactics') {
+    <div routerLink="/tactics/guess"
+      class="bg-white border border-border-base rounded-2xl md:rounded-3xl p-6 md:p-7 hover:border-slate-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-56 md:h-64 group">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 border border-purple-200/60 flex items-center justify-center shrink-0">
+            <ng-icon name="heroAcademicCap" class="w-5 h-5"></ng-icon>
+          </div>
+          <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-purple-100/60 text-purple-700">Daily</span>
+        </div>
+        <h3 class="text-xl font-medium mb-2 group-hover:text-accent transition-colors">Guess the Game</h3>
+        <p class="text-muted text-sm leading-relaxed">
+          Evaluate positional dynamics and predict winning moves from historical master clashes.
+        </p>
+      </div>
+      <div class="flex items-center text-xs font-semibold pt-4 border-t border-border-base/50">
+        <span>Play daily challenge →</span>
+      </div>
+    </div>
+    }
+
+    <!-- Card 4: World Championships -->
+    @if (activeCategory() === 'all' || activeCategory() === 'analysis') {
+    <div routerLink="/world-championships"
+      class="bg-white border border-border-base rounded-2xl md:rounded-3xl p-6 md:p-7 hover:border-slate-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-56 md:h-64 group">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60 flex items-center justify-center shrink-0">
+            <ng-icon name="heroCheckBadge" class="w-5 h-5"></ng-icon>
+          </div>
+          <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-subtle text-muted">Ratings</span>
+        </div>
+        <h3 class="text-xl font-medium mb-2 group-hover:text-accent transition-colors">World Championships
+        </h3>
+        <p class="text-muted text-sm leading-relaxed">
+          Analyze historical rating trajectories, world championship matches, and grandmaster monikers.
+        </p>
+      </div>
+      <div class="flex items-center text-xs font-semibold pt-4 border-t border-border-base/50">
+        <span>View rankings & matches →</span>
+      </div>
+    </div>
+    }
+
+    <!-- Card 5: Swiss & Arena Tournaments -->
+    @if (activeCategory() === 'all' || activeCategory() === 'tournaments') {
+    <div routerLink="/events"
+      class="bg-white border border-border-base rounded-2xl md:rounded-3xl p-6 md:p-7 hover:border-slate-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-56 md:h-64 group">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 border border-rose-200/60 flex items-center justify-center shrink-0">
+            <ng-icon name="heroTrophy" class="w-5 h-5"></ng-icon>
+          </div>
+          <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-subtle text-muted">Arena</span>
+        </div>
+        <h3 class="text-xl font-medium mb-2 group-hover:text-accent transition-colors">Tournaments</h3>
+        <p class="text-muted text-sm leading-relaxed">
+          Compete in live Swiss or Arena tourneys, view real-time standings, and analyze arena games.
+        </p>
+      </div>
+      <div class="flex items-center text-xs font-semibold pt-4 border-t border-border-base/50">
+        <span>Browse tournaments →</span>
+      </div>
+    </div>
+    }
+
+    <!-- Card 6: Interactive Study Board -->
+    @if (activeCategory() === 'all' || activeCategory() === 'analysis') {
+    <div routerLink="/study"
+      class="bg-white border border-border-base rounded-2xl md:rounded-3xl p-6 md:p-7 hover:border-slate-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between h-56 md:h-64 group">
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <div
+            class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-200/60 flex items-center justify-center shrink-0">
+            <ng-icon name="heroCommandLine" class="w-5 h-5"></ng-icon>
+          </div>
+          <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-subtle text-muted">Study</span>
+        </div>
+        <h3 class="text-xl font-medium mb-2 group-hover:text-accent transition-colors">Study</h3>
+        <p class="text-muted text-sm leading-relaxed">
+          Create collaborative chess studies, analyze move trees, paste PGN logs, and train repertoires.
+        </p>
+      </div>
+      <div class="flex items-center text-xs font-semibold pt-4 border-t border-border-base/50">
+        <span>Explore studies →</span>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Primary Action Pill Button -->
+  <div class="mb-14 flex items-center gap-4">
+    <a routerLink="/study"
+      class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-content text-white font-medium text-sm hover:bg-slate-800 transition-colors shadow-xs">
+      <span>Start studying</span>
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      </svg>
+    </a>
+    <a routerLink="/tactics"
+      class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-border-base text-content font-medium text-sm hover:bg-subtle transition-colors">
+      <span>Tactics training</span>
+    </a>
+  </div>
+
+  <!-- Live Board Preview Section (Subtle Utility Panel) -->
+  <div class="bg-white border border-border-base rounded-3xl p-6 md:p-8 mb-12 shadow-xs">
+    <div class="flex flex-col md:flex-row items-center gap-8">
+      <div class="w-full md:w-1/2 max-w-[340px]">
+        <div
+          class="board-container-parent aspect-square rounded-2xl overflow-hidden border border-border-base bg-subtle">
+          <app-chess-board [fen]="heroFen()" [lastMove]="heroLastMove()" [interactive]="false" [resizable]="false"
+            [hideCoordinates]="true" [fluid]="true" />
+        </div>
+      </div>
+      <div class="flex-1 text-left">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium mb-3">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Live Board Stream</span>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-medium mb-2">Interactive Position Viewer</h2>
+        <p class="text-muted text-sm md:text-base mb-6">
+          Watch positions replay in real-time or load custom opening studies from your personal database.
+        </p>
+        <div class="flex items-center gap-3">
+          <a routerLink="/study" class="text-accent text-sm font-medium hover:underline inline-flex items-center gap-1">
+            <span>Browse opening studies</span>
+            <span>→</span>
+          </a>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <section class="w-full py-10 md:py-24 px-4 md:px-16">
-    <div class="mx-auto">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
-        <header>
-          <h2 class="text-3xl md:text-5xl mb-4">Explore openings</h2>
-          <p class="text-muted text-lg max-w-2xl">Learn the theory behind the most popular chess openings.</p>
-        </header>
-        <app-arrow-link link="/study" [queryParams]="{ category: 'opening_repertoire' }"
-          text="Browse all openings"></app-arrow-link>
+  <!-- Google AI Studio Style Bottom Action Bar & Quick Search -->
+  <div class="w-full bg-white border border-border-base rounded-3xl p-5 md:p-6 shadow-xs">
+    <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-3">Quick Launcher & Search</div>
+
+    <div class="relative w-full mb-4">
+      <div
+        class="flex items-center px-4 py-3 bg-subtle border border-border-base rounded-2xl focus-within:bg-white focus-within:border-accent transition-all">
+        <ng-icon name="heroMagnifyingGlass" class="w-5 h-5 text-muted shrink-0"></ng-icon>
+        <input type="text" [value]="searchQuery()" (input)="searchQuery.set($any($event.target).value)"
+          (keydown.enter)="onSearch()" placeholder="Search openings, FEN positions, tutorials, e.g. Sicilian Najdorf..."
+          class="flex-1 mx-3 bg-transparent outline-none text-content placeholder-slate-400 text-sm md:text-base" />
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 md:mb-10">
-        @for (study of studiesList(); track study.id) {
-        <div [routerLink]="['/study', study.id]"
-          class="home-opening-card group bg-white border border-border-base rounded-2xl overflow-hidden cursor-pointer">
-          <!-- Mini chess board thumbnail -->
-          <div class="board-container-parent aspect-square bg-surface relative overflow-hidden pointer-events-none">
-            <div class="w-full h-full">
-              <app-chess-board [fen]="getStudyFrame(study).fen" [lastMove]="getStudyFrame(study).lastMove ?? undefined"
-                [interactive]="false" [resizable]="false" [hideCoordinates]="true" [fluid]="true" />
-            </div>
-          </div>
-          <!-- Content -->
-          <div class="p-3 md:p-4 flex items-center justify-between">
-            <div class="min-w-0 flex-1">
-              <h4 class="font-semibold text-sm/6 md:text-base truncate">{{ study.name }}</h4>
-              <p class="text-xs md:text-xs text-muted mt-0.5 truncate">by {{ study.owner?.name || 'Me' }}</p>
-            </div>
-            <svg class="hidden sm:block w-4 h-4 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </div>
+      @if (searchResults().length > 0) {
+      <div
+        class="absolute bottom-full left-0 right-0 mb-2 bg-white border border-border-base rounded-2xl max-h-60 overflow-y-auto z-50 text-left shadow-lg">
+        @for (course of searchResults(); track course.id) {
+        <div (click)="navigateToCourse(course.id)"
+          class="px-5 py-3 cursor-pointer hover:bg-subtle border-b border-border-base last:border-0 transition-colors">
+          <div class="font-medium text-sm text-content">{{ course.title }}</div>
+          <div class="text-xs text-muted">{{ course.description }}</div>
         </div>
         }
       </div>
+      }
     </div>
-  </section>
 
-  <section class="w-full py-10 md:py-24 px-4 md:px-16">
-    <div class="mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-16">
-      <!-- Left: Tactics Preview Board -->
-      <div class="flex-1 relative w-full aspect-square max-w-[460px] mx-auto md:mx-0">
-        <div
-          class="board-container-parent aspect-square bg-surface relative overflow-hidden pointer-events-none rounded-4xl border border-border-base">
-          <div class="w-full h-full">
-            <app-chess-board [fen]="tacticsPreviewFen()" [interactive]="false" [resizable]="false"
-              [hideCoordinates]="true" [fluid]="true" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Right: Copy -->
-      <div class="flex-1 text-left">
-        <h2 class="text-3xl md:text-5xl mb-4">Tactics training</h2>
-        <p class="text-muted text-lg max-w-md mb-6">
-          Develop pattern recognition with thousands of puzzles curated for your level.
-        </p>
-
-        <div class="hidden md:block space-y-3 mb-10">
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-accent shrink-0"></div>
-            <span class="text-md text-muted">Casual puzzle mode — play at your own pace</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-accent shrink-0"></div>
-            <span class="text-md text-muted">Themed training — pins, forks, skewers &amp; more</span>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="w-2 h-2 rounded-full bg-accent shrink-0"></div>
-            <span class="text-md text-muted">Woodpecker method — spaced repetition system</span>
-          </div>
-        </div>
-
-        <app-arrow-link link="/tactics" text="Start training"></app-arrow-link>
-      </div>
+    <div class="flex items-center flex-wrap gap-2">
+      <span class="text-xs text-muted mr-1 font-medium">Quick links:</span>
+      <a routerLink="/study"
+        class="px-3 py-1.5 rounded-full bg-subtle hover:bg-slate-200/80 border border-border-base text-xs font-medium text-content transition-colors">📖
+        Openings</a>
+      <a routerLink="/tactics"
+        class="px-3 py-1.5 rounded-full bg-subtle hover:bg-slate-200/80 border border-border-base text-xs font-medium text-content transition-colors">🎯
+        Puzzles</a>
+      <a routerLink="/tactics/guess"
+        class="px-3 py-1.5 rounded-full bg-subtle hover:bg-slate-200/80 border border-border-base text-xs font-medium text-content transition-colors">🧩
+        Guess Game</a>
+      <a routerLink="/events"
+        class="px-3 py-1.5 rounded-full bg-subtle hover:bg-slate-200/80 border border-border-base text-xs font-medium text-content transition-colors">🏆
+        Tournaments</a>
+      <a routerLink="/world-championships"
+        class="px-3 py-1.5 rounded-full bg-subtle hover:bg-slate-200/80 border border-border-base text-xs font-medium text-content transition-colors">👑
+        World Championships</a>
     </div>
-  </section>
-
-
-
+  </div>
 </div>

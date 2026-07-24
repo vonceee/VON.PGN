@@ -21,148 +21,8 @@ interface ContentBlock {
     ButtonComponent,
     BlogGameViewerComponent,
   ],
-  template: `
-    <div class="max-w-4xl mx-auto px-4 py-8">
-      
-      <!-- Back to Blogs -->
-      <div class="mb-8">
-        <a routerLink="/blog" class="text-sm/6 font-medium text-muted hover:text-content hover:underline flex items-center gap-1">
-          ← Back to blogs
-        </a>
-      </div>
-
-      <!-- Loading State -->
-      <div *ngIf="isLoading()" class="min-h-96 flex items-center justify-center">
-      </div>
-
-      <!-- Error State -->
-      <div *ngIf="!isLoading() && errorMsg()" class="ui-panel bg-main rounded-xl border border-red-200 p-8 text-center my-8">
-        <h3 class="text-lg font-medium text-red-500 mb-2">Error loading post</h3>
-        <p class="text-muted text-sm/6 mb-4">{{ errorMsg() }}</p>
-        <a routerLink="/blog" appButton variant="outline">Back to blogs</a>
-      </div>
-
-      <!-- Post Detail View -->
-      <article *ngIf="!isLoading() && blog() as post" class="space-y-8">
-        
-        <!-- Standardized Page Header (Inline) -->
-        <header class="mb-8 pb-6 border-b border-border-base">
-          <div class="flex items-center gap-2 mb-3">
-            <span
-              *ngIf="post.status === 'draft'"
-              class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800"
-            >
-              Draft
-            </span>
-            <span class="text-sm/6 text-muted">
-              {{ post.published_at ? formatDate(post.published_at) : 'Not published' }}
-            </span>
-          </div>
-
-          <h1 class="text-4xl md:text-5xl font-normal leading-tight mb-4">
-            {{ post.title }}
-          </h1>
-
-          <div class="flex flex-wrap items-center justify-between gap-4 mt-6">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center font-semibold border border-border-base">
-                {{ post.author.name.charAt(0) }}
-              </div>
-              <div>
-                <p class="text-sm/6 font-medium">{{ post.author.name }}</p>
-                <p class="text-xs text-muted">Author</p>
-              </div>
-            </div>
-            
-            <!-- Admin Edit Controls -->
-            <div *ngIf="isAdmin()" class="flex items-center gap-2">
-              <a [routerLink]="['/blog', post.slug, 'edit']" appButton variant="outline" class="text-sm/6">
-                Edit post
-              </a>
-              <button (click)="deletePost(post.id!)" appButton variant="outline" class="text-sm/6 border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300">
-                Delete
-              </button>
-            </div>
-          </div>
-        </header>
-
-        <!-- Summary Banner -->
-        <div *ngIf="post.summary" class="p-6 bg-subtle/20 border-l-4 border-accent rounded-r-xl text-muted italic leading-relaxed text-lg">
-          {{ post.summary }}
-        </div>
-
-        <!-- Render Content Blocks (Inline Games and Text) -->
-        <div class="prose prose-slate max-w-none text-base md:text-lg space-y-6">
-          @for (block of blocks(); track $index) {
-            @if (block.type === 'text') {
-              <div [innerHTML]="parseMarkdown(block.content || '')" class="markdown-body"></div>
-            } @else if (block.type === 'game' && post.games && post.games[block.index!]; as g) {
-              <app-blog-game-viewer [pgn]="g.pgn" [title]="g.title || ''"></app-blog-game-viewer>
-            }
-          }
-        </div>
-
-        <!-- Remaining/Non-Inline Games Section -->
-        <section *ngIf="remainingGames().length > 0" class="mt-12 pt-8 border-t border-border-base">
-          <h2 class="text-2xl font-normal mb-6">Interactive games</h2>
-          
-          <div class="space-y-8">
-            <div *ngFor="let g of remainingGames()" class="ui-panel bg-main rounded-xl border border-border-base p-4">
-              <app-blog-game-viewer [pgn]="g.pgn" [title]="g.title || ''"></app-blog-game-viewer>
-            </div>
-          </div>
-        </section>
-
-        <!-- Author Bio Footer -->
-        <footer *ngIf="post.author.bio" class="mt-16 p-8 rounded-2xl bg-subtle/25 border border-border-base flex flex-col md:flex-row gap-6 items-start">
-          <div class="w-16 h-16 rounded-full bg-subtle flex items-center justify-center font-medium text-xl border border-border-base shrink-0">
-            {{ post.author.name.charAt(0) }}
-          </div>
-          <div>
-            <h4 class="text-lg font-semibold mb-2">About {{ post.author.name }}</h4>
-            <p class="text-muted text-sm/6 leading-relaxed">{{ post.author.bio }}</p>
-          </div>
-        </footer>
-
-      </article>
-
-    </div>
-  `,
-  styles: [
-    `
-      ::ng-deep .markdown-body {
-        p {
-          margin-bottom: 1.5rem;
-          line-height: 1.75;
-        }
-        ul, ol {
-          margin-bottom: 1.5rem;
-          padding-left: 1.5rem;
-        }
-        li {
-          list-style-type: disc;
-          margin-bottom: 0.5rem;
-        }
-        a {
-          color: var(--color-accent);
-          text-decoration: underline;
-          text-underline-offset: 4px;
-        }
-        strong {
-          font-weight: 600;
-        }
-        h1, h2, h3, h4 {
-          color: var(--color-content);
-          font-weight: 500;
-          margin-top: 2rem;
-          margin-bottom: 1rem;
-        }
-        h1 { font-size: 1.875rem; }
-        h2 { font-size: 1.5rem; }
-        h3 { font-size: 1.25rem; }
-      }
-    `,
-  ],
+  templateUrl: './blog-detail.component.html',
+  styles: []
 })
 export class BlogDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -173,6 +33,7 @@ export class BlogDetailComponent implements OnInit {
   blog = signal<Blog | null>(null);
   isLoading = signal(true);
   errorMsg = signal<string | null>(null);
+  fromSource = signal<string | null>(null);
 
   isAdmin = computed(() => this.authService.isAdmin());
 
@@ -200,6 +61,10 @@ export class BlogDetailComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.route.queryParamMap.subscribe(queryParams => {
+      this.fromSource.set(queryParams.get('from'));
+    });
+
     this.route.paramMap.subscribe(params => {
       const slug = params.get('slug');
       if (slug) {

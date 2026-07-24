@@ -33,7 +33,7 @@ interface EditorGame {
       <!-- Standardized Page Header (Inline) -->
       <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div class="flex-1">
-          <h1 class="text-4xl md:text-5xl mb-2 font-normal">
+          <h1 class="text-4xl md:text-5xl mb-2">
             {{ isEditMode() ? 'Edit blog post' : 'Create new blog post' }}
           </h1>
           <p class="text-muted text-lg">
@@ -50,7 +50,7 @@ interface EditorGame {
         
         <!-- Left Side: Editor Form -->
         <div class="space-y-6">
-          <div class="ui-panel bg-main rounded-xl border border-border-base p-6 md:p-8 space-y-6">
+          <div class="bg-main rounded-xl border border-border-base p-6 md:p-8 space-y-6">
             
             <!-- Title -->
             <div class="flex flex-col gap-2">
@@ -109,7 +109,7 @@ interface EditorGame {
                 [(ngModel)]="content"
                 placeholder="Write your article here. Use [game:0] to insert your first game inline..."
                 rows="16"
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none focus:border-accent text-base font-normal leading-relaxed resize-y min-h-[350px]"
+                class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none focus:border-accent text-base leading-relaxed resize-y min-h-[350px]"
               ></textarea>
             </div>
             
@@ -153,7 +153,7 @@ interface EditorGame {
         <div class="space-y-6">
           
           <!-- PGN Games Manager Card -->
-          <div class="ui-panel bg-main rounded-xl border border-border-base p-6 space-y-4">
+          <div class="bg-main rounded-xl border border-border-base p-6 space-y-4">
             <h3 class="text-lg font-semibold border-b border-border-base pb-2">PGN games manager</h3>
             
             <!-- Game adding inputs -->
@@ -217,7 +217,7 @@ interface EditorGame {
           </div>
 
           <!-- Live Preview Card -->
-          <div class="ui-panel bg-main rounded-xl border border-border-base p-6 space-y-4">
+          <div class="bg-main rounded-xl border border-border-base p-6 space-y-4">
             <h3 class="text-lg font-semibold border-b border-border-base pb-2">Live preview</h3>
             
             <div class="space-y-4">

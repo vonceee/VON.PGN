@@ -1,0 +1,56 @@
+<div
+  class="bg-main rounded-xl border border-border-base overflow-hidden flex flex-col md:grid md:grid-cols-[400px_1fr] md:h-[540px] max-w-4xl mx-auto my-6">
+
+  <!-- Left Column: Chess Board & Bottom Controls -->
+  <div
+    class="flex flex-col justify-between p-5 border-b md:border-b-0 md:border-r border-border-base bg-subtle/10 h-full min-h-0">
+    <!-- Game Title / Header -->
+    <div class="mb-2">
+      <h3 class="text-base md:text-lg font-semibold truncate" [title]="gameTitle()">{{ gameTitle() }}</h3>
+      <p class="text-xs text-muted truncate" [title]="gameDetails()">{{ gameDetails() }}</p>
+    </div>
+
+    <!-- Chessboard container -->
+    <div class="flex-1 flex items-center justify-center min-h-0 py-2 my-auto">
+      <div class="w-full max-w-[320px] aspect-square flex items-center justify-center relative">
+        <app-chess-board [fen]="currentFen()" [orientation]="boardOrientation()" [interactive]="false"
+          [resizable]="false" [fluid]="true" [hideCoordinates]="false"></app-chess-board>
+      </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="flex items-center justify-center gap-2 mt-2">
+      <button appButton variant="ghost" (click)="goToFirst()" [disabled]="currentPly() === 0"
+        class="p-2 min-w-9 rounded-full" title="First Move">
+        <ng-icon name="heroChevronDoubleLeft" class="text-md"></ng-icon>
+      </button>
+
+      <button appButton variant="ghost" (click)="prevMove()" [disabled]="currentPly() === 0"
+        class="p-2 min-w-9 rounded-full" title="Previous Move">
+        <ng-icon name="heroChevronLeft" class="text-md"></ng-icon>
+      </button>
+
+      <button appButton variant="ghost" (click)="flipBoard()" class="p-2 min-w-9 rounded-full" title="Flip Board">
+        <ng-icon name="heroArrowsRightLeft" class="text-md"></ng-icon>
+      </button>
+
+      <button appButton variant="ghost" (click)="nextMove()" [disabled]="currentPly() === maxPly()"
+        class="p-2 min-w-9 rounded-full" title="Next Move">
+        <ng-icon name="heroChevronRight" class="text-md"></ng-icon>
+      </button>
+
+      <button appButton variant="ghost" (click)="goToLast()" [disabled]="currentPly() === maxPly()"
+        class="p-2 min-w-9 rounded-full" title="Last Move">
+        <ng-icon name="heroChevronDoubleRight" class="text-md"></ng-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Right Column: Move Notation / List -->
+  <div class="flex flex-col h-full overflow-hidden bg-main min-h-0">
+    <div class="flex-1 overflow-y-auto p-2">
+      <app-move-notation [moveTree]="moveTree()" [currentFen]="currentFen()" [currentPly]="currentPly()"
+        [initialPly]="0" [layout]="'grid'" (navigate)="onNavigateToPly($event)"></app-move-notation>
+    </div>
+  </div>
+</div>

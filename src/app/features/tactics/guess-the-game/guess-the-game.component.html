@@ -21,7 +21,7 @@
 
       <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
       @if (isThreeColumn()) {
-      <div class="bg-main rounded-xl p-6 xl:self-start flex flex-col gap-6 shrink-0 sync-board-height overflow-hidden">
+      <div class="bg-main rounded-xl p-6 xl:self-start flex flex-col gap-6 shrink-0 overflow-hidden" [style.maxHeight.px]="boardSize()">
 
         <!-- Upper part: Info rows -->
         <div class="flex-1 flex flex-col gap-4 pr-1 min-h-0 select-none overflow-hidden">
@@ -107,17 +107,25 @@
         <!-- Lower part: Controls & Actions -->
         <div class="shrink-0">
           @if (!isGameOver()) {
-          <div class="flex gap-2">
+          <div class="flex flex-col gap-2">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()"
               placeholder="e.g Magnus vs Hikaru"
               class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-muted"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
-            <button (click)="revealFullMatchup()" title="Reveal Answer"
-              class="p-2 rounded-xl transition-colors cursor-pointer text-rose-500 hover:bg-rose-50 flex items-center justify-center">
-              <ng-icon name="heroEye" class="text-lg"></ng-icon>
-            </button>
+            <div class="flex gap-2 pt-2">
+              <button
+                class="flex-1 whitespace-nowrap group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-content text-main rounded-full"
+                (click)="submitGuess()">
+                Submit
+              </button>
+              <button
+                class="flex-1 group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-surface rounded-full hover:bg-subtle border border-border-base"
+                (click)="revealFullMatchup()">
+                Reveal
+              </button>
+            </div>
           </div>
           } @else {
           <div class="flex gap-2">
@@ -254,16 +262,20 @@
 
           <!-- Controls or Next game button -->
           @if (!isGameOver()) {
-          <div class="flex gap-2">
+          <div class="flex flex-col gap-2">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()" placeholder="Type answer..."
-              class="flex-1 px-4 py-2 bg-main border rounded-xl outline-none text-sm/6 font-medium transition-all duration-200"
+              class="w-full px-4 py-2 bg-main border rounded-xl outline-none text-sm/6 font-medium transition-all duration-200"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
-            <button (click)="revealFullMatchup()" title="Reveal Answer"
-              class="p-2 rounded-xl transition-colors cursor-pointer text-rose-500 hover:bg-rose-50 flex items-center justify-center">
-              <ng-icon name="heroEye" class="text-lg"></ng-icon>
-            </button>
+            <div class="flex gap-2">
+              <button appButton variant="primary" class="flex-1" (click)="submitGuess()">
+                Submit
+              </button>
+              <button appButton variant="outline" class="flex-1" (click)="revealFullMatchup()">
+                Reveal Answer
+              </button>
+            </div>
           </div>
           } @else {
           <div class="flex gap-2">

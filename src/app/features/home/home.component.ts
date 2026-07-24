@@ -7,6 +7,7 @@ import { LessonService } from '../../core/services/lesson.service';
 import { PresenceService } from '../../core/services/presence.service';
 import { StudyApiService } from '../../core/services/study-api.service';
 import { TacticsService } from '../../core/services/tactics.service';
+import { GuessTheGameService, GuessTheGameChallenge } from '../../core/services/guess-the-game.service';
 import { Study, MoveNode } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 
@@ -74,6 +75,11 @@ import {
   heroCheckCircle,
   heroUsers,
   heroClipboardDocument,
+  heroTrophy,
+  heroAcademicCap,
+  heroPuzzlePiece,
+  heroSparkles,
+  heroCommandLine,
 } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -96,6 +102,11 @@ import {
       heroCheckCircle,
       heroUsers,
       heroClipboardDocument,
+      heroTrophy,
+      heroAcademicCap,
+      heroPuzzlePiece,
+      heroSparkles,
+      heroCommandLine,
     }),
   ],
   templateUrl: './home.component.html',
@@ -107,8 +118,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   presenceService = inject(PresenceService);
   private studyApiService = inject(StudyApiService);
   private tacticsService = inject(TacticsService);
+  private guessTheGameService = inject(GuessTheGameService);
 
   tacticsPreviewFen = signal<string>('3r2k1/p4ppp/1p2pb2/1q6/8/PN2B1P1/1P2QP1P/3R2K1 b - - 0 24');
+  heroChallenge = signal<GuessTheGameChallenge | null>(null);
+
+  /** Category tab filter: 'all' | 'openings' | 'tactics' | 'analysis' | 'tournaments' */
+  activeCategory = signal<'all' | 'openings' | 'tactics' | 'analysis' | 'tournaments'>('all');
 
   // ── Animation ────────────────────────────────────────────────────────────
   /** Global tick for animations */
@@ -117,27 +133,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   /** Dynamic study openings list from backend */
   studiesList = signal<any[]>([]);
 
-  /** Dynamic hero frames derived from chapter 1 of the first Opening Repertoire study, falling back to Najdorf. */
+  /** Dynamic hero frames derived from the daily guess the game challenge, falling back to Najdorf. */
   heroFrames = computed(() => {
-    const studies = this.studiesList();
-    if (studies.length === 0) {
+    const challenge = this.heroChallenge();
+    if (!challenge) {
       return OPENING_FRAMES;
     }
-    const firstStudy = studies[0];
-    const chapters = firstStudy.chapters || [];
-    if (chapters.length === 0) {
+    const initialFen = challenge.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    
+    try {
+      const parsedTree = buildTreeFromMoves({ pgn: challenge.pgn || '' }, initialFen);
+      if (parsedTree.length === 0) {
+        return [{ fen: initialFen, lastMove: null, label: `${challenge.white_player} vs ${challenge.black_player}` }];
+      }
+      
+      return buildFramesFromMoveNodes(parsedTree, initialFen, `${challenge.white_player} vs ${challenge.black_player}`);
+    } catch (e) {
+      console.error('Failed to parse guess the game PGN for hero animation:', e);
       return OPENING_FRAMES;
     }
-    const firstChapter = chapters[0];
-    const rawMoves = firstChapter.moves || [];
-    const initialFen = firstChapter.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-    
-    const parsedTree = buildTreeFromMoves(rawMoves, initialFen);
-    if (parsedTree.length === 0) {
-      return [{ fen: initialFen, lastMove: null, label: firstChapter.name || firstStudy.name }];
-    }
-    
-    return buildFramesFromMoveNodes(parsedTree, initialFen, firstChapter.name || firstStudy.name);
   });
 
   /** FEN string fed into the hero chess board component. */
@@ -216,6 +230,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.lessonService.loadAllCourses().subscribe({
       next:  () => this.isLoading.set(false),
       error: () => this.isLoading.set(false),
+    });
+
+    // Fetch a daily challenge from guess the game to play on the hero board
+    this.guessTheGameService.getDailyChallenge().subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.heroChallenge.set(res.data);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch guess the game daily challenge for homepage:', err);
+      }
     });
 
     // Fetch a daily puzzle position to display in the Tactics Preview section
