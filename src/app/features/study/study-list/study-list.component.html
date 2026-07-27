@@ -1,15 +1,7 @@
-<div class="px-4 md:px-16 py-8">
-  <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
-    <div class="flex-1">
-      <h1 class="text-4xl md:text-5xl mb-2">Study</h1>
-      <p class="text-muted text-lg">Collaborate and analyze chess games with others.</p>
-    </div>
-
-    <div class="flex items-center gap-2">
-      @if (isLoggedIn()) {
-      <button appButton variant="primary" (click)="createNewStudy()">Create new study</button>
-      }
-    </div>
+<div #studyListContainer class="px-4 md:px-16 py-8 relative">
+  <header class="mb-6">
+    <h1 class="text-4xl md:text-5xl mb-2">Study</h1>
+    <p class="text-muted text-lg">Collaborate and analyze chess games with others.</p>
   </header>
 
   <!-- Search & Filter Bar -->
@@ -22,7 +14,7 @@
           clip-rule="evenodd" />
       </svg>
       <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search studies..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
@@ -76,12 +68,20 @@
       <option value="alphabetical">Alphabetical</option>
     </select>
     }
+
+    @if (isLoggedIn()) {
+    <button
+      class="inline-flex items-center justify-center w-11 h-11 shrink-0 rounded-xl cursor-pointer border border-border-base hover:bg-subtle"
+      (click)="createNewStudy()" title="Create study">
+      <ng-icon name="heroPlus" size="1.25rem" class="shrink-0"></ng-icon>
+    </button>
+    }
   </div>
 
   <div class="relative min-h-[400px]">
     @if (isLoading()) {
     <div class="absolute inset-0 flex items-center justify-center">
-      
+
     </div>
     } @else if (studies().length === 0) {
     <div class="flex-1 flex flex-col items-center justify-center bg-main rounded-4xl p-16 text-center">
@@ -113,7 +113,9 @@
     } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of studies(); track study.id) {
-      <div class="bg-main rounded-lg border border-border-base flex flex-col md:flex-row-reverse overflow-hidden">
+      <div (mouseenter)="onCardMouseEnter($event, study)" (mouseleave)="onCardMouseLeave()"
+        (mousemove)="onCardMouseMove($event)" [routerLink]="'/study/' + study.id"
+        class="bg-content text-white border border-white/10 rounded-xl flex flex-col md:flex-row-reverse overflow-hidden hover:border-white/30 transition-all duration-300 cursor-none group cursor-pointer">
         <!-- Chess Board Preview Container -->
         <div
           class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">
@@ -124,7 +126,7 @@
               [hideCoordinates]="true" [fluid]="true" />
             } @placeholder {
             <div class="w-full h-full flex items-center justify-center bg-subtle">
-              
+
             </div>
             }
           </div>
@@ -133,33 +135,37 @@
         <!-- Content -->
         <div class="flex-1 p-5 flex flex-col justify-between min-w-0">
           <div>
+            <div class="flex items-center gap-2 mb-3.5">
+              <ng-icon [name]="getCategoryIcon(study.category)" size="1.5rem" class="text-slate-300 shrink-0"></ng-icon>
+              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-white/10 text-slate-200">
+                {{ getCategoryLabel(study.category) }}
+              </span>
+            </div>
             <div class="flex items-start justify-between gap-2 mb-2">
-              <h2 class="text-xl font-semibold truncate" [title]="study.name">
+              <h2 class="text-xl font-semibold truncate text-white" [title]="study.name">
                 {{ study.name }}
               </h2>
             </div>
-
-            <div class="space-y-1 text-sm/6 font-medium text-muted mb-4">
-              <div class="flex items-center gap-2">
-                {{ study.chapters_count }} {{ study.chapters_count === 1 ? 'Chapter' : 'Chapters' }}
-              </div>
-
-              <div class="flex items-center gap-2">
-                <span>Created by <span class="font-semibold">{{ study.owner.name }}</span></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bottom Row -->
-          <div class="mt-4 flex items-center justify-start">
-            <a appButton variant="primary" [routerLink]="'/study/' + study.id">
-              View study
-            </a>
+            @if (study.description) {
+            <p class="text-slate-300 text-sm leading-relaxed mt-2.5 line-clamp-3" [title]="study.description">
+              {{ study.description }}
+            </p>
+            }
           </div>
         </div>
       </div>
       }
     </div>
     }
+  </div>
+
+  <!-- Custom Floating Cursor -->
+  <div [style.left.px]="cursorX()" [style.top.px]="cursorY()" [class.opacity-100]="isHoveringCard()"
+    [class.scale-100]="isHoveringCard()" [class.opacity-0]="!isHoveringCard()" [class.scale-90]="!isHoveringCard()"
+    class="pointer-events-none absolute z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-border-base rounded-full px-7 py-3.5 flex items-center gap-3 shadow-lg select-none transition-[opacity,transform] duration-200 ease-out">
+    <ng-icon [name]="getCategoryIcon(hoveredStudyCategory())" size="1.25rem" color="black"
+      class="text-black shrink-0"></ng-icon>
+    <span class="text-[16px] font-semibold text-content leading-none">{{ getCategoryLabel(hoveredStudyCategory())
+      }}</span>
   </div>
 </div>

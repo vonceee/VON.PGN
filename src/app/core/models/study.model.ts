@@ -23,6 +23,7 @@ export interface Study {
   chapters?: StudyChapter[];
   preview_fen?: string;
   preview_last_move?: string;
+  description?: string;
   created_at: string;
   updated_at: string;
 }

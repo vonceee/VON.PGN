@@ -1,5 +1,5 @@
 <!-- Message List -->
-<div #scrollContainer class="flex-1 overflow-y-auto min-h-0 p-4 rounded-lg " style="flex-basis: 0;">
+<div #scrollContainer class="flex-1 overflow-y-auto min-h-0 p-4 rounded-lg" style="flex-basis: 0;">
   @for (msg of messages(); track msg.timestamp + msg.senderId) {
   <div class="relative flex items-baseline gap-2 group">
     <span class="text-xs font-medium shrink-0">

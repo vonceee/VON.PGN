@@ -27,11 +27,15 @@
     </div>
 
     <!-- Actions -->
-    <div class="flex gap-3 px-6 pb-6">
-      <button appButton variant="outline" class="flex-1" (click)="cancel.emit()">
+    <div class="flex gap-3 px-6 pb-6 justify-end">
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-subtle transition-all"
+        (click)="cancel.emit()">
         Cancel
       </button>
-      <button appButton variant="primary" class="flex-1" (click)="confirm.emit()">
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white text-[16px] leading-5 cursor-pointer"
+        (click)="confirm.emit()">
         Start session
       </button>
     </div>

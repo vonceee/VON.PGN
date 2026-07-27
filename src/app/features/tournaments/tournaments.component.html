@@ -49,7 +49,7 @@
         <ng-icon name="heroMagnifyingGlass"
           class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"></ng-icon>
         <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search tournaments..."
-          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50  " />
+          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50  " />
         @if (searchQuery()) {
         <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
           <ng-icon name="heroXMark" class="w-4 h-4"></ng-icon>

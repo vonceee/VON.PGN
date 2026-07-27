@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, signal, computed, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal, computed, OnDestroy, AfterViewInit, ViewChild, ElementRef, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
@@ -11,8 +11,6 @@ import { GuessTheGameService, GuessTheGameChallenge } from '../../core/services/
 import { Study, MoveNode } from '../../core/models/study.model';
 import { buildTreeFromMoves } from '../../core/utils/chess-tree.utils';
 
-import { ArrowLinkComponent } from '@shared/ui';
-import { ChessBoardComponent } from '@shared/chess';
 import { Chess } from 'chess.js';
 import type { Key } from 'chessground/types';
 
@@ -80,6 +78,7 @@ import {
   heroPuzzlePiece,
   heroSparkles,
   heroCommandLine,
+  heroPlay,
 } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -88,8 +87,6 @@ import {
   imports: [
     CommonModule,
     RouterModule,
-    ArrowLinkComponent,
-    ChessBoardComponent,
     NgIconComponent,
   ],
   providers: [
@@ -107,11 +104,134 @@ import {
       heroPuzzlePiece,
       heroSparkles,
       heroCommandLine,
+      heroPlay,
     }),
   ],
   templateUrl: './home.component.html',
+  styleUrl: './home.component.css',
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('heroCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('heroSection') heroSectionRef!: ElementRef<HTMLElement>;
+  @ViewChild('homeContainer') homeContainerRef!: ElementRef<HTMLElement>;
+
+  isHoveringCard = signal(false);
+  cursorX = signal(0);
+  cursorY = signal(0);
+
+  activeCarouselIndex = signal(0);
+  carouselSlides = [
+    {
+      title: 'Coaching Tools',
+      description: 'Manage collaborative student spaces, review real-time analysis chapters, build openings repertoire databases, and run chess reviews with students.',
+      linkText: 'Explore coaching studies',
+      linkUrl: '/study',
+      image: 'assets/images/home_coaching.webp'
+    },
+    {
+      title: 'Tournament Players Training',
+      description: 'Build puzzle pattern memory with rated exercises, solve coordinates motifs, and study grandmaster repertoires via spaced repetition.',
+      linkText: 'Start training tactics',
+      linkUrl: '/tactics',
+      image: 'assets/images/home_player.webp'
+    },
+    {
+      title: 'Casual Chess Enjoyment',
+      description: 'Engage with daily guess-the-move clashes, analyze historic matches on timeline graphs, and enjoy the beauty of chess.',
+      linkText: 'Play daily challenge',
+      linkUrl: '/tactics/guess',
+      image: 'assets/images/home_casual.webp'
+    }
+  ];
+
+  nextSlide() {
+    const nextIdx = (this.activeCarouselIndex() + 1) % this.carouselSlides.length;
+    this.activeCarouselIndex.set(nextIdx);
+  }
+
+  prevSlide() {
+    const prevIdx = (this.activeCarouselIndex() - 1 + this.carouselSlides.length) % this.carouselSlides.length;
+    this.activeCarouselIndex.set(prevIdx);
+  }
+
+  private cursorAnimationFrameId: number | null = null;
+  private targetX = 0;
+  private targetY = 0;
+
+  onCardMouseEnter(event: MouseEvent) {
+    if (!this.isBrowser || !this.homeContainerRef) return;
+    const container = this.homeContainerRef.nativeElement;
+    const rect = container.getBoundingClientRect();
+    this.targetX = event.clientX - rect.left;
+    this.targetY = event.clientY - rect.top;
+
+    this.isHoveringCard.set(true);
+    this.startCursorAnimation();
+  }
+
+  onCardMouseLeave() {
+    this.isHoveringCard.set(false);
+    this.stopCursorAnimation();
+  }
+
+  onCardMouseMove(event: MouseEvent) {
+    if (!this.isBrowser || !this.homeContainerRef) return;
+    const container = this.homeContainerRef.nativeElement;
+    const rect = container.getBoundingClientRect();
+    this.targetX = event.clientX - rect.left;
+    this.targetY = event.clientY - rect.top;
+  }
+
+  private startCursorAnimation() {
+    if (!this.isBrowser) return;
+    if (this.cursorAnimationFrameId) return;
+
+    this.cursorX.set(this.targetX);
+    this.cursorY.set(this.targetY);
+
+    const animateCursor = () => {
+      if (!this.isHoveringCard()) {
+        this.cursorAnimationFrameId = null;
+        return;
+      }
+
+      const curX = this.cursorX();
+      const curY = this.cursorY();
+
+      // Lerp logic: 0.12 factor creates a clean delayed momentum effect
+      const nextX = curX + (this.targetX - curX) * 0.12;
+      const nextY = curY + (this.targetY - curY) * 0.12;
+
+      this.cursorX.set(nextX);
+      this.cursorY.set(nextY);
+
+      this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
+    };
+
+    this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
+  }
+
+  private stopCursorAnimation() {
+    if (this.cursorAnimationFrameId) {
+      cancelAnimationFrame(this.cursorAnimationFrameId);
+      this.cursorAnimationFrameId = null;
+    }
+  }
+
+  private platformId = inject(PLATFORM_ID);
+  private isBrowser = isPlatformBrowser(this.platformId);
+
+  // 3D Canvas properties
+  private animationFrameId: number | null = null;
+  private resizeListener: (() => void) | null = null;
+  private mouseMoveListener: ((e: MouseEvent) => void) | null = null;
+  private mouseLeaveListener: (() => void) | null = null;
+
+  // Mouse coordinate state
+  private mouseX = 0;
+  private mouseY = 0;
+  private isMouseOver = false;
+
   private lessonService = inject(LessonService);
   private router = inject(Router);
   authService = inject(AuthService);
@@ -140,13 +260,13 @@ export class HomeComponent implements OnInit, OnDestroy {
       return OPENING_FRAMES;
     }
     const initialFen = challenge.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-    
+
     try {
       const parsedTree = buildTreeFromMoves({ pgn: challenge.pgn || '' }, initialFen);
       if (parsedTree.length === 0) {
         return [{ fen: initialFen, lastMove: null, label: `${challenge.white_player} vs ${challenge.black_player}` }];
       }
-      
+
       return buildFramesFromMoveNodes(parsedTree, initialFen, `${challenge.white_player} vs ${challenge.black_player}`);
     } catch (e) {
       console.error('Failed to parse guess the game PGN for hero animation:', e);
@@ -189,12 +309,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     const firstChapter = chapters[0];
     const rawMoves = firstChapter.moves || [];
     const initialFen = firstChapter.initial_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-    
+
     const parsedTree = buildTreeFromMoves(rawMoves, initialFen);
     if (parsedTree.length === 0) {
       return { fen: initialFen, lastMove: null };
     }
-    
+
     const frames = buildFramesFromMoveNodes(parsedTree, initialFen, firstChapter.name || study.name);
     const tick = this.globalAnimationTick();
     const index = Math.min(tick, frames.length - 1);
@@ -209,8 +329,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // ── Courses & search ──────────────────────────────────────────────────────
   searchQuery = signal<string>('');
-  allCourses  = this.lessonService.allCourses;
-  isLoading   = signal(true);
+  allCourses = this.lessonService.allCourses;
+  isLoading = signal(true);
 
   featuredCoursesList = computed(() => this.allCourses().slice(0, 3));
 
@@ -224,11 +344,134 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
   });
 
+  ngAfterViewInit() {
+    if (!this.isBrowser) return;
+
+    const canvas = this.canvasRef.nativeElement;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const container = this.heroSectionRef.nativeElement;
+
+    const resizeCanvas = () => {
+      const rect = container.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    };
+    resizeCanvas();
+
+    window.addEventListener('resize', resizeCanvas);
+    this.resizeListener = resizeCanvas;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      this.mouseX = e.clientX - rect.left;
+      this.mouseY = e.clientY - rect.top;
+      this.isMouseOver = true;
+    };
+    const onMouseLeave = () => {
+      this.isMouseOver = false;
+    };
+
+    container.addEventListener('mousemove', onMouseMove);
+    container.addEventListener('mouseleave', onMouseLeave);
+    this.mouseMoveListener = onMouseMove;
+    this.mouseLeaveListener = onMouseLeave;
+
+    const columns = 28;
+    const rows = 28;
+    const spacing = 28;
+
+    const points: { x: number; y: number; z: number; ox: number; oz: number }[] = [];
+    const halfWidth = ((columns - 1) * spacing) / 2;
+    const halfDepth = ((rows - 1) * spacing) / 2;
+
+    for (let c = 0; c < columns; c++) {
+      for (let r = 0; r < rows; r++) {
+        const x = c * spacing - halfWidth;
+        const z = r * spacing - halfDepth;
+        points.push({
+          x,
+          y: 0,
+          z,
+          ox: x,
+          oz: z
+        });
+      }
+    }
+
+    let time = 0;
+    const focalLength = 350;
+
+    const animate = () => {
+      time += 0.025;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const pitch = 0.8;
+      const yaw = Math.sin(time * 0.1) * 0.15;
+
+      const cosP = Math.cos(pitch);
+      const sinP = Math.sin(pitch);
+      const cosY = Math.cos(yaw);
+      const sinY = Math.sin(yaw);
+
+      const sceneCenterX = canvas.width * 0.65;
+      const sceneCenterY = canvas.height * 0.45;
+      const sceneCenterZ = 200;
+
+      points.forEach(p => {
+        const waveX = p.ox * 0.012;
+        const waveZ = p.oz * 0.012;
+        p.y = Math.sin(waveX + time) * 15 + Math.cos(waveZ + time) * 15;
+
+        const x1 = p.ox * cosY - p.oz * sinY;
+        const z1 = p.oz * cosY + p.ox * sinY;
+
+        const y2 = p.y * cosP - z1 * sinP;
+        const z2 = z1 * cosP + p.y * sinP;
+
+        const finalX = x1;
+        const finalY = y2;
+        const finalZ = z2 + sceneCenterZ;
+
+        const scale = focalLength / (focalLength + finalZ);
+        let screenX = sceneCenterX + finalX * scale;
+        let screenY = sceneCenterY + finalY * scale;
+
+        if (this.isMouseOver) {
+          const dx = screenX - this.mouseX;
+          const dy = screenY - this.mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 120) {
+            const force = (120 - dist) / 120;
+            screenX += (dx / dist) * force * 15;
+            screenY += (dy / dist) * force * 15;
+          }
+        }
+
+        if (screenX >= 0 && screenX <= canvas.width && screenY >= 0 && screenY <= canvas.height) {
+          const depthAlpha = Math.max(0.1, Math.min(1.0, 1.0 - (finalZ - 100) / 400));
+          const size = Math.max(0.6, scale * 3.5);
+
+          ctx.beginPath();
+          ctx.arc(screenX, screenY, size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(59, 130, 246, ${depthAlpha * 0.65})`;
+          ctx.fill();
+        }
+      });
+
+      this.animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+  }
+
   ngOnInit() {
     this.presenceService.subscribeToSiteStats();
     this.startHeroAnimation();
     this.lessonService.loadAllCourses().subscribe({
-      next:  () => this.isLoading.set(false),
+      next: () => this.isLoading.set(false),
       error: () => this.isLoading.set(false),
     });
 
@@ -263,7 +506,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.studiesList.set([]);
           return;
         }
-        
+
         // Fetch detailed study objects for chapter information
         const detailRequests = summaryList.map((s: Study) => this.studyApiService.getStudyRaw(s.id));
         forkJoin(detailRequests).subscribe({
@@ -285,6 +528,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.presenceService.unsubscribeFromSiteStats();
     if (this.heroInterval) clearInterval(this.heroInterval);
+    this.stopCursorAnimation();
+
+    if (this.animationFrameId) {
+      cancelAnimationFrame(this.animationFrameId);
+    }
+    if (this.resizeListener && this.isBrowser) {
+      window.removeEventListener('resize', this.resizeListener);
+    }
+    if (this.mouseMoveListener && this.isBrowser && this.heroSectionRef) {
+      try {
+        const container = this.heroSectionRef.nativeElement;
+        if (container) {
+          container.removeEventListener('mousemove', this.mouseMoveListener);
+          container.removeEventListener('mouseleave', this.mouseLeaveListener!);
+        }
+      } catch (e) {
+        // Ignore if container is already destroyed
+      }
+    }
   }
 
   navigateToCourse(slug: string) {

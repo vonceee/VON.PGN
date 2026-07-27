@@ -57,13 +57,14 @@
           [orientation]="sidebar.newChapterOrientation() || 'white'"></app-board-editor>
         } @else {
         <!-- Notation & Commentary Card -->
-        <div class="flex flex-col overflow-hidden bg-main rounded-xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
+        <div
+          class="flex flex-col overflow-hidden border-2 border-border-base rounded-xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             @if (facade.openingName(); as name) {
             <!-- Opening Name Header -->
-            <div class="p-2 border-b border-border-base bg-main flex items-center justify-between shrink-0 select-text">
+            <div class="p-2 border-b border-border-base flex items-center justify-between shrink-0 select-text">
               <div class="flex items-center gap-2 overflow-hidden">
-                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-subtle text-muted shrink-0">
+                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-subtle shrink-0">
                   {{ facade.openingEco() || 'ECO' }}
                 </span>
                 <span class="text-sm/6 font-medium truncate" [title]="name">
@@ -95,7 +96,7 @@
               <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto pr-1">
                 <!-- Pre-move comments -->
                 @if (activeNode.preComments && activeNode.preComments.length > 0) {
-                <div class="text-md text-muted pl-3 py-0.5">
+                <div class="text-md pl-3 py-0.5">
                   {{ activeNode.preComments[0] }}
                 </div>
                 }
@@ -108,7 +109,8 @@
               </div>
             </div>
             }
-            } @else if (facade.moveTree().length > 0 && facade.moveTree()[0].preComments && facade.moveTree()[0].preComments!.length > 0) {
+            } @else if (facade.moveTree().length > 0 && facade.moveTree()[0].preComments &&
+            facade.moveTree()[0].preComments!.length > 0) {
             <!-- Start Position Commentary Section (Introduction) -->
             <div class="p-4 bg-amber-500/10 flex flex-col gap-2 shrink-0 select-text">
               <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto pr-1">
@@ -156,7 +158,7 @@
   </div>
   } @else if (facade.isLoading()) {
   <div class="flex items-center justify-center min-h-96">
-    
+
   </div>
   }
 
@@ -183,10 +185,11 @@
 
 <!-- Reusable Toolbar Template -->
 <ng-template #toolbarTemplate>
-  <div class="p-2 flex items-center justify-between bg-main rounded-4xl select-none w-full shrink-0 px-4">
+  <div
+    class="p-2 flex items-center justify-between border-2 border-border-base rounded-4xl select-none w-full shrink-0 px-4 text-content">
     <!-- Flip Board Button -->
     <button (click)="flipBoard()" title="Flip Board"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
       <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
     </button>
 
@@ -195,19 +198,19 @@
     <!-- Navigation Buttons Group -->
     <div class="flex items-center gap-1.5">
       <button (click)="goToFirst()" title="First Move"
-        class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
         <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
       </button>
       <button (click)="facade.onPrevMove()" title="Previous Move"
-        class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
         <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
       </button>
       <button (click)="facade.onNextMove()" title="Next Move"
-        class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
         <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
       </button>
       <button (click)="goToLast()" title="Last Move"
-        class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
         <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
       </button>
     </div>
@@ -217,12 +220,12 @@
     <!-- Viewer Count Indicator -->
     @if (facade.isOwner()) {
     <button (click)="sidebar?.selectSection('members')" title="Viewers"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center gap-1.5 select-none animate-none">
+      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center gap-1.5 select-none animate-none">
       <ng-icon name="heroEye" class="text-lg"></ng-icon>
       <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
     </button>
     } @else {
-    <div title="Viewers" class="p-2 rounded-full flex items-center justify-center gap-1.5 text-muted select-none">
+    <div title="Viewers" class="p-2 rounded-full flex items-center justify-center gap-1.5 select-none">
       <ng-icon name="heroEye" class="text-lg"></ng-icon>
       <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
     </div>
@@ -232,7 +235,7 @@
     @if (facade.canEdit()) {
     <div class="h-4 w-px bg-muted/20 shrink-0"></div>
     <button (click)="facade.onEditMetadata()" title="Edit Game Metadata"
-      class="p-2 rounded-full transition-colors cursor-pointer text-muted hover:bg-subtle flex items-center justify-center">
+      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
       <ng-icon name="heroPencil" class="text-lg"></ng-icon>
     </button>
     }

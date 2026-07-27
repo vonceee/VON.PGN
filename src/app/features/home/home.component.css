@@ -1,0 +1,45 @@
+@keyframes pawn-hop {
+  0%, 100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  8% {
+    transform: translateY(0) scale(1.15, 0.85); /* Squash prep */
+  }
+  25% {
+    transform: translateY(-25%) scale(0.9, 1.15); /* Hop stretch */
+  }
+  42% {
+    transform: translateY(0) scale(1.1, 0.9); /* Landing squash */
+  }
+  50% {
+    transform: translateY(0) scale(0.98, 1.02); /* Slight bounce */
+  }
+  58% {
+    transform: translateY(0) scale(1, 1); /* Settle */
+  }
+}
+
+.animate-pawn-hop {
+  display: inline-block;
+  animation: pawn-hop 2.2s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+  transform-origin: bottom center;
+}
+
+/* Premium Carousel Animation Classes */
+.carousel-track {
+  display: flex;
+  gap: 1.5rem;
+  transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.carousel-slide {
+  transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1), opacity 800ms cubic-bezier(0.16, 1, 0.3, 1), border-color 300ms ease;
+  will-change: transform, opacity;
+}
+
+.carousel-slide-img {
+  transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+

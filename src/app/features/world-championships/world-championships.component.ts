@@ -1,14 +1,13 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { WorldChampionshipService } from '../../core/services/world-championship.service';
 import { WorldChampionshipMatch, WorldChampionshipEra } from '../../core/models/world-championship.model';
-import { ButtonComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-world-championships',
   standalone: true,
-  imports: [CommonModule, RouterLink, ButtonComponent],
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './world-championships.component.html',
 })

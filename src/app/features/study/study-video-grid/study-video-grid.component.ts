@@ -47,7 +47,7 @@ import { AuthService } from '../../../core/services/auth.service';
             @if (isCameraOff()) {
               <div class="absolute inset-0 bg-subtle flex flex-col items-center justify-center">
                 <div class="w-12 h-12 rounded-full bg-surface border border-border-base flex items-center justify-center mb-1.5">
-                  <ng-icon name="heroUser" class="w-6 h-6 text-muted"></ng-icon>
+                  <ng-icon name="heroUser" size="1.5rem" class="text-muted"></ng-icon>
                 </div>
                 <span class="text-xstext-muted font-medium">Camera Off</span>
               </div>
@@ -55,7 +55,7 @@ import { AuthService } from '../../../core/services/auth.service';
           } @else {
             <div class="text-muted text-xs flex flex-col items-center">
               <div class="w-10 h-10 rounded-full bg-surface flex items-center justify-center mb-2">
-                <ng-icon name="heroVideoCameraSlash" class="w-5 h-5 text-muted"></ng-icon>
+                <ng-icon name="heroVideoCameraSlash" size="1.25rem" class="text-muted"></ng-icon>
               </div>
               <span class="text-xsfont-medium">Connecting camera...</span>
             </div>
@@ -65,7 +65,7 @@ import { AuthService } from '../../../core/services/auth.service';
             <span>You</span>
             @if (isMuted()) {
               <div class="relative flex items-center justify-center">
-                <ng-icon name="heroMicrophone" class="text-red-500 w-3 h-3"></ng-icon>
+                <ng-icon name="heroMicrophone" size="0.75rem" class="text-red-500"></ng-icon>
                 <div class="absolute w-[1.2px] h-4 bg-red-500 rotate-45 pointer-events-none rounded"></div>
               </div>
             }
@@ -100,7 +100,7 @@ import { AuthService } from '../../../core/services/auth.service';
           title="Toggle Mic"
         >
           <div class="relative flex items-center justify-center">
-            <ng-icon name="heroMicrophone" class="w-4 h-4"></ng-icon>
+            <ng-icon name="heroMicrophone" size="1rem"></ng-icon>
             @if (isMuted()) {
               <div class="absolute w-[1.5px] h-4.5 bg-rose-500 rotate-45 pointer-events-none rounded"></div>
             }
@@ -115,7 +115,7 @@ import { AuthService } from '../../../core/services/auth.service';
           class="w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           title="Toggle Camera"
         >
-          <ng-icon [name]="isCameraOff() ? 'heroVideoCameraSlash' : 'heroVideoCamera'" class="w-4 h-4"></ng-icon>
+          <ng-icon [name]="isCameraOff() ? 'heroVideoCameraSlash' : 'heroVideoCamera'" size="1rem"></ng-icon>
         </button>
 
         <!-- Dock/Undock Toggle -->
@@ -124,7 +124,7 @@ import { AuthService } from '../../../core/services/auth.service';
           class="w-9 h-9 rounded-full bg-subtle hover:bg-border-base/50 border border-border-base flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           [title]="webrtc.isDetached() ? 'Dock to Sidebar' : 'Pop Out Video Call'"
         >
-          <ng-icon [name]="webrtc.isDetached() ? 'heroArrowDownLeft' : 'heroArrowUpRight'" class="w-4 h-4"></ng-icon>
+          <ng-icon [name]="webrtc.isDetached() ? 'heroArrowDownLeft' : 'heroArrowUpRight'" size="1rem"></ng-icon>
         </button>
 
         <!-- Hang Up -->
@@ -133,7 +133,7 @@ import { AuthService } from '../../../core/services/auth.service';
           class="w-9 h-9 rounded-full bg-rose-500 hover:bg-rose-600 border-0 flex items-center justify-center text-white transition-all duration-200 active:scale-95 cursor-pointer"
           title="Leave Call"
         >
-          <ng-icon name="heroPhoneXMark" class="w-4 h-4"></ng-icon>
+          <ng-icon name="heroPhoneXMark" size="1rem"></ng-icon>
         </button>
       </div>
     </div>

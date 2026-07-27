@@ -281,15 +281,6 @@ export class StudySidebarComponent {
           this.toastService.show(err.error?.message || 'Failed to import PGN.', 'error');
         }
       });
-    } else {
-      this.studyService.addChapter(s.id, payload.name, payload.fen, payload.orientation).subscribe({
-        next: (res) => {
-          const newChapter = res?.data || res;
-          this.studyService.getStudy(s.id, newChapter.id);
-          this.toastService.show('Chapter created successfully!', 'success');
-          this.selectSection('chapters');
-        },
-      });
     }
   }
 

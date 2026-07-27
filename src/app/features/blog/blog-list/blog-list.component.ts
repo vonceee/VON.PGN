@@ -84,7 +84,7 @@ import { ButtonComponent } from '@shared/ui';
       >
         <article
           *ngFor="let blog of blogs()"
-          class="bg-main rounded-xl border border-border-base hover:shadow-md transition-shadow overflow-hidden flex flex-col justify-between h-full group"
+          class="bg-main rounded-xl border border-border-basetransition-shadow overflow-hidden flex flex-col justify-between h-full group"
         >
           <!-- Thumbnail Cover Image -->
           <div *ngIf="blog.cover_image" class="w-full h-48 bg-subtle border-b border-border-base overflow-hidden relative">

@@ -18,7 +18,7 @@
             clip-rule="evenodd" />
         </svg>
         <input type="text" [formControl]="searchControl" placeholder="Search themes..."
-          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
         @if (searchControl.value) {
         <button (click)="searchControl.setValue('')"
           class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted hover:text-content">
@@ -35,7 +35,7 @@
       <main class="flex-1 overflow-y-auto pr-2 min-h-0">
         @if (isLoading()) {
         <div class="h-96 flex items-center justify-center">
-          
+
         </div>
         } @else {
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 pb-10">
