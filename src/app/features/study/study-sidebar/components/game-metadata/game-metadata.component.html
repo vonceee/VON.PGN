@@ -2,7 +2,6 @@
   <div class="flex-1 overflow-y-auto min-h-0 p-4">
     <div class="flex flex-col gap-4">
       <!-- Player Info & Clocks -->
-      @if (hasPlayers()) {
       <div class="flex flex-col">
         <!-- White Player Row -->
         <div class="flex items-center gap-2">
@@ -10,15 +9,18 @@
             <span class="w-2.5 h-2.5 rounded-full bg-white shrink-0 border"></span>
             <div class="flex flex-col min-w-0">
               <div class="flex items-center gap-1.5 min-w-0">
-                @if (facade.whitePlayer().title) {
+                @if (whitePlayer().title) {
                 <span class="text-xs font-medium rounded bg-subtle shrink-0 px-1 py-0.5 text-accent-foreground">
-                  {{ facade.whitePlayer().title }}
+                  {{ whitePlayer().title }}
                 </span>
                 }
-                <span class="text-sm/6 truncate font-medium">{{ facade.whitePlayer().name }}</span>
+                <span class="text-sm/6 truncate font-medium" [class.text-muted]="whitePlayer().isPlaceholder"
+                  [class.italic]="whitePlayer().isPlaceholder">
+                  {{ whitePlayer().name }}
+                </span>
               </div>
-              @if (facade.whitePlayer().elo) {
-              <span class="text-xs text-muted font-medium mt-1">{{ facade.whitePlayer().elo }}</span>
+              @if (whitePlayer().elo) {
+              <span class="text-xs font-medium mt-1">{{ whitePlayer().elo }}</span>
               }
             </div>
           </div>
@@ -37,15 +39,18 @@
             <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0"></span>
             <div class="flex flex-col min-w-0">
               <div class="flex items-center gap-1.5 min-w-0">
-                @if (facade.blackPlayer().title) {
+                @if (blackPlayer().title) {
                 <span class="text-xs font-medium rounded bg-subtle shrink-0 px-1 py-0.5 text-accent-foreground">
-                  {{ facade.blackPlayer().title }}
+                  {{ blackPlayer().title }}
                 </span>
                 }
-                <span class="text-sm/6 truncate font-medium">{{ facade.blackPlayer().name }}</span>
+                <span class="text-sm/6 truncate font-medium" [class.text-muted]="blackPlayer().isPlaceholder"
+                  [class.italic]="blackPlayer().isPlaceholder">
+                  {{ blackPlayer().name }}
+                </span>
               </div>
-              @if (facade.blackPlayer().elo) {
-              <span class="text-xs text-muted font-medium mt-1">{{ facade.blackPlayer().elo }}</span>
+              @if (blackPlayer().elo) {
+              <span class="text-xs font-medium mt-1">{{ blackPlayer().elo }}</span>
               }
             </div>
           </div>
@@ -58,29 +63,19 @@
           }
         </div>
       </div>
-      }
 
-      <!-- Additional Details Collapsible Section -->
+      <!-- Additional Details Section -->
       @if (metadataItems().length > 0) {
-      <div class="flex flex-col">
-        <button (click)="toggleDetails()"
-          class="w-full flex items-center justify-between p-2.5 px-4 rounded-4xl bg-subtle text-xs font-medium text-muted hover:bg-subtle/80 cursor-pointer transition-all select-none">
-          <span>More info</span>
-          <ng-icon [name]="showDetails() ? 'heroChevronUp' : 'heroChevronDown'"
-            class="text-sm/6 text-muted/80"></ng-icon>
-        </button>
-
-        @if (showDetails()) {
-        <div class="flex flex-col gap-2 mt-2">
-          @for (item of metadataItems(); track item.label) {
-          <div class="flex flex-col gap-2 p-4 border border-border-base rounded-xl select-none">
-            <span class="text-xs font-medium text-muted flex items-center gap-1.5">
-              <ng-icon [name]="item.icon" class="text-xs"></ng-icon>
-              {{ item.label }}
-            </span>
-            <span class="text-xs font-medium">{{ item.value }}</span>
-          </div>
-          }
+      <div class="flex flex-col gap-2">
+        @for (item of metadataItems(); track item.label) {
+        <div class="flex flex-col gap-2 p-4 border border-border-base rounded-xl select-none">
+          <span class="text-xs font-medium flex items-center gap-1.5">
+            <ng-icon [name]="item.icon" class="text-xs"></ng-icon>
+            {{ item.label }}
+          </span>
+          <span class="text-xs font-medium" [class.text-muted]="item.isPlaceholder" [class.italic]="item.isPlaceholder">
+            {{ item.value }}
+          </span>
         </div>
         }
       </div>

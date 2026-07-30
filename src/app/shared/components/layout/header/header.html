@@ -231,8 +231,10 @@
       <button (click)="toggleProfileDropdown()"
         class="flex items-center gap-2 group cursor-pointer focus:outline-none relative">
         <div class="flex items-center gap-1.5">
-          <!-- Profile Icon (visible on all larger screens) -->
-          <ng-icon name="heroUserCircle" class="text-2xl group-transition-colors"></ng-icon>
+          <ng-icon name="heroUserCircle" class="text-2xl group-transition-colors 4xl:hidden"></ng-icon>
+          <span class="hidden 4xl:inline text-sm/6 font-medium transition-colors">
+            {{ userService.currentUser()?.username || 'Profile' }}
+          </span>
         </div>
       </button>
 

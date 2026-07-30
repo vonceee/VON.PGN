@@ -712,7 +712,37 @@ export class StudyNavigationFacade {
   }
 
   onShapeDrawn(shapes: any[]) {
-    this.studyService.emitShapes(shapes, this.currentChapter()?.id, this.currentFen());
+    if (this.isSyncing()) {
+      this.studyService.emitShapes(shapes, this.currentChapter()?.id, this.currentFen());
+    }
+
+    // Only save shapes to the database moves tree if studying alone (not syncing in a class)
+    if (!this.isSyncing()) {
+      const node = this.currentNode();
+      if (node) {
+        this.moveTree.update((tree) =>
+          updateNodeInTree(tree, node.fen, node.ply, {
+            shapes: shapes,
+          })
+        );
+
+        this.currentNode.set({
+          ...node,
+          shapes: shapes,
+        });
+
+        this.studyService
+          .emitMove(
+            '',
+            this.currentFen(),
+            this.moveTree(),
+            this.boardOrientation(),
+            false,
+            false
+          )
+          .subscribe();
+      }
+    }
   }
 
   onSaveMetadata(tags: Record<string, string>) {
