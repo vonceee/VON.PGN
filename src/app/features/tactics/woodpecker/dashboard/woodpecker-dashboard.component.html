@@ -12,11 +12,14 @@
             <ng-icon name="heroInformationCircle" class="text-xl md:text-2xl"></ng-icon>
           </button>
         </h1>
-        <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Burn tactical patterns into
-          your subconscious with spaced repetition training.</p>
+        <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">A specialized form of
+          spaced repetition designed by GM Axel Smith and IM Hans Tikkanen to burn chess patterns into your
+          subconscious.</p>
       </div>
       <div class="flex items-center gap-4">
-        <button appButton variant="primary" routerLink="/tactics/woodpecker/setup">
+        <button
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all"
+          routerLink="/tactics/woodpecker/setup">
           Create new session
         </button>
       </div>
@@ -35,7 +38,8 @@
     <section class="mb-12">
       @if (sessions().length === 0) {
       <!-- Empty State -->
-      <div class="flex-1 flex flex-col items-center justify-center bg-main rounded-4xl p-16 text-center">
+      <div
+        class="flex-1 flex flex-col items-center justify-center border-2 border-border-base rounded-4xl p-16 text-center">
         <div class="w-16 h-16 bg-accent/5 rounded-full flex items-center justify-center mb-6 text-accent">
           <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -53,10 +57,10 @@
       </div>
       } @else {
       <!-- Grid of Active Sessions -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @for (session of sessions(); track session.id) {
         @if (session.status === 'active') {
-        <div class="bg-main rounded-4xl p-6 flex flex-col justify-between">
+        <div class="border-2 border-border-base rounded-4xl p-6 flex flex-col justify-between">
           <div>
             <!-- Card Top Headers -->
             <div class="flex justify-between items-start mb-4">
@@ -74,15 +78,18 @@
 
             <!-- Meta Tags -->
             <div class="flex flex-wrap gap-2 mb-6">
-              <span class="px-2.5 py-1 text-xs rounded-full border border-border-base bg-main text-muted font-medium">
+              <span
+                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-muted font-medium">
                 {{ getThemeDisplayName(session.theme) }}
               </span>
               @if (session.rating_min || session.rating_max) {
-              <span class="px-2.5 py-1 text-xs rounded-full border border-border-base bg-main text-muted font-medium">
+              <span
+                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-muted font-medium">
                 {{ session.rating_min ?? '0' }} - {{ session.rating_max ?? '∞' }} Elo
               </span>
               }
-              <span class="px-2.5 py-1 text-xs rounded-full border border-border-base bg-main text-muted font-medium">
+              <span
+                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-muted font-medium">
                 {{ session.total_puzzles }} puzzles
               </span>
             </div>
@@ -138,7 +145,7 @@
 
       <div class="space-y-6">
         @for (session of sessions(); track session.id) {
-        <div class="bg-main rounded-4xl p-6">
+        <div class="border-2 border-border-base rounded-4xl p-6">
           <!-- Session Details Title -->
           <div
             class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4 mb-6">
@@ -222,10 +229,10 @@
   }
   }
   @if (sessionToAbandon(); as sessionId) {
-  <!-- Gorgeous Custom Confirm Abandon Modal Backdrop -->
   <div class="fixed inset-0 flex items-center justify-center p-4 z-50" (click)="cancelAbandon()">
     <!-- Modal Container -->
-    <div class="bg-main w-full max-w-md rounded-4xl border border-border-base p-8 relative flex flex-col gap-6"
+    <div
+      class="border-2 border-border-base w-full max-w-md rounded-4xl border border-border-base p-8 relative flex flex-col gap-6 bg-white"
       (click)="$event.stopPropagation()">
 
       <!-- Warning Header -->
@@ -241,10 +248,14 @@
 
       <!-- Action Buttons -->
       <div class="flex justify-end gap-3 pt-2">
-        <button appButton variant="outline" (click)="cancelAbandon()">
+        <button
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all"
+          (click)="cancelAbandon()">
           Cancel
         </button>
-        <button appButton variant="danger" (click)="confirmAbandon(sessionId)">
+        <button
+          class="whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+          (click)="confirmAbandon(sessionId)">
           Abandon Session
         </button>
       </div>
@@ -256,7 +267,8 @@
   <!-- Gorgeous Custom Confirm Delete Modal Backdrop -->
   <div class="fixed inset-0 flex items-center justify-center p-4 z-50" (click)="cancelDelete()">
     <!-- Modal Container -->
-    <div class="bg-main w-full max-w-md rounded-4xl border border-border-base p-8 relative flex flex-col gap-6"
+    <div
+      class="border-2 border-border-base w-full max-w-md rounded-4xl border border-border-base p-8 relative flex flex-col gap-6"
       (click)="$event.stopPropagation()">
 
       <!-- Warning Header -->
@@ -272,10 +284,14 @@
 
       <!-- Action Buttons -->
       <div class="flex justify-end gap-3 pt-2">
-        <button appButton variant="outline" (click)="cancelDelete()">
+        <button
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all"
+          (click)="cancelDelete()">
           Cancel
         </button>
-        <button appButton variant="danger" (click)="confirmDelete(sessionId)">
+        <button
+          class="whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+          (click)="confirmDelete(sessionId)">
           Delete Permanently
         </button>
       </div>

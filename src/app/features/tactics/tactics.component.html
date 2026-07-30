@@ -23,7 +23,7 @@
 
         <!-- Stats & Notation Sidebar -->
         <div
-          class="w-full lg:w-[400px] h-[400px] max-h-[620px] my-auto flex flex-col min-h-0 overflow-hidden bg-main rounded-4xl">
+          class="w-full lg:w-[400px] h-[400px] max-h-[620px] my-auto flex flex-col min-h-0 overflow-hidden border-2 border-border-base rounded-4xl">
           <div class="flex flex-col overflow-hidden w-full h-full">
             <!-- Top Section: Stats or Guest Prompt -->
             <div class="p-4 md:p-6 flex flex-col gap-4 shrink-0">
@@ -63,8 +63,8 @@
               <div class="flex items-center justify-between w-full">
                 <!-- Guest Info (Left) -->
                 <div>
-                  <p class="text-md">
-                    Sign in to save progress
+                  <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
+                    sign in to save progress
                   </p>
                 </div>
 
@@ -119,7 +119,9 @@
                 <span>Reveal answer</span>
               </button>
               }
-              <button appButton variant="primary" (click)="loadNextPuzzle()" class="flex-1">
+              <button
+                class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                (click)="loadNextPuzzle()">
                 Next puzzle
               </button>
             </div>

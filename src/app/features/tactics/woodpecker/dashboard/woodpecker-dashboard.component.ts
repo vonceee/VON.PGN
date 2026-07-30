@@ -1,7 +1,6 @@
 import { Component, OnInit, signal, inject, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent } from '@shared/ui';
 import { TacticsService, WoodpeckerSession } from '../../../../core/services/tactics.service';
 import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpecker-explanation-modal.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -13,7 +12,6 @@ import { heroInformationCircle } from '@ng-icons/heroicons/outline';
   imports: [
     CommonModule,
     RouterLink,
-    ButtonComponent,
     WoodpeckerExplanationModalComponent,
     NgIconComponent,
   ],
@@ -113,7 +111,7 @@ export class WoodpeckerDashboardComponent implements OnInit {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    
+
     if (hrs > 0) {
       return `${hrs}h ${mins}m`;
     }

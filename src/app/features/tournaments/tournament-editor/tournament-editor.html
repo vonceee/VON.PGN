@@ -135,8 +135,7 @@
           <button appButton variant="ghost" class="flex-1 md:flex-none" (click)="location.back()">
             Discard Changes
           </button>
-          <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px]
-            leading-5 cursor-pointer class="flex-1 md:flex-none px-12" (click)="confirmSave()" [loading]="saving()">
+          <button appButton variant="primary" class="flex-1 md:flex-none px-12" (click)="confirmSave()" [loading]="saving()">
             {{ tournamentId() ? 'Update Tournament' : 'Publish Tournament' }}
           </button>
         </div>
@@ -162,8 +161,7 @@
         <button appButton variant="ghost" (click)="closeReviewModal()">
           Back to Editing
         </button>
-        <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px]
-          leading-5 cursor-pointer class="px-10" [loading]="saving()" (click)="executeSave()">
+        <button appButton variant="primary" class="px-10" [loading]="saving()" (click)="executeSave()">
           {{ tournamentId() ? 'Confirm & Update' : 'Confirm & Publish' }}
         </button>
       </div>
