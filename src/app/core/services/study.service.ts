@@ -62,6 +62,7 @@ export class StudyService {
 
   // Expose Real-time event streams from Socket service
   onMoveMade$ = this.socketService.onMoveMade$;
+  onSynced$ = this.socketService.onSynced$;
   onShapesDrawn$ = this.socketService.onShapesDrawn$;
   onChapterChanged$ = this.socketService.onChapterChanged$;
   onChatMessage$ = this.socketService.onChatMessage$;
@@ -74,6 +75,9 @@ export class StudyService {
     fen: string | null;
     moves: any[] | null;
     orientation?: 'white' | 'black';
+    shapes?: any[];
+    shapesChapterId?: number | string | null;
+    shapesFen?: string | null;
   }>({ chapterId: null, fen: null, moves: null });
 
   private dbSaveSubject = new Subject<{
@@ -189,10 +193,13 @@ export class StudyService {
         this.lockHolderId.set(state.lockHolderId || null);
         this.classStartedAt.set(state.classStartedAt || null);
         this.lastRemoteState.set({
-          chapterId: state.chapterId || state.currentChapterId,
+          chapterId: state.chapterId !== null && state.chapterId !== undefined ? Number(state.chapterId) : null,
           fen: state.fen,
           moves: state.moves,
           orientation: state.orientation,
+          shapes: state.shapes,
+          shapesChapterId: state.shapesChapterId,
+          shapesFen: state.shapesFen,
         });
       });
 
@@ -543,10 +550,10 @@ export class StudyService {
     }
   }
 
-  emitShapes(shapes: any[]): void {
+  emitShapes(shapes: any[], chapterId?: number, fen?: string): void {
     const study = this.currentStudy();
     if (!study) return;
-    this.socketService.emitShapes(study.id, shapes);
+    this.socketService.emitShapes(study.id, shapes, chapterId, fen);
   }
 
   sendChatMessage(text: string): void {

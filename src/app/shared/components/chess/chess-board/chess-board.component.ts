@@ -405,6 +405,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
         this.isProgrammaticSet = true;
         try {
           this.cgApi.set({ drawable: { shapes: this.syncedShapes } });
+          if (this.cgApi.redrawAll) {
+            this.cgApi.redrawAll();
+          }
         } finally {
           this.isProgrammaticSet = false;
         }
@@ -662,10 +665,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
     if (this.isProgrammaticSet) return;
     if (this.cgApi) {
       const shapes = this.cgApi.state.drawable.shapes;
-      if (this.shapesAreEqual(shapes, this.syncedShapes)) {
-        return;
-      }
-      this.shapeDrawn.emit(shapes);
+      this.shapeDrawn.emit([...shapes]);
     }
   }
 

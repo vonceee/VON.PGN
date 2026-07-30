@@ -10,6 +10,7 @@ import {
   StudyChapter,
   StudyMoveMadePayload,
   StudyShapesDrawnPayload,
+  StudySyncedPayload,
 } from '../models/study.model';
 
 export interface StudyViewer {
@@ -30,7 +31,7 @@ export class StudySocketService {
   isConnected = signal(false);
 
   // Real-time Event Subjects
-  private syncedSubject = new Subject<any>();
+  private syncedSubject = new Subject<StudySyncedPayload>();
   private moveMadeSubject = new Subject<StudyMoveMadePayload>();
   private shapesDrawnSubject = new Subject<StudyShapesDrawnPayload>();
   private chapterChangedSubject = new Subject<any>();
@@ -180,8 +181,8 @@ export class StudySocketService {
     this.socket?.emit('study_move', payload);
   }
 
-  emitShapes(studyId: number | string, shapes: any[]): void {
-    this.socket?.emit('study_draw_shapes', { studyId, shapes });
+  emitShapes(studyId: number | string, shapes: any[], chapterId?: number | string, fen?: string): void {
+    this.socket?.emit('study_draw_shapes', { studyId, shapes, chapterId, fen });
   }
 
   emitSendChat(studyId: number | string, text: string): void {

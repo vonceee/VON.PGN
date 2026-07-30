@@ -269,6 +269,7 @@ export class StudyComponent implements OnInit, OnDestroy {
     });
   }
 
+
   onDeleteConfirmed() {
     this.facade.onDeleteConfirmed(() => {
       this.router.navigate(['/study']);

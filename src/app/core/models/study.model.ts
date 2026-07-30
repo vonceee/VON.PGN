@@ -112,6 +112,8 @@ export interface StudyMoveMadePayload {
 export interface StudyShapesDrawnPayload {
   shapes: any[]; // chessground shapes
   userId: string;
+  chapterId?: number | string;
+  fen?: string;
 }
 
 export interface StudySyncedPayload {
@@ -120,5 +122,10 @@ export interface StudySyncedPayload {
   fen: string;
   moves: any[];
   shapes: any[];
+  shapesChapterId?: number | string | null;
+  shapesFen?: string | null;
+  isClassActive?: boolean;
+  lockHolderId?: string | null;
+  classStartedAt?: string | null;
   orientation?: 'white' | 'black';
 }

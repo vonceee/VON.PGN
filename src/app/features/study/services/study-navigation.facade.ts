@@ -15,7 +15,7 @@ import { AudioService } from '../../../core/services/audio.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { OpeningService } from '../../../core/services/opening.service';
-import { MoveNode, StudyChapter } from '../../../core/models/study.model';
+import { MoveNode, StudyChapter, StudySyncedPayload } from '../../../core/models/study.model';
 import {
   buildTreeFromMoves,
   updateNodeInTree,
@@ -27,6 +27,10 @@ import {
   findVariationBranch,
   findPathToFen,
 } from '../../../core/utils/chess-tree.utils';
+function cleanFen(fen: string): string {
+  if (!fen) return '';
+  return fen.trim().split(/\s+/).slice(0, 2).join(' ');
+}
 
 @Injectable({
   providedIn: 'root',
@@ -307,9 +311,16 @@ export class StudyNavigationFacade {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
         this.ngZone.run(() => {
-          const myUid = this.authService.currentUser()?.uid || this.authService.currentUser()?.id;
-          if (String(payload.userId) !== String(myUid)) {
-            this.remoteShapes.set(payload.shapes || []);
+          this.remoteShapes.set(payload.shapes || []);
+        });
+      });
+
+    this.studyService.onSynced$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((state: StudySyncedPayload) => {
+        this.ngZone.run(() => {
+          if (state.shapes && state.shapes.length > 0) {
+            this.remoteShapes.set(state.shapes);
           }
         });
       });
@@ -324,11 +335,17 @@ export class StudyNavigationFacade {
   }
 
   private executeSync(remote: any, isChapterChange: boolean) {
-    if (!isChapterChange && this.currentFen() === remote.fen) {
+    if (!isChapterChange && cleanFen(this.currentFen()) === cleanFen(remote.fen)) {
       return;
     }
 
-    this.remoteShapes.set([]);
+    const sameChapter = !remote.shapesChapterId || String(remote.shapesChapterId) === String(remote.chapterId);
+    const sameFen = !remote.shapesFen || cleanFen(remote.shapesFen) === cleanFen(remote.fen);
+    if (remote.shapes && remote.shapes.length > 0 && sameChapter && sameFen) {
+      this.remoteShapes.set(remote.shapes);
+    } else {
+      this.remoteShapes.set([]);
+    }
     if (this.currentChapter()?.id !== remote.chapterId) {
       const target = this.study()?.chapters?.find(
         (c) => String(c.id) === String(remote.chapterId)
@@ -695,33 +712,7 @@ export class StudyNavigationFacade {
   }
 
   onShapeDrawn(shapes: any[]) {
-    if (!this.canEdit()) return;
-    this.studyService.emitShapes(shapes);
-
-    const node = this.currentNode();
-    if (node) {
-      this.moveTree.update((tree) =>
-        updateNodeInTree(tree, node.fen, node.ply, {
-          shapes: shapes,
-        })
-      );
-
-      this.currentNode.set({
-        ...node,
-        shapes: shapes,
-      });
-
-      this.studyService
-        .emitMove(
-          '',
-          this.currentFen(),
-          this.moveTree(),
-          this.boardOrientation(),
-          this.isSyncing(),
-          false
-        )
-        .subscribe();
-    }
+    this.studyService.emitShapes(shapes, this.currentChapter()?.id, this.currentFen());
   }
 
   onSaveMetadata(tags: Record<string, string>) {
