@@ -26,7 +26,7 @@
         <!-- Commentary text area -->
         <div class="space-y-2.5">
             <textarea [ngModel]="comment()" (ngModelChange)="comment.set($event)" (blur)="onSave()"
-                [placeholder]="node() ? 'add your thoughts on this move..' : 'add a chapter introduction context...'" 
+                [placeholder]="node() ? 'add your thoughts on this move..' : 'add a chapter introduction context...'"
                 rows="6" [disabled]="!canEdit()"
                 class="w-full px-4 py-3 bg-subtle rounded-lg text-sm/6 outline-none resize-none focus:bg-subtle border border-transparent focus:border-border-base transition-colors"></textarea>
         </div>

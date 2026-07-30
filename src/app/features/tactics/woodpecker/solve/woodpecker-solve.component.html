@@ -151,14 +151,17 @@
 
             <div class="flex items-center gap-3">
               @if (status() === 'failed' && !hasRevealedSolution()) {
-              <button appButton variant="primary" (click)="revealSolution()">
+              <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium
+                text-[16px] leading-5 cursor-pointer (click)="revealSolution()">
                 Reveal
               </button>
               }
-              <button appButton variant="primary" routerLink="/tactics/woodpecker">
+              <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium
+                text-[16px] leading-5 cursor-pointer routerLink="/tactics/woodpecker">
                 Pause
               </button>
-              <button appButton variant="primary" (click)="nextPuzzle()" [disabled]="status() === 'playing'">
+              <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium
+                text-[16px] leading-5 cursor-pointer (click)="nextPuzzle()" [disabled]="status() === 'playing'">
                 {{ cycleCompletionPending() ? 'Finish' : 'Next' }}
               </button>
             </div>
@@ -215,12 +218,14 @@
 
           <!-- Next Button Action -->
           @if (session()?.status === 'completed') {
-          <button appButton variant="primary" routerLink="/tactics/woodpecker" class="w-full">
+          <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px]
+            leading-5 cursor-pointer routerLink="/tactics/woodpecker" class="w-full">
             Finish & Return to Dashboard
           </button>
           } @else {
           <div class="flex flex-col gap-3 w-full">
-            <button appButton variant="primary" (click)="startNextCycle()" class="w-full">
+            <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium
+              text-[16px] leading-5 cursor-pointer (click)="startNextCycle()" class="w-full">
               Start cycle {{ stats.cycleNumber + 1 }}
             </button>
             <button appButton variant="outline" routerLink="/tactics/woodpecker" class="w-full">

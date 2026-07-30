@@ -11,8 +11,6 @@ import { Study, StudyChapter, MoveNode } from '../../../../core/models/study.mod
 import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
 import { ChessBoardComponent } from '@shared/chess';
 import { ButtonComponent } from '@shared/ui';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroInformationCircle } from '@ng-icons/heroicons/outline';
 export interface MovePath {
   id: string;
   moves: MoveNode[];
@@ -33,8 +31,7 @@ export interface PracticeMistake {
 @Component({
   selector: 'app-opening-drill',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ChessBoardComponent, ButtonComponent, NgIconComponent],
-  providers: [provideIcons({ heroInformationCircle })],
+  imports: [CommonModule, FormsModule, RouterModule, ChessBoardComponent, ButtonComponent],
   templateUrl: './opening-drill.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -99,25 +96,6 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
   // Mistake tracker
   lastMistake = signal<{ played: string; correct: string; studyId: number | string; chapterId: number; chapterName: string } | null>(null);
   drillMistakes = signal<PracticeMistake[]>([]);
-  showExplanation = signal(false);
-  walkthroughStep = signal(2);
-
-  nextStep() {
-    const current = this.walkthroughStep();
-    if (current < 7) {
-      this.walkthroughStep.set(current + 1);
-    } else {
-      this.showExplanation.set(false);
-      this.walkthroughStep.set(0);
-    }
-  }
-
-  prevStep() {
-    const current = this.walkthroughStep();
-    if (current > 1) {
-      this.walkthroughStep.set(current - 1);
-    }
-  }
 
   // Statistics
   attemptsCount = signal(0);
@@ -136,8 +114,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
       this.route.paramMap.subscribe(params => {
         const idStr = params.get('id');
         if (idStr) {
-          const studyId = parseInt(idStr, 10);
-          this.loadRepertoire(studyId);
+          this.loadRepertoire(idStr);
         }
       });
     }
@@ -147,7 +124,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
     if (this.opponentTimer) clearTimeout(this.opponentTimer);
   }
 
-  loadRepertoire(studyId: number) {
+  loadRepertoire(studyId: string | number) {
     this.isLoading.set(true);
     this.http.get<{ data: Study }>(`${this.apiUrl}/studies/${studyId}`).subscribe({
       next: (res) => {
@@ -410,8 +387,6 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
    *   This removes the invalid entry from the chess.js engine, preventing illegal destination crashes.
    */
   onStudentMove(event: { move: any; fen: string }) {
-    this.showExplanation.set(false);
-    this.walkthroughStep.set(0);
     const path = this.currentPath();
     if (!path) return;
 
