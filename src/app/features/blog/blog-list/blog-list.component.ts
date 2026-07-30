@@ -15,7 +15,7 @@ import { ButtonComponent } from '@shared/ui';
       <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div class="flex-1">
           <h1 class="text-4xl md:text-5xl mb-2">Chess blogs</h1>
-          <p class="text-muted text-lg">Insights, tutorials, and game analyses from the community.</p>
+          <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Insights, tutorials, and game analyses from the community.</p>
         </div>
         <div class="flex items-center gap-4">
           <a

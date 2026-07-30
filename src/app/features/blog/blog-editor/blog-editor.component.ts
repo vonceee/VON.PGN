@@ -36,7 +36,7 @@ interface EditorGame {
           <h1 class="text-4xl md:text-5xl mb-2">
             {{ isEditMode() ? 'Edit blog post' : 'Create new blog post' }}
           </h1>
-          <p class="text-muted text-lg">
+          <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
             {{ isEditMode() ? 'Update your post and manage interactive games.' : 'Write articles, draft ideas, and insert chess games.' }}
           </p>
         </div>

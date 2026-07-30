@@ -15,6 +15,13 @@
           <span class="text-xs text-muted font-medium mt-0.5">Owner</span>
         </div>
       </div>
+      @if (isOwner()) {
+      <button (click)="addMember()"
+        class="w-8 h-8 rounded-full border border-border-base flex items-center justify-center cursor-pointer hover:bg-main hover:text-accent transition-colors"
+        title="Add member">
+        <ng-icon name="heroPlus" class="text-md"></ng-icon>
+      </button>
+      }
     </div>
 
     <!-- Collaborators/Members List -->
@@ -66,14 +73,7 @@
     }
     }
 
-    @if (isOwner()) {
-    <div class="pt-6">
-      <button (click)="addMember()"
-        class="whitespace-nowrap group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-content text-main rounded-full">
-        Add member
-      </button>
-    </div>
-    }
+
 
     <!-- Viewers Section Header -->
     <div class="mt-4 pt-4 pb-2 border-t border-border-base flex items-center justify-between">
