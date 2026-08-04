@@ -1,0 +1,68 @@
+<h2 class="text-3xl mb-6 border-b border-border-base pb-4">
+  Service Downtime
+</h2>
+<div class="prose prose-slate max-w-none">
+  <div class="mb-12 border-b border-border-base pb-8">
+    <span class="text-xs block mb-4">August 3, 2026</span>
+
+    <p class="text-sm leading-relaxed tracking-widest mb-4">
+      Case study: On August 3, 2026, the website experienced database connection issues that caused pages to fail
+      rendering,
+      returning a generic Cloudflare <strong>Error 1102 (Worker Exception)</strong> or <strong>Not Found</strong> page
+      to users.
+    </p>
+
+    <p class="text-sm leading-relaxed tracking-widest">
+      The root cause was identified as a Supabase service issue:
+      <code>error: extension "pg_stat_statements" is not available</code>. It was resolved by toggling the
+      <code>pg_stat_statements</code> extension off and back on in the Supabase console. To address similar issues in
+      the future, we implemented the mitigations documented below.
+    </p>
+  </div>
+  <h3 class="text-xl mb-4">Worker-level fallback (SSR)</h3>
+  <p class="text-sm leading-relaxed tracking-widest mb-6">
+    If our backend services or database are completely unreachable during your initial page load, Cloudflare Workers
+    intercept the error and serve a lightweight, styled offline page. This page keeps you informed without throwing
+    generic browser or Cloudflare exception codes.
+  </p>
+  <pre
+    class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-8">
+    <code>
+// _worker.ts / server.ts
+try {{ '{' }}
+  const response = await angularApp.handle(request);
+  if (response && response.status >= 500) {{ '{' }}
+    return getFallbackErrorPage();
+  {{ '}' }}
+  return response ?? new Response('Not Found', {{ '{' }} status: 404 {{ '}' }});
+{{ '}' }} catch (err) {{ '{' }}
+  console.error('SSR render failed:', err);
+  return getFallbackErrorPage();
+{{ '}' }}
+    </code>
+  </pre>
+
+  <h3 class="text-xl mb-4">Graceful client overlay</h3>
+  <p class="text-sm leading-relaxed tracking-widest mb-6">
+    If database or backend connection issues arise while users are actively using the application, a full-screen overlay
+    is displayed. This blocks interactions with broken interfaces.
+  </p>
+  <pre
+    class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-8">
+    <code>
+// http-error-interceptor.ts
+const isServerOrConnectionError = 
+  error.status === 0 || 
+  error.status === 500 || 
+  error.status === 502 || 
+  error.status === 503 || 
+  error.status === 504;
+
+if (isServerOrConnectionError && req.url.includes('/api/')) {{ '{' }}
+  if (!req.url.includes('/db-check')) {{ '{' }}
+    networkService.setDatabaseOffline(true);
+  {{ '}' }}
+{{ '}' }}
+    </code>
+  </pre>
+</div>

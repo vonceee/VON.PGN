@@ -1,62 +1,55 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, RouterOutlet, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-documentation',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    RouterOutlet,
+  ],
   templateUrl: './documentation.component.html',
 })
 export class DocumentationComponent {
+  private router = inject(Router);
   activeSection = 'getting-started';
 
   sections = [
-    {
-      title: 'Getting Started',
-      id: 'getting-started',
-      content: 'Welcome to the vonchess documentation. Here you can find all the information you need to get started with our platform.'
-    },
-    {
-      title: 'Core Concepts',
-      id: 'core-concepts',
-      content: 'Learn about the core concepts of vonchess, including our ranking system, matchmaking, and gameplay mechanics.'
-    },
-    {
-      title: 'Account Management',
-      id: 'account-management',
-      content: 'Manage your profile, handle account settings, and customize your playing experience.'
-    },
-    {
-      title: 'API Reference',
-      id: 'api-reference',
-      content: 'Detailed documentation for developers who want to integrate with the vonchess API.'
-    }
+    { title: 'Getting Started', id: 'getting-started' },
+    { title: 'Core Concepts', id: 'core-concepts' },
+    { title: 'Account Management', id: 'account-management' },
+    { title: 'Service Downtime', id: 'service-downtime' },
+    { title: 'API Reference', id: 'api-reference' }
   ];
 
-  scrollTo(sectionId: string) {
-    this.activeSection = sectionId;
-    const element = document.getElementById(sectionId);
-    if (element) {
-      // Offset by roughly header height (if exists) or purely smooth scroll. Let scroll-mt handle the offset css.
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  constructor() {
+    // Initialize active section from current URL
+    this.updateActiveSection(this.router.url);
+
+    // Listen for route changes to update active section
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      this.updateActiveSection(event.urlAfterRedirects);
+    });
+  }
+
+  private updateActiveSection(url: string) {
+    const parts = url.split('/');
+    const lastPart = parts[parts.length - 1].split('#')[0].split('?')[0];
+    if (this.sections.some(s => s.id === lastPart)) {
+      this.activeSection = lastPart;
     }
   }
 
-  // Simple scroll spy setup
-  @HostListener('window:scroll')
-  onScroll() {
-    let current = this.sections[0].id;
-    for (const section of this.sections) {
-      const element = document.getElementById(section.id);
-      if (element) {
-        const top = element.getBoundingClientRect().top;
-        // If the top of the section is near the middle/top of the viewport
-        if (top <= 100) {
-          current = section.id;
-        }
-      }
+  scrollTo(sectionId: string) {
+    this.activeSection = sectionId;
+    this.router.navigate(['/documentation', sectionId]);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    this.activeSection = current;
   }
 }

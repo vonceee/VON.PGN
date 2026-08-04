@@ -30,6 +30,9 @@ export class NetworkStatusService {
   // Tracks if the user has been offline during this app session, to determine if they need a "Connected" success flash
   wasOffline = signal<boolean>(false);
 
+  // Tracks if the database (Supabase) is offline
+  databaseOffline = signal<boolean>(false);
+
   constructor() {
     if (typeof window !== 'undefined') {
       window.addEventListener('online', () => this.checkStatus());
@@ -42,6 +45,15 @@ export class NetworkStatusService {
           this.checkStatus(isSocketConnected);
         });
       });
+    }
+  }
+
+  /**
+   * Sets the database offline status.
+   */
+  setDatabaseOffline(isOffline: boolean): void {
+    if (isOffline !== this.databaseOffline()) {
+      this.databaseOffline.set(isOffline);
     }
   }
 

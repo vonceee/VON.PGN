@@ -3,10 +3,12 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { NetworkStatusService } from '../services/network-status.service';
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
+  const networkService = inject(NetworkStatusService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -25,6 +27,22 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         }
         return throwError(() => error);
       }
+
+      // Check for connection refused (0) or backend server/gateway errors (500, 502, 503, 504)
+      const isServerOrConnectionError = 
+        error.status === 0 || 
+        error.status === 500 || 
+        error.status === 502 || 
+        error.status === 503 || 
+        error.status === 504;
+
+      if (isServerOrConnectionError && req.url.includes('/api/')) {
+        // Exclude the db-check endpoint itself from triggering the status to avoid loops
+        if (!req.url.includes('/db-check')) {
+          networkService.setDatabaseOffline(true);
+        }
+      }
+
       return throwError(() => error);
     })
   );

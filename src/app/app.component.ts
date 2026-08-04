@@ -1,15 +1,16 @@
 import { Component, signal, inject, effect } from '@angular/core';
 import { RouterOutlet, Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
-import { ToastComponent, NetworkStatusComponent } from '@shared/feedback';
+import { ToastComponent, NetworkStatusComponent, DatabaseOfflineOverlayComponent } from '@shared/feedback';
 import { AuthService } from './core/services/auth.service';
 import { GameService } from './core/services/game.service';
 import { LoadingService } from './core/services/loading.service';
+import { NetworkStatusService } from './core/services/network-status.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToastComponent, NetworkStatusComponent, CommonModule],
+  imports: [RouterOutlet, ToastComponent, NetworkStatusComponent, DatabaseOfflineOverlayComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.css',
 })
@@ -17,6 +18,7 @@ export class App {
   private authService = inject(AuthService);
   private gameService = inject(GameService);
   protected loadingService = inject(LoadingService);
+  protected networkService = inject(NetworkStatusService);
   private router = inject(Router);
 
   protected readonly title = signal('vonchess');

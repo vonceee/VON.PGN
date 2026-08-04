@@ -245,6 +245,44 @@ export const routes: Routes = [
         title: 'Vonchess.net • Docs',
         data: { description: 'vonchess documentation — guides, FAQs, and platform information.' },
         resolve: { seo: seoResolver },
+        children: [
+          { path: '', redirectTo: 'getting-started', pathMatch: 'full' },
+          {
+            path: 'getting-started',
+            loadComponent: () =>
+              import('./features/documentation/components/getting-started.component').then(
+                (m) => m.GettingStartedComponent,
+              ),
+          },
+          {
+            path: 'core-concepts',
+            loadComponent: () =>
+              import('./features/documentation/components/core-concepts.component').then(
+                (m) => m.CoreConceptsComponent,
+              ),
+          },
+          {
+            path: 'account-management',
+            loadComponent: () =>
+              import('./features/documentation/components/account-management.component').then(
+                (m) => m.AccountManagementComponent,
+              ),
+          },
+          {
+            path: 'service-downtime',
+            loadComponent: () =>
+              import('./features/documentation/components/service-downtime.component').then(
+                (m) => m.ServiceDowntimeComponent,
+              ),
+          },
+          {
+            path: 'api-reference',
+            loadComponent: () =>
+              import('./features/documentation/components/api-reference.component').then(
+                (m) => m.ApiReferenceComponent,
+              ),
+          },
+        ]
       },
       {
         path: 'roadmap',
