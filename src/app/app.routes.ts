@@ -282,6 +282,13 @@ export const routes: Routes = [
                 (m) => m.ApiReferenceComponent,
               ),
           },
+          {
+            path: 'layout-architecture',
+            loadComponent: () =>
+              import('./features/documentation/components/layout-architecture.component').then(
+                (m) => m.LayoutArchitectureComponent,
+              ),
+          },
         ]
       },
       {

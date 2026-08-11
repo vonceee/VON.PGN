@@ -1,4 +1,4 @@
-<div #studyListContainer class="px-4 md:px-16 py-8 relative">
+<div #studyListContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
   <header class="mb-6">
     <h1 class="text-4xl md:text-5xl mb-2">Study</h1>
     <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">interactive, collaborative
@@ -148,7 +148,8 @@
               </h2>
             </div>
             @if (study.description) {
-            <p class="text-slate-300 text-sm leading-relaxed mt-2.5 line-clamp-3" [title]="study.description">
+            <p class="text-slate-300 text-sm leading-relaxed tracking-wide mt-2.5 line-clamp-3"
+              [title]="study.description">
               {{ study.description }}
             </p>
             }

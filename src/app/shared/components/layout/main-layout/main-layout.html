@@ -1,0 +1,11 @@
+<div class="h-screen w-full flex flex-col">
+  <app-header class="w-full shrink-0 z-50"></app-header>
+  <main class="flex-1 overflow-y-auto w-full relative">
+    <div class="flex flex-col min-h-full bg-gradient-to-br from-white via-slate-50/20 to-slate-50/50">
+      <div class="w-full flex-1 mx-auto relative">
+        <router-outlet></router-outlet>
+      </div>
+      <app-footer *ngIf="showFooter()" class="w-full shrink-0"></app-footer>
+    </div>
+  </main>
+</div>

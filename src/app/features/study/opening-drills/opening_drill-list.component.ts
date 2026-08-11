@@ -19,7 +19,6 @@ import { heroBookOpen, heroPlay } from '@ng-icons/heroicons/outline';
   imports: [CommonModule, FormsModule, RouterModule, ButtonComponent, ChessBoardComponent, NgIconComponent],
   templateUrl: './opening_drill-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'block h-full w-full' },
   providers: [
     provideIcons({
       heroBookOpen,

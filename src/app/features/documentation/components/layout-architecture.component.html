@@ -1,0 +1,82 @@
+<h2 class="text-3xl font-semibold mb-6 border-b border-border-base pb-4">
+  Layout Architecture
+</h2>
+<div class="prose prose-slate max-w-none text-muted">
+  <p class="text-lg leading-relaxed mb-6">
+    The application layout in vonchess is built to support both standard responsive web content and full-screen immersive workspaces (like chess analysis boards and drills).
+  </p>
+
+  <div class="space-y-8 my-8">
+    <div class="border-l-4 border-accent pl-6 py-1">
+      <h3 class="text-xl font-semibold text-content mb-2">Main Layout Shell</h3>
+      <p class="text-sm leading-relaxed text-muted mb-4">
+        The top-level shell of the application is managed by <code>MainLayoutComponent</code>. Its structure divides the viewport vertically:
+      </p>
+      <ul class="list-disc pl-5 text-sm space-y-2 mb-4">
+        <li><strong>Sticky Header</strong>: Houses primary navigation dropdowns and search bars, with a fixed height and z-index.</li>
+        <li><strong>Main Content Container</strong>: Fills remaining vertical space with scroll isolation (<code>flex-1 overflow-y-auto</code>).</li>
+        <li><strong>Conditional Footer</strong>: Stays at the bottom of the content container unless hidden dynamically.</li>
+      </ul>
+      <pre
+        class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
+        <code>
+&lt;div class="h-screen w-full flex flex-col"&gt;
+  &lt;app-header class="w-full shrink-0 z-50"&gt;&lt;/app-header&gt;
+  &lt;main class="flex-1 overflow-y-auto w-full relative"&gt;
+    &lt;div class="flex flex-col min-h-full bg-gradient-to-br from-white via-slate-50/20 to-slate-50/50"&gt;
+      &lt;div class="w-full flex-1 mx-auto relative"&gt;
+        &lt;router-outlet&gt;&lt;/router-outlet&gt;
+      &lt;/div&gt;
+      &lt;app-footer *ngIf="showFooter()" class="w-full shrink-0"&gt;&lt;/app-footer&gt;
+    &lt;/div&gt;
+  &lt;/main&gt;
+&lt;/div&gt;
+        </code>
+      </pre>
+    </div>
+
+    <div class="border-l-4 border-accent pl-6 py-1">
+      <h3 class="text-xl font-semibold text-content mb-2">Dynamic Footer Visibility</h3>
+      <p class="text-sm leading-relaxed text-muted mb-4">
+        Standard pages like home, blog, and roadmap display the footer. However, workspace interfaces (e.g., under <code>/study/</code> or <code>/tactics/</code>) hide the footer to maximize board real estate. This is handled by subscribing to router navigation events:
+      </p>
+      <pre
+        class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
+        <code>
+// main-layout.ts
+this.router.events.pipe(
+  filter((event): event is NavigationEnd =&gt; event instanceof NavigationEnd)
+).subscribe((event) =&gt; {{ '{' }}
+  const url = event.urlAfterRedirects.split('?')[0];
+  const isTactics = url.startsWith('/tactics/');
+  const isStudy = url.includes('/study/');
+
+  const hideFooter = isTactics || isStudy;
+  this.showFooter.set(!hideFooter);
+{{ '}' }});
+        </code>
+      </pre>
+    </div>
+
+    <div class="border-l-4 border-accent pl-6 py-1">
+      <h3 class="text-xl font-semibold text-content mb-2">Fluid Layout System</h3>
+      <p class="text-sm leading-relaxed text-muted mb-4">
+        For complex multi-column boards, <code>LayoutService</code> offers fluid layouts via an Angular signal. Workspace components toggle the fluid layout programmatically during lifecycle hooks:
+      </p>
+      <pre
+        class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm">
+        <code>
+// layout.service.ts
+@Injectable({{ '{' }} providedIn: 'root' {{ '}' }})
+export class LayoutService {{ '{' }}
+  isFluid = signal(false);
+
+  setFluid(fluid: boolean) {{ '{' }}
+    this.isFluid.set(fluid);
+  {{ '}' }}
+{{ '}' }}
+        </code>
+      </pre>
+    </div>
+  </div>
+</div>

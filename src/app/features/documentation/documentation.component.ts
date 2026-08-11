@@ -20,6 +20,7 @@ export class DocumentationComponent {
   sections = [
     { title: 'Getting Started', id: 'getting-started' },
     { title: 'Core Concepts', id: 'core-concepts' },
+    { title: 'Layout Architecture', id: 'layout-architecture' },
     { title: 'Account Management', id: 'account-management' },
     { title: 'Service Downtime', id: 'service-downtime' },
     { title: 'API Reference', id: 'api-reference' }
