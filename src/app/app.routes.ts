@@ -289,6 +289,13 @@ export const routes: Routes = [
                 (m) => m.LayoutArchitectureComponent,
               ),
           },
+          {
+            path: 'ui-components',
+            loadComponent: () =>
+              import('./features/documentation/components/ui-components.component').then(
+                (m) => m.UiComponentsComponent,
+              ),
+          },
         ]
       },
       {

@@ -1,0 +1,149 @@
+<h2 class="text-3xl mb-6 border-b border-border-base pb-4">
+  User Account Management
+</h2>
+<div class="prose prose-slate max-w-none">
+  <h3 class="text-xl mb-4">Account registration flow</h3>
+  <div class="mt-6 mb-12">
+    <div class="flex flex-col gap-4 mb-6">
+      <h4 class="text-base flex items-center gap-2">
+        <span
+          class="flex items-center justify-center w-6 h-6 rounded-full bg-accent text-white text-xs font-bold">1</span>
+        Frontend (Angular)
+      </h4>
+      <div class="text-xs text-muted italic">
+        src\app\features\auth\register\register.html, src\app\features\auth\register\register.component.ts</div>
+      <ul class="list-disc pl-5 text-sm space-y-2 leading-relaxed tracking-wide">
+        <li><strong>Reactive Form Validation</strong>: Enforces data validation and complexity rules.</li>
+        <li><strong>Reactive Submission Stream</strong>: Setting form inputs triggers a <code>submissionPayload</code>
+          signal, firing an <code>rxResource</code> call.</li>
+        <li><strong>Auth Service Interaction</strong>: Calls <code>AuthService.register(payload)</code> which makes a
+          POST request to <code>/api/register</code>.</li>
+        <li><strong>Token Storage</strong>: Saves plain-text Sanctum token under <code>localStorage</code> (key:
+          <code>chess_auth_token</code>).
+        </li>
+        <li><strong>Routing & Redirection</strong>: Directs unverified users to <code>/verify-email</code> and
+          verified users to <code>/profile</code>.</li>
+        <li><strong>LinkedSignal Error Mapping</strong>: Error triggers an effect mapping failures to form-specific
+          field signals via <code>linkedSignal</code>.</li>
+      </ul>
+    </div>
+
+    <!-- Backend Card -->
+    <div class="flex flex-col gap-4">
+      <h4 class="text-base flex items-center gap-2">
+        <span
+          class="flex items-center justify-center w-6 h-6 rounded-full bg-accent text-white text-xs font-bold">2</span>
+        Backend (Laravel)
+      </h4>
+      <ul class="list-disc pl-5 text-sm space-y-2 leading-relaxed tracking-wide">
+        <li><strong>Duplicate Prevention</strong>: Explicitly queries the <code>users</code> table for duplicate
+          emails/usernames before validation.</li>
+        <li><strong>Request Validation</strong>: Validates fields matching complexity constraints and confirmation.
+        </li>
+        <li><strong>IP Country Detection</strong>: Employs <code>DetectsCountry</code> trait to query
+          <code>ipapi.co</code> / <code>ip-api.com</code> for country detection.
+        </li>
+        <li><strong>Persistence & Model Instantiation</strong>: Instantiates and persists the following models in the
+          database:
+          <ul class="list-disc pl-5 mt-1 space-y-1 text-sm leading-relaxed tracking-wide">
+            <li><code>App\Models\User</code>: Main user record representing the player credentials and registration
+              data.</li>
+            <li><code>App\Models\UserPreference</code>: Default customization settings (board style, sound theme,
+              volume, etc.).</li>
+            <li><code>App\Models\UserProgress</code>: Initial stats tracking model for the user's studies and puzzles.
+            </li>
+            <li><code>Laravel\Sanctum\PersonalAccessToken</code>: The authentication token issued to the client to
+              authorize subsequent API requests.</li>
+          </ul>
+        </li>
+        <li><strong>Registered Event Notification</strong>: Dispatches the <code>Registered</code> event, triggering
+          mailers to send the verification link.</li>
+        <li><strong>Sanctum Issuance</strong>: Returns HTTP <code>201 Created</code> with generated personal access
+          token and user profile details.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 class="text-xl mt-8 mb-4">Input validation rules</h3>
+  <div class="overflow-x-auto border-2 border-border-base rounded-2xl p-6 mb-8">
+    <table class="min-w-full divide-y divide-border-base text-sm">
+      <thead>
+        <tr class="text-left">
+          <th class="pb-3 font-semibold pr-4">Field</th>
+          <th class="pb-3 font-semibold pr-4">Frontend Rules (Angular)</th>
+          <th class="pb-3 font-semibold">Backend Rules (Laravel)</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-border-base">
+        <tr>
+          <td class="py-4 font-medium pr-4"><code>username</code></td>
+          <td class="py-4 pr-4">
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Required</li>
+              <li>Pattern: <code>/^[a-zA-Z0-9_-]+$/</code> (letters, numbers, hyphens, underscores)</li>
+            </ul>
+          </td>
+          <td class="py-4">
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Required, string</li>
+              <li>Maximum 255 characters</li>
+              <li>Pattern: <code>/^[a-zA-Z0-9_-]+$/</code></li>
+              <li>Must be unique (pre-checked manually in database)</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="py-4 font-medium pr-4"><code>email</code></td>
+          <td class="py-4 pr-4">
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Required</li>
+              <li>Must be a valid email format</li>
+            </ul>
+          </td>
+          <td class="py-4">
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Required, string</li>
+              <li>Must be a valid email format</li>
+              <li>Maximum 255 characters</li>
+              <li>Must be unique (pre-checked manually in database)</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="py-4 font-medium pr-4"><code>password</code></td>
+          <td class="py-4 pr-4">
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Required</li>
+              <li>Minimum 8 characters</li>
+              <li>Complexity pattern: at least one lowercase letter, one uppercase letter, and one number</li>
+            </ul>
+          </td>
+          <td class="py-4">
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Required</li>
+              <li>Minimum 8 characters</li>
+              <li>Must contain: letters, numbers, and both uppercase & lowercase characters (mixed case)</li>
+              <li>Must match <code>password_confirmation</code></li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="py-4 font-medium pr-4"><code>password_confirmation</code></td>
+          <td class="py-4 pr-4">
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Required</li>
+              <li>Must match the <code>password</code> field (checked via custom group-level validator
+                <code>passwordsMatchValidator</code>)
+              </li>
+            </ul>
+          </td>
+          <td class="py-4">
+            <ul class="list-disc pl-4 space-y-1">
+              <li>Implicitly verified via the backend password confirmation matching rule</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

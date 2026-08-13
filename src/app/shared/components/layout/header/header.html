@@ -24,27 +24,29 @@
           <span class="text-sm/6 font-medium">Study</span>
         </a>
         <a appLink routerLink="/study" [queryParams]="{ category: 'opening_repertoire' }" routerLinkActive="bg-white/10"
-          [routerLinkActiveOptions]="{ exact: true }" class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroQueueList"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Opening</span>
         </a>
         <a appLink routerLink="/study" [queryParams]="{ category: 'middlegame' }" routerLinkActive="bg-white/10"
-          [routerLinkActiveOptions]="{ exact: true }" class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroChartBar"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Middlegame</span>
         </a>
         <a appLink routerLink="/study" [queryParams]="{ category: 'endgame' }" routerLinkActive="bg-white/10"
-          [routerLinkActiveOptions]="{ exact: true }" class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroFlag"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Endgame</span>
         </a>
         <a appLink routerLink="/roadmap" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
-          <ng-icon name="heroMap"
-            class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
+          <ng-icon name="heroMap" class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Roadmap</span>
         </a>
       </div>
@@ -94,12 +96,14 @@
           <span class="text-sm/6 font-medium">Player monikers</span>
         </a>
         <a appLink routerLink="/world-championships" routerLinkActive="bg-white/10"
-          [routerLinkActiveOptions]="{ exact: true }" class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroTrophy"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">WC</span>
         </a>
-        <a appLink routerLink="/tactics/guess" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a appLink routerLink="/tactics/guess" routerLinkActive="bg-white/10"
+          [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroQuestionMarkCircle"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
@@ -166,7 +170,8 @@
       <!-- Search Results Dropdown -->
       @if (isSearchOpen()) {
       @if (searchResults().length > 0) {
-      <div class="absolute right-0 top-full mt-2 w-64 bg-content text-white rounded-xl border border-white/10 py-2 z-50 shadow-md">
+      <div
+        class="absolute right-0 top-full mt-2 w-64 bg-content text-white rounded-xl border border-white/10 py-2 z-50 shadow-md">
         @for (user of searchResults(); track user.uid) {
         <a [routerLink]="['/user', user.username]" target="_blank" rel="noopener noreferrer"
           (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
@@ -202,7 +207,8 @@
         <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <span class="text-sm/6">Notifications</span>
           @if (notificationService.unreadCount() > 0) {
-          <button (click)="notificationService.markAllAsRead().subscribe()" class="text-xs hover:underline text-white/80 hover:text-white">Mark all as
+          <button (click)="notificationService.markAllAsRead().subscribe()"
+            class="text-xs hover:underline text-white/80 hover:text-white">Mark all as
             read</button>
           }
         </div>
@@ -269,20 +275,21 @@
         <!-- Logout -->
         <button (click)="logout()"
           class="w-full text-left px-4 py-2.5 hover:bg-red-500/10 flex items-center group/item text-red-500 hover:text-red-400 cursor-pointer">
-          <ng-icon name="heroArrowLeftOnRectangle" class="w-4 h-4 text-red-500 group-hover/item:text-red-400 mr-3 shrink-0"></ng-icon>
+          <ng-icon name="heroArrowLeftOnRectangle"
+            class="w-4 h-4 text-red-500 group-hover/item:text-red-400 mr-3 shrink-0"></ng-icon>
           <span class="text-sm/6 font-medium">Logout</span>
         </button>
       </div>
     </div>
     } @else {
-    <a appLink routerLink="/login">Log in</a>
+    <a class="text-md font-medium hover:underline" routerLink="/login">Login</a>
     }
 
     <!-- Mobile Hamburger Button -->
     <button (click)="toggleMobileMenu()"
       class="lg:hidden p-1.5 cursor-pointer relative group transition-colors flex items-center justify-center rounded-lg"
       aria-label="Toggle Menu">
-      <ng-icon name="heroBars3" class="w-6 h-6"></ng-icon>
+      <ng-icon name="heroBars3" strokeWidth="2" class="w-6 h-6"></ng-icon>
     </button>
   </div>
 </header>

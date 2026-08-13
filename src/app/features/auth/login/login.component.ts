@@ -2,9 +2,10 @@ import { Component, inject, DestroyRef, signal, computed } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { ButtonComponent } from '@shared/ui';
 import { AuthBrandingComponent } from '../components/auth-branding/auth-branding';
 import { Header } from '@shared/layout';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroEye, heroEyeSlash } from '@ng-icons/heroicons/outline';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 60_000;
@@ -12,7 +13,8 @@ const LOCKOUT_DURATION_MS = 60_000;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, ButtonComponent, AuthBrandingComponent, Header],
+  imports: [ReactiveFormsModule, RouterLink, AuthBrandingComponent, Header, NgIconComponent],
+  providers: [provideIcons({ heroEye, heroEyeSlash })],
   templateUrl: './login.html',
 })
 export class LoginComponent {

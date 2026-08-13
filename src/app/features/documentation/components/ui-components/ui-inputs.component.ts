@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-docs-account-management',
+  selector: 'app-ui-inputs',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './account-management.component.html',
+  templateUrl: './ui-inputs.component.html',
 })
-export class AccountManagementComponent {}
+export class UiInputsComponent {}

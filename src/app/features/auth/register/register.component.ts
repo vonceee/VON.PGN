@@ -4,9 +4,10 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators, Validati
 import { RouterLink } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { ButtonComponent } from '@shared/ui';
 import { AuthBrandingComponent } from '../components/auth-branding/auth-branding';
 import { Header } from '@shared/layout';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroEye, heroEyeSlash } from '@ng-icons/heroicons/outline';
 
 function passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -21,7 +22,8 @@ function passwordsMatchValidator(control: AbstractControl): ValidationErrors | n
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, ButtonComponent, AuthBrandingComponent, Header],
+  imports: [ReactiveFormsModule, RouterLink, AuthBrandingComponent, Header, NgIconComponent],
+  providers: [provideIcons({ heroEye, heroEyeSlash })],
   templateUrl: './register.html',
 })
 export class RegisterComponent {

@@ -1,19 +1,19 @@
-<div class="h-screen flex flex-col bg-white">
+<div class="h-screen flex flex-col">
   <app-header class="w-full shrink-0 z-50"></app-header>
   <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
     <!-- Left Column: Form Section -->
     <div class="lg:basis-2/5 flex flex-col px-6 overflow-y-auto h-full">
-      <div class="mx-auto my-auto w-full xl:max-w-md py-8">
-        <header class="mb-8">
-          <h1 class="text-4xl md:text-5xl mb-2">Sign up for vonchess</h1>
+      <div class="mx-auto my-auto w-full xl:max-w-sm py-8">
+        <header>
+          <h1 class="text-3xl md:text-4xl mb-4">Sign up for vonchess</h1>
         </header>
 
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
           <!-- Username Field -->
-          <div class="space-y-1">
-            <label for="username" class="text-sm/6 "> Username </label>
+          <div class="space-y-2">
+            <label for="username" class="text-sm/6 font-semibold"> Username </label>
             <input id="username" type="text" formControlName="username" placeholder="Yunah"
-              class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm/6 lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   " />
+              class="block w-full pl-3 pr-3 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
             @if (usernameError()) {
             <p class="text-xs text-red-500 mt-1 px-1">{{ usernameError() }}</p>
             } @else if (
@@ -32,37 +32,27 @@
 
           <!-- Email Field -->
           <div class="space-y-1">
-            <label for="email" class="text-sm/6 "> Email </label>
+            <label for="email" class="text-sm/6 font-semibold"> Email </label>
             <input id="email" type="email" formControlName="email" placeholder="hello@email.com"
-              class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm/6 lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   " />
+              class="block w-full pl-3 pr-3 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
             @if (emailError()) {
             <p class="text-xs text-red-500 mt-1 px-1">{{ emailError() }}</p>
             }
           </div>
 
           <!-- Password Field -->
-          <div class="space-y-1">
-            <label for="password" class="text-sm/6 "> Password </label>
+          <div class="space-y-2">
+            <label for="password" class="text-sm/6 font-semibold"> Password </label>
             <div class="relative">
               <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
                 placeholder="••••••••"
-                class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm/6 lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   pr-10 " />
+                class="block w-full pl-3 pr-3 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
               <button type="button" (click)="showPassword.set(!showPassword())"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted   focus:outline-none">
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted focus:outline-none flex items-center justify-center">
                 @if (showPassword()) {
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path
-                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
-                  </path>
-                  <line x1="1" y1="1" x2="23" y2="23"></line>
-                </svg>
+                <ng-icon name="heroEyeSlash" class="w-4.5 h-4.5"></ng-icon>
                 } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
+                <ng-icon name="heroEye" class="w-4.5 h-4.5"></ng-icon>
                 }
               </button>
             </div>
@@ -82,28 +72,18 @@
           </div>
 
           <!-- Confirm Password Field -->
-          <div class="space-y-1">
-            <label for="password_confirmation" class="text-sm/6 "> Confirm Password </label>
+          <div class="space-y-2 mb-4">
+            <label for="password_confirmation" class="text-sm/6 font-semibold"> Confirm Password </label>
             <div class="relative">
               <input id="password_confirmation" [type]="showConfirmPassword() ? 'text' : 'password'"
                 formControlName="password_confirmation" placeholder="••••••••"
-                class="w-full px-4 py-2.5 bg-subtle/50 border border-border-base  rounded-lg text-sm/6 lg:text-base  focus:ring-accent/10 focus:border-accent outline-none placeholder:text-muted   pr-10 " />
+                class="block w-full pl-3 pr-3 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
               <button type="button" (click)="showConfirmPassword.set(!showConfirmPassword())"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted   focus:outline-none">
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted focus:outline-none flex items-center justify-center">
                 @if (showConfirmPassword()) {
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path
-                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
-                  </path>
-                  <line x1="1" y1="1" x2="23" y2="23"></line>
-                </svg>
+                <ng-icon name="heroEyeSlash" class="w-4.5 h-4.5"></ng-icon>
                 } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
+                <ng-icon name="heroEye" class="w-4.5 h-4.5"></ng-icon>
                 }
               </button>
             </div>
@@ -123,8 +103,11 @@
           }
 
           <!-- Submit Button -->
-          <button appButton type="submit" variant="primary" [loading]="registerResource.isLoading()"
-            [disabled]="registerForm.invalid" class="w-full block">
+          <button type="submit" [disabled]="registerForm.invalid || registerResource.isLoading()"
+            class="w-full flex items-center justify-center gap-2 mt-6 px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+            @if (registerResource.isLoading()) {
+            <div class="w-4 h-4 border-4 border-current border-t-transparent rounded-full animate-spin shrink-0"></div>
+            }
             Continue
           </button>
         </form>
@@ -136,7 +119,7 @@
           </a>
         </p>
 
-        <p class="mt-8 text-center text-xs ">
+        <p class="mt-8 text-center text-xs">
           By creating an account, you agree to the <br />
           <a routerLink="/terms-of-service" target="_blank" rel="noopener noreferrer"
             class=" underline underline-offset-2">Terms of Service</a>
