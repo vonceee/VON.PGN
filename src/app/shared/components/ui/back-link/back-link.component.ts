@@ -1,18 +1,16 @@
 import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LinkComponent } from '../link/link.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroArrowLeft } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-back-link',
   standalone: true,
-  imports: [RouterLink, LinkComponent, NgIconComponent],
+  imports: [RouterLink, NgIconComponent],
   providers: [provideIcons({ heroArrowLeft })],
   template: `
     <div class="shrink-0">
       <a
-        appLink
         [routerLink]="link()"
         class="group flex items-center gap-2 text-sm/6 "
       >

@@ -11,7 +11,7 @@
   <p class="text-sm/6    max-w-xs">
     This lesson view requires a larger screen. Please open this page on a tablet or desktop device.
   </p>
-  <a appLink routerLink="/roadmap">Back to Roadmap</a>
+  <a routerLink="/roadmap">Back to Roadmap</a>
 </div>
 
 <!-- Desktop: full sidebar + content layout -->
@@ -23,7 +23,7 @@
 
     <div class="flex-1 overflow-y-auto w-full relative pl-4">
       @if (isLoadingCourse()) {
-      
+
       } @else if (course()) {
       <app-lesson-view [courseData]="course()" [lessonData]="activeLesson()" (startCourse)="onLessonSelected($event)"
         (nextLesson)="onNextLesson()" (prevLesson)="onPrevLesson()" (backToCourse)="onLessonSelected('')"

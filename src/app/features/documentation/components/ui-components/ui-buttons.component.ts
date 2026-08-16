@@ -8,6 +8,8 @@ import {
   heroChevronRight,
   heroPencil,
   heroStop,
+  heroClipboard,
+  heroCheck,
 } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -21,6 +23,8 @@ import {
       heroChevronRight,
       heroPencil,
       heroStop,
+      heroClipboard,
+      heroCheck,
     }),
   ],
   templateUrl: './ui-buttons.component.html',
@@ -28,4 +32,18 @@ import {
 export class UiButtonsComponent {
   isLoading = signal(false);
   isDisabled = signal(false);
+
+  copiedPrimary = signal(false);
+  copiedOutline = signal(false);
+
+  copyToClipboard(text: string, type: 'primary' | 'outline') {
+    navigator.clipboard.writeText(text);
+    if (type === 'primary') {
+      this.copiedPrimary.set(true);
+      setTimeout(() => this.copiedPrimary.set(false), 2000);
+    } else {
+      this.copiedOutline.set(true);
+      setTimeout(() => this.copiedOutline.set(false), 2000);
+    }
+  }
 }

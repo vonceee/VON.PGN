@@ -1,13 +1,15 @@
 <!-- Toggles Section -->
 <section class="mb-12">
-  <h3 class="text-2xl font-semibold text-content mb-4 border-b border-border-base pb-2">Toggles</h3>
+  <h3 class="text-2xl mb-4 border-b-2 border-border-base pb-2">Toggles</h3>
   <p class="text-sm leading-relaxed mb-6">
-    Toggles are interactive switches used to toggle states on or off. They use two-way data binding (signals/models) for state management.
+    Toggles are interactive switches used to toggle states on or off. They use two-way data binding (signals/models) for
+    state management.
   </p>
 
   <!-- Toggle Showcase -->
   <div class="bg-subtle border border-border-base rounded-2xl p-8 mb-8">
-    <div class="flex flex-wrap items-center gap-8 justify-center bg-white p-8 rounded-xl border border-border-base/60 mb-6 shadow-sm">
+    <div
+      class="flex flex-wrap items-center gap-8 justify-center bg-white p-8 rounded-xl border border-border-base/60 mb-6 shadow-sm">
       <div class="flex flex-col items-center gap-2">
         <app-toggle [checked]="isToggleActive()" (checkedChange)="isToggleActive.set($event)"></app-toggle>
         <span class="text-xs text-content">Active Toggle: {{ isToggleActive() }}</span>
@@ -21,8 +23,9 @@
         <span class="text-xs text-muted">Disabled (Off)</span>
       </div>
     </div>
-    
-    <pre class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm"><code>&lt;!-- Simple toggle with two-way binding --&gt;
+
+    <pre
+      class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm"><code>&lt;!-- Simple toggle with two-way binding --&gt;
 &lt;app-toggle [(checked)]="isToggled"&gt;&lt;/app-toggle&gt;
 
 &lt;!-- Disabled toggle --&gt;

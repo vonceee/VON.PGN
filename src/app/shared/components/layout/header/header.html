@@ -1,6 +1,6 @@
 <header
   class="sticky top-0 z-50 flex w-full items-center justify-between px-4 lg:px-16 py-2.5 bg-main border-b border-border-base text-content">
-  <a appLink routerLink="/home" class="text-2xl text-blue-600 font-extrabold flex items-center gap-2 shrink-0 group ">
+  <a routerLink="/home" class="text-2xl text-blue-600 font-extrabold flex items-center gap-2 shrink-0 group ">
     vonchess
   </a>
 
@@ -17,34 +17,34 @@
       </a>
       <div
         class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
-        <a appLink routerLink="/study" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/study" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroBookOpen"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Study</span>
         </a>
-        <a appLink routerLink="/study" [queryParams]="{ category: 'opening_repertoire' }" routerLinkActive="bg-white/10"
+        <a routerLink="/study" [queryParams]="{ category: 'opening_repertoire' }" routerLinkActive="bg-white/10"
           [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroQueueList"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Opening</span>
         </a>
-        <a appLink routerLink="/study" [queryParams]="{ category: 'middlegame' }" routerLinkActive="bg-white/10"
+        <a routerLink="/study" [queryParams]="{ category: 'middlegame' }" routerLinkActive="bg-white/10"
           [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroChartBar"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Middlegame</span>
         </a>
-        <a appLink routerLink="/study" [queryParams]="{ category: 'endgame' }" routerLinkActive="bg-white/10"
+        <a routerLink="/study" [queryParams]="{ category: 'endgame' }" routerLinkActive="bg-white/10"
           [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroFlag"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Endgame</span>
         </a>
-        <a appLink routerLink="/roadmap" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/roadmap" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroMap" class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Roadmap</span>
@@ -63,13 +63,13 @@
       </a>
       <div
         class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
-        <a appLink routerLink="/study/drills" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/study/drills" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroBolt"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Opening drills</span>
         </a>
-        <a appLink routerLink="/tactics" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/tactics" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroFire"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
@@ -89,21 +89,19 @@
       </a>
       <div
         class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
-        <a appLink routerLink="/monikers" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/monikers" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroUser"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Player monikers</span>
         </a>
-        <a appLink routerLink="/world-championships" routerLinkActive="bg-white/10"
-          [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/world-championships" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroTrophy"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">WC</span>
         </a>
-        <a appLink routerLink="/tactics/guess" routerLinkActive="bg-white/10"
-          [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/tactics/guess" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroQuestionMarkCircle"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
@@ -123,25 +121,25 @@
       </a>
       <div
         class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
-        <a appLink routerLink="/academy" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/academy" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroAcademicCap"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Academy</span>
         </a>
-        <a appLink routerLink="/coaches" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/coaches" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroUsers"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Coaches</span>
         </a>
-        <a appLink routerLink="/events" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/events" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroCalendar"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Events</span>
         </a>
-        <a appLink routerLink="/blog" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
+        <a routerLink="/blog" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroDocumentText"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
@@ -247,7 +245,7 @@
       <!-- Desktop Profile Dropdown -->
       <div [class.hidden]="!isProfileDropdownOpen()"
         class="absolute right-0 top-full mt-2 w-48 bg-content text-white border border-white/10 rounded-xl z-50 flex flex-col py-2 origin-top-right shadow-md">
-        <a appLink [routerLink]="['/profile']" (click)="toggleProfileDropdown()"
+        <a [routerLink]="['/profile']" (click)="toggleProfileDropdown()"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroUser"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
@@ -255,7 +253,7 @@
         </a>
 
         @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
-        <a appLink routerLink="/my-events" (click)="toggleProfileDropdown()"
+        <a routerLink="/my-events" (click)="toggleProfileDropdown()"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroBriefcase"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
@@ -264,7 +262,7 @@
         }
 
         @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
-        <a appLink routerLink="/admin" (click)="toggleProfileDropdown()"
+        <a routerLink="/admin" (click)="toggleProfileDropdown()"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroCog6Tooth"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
