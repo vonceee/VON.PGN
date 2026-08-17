@@ -2,14 +2,12 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CoachService } from '../coaches/services/coach.service';
-
-import { ButtonComponent  } from '@shared/ui';
 import { AcademyEnrollmentFormComponent } from './components/enrollment-form/enrollment-form';
 
 @Component({
   selector: 'app-academy',
   standalone: true,
-  imports: [CommonModule, RouterModule, AcademyEnrollmentFormComponent, ButtonComponent],
+  imports: [CommonModule, RouterModule, AcademyEnrollmentFormComponent],
   templateUrl: './academy.html',
   styleUrl: './academy.css',
 })

@@ -3,13 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AcademyService } from '../../../../core/services/academy.service';
 import { ToastService } from '../../../../core/services/toast.service';
-import { RouterLink } from '@angular/router';
-import { ButtonComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-academy-enrollment-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, ButtonComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './enrollment-form.html',
   styles: [`
     :host {
