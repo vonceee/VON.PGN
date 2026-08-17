@@ -29,14 +29,9 @@ export class MainLayoutComponent {
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event) => {
-      const url = event.urlAfterRedirects.split('?')[0];
-
-      const isTactics = url.startsWith('/tactics/');
-      const isStudy = url.includes('/study/');
-      const isMyEventsEditor = url.startsWith('/my-events/');
-
-      const hideFooter = isTactics || isStudy || isMyEventsEditor;
-      this.showFooter.set(!hideFooter);
+      const url = event.urlAfterRedirects.split('?')[0].split('#')[0];
+      const isHome = url === '/' || url === '/home';
+      this.showFooter.set(isHome);
     });
   }
 }

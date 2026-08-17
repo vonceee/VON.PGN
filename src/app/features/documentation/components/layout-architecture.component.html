@@ -38,7 +38,7 @@
     <div class="border-l-4 border-accent pl-6 py-1">
       <h3 class="text-xl font-semibold text-content mb-2">Dynamic Footer Visibility</h3>
       <p class="text-sm leading-relaxed text-muted mb-4">
-        Standard pages like home, blog, and roadmap display the footer. However, workspace interfaces (e.g., under <code>/study/</code> or <code>/tactics/</code>) hide the footer to maximize board real estate. This is handled by subscribing to router navigation events:
+        The footer is displayed only on the homepage to keep other workspace and content interfaces clean and distraction-free. This is handled by subscribing to router navigation events:
       </p>
       <pre
         class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
@@ -46,13 +46,10 @@
 // main-layout.ts
 this.router.events.pipe(
   filter((event): event is NavigationEnd =&gt; event instanceof NavigationEnd)
-).subscribe((event) =&gt; {{ '{' }}
-  const url = event.urlAfterRedirects.split('?')[0];
-  const isTactics = url.startsWith('/tactics/');
-  const isStudy = url.includes('/study/');
-
-  const hideFooter = isTactics || isStudy;
-  this.showFooter.set(!hideFooter);
+).subscribe((event) => {{ '{' }}
+  const url = event.urlAfterRedirects.split('?')[0].split('#')[0];
+  const isHome = url === '/' || url === '/home';
+  this.showFooter.set(isHome);
 {{ '}' }});
         </code>
       </pre>
