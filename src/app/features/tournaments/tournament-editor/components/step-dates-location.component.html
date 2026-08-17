@@ -1,0 +1,51 @@
+<div [formGroup]="form" class="space-y-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <app-form-field formControlName="startDate" label="Start Date" type="date" [required]="true"
+      [errorMessage]="getError('startDate')"></app-form-field>
+
+    <div class="relative">
+      <app-form-field formControlName="endDate" label="End Date" type="date" [required]="true"
+        [errorMessage]="getError('endDate')"></app-form-field>
+      <div class="absolute top-0 right-0 flex items-center gap-2">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" [ngModel]="isOneDayTournament()" (ngModelChange)="toggleOneDayTournament()"
+            [ngModelOptions]="{ standalone: true }"
+            class="w-4 h-4 text-accent bg-content border-border-base rounded focus:ring-accent focus:ring-2" />
+          <span class="text-sm/6 ">1-day tournament</span>
+        </label>
+      </div>
+    </div>
+
+    <app-form-field formControlName="registrationDeadline" label="Registration Deadline" type="date"
+      [optional]="true"></app-form-field>
+  </div>
+
+  <app-form-field formControlName="location" label="Venue Location"
+    placeholder="e.g. Kai Mall, Almar, Zabarte, Caloocan City, Metro Manila" [required]="true" [showCharCount]="true"
+    [charLimit]="255" [errorMessage]="getError('location')"></app-form-field>
+
+  <div class="space-y-1.5">
+    <label class="field-label block text-sm/6  text-muted ">Google Maps Link <span class="">(Optional)</span></label>
+    <div class="flex gap-2">
+      <input type="text" [ngModel]="mapsLink()" (ngModelChange)="mapsLink.set($event)"
+        [ngModelOptions]="{ standalone: true }" placeholder="Paste Google Maps URL to verify location"
+        class="flex-1 pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+      <button type="button" (click)="parseMapsLink.emit()" [disabled]="mapsLinkLoading()"
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-muted hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+        @if (mapsLinkLoading()) {
+        <div class="w-4 h-4 border-4 border-current border-t-transparent rounded-full animate-spin shrink-0"></div>
+        }
+        {{ mapsLinkLoading() ? 'Verifying...' : 'Verify' }}
+      </button>
+    </div>
+    @if (verificationStatus() === 'success') {
+    <p class="text-xs text-green-600 mt-1.5">✓ Location verified successfully</p>
+    }
+    @if (verificationStatus() === 'error') {
+    <p class="text-xs text-red-500 mt-1.5">{{ mapsLinkError() }}</p>
+    }
+    <p class="text-xs  mt-1.5">
+      Paste a Google Maps URL to verify the tournament location
+    </p>
+  </div>
+</div>

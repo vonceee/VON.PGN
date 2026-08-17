@@ -6,22 +6,13 @@
         ongoing, and completed chess events.</p>
     </div>
     <div class="flex items-center gap-4">
-      <a appButton variant="outline" routerLink="/my-events/new">+ New Event</a>
+      <a class="flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        routerLink="/my-events/new">+ New Event</a>
     </div>
   </header>
 
   @if (loading()) {
 
-  } @else if (tournaments().length === 0) {
-  <div class="text-center py-20">
-    <div class="flex flex-col items-center gap-4">
-      <ng-icon name="heroTrophy" class="w-16 h-16 text-muted"></ng-icon>
-      <div>
-        <p class="text-lg font-semibold text-muted ">No events yet</p>
-        <p class="text-sm/6  mt-1">Create your first event to get started</p>
-      </div>
-    </div>
-  </div>
   } @else {
   <div class="flex flex-col gap-4">
     @for (tournament of tournaments(); track tournament.id) {

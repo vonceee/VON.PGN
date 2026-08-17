@@ -1,0 +1,13 @@
+<div [formGroup]="form">
+  <app-form-field
+    formControlName="registrationInstructions"
+    label="Registration Instructions"
+    type="textarea"
+    [rows]="8"
+    placeholder="e.g. to register, fill up this google form, or contact 0917-XXX-XXXX"
+    [required]="true"
+    [showCharCount]="true"
+    [charLimit]="65535"
+    [errorMessage]="getError('registrationInstructions')"
+  ></app-form-field>
+</div>

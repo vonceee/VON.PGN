@@ -1,0 +1,45 @@
+<div [formGroup]="form" class="space-y-6">
+  <app-form-field
+    formControlName="format"
+    label="Format"
+    placeholder="e.g. Swiss System, 9 Rounds"
+    [required]="true"
+    [showCharCount]="true"
+    [charLimit]="255"
+    [errorMessage]="getError('format')"
+  ></app-form-field>
+
+  <app-form-field
+    formControlName="timeControl"
+    label="Time Control"
+    placeholder="e.g. 90 min + 30 sec increment"
+    [required]="true"
+    [showCharCount]="true"
+    [charLimit]="255"
+    [errorMessage]="getError('timeControl')"
+  ></app-form-field>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <app-form-field
+      formControlName="rounds"
+      label="Rounds"
+      type="number"
+      [required]="true"
+      [errorMessage]="getError('rounds')"
+    ></app-form-field>
+
+    <app-form-field
+      formControlName="entryFee"
+      label="Registration Fee"
+      type="currency"
+      [optional]="true"
+    ></app-form-field>
+
+    <app-form-field
+      formControlName="prizePool"
+      label="Total Prize Pool"
+      type="currency"
+      [optional]="true"
+    ></app-form-field>
+  </div>
+</div>

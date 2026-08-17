@@ -85,7 +85,7 @@ import { heroExclamationCircle } from '@ng-icons/heroicons/outline';
         }
 
         @case ('currency') {
-          <div class="currency-input-wrapper" [class.error]="hasError">
+          <div [class]="currencyWrapperClasses">
             <span class="currency-prefix">&#8369;</span>
             <input
               type="text"
@@ -101,14 +101,14 @@ import { heroExclamationCircle } from '@ng-icons/heroicons/outline';
         }
 
         @case ('url') {
-          <div class="flex gap-2">
+          <div class="flex gap-2 w-full">
             <input
               type="url"
               [value]="value"
               (input)="onInput($event)"
               (blur)="onBlur()"
               [placeholder]="placeholder"
-              class="flex-1 p-3 border border-border-base rounded focus:outline-none focus:border-accent "
+              [class]="urlClasses"
               [disabled]="disabled"
             />
             @if (showCharCount) {
@@ -177,19 +177,35 @@ export class FormFieldComponent implements ControlValueAccessor {
   }
 
   get inputClasses(): string {
-    const base = 'w-full p-3 border rounded focus:outline-none ';
+    const base = 'block w-full pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 ';
     if (this.hasError) {
-      return base + ' border-red-500 focus:border-red-500';
+      return base + ' border-red-500 focus:ring-red-500/50';
     }
-    return base + ' border-border-base focus:border-accent';
+    return base + ' border-border-base focus:ring-accent/50';
   }
 
   get textareaClasses(): string {
-    const base = 'w-full p-3 border rounded focus:outline-none  pb-6';
+    const base = 'block w-full pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 pb-6';
     if (this.hasError) {
-      return base + ' border-red-500 focus:border-red-500';
+      return base + ' border-red-500 focus:ring-red-500/50';
     }
-    return base + ' border-border-base focus:border-accent';
+    return base + ' border-border-base focus:ring-accent/50';
+  }
+
+  get urlClasses(): string {
+    const base = 'flex-1 pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 ';
+    if (this.hasError) {
+      return base + ' border-red-500 focus:ring-red-500/50';
+    }
+    return base + ' border-border-base focus:ring-accent/50';
+  }
+
+  get currencyWrapperClasses(): string {
+    const base = 'flex items-stretch border rounded-xl overflow-hidden transition-all bg-white w-full focus-within:ring-2 ';
+    if (this.hasError) {
+      return base + ' border-red-500 focus-within:ring-red-500/50';
+    }
+    return base + ' border-border-base focus-within:ring-accent/50';
   }
 
   writeValue(value: any): void {

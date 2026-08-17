@@ -69,10 +69,9 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <!-- Left Column -->
       <div class="md:col-span-2 space-y-8">
-        @if (tournament && posterForm()) {
+        @if (tournament.poster_settings?.useCustomPoster && tournament.poster_settings?.customPosterUrl) {
         <div class="max-w-lg mb-10 mx-auto md:mx-0">
-          <app-poster-preview [form]="posterForm()!" [tournamentData]="tournament"
-            [prizeCategories]="posterPrizeCategories()"></app-poster-preview>
+          <img [src]="tournament.poster_settings.customPosterUrl" alt="Tournament Poster" class="w-full rounded-xl shadow-lg border border-border-base" />
         </div>
         }
 

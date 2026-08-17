@@ -1,40 +1,41 @@
-<div class="mx-auto p-6 max-w-[1600px]">
+<div class="mx-auto p-6">
   <input #posterUploadInput type="file" hidden (change)="onPosterFileSelected($event)"
     accept="image/png, image/jpeg, image/webp" />
-  <form [formGroup]="tournamentForm"
-    class="grid grid-cols-1 lg:grid-cols-[180px_1fr_420px] 2xl:grid-cols-[200px_1fr_500px] gap-2 items-start">
+  <form [formGroup]="tournamentForm" class="grid grid-cols-1 lg:grid-cols-[64px_1fr] gap-8 items-start">
     <!-- Left Sidebar: Section Navigation -->
-    <aside class="hidden lg:flex sticky top-6 flex flex-col gap-2">
+    <aside
+      class="hidden lg:flex sticky top-6 flex flex-col gap-3 items-center py-4 px-2 border-2 border-border-base rounded-2xl w-16 shrink-0">
       @for (
       section of [
-      { id: 'sec-basic', label: 'Basic Info' },
-      { id: 'sec-dates', label: 'Dates & Location' },
-      { id: 'sec-format', label: 'Format & Rules' },
-      { id: 'sec-organizer', label: 'Organizer' },
-      { id: 'sec-registration', label: 'Registration' },
-      { id: 'sec-eligibility', label: 'Eligibility' },
-      { id: 'sec-prizes', label: 'Prizes' },
-      { id: 'sec-schedule', label: 'Schedule' },
+      { id: 'sec-basic', label: 'Basic Info', icon: 'heroInformationCircle' },
+      { id: 'sec-dates', label: 'Dates & Location', icon: 'heroCalendar' },
+      { id: 'sec-format', label: 'Format & Rules', icon: 'heroClipboardDocument' },
+      { id: 'sec-organizer', label: 'Organizer', icon: 'heroUser' },
+      { id: 'sec-registration', label: 'Registration', icon: 'heroPencilSquare' },
+      { id: 'sec-eligibility', label: 'Eligibility', icon: 'heroShieldCheck' },
+      { id: 'sec-prizes', label: 'Prizes', icon: 'heroTrophy' },
+      { id: 'sec-schedule', label: 'Schedule', icon: 'heroClock' }
       ];
       track section.id
       ) {
       <button type="button" (click)="scrollToSection(section.id)" [class]="
-            activeSection() === section.id
-              ? 'bg-accent'
-              : 'hover:bg-subtle '
-          "
-        class="flex items-center px-4 py-3 rounded-lg text-sm/6 font-semibold text-left border-none cursor-pointer">
-        {{ section.label }}
+          activeSection() === section.id
+            ? 'text-accent bg-subtle rounded-full'
+            : 'text-muted hover:bg-subtle rounded-xl'
+        " class="p-3 transition-all cursor-pointer border-none flex items-center justify-center relative group">
+        <ng-icon [name]="section.icon" class="text-xl"></ng-icon>
+        <div
+          class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-white border border-border-base rounded-xl text-sm font-medium text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity shadow-lg">
+          {{ section.label }}
+        </div>
       </button>
       }
     </aside>
 
     <!-- Center Console: Main Form Sections -->
-    <main class="flex flex-col gap-8 pb-32">
+    <main class="flex flex-col gap-8 pb-8">
       <div class="flex flex-col items-start gap-2">
-        <app-back-link size="sm" text="Back to Dashboard" (click)="location.back()"></app-back-link>
-
-        <div class="flex items-center justify-between w-full">
+        <div class="flex flex-col md:flex-row md:items-center justify-between w-full gap-4">
           <header class="flex-1">
             <h1 class="text-3xl md:text-4xl mb-1">{{ tournamentId() ? 'Update tournament' : 'Create new tournament' }}
             </h1>
@@ -42,28 +43,43 @@
               below to publish your chess event.</p>
           </header>
 
-          <div class="header-actions">
+          <div class="flex items-center gap-3 shrink-0">
+            <button type="button" (click)="location.back()"
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-muted hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+              Discard Changes
+            </button>
+
             @if (!useCustomPoster) {
-            <button appButton variant="primary" (click)="posterUploadInput.click()">
-              Upload Own Custom Poster
+            <button type="button" (click)="posterUploadInput.click()"
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer">
+              Upload Poster
             </button>
             } @else {
-            <button appButton variant="danger" (click)="removeCustomPoster()">
-              Remove Custom Poster
+            <button type="button" (click)="removeCustomPoster()"
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+              Remove Poster
             </button>
             }
+
+            <button type="button" (click)="confirmSave()" [disabled]="saving()"
+              class="inline-flex items-center justify-center gap-2 px-8 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
+              @if (saving()) {
+                <div class="w-4 h-4 border-4 border-current border-t-transparent rounded-full animate-spin shrink-0"></div>
+              }
+              {{ tournamentId() ? 'Update' : 'Publish' }}
+            </button>
           </div>
         </div>
       </div>
 
       <!-- Basic Info -->
-      <section id="sec-basic" class="p-8 scroll-mt-6 ui-panel">
+      <section id="sec-basic" class="p-8 scroll-mt-6 border-2 border-border-base">
         <h2 class="text-2xl mb-3">Basic information</h2>
         <app-step-basic-info [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-basic-info>
       </section>
 
       <!-- Dates & Location -->
-      <section id="sec-dates" class="p-8 scroll-mt-6 ui-panel">
+      <section id="sec-dates" class="p-8 scroll-mt-6 border-2 border-border-base">
         <h2 class="text-2xl mb-3">Dates & location</h2>
         <app-step-dates-location [form]="tournamentForm" [getError]="getError.bind(this)" [mapsLink]="mapsLink"
           [mapsLinkLoading]="mapsLinkLoading" [mapsLinkError]="mapsLinkError" [verificationStatus]="verificationStatus"
@@ -71,32 +87,32 @@
       </section>
 
       <!-- Format & Rules -->
-      <section id="sec-format" class="p-8 scroll-mt-6 ui-panel">
+      <section id="sec-format" class="p-8 scroll-mt-6 border-2 border-border-base">
         <h2 class="text-2xl mb-3">Format & rules</h2>
         <app-step-format-rules [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-format-rules>
       </section>
 
       <!-- Organizer -->
-      <section id="sec-organizer" class="p-8 scroll-mt-6 ui-panel">
+      <section id="sec-organizer" class="p-8 scroll-mt-6 border-2 border-border-base">
         <h2 class="text-2xl mb-3">Organizer information</h2>
         <app-step-organizer [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-organizer>
       </section>
 
       <!-- Registration -->
-      <section id="sec-registration" class="p-8 scroll-mt-6 ui-panel">
+      <section id="sec-registration" class="p-8 scroll-mt-6 border-2 border-border-base">
         <h2 class="text-2xl mb-3">Registration details</h2>
         <app-step-registration [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-registration>
       </section>
 
       <!-- Eligibility -->
-      <section id="sec-eligibility" class="p-8 scroll-mt-6 ui-panel">
+      <section id="sec-eligibility" class="p-8 scroll-mt-6 border-2 border-border-base">
         <h2 class="text-2xl mb-3">Player eligibility</h2>
         <app-step-eligibility [eligibilityArray]="eligibilityArray" (addItem)="addEligibilityItem()"
           (removeItem)="removeEligibilityItem($event)"></app-step-eligibility>
       </section>
 
       <!-- Prizes -->
-      <section id="sec-prizes" class="p-8 scroll-mt-6 ui-panel">
+      <section id="sec-prizes" class="p-8 scroll-mt-6 border-2 border-border-base">
         <h2 class="text-2xl mb-3">Prizes & categories</h2>
         <app-step-prizes [categoriesArray]="categoriesArray" (addCategory)="addCategory()"
           (removeCategory)="removeCategory($event)" (addExtraPrize)="addExtraPrize($event)"
@@ -105,7 +121,7 @@
       </section>
 
       <!-- Schedule -->
-      <section id="sec-schedule" class="p-8 scroll-mt-6 ui-panel">
+      <section id="sec-schedule" class="p-8 scroll-mt-6 border-2 border-border-base">
         <h2 class="text-2xl mb-3">Event schedule</h2>
         <app-step-schedule [scheduleDaysArray]="scheduleDaysArray" (addScheduleDay)="addScheduleDay()"
           (removeScheduleDay)="removeScheduleDay($event)" (addScheduleEvent)="addScheduleEvent($event)"
@@ -113,41 +129,15 @@
       </section>
     </main>
 
-    <!-- Right Sidebar: Live Poster Preview -->
-    <aside class="sticky top-6 flex flex-col gap-6">
-      @if (tournamentDataSignal(); as data) {
-      <app-poster-preview [form]="tournamentForm" [tournamentData]="data" [prizeCategories]="posterPrizeCategories"
-        [downloading]="downloadingPoster()"></app-poster-preview>
-      }
-    </aside>
 
-    <!-- Sticky Footer Actions -->
-    <footer class="ui-sticky-footer px-8 py-4">
-      <div class="max-w-[1600px] mx-auto w-full flex justify-between items-center">
-        <span class="text-sm/6  hidden md:inline">
-          {{
-          tournamentId()
-          ? 'Editing: ' + tournamentForm.get('name')?.value
-          : 'Creating new tournament'
-          }}
-        </span>
-        <div class="flex gap-4 w-full md:w-auto">
-          <button appButton variant="ghost" class="flex-1 md:flex-none" (click)="location.back()">
-            Discard Changes
-          </button>
-          <button appButton variant="primary" class="flex-1 md:flex-none px-12" (click)="confirmSave()" [loading]="saving()">
-            {{ tournamentId() ? 'Update Tournament' : 'Publish Tournament' }}
-          </button>
-        </div>
-      </div>
-    </footer>
+
   </form>
 
   @if (showReviewModal()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60   " (click)="closeReviewModal()">
-    <div class="bg-main w-full max-w-4xl max-h-[90vh] flex flex-col relative   " (click)="$event.stopPropagation()">
+    <div class="w-full max-w-4xl max-h-[90vh] flex flex-col relative   " (click)="$event.stopPropagation()">
       <button
-        class="absolute top-6 right-6 w-10 h-10 rounded-full bg-subtle text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500 z-10"
+        class="absolute top-6 right-6 w-10 h-10 rounded-full text-muted flex items-center justify-center hover:bg-red-50 hover:text-red-500 z-10"
         (click)="closeReviewModal()">
         <ng-icon name="heroXMark" class="w-6 h-6"></ng-icon>
       </button>
@@ -157,11 +147,16 @@
           (editSection)="onReviewEdit($event)"></app-review-section>
       </div>
 
-      <div class="p-6 px-10 bg-subtle border-t border-border-base flex justify-between items-center gap-6">
-        <button appButton variant="ghost" (click)="closeReviewModal()">
+      <div class="p-6 px-10 flex justify-between items-center gap-6">
+        <button type="button" (click)="closeReviewModal()"
+          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-muted hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
           Back to Editing
         </button>
-        <button appButton variant="primary" class="px-10" [loading]="saving()" (click)="executeSave()">
+        <button type="button" (click)="executeSave()" [disabled]="saving()"
+          class="inline-flex items-center justify-center gap-2 px-10 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
+          @if (saving()) {
+            <div class="w-4 h-4 border-4 border-current border-t-transparent rounded-full animate-spin shrink-0"></div>
+          }
           {{ tournamentId() ? 'Confirm & Update' : 'Confirm & Publish' }}
         </button>
       </div>

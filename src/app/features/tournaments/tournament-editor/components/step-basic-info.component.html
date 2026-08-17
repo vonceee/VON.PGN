@@ -1,0 +1,21 @@
+<div [formGroup]="form" class="space-y-6">
+  <app-form-field
+    formControlName="name"
+    label="Tournament Name"
+    placeholder="e.g. Mobile Chess Bus Tournament 2026"
+    [required]="true"
+    [showCharCount]="true"
+    [charLimit]="64"
+    [errorMessage]="getError('name')"
+  ></app-form-field>
+
+  <app-form-field
+    formControlName="description"
+    label="Description"
+    type="textarea"
+    placeholder="you can add description, social media links, etc..."
+    [optional]="true"
+    [showCharCount]="true"
+    [charLimit]="65535"
+  ></app-form-field>
+</div>

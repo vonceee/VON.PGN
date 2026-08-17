@@ -21,7 +21,7 @@ import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpe
   templateUrl: './woodpecker-solve.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'absolute inset-0 overflow-hidden',
+    class: 'absolute inset-0 overflow-y-auto lg:overflow-hidden',
   },
 })
 export class WoodpeckerSolveComponent implements OnInit, OnDestroy {

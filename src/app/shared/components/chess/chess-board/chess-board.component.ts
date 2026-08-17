@@ -284,14 +284,21 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   private updateBoardSize() {
     const GUTTER = 0;
 
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const parent = this.el.nativeElement.parentElement;
+    const currentParentHeight = parent ? parent.clientHeight : 0;
+    const currentParentWidth = parent ? parent.clientWidth : 0;
+
     // Determine the maximum size that fits the screen height
-    const maxHeight = this.containerSize.height || (window.innerHeight - 120);
+    const maxHeight = currentParentHeight || this.containerSize.height || (window.innerHeight - 120);
 
     // Determine the maximum size that fits the screen width (accounting for other columns' fixed widths)
     let otherWidth = this.layoutColumnsWidth;
     if (otherWidth === undefined) {
       const isThreeCol = window.innerWidth >= 1280;
-      otherWidth = (isThreeCol ? 330 : 0) + 400 + 80;
+      const isTwoCol = window.innerWidth >= 768 && window.innerWidth < 1280;
+      otherWidth = isThreeCol ? (330 + 400 + 80) : (isTwoCol ? (400 + 60) : 32);
     }
 
     // Limit screen width reference to maximum container width (1850px) to prevent overflowing container boundaries
@@ -300,7 +307,8 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
     const maxWidth = activeWidth - otherWidth;
 
     // The maximum possible board size is the minimum of available width and height
-    const maxPossible = Math.max(this.minSize, Math.min(maxWidth, maxHeight));
+    const maxWidthConstraint = currentParentWidth || maxWidth;
+    const maxPossible = Math.max(this.minSize, Math.min(maxWidthConstraint, maxHeight));
 
     // Use manual size if set, otherwise fit to parent
     const targetSize = this.fluid ? this.containerSize.width : (this.manualSize() || maxPossible);
@@ -321,7 +329,6 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
     const boardSize = totalSize - GUTTER;
     if (this.boardSize !== boardSize) {
       this.boardSize = boardSize;
-      this.manualSize.set(boardSize);
       this.sizeChange.emit(this.boardSize);
 
       // Notify Chessground to redraw

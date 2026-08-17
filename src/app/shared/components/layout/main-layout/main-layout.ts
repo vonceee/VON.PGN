@@ -33,8 +33,9 @@ export class MainLayoutComponent {
 
       const isTactics = url.startsWith('/tactics/');
       const isStudy = url.includes('/study/');
+      const isMyEventsEditor = url.startsWith('/my-events/');
 
-      const hideFooter = isTactics || isStudy;
+      const hideFooter = isTactics || isStudy || isMyEventsEditor;
       this.showFooter.set(!hideFooter);
     });
   }

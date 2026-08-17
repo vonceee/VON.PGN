@@ -22,6 +22,12 @@ import { ButtonComponent } from '@shared/ui';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { getPlyFromFen } from '../../core/utils/chess-tree.utils';
 import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
+import { EngineService } from '../../core/services/engine.service';
+import { ToggleComponent } from '@shared/ui';
+import { StudyAnalysisComponent } from '../study/study-analysis/study-analysis.component';
+
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroEye } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-tactics',
@@ -29,12 +35,19 @@ import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
   imports: [
     CommonModule,
     TacticsBoardComponent,
-    ButtonComponent,
     MoveNotationComponent,
+    NgIconComponent,
+    ToggleComponent,
+    StudyAnalysisComponent,
+  ],
+  providers: [
+    provideIcons({
+      heroEye,
+    }),
   ],
   templateUrl: './tactics.component.html',
   host: {
-    class: 'absolute inset-0 overflow-hidden',
+    class: 'absolute inset-0 overflow-y-auto lg:overflow-hidden',
   },
 })
 export class TacticsComponent implements OnInit, OnDestroy {
@@ -59,7 +72,101 @@ export class TacticsComponent implements OnInit, OnDestroy {
     return key;
   });
 
-  constructor() { }
+  engineService = inject(EngineService);
+
+  // Engine analysis properties
+  isEngineActive = signal(false);
+  showEngineSettings = signal(false);
+  
+  engineDepth = this.engineService.engineDepth;
+  engineNodes = this.engineService.engineNodes;
+  engineNps = this.engineService.engineNps;
+  isEngineError = this.engineService.isError;
+  pvLines = this.engineService.pvLines;
+  multiPv = this.engineService.multiPv;
+  searchMode = this.engineService.searchMode;
+
+  formattedPvLines = computed(() => {
+    const lines = this.pvLines();
+    const fen = this.currentFen();
+    if (lines.length === 0 || !fen) return [];
+
+    return lines.map((line) => {
+      const chess = new Chess(fen);
+      const moves: {
+        san: string;
+        uci: string;
+        moveNumber: number;
+        showMoveNumber: boolean;
+        isBlack: boolean;
+      }[] = [];
+
+      for (let i = 0; i < line.pv.length; i++) {
+        const uci = line.pv[i];
+        const currentTurn = chess.turn();
+        const currentMoveNumber = chess.moveNumber();
+        const showMoveNumber = i === 0 || currentTurn === 'w';
+        const isBlack = i === 0 && currentTurn === 'b';
+
+        try {
+          const from = uci.substring(0, 2);
+          const to = uci.substring(2, 4);
+          const promotion = uci.length > 4 ? uci.substring(4, 5) : undefined;
+          const result = chess.move({ from, to, promotion });
+          moves.push({
+            san: result.san,
+            uci,
+            moveNumber: currentMoveNumber,
+            showMoveNumber,
+            isBlack,
+          });
+        } catch (e) {
+          moves.push({
+            san: uci,
+            uci,
+            moveNumber: currentMoveNumber,
+            showMoveNumber,
+            isBlack,
+          });
+        }
+      }
+
+      return {
+        ...line,
+        moves,
+      };
+    });
+  });
+
+  formattedNps = computed(() => {
+    const nps = this.engineNps();
+    if (nps >= 1_000_000) return `${(nps / 1_000_000).toFixed(1)}M nps`;
+    if (nps >= 1_000) return `${(nps / 1_000).toFixed(0)}k nps`;
+    return nps > 0 ? `${nps} nps` : '';
+  });
+
+  engineEval = computed(() => {
+    const lines = this.pvLines();
+    return lines.length > 0 ? lines[0].eval : null;
+  });
+
+  constructor() {
+    effect(() => {
+      const active = this.isEngineActive();
+      const fen = this.currentFen();
+      const isBrowser = isPlatformBrowser(this.platformId);
+
+      console.log('[Tactics Component] Engine Effect triggered:', { active, fen, isBrowser });
+
+      if (isBrowser) {
+        if (active && fen) {
+          this.engineService.startAnalysis(fen);
+        } else {
+          this.engineService.stop();
+        }
+      }
+    });
+  }
 
   currentUser = this.userService.currentUser;
   puzzleHistory = signal<PuzzleAttempt[]>([]);
@@ -84,16 +191,9 @@ export class TacticsComponent implements OnInit, OnDestroy {
   pgnMoves = signal<string[]>([]);
   currentPly = signal(0);
   currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  fenError = signal<string | null>(null);
   puzzleStartPly = signal(0);
   isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
-  boardSize = signal(600);
-
-
-  private sizeEffect = effect(() => {
-    if (isPlatformBrowser(this.platformId)) {
-      document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
-    }
-  });
 
   ngOnInit() {
     this.onResize();
@@ -114,7 +214,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-
+    this.engineService.terminate();
   }
 
 
@@ -136,6 +236,8 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.isReviewMode.set(!!puzzleId);
     this.pgnMoves.set([]);
     this.currentPly.set(0);
+    this.isEngineActive.set(false);
+    this.fenError.set(null);
 
     this.tacticsService.getDailyPuzzle(this.activeTheme() ?? undefined, puzzleId).subscribe({
       next: (res: { data: Puzzle }) => {
@@ -335,8 +437,9 @@ export class TacticsComponent implements OnInit, OnDestroy {
         }
         this.currentFen.set(this.chess.fen());
       }
-    } catch (e) {
+    } catch (e: any) {
       DevLogger.warn('[Tactics] Could not update FEN for move:', san, e);
+      this.fenError.set(e.message || String(e));
     }
   }
 
@@ -382,8 +485,9 @@ export class TacticsComponent implements OnInit, OnDestroy {
       } else if (this.boardComponent) {
         this.boardComponent.lastMove = undefined;
       }
-    } catch (e) {
+    } catch (e: any) {
       DevLogger.warn('[Tactics] Failed to set chess state for ply:', ply, e);
+      this.fenError.set(e.message || String(e));
     }
   }
 }

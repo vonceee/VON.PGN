@@ -1,0 +1,141 @@
+<div class="space-y-6">
+
+  @if (categoriesArray.length === 0) {
+  <p class=" text-sm/6 py-8 text-center bg-subtle  rounded-xl border-2  border-border-base">No prize categories added
+    yet.
+  </p>
+  }
+
+  <div class="space-y-8">
+    @for (cat of categoriesArray.controls; track $index; let ci = $index) {
+    <div class="p-6 bg-subtle/50 rounded-xl border border-border-base">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-semibold text-lg ">Category {{ ci + 1 }}</h3>
+        <button type="button" (click)="removeCategory.emit(ci)"
+          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+          Remove Category
+        </button>
+      </div>
+
+      <div class="space-y-4 mb-8">
+        <label class="block text-sm/6 font-semibold text-muted ">Category Name</label>
+        <input type="text" [formControl]="getControl(categoryGroup(ci), 'name')" placeholder="e.g. Open, Under 14"
+          class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+      </div>
+
+      <div class="space-y-6">
+        <div class="p-4 bg-white  rounded-lg border border-border-base">
+          <label class="text-sm/6 font-semibold block mb-4 text-accent/80  ">Main Prizes</label>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="space-y-1.5">
+              <label class="block text-xs font-semibold  uppercase">1st Place</label>
+              <input type="text" [formControl]="getControl(categoryGroup(ci), 'champion')"
+                placeholder="P50,000 + trophy"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-xs font-semibold  uppercase">2nd Place</label>
+              <input type="text" [formControl]="getControl(categoryGroup(ci), '2nd_place')" placeholder="Prize value"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+            </div>
+            <div class="space-y-1.5">
+              <label class="block text-xs font-semibold  uppercase">3rd Place</label>
+              <input type="text" [formControl]="getControl(categoryGroup(ci), '3rd_place')" placeholder="Prize value"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+            </div>
+          </div>
+
+          @if (getCategoryExtraPrizes(ci).length > 0) {
+          <div class="space-y-4 mt-6 pt-6 border-t  border-border-base">
+            @for (ep of getCategoryExtraPrizes(ci).controls; track $index; let ei = $index) {
+            <div class="flex gap-4 items-start bg-subtle/30 p-3 rounded-lg">
+              <div class="flex-1 space-y-2">
+                <div class="flex gap-2 items-center">
+                  <input type="text" [formControl]="getControl(extraPrizeGroup(ci, ei), 'label')"
+                    placeholder="Place name (e.g. 4th - 10th)"
+                    class="flex-1 pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+                  <button type="button" (click)="removeExtraPrize.emit({ci, ei})"
+                    class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+                    ✕
+                  </button>
+                </div>
+                <input type="text" [formControl]="getControl(extraPrizeGroup(ci, ei), 'value')"
+                  placeholder="Prize value"
+                  class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+              </div>
+            </div>
+            }
+          </div>
+          }
+          <div class="mt-4">
+            <button type="button" (click)="addExtraPrize.emit(ci)"
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer">
+              + Add Extra Place
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4 bg-white  rounded-lg border border-border-base">
+          <label class="text-sm/6 font-semibold block mb-4 text-purple-600  ">Special Awards</label>
+          <div class="space-y-4">
+            @for (award of getCategorySpecialAwards(ci).controls; track $index; let ai = $index) {
+            <div class="p-4 bg-subtle/30 rounded-lg border border-border-base">
+              <div class="flex gap-3 items-center mb-3">
+                <input type="text" [formControl]="getControl(specialAwardGroup(ci, ai), 'name')"
+                  placeholder="e.g. Top Senior"
+                  class="flex-1 pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+                <select [formControl]="getControl(specialAwardGroup(ci, ai), 'type')"
+                  class="pl-3 pr-8 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50">
+                  <option value="simple">Simple</option>
+                  <option value="nested">1st/2nd/3rd Style</option>
+                </select>
+                <button type="button" (click)="removeSpecialAward.emit({ci, ai})"
+                  class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+                  ✕
+                </button>
+              </div>
+              @if (specialAwardGroup(ci, ai).get('type')?.value === 'simple') {
+              <input type="text" [formControl]="getControl(specialAwardGroup(ci, ai), 'value')"
+                placeholder="Prize value"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+              } @else {
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold  ml-1">1st</label>
+                  <input type="text" [formControl]="getControl(specialAwardGroup(ci, ai), '1st')"
+                    placeholder="1st prize"
+                    class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+                </div>
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold  ml-1">2nd</label>
+                  <input type="text" [formControl]="getControl(specialAwardGroup(ci, ai), '2nd')"
+                    placeholder="2nd prize"
+                    class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+                </div>
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold  ml-1">3rd</label>
+                  <input type="text" [formControl]="getControl(specialAwardGroup(ci, ai), '3rd')"
+                    placeholder="3rd prize"
+                    class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+                </div>
+              </div>
+              }
+            </div>
+            }
+          </div>
+          <div class="mt-4">
+            <button type="button" (click)="addSpecialAward.emit(ci)"
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer">
+              + Add Special Award
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+    <button type="button" (click)="addCategory.emit()"
+      class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer w-full">
+      + Add New Category
+    </button>
+  </div>
+</div>

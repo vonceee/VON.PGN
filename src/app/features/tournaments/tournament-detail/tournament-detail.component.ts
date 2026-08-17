@@ -2,9 +2,7 @@ import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { BackLinkComponent  } from '@shared/ui';
-import { PosterPreviewComponent } from '../tournament-editor/components/poster-preview.component';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -37,8 +35,6 @@ import {
     CommonModule,
     RouterModule,
     BackLinkComponent,
-    PosterPreviewComponent,
-    ReactiveFormsModule,
     UserHovercardDirective,
     NgIconComponent,
   ],
@@ -68,12 +64,9 @@ export class TournamentDetailComponent implements OnInit {
   private tournamentService = inject(TournamentService);
   private sanitizer = inject(DomSanitizer);
   private seo = inject(SeoService);
-  private fb = inject(FormBuilder);
   authService = inject(AuthService);
 
   tournament = signal<Tournament | undefined>(undefined);
-  posterForm = signal<FormGroup | undefined>(undefined);
-  posterPrizeCategories = signal<any[]>([]);
   mapUrl = signal<SafeResourceUrl | null>(null);
   isBookmarked = signal(false);
   bookmarkLoading = signal(false);
@@ -89,7 +82,6 @@ export class TournamentDetailComponent implements OnInit {
           this.isBookmarked.set(t.isBookmarked ?? false);
           this.setupMap();
           this.updateSeo(t);
-          this.initPoster(t);
         }
       }
     });
@@ -228,94 +220,5 @@ export class TournamentDetailComponent implements OnInit {
     return count.toString();
   }
 
-  private parsePosterSettings(ps: any): any {
-    if (!ps) return null;
-    let decoded = ps;
-    if (typeof ps === 'string') {
-      try {
-        decoded = JSON.parse(ps);
-        if (typeof decoded === 'string') decoded = JSON.parse(decoded);
-      } catch (e) { return null; }
-    }
-    
-    if (decoded && typeof decoded === 'object') {
-      // Normalize snake_case to camelCase for the form
-      if (decoded.background_image && !decoded.backgroundImage) {
-        decoded.backgroundImage = decoded.background_image;
-      }
-      if (decoded.layout_id && !decoded.layoutId) {
-        decoded.layoutId = decoded.layout_id;
-      }
-    }
-    return decoded;
-  }
-
-  private initPoster(t: Tournament) {
-    // 1. Initialize hidden form for the engine
-    let ps = this.parsePosterSettings(t.poster_settings);
-    const settings = ps || {
-        layoutId: 'portrait-classic',
-        theme: 'light',
-        backgroundImage: null,
-        logos: [],
-        visibility: {
-            showPrizePool: true,
-            showSchedule: true,
-            showEntryFee: true,
-            showOrganizerInfo: true
-        }
-    };
-
-    const form = this.fb.group({
-        posterSettings: this.fb.group({
-            layoutId: [settings.layoutId],
-            theme: [settings.theme],
-            backgroundImage: [settings.backgroundImage],
-            logos: this.fb.array(settings.logos || []),
-            visibility: this.fb.group({
-                showPrizePool: [settings.visibility?.showPrizePool ?? true],
-                showSchedule: [settings.visibility?.showSchedule ?? true],
-                showEntryFee: [settings.visibility?.showEntryFee ?? true],
-                showOrganizerInfo: [settings.visibility?.showOrganizerInfo ?? true]
-            }),
-            useCustomPoster: [settings.useCustomPoster ?? false],
-            customPosterUrl: [settings.customPosterUrl ?? null]
-        })
-    });
-    this.posterForm.set(form);
-
-    // 2. Map prizes
-    const categories: any[] = [];
-    if (t.categories) {
-        Object.entries(t.categories).forEach(([name, data]) => {
-            const prizes: any[] = [];
-            if (data.prizes) {
-                Object.entries(data.prizes).forEach(([place, value]) => {
-                    if (value) prizes.push({ place: place.replace('_', ' '), value });
-                });
-            }
-
-            const specialAwards: any[] = [];
-            if (data.specialAwards) {
-                Object.entries(data.specialAwards).forEach(([awardName, value]) => {
-                    if (typeof value === 'string') {
-                        specialAwards.push({ name: awardName, value });
-                    } else if (value && typeof value === 'object') {
-                        Object.entries(value).forEach(([subPlace, subVal]) => {
-                            if (subVal) specialAwards.push({ name: `${awardName} (${subPlace})`, value: subVal });
-                        });
-                    }
-                });
-            }
-
-            categories.push({
-                category: name.replace('_', ' '),
-                prizes,
-                specialAwards
-            });
-        });
-    }
-    this.posterPrizeCategories.set(categories);
-  }
 }
 

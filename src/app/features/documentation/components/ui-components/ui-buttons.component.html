@@ -1,209 +1,98 @@
-<!-- Buttons Section -->
+<!-- Tailwind Buttons Section -->
 <section class="mb-12">
-  <h3 class="text-2xl mb-4 border-b border-border-base pb-2">Buttons</h3>
-  <p class="text-sm leading-relaxed mb-6">
-    Buttons are implemented via the <code>appButton</code> directive, which can be applied to both HTML
-    <code>&lt;button&gt;</code> and <code>&lt;a&gt;</code> anchor tags. It dynamically styles elements using semantic
-    design tokens and manages loading and disabled states automatically.
-  </p>
+  <h3 class="text-2xl mb-4 border-b border-border-base pb-2">Tailwind Buttons</h3>
+  <!-- Core Button Variants (Primary, Outline, Danger & Ghost) -->
+  <div class="mb-12">
+    <h4 class="text-md mb-4">1. Core Button Variants (Primary, Outline, Danger & Ghost)</h4>
 
-  <!-- Interactive Button Playground -->
-  <div class="bg-subtle border border-border-base rounded-2xl p-8 mb-8">
-    <h4 class="text-md mb-6">Interactive Playground</h4>
-
-    <!-- Preview Container -->
-    <div
-      class="flex flex-wrap items-center gap-6 justify-center bg-white p-8 rounded-xl border border-border-base/60 mb-6 shadow-sm min-h-32">
-      <button appButton variant="primary" [loading]="isLoading()" [disabled]="isDisabled()">
+    <!-- Showcase Preview -->
+    <div class="flex flex-wrap items-center gap-4 justify-center bg-subtle p-8 rounded-xl mb-6">
+      <!-- Primary -->
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer">
         Primary Button
       </button>
-      <button appButton variant="outline" [loading]="isLoading()" [disabled]="isDisabled()">
+
+      <!-- Outline -->
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer">
         Outline Button
       </button>
-      <button appButton variant="danger" [loading]="isLoading()" [disabled]="isDisabled()">
+
+      <!-- Danger -->
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
         Danger Button
       </button>
-      <button appButton variant="ghost" [loading]="isLoading()" [disabled]="isDisabled()">
+
+      <!-- Ghost -->
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-muted hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
         Ghost Button
       </button>
     </div>
 
-    <!-- Playground Controls -->
-    <div class="flex flex-wrap items-center gap-8 justify-center border-t border-border-base/60 pt-6">
-      <label class="flex items-center gap-3 text-sm font-medium cursor-pointer">
-        <app-toggle [checked]="isLoading()" (checkedChange)="isLoading.set($event)"></app-toggle>
-        <span>Loading state</span>
-      </label>
-      <label class="flex items-center gap-3 text-sm font-medium cursor-pointer">
-        <app-toggle [checked]="isDisabled()" (checkedChange)="isDisabled.set($event)"></app-toggle>
-        <span>Disabled state</span>
-      </label>
-    </div>
-  </div>
-
-  <!-- Variant Details -->
-  <div class="space-y-6 mb-8">
-    <div class="border-l-4 border-accent pl-6 py-1">
-      <h4 class="text-md mb-2">Base Tailwind Classes</h4>
-      <p class="text-sm leading-relaxed mb-4">
-        All button variants inherit the following core layout, typography, and interactive classes:
-      </p>
-      <pre
-        class="bg-white border border-border-base rounded-2xl p-4 text-xs overflow-x-auto leading-relaxed shadow-sm mb-4"><code>group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer</code></pre>
-    </div>
-
-    <div class="border-l-4 border-accent pl-6 py-1">
-      <h4 class="text-md mb-2">Variant-Specific Tailwind Classes</h4>
-      <p class="text-sm leading-relaxed mb-4">
-        Each variant appends specific styling classes to the base classes:
-      </p>
-
-      <div class="overflow-x-auto mb-4 border border-border-base rounded-xl bg-white shadow-sm">
-        <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="border-b border-border-base bg-subtle/50 font-semibold">
-              <th class="p-3">Variant</th>
-              <th class="p-3">Tailwind Classes Applied</th>
-              <th class="p-3">Description</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-border-base text-content">
-            <tr>
-              <td class="p-3">primary</td>
-              <td class="p-3 text-accent">bg-content text-main rounded-full</td>
-              <td class="p-3 text-muted">Primary CTA with filled background and full rounded shape.</td>
-            </tr>
-            <tr>
-              <td class="p-3">outline</td>
-              <td class="p-3 text-accent">bg-surface rounded-full hover:bg-accent/10</td>
-              <td class="p-3 text-muted">Secondary button with border-base styling and hover tint.</td>
-            </tr>
-            <tr>
-              <td class="p-3">danger</td>
-              <td class="p-3 text-accent">bg-red-50 border-transparent rounded-full text-red-700
-                hover:bg-red-100 hover:text-red-800 transition-colors</td>
-              <td class="p-3 text-muted">Soft red destructive button, darkening elements on hover.</td>
-            </tr>
-            <tr>
-              <td class="p-3">ghost</td>
-              <td class="p-3 text-accent">bg-transparent hover:bg-accent/10 border-transparent text-muted</td>
-              <td class="p-3 text-muted">Minimal button with transparent background, showing accent tint on hover.</td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Primary Class Block -->
+    <div class="relative mb-4">
+      <span class="block mb-1">Primary Button</span>
+      <div class="whitespace-nowrap overflow-x-auto font-mono text-xs text-content">
+        inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5
+        cursor-pointer
       </div>
     </div>
 
-    <div class="border-l-4 border-accent pl-6 py-1">
-      <h4 class="text-md mb-2">Disabled & Loading States Tailwind Classes</h4>
-      <p class="text-sm leading-relaxed mb-4">
-        When <code>[loading]="true"</code> or <code>[disabled]="true"</code> is passed, the host element receives the
-        following utility classes to prevent interaction and dim the component:
-      </p>
-      <pre
-        class="bg-white border border-border-base rounded-2xl p-4 text-xs overflow-x-auto leading-relaxed shadow-sm mb-4"><code>pointer-events-none opacity-50</code></pre>
+    <!-- Outline Class Block -->
+    <div class="relative mb-4">
+      <span class="block mb-1">Outline Button</span>
+      <div class="whitespace-nowrap overflow-x-auto font-mono text-xs text-content">
+        inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium
+        text-[16px] leading-5 cursor-pointer hover:bg-subtle transition-all
+      </div>
     </div>
 
-    <div class="border-l-4 border-accent pl-6 py-1">
-      <h4 class="text-md mb-2">Usage Examples</h4>
-
-      <p class="text-sm leading-relaxed mb-2">1. Import <code>ButtonComponent</code> in your Angular component:</p>
-      <pre
-        class="bg-white border border-border-base rounded-2xl p-6 text-xs overflow-x-auto leading-relaxed shadow-sm mb-4"><code>import &#123; ButtonComponent &#125; from '&#64;shared/ui';
-
-&#64;Component(&#123;
-  // ...
-  imports: [ButtonComponent]
-&#125;)</code></pre>
-
-      <p class="text-sm leading-relaxed mb-2">2. Use the directive in your component template:</p>
-      <pre
-        class="bg-white border border-border-base rounded-2xl p-6 text-xs overflow-x-auto leading-relaxed shadow-sm mb-4"><code>&lt;!-- Button element with primary variant --&gt;
-&lt;button appButton variant="primary"&gt;Continue&lt;/button&gt;
-
-&lt;!-- Anchor element styled as an outline button --&gt;
-&lt;a appButton variant="outline" routerLink="/profile"&gt;View Profile&lt;/a&gt;
-
-&lt;!-- Destructive action button with loading state --&gt;
-&lt;button appButton variant="danger" [loading]="isDeleting" (click)="deleteItem()"&gt;
-  Delete Account
-&lt;/button&gt;</code></pre>
-    </div>
-  </div>
-</section>
-
-<!-- Pure Tailwind Buttons Section -->
-<section class="mb-12">
-  <h3 class="text-2xl mb-4 border-b border-border-base pb-2">Pure Tailwind Buttons</h3>
-  <p class="text-sm leading-relaxed mb-6">
-    In cases where the <code>appButton</code> directive is not imported (such as standalone workspace widgets or sidebar
-    forms), standard HTML button configurations are implemented using explicit Tailwind utility classes.
-  </p>
-
-  <!-- Pure Tailwind Primary Action Button -->
-  <div class="bg-subtle border border-border-base rounded-2xl p-8 mb-8">
-    <h4 class="text-md mb-4">1. Primary Form Action Button</h4>
-    <p class="text-sm leading-relaxed mb-6">
-      Commonly used as the primary submit button in sidebar modals, chapter creation panels, and tactics/drills setups.
-    </p>
-
-    <!-- Showcase Preview -->
-    <div
-      class="flex flex-col items-center justify-center bg-white p-8 rounded-xl border border-border-base/60 mb-6 shadow-sm">
-      <button
-        class="w-full max-w-xs flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-        Add Chapter
-      </button>
-
-      <button disabled
-        class="mt-4 w-full max-w-xs flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-        Add Chapter (Disabled)
-      </button>
+    <!-- Danger Class Block -->
+    <div class="relative mb-4">
+      <span class="block mb-1">Danger Button</span>
+      <div class="whitespace-nowrap overflow-x-auto font-mono text-xs text-content">
+        inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700
+        hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer
+      </div>
     </div>
 
-    <!-- Code & Classes Details -->
-    <div class="border-l-4 border-accent pl-6 py-1 mb-6">
-      <h5 class="text-sm mb-2">Tailwind Classes Applied</h5>
-      <pre
-        class="bg-white border border-border-base rounded-xl p-4 text-xs overflow-x-auto leading-relaxed shadow-sm"><code>w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed</code></pre>
+    <!-- Ghost Class Block -->
+    <div class="relative mb-4">
+      <span class="block mb-1">Ghost Button</span>
+      <div class="whitespace-nowrap overflow-x-auto font-mono text-xs text-content">
+        inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-muted
+        hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer
+      </div>
     </div>
-
-    <pre class="bg-white border border-border-base rounded-2xl p-6 text-xs overflow-x-auto leading-relaxed shadow-sm"><code>&lt;!-- Pure Tailwind Primary Button --&gt;
-&lt;button class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"&gt;
-  Add Chapter
-&lt;/button&gt;</code></pre>
   </div>
 
   <!-- Pure Tailwind Icon / Toolbar Button -->
-  <div class="bg-subtle border border-border-base rounded-2xl p-8 mb-8">
+  <div class="mb-12">
     <h4 class="text-md mb-4">2. Icon / Toolbar Buttons</h4>
-    <p class="text-sm leading-relaxed mb-6">
-      For specialized workspace toolbars (e.g., chess study board navigation controls), pure Tailwind circular icon
-      buttons keep layouts compact and tightly aligned.
-    </p>
-
     <!-- Showcase Preview -->
-    <div
-      class="flex flex-wrap items-center gap-4 justify-center bg-white p-8 rounded-xl border border-border-base/60 mb-6 shadow-sm">
+    <div class="flex flex-wrap items-center gap-4 justify-center bg-subtle p-8 rounded-xl mb-6">
       <!-- Standard Toolbar Button -->
       <button title="Flip Board"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center text-content">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-white flex items-center justify-center text-content">
         <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
       </button>
 
       <!-- Prev Button -->
       <button title="Previous Move"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center text-content">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-white flex items-center justify-center text-content">
         <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
       </button>
 
       <!-- Next Button -->
       <button title="Next Move"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center text-content">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-white flex items-center justify-center text-content">
         <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
       </button>
 
-      <div class="h-6 w-px bg-border-base"></div>
+      <div class="h-6 w-px bg-border-base/60"></div>
 
       <!-- Active / Toggle State -->
       <button title="Stop"
@@ -212,22 +101,21 @@
       </button>
     </div>
 
-    <!-- Code & Classes Details -->
-    <div class="border-l-4 border-accent pl-6 py-1 mb-6">
-      <h5 class="text-sm mb-2">Tailwind Classes Applied</h5>
-      <ul class="list-disc pl-5 text-sm space-y-2 mb-4 text-muted">
-        <li><strong>Base State</strong>:
-          <code>p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center text-content</code>
-        </li>
-        <li><strong>Active State (e.g. Stop Session)</strong>: <code>text-rose-500 bg-rose-500/10</code></li>
-      </ul>
+    <!-- Icon Base Class Block -->
+    <div class="relative mb-4">
+      <span class="block mb-1">Toolbar Button (Base)</span>
+      <div class="whitespace-nowrap overflow-x-auto font-mono text-xs text-content">
+        p-2 rounded-full transition-colors cursor-pointer hover:bg-white flex items-center justify-center text-content
+      </div>
     </div>
 
-    <pre class="bg-white border border-border-base rounded-2xl p-6 text-xs overflow-x-auto leading-relaxed shadow-sm"><code>&lt;!-- Pure Tailwind circular icon button --&gt;
-&lt;button title="Flip Board" 
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center"&gt;
-  &lt;ng-icon name="heroArrowsRightLeft" class="text-lg"&gt;&lt;/ng-icon&gt;
-&lt;/button&gt;</code></pre>
+    <!-- Icon Active Class Block -->
+    <div class="relative mb-4">
+      <span class="block mb-1">Active State (e.g. Stop Session)</span>
+      <div class="whitespace-nowrap overflow-x-auto font-mono text-xs text-content">
+        p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center text-rose-500 bg-rose-500/10
+      </div>
+    </div>
   </div>
 
   <!-- Pure Tailwind Inline CTA Buttons -->
@@ -252,7 +140,7 @@
     <!-- CTA Primary Class Block -->
     <div class="relative mb-4">
       <span class="block mb-1">CTA Primary</span>
-      <div class="whitespace-nowrap overflow-x-auto">
+      <div class="whitespace-nowrap overflow-x-auto font-mono text-xs text-content">
         inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px]
         leading-5 cursor-pointer
       </div>
@@ -261,7 +149,7 @@
     <!-- CTA Outline Class Block -->
     <div class="relative mb-4">
       <span class="block mb-1">CTA Outline</span>
-      <div class="whitespace-nowrap overflow-x-auto">
+      <div class="whitespace-nowrap overflow-x-auto font-mono text-xs text-content">
         inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base
         font-medium text-[16px] leading-5 cursor-pointer hover:bg-subtle transition-all
       </div>

@@ -1,0 +1,33 @@
+<div [formGroup]="form" class="space-y-6">
+
+  <app-form-field
+    formControlName="organizer"
+    label="Organizer Name"
+    placeholder="e.g. National Chess Federation of the Philippines"
+    [required]="true"
+    [showCharCount]="true"
+    [charLimit]="255"
+    [errorMessage]="getError('organizer')"
+  ></app-form-field>
+
+  <app-form-field
+    formControlName="contact"
+    label="Contact"
+    placeholder="e.g. tournaments@ncfph.org or 0917-123-4567"
+    [required]="true"
+    [showCharCount]="true"
+    [charLimit]="255"
+    [errorMessage]="getError('contact')"
+  ></app-form-field>
+
+  <app-form-field
+    formControlName="link"
+    label="Link"
+    type="url"
+    placeholder="e.g. https://facebook.com/posts/your-tournament-updates"
+    [optional]="true"
+    [showCharCount]="true"
+    [charLimit]="255"
+    hint="Optional — link to a Facebook post or page for tournament updates"
+  ></app-form-field>
+</div>

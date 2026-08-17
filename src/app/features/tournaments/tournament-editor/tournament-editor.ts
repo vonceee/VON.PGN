@@ -17,7 +17,6 @@ import { environment } from '../../../../environments/environment';
 
 import { AdminService } from '../../../core/services/admin.service';
 import { TournamentService } from '../../../core/services/tournament.service';
-import { ButtonComponent } from '@shared/ui';
 import { ToastService } from '../../../core/services/toast.service';
 
 import {
@@ -35,21 +34,26 @@ import {
   StepScheduleComponent,
 } from './components/steps-prizes-schedule.component';
 import { ReviewSectionComponent } from './components/review-section.component';
-import { PosterPreviewComponent } from './components/poster-preview.component';
 
 import {
   TournamentMode,
-  PosterTheme,
   VerificationStatus,
   comparePrizeKeys,
 } from './models/tournament-editor.models';
 import { TournamentFormHandler } from './handlers/tournament-form.handler';
 import { TournamentMapsService } from './services/tournament-maps.service';
-import { TournamentPosterHandler } from './handlers/tournament-poster.handler';
-import { BackLinkComponent } from '@shared/ui';
-
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroXMark } from '@ng-icons/heroicons/outline';
+import {
+  heroXMark,
+  heroInformationCircle,
+  heroCalendar,
+  heroClipboardDocument,
+  heroUser,
+  heroPencilSquare,
+  heroShieldCheck,
+  heroTrophy,
+  heroClock
+} from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-tournament-editor',
@@ -58,7 +62,6 @@ import { heroXMark } from '@ng-icons/heroicons/outline';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    ButtonComponent,
     StepBasicInfoComponent,
     StepDatesLocationComponent,
     StepFormatRulesComponent,
@@ -68,13 +71,19 @@ import { heroXMark } from '@ng-icons/heroicons/outline';
     StepPrizesComponent,
     StepScheduleComponent,
     ReviewSectionComponent,
-    PosterPreviewComponent,
-    BackLinkComponent,
     NgIconComponent,
   ],
   providers: [
     provideIcons({
       heroXMark,
+      heroInformationCircle,
+      heroCalendar,
+      heroClipboardDocument,
+      heroUser,
+      heroPencilSquare,
+      heroShieldCheck,
+      heroTrophy,
+      heroClock
     }),
   ],
   templateUrl: './tournament-editor.html'
@@ -92,7 +101,6 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   // Handlers & Services
   public formHandler = inject(TournamentFormHandler);
   private mapsService = inject(TournamentMapsService);
-  private posterHandler = inject(TournamentPosterHandler);
 
   @Input() mode: TournamentMode = 'admin';
 
@@ -110,7 +118,6 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
 
   // Poster State
   useCustomPosterSignal = signal(false);
-  downloadingPoster = signal(false);
 
   // Form Shortcut
   get tournamentForm() {
@@ -338,10 +345,6 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
   }
 
   // ---- Poster Actions ----
-
-  get posterPrizeCategories() {
-    return this.posterHandler.getPosterPrizeCategories(this.tournamentDataSignal());
-  }
 
   onPosterFileSelected(event: any) {
     const file = event.target.files?.[0];
