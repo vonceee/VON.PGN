@@ -9,7 +9,7 @@
     <div class="group relative" routerLinkActive #learnActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">
       <a [class.bg-subtle]="learnActive.isActive"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-lg hover:bg-subtle transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-subtle transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         <span>Learn</span>
         <ng-icon name="heroChevronDown"
           class="w-3.5 h-3.5 text-muted/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
@@ -55,7 +55,7 @@
     <div class="group relative" routerLinkActive #practiceActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">
       <a [class.bg-subtle]="practiceActive.isActive"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-lg hover:bg-subtle transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-subtle transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         <span>Practice</span>
         <ng-icon name="heroChevronDown"
           class="w-3.5 h-3.5 text-muted/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
@@ -64,13 +64,13 @@
         class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
         <a routerLink="/study/drills" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
-          <ng-icon name="heroBolt"
+          <ng-icon name="heroArrowPath"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
-          <span class="text-sm/6 font-medium">Opening drills</span>
+          <span class="text-sm/6 font-medium">Opening Drills</span>
         </a>
         <a routerLink="/tactics" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
-          <ng-icon name="heroFire"
+          <ng-icon name="heroPuzzlePiece"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
           <span class="text-sm/6 font-medium">Tactics</span>
         </a>
@@ -81,7 +81,7 @@
     <div class="group relative" routerLinkActive #museumActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">
       <a [class.bg-subtle]="museumActive.isActive"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-lg hover:bg-subtle transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-subtle transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         <span>Museum</span>
         <ng-icon name="heroChevronDown"
           class="w-3.5 h-3.5 text-muted/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
@@ -90,9 +90,9 @@
         class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
         <a routerLink="/monikers" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
-          <ng-icon name="heroUser"
+          <ng-icon name="heroAtSymbol"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
-          <span class="text-sm/6 font-medium">Player monikers</span>
+          <span class="text-sm/6 font-medium">Monikers</span>
         </a>
         <a routerLink="/world-championships" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
@@ -104,7 +104,7 @@
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroQuestionMarkCircle"
             class="w-4 h-4 group-hover/item:text-white transition-colors shrink-0 mr-3"></ng-icon>
-          <span class="text-sm/6 font-medium">Guess the game</span>
+          <span class="text-sm/6 font-medium">GuessTheGame</span>
         </a>
       </div>
     </div>
@@ -113,7 +113,7 @@
     <div class="group relative" routerLinkActive #moreActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">
       <a [class.bg-subtle]="moreActive.isActive"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-lg hover:bg-subtle transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-subtle transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         <span>More</span>
         <ng-icon name="heroChevronDown"
           class="w-3.5 h-3.5 text-muted/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
@@ -154,7 +154,8 @@
   <div class="flex items-center gap-4 lg:gap-5 ml-auto lg:ml-0">
     <!-- Desktop Search Bar -->
     <div class="relative hidden lg:block group/search" #searchContainer>
-      <div class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-subtle border border-border-base focus-within:border-accent/40 focus-within:bg-main transition-all">
+      <div
+        class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-subtle border border-border-base focus-within:border-accent/40 focus-within:bg-main transition-all">
         <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 shrink-0 mr-2"></ng-icon>
         <input #searchInput type="text" placeholder="Search" [value]="searchQuery()" (input)="onSearchInput($event)"
           (focus)="isSearchOpen.set(true)" class="bg-transparent outline-none text-sm/6 w-full " />
@@ -284,7 +285,7 @@
 
     <!-- Mobile Hamburger Button -->
     <button (click)="toggleMobileMenu()"
-      class="lg:hidden p-1.5 cursor-pointer relative group transition-colors flex items-center justify-center rounded-lg"
+      class="lg:hidden p-1.5 cursor-pointer relative group transition-colors flex items-center justify-center rounded-full"
       aria-label="Toggle Menu">
       <ng-icon name="heroBars3" strokeWidth="2" class="w-6 h-6"></ng-icon>
     </button>

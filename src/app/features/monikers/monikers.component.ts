@@ -19,6 +19,20 @@ import { FloatingCursorComponent } from '@shared/ui';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './monikers.component.html',
+  styles: [`
+    .octagon-clip {
+      clip-path: polygon(
+        16px 0%, 
+        calc(100% - 16px) 0%, 
+        100% 16px, 
+        100% calc(100% - 16px), 
+        calc(100% - 16px) 100%, 
+        16px 100%, 
+        0% calc(100% - 16px), 
+        0% 16px
+      );
+    }
+  `],
 })
 export class MonikersComponent {
   private monikerService = inject(MonikerService);
@@ -110,5 +124,10 @@ export class MonikersComponent {
 
   getCategoryLabel(category?: string): string {
     return category || '';
+  }
+
+  getChessPieceSymbol(index: number): string {
+    const pieces = ['♔', '♕', '♖', '♗', '♘', '♙'];
+    return pieces[index % pieces.length];
   }
 }

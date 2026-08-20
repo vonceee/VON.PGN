@@ -3,9 +3,9 @@
   <!-- Standardized Page Header (Inline) -->
   <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
-      <h1 class="text-4xl md:text-5xl mb-2 text-content">Chess player monikers</h1>
+      <h1 class="text-4xl md:text-5xl mb-2 text-content">Chess Player Monickers</h1>
       <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
-        explore the famous nicknames, titles, and epithets of legendary grandmasters and the stories behind them.
+        explore the famous nicknames of chess grandmasters and the stories behind them.
       </p>
     </div>
   </header>
@@ -46,47 +46,113 @@
     </div>
   </div>
 
-  <!-- Monikers Grid -->
+  <!-- Monikers Grid (Asymmetrical Bento Layout) -->
   @if (filteredMonikers().length > 0) {
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    @for (item of filteredMonikers(); track item.id) {
-    <article (click)="openBlog(item.blogSlug)" appFloatingCursorTrigger="Read more" cursorIcon="heroBookOpen"
-      class="bg-content text-white border border-white/10 rounded-xl p-6 flex flex-col justify-between h-full group hover:border-white/30 transition-all duration-300 cursor-none relative overflow-hidden">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 grid-flow-row-dense">
+    @for (item of filteredMonikers(); track item.id; let idx = $index) {
 
-      <div>
-        <!-- Player Picture Section -->
-        <div class="flex items-center gap-4 mb-5">
-          <div
-            class="relative w-16 h-16 rounded-full overflow-hidden border border-white/10 bg-white/5 shrink-0 shadow-sm">
-            @if (item.imageUrl && !failedImages().has(item.id)) {
-            <img [src]="item.imageUrl" [alt]="item.playerName" (error)="onImageError(item.id)"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-            } @else {
-            <div class="w-full h-full flex items-center justify-center bg-white/10 text-white font-bold text-lg">
-              {{ getInitials(item.playerName) }}
-            </div>
-            }
-          </div>
+    <!-- Featured Player Card: Spans 2 columns on md/lg, horizontal split layout -->
+    @if (item.featured) {
+    <div (click)="openBlog(item.blogSlug)" appFloatingCursorTrigger="Read more" cursorIcon="heroBookOpen"
+      class="md:col-span-2 group relative p-[1.5px] bg-white/10 hover:bg-white/30 transition-all duration-300 octagon-clip flex flex-col min-h-[220px] cursor-none cursor-pointer">
 
-          <div class="min-w-0 flex-1">
-            <span class="text-xs font-semibold text-slate-300 tracking-wide uppercase block mb-0.5">
+      <article
+        class="bg-content text-white octagon-clip p-6 flex flex-col sm:flex-row gap-6 justify-between h-full w-full overflow-hidden relative">
+        <!-- Ambient watermark piece -->
+        <div
+          class="absolute -bottom-16 -right-16 text-[280px] select-none font-serif text-white/10 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-65 transition-all duration-700 pointer-events-none">
+          {{ getChessPieceSymbol(idx) }}
+        </div>
+
+        <!-- Left side: Player Details & Description -->
+        <div class="flex-1 relative z-10 min-w-0 flex flex-col justify-center">
+          <div>
+            <span class="text-xs font-semibold text-slate-400 tracking-wide uppercase block mb-1">
               {{ item.category }}
             </span>
-            <h3 class="text-xl font-semibold text-white truncate group-hover:text-slate-200 transition-colors">
-              {{ item.playerName }} <span class="text-slate-300 font-normal">"{{ item.moniker }}"</span>
+
+            <h3 class="text-2xl font-bold text-white mb-2 leading-snug">
+              {{ item.playerName }}
+              <span class="text-slate-300 font-normal block sm:inline text-lg sm:ml-2">"{{ item.moniker }}"</span>
             </h3>
-            <p class="text-xs text-slate-400 truncate">
+
+            <p class="text-xs text-slate-400 mb-4">
               {{ item.fideTitle }} • {{ item.years }}
+            </p>
+
+            <p class="text-slate-300 text-sm leading-relaxed line-clamp-3 max-w-xl">
+              {{ item.shortDescription }}
             </p>
           </div>
         </div>
 
-        <!-- Short Description -->
-        <p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
-          {{ item.shortDescription }}
-        </p>
-      </div>
-    </article>
+        <!-- Right side: Featured Avatar Frame -->
+        <div
+          class="w-32 h-32 rounded-2xl overflow-hidden border border-white/10 bg-white/5 shrink-0 shadow-lg relative sm:self-center">
+          @if (item.imageUrl && !failedImages().has(item.id)) {
+          <img [src]="item.imageUrl" [alt]="item.playerName" (error)="onImageError(item.id)"
+            class="w-full h-full object-cover" />
+          } @else {
+          <div class="w-full h-full flex items-center justify-center bg-white/10 text-white font-bold text-2xl">
+            {{ getInitials(item.playerName) }}
+          </div>
+          }
+        </div>
+      </article>
+    </div>
+    }
+
+    <!-- Standard Player Card: Spans 1 column, vertical block layout -->
+    @else {
+    <div (click)="openBlog(item.blogSlug)" appFloatingCursorTrigger="Read more" cursorIcon="heroBookOpen"
+      class="col-span-1 group relative p-[1.5px] bg-white/10 hover:bg-white/30 transition-all duration-300 octagon-clip flex flex-col min-h-[300px] cursor-none cursor-pointer">
+
+      <article
+        class="bg-content text-white octagon-clip p-6 flex flex-col justify-between h-full w-full overflow-hidden relative">
+        <!-- Ambient watermark piece -->
+        <div
+          class="absolute -bottom-12 -right-12 text-[180px] select-none font-serif text-white/10 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-65 transition-all duration-700 pointer-events-none">
+          {{ getChessPieceSymbol(idx) }}
+        </div>
+
+        <div class="relative z-10">
+          <!-- Player Picture Section -->
+          <div class="flex items-center gap-4 mb-5">
+            <div
+              class="relative w-14 h-14 rounded-full overflow-hidden border border-white/10 bg-white/5 shrink-0 shadow-sm">
+              @if (item.imageUrl && !failedImages().has(item.id)) {
+              <img [src]="item.imageUrl" [alt]="item.playerName" (error)="onImageError(item.id)"
+                class="w-full h-full object-cover" />
+              } @else {
+              <div class="w-full h-full flex items-center justify-center bg-white/10 text-white font-bold text-lg">
+                {{ getInitials(item.playerName) }}
+              </div>
+              }
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <span class="text-xs font-semibold text-slate-400 tracking-wide uppercase block mb-0.5">
+                {{ item.category }}
+              </span>
+              <h3 class="text-lg font-semibold text-white truncate leading-snug">
+                {{ item.playerName }}
+              </h3>
+              <span class="text-slate-300 font-normal text-xs block truncate">"{{ item.moniker }}"</span>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4">
+            {{ item.fideTitle }} • {{ item.years }}
+          </p>
+
+          <!-- Short Description -->
+          <p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
+            {{ item.shortDescription }}
+          </p>
+        </div>
+      </article>
+    </div>
+    }
     }
   </div>
   } @else {

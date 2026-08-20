@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
 import {
@@ -38,7 +38,6 @@ import { AudioService } from '../../../core/services/audio.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { LayoutService } from '../../../core/services/layout.service';
 import { ChessBoardComponent, MoveNotationComponent } from '@shared/chess';
-import { ButtonComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-guess-the-game',
@@ -50,7 +49,6 @@ import { ButtonComponent } from '@shared/ui';
     ChessBoardComponent,
     MoveNotationComponent,
     NgIconComponent,
-    ButtonComponent
   ],
   providers: [
     provideIcons({
@@ -78,6 +76,7 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
   private layoutService = inject(LayoutService);
   private platformId = inject(PLATFORM_ID);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   @ViewChild('board') boardComponent!: ChessBoardComponent;
 
@@ -487,5 +486,17 @@ export class GuessTheGameComponent implements OnInit, OnDestroy {
       return { route: ['/study', game.study_id], queryParams: { chapter: game.id } };
     }
     return null;
+  }
+
+  openAnalysis(game: GuessTheGameChallenge) {
+    const linkInfo = this.getAnalysisLinkInfo(game);
+    if (!linkInfo) return;
+    if (linkInfo.url) {
+      window.open(linkInfo.url, '_blank');
+    } else if (linkInfo.route) {
+      const urlTree = this.router.createUrlTree(linkInfo.route, { queryParams: linkInfo.queryParams });
+      const serializedUrl = this.router.serializeUrl(urlTree);
+      window.open(serializedUrl, '_blank');
+    }
   }
 }

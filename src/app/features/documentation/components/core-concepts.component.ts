@@ -27,7 +27,7 @@ import { RouterModule } from '@angular/router';
         </div>
 
         <div class="border-l-4 border-accent pl-6 py-1">
-          <h3 class="text-xl font-semibold text-content mb-2">Opening drills</h3>
+          <h3 class="text-xl font-semibold text-content mb-2">Opening Drills</h3>
           <p class="text-sm leading-relaxed text-muted">
             Build muscle memory for your opening repertoire. In the <a routerLink="/study/drills"
               class="text-accent underline">Drills section</a>, you can practice your white and black repertoires.
@@ -48,4 +48,4 @@ import { RouterModule } from '@angular/router';
     </div>
   `
 })
-export class CoreConceptsComponent {}
+export class CoreConceptsComponent { }

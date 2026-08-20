@@ -18,8 +18,8 @@ import {
   heroChartBar,
   heroFlag,
   heroMap,
-  heroBolt,
-  heroFire,
+  heroArrowPath,
+  heroPuzzlePiece,
   heroUser,
   heroTrophy,
   heroQuestionMarkCircle,
@@ -35,6 +35,7 @@ import {
   heroArrowLeftOnRectangle,
   heroBars3,
   heroQueueList,
+  heroAtSymbol,
 } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -55,8 +56,8 @@ import {
       heroChartBar,
       heroFlag,
       heroMap,
-      heroBolt,
-      heroFire,
+      heroArrowPath,
+      heroPuzzlePiece,
       heroUser,
       heroTrophy,
       heroQuestionMarkCircle,
@@ -72,6 +73,7 @@ import {
       heroArrowLeftOnRectangle,
       heroBars3,
       heroQueueList,
+      heroAtSymbol,
     }),
   ],
   templateUrl: './header.html',

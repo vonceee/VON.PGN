@@ -40,24 +40,11 @@ export class BlogService {
   private apiUrl = environment.apiUrl;
 
   getBlogs(page = 1): Observable<any> {
-    const hardcodedList = Object.values(MONIKER_BLOGS_DATA);
-
     return this.http.get<any>(`${this.apiUrl}/blogs?page=${page}`).pipe(
-      map((res) => {
-        const apiBlogs = res?.data || [];
-        // Prevent duplicates by slug
-        const apiSlugs = new Set(apiBlogs.map((b: Blog) => b.slug));
-        const missingHardcoded = hardcodedList.filter((b) => !apiSlugs.has(b.slug));
-
-        return {
-          ...res,
-          data: [...apiBlogs, ...missingHardcoded],
-        };
-      }),
       catchError(() => {
-        // If API fails, return hardcoded moniker blogs feed
+        // If API fails, return an empty blogs feed
         return of({
-          data: hardcodedList,
+          data: [],
           current_page: 1,
           last_page: 1,
           prev_page_url: null,
