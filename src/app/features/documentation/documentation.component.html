@@ -1,18 +1,27 @@
-<div class="min-h-screen bg-white/50 backdrop-blur-xl flex flex-col md:flex-row">
+<div class="min-h-screen flex flex-col md:flex-row">
 
   <!-- Sidebar Navigation -->
   <aside
-    class="w-full md:w-64 lg:w-72 shrink-0 border-r border-border-base md:sticky overflow-y-auto px-6 py-8 bg-white">
+    class="w-full md:w-64 lg:w-72 shrink-0 border-r-2 border-border-base md:sticky md:top-0 md:h-[calc(100vh-60px)] overflow-y-auto px-6 py-8 bg-white">
     <div class="mb-8">
-      <h2 class="text-xs font-semibold mb-4 px-3 text-muted">Documentation</h2>
       <nav class="space-y-1">
-        <button *ngFor="let section of sections" (click)="scrollTo(section.id)"
-          [class.bg-subtle]="activeSection === section.id" [class.text-content]="activeSection === section.id"
-          [class.font-semibold]="activeSection === section.id" [class.text-muted]="activeSection !== section.id"
-          class="w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-subtle transition-all duration-150 flex items-center justify-between group cursor-pointer">
-          <span>{{ section.title }}</span>
-          <span *ngIf="activeSection === section.id" class="w-1.5 h-1.5 rounded-full bg-accent"></span>
-        </button>
+        <div *ngFor="let section of sections" class="flex flex-col">
+          <button (click)="scrollTo(section.id)" [class.bg-subtle]="activeSection === section.id"
+            [class.font-semibold]="activeSection === section.id"
+            class="w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-subtle transition-all duration-150 flex items-center justify-between group cursor-pointer">
+            <span>{{ section.title }}</span>
+            <span *ngIf="activeSection === section.id" class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+          </button>
+
+          <!-- Subtopics -->
+          <div *ngIf="activeSection === section.id && section.subtopics"
+            class="ml-4 pl-3 border-l border-border-base mt-1 mb-2 space-y-1 flex flex-col">
+            <button *ngFor="let sub of section.subtopics" (click)="scrollToSubtopic(section.id, sub.id)"
+              [class.font-semibold]="activeSubtopic === sub.id" class="w-full text-left py-1.5 text-xs cursor-pointer">
+              {{ sub.title }}
+            </button>
+          </div>
+        </div>
       </nav>
     </div>
   </aside>

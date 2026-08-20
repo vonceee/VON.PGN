@@ -16,15 +16,72 @@ import { filter } from 'rxjs/operators';
 export class DocumentationComponent {
   private router = inject(Router);
   activeSection = 'getting-started';
+  activeSubtopic = '';
 
   sections = [
-    { title: 'Getting Started', id: 'getting-started' },
-    { title: 'Core Concepts', id: 'core-concepts' },
-    { title: 'Layout Architecture', id: 'layout-architecture' },
-    { title: 'UI Components', id: 'ui-components' },
-    { title: 'Account Management', id: 'account-management' },
-    { title: 'Service Downtime', id: 'service-downtime' },
-    { title: 'API Reference', id: 'api-reference' }
+    {
+      title: 'Getting Started',
+      id: 'getting-started',
+      subtopics: [
+        { title: 'Create Account', id: 'create-account' },
+        { title: 'Verify Email', id: 'verify-email' },
+        { title: 'Set up Profile', id: 'setup-profile' },
+        { title: 'Find a Game', id: 'find-game' }
+      ]
+    },
+    {
+      title: 'Core Concepts',
+      id: 'core-concepts',
+      subtopics: [
+        { title: 'Collaborative Studies', id: 'collaborative-studies' },
+        { title: 'Opening Drills', id: 'opening-drills' },
+        { title: 'World Championships Database', id: 'world-championships-database' }
+      ]
+    },
+    {
+      title: 'Layout Architecture',
+      id: 'layout-architecture',
+      subtopics: [
+        { title: 'Main Layout Shell', id: 'layout-shell' },
+        { title: 'Dynamic Footer Visibility', id: 'footer-visibility' },
+        { title: 'Fluid Layout System', id: 'fluid-layout' }
+      ]
+    },
+    {
+      title: 'UI Components',
+      id: 'ui-components',
+      subtopics: [
+        { title: 'Tailwind Buttons', id: 'buttons' },
+        { title: 'Badges', id: 'badges' },
+        { title: 'Toggles', id: 'toggles' },
+        { title: 'Input Fields', id: 'inputs' },
+        { title: 'Floating Cursor', id: 'floating-cursor' }
+      ]
+    },
+    {
+      title: 'Account Management',
+      id: 'account-management',
+      subtopics: [
+        { title: 'Account Registration Flow', id: 'registration-flow' },
+        { title: 'Input Validation Rules', id: 'validation-rules' }
+      ]
+    },
+    {
+      title: 'Service Downtime',
+      id: 'service-downtime',
+      subtopics: [
+        { title: 'Worker-level Fallback', id: 'worker-fallback' },
+        { title: 'Graceful Client Overlay', id: 'client-overlay' }
+      ]
+    },
+    {
+      title: 'API Reference',
+      id: 'api-reference',
+      subtopics: [
+        { title: 'Core Endpoints', id: 'core-endpoints' },
+        { title: 'Sample JSON Response', id: 'sample-response' }
+      ]
+    }
   ];
 
   constructor() {
@@ -49,9 +106,39 @@ export class DocumentationComponent {
 
   scrollTo(sectionId: string) {
     this.activeSection = sectionId;
-    this.router.navigate(['/documentation', sectionId]);
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.activeSubtopic = '';
+    this.router.navigate(['/documentation', sectionId]).then(() => {
+      if (typeof window !== 'undefined') {
+        const scrollContainer = document.querySelector('main.flex-1');
+        if (scrollContainer) {
+          scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    });
+  }
+
+  scrollToSubtopic(sectionId: string, subtopicId: string) {
+    this.activeSubtopic = subtopicId;
+    if (this.activeSection !== sectionId) {
+      this.activeSection = sectionId;
+      this.router.navigate(['/documentation', sectionId]).then(() => {
+        setTimeout(() => {
+          this.scrollToElement(subtopicId);
+        }, 100);
+      });
+    } else {
+      this.scrollToElement(subtopicId);
+    }
+  }
+
+  private scrollToElement(elementId: string) {
+    if (typeof document !== 'undefined') {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   }
 }

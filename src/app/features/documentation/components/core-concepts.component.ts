@@ -17,7 +17,7 @@ import { RouterModule } from '@angular/router';
       </p>
 
       <div class="space-y-8 my-8">
-        <div class="border-l-4 border-accent pl-6 py-1">
+        <div id="collaborative-studies" class="border-l-4 border-accent pl-6 py-1">
           <h3 class="text-xl font-semibold text-content mb-2">Collaborative studies</h3>
           <p class="text-sm leading-relaxed text-muted">
             Studies are interactive, multiplayer boards where you can import PGNs, play through variations, and
@@ -26,7 +26,7 @@ import { RouterModule } from '@angular/router';
           </p>
         </div>
 
-        <div class="border-l-4 border-accent pl-6 py-1">
+        <div id="opening-drills" class="border-l-4 border-accent pl-6 py-1">
           <h3 class="text-xl font-semibold text-content mb-2">Opening Drills</h3>
           <p class="text-sm leading-relaxed text-muted">
             Build muscle memory for your opening repertoire. In the <a routerLink="/study/drills"
@@ -35,7 +35,7 @@ import { RouterModule } from '@angular/router';
           </p>
         </div>
 
-        <div class="border-l-4 border-accent pl-6 py-1">
+        <div id="world-championships-database" class="border-l-4 border-accent pl-6 py-1">
           <h3 class="text-xl font-semibold text-content mb-2">World championships database</h3>
           <p class="text-sm leading-relaxed text-muted">
             Access every game played in FIDE World Chess Championships from 1886 to the present. You can view

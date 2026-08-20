@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
         repertoires.
       </p>
 
-      <h3 class="text-xl font-semibold text-content mb-4">Core endpoints</h3>
+      <h3 id="core-endpoints" class="text-xl font-semibold text-content mb-4">Core endpoints</h3>
       <div class="overflow-x-auto border border-border-base rounded-2xl bg-white mb-8">
         <table class="w-full text-left border-collapse text-sm">
           <thead>
@@ -45,7 +45,7 @@ import { CommonModule } from '@angular/common';
         </table>
       </div>
 
-      <h3 class="text-xl font-semibold text-content mb-4">Sample JSON response</h3>
+      <h3 id="sample-response" class="text-xl font-semibold text-content mb-4">Sample JSON response</h3>
       <pre class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs text-content overflow-x-auto leading-relaxed shadow-sm"><code>{{ '{' }}
   "status": "success",
   "data": {{ '{' }}

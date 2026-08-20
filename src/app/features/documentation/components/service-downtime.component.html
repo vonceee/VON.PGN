@@ -19,7 +19,7 @@
       the future, we implemented the mitigations documented below.
     </p>
   </div>
-  <h3 class="text-xl mb-4">Worker-level fallback (SSR)</h3>
+  <h3 id="worker-fallback" class="text-xl mb-4">Worker-level fallback (SSR)</h3>
   <p class="text-sm leading-relaxed tracking-widest mb-6">
     If our backend services or database are completely unreachable during your initial page load, Cloudflare Workers
     intercept the error and serve a lightweight, styled offline page. This page keeps you informed without throwing
@@ -42,7 +42,7 @@ try {{ '{' }}
     </code>
   </pre>
 
-  <h3 class="text-xl mb-4">Graceful client overlay</h3>
+  <h3 id="client-overlay" class="text-xl mb-4">Graceful client overlay</h3>
   <p class="text-sm leading-relaxed tracking-widest mb-6">
     If database or backend connection issues arise while users are actively using the application, a full-screen overlay
     is displayed. This blocks interactions with broken interfaces.
