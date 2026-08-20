@@ -20,22 +20,9 @@ import { Router } from '@angular/router';
       class="lg:hidden fixed top-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] h-full bg-main border-l border-border-base flex flex-col overflow-y-auto transition-transform duration-300"
     >
       <!-- Menu Header -->
-      <div class="flex items-center justify-end shrink-0 h-16 px-4">
-        <!-- Close Button -->
-        <button
-          (click)="close.emit()"
-          aria-label="Close menu"
-          class="p-1.5 cursor-pointer relative group text-muted transition-colors flex items-center justify-center rounded-lg hover:bg-subtle"
-        >
-          <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <!-- Search Section -->
-      <div class="px-6 py-4 border-b border-border-base">
-        <div class="flex items-center bg-surface/50 rounded-full px-4 py-2 border border-border-base focus-within:border-accent/50 focus-within:bg-main transition-all">
+      <div class="flex items-center gap-4 shrink-0 h-16 px-4 border-b border-border-base relative">
+        <!-- Inline Search Bar -->
+        <div class="flex-1 flex items-center bg-surface/50 rounded-full px-4 py-1.5 border border-border-base focus-within:border-accent/50 focus-within:bg-main transition-all relative">
           <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 mr-2 shrink-0"></ng-icon>
           <input
             type="text"
@@ -47,21 +34,36 @@ import { Router } from '@angular/router';
           @if (isSearching()) {
             <div class="w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
           }
+
+          <!-- Search Results Dropdown -->
+          @if (searchResults().length > 0) {
+            <div class="absolute left-0 right-0 top-full mt-2 py-1 max-h-60 overflow-y-auto bg-main border border-border-base rounded-2xl shadow-md z-50">
+              @for (user of searchResults(); track user.uid) {
+                <button
+                  (click)="viewUserProfile(user)"
+                  class="w-full flex items-center px-4 py-2 text-sm/6 hover:bg-subtle text-left transition-colors cursor-pointer"
+                >
+                  <span class="font-medium truncate">{{ user.username }}</span>
+                </button>
+              }
+            </div>
+          } @else if (searchQuery().length >= 2 && !isSearching()) {
+            <div class="absolute left-0 right-0 top-full mt-2 px-4 py-2 bg-main border border-border-base rounded-2xl shadow-md text-xs italic z-50">
+              No players found
+            </div>
+          }
         </div>
-        @if (searchResults().length > 0) {
-          <div class="mt-2 py-1 max-h-60 overflow-y-auto bg-main border border-border-base rounded-2xl shadow-md">
-            @for (user of searchResults(); track user.uid) {
-              <button
-                (click)="viewUserProfile(user)"
-                class="w-full flex items-center px-4 py-2 text-sm/6 hover:bg-subtle text-left transition-colors cursor-pointer"
-              >
-                <span class="font-medium truncate">{{ user.username }}</span>
-              </button>
-            }
-          </div>
-        } @else if (searchQuery().length >= 2 && !isSearching()) {
-          <div class="mt-2 px-4 py-2 text-xs italic">No players found</div>
-        }
+
+        <!-- Close Button -->
+        <button
+          (click)="close.emit()"
+          aria-label="Close menu"
+          class="p-1.5 cursor-pointer relative group text-muted transition-colors flex items-center justify-center rounded-lg hover:bg-subtle shrink-0"
+        >
+          <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       <!-- Navigation Grid -->
@@ -69,18 +71,18 @@ import { Router } from '@angular/router';
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
           @for (group of linkGroups; track group.title) {
             <div class="flex flex-col gap-2">
-              <span class="text-sm/6 font-medium pb-1.5 border-b border-border-base block">
+              <span class="text-xs font-bold text-muted uppercase block mb-1">
                 {{ group.title }}
               </span>
-              <div class="flex flex-col gap-1 pl-1">
+              <div class="flex flex-col gap-0.5">
                 @for (link of group.links; track link.label) {
                   <a
                     [routerLink]="link.path"
                     [queryParams]="link.queryParams"
-                    routerLinkActive="text-accent font-semibold"
+                    routerLinkActive="bg-subtle text-accent font-semibold"
                     [routerLinkActiveOptions]="{ exact: !link.queryParams }"
                     (click)="close.emit()"
-                    class="py-1 text-sm/6 font-medium text-muted hover:underline transition-all flex items-center justify-between"
+                    class="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all duration-200"
                   >
                     <span>{{ link.label }}</span>
                   </a>
@@ -94,48 +96,49 @@ import { Router } from '@angular/router';
       <!-- Auth Section -->
       <div class="border-t border-border-base p-6 bg-surface/30 shrink-0 md:hidden">
         @if (authService.isAuthenticated()) {
-          <!-- User Profile Label -->
-          <div class="px-3 py-2 mb-3">
-            <span class="text-sm/6 font-semibold block">
+          <!-- User Profile Card -->
+          <div class="flex items-center gap-3 px-3.5 py-2.5 mb-4 bg-main rounded-xl border border-border-base">
+            <div class="w-8 h-8 rounded-full bg-subtle flex items-center justify-center">
+              <svg class="w-5 h-5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <span class="text-sm font-semibold text-content truncate leading-tight">
               {{ userService.currentUser()?.username || 'User' }}
             </span>
           </div>
 
-          <!-- User Actions Grid (Matches Desktop Dropdown Items) -->
-          <div class="grid grid-cols-2 gap-x-4 gap-y-2 px-1">
+          <!-- User Actions List -->
+          <div class="flex flex-col gap-1">
             <a
               routerLink="/profile"
-              routerLinkActive="text-accent font-semibold"
+              routerLinkActive="bg-subtle text-accent font-semibold"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="close.emit()"
-              class="py-1 text-xs font-medium text-muted hover:underline transition-all"
+              class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all duration-200"
             >
               Profile
             </a>
 
-
-
             @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
               <a
                 routerLink="/my-events"
-                routerLinkActive="text-accent font-semibold"
+                routerLinkActive="bg-subtle text-accent font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="py-1 text-xs font-medium text-muted hover:underline transition-all"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all duration-200"
               >
                 My Tournaments
               </a>
-
-
             }
 
             @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
               <a
                 routerLink="/admin"
-                routerLinkActive="text-accent font-semibold"
+                routerLinkActive="bg-subtle text-accent font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="py-1 text-xs font-medium text-muted hover:underline transition-all"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all duration-200"
               >
                 Admin Panel
               </a>
@@ -143,7 +146,7 @@ import { Router } from '@angular/router';
 
             <button
               (click)="authService.logout(); close.emit()"
-              class="col-span-2 mt-2 py-1.5 px-4 rounded-full border border-rose-200/60 hover:bg-rose-50/50 text-center text-xs font-medium text-rose-600 transition-all cursor-pointer"
+              class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-rose-600 hover:bg-rose-500/10 hover:text-rose-700 transition-all duration-200 cursor-pointer text-left"
             >
               Logout
             </button>

@@ -154,7 +154,7 @@
   <div class="flex items-center gap-4 lg:gap-5 ml-auto lg:ml-0">
     <!-- Desktop Search Bar -->
     <div class="relative hidden lg:block group/search" #searchContainer>
-      <div class="flex items-center h-9 w-44 lg:w-64 px-2 rounded-md bg-subtle border border-border-base">
+      <div class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-subtle border border-border-base focus-within:border-accent/40 focus-within:bg-main transition-all">
         <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 shrink-0 mr-2"></ng-icon>
         <input #searchInput type="text" placeholder="Search" [value]="searchQuery()" (input)="onSearchInput($event)"
           (focus)="isSearchOpen.set(true)" class="bg-transparent outline-none text-sm/6 w-full " />
