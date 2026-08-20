@@ -3,128 +3,59 @@
   <h3 class="text-2xl mb-4 border-b border-border-base pb-2">Floating Cursor</h3>
 
   <!-- Showcase Preview -->
-  <div #demoContainer (mouseenter)="onCardMouseEnter($event)" (mouseleave)="onCardMouseLeave()"
-    (mousemove)="onCardMouseMove($event)"
+  <div appFloatingCursorContainer
     class="relative overflow-hidden flex flex-col items-center justify-center bg-subtle border border-border-base h-56 rounded-xl mb-8 cursor-none select-none">
 
-    <div class="text-center pointer-events-none">
-      <p class="text-muted text-sm">hover over this box</p>
+    <div appFloatingCursorTrigger="Floating Cursor" cursorIcon="heroPlay" class="w-full h-full flex items-center justify-center cursor-none">
+      <div class="text-center pointer-events-none">
+        <p class="text-muted text-sm">hover over this box</p>
+      </div>
     </div>
 
     <!-- Custom Floating Cursor Badge -->
-    <div [style.left.px]="cursorX()" [style.top.px]="cursorY()" [class.opacity-100]="isHoveringCard()"
-      [class.scale-100]="isHoveringCard()" [class.opacity-0]="!isHoveringCard()" [class.scale-90]="!isHoveringCard()"
-      class="pointer-events-none absolute z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-border-base rounded-full px-7 py-3.5 flex items-center gap-3 shadow-lg select-none transition-[opacity,transform] duration-200 ease-out">
-      <ng-icon name="heroPlay" size="1.25rem" color="black" class="text-black shrink-0"></ng-icon>
-      <span class="text-[16px] font-semibold text-content leading-none">Floating Cursor</span>
-    </div>
+    <app-floating-cursor></app-floating-cursor>
   </div>
 
   <!-- HTML Implementation -->
   <div class="mb-6">
     <span class="block font-medium mb-2 text-sm text-content">1. HTML Template Markup</span>
     <pre
-      class="bg-slate-50 border border-border-base rounded-xl p-4 overflow-x-auto text-xs text-content font-mono leading-relaxed"><code>&lt;!-- Parent container relative + overflow-hidden --&gt;
-&lt;div #container
-     (mouseenter)="onCardMouseEnter($event)"
-     (mouseleave)="onCardMouseLeave()"
-     (mousemove)="onCardMouseMove($event)"
-     class="relative overflow-hidden cursor-none"&gt;
+      class="bg-slate-50 border border-border-base rounded-xl p-4 overflow-x-auto text-xs text-content font-mono leading-relaxed"><code>&lt;!-- Parent container: relative + overflow-hidden + appFloatingCursorContainer --&gt;
+&lt;div appFloatingCursorContainer
+     class="relative overflow-hidden"&gt;
+
+  &lt;!-- Trigger element: cursor-none hides the default cursor on hover --&gt;
+  &lt;div appFloatingCursorTrigger="Practice"
+       cursorIcon="heroPlay"
+       class="p-6 cursor-none"&gt;
+    Hover over me
+  &lt;/div&gt;
 
   &lt;!-- Custom Floating Cursor element --&gt;
-  &lt;div [style.left.px]="cursorX()" 
-       [style.top.px]="cursorY()" 
-       [class.opacity-100]="isHoveringCard()"
-       [class.scale-100]="isHoveringCard()" 
-       [class.opacity-0]="!isHoveringCard()" 
-       [class.scale-90]="!isHoveringCard()"
-       class="pointer-events-none absolute z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-border-base rounded-full px-7 py-3.5 flex items-center gap-3 shadow-lg select-none transition-[opacity,transform] duration-200 ease-out"&gt;
-    &lt;ng-icon name="heroPlay" size="1.25rem" color="black" class="shrink-0"&gt;&lt;/ng-icon&gt;
-    &lt;span class="text-[16px] font-semibold text-content leading-none"&gt;Practice&lt;/span&gt;
-  &lt;/div&gt;
+  &lt;app-floating-cursor&gt;&lt;/app-floating-cursor&gt;
 &lt;/div&gt;</code></pre>
   </div>
 
   <!-- TS Implementation -->
   <div>
-    <span class="block font-medium mb-2 text-sm text-content">2. Angular Component Logic (TypeScript)</span>
+    <span class="block font-medium mb-2 text-sm text-content">2. Angular Component Setup (TypeScript)</span>
     <pre
-      class="bg-slate-50 border border-border-base rounded-xl p-4 overflow-x-auto text-xs text-content font-mono leading-relaxed"><code>import {{ '{' }} Component, ElementRef, ViewChild, signal, inject, PLATFORM_ID, OnDestroy {{ '}' }} from '@angular/core';
-import {{ '{' }} isPlatformBrowser {{ '}' }} from '@angular/common';
+      class="bg-slate-50 border border-border-base rounded-xl p-4 overflow-x-auto text-xs text-content font-mono leading-relaxed"><code>import {{ '{' }} Component {{ '}' }} from '@angular/core';
+import {{ '{' }} FloatingCursorContainerDirective, FloatingCursorTriggerDirective {{ '}' }} from '@shared/directives';
+import {{ '{' }} FloatingCursorComponent {{ '}' }} from '@shared/ui';
 
 @Component({{ '{' }}
   selector: 'app-my-component',
+  standalone: true,
+  imports: [
+    FloatingCursorContainerDirective,
+    FloatingCursorTriggerDirective,
+    FloatingCursorComponent
+  ],
   templateUrl: './my-component.component.html'
 {{ '}' }})
-export class MyComponent implements OnDestroy {{ '{' }}
-  @ViewChild('container') containerRef!: ElementRef&lt;HTMLElement&gt;;
-
-  private platformId = inject(PLATFORM_ID);
-  isBrowser = isPlatformBrowser(this.platformId);
-
-  isHoveringCard = signal(false);
-  cursorX = signal(0);
-  cursorY = signal(0);
-
-  private cursorAnimationFrameId: number | null = null;
-  private targetX = 0;
-  private targetY = 0;
-
-  onCardMouseEnter(event: MouseEvent) {{ '{' }}
-    if (!this.isBrowser || !this.containerRef) return;
-    const rect = this.containerRef.nativeElement.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
-    this.isHoveringCard.set(true);
-    this.startCursorAnimation();
-  {{ '}' }}
-
-  onCardMouseLeave() {{ '{' }}
-    this.isHoveringCard.set(false);
-    this.stopCursorAnimation();
-  {{ '}' }}
-
-  onCardMouseMove(event: MouseEvent) {{ '{' }}
-    if (!this.isBrowser || !this.containerRef) return;
-    const rect = this.containerRef.nativeElement.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
-  {{ '}' }}
-
-  private startCursorAnimation() {{ '{' }}
-    if (!this.isBrowser || this.cursorAnimationFrameId) return;
-    this.cursorX.set(this.targetX);
-    this.cursorY.set(this.targetY);
-
-    const animateCursor = () =&gt; {{ '{' }}
-      if (!this.isHoveringCard()) {{ '{' }}
-        this.cursorAnimationFrameId = null;
-        return;
-      {{ '}' }}
-      const curX = this.cursorX();
-      const curY = this.cursorY();
-
-      // Lerp logic: 0.12 factor generates a clean delayed momentum effect
-      const nextX = curX + (this.targetX - curX) * 0.12;
-      const nextY = curY + (this.targetY - curY) * 0.12;
-
-      this.cursorX.set(nextX);
-      this.cursorY.set(nextY);
-      this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-    {{ '}' }};
-    this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-  {{ '}' }}
-
-  private stopCursorAnimation() {{ '{' }}
-    if (this.cursorAnimationFrameId) {{ '{' }}
-      cancelAnimationFrame(this.cursorAnimationFrameId);
-      this.cursorAnimationFrameId = null;
-    {{ '}' }}
-  {{ '}' }}
-
-  ngOnDestroy() {{ '{' }}
-    this.stopCursorAnimation();
-  {{ '}' }}
+export class MyComponent {{ '{' }}
+  // Zero boilerplate required! No event listeners, no requestAnimationFrame, no page signals.
 {{ '}' }}</code></pre>
   </div>
 </section>

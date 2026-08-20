@@ -13,10 +13,23 @@ import type { Key } from 'chessground/types';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroBookOpen, heroPlay } from '@ng-icons/heroicons/outline';
 
+import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
+import { FloatingCursorComponent } from '@shared/ui';
+
 @Component({
   selector: 'app-opening-drill-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonComponent, ChessBoardComponent, NgIconComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ButtonComponent,
+    ChessBoardComponent,
+    NgIconComponent,
+    FloatingCursorContainerDirective,
+    FloatingCursorTriggerDirective,
+    FloatingCursorComponent
+  ],
   templateUrl: './opening_drill-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
@@ -27,8 +40,6 @@ import { heroBookOpen, heroPlay } from '@ng-icons/heroicons/outline';
   ]
 })
 export class OpeningDrillListComponent implements OnInit {
-  @ViewChild('drillListContainer') drillListContainerRef!: ElementRef<HTMLElement>;
-
   private http = inject(HttpClient);
   private router = inject(Router);
   private studyService = inject(StudyService);
@@ -37,72 +48,9 @@ export class OpeningDrillListComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   isBrowser = isPlatformBrowser(this.platformId);
-  isHoveringCard = signal(false);
-  cursorX = signal(0);
-  cursorY = signal(0);
-
-  private cursorAnimationFrameId: number | null = null;
-  private targetX = 0;
   private targetY = 0;
 
-  onCardMouseEnter(event: MouseEvent) {
-    if (!this.isBrowser || !this.drillListContainerRef) return;
-    const container = this.drillListContainerRef.nativeElement;
-    const rect = container.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
 
-    this.isHoveringCard.set(true);
-    this.startCursorAnimation();
-  }
-
-  onCardMouseLeave() {
-    this.isHoveringCard.set(false);
-    this.stopCursorAnimation();
-  }
-
-  onCardMouseMove(event: MouseEvent) {
-    if (!this.isBrowser || !this.drillListContainerRef) return;
-    const container = this.drillListContainerRef.nativeElement;
-    const rect = container.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
-  }
-
-  private startCursorAnimation() {
-    if (!this.isBrowser) return;
-    if (this.cursorAnimationFrameId) return;
-
-    this.cursorX.set(this.targetX);
-    this.cursorY.set(this.targetY);
-
-    const animateCursor = () => {
-      if (!this.isHoveringCard()) {
-        this.cursorAnimationFrameId = null;
-        return;
-      }
-
-      const curX = this.cursorX();
-      const curY = this.cursorY();
-
-      const nextX = curX + (this.targetX - curX) * 0.12;
-      const nextY = curY + (this.targetY - curY) * 0.12;
-
-      this.cursorX.set(nextX);
-      this.cursorY.set(nextY);
-
-      this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-    };
-
-    this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-  }
-
-  private stopCursorAnimation() {
-    if (this.cursorAnimationFrameId) {
-      cancelAnimationFrame(this.cursorAnimationFrameId);
-      this.cursorAnimationFrameId = null;
-    }
-  }
 
   isLoading = signal(false);
   activeTab = signal<'my' | 'public'>('my');

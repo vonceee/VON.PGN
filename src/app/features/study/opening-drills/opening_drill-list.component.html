@@ -1,4 +1,4 @@
-<div #drillListContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
+<div appFloatingCursorContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
   <div class="flex-1 flex flex-col mx-auto w-full">
 
     <!-- Standardized Premium Page Header -->
@@ -78,9 +78,8 @@
     <!-- Repertoires Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of filteredRepertoires(); track study.id) {
-      <div (mouseenter)="onCardMouseEnter($event)" (mouseleave)="onCardMouseLeave()"
-        (mousemove)="onCardMouseMove($event)" (click)="selectRepertoire(study)"
-        class="bg-content text-white border border-white/10 rounded-xl flex flex-col md:flex-row-reverse overflow-hidden hover:border-white/30 transition-all duration-300 cursor-none group cursor-pointer">
+      <div appFloatingCursorTrigger="Practice" cursorIcon="heroPlay" (click)="selectRepertoire(study)"
+        class="bg-content text-white border border-white/10 rounded-xl flex flex-col md:flex-row-reverse overflow-hidden hover:border-white/30 transition-all duration-300 cursor-none group">
         <!-- Chess Board Preview Container -->
         <div
           class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">
@@ -127,10 +126,5 @@
   </div>
 
   <!-- Custom Floating Cursor -->
-  <div [style.left.px]="cursorX()" [style.top.px]="cursorY()" [class.opacity-100]="isHoveringCard()"
-    [class.scale-100]="isHoveringCard()" [class.opacity-0]="!isHoveringCard()" [class.scale-90]="!isHoveringCard()"
-    class="pointer-events-none absolute z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-border-base rounded-full px-7 py-3.5 flex items-center gap-3 shadow-lg select-none transition-[opacity,transform] duration-200 ease-out">
-    <ng-icon name="heroPlay" size="1.25rem" color="black" class="text-black shrink-0"></ng-icon>
-    <span class="text-[16px] font-semibold text-content leading-none">Practice</span>
-  </div>
+  <app-floating-cursor></app-floating-cursor>
 </div>

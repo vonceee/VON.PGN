@@ -1,4 +1,4 @@
-<div #monikersContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
+<div appFloatingCursorContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
 
   <!-- Standardized Page Header (Inline) -->
   <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -50,9 +50,8 @@
   @if (filteredMonikers().length > 0) {
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     @for (item of filteredMonikers(); track item.id) {
-    <article (click)="openBlog(item.blogSlug)" (mouseenter)="onCardMouseEnter($event, item.category)"
-      (mouseleave)="onCardMouseLeave()" (mousemove)="onCardMouseMove($event)"
-      class="bg-content text-white border border-white/10 rounded-xl p-6 flex flex-col justify-between h-full group hover:border-white/30 transition-all duration-300 cursor-none cursor-pointer relative overflow-hidden">
+    <article (click)="openBlog(item.blogSlug)" appFloatingCursorTrigger="Read more" cursorIcon="heroBookOpen"
+      class="bg-content text-white border border-white/10 rounded-xl p-6 flex flex-col justify-between h-full group hover:border-white/30 transition-all duration-300 cursor-none relative overflow-hidden">
 
       <div>
         <!-- Player Picture Section -->
@@ -107,10 +106,5 @@
   }
 
   <!-- Floating Cursor -->
-  <div [style.left.px]="cursorX()" [style.top.px]="cursorY()" [class.opacity-100]="isHoveringCard()"
-    [class.scale-100]="isHoveringCard()" [class.opacity-0]="!isHoveringCard()" [class.scale-90]="!isHoveringCard()"
-    class="pointer-events-none absolute z-50 transform -translate-x-1/2 -translate-y-1/2 bg-white border border-border-base rounded-full px-7 py-3.5 flex items-center gap-3 shadow-lg select-none transition-[opacity,transform] duration-200 ease-out">
-    <ng-icon name="heroBookOpen" size="1.25rem" color="black" class="text-black shrink-0"></ng-icon>
-    <span class="text-[16px] font-semibold text-content leading-none">Read more</span>
-  </div>
+  <app-floating-cursor></app-floating-cursor>
 </div>

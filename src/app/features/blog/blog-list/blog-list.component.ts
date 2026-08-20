@@ -4,157 +4,36 @@ import { RouterLink, RouterModule } from '@angular/router';
 import { BlogService, Blog } from '../../../core/services/blog.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonComponent } from '@shared/ui';
+import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
+import { FloatingCursorComponent } from '@shared/ui';
+
 @Component({
   selector: 'app-blog-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterModule, ButtonComponent],
-  template: `
-    <div class="max-w-7xl mx-auto px-4 py-8">
-      
-      <!-- Standardized Page Header (Inline) -->
-      <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div class="flex-1">
-          <h1 class="text-4xl md:text-5xl mb-2">Chess blogs</h1>
-          <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Insights, tutorials, and game analyses from the community.</p>
-        </div>
-        <div class="flex items-center gap-4">
-          <a
-            *ngIf="isAdmin()"
-            routerLink="/blog/new"
-            appButton
-            variant="primary"
-            class="whitespace-nowrap"
-          >
-            Create blog post
-          </a>
-        </div>
-      </header>
-
-      <!-- Tabs (only visible for admins to manage drafts) -->
-      <div *ngIf="isAdmin()" class="border-b border-border-base mb-8">
-        <nav class="flex gap-6">
-          <button
-            (click)="setTab('all')"
-            [class.border-accent]="activeTab() === 'all'"
-            [class.text-content]="activeTab() === 'all'"
-            [class.border-transparent]="activeTab() !== 'all'"
-            [class.text-muted]="activeTab() !== 'all'"
-            class="pb-4 text-sm/6 font-medium border-b-2 cursor-pointer transition-colors"
-          >
-            All blogs
-          </button>
-          <button
-            (click)="setTab('my')"
-            [class.border-accent]="activeTab() === 'my'"
-            [class.text-content]="activeTab() === 'my'"
-            [class.border-transparent]="activeTab() !== 'my'"
-            [class.text-muted]="activeTab() !== 'my'"
-            class="pb-4 text-sm/6 font-medium border-b-2 cursor-pointer transition-colors"
-          >
-            My drafts & posts
-          </button>
-        </nav>
-      </div>
-
-      <!-- Loading State -->
-      <div *ngIf="isLoading()" class="min-h-96 flex items-center justify-center">
-      </div>
-
-      <!-- Empty State -->
-      <div
-        *ngIf="!isLoading() && blogs().length === 0"
-        class="bg-main rounded-xl border border-border-base p-12 text-center my-8"
-      >
-        <h3 class="text-lg font-medium mb-2">No blog posts found</h3>
-        <p class="text-muted text-sm/6 mb-6">Check back later or check another tab.</p>
-        <a
-          *ngIf="isAdmin()"
-          routerLink="/blog/new"
-          appButton
-          variant="primary"
-        >
-          Create first post
-        </a>
-      </div>
-
-      <!-- Blog Grid -->
-      <div
-        *ngIf="!isLoading() && blogs().length > 0"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-      >
-        <article
-          *ngFor="let blog of blogs()"
-          class="bg-main rounded-xl border border-border-basetransition-shadow overflow-hidden flex flex-col justify-between h-full group"
-        >
-          <!-- Thumbnail Cover Image -->
-          <div *ngIf="blog.cover_image" class="w-full h-48 bg-subtle border-b border-border-base overflow-hidden relative">
-            <img [src]="blog.cover_image" [alt]="blog.title" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300" />
-          </div>
-
-          <div class="p-6 flex-1 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center gap-2 mb-3">
-                <span
-                  *ngIf="blog.status === 'draft'"
-                  class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800"
-                >
-                  Draft
-                </span>
-                <span class="text-xs text-muted">
-                  {{ blog.published_at ? formatDate(blog.published_at) : 'Not published' }}
-                </span>
-              </div>
-
-              <h2 class="text-xl font-semibold mb-2 line-clamp-2">
-                <a [routerLink]="['/blog', blog.slug]" class="hover:text-accent transition-colors">
-                  {{ blog.title }}
-                </a>
-              </h2>
-
-              <p class="text-muted text-sm/6 mb-6 line-clamp-3 leading-relaxed">
-                {{ blog.summary || truncateText(blog.content, 120) }}
-              </p>
-            </div>
-
-            <div class="flex items-center justify-between mt-auto pt-4 border-t border-border-base">
-              <span class="text-xs text-muted">By {{ blog.author.name }}</span>
-              <a
-                [routerLink]="['/blog', blog.slug]"
-                class="text-xs font-semibold text-accent hover:underline flex items-center gap-1"
-              >
-                Read article
-              </a>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <!-- Pagination (Simple) -->
-      <div
-        *ngIf="!isLoading() && (hasPrevPage() || hasNextPage())"
-        class="flex items-center justify-center gap-4 mt-12"
-      >
-        <button
-          appButton
-          variant="outline"
-          (click)="changePage(currentPage() - 1)"
-          [disabled]="!hasPrevPage()"
-        >
-          Previous
-        </button>
-        <span class="text-sm/6 text-muted">Page {{ currentPage() }} of {{ totalPages() }}</span>
-        <button
-          appButton
-          variant="outline"
-          (click)="changePage(currentPage() + 1)"
-          [disabled]="!hasNextPage()"
-        >
-          Next
-        </button>
-      </div>
-
-    </div>
-  `,
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterModule,
+    ButtonComponent,
+    FloatingCursorContainerDirective,
+    FloatingCursorTriggerDirective,
+    FloatingCursorComponent
+  ],
+  templateUrl: './blog-list.component.html',
+  styles: [`
+    .octagon-clip {
+      clip-path: polygon(
+        20px 0%, 
+        calc(100% - 20px) 0%, 
+        100% 20px, 
+        100% calc(100% - 20px), 
+        calc(100% - 20px) 100%, 
+        20px 100%, 
+        0% calc(100% - 20px), 
+        0% 20px
+      );
+    }
+  `],
 })
 export class BlogListComponent implements OnInit {
   private blogService = inject(BlogService);

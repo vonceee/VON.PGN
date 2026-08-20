@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed, PLATFORM_ID, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
@@ -25,10 +25,24 @@ import {
 } from '@ng-icons/heroicons/outline';
 
 
+import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
+import { FloatingCursorComponent } from '@shared/ui';
+
 @Component({
   selector: 'app-study-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ButtonComponent, DialogModule, ChessBoardComponent, NgIconComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ButtonComponent,
+    DialogModule,
+    ChessBoardComponent,
+    NgIconComponent,
+    FloatingCursorContainerDirective,
+    FloatingCursorTriggerDirective,
+    FloatingCursorComponent
+  ],
   templateUrl: './study-list.component.html',
   providers: [
     provideIcons({
@@ -42,24 +56,12 @@ import {
   ]
 })
 export class StudyListComponent implements OnInit {
-  @ViewChild('studyListContainer') studyListContainerRef!: ElementRef<HTMLElement>;
-
+  private platformId = inject(PLATFORM_ID);
   private studyService = inject(StudyService);
   public authService = inject(AuthService);
   private router = inject(Router);
-  private platformId = inject(PLATFORM_ID);
   private dialog = inject(Dialog);
   private route = inject(ActivatedRoute);
-
-  isBrowser = isPlatformBrowser(this.platformId);
-  isHoveringCard = signal(false);
-  cursorX = signal(0);
-  cursorY = signal(0);
-  hoveredStudyCategory = signal<string | undefined>(undefined);
-
-  private cursorAnimationFrameId: number | null = null;
-  private targetX = 0;
-  private targetY = 0;
 
   getCategoryIcon(category?: string): string {
     switch (category) {
@@ -79,67 +81,7 @@ export class StudyListComponent implements OnInit {
     }
   }
 
-  onCardMouseEnter(event: MouseEvent, study: Study) {
-    if (!this.isBrowser || !this.studyListContainerRef) return;
-    const container = this.studyListContainerRef.nativeElement;
-    const rect = container.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
 
-    this.hoveredStudyCategory.set(study.category);
-    this.isHoveringCard.set(true);
-    this.startCursorAnimation();
-  }
-
-  onCardMouseLeave() {
-    this.isHoveringCard.set(false);
-    this.hoveredStudyCategory.set(undefined);
-    this.stopCursorAnimation();
-  }
-
-  onCardMouseMove(event: MouseEvent) {
-    if (!this.isBrowser || !this.studyListContainerRef) return;
-    const container = this.studyListContainerRef.nativeElement;
-    const rect = container.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
-  }
-
-  private startCursorAnimation() {
-    if (!this.isBrowser) return;
-    if (this.cursorAnimationFrameId) return;
-
-    this.cursorX.set(this.targetX);
-    this.cursorY.set(this.targetY);
-
-    const animateCursor = () => {
-      if (!this.isHoveringCard()) {
-        this.cursorAnimationFrameId = null;
-        return;
-      }
-
-      const curX = this.cursorX();
-      const curY = this.cursorY();
-
-      // Lerp logic: 0.12 factor creates a clean delayed momentum effect
-      const nextX = curX + (this.targetX - curX) * 0.12;
-      const nextY = curY + (this.targetY - curY) * 0.12;
-
-      this.cursorX.set(nextX);
-      this.cursorY.set(nextY);
-
-      this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-    };
-
-    this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-  }
-
-  private stopCursorAnimation() {
-    if (this.cursorAnimationFrameId) {
-      cancelAnimationFrame(this.cursorAnimationFrameId);
-      this.cursorAnimationFrameId = null;
-    }
-  }
 
   activeTab = signal<'all' | 'my'>('all');
   isLoggedIn = signal(false);

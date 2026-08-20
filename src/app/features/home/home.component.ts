@@ -80,6 +80,8 @@ import {
   heroPlay,
   heroGlobeAsiaAustralia,
 } from '@ng-icons/heroicons/outline';
+import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
+import { FloatingCursorComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-home',
@@ -88,6 +90,9 @@ import {
     CommonModule,
     RouterModule,
     NgIconComponent,
+    FloatingCursorContainerDirective,
+    FloatingCursorTriggerDirective,
+    FloatingCursorComponent,
   ],
   providers: [
     provideIcons({
@@ -113,11 +118,7 @@ import {
 export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('heroCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('heroSection') heroSectionRef!: ElementRef<HTMLElement>;
-  @ViewChild('homeContainer') homeContainerRef!: ElementRef<HTMLElement>;
-
-  isHoveringCard = signal(false);
-  cursorX = signal(0);
-  cursorY = signal(0);
+  // No homeContainerRef needed anymore
 
   activeCarouselIndex = signal(0);
   carouselSlides = [
@@ -154,69 +155,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.activeCarouselIndex.set(prevIdx);
   }
 
-  private cursorAnimationFrameId: number | null = null;
-  private targetX = 0;
-  private targetY = 0;
 
-  onCardMouseEnter(event: MouseEvent) {
-    if (!this.isBrowser || !this.homeContainerRef) return;
-    const container = this.homeContainerRef.nativeElement;
-    const rect = container.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
-
-    this.isHoveringCard.set(true);
-    this.startCursorAnimation();
-  }
-
-  onCardMouseLeave() {
-    this.isHoveringCard.set(false);
-    this.stopCursorAnimation();
-  }
-
-  onCardMouseMove(event: MouseEvent) {
-    if (!this.isBrowser || !this.homeContainerRef) return;
-    const container = this.homeContainerRef.nativeElement;
-    const rect = container.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
-  }
-
-  private startCursorAnimation() {
-    if (!this.isBrowser) return;
-    if (this.cursorAnimationFrameId) return;
-
-    this.cursorX.set(this.targetX);
-    this.cursorY.set(this.targetY);
-
-    const animateCursor = () => {
-      if (!this.isHoveringCard()) {
-        this.cursorAnimationFrameId = null;
-        return;
-      }
-
-      const curX = this.cursorX();
-      const curY = this.cursorY();
-
-      // Lerp logic: 0.12 factor creates a clean delayed momentum effect
-      const nextX = curX + (this.targetX - curX) * 0.12;
-      const nextY = curY + (this.targetY - curY) * 0.12;
-
-      this.cursorX.set(nextX);
-      this.cursorY.set(nextY);
-
-      this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-    };
-
-    this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-  }
-
-  private stopCursorAnimation() {
-    if (this.cursorAnimationFrameId) {
-      cancelAnimationFrame(this.cursorAnimationFrameId);
-      this.cursorAnimationFrameId = null;
-    }
-  }
 
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
@@ -528,7 +467,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     this.presenceService.unsubscribeFromSiteStats();
     if (this.heroInterval) clearInterval(this.heroInterval);
-    this.stopCursorAnimation();
 
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);

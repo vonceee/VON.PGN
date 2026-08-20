@@ -1,50 +1,28 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, ViewChild, ElementRef, PLATFORM_ID, OnDestroy } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MonikerService } from '../../core/services/moniker.service';
 import { PlayerMoniker } from '../../core/models/moniker.model';
 import { ButtonComponent } from '@shared/ui';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import {
-  heroTrophy,
-  heroSparkles,
-  heroAcademicCap,
-  heroGlobeAlt,
-  heroBookOpen,
-} from '@ng-icons/heroicons/outline';
+import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
+import { FloatingCursorComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-monikers',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, NgIconComponent],
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    FloatingCursorContainerDirective,
+    FloatingCursorTriggerDirective,
+    FloatingCursorComponent
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './monikers.component.html',
-  providers: [
-    provideIcons({
-      heroTrophy,
-      heroSparkles,
-      heroAcademicCap,
-      heroGlobeAlt,
-      heroBookOpen,
-    })
-  ]
 })
-export class MonikersComponent implements OnDestroy {
-  @ViewChild('monikersContainer') monikersContainerRef!: ElementRef<HTMLElement>;
-
+export class MonikersComponent {
   private monikerService = inject(MonikerService);
   private router = inject(Router);
-  private platformId = inject(PLATFORM_ID);
-
-  isBrowser = isPlatformBrowser(this.platformId);
-  isHoveringCard = signal(false);
-  cursorX = signal(0);
-  cursorY = signal(0);
-  hoveredMonikerCategory = signal<string | undefined>(undefined);
-
-  private cursorAnimationFrameId: number | null = null;
-  private targetX = 0;
-  private targetY = 0;
 
   searchQuery = signal<string>('');
   selectedCategory = signal<string>('All');
@@ -117,72 +95,6 @@ export class MonikersComponent implements OnDestroy {
 
   openBlog(blogSlug: string) {
     this.router.navigate(['/blog', blogSlug], { queryParams: { from: 'monikers' } });
-  }
-
-  ngOnDestroy() {
-    this.stopCursorAnimation();
-  }
-
-  onCardMouseEnter(event: MouseEvent, category: string) {
-    if (!this.isBrowser || !this.monikersContainerRef) return;
-    const container = this.monikersContainerRef.nativeElement;
-    const rect = container.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
-
-    this.hoveredMonikerCategory.set(category);
-    this.isHoveringCard.set(true);
-    this.startCursorAnimation();
-  }
-
-  onCardMouseLeave() {
-    this.isHoveringCard.set(false);
-    this.hoveredMonikerCategory.set(undefined);
-    this.stopCursorAnimation();
-  }
-
-  onCardMouseMove(event: MouseEvent) {
-    if (!this.isBrowser || !this.monikersContainerRef) return;
-    const container = this.monikersContainerRef.nativeElement;
-    const rect = container.getBoundingClientRect();
-    this.targetX = event.clientX - rect.left;
-    this.targetY = event.clientY - rect.top;
-  }
-
-  private startCursorAnimation() {
-    if (!this.isBrowser) return;
-    if (this.cursorAnimationFrameId) return;
-
-    this.cursorX.set(this.targetX);
-    this.cursorY.set(this.targetY);
-
-    const animateCursor = () => {
-      if (!this.isHoveringCard()) {
-        this.cursorAnimationFrameId = null;
-        return;
-      }
-
-      const curX = this.cursorX();
-      const curY = this.cursorY();
-
-      // Lerp logic: 0.12 factor creates a clean delayed momentum effect
-      const nextX = curX + (this.targetX - curX) * 0.12;
-      const nextY = curY + (this.targetY - curY) * 0.12;
-
-      this.cursorX.set(nextX);
-      this.cursorY.set(nextY);
-
-      this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-    };
-
-    this.cursorAnimationFrameId = requestAnimationFrame(animateCursor);
-  }
-
-  private stopCursorAnimation() {
-    if (this.cursorAnimationFrameId) {
-      cancelAnimationFrame(this.cursorAnimationFrameId);
-      this.cursorAnimationFrameId = null;
-    }
   }
 
   getCategoryIcon(category?: string): string {
