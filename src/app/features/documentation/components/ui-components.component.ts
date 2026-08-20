@@ -5,6 +5,7 @@ import { UiButtonsComponent } from './ui-components/ui-buttons.component';
 import { UiBadgesComponent } from './ui-components/ui-badges.component';
 import { UiTogglesComponent } from './ui-components/ui-toggles.component';
 import { UiInputsComponent } from './ui-components/ui-inputs.component';
+import { UiCursorComponent } from './ui-components/ui-cursor.component';
 
 @Component({
   selector: 'app-docs-ui-components',
@@ -16,6 +17,7 @@ import { UiInputsComponent } from './ui-components/ui-inputs.component';
     UiBadgesComponent,
     UiTogglesComponent,
     UiInputsComponent,
+    UiCursorComponent,
   ],
   templateUrl: './ui-components.component.html',
 })
