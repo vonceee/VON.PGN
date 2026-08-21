@@ -281,6 +281,19 @@ export class StudySidebarComponent {
           this.toastService.show(err.error?.message || 'Failed to import PGN.', 'error');
         }
       });
+    } else {
+      const fen = payload.type === 'empty' ? undefined : payload.fen;
+      this.studyService.addChapter(s.id, payload.name, fen, payload.orientation).subscribe({
+        next: (res) => {
+          const newChapter = res.data ?? res;
+          this.studyService.getStudy(s.id, newChapter?.id);
+          this.selectSection('chapters');
+        },
+        error: (err) => {
+          console.error('Chapter creation failed:', err);
+          this.toastService.show(err.error?.message || 'Failed to create chapter.', 'error');
+        }
+      });
     }
   }
 
