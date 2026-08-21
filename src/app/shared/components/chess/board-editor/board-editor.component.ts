@@ -23,7 +23,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         <div class="flex flex-col gap-4">
           <!-- Black Pieces -->
           <div class="space-y-1.5">
-            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-subtle/30 border border-border-base rounded-xl">
+            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-slate-50/30 border border-border-base rounded-xl">
               @for (role of pieceRoles; track role) {
                 <button 
                   class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
@@ -41,7 +41,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
           <!-- White Pieces -->
           <div class="space-y-1.5">
-            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-subtle/30 border border-border-base rounded-xl">
+            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-slate-50/30 border border-border-base rounded-xl">
               @for (role of pieceRoles; track role) {
                 <button 
                   class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
@@ -104,7 +104,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
         <!-- Castling rights -->
         <div class="flex flex-col">
-          <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-subtle/30 border border-border-base rounded-xl">
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-slate-50/30 border border-border-base rounded-xl">
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
               <input type="checkbox" [ngModel]="whiteKingside()" (ngModelChange)="whiteKingside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
               <span>White O-O</span>
@@ -157,7 +157,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
           <div class="flex flex-col gap-8 shrink-0">
             <!-- Black Pieces -->
             <div class="space-y-2">
-              <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
+              <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-slate-50/30 backdrop-blur-md border border-base rounded-xl">
                 @for (role of pieceRoles; track role) {
                   <button 
                     class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
@@ -175,7 +175,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
             <!-- White Pieces -->
             <div class="space-y-2">
-              <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-subtle/30 backdrop-blur-md border border-base rounded-xl">
+              <div class="grid grid-cols-2 gap-1.5 p-1.5 bg-slate-50/30 backdrop-blur-md border border-base rounded-xl">
                 @for (role of pieceRoles; track role) {
                   <button 
                     class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"

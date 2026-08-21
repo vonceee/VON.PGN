@@ -8,14 +8,14 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="flex h-full w-full rounded-sm overflow-hidden text-xs font-semibold text-white">
       <div 
-        class="bg-subtle flex items-center justify-center  " 
+        class="bg-slate-50 flex items-center justify-center  " 
         [style.width.%]="stats().white"
         [title]="stats().white + '% White wins'"
       >
         <span class="truncate px-1" *ngIf="stats().white > 15">{{ stats().white }}%</span>
       </div>
       <div 
-        class="bg-subtle0 flex items-center justify-center   border-x border-black/5" 
+        class="bg-slate-500 flex items-center justify-center   border-x border-black/5" 
         [style.width.%]="stats().draws"
         [title]="stats().draws + '% Draws'"
       >

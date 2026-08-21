@@ -1,6 +1,6 @@
 <div class="space-y-6">
   @if (eligibilityArray.length === 0) {
-  <p class="text-sm/6 py-8 text-center bg-subtle rounded-xl border-2 border-border-base">
+  <p class="text-sm/6 py-8 text-center bg-slate-50 rounded-xl border-2 border-border-base">
     No requirements added yet.
   </p>
   }
@@ -17,7 +17,7 @@
     </div>
     }
     <button type="button" (click)="addItem.emit()"
-      class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer w-full">
+      class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all cursor-pointer w-full">
       + Add Requirement
     </button>
   </div>

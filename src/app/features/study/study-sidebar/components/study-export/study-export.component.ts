@@ -21,8 +21,8 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
         <!-- Radio Options -->
         <div class="flex flex-col mb-4">
           <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
-            [class.bg-subtle]="exportOption() === 'current'" [class.border-accent]="exportOption() === 'current'">
+            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-50 cursor-pointer transition-colors"
+            [class.bg-slate-50]="exportOption() === 'current'" [class.border-accent]="exportOption() === 'current'">
             <input type="radio" name="exportOption" value="current" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
               class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
@@ -33,8 +33,8 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
           </label>
 
           <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
-            [class.bg-subtle]="exportOption() === 'all'" [class.border-accent]="exportOption() === 'all'">
+            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-50 cursor-pointer transition-colors"
+            [class.bg-slate-50]="exportOption() === 'all'" [class.border-accent]="exportOption() === 'all'">
             <input type="radio" name="exportOption" value="all" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
               class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
@@ -45,8 +45,8 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
           </label>
 
           <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-subtle cursor-pointer transition-colors"
-            [class.bg-subtle]="exportOption() === 'selected'" [class.border-accent]="exportOption() === 'selected'">
+            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-50 cursor-pointer transition-colors"
+            [class.bg-slate-50]="exportOption() === 'selected'" [class.border-accent]="exportOption() === 'selected'">
             <input type="radio" name="exportOption" value="selected" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
               class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
@@ -74,7 +74,7 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
           <div class="flex-1 overflow-y-auto space-y-1 pr-1">
             @for (chap of study()?.chapters; track chap.id; let idx = $index) {
             <label
-              class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-subtle cursor-pointer select-none transition-colors"
+              class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-50 cursor-pointer select-none transition-colors"
               [class.bg-surface]="selectedChapterIds().has(chap.id)">
               <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
                 (change)="toggleChapterSelection(chap.id)"

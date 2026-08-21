@@ -32,7 +32,7 @@
           <span>Explore Tools</span>
         </button>
         <a routerLink="/study"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all">
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all">
           <span>Start Studying</span>
         </a>
       </div>
@@ -47,31 +47,31 @@
       <button type="button" (click)="activeCategory.set('all')"
         [class]="activeCategory() === 'all' 
           ? 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer shrink-0 transition-all' 
-          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer shrink-0'">
+          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all cursor-pointer shrink-0'">
         All
       </button>
       <button type="button" (click)="activeCategory.set('openings')"
         [class]="activeCategory() === 'openings' 
           ? 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer shrink-0 transition-all' 
-          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer shrink-0'">
+          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all cursor-pointer shrink-0'">
         Openings
       </button>
       <button type="button" (click)="activeCategory.set('tactics')"
         [class]="activeCategory() === 'tactics' 
           ? 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer shrink-0 transition-all' 
-          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer shrink-0'">
+          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all cursor-pointer shrink-0'">
         Tactics
       </button>
       <button type="button" (click)="activeCategory.set('analysis')"
         [class]="activeCategory() === 'analysis' 
           ? 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer shrink-0 transition-all' 
-          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer shrink-0'">
+          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all cursor-pointer shrink-0'">
         Analysis
       </button>
       <button type="button" (click)="activeCategory.set('tournaments')"
         [class]="activeCategory() === 'tournaments' 
           ? 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer shrink-0 transition-all' 
-          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer shrink-0'">
+          : 'inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base text-content font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all cursor-pointer shrink-0'">
         Tournaments
       </button>
     </div>

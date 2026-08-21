@@ -50,7 +50,7 @@
           </div>
           <div class="flex gap-2">
             <a [routerLink]="['/admin/chapter', chapterId(), 'lesson', lesson.id]"
-              class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-subtle hover:bg-subtle">Edit</a>
+              class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-slate-50 hover:bg-slate-50">Edit</a>
             <button (click)="requestDeleteLesson(lesson.id)"
               class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-red-600 text-white hover:bg-red-700">Delete</button>
           </div>
@@ -79,7 +79,7 @@
     </div>
     <div class="flex gap-3 p-4 px-5 border-t border-border-base">
       <button (click)="cancelDeleteLesson()"
-        class="inline-block px-4 py-2 rounded text-sm/6   bg-subtle hover:bg-subtle">Cancel</button>
+        class="inline-block px-4 py-2 rounded text-sm/6   bg-slate-50 hover:bg-slate-50">Cancel</button>
       <button (click)="confirmDeleteLesson()"
         class="inline-block px-4 py-2 rounded text-sm/6   bg-red-600 text-white hover:bg-red-700">Delete</button>
     </div>

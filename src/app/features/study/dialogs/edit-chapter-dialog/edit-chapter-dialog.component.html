@@ -61,7 +61,7 @@
             Confirm delete
           </button>
           <button
-            class="flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-surface hover:bg-subtle rounded-full"
+            class="flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-surface hover:bg-slate-50 rounded-full"
             (click)="isConfirmingDelete.set(false)">
             Cancel
           </button>
@@ -75,7 +75,7 @@
   <!-- Footer Actions -->
   <div class="pt-4 flex gap-4 w-full">
     <button (click)="dialogRef.close()"
-      class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all">
+      class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all">
       Cancel
     </button>
     <button (click)="onSave()" [disabled]="!name().trim()"

@@ -3,7 +3,7 @@
   <div class="flex-1 flex flex-col justify-center px-6 py-8 lg:px-20 xl:px-32 overflow-y-auto lg:overflow-y-hidden">
     <div class="mx-auto w-full text-center">
       <div class="mb-8 flex justify-center">
-        <div class="h-20 w-20 bg-subtle   rounded-full flex items-center justify-center border border-border-base ">
+        <div class="h-20 w-20 bg-slate-50   rounded-full flex items-center justify-center border border-border-base ">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             stroke="currentColor" class="w-10 h-10 text-accent">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -28,7 +28,7 @@
         you can close this tab after verification.
       </p>
       } @else {
-      <div class="mb-8 p-4 bg-subtle/50 rounded-lg border border-border-base  text-left">
+      <div class="mb-8 p-4 bg-slate-50/50 rounded-lg border border-border-base  text-left">
         <label class="block text-sm/6  mb-2">Update Email Address</label>
         <div class="flex gap-2">
           <input type="email" [(ngModel)]="newEmailInput"
@@ -39,7 +39,7 @@
             {{ isUpdatingEmail ? 'Saving...' : 'Save' }}
           </button>
           <button (click)="cancelEditEmail()" [disabled]="isUpdatingEmail"
-            class="px-4 py-2 bg-subtle hover:bg-subtle    rounded-lg text-sm/6 font-semibold disabled:opacity-50 ">
+            class="px-4 py-2 bg-slate-50 hover:bg-slate-50    rounded-lg text-sm/6 font-semibold disabled:opacity-50 ">
             Cancel
           </button>
         </div>

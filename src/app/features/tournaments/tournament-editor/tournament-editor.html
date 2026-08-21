@@ -20,8 +20,8 @@
       ) {
       <button type="button" (click)="scrollToSection(section.id)" [class]="
           activeSection() === section.id
-            ? 'text-accent bg-subtle rounded-full'
-            : 'text-gray-500 hover:bg-subtle rounded-xl'
+            ? 'text-accent bg-slate-50 rounded-full'
+            : 'text-gray-500 hover:bg-slate-50 rounded-xl'
         " class="p-3 transition-all cursor-pointer border-none flex items-center justify-center relative group">
         <ng-icon [name]="section.icon" class="text-xl"></ng-icon>
         <div
@@ -51,7 +51,7 @@
 
             @if (!useCustomPoster) {
             <button type="button" (click)="posterUploadInput.click()"
-              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer">
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all cursor-pointer">
               Upload Poster
             </button>
             } @else {

@@ -5,11 +5,11 @@
     <button (click)="selectChapter(chap)" cdkDrag [cdkDragDisabled]="!canEdit()" class="relative flex items-center justify-between p-2 cursor-pointer group text-left
             {{
               currentChapter()?.id === chap.id
-                ? 'bg-subtle rounded-lg'
-                : 'hover:bg-subtle rounded-lg'
+                ? 'bg-slate-50 rounded-lg'
+                : 'hover:bg-slate-50 rounded-lg'
             }}">
       <!-- Drag Placeholder -->
-      <div *cdkDragPlaceholder class="h-10 bg-subtle border border-border-accent rounded-lg mx-2 my-0.5">
+      <div *cdkDragPlaceholder class="h-10 bg-slate-50 border border-border-accent rounded-lg mx-2 my-0.5">
       </div>
 
       @if (currentChapter()?.id === chap.id) {

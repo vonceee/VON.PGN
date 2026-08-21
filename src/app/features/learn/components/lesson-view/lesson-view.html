@@ -31,11 +31,11 @@
     </div>
     <div class="mt-4 flex flex-col gap-4 text-sm/6">
       <div class="flex flex-wrap items-center gap-3">
-        <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-gray-500 ">
+        <span class="inline-flex items-center gap-2 rounded-full bg-slate-50 /70 px-3 py-1.5 text-gray-500 ">
           <span class="font-semibold  ">Estimated time:</span>
           <span>{{ estimatedTime }}</span>
         </span>
-        <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-gray-500 ">
+        <span class="inline-flex items-center gap-2 rounded-full bg-slate-50 /70 px-3 py-1.5 text-gray-500 ">
           <span class="font-semibold  ">Difficulty:</span>
           <span>{{ difficulty }}</span>
         </span>
@@ -221,7 +221,7 @@
     </div>
 
     @if (isLastLesson) {
-    <div class="mt-8 mb-8 bg-subtle/50 p-6 rounded-2xl border border-border-base">
+    <div class="mt-8 mb-8 bg-slate-50/50 p-6 rounded-2xl border border-border-base">
       <h3 class="text-xl font-semibold mb-6">What to learn next?</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         @for (course of suggestedCourses; track course.id) {

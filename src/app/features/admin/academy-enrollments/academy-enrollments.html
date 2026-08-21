@@ -44,7 +44,7 @@
           <tr *ngFor="let item of enrollments()">
             <td class="px-6 py-6">
               <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded bg-subtle flex items-center justify-center  font-semibold text-xl">
+                <div class="w-12 h-12 rounded bg-slate-50 flex items-center justify-center  font-semibold text-xl">
                   {{ item.full_name[0] }}
                 </div>
                 <div>
@@ -55,7 +55,7 @@
               </div>
             </td>
             <td class="px-6 py-6">
-              <span class="px-3 py-1 rounded bg-subtle text-xs font-semibold">
+              <span class="px-3 py-1 rounded bg-slate-50 text-xs font-semibold">
                 {{ item.chess_level }}
               </span>
             </td>
@@ -94,7 +94,7 @@
 
     <!-- Loading State -->
     @if (isLoading()) {
-    
+
     }
   </div>
 </div>

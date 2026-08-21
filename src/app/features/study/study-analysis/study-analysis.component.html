@@ -47,7 +47,7 @@
       @for (n of [1,2,3]; track n) {
       <button (click)="onMultiPvChange(n)" class="w-7 h-7 rounded-lg text-xs   " [class]="multiPvCount() === n
               ? 'bg-accent/20 border border-accent/30'
-              : 'bg-subtle text-gray-500 border border-transparent hover:bg-surface'">
+              : 'bg-slate-50 text-gray-500 border border-transparent hover:bg-surface'">
         {{ n }}
       </button>
       }

@@ -34,7 +34,7 @@ import { AuthService } from '../../../core/services/auth.service';
       <div class="flex flex-col gap-3 flex-1 overflow-y-auto min-h-0 mb-4">
         
         <!-- Local Stream Video Box -->
-        <div class="relative bg-subtle rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+        <div class="relative bg-slate-50 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
           @if (localStream()) {
             <video 
               #localVideo 
@@ -45,7 +45,7 @@ import { AuthService } from '../../../core/services/auth.service';
               class="w-full h-full object-cover transform -scale-x-100"
             ></video>
             @if (isCameraOff()) {
-              <div class="absolute inset-0 bg-subtle flex flex-col items-center justify-center">
+              <div class="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center">
                 <div class="w-12 h-12 rounded-full bg-surface border border-border-base flex items-center justify-center mb-1.5">
                   <ng-icon name="heroUser" size="1.5rem" class="text-gray-500"></ng-icon>
                 </div>
@@ -74,7 +74,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
         <!-- Remote Stream Video Boxes -->
         @for (peer of remoteStreamsList(); track peer.id) {
-          <div class="relative bg-subtle rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+          <div class="relative bg-slate-50 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
             <video 
               [srcObject]="peer.stream" 
               autoplay 
@@ -95,7 +95,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <button 
           (click)="toggleMic()" 
           [class.bg-rose-50]="isMuted()" [class.text-rose-600]="isMuted()" [class.border-rose-100]="isMuted()" [class.hover:bg-rose-100]="isMuted()"
-          [class.bg-subtle]="!isMuted()" [class.text-content]="!isMuted()" [class.border-border-base]="!isMuted()" [class.hover:bg-border-base/50]="!isMuted()"
+          [class.bg-slate-50]="!isMuted()" [class.text-content]="!isMuted()" [class.border-border-base]="!isMuted()" [class.hover:bg-border-base/50]="!isMuted()"
           class="w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           title="Toggle Mic"
         >
@@ -111,7 +111,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <button 
           (click)="toggleCam()" 
           [class.bg-rose-50]="isCameraOff()" [class.text-rose-600]="isCameraOff()" [class.border-rose-100]="isCameraOff()" [class.hover:bg-rose-100]="isCameraOff()"
-          [class.bg-subtle]="!isCameraOff()" [class.text-content]="!isCameraOff()" [class.border-border-base]="!isCameraOff()" [class.hover:bg-border-base/50]="!isCameraOff()"
+          [class.bg-slate-50]="!isCameraOff()" [class.text-content]="!isCameraOff()" [class.border-border-base]="!isCameraOff()" [class.hover:bg-border-base/50]="!isCameraOff()"
           class="w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           title="Toggle Camera"
         >
@@ -121,7 +121,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <!-- Dock/Undock Toggle -->
         <button 
           (click)="toggleDetached()" 
-          class="w-9 h-9 rounded-full bg-subtle hover:bg-border-base/50 border border-border-base flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
+          class="w-9 h-9 rounded-full bg-slate-50 hover:bg-border-base/50 border border-border-base flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           [title]="webrtc.isDetached() ? 'Dock to Sidebar' : 'Pop Out Video Call'"
         >
           <ng-icon [name]="webrtc.isDetached() ? 'heroArrowDownLeft' : 'heroArrowUpRight'" size="1rem"></ng-icon>

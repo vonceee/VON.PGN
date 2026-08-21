@@ -47,9 +47,9 @@
       </div>
       <div class="flex gap-4 mb-4">
         <button type="button" (click)="addTextBlock()"
-          class="inline-block px-4 py-2 rounded text-sm/6   bg-subtle hover:bg-subtle">+ Text Block</button>
+          class="inline-block px-4 py-2 rounded text-sm/6   bg-slate-50 hover:bg-slate-50">+ Text Block</button>
         <button type="button" (click)="addBoardBlock()"
-          class="inline-block px-4 py-2 rounded text-sm/6   bg-subtle hover:bg-subtle">+ Board Block</button>
+          class="inline-block px-4 py-2 rounded text-sm/6   bg-slate-50 hover:bg-slate-50">+ Board Block</button>
       </div>
 
       <div formArrayName="content_blocks">
@@ -57,13 +57,13 @@
           <div [formGroupName]="i" class="bg-white border border-border-base rounded-lg p-5 mb-4"
             style="background: #fafafa;">
             <div class="flex justify-between items-center mb-4">
-              <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-subtle">{{
+              <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-slate-50">{{
                 block.get('type')?.value }}</span>
               <div class="flex gap-2">
                 <button type="button" (click)="moveBlock(i, -1)" [disabled]="i === 0"
-                  class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-subtle hover:bg-subtle disabled:opacity-50">↑</button>
+                  class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-slate-50 hover:bg-slate-50 disabled:opacity-50">↑</button>
                 <button type="button" (click)="moveBlock(i, 1)" [disabled]="i === contentBlocks.length - 1"
-                  class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-subtle hover:bg-subtle disabled:opacity-50">↓</button>
+                  class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-slate-50 hover:bg-slate-50 disabled:opacity-50">↓</button>
                 <button type="button" (click)="removeBlock(i)"
                   class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-red-600 text-white hover:bg-red-700">X</button>
               </div>

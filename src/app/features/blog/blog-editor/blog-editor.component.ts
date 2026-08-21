@@ -80,7 +80,7 @@ interface EditorGame {
                 <label class="text-sm/6 font-semibold">Body content (Markdown)</label>
                 
                 <!-- Toolbar Helpers -->
-                <div class="flex items-center gap-1 bg-subtle/50 border border-border-base rounded-full p-1 text-xs">
+                <div class="flex items-center gap-1 bg-slate-50/50 border border-border-base rounded-full p-1 text-xs">
                   <button (click)="insertMarkdown('bold')" class="px-2.5 py-1 rounded-full hover:bg-white font-semibold cursor-pointer">B</button>
                   <button (click)="insertMarkdown('italic')" class="px-2.5 py-1 rounded-full hover:bg-white italic cursor-pointer">I</button>
                   <button (click)="insertMarkdown('header')" class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">H2</button>
@@ -94,7 +94,7 @@ interface EditorGame {
                       <button
                         *ngFor="let g of games(); let idx = index"
                         (click)="insertGameTag(idx)"
-                        class="text-left text-xs px-3 py-2 hover:bg-subtle rounded-lg truncate cursor-pointer font-medium"
+                        class="text-left text-xs px-3 py-2 hover:bg-slate-50 rounded-lg truncate cursor-pointer font-medium"
                       >
                         Game #{{ idx }} - {{ g.title || 'Untitled' }}
                       </button>
@@ -157,7 +157,7 @@ interface EditorGame {
             <h3 class="text-lg font-semibold border-b border-border-base pb-2">PGN games manager</h3>
             
             <!-- Game adding inputs -->
-            <div class="space-y-3 p-4 bg-subtle/25 rounded-xl border border-border-base">
+            <div class="space-y-3 p-4 bg-slate-50/25 rounded-xl border border-border-base">
               <h4 class="text-xs font-semibold text-gray-500 uppercase">Add a chess game</h4>
               
               <div class="flex flex-col gap-1.5">
@@ -196,7 +196,7 @@ interface EditorGame {
                 No games added yet.
               </div>
 
-              <div *ngFor="let g of games(); let idx = index" class="flex items-center justify-between p-3 rounded-xl border border-border-base bg-subtle/10 gap-3">
+              <div *ngFor="let g of games(); let idx = index" class="flex items-center justify-between p-3 rounded-xl border border-border-base bg-slate-50/10 gap-3">
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
                     <span class="text-sm/6 font-medium px-1.5 py-0.5 rounded-full bg-accent text-main shrink-0">
@@ -223,7 +223,7 @@ interface EditorGame {
             <div class="space-y-4">
               <h1 class="text-2xl md:text-3xl font-medium">{{ title() || 'Post Title' }}</h1>
               
-              <div *ngIf="summary()" class="p-4 bg-subtle/25 border-l-4 border-accent rounded-r-xl text-gray-500 text-sm/6 italic">
+              <div *ngIf="summary()" class="p-4 bg-slate-50/25 border-l-4 border-accent rounded-r-xl text-gray-500 text-sm/6 italic">
                 {{ summary() }}
               </div>
 
@@ -233,7 +233,7 @@ interface EditorGame {
                   @if (block.type === 'text') {
                     <div [innerHTML]="parseMarkdown(block.content || '')" class="preview-markdown"></div>
                   } @else if (block.type === 'game') {
-                    <div class="my-4 p-4 rounded-xl border border-dashed border-border-base bg-subtle/20 flex flex-col items-center justify-center min-h-[120px] text-center">
+                    <div class="my-4 p-4 rounded-xl border border-dashed border-border-base bg-slate-50/20 flex flex-col items-center justify-center min-h-[120px] text-center">
                       <div class="w-8 h-8 rounded-full bg-accent text-main flex items-center justify-center font-medium text-xs mb-2">
                         ♞
                       </div>

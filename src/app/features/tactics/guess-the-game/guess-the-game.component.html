@@ -122,7 +122,7 @@
                 Submit
               </button>
               <button
-                class="flex-1 w-full max-w-full justify-center inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all"
+                class="flex-1 w-full max-w-full justify-center inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all"
                 (click)="revealFullMatchup()">
                 Reveal
               </button>
@@ -133,13 +133,13 @@
             @if (getAnalysisLinkInfo(game); as linkInfo) {
             @if (linkInfo.url) {
             <a [href]="linkInfo.url" target="_blank"
-              class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-subtle transition-all"
+              class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-50 transition-all"
               title="Study analysis">
               <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
             </a>
             } @else if (linkInfo.route) {
             <a [routerLink]="linkInfo.route" [queryParams]="linkInfo.queryParams" target="_blank"
-              class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-subtle transition-all"
+              class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-50 transition-all"
               title="Study analysis">
               <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
             </a>
@@ -190,7 +190,7 @@
           <!-- If NOT in 3-column mode, render target cards inline here! -->
           <div class="grid grid-cols-2 gap-3 pb-2 select-none">
             <!-- White Player Card -->
-            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle min-w-0">
+            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-slate-50 min-w-0">
               <div class="flex-1 flex items-center gap-3 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full bg-white border border-border-base shrink-0 select-none"></span>
                 <div class="flex flex-col min-w-0">
@@ -223,7 +223,7 @@
             </div>
 
             <!-- Black Player Card -->
-            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-subtle min-w-0">
+            <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-slate-50 min-w-0">
               <div class="flex-1 flex items-center gap-3 min-w-0">
                 <span class="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0 select-none"></span>
                 <div class="flex flex-col min-w-0">
@@ -309,7 +309,7 @@
         <div class="p-2 flex items-center justify-between bg-white rounded-xl select-none w-full shrink-0 px-4">
           <!-- Flip Board Button -->
           <button (click)="flipBoard()" title="Flip Board"
-            class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-subtle flex items-center justify-center">
+            class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-slate-50 flex items-center justify-center">
             <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
           </button>
 
@@ -318,26 +318,26 @@
           <!-- Navigation Buttons Group -->
           <div class="flex items-center gap-1.5">
             <button (click)="goToStart()" title="First Move"
-              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-subtle flex items-center justify-center">
+              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-slate-50 flex items-center justify-center">
               <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
             </button>
             <button (click)="prevMove()" title="Previous Move"
-              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-subtle flex items-center justify-center">
+              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-slate-50 flex items-center justify-center">
               <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
             </button>
 
             <!-- Autoplay (Play/Pause) -->
             <button (click)="toggleAutoplay()" [title]="isAutoplay() ? 'Pause Autoplay' : 'Start Autoplay'"
-              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-subtle flex items-center justify-center">
+              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-slate-50 flex items-center justify-center">
               <ng-icon [name]="isAutoplay() ? 'heroPause' : 'heroPlay'" class="text-lg"></ng-icon>
             </button>
 
             <button (click)="nextMove()" title="Next Move"
-              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-subtle flex items-center justify-center">
+              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-slate-50 flex items-center justify-center">
               <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
             </button>
             <button (click)="goToEnd()" title="Last Move"
-              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-subtle flex items-center justify-center">
+              class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-slate-50 flex items-center justify-center">
               <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
             </button>
           </div>

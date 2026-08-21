@@ -11,7 +11,7 @@
 
     <!-- Cover Image Banner -->
     <div *ngIf="post.cover_image"
-      class="w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden border border-border-base bg-subtle relative shadow-sm">
+      class="w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden border border-border-base bg-slate-50 relative shadow-sm">
       <img [src]="post.cover_image" [alt]="post.title" class="w-full h-full object-cover object-center" />
     </div>
 
@@ -34,7 +34,7 @@
       <div class="flex flex-wrap items-center justify-between gap-4 mt-6">
         <div class="flex items-center gap-3">
           <div
-            class="w-10 h-10 rounded-full bg-subtle flex items-center justify-center font-semibold border border-border-base">
+            class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center font-semibold border border-border-base">
             {{ post.author.name.charAt(0) }}
           </div>
           <div>
@@ -58,7 +58,7 @@
 
     <!-- Summary Banner -->
     <div *ngIf="post.summary"
-      class="p-6 bg-subtle/20 border-l-4 border-accent rounded-r-xl text-gray-500 italic leading-relaxed text-lg">
+      class="p-6 bg-slate-50/20 border-l-4 border-accent rounded-r-xl text-gray-500 italic leading-relaxed text-lg">
       {{ post.summary }}
     </div>
 
@@ -86,9 +86,9 @@
 
     <!-- Author Bio Footer -->
     <footer *ngIf="post.author.bio"
-      class="mt-16 p-8 rounded-2xl bg-subtle/25 border border-border-base flex flex-col md:flex-row gap-6 items-start">
+      class="mt-16 p-8 rounded-2xl bg-slate-50/25 border border-border-base flex flex-col md:flex-row gap-6 items-start">
       <div
-        class="w-16 h-16 rounded-full bg-subtle flex items-center justify-center font-medium text-xl border border-border-base shrink-0">
+        class="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center font-medium text-xl border border-border-base shrink-0">
         {{ post.author.name.charAt(0) }}
       </div>
       <div>

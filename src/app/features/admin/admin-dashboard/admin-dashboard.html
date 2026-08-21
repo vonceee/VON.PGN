@@ -56,13 +56,13 @@
           </thead>
           <tbody class="divide-y divide-border-base/50">
             @for (item of recentEnrollments(); track item.id) {
-            <tr class="hover:bg-subtle ">
+            <tr class="hover:bg-slate-50 ">
               <td class="py-4">
                 <div class="font-semibold">{{ item.full_name }}</div>
                 <div class="text-xs text-gray-500">{{ item.email }}</div>
               </td>
               <td class="py-4">
-                <span class="text-xs font-semibold bg-subtle px-2.5 py-1 rounded-lg">
+                <span class="text-xs font-semibold bg-slate-50 px-2.5 py-1 rounded-lg">
                   {{ item.chess_level }}
                 </span>
               </td>

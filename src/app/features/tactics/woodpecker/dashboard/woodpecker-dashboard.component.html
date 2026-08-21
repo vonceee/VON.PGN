@@ -7,7 +7,7 @@
         <h1 class="text-4xl md:text-5xl mb-2 flex items-center gap-2">
           <span>Woodpecker method</span>
           <button (click)="toggleExplanation()"
-            class="p-1 rounded-full text-gray-500 hover:bg-subtle transition-colors duration-200 cursor-pointer flex items-center justify-center"
+            class="p-1 rounded-full text-gray-500 hover:bg-slate-50 transition-colors duration-200 cursor-pointer flex items-center justify-center"
             title="What is Woodpecker method?">
             <ng-icon name="heroInformationCircle" class="text-xl md:text-2xl"></ng-icon>
           </button>
@@ -18,7 +18,7 @@
       </div>
       <div class="flex items-center gap-4">
         <button
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all"
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all"
           routerLink="/tactics/woodpecker/setup">
           Create new session
         </button>
@@ -100,7 +100,7 @@
                 <span>Puzzles solved</span>
                 <span>{{ getProgressPercentage(session) }}%</span>
               </div>
-              <div class="w-full bg-subtle h-2 rounded-full overflow-hidden">
+              <div class="w-full bg-slate-50 h-2 rounded-full overflow-hidden">
                 <div class="bg-accent h-full rounded-full transition-all duration-500"
                   [style.width.%]="getProgressPercentage(session)"></div>
               </div>
@@ -183,7 +183,7 @@
             </h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               @for (cycle of session.cycles; track cycle.id) {
-              <div class="bg-subtle rounded-xl p-4 border border-slate-100">
+              <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
                 <div class="flex justify-between items-center mb-3">
                   <span class="text-md font-semibold">Cycle {{ cycle.cycle_number }}</span>
                   <span class="w-2.5 h-2.5 rounded-full" [class.bg-green-500]="cycle.status === 'completed'"
@@ -214,7 +214,7 @@
               <!-- Render placeholders for uncompleted cycles -->
               @if (session.cycles && session.cycles.length < 4 && session.status !=='abandoned' ) { @for (cycleNum of
                 getMissingCycles(session); track cycleNum) { <div
-                class="bg-subtle/50 rounded-xl p-4 border border-dashed border-border-base flex flex-col items-center justify-center min-h-[110px] text-gray-500 text-xs">
+                class="bg-slate-50/50 rounded-xl p-4 border border-dashed border-border-base flex flex-col items-center justify-center min-h-[110px] text-gray-500 text-xs">
                 Cycle {{ cycleNum }}
                 <span class="text-xs mt-1">Pending progression</span>
             </div>
@@ -249,7 +249,7 @@
       <!-- Action Buttons -->
       <div class="flex justify-end gap-3 pt-2">
         <button
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all"
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all"
           (click)="cancelAbandon()">
           Cancel
         </button>
@@ -285,7 +285,7 @@
       <!-- Action Buttons -->
       <div class="flex justify-end gap-3 pt-2">
         <button
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all"
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-50 transition-all"
           (click)="cancelDelete()">
           Cancel
         </button>

@@ -20,10 +20,10 @@
       </p>
 
       <!-- Final Diagnostics summary -->
-      <div class="bg-subtle rounded-4xl p-6 w-full mb-8">
+      <div class="bg-slate-50 rounded-4xl p-6 w-full mb-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           @for (cycle of session()?.cycles; track cycle.id) {
-          <div class="bg-subtle rounded-xl p-4 border border-slate-100">
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
             <span class="text-md font-medium block mb-1">Cycle {{ cycle.cycle_number }}</span>
             <span class="text-xl font-medium block mb-1">
               {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}%
@@ -76,7 +76,7 @@
         </div>
 
         <!-- Digital Readout Timer -->
-        <div class="bg-subtle rounded-xl p-4 border border-slate-100 flex items-center justify-between">
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 flex items-center justify-between">
           <div>
             <span class="text-xs text-gray-500 block mb-0.5">Cycle timer</span>
             <span class="text-3xl font-medium">{{ formatTime(cycleTimeElapsed()) }}</span>
@@ -92,7 +92,7 @@
 
         <!-- Progress slider -->
         <div>
-          <div class="w-full bg-subtle h-2 rounded-full overflow-hidden mb-2">
+          <div class="w-full bg-slate-50 h-2 rounded-full overflow-hidden mb-2">
             <div class="bg-accent h-full rounded-full transition-all duration-300"
               [style.width.%]="(((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)">
             </div>
@@ -190,7 +190,7 @@
 
 
         <!-- Diagnostic Metrics -->
-        <div class="grid grid-cols-2 gap-4 w-full bg-subtle border border-slate-100 rounded-2xl p-4 text-left">
+        <div class="grid grid-cols-2 gap-4 w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left">
           <div>
             <span class="text-xs text-gray-500 block mb-0.5">Accuracy</span>
             <span class="text-lg font-medium">{{ stats.accuracy }}%</span>
