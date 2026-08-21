@@ -25,7 +25,7 @@ interface EditorGame {
       
       <!-- Back Link -->
       <div class="mb-8">
-        <a routerLink="/blog" class="text-sm/6 font-medium text-gray-500 hover:text-content hover:underline flex items-center gap-1">
+        <a routerLink="/blog" class="text-sm/6 font-medium text-gray-500 hover:text-slate-900 hover:underline flex items-center gap-1">
           ← Back to blogs
         </a>
       </div>

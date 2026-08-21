@@ -38,7 +38,7 @@ import {
         @if (icon()) {
           <ng-icon [name]="icon()!" size="1.25rem" color="black" class="text-black shrink-0"></ng-icon>
         }
-        <span class="text-[16px] font-semibold text-content leading-none">{{ text() }}</span>
+        <span class="text-[16px] font-semibold text-slate-900 leading-none">{{ text() }}</span>
       </div>
     </div>
   `

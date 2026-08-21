@@ -53,7 +53,7 @@
             @if (turn.white; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move bg-content text-main font-medium'
+                        ? 'active-move bg-slate-900 text-main font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'bg-amber-500/10 transition-all'
                           : 'hover:bg-slate-50 transition-colors'
@@ -88,7 +88,7 @@
             @if (turn.black; as node) {
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
-                        ? 'active-move bg-content text-main font-medium'
+                        ? 'active-move bg-slate-900 text-main font-medium'
                         : activeContinuationSet().has(node.fen + '_' + node.ply)
                           ? 'bg-amber-500/10 !text-amber-800 transition-all'
                           : 'hover:bg-slate-50 transition-colors'
@@ -203,7 +203,7 @@
       <!-- Move Button -->
       <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, isMainline)" [class]="
             currentFen() === node.fen
-              ? 'active-move bg-content text-main font-medium'
+              ? 'active-move bg-slate-900 text-main font-medium'
               : activeContinuationSet().has(node.fen + '_' + node.ply)
                 ? 'bg-amber-500/10 !text-amber-800'
                 : (isMainline ? 'hover:bg-slate-50 transition-colors' : 'text-gray-500 hover:bg-slate-50 transition-colors')

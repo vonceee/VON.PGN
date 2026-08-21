@@ -95,7 +95,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <button 
           (click)="toggleMic()" 
           [class.bg-rose-50]="isMuted()" [class.text-rose-600]="isMuted()" [class.border-rose-100]="isMuted()" [class.hover:bg-rose-100]="isMuted()"
-          [class.bg-slate-50]="!isMuted()" [class.text-content]="!isMuted()" [class.border-border-base]="!isMuted()" [class.hover:bg-border-base/50]="!isMuted()"
+          [class.bg-slate-50]="!isMuted()" [class.text-slate-900]="!isMuted()" [class.border-border-base]="!isMuted()" [class.hover:bg-border-base/50]="!isMuted()"
           class="w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           title="Toggle Mic"
         >
@@ -111,7 +111,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <button 
           (click)="toggleCam()" 
           [class.bg-rose-50]="isCameraOff()" [class.text-rose-600]="isCameraOff()" [class.border-rose-100]="isCameraOff()" [class.hover:bg-rose-100]="isCameraOff()"
-          [class.bg-slate-50]="!isCameraOff()" [class.text-content]="!isCameraOff()" [class.border-border-base]="!isCameraOff()" [class.hover:bg-border-base/50]="!isCameraOff()"
+          [class.bg-slate-50]="!isCameraOff()" [class.text-slate-900]="!isCameraOff()" [class.border-border-base]="!isCameraOff()" [class.hover:bg-border-base/50]="!isCameraOff()"
           class="w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           title="Toggle Camera"
         >

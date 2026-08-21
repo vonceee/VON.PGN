@@ -10,7 +10,6 @@
   --color-surface: hsl(210 16% 96%);
   --color-subtle: hsl(210 14% 94%);
 
-  --color-content: hsl(222 47% 11%);
   --color-muted: hsl(215 16% 47%);
   --color-accent: hsl(222 47% 11%);
 
@@ -36,6 +35,7 @@
       opacity: 0;
       transform: translateY(8px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);

@@ -1,4 +1,4 @@
-<header class="sticky top-0 z-50 flex w-full items-center justify-between px-4 lg:px-16 py-2.5 text-content">
+<header class="sticky top-0 z-50 flex w-full items-center justify-between px-4 lg:px-16 py-2.5 text-slate-900">
   <a routerLink="/home" class="text-2xl text-blue-600 font-extrabold flex items-center gap-2 shrink-0 group ">
     vonchess
   </a>
@@ -15,7 +15,7 @@
           class="w-3.5 h-3.5 text-gray-500/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
+        class="absolute top-full left-0 min-w-48 bg-slate-900 text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
         <a routerLink="/study" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroBookOpen"
@@ -61,7 +61,7 @@
           class="w-3.5 h-3.5 text-gray-500/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
+        class="absolute top-full left-0 min-w-48 bg-slate-900 text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
         <a routerLink="/study/drills" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroArrowPath"
@@ -93,7 +93,7 @@
           class="w-3.5 h-3.5 text-gray-500/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
+        class="absolute top-full left-0 min-w-48 bg-slate-900 text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
         <a routerLink="/monikers" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroAtSymbol"
@@ -125,7 +125,7 @@
           class="w-3.5 h-3.5 text-gray-500/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
       </a>
       <div
-        class="absolute top-full left-0 min-w-48 bg-content text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
+        class="absolute top-full left-0 min-w-48 bg-slate-900 text-white border border-white/10 rounded-xl py-2 mt-2 pointer-events-none opacity-0 invisible group-hover:pointer-events-auto group-hover:opacity-100 group-hover:visible z-50 flex flex-col shadow-md">
         <a routerLink="/academy" routerLinkActive="bg-white/10" [routerLinkActiveOptions]="{ exact: true }"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroAcademicCap"
@@ -175,7 +175,7 @@
       @if (isSearchOpen()) {
       @if (searchResults().length > 0) {
       <div
-        class="absolute right-0 top-full mt-2 w-64 bg-content text-white rounded-xl border border-white/10 py-2 z-50 shadow-md">
+        class="absolute right-0 top-full mt-2 w-64 bg-slate-900 text-white rounded-xl border border-white/10 py-2 z-50 shadow-md">
         @for (user of searchResults(); track user.uid) {
         <a [routerLink]="['/user', user.username]" target="_blank" rel="noopener noreferrer"
           (click)="isSearchOpen.set(false); searchQuery.set(''); searchResults.set([])"
@@ -207,7 +207,7 @@
 
       @if (isNotificationsOpen()) {
       <div
-        class="absolute right-0 top-full mt-2 w-80 bg-content text-white border border-white/10 rounded-xl z-50 overflow-hidden flex flex-col shadow-md">
+        class="absolute right-0 top-full mt-2 w-80 bg-slate-900 text-white border border-white/10 rounded-xl z-50 overflow-hidden flex flex-col shadow-md">
         <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between">
           <span class="text-sm/6">Notifications</span>
           @if (notificationService.unreadCount() > 0) {
@@ -250,7 +250,7 @@
 
       <!-- Desktop Profile Dropdown -->
       <div [class.hidden]="!isProfileDropdownOpen()"
-        class="absolute right-0 top-full mt-2 w-48 bg-content text-white border border-white/10 rounded-xl z-50 flex flex-col py-2 origin-top-right shadow-md">
+        class="absolute right-0 top-full mt-2 w-48 bg-slate-900 text-white border border-white/10 rounded-xl z-50 flex flex-col py-2 origin-top-right shadow-md">
         <a [routerLink]="['/profile']" (click)="toggleProfileDropdown()"
           class="px-4 py-2.5 hover:bg-white/10 flex items-center group/item">
           <ng-icon name="heroUser"

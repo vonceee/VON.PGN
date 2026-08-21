@@ -19,7 +19,7 @@ import { RouterModule } from '@angular/router';
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
         <div id="create-account" class="p-6 rounded-2xl bg-white border border-border-base flex flex-col gap-3">
           <span class="text-xs font-semibold uppercase text-accent">Step 1</span>
-          <h3 class="text-lg font-semibold text-content m-0">Create your account</h3>
+          <h3 class="text-lg font-semibold text-slate-900 m-0">Create your account</h3>
           <p class="text-sm leading-relaxed m-0 text-gray-500">
             Register at the <a routerLink="/register" class="text-accent underline font-medium">Register Page</a>.
             All you need is an email address and a password.
@@ -28,7 +28,7 @@ import { RouterModule } from '@angular/router';
 
         <div id="verify-email" class="p-6 rounded-2xl bg-white border border-border-base flex flex-col gap-3">
           <span class="text-xs font-semibold uppercase text-accent">Step 2</span>
-          <h3 class="text-lg font-semibold text-content m-0">Verify email</h3>
+          <h3 class="text-lg font-semibold text-slate-900 m-0">Verify email</h3>
           <p class="text-sm leading-relaxed m-0 text-gray-500">
             Check your inbox for a verification link to activate competitive match play and access ratings.
           </p>
@@ -36,7 +36,7 @@ import { RouterModule } from '@angular/router';
 
         <div id="setup-profile" class="p-6 rounded-2xl bg-white border border-border-base flex flex-col gap-3">
           <span class="text-xs font-semibold uppercase text-accent">Step 3</span>
-          <h3 class="text-lg font-semibold text-content m-0">Set up profile</h3>
+          <h3 class="text-lg font-semibold text-slate-900 m-0">Set up profile</h3>
           <p class="text-sm leading-relaxed m-0 text-gray-500">
             Navigate to your <a routerLink="/profile" class="text-accent underline font-medium">Profile
               Dashboard</a> to configure settings, choose board styles, and view ratings.
@@ -45,7 +45,7 @@ import { RouterModule } from '@angular/router';
 
         <div id="find-game" class="p-6 rounded-2xl bg-white border border-border-base flex flex-col gap-3">
           <span class="text-xs font-semibold uppercase text-accent">Step 4</span>
-          <h3 class="text-lg font-semibold text-content m-0">Find a game</h3>
+          <h3 class="text-lg font-semibold text-slate-900 m-0">Find a game</h3>
           <p class="text-sm leading-relaxed m-0 text-gray-500">
             Visit the <a routerLink="/play" class="text-accent underline font-medium">Play Portal</a> to queue up
             for matchmaking or create custom challenges.

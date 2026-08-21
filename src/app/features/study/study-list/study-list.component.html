@@ -18,7 +18,7 @@
         class="block w-full pl-9 pr-9 py-2.5 bg-white border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-content">
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-slate-900">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
           <path
             d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -117,7 +117,7 @@
       @for (study of studies(); track study.id) {
       <div [appFloatingCursorTrigger]="getCategoryLabel(study.category)" [cursorIcon]="getCategoryIcon(study.category)"
         [routerLink]="'/study/' + study.id"
-        class="bg-content text-white border border-white/10 rounded-xl flex flex-col md:flex-row-reverse overflow-hidden hover:border-white/30 transition-all duration-300 cursor-none group">
+        class="bg-slate-900 text-white border border-white/10 rounded-xl flex flex-col md:flex-row-reverse overflow-hidden hover:border-white/30 transition-all duration-300 cursor-none group">
         <!-- Chess Board Preview Container -->
         <div
           class="board-container-parent w-full md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">

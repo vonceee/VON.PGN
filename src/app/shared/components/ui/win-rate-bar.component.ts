@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
         <span class="truncate px-1" *ngIf="stats().draws > 15">{{ stats().draws }}%</span>
       </div>
       <div 
-        class="bg-content flex items-center justify-center  " 
+        class="bg-slate-900 flex items-center justify-center  " 
         [style.width.%]="stats().black"
         [title]="stats().black + '% Black wins'"
       >

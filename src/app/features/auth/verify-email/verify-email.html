@@ -35,7 +35,7 @@
             class="flex-1 px-3 py-2 bg-white  border border-border-base  rounded-lg text-sm/6 focus:ring-2 focus:ring-accent focus:border-transparent outline-none placeholder:text-gray-500  "
             placeholder="Enter new email" (keyup.enter)="updateEmail()" />
           <button (click)="updateEmail()" [disabled]="isUpdatingEmail || !newEmailInput"
-            class="px-4 py-2 bg-black hover:bg-content   text-white  rounded-lg text-sm/6 font-semibold disabled:opacity-50 ">
+            class="px-4 py-2 bg-black hover:bg-slate-900   text-white  rounded-lg text-sm/6 font-semibold disabled:opacity-50 ">
             {{ isUpdatingEmail ? 'Saving...' : 'Save' }}
           </button>
           <button (click)="cancelEditEmail()" [disabled]="isUpdatingEmail"
@@ -63,7 +63,7 @@
   </div>
 
   <!-- Right Column: Branding Section -->
-  <div class="hidden lg:flex flex-1 bg-content  text-white p-10 flex-col justify-between relative overflow-hidden">
+  <div class="hidden lg:flex flex-1 bg-slate-900  text-white p-10 flex-col justify-between relative overflow-hidden">
     <!-- Abstract Chess Grid Pattern Background -->
     <div class="absolute inset-0 opacity-20 pointer-events-none">
       <div class="chess-grid h-full w-full"></div>

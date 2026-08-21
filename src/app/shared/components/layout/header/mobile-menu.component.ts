@@ -82,7 +82,7 @@ import { Router } from '@angular/router';
                     routerLinkActive="bg-slate-50 text-accent font-semibold"
                     [routerLinkActiveOptions]="{ exact: !link.queryParams }"
                     (click)="close.emit()"
-                    class="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-content hover:bg-slate-50 transition-all duration-200"
+                    class="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
                   >
                     <span>{{ link.label }}</span>
                   </a>
@@ -103,7 +103,7 @@ import { Router } from '@angular/router';
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
-            <span class="text-sm font-semibold text-content truncate leading-tight">
+            <span class="text-sm font-semibold text-slate-900 truncate leading-tight">
               {{ userService.currentUser()?.username || 'User' }}
             </span>
           </div>
@@ -115,7 +115,7 @@ import { Router } from '@angular/router';
               routerLinkActive="bg-slate-50 text-accent font-semibold"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="close.emit()"
-              class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-content hover:bg-slate-50 transition-all duration-200"
+              class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
             >
               Profile
             </a>
@@ -126,7 +126,7 @@ import { Router } from '@angular/router';
                 routerLinkActive="bg-slate-50 text-accent font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-content hover:bg-slate-50 transition-all duration-200"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
               >
                 My Tournaments
               </a>
@@ -138,7 +138,7 @@ import { Router } from '@angular/router';
                 routerLinkActive="bg-slate-50 text-accent font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-content hover:bg-slate-50 transition-all duration-200"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
               >
                 Admin Panel
               </a>

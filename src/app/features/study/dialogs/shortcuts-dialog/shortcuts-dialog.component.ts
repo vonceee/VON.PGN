@@ -24,7 +24,7 @@ import { DialogRef } from '@angular/cdk/dialog';
             <div class="space-y-2">
               @for (item of moveShortcuts; track item.key) {
                 <div class="flex items-center justify-between py-1.5 border-b border-border-base last:border-0 group">
-                  <span class="text-sm/6 opacity-80 group-hover:text-content">
+                  <span class="text-sm/6 opacity-80 group-hover:text-slate-900">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
@@ -43,7 +43,7 @@ import { DialogRef } from '@angular/cdk/dialog';
             <div class="space-y-2">
               @for (item of posShortcuts; track item.key) {
                 <div class="flex items-center justify-between py-1.5 border-b border-border-base last:border-0 group">
-                  <span class="text-sm/6 opacity-80 group-hover:text-content">
+                  <span class="text-sm/6 opacity-80 group-hover:text-slate-900">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
@@ -64,7 +64,7 @@ import { DialogRef } from '@angular/cdk/dialog';
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2">
               @for (item of otherShortcuts; track item.label) {
                 <div class="flex items-center justify-between py-1.5 group">
-                  <span class="text-sm/6 opacity-80 group-hover:text-content">
+                  <span class="text-sm/6 opacity-80 group-hover:text-slate-900">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-1">

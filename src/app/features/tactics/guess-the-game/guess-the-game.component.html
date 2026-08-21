@@ -117,7 +117,7 @@
 
             <div class="flex gap-2 pt-2">
               <button
-                class="flex-1 w-full max-w-full justify-center inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer"
+                class="flex-1 w-full max-w-full justify-center inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
                 (click)="submitGuess()">
                 Submit
               </button>
@@ -145,7 +145,7 @@
             </a>
             }
             }
-            <button class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium
+            <button class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium
               text-[16px] leading-5 cursor-pointer" (click)="loadNextChallenge()">
               Next
             </button>
@@ -275,12 +275,12 @@
 
             <div class="flex gap-2">
               <button
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer flex-1"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer flex-1"
                 (click)="submitGuess()">
                 Submit
               </button>
               <button
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer flex-1"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer flex-1"
                 (click)="revealFullMatchup()">
                 Reveal Answer
               </button>
@@ -290,13 +290,13 @@
           <div class="flex gap-2">
             @if (getAnalysisLinkInfo(game); as linkInfo) {
             <button
-              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer flex-1"
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer flex-1"
               (click)="openAnalysis(game)" title="Study analysis">
               <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
             </button>
             }
             <button
-              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer flex-1"
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer flex-1"
               (click)="loadNextChallenge()">
               Next
             </button>

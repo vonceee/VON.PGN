@@ -35,7 +35,6 @@ function getFallbackErrorPage(): Response {
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --text-content: #0f172a;
       --text-gray-500: #64748b;
       --accent: #2563eb;
       --accent-hover: #1d4ed8;
@@ -48,7 +47,6 @@ function getFallbackErrorPage(): Response {
     }
     body {
       font-family: 'Outfit', sans-serif;
-      color: var(--text-content);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -95,7 +93,6 @@ function getFallbackErrorPage(): Response {
       font-size: 32px;
       font-weight: 500;
       margin-bottom: 12px;
-      color: var(--text-content);
     }
     p {
       font-size: 16px;

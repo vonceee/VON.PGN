@@ -32,7 +32,7 @@ export class ButtonComponent {
 
     switch (this.variant()) {
       case 'primary':
-        return `${base} bg-content text-main rounded-full`;
+        return `${base} bg-slate-900 text-main rounded-full`;
       case 'danger':
         return `${base} bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors`;
       case 'ghost':

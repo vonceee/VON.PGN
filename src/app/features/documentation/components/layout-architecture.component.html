@@ -9,7 +9,7 @@
 
   <div class="space-y-8 my-8">
     <div id="layout-shell" class="border-l-4 border-accent pl-6 py-1">
-      <h3 class="text-xl font-semibold text-content mb-2">Main Layout Shell</h3>
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Main Layout Shell</h3>
       <p class="text-sm leading-relaxed text-gray-500 mb-4">
         The top-level shell of the application is managed by <code>MainLayoutComponent</code>. Its structure divides the
         viewport vertically:
@@ -41,7 +41,7 @@
     </div>
 
     <div id="footer-visibility" class="border-l-4 border-accent pl-6 py-1">
-      <h3 class="text-xl font-semibold text-content mb-2">Dynamic Footer Visibility</h3>
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Dynamic Footer Visibility</h3>
       <p class="text-sm leading-relaxed text-gray-500 mb-4">
         The footer is displayed only on the homepage to keep other workspace and content interfaces clean and
         distraction-free. This is handled by subscribing to router navigation events:
@@ -62,7 +62,7 @@ this.router.events.pipe(
     </div>
 
     <div id="fluid-layout" class="border-l-4 border-accent pl-6 py-1">
-      <h3 class="text-xl font-semibold text-content mb-2">Fluid Layout System</h3>
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Fluid Layout System</h3>
       <p class="text-sm leading-relaxed text-gray-500 mb-4">
         For complex multi-column boards, <code>LayoutService</code> offers fluid layouts via an Angular signal.
         Workspace components toggle the fluid layout programmatically during lifecycle hooks:
@@ -84,13 +84,13 @@ export class LayoutService {{ '{' }}
     </div>
 
     <div class="border-l-4 border-accent pl-6 py-1">
-      <h3 class="text-xl font-semibold text-content mb-2">Tactics & Chessboard Responsive Layout</h3>
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Tactics & Chessboard Responsive Layout</h3>
       <p class="text-sm leading-relaxed text-gray-500 mb-4">
         The workspace layout for puzzles and woodpecker training screens is optimized for both strict viewport alignment
         on desktop/laptop viewports and fluid scrollable stacking on mobile devices.
       </p>
 
-      <h4 class="text-sm font-semibold text-content mb-2">1. Layout Grid & Vertical Stretching</h4>
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">1. Layout Grid & Vertical Stretching</h4>
       <p class="text-xs leading-relaxed text-gray-500 mb-4">
         To prevent height calculation loops that cause the chessboard to overflow or coordinates to be clipped at the
         top and bottom, the main grid uses <code>items-stretch</code> (implicit default) on desktop viewports. The left
@@ -127,7 +127,7 @@ export class LayoutService {{ '{' }}
         </code>
       </pre>
 
-      <h4 class="text-sm font-semibold text-content mb-2">2. Parent-Dimension Sizing Calculation</h4>
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">2. Parent-Dimension Sizing Calculation</h4>
       <p class="text-xs leading-relaxed text-gray-500 mb-4">
         Rather than estimating the available workspace height using viewport math, <code>ChessBoardComponent</code>
         measures its parent element's actual dimensions directly from the DOM, and fallbacks are used as a fallback if
@@ -149,7 +149,7 @@ const maxPossible = Math.max(this.minSize, Math.min(maxWidthConstraint, maxHeigh
         </code>
       </pre>
 
-      <h4 class="text-sm font-semibold text-content mb-2">3. Manual Sizing State</h4>
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">3. Manual Sizing State</h4>
       <p class="text-xs leading-relaxed text-gray-500 mb-4">
         By keeping <code>manualSize</code> set to <code>null</code> during automatic size updates, the chessboard is
         free to shrink and grow dynamically on window resize events, and is only locked if the user drags the manual

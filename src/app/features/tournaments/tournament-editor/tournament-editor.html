@@ -45,7 +45,7 @@
 
           <div class="flex items-center gap-3 shrink-0">
             <button type="button" (click)="discardChanges()"
-              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-slate-900 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
               Discard Changes
             </button>
 
@@ -62,7 +62,7 @@
             }
 
             <button type="button" (click)="confirmSave()" [disabled]="saving()"
-              class="inline-flex items-center justify-center gap-2 px-8 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
+              class="inline-flex items-center justify-center gap-2 px-8 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
               @if (saving()) {
               <div class="w-4 h-4 border-4 border-current border-t-transparent rounded-full animate-spin shrink-0">
               </div>
@@ -145,11 +145,11 @@
 
       <div class="p-6 px-10 flex justify-between items-center gap-6">
         <button type="button" (click)="closeReviewModal()"
-          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-slate-900 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
           Back to Editing
         </button>
         <button type="button" (click)="executeSave()" [disabled]="saving()"
-          class="inline-flex items-center justify-center gap-2 px-10 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
+          class="inline-flex items-center justify-center gap-2 px-10 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none">
           @if (saving()) {
           <div class="w-4 h-4 border-4 border-current border-t-transparent rounded-full animate-spin shrink-0"></div>
           }

@@ -3,7 +3,7 @@
   <!-- Standardized Page Header (Inline) -->
   <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
-      <h1 class="text-4xl md:text-5xl mb-2 text-content">Chess Player Monickers</h1>
+      <h1 class="text-4xl md:text-5xl mb-2 text-slate-900">Chess Player Monickers</h1>
       <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
         explore the famous nicknames of chess grandmasters and the stories behind them.
       </p>
@@ -23,7 +23,7 @@
         class="block w-full pl-9 pr-9 py-2.5 bg-white border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-content">
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-slate-900">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
           <path
             d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -58,7 +58,7 @@
       class="md:col-span-2 group relative p-[1.5px] bg-white/10 hover:bg-white/30 transition-all duration-300 octagon-clip flex flex-col min-h-[220px] cursor-none cursor-pointer">
 
       <article
-        class="bg-content text-white octagon-clip p-6 flex flex-col sm:flex-row gap-6 justify-between h-full w-full overflow-hidden relative">
+        class="bg-slate-900 text-white octagon-clip p-6 flex flex-col sm:flex-row gap-6 justify-between h-full w-full overflow-hidden relative">
         <!-- Ambient watermark piece -->
         <div
           class="absolute -bottom-16 -right-16 text-[280px] select-none font-serif text-white/10 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-65 transition-all duration-700 pointer-events-none">
@@ -109,7 +109,7 @@
       class="col-span-1 group relative p-[1.5px] bg-white/10 hover:bg-white/30 transition-all duration-300 octagon-clip flex flex-col min-h-[300px] cursor-none cursor-pointer">
 
       <article
-        class="bg-content text-white octagon-clip p-6 flex flex-col justify-between h-full w-full overflow-hidden relative">
+        class="bg-slate-900 text-white octagon-clip p-6 flex flex-col justify-between h-full w-full overflow-hidden relative">
         <!-- Ambient watermark piece -->
         <div
           class="absolute -bottom-12 -right-12 text-[180px] select-none font-serif text-white/10 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-65 transition-all duration-700 pointer-events-none">
@@ -164,7 +164,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
     </div>
-    <h3 class="text-lg font-medium mb-1 text-content">No monikers match your query</h3>
+    <h3 class="text-lg font-medium mb-1 text-slate-900">No monikers match your query</h3>
     <p class="text-gray-500 text-sm mb-6">Try searching for a different player name, moniker title, or reset filters.
     </p>
     <button appButton variant="outline" (click)="resetFilters()">
