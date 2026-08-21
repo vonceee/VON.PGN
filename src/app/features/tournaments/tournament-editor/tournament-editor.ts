@@ -17,7 +17,6 @@ import { environment } from '../../../../environments/environment';
 
 import { AdminService } from '../../../core/services/admin.service';
 import { TournamentService } from '../../../core/services/tournament.service';
-import { ToastService } from '../../../core/services/toast.service';
 
 import {
   StepBasicInfoComponent,
@@ -91,7 +90,6 @@ import {
 export class TournamentEditorComponent implements OnInit, OnDestroy {
   private adminService = inject(AdminService);
   private tournamentService = inject(TournamentService);
-  private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private http = inject(HttpClient);
@@ -118,6 +116,8 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
 
   // Poster State
   useCustomPosterSignal = signal(false);
+
+  private formChangesSub?: any;
 
   // Form Shortcut
   get tournamentForm() {
@@ -159,8 +159,33 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
       } else {
         this.tournamentId.set(null);
         this.formHandler.resetForm();
+
+        // Restore draft for new tournament
+        if (isPlatformBrowser(this.platformId)) {
+          const savedDraft = localStorage.getItem('tournament_draft_new');
+          if (savedDraft) {
+            try {
+              const draftData = JSON.parse(savedDraft);
+              this.formHandler.populateForm(draftData);
+              if (draftData.poster_settings?.useCustomPoster) {
+                this.useCustomPosterSignal.set(true);
+              }
+            } catch (e) {
+              localStorage.removeItem('tournament_draft_new');
+            }
+          }
+        }
       }
     });
+
+    // Auto-save form changes to localStorage
+    if (isPlatformBrowser(this.platformId)) {
+      this.formChangesSub = this.tournamentForm.valueChanges.subscribe(() => {
+        const data = this.formHandler.buildTournamentData();
+        const key = this.tournamentId() ? `tournament_draft_${this.tournamentId()}` : 'tournament_draft_new';
+        localStorage.setItem(key, JSON.stringify(data));
+      });
+    }
   }
 
   // ---- Navigation ----
@@ -260,14 +285,26 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         const data = res.data || res;
         this.tournamentId.set(data.id);
+
+        // Restore draft for existing tournament if it exists
+        if (isPlatformBrowser(this.platformId)) {
+          const savedDraft = localStorage.getItem(`tournament_draft_${data.id}`);
+          if (savedDraft) {
+            try {
+              const draftData = JSON.parse(savedDraft);
+              this.formHandler.populateForm(draftData);
+              if (draftData.poster_settings?.useCustomPoster) this.useCustomPosterSignal.set(true);
+              return;
+            } catch (e) {
+              localStorage.removeItem(`tournament_draft_${data.id}`);
+            }
+          }
+        }
+
         this.formHandler.populateForm(data);
         if (data.poster_settings?.useCustomPoster) this.useCustomPosterSignal.set(true);
       },
       error: (err: any) => {
-        this.toastService.show(
-          err.status === 403 ? 'Permission denied.' : 'Tournament not found.',
-          'error',
-        );
         this.router.navigate([this.mode === 'user' ? '/my-events' : '/admin']);
       },
     });
@@ -277,7 +314,6 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     // Basic validation
     if (this.tournamentForm.invalid) {
       this.tournamentForm.markAllAsTouched();
-      this.toastService.show('Please fix the errors before saving.', 'error');
       return;
     }
 
@@ -334,12 +370,14 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     op.subscribe({
       next: () => {
         this.saving.set(false);
-        this.toastService.show(`Tournament ${tid ? 'updated' : 'created'} successfully`, 'success');
+        if (isPlatformBrowser(this.platformId)) {
+          const key = tid ? `tournament_draft_${tid}` : 'tournament_draft_new';
+          localStorage.removeItem(key);
+        }
         this.router.navigate([this.mode === 'user' ? '/my-events' : '/admin']);
       },
       error: (err: any) => {
         this.saving.set(false);
-        this.toastService.show('Failed to save: ' + (err.error?.message || err.message), 'error');
       },
     });
   }
@@ -350,8 +388,6 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
     const file = event.target.files?.[0];
     if (file && file.size < 10 * 1024 * 1024) {
       this.handleMediaUpload({ file, type: 'poster' });
-    } else {
-      this.toastService.show('File is too large (max 10MB)', 'error');
     }
   }
 
@@ -376,10 +412,8 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
               new FormControl(res.url),
             );
           }
-          this.toastService.show('Image uploaded successfully', 'success');
         },
-        error: (err) =>
-          this.toastService.show('Upload failed: ' + (err.error?.message || err.message), 'error'),
+        error: (err) => {},
       });
   }
 
@@ -388,11 +422,21 @@ export class TournamentEditorComponent implements OnInit, OnDestroy {
       posterSettings: { useCustomPoster: false, customPosterUrl: null },
     });
     this.useCustomPosterSignal.set(false);
-    this.toastService.show('Custom poster removed.', 'success');
+  }
+
+  discardChanges() {
+    if (isPlatformBrowser(this.platformId)) {
+      const key = this.tournamentId() ? `tournament_draft_${this.tournamentId()}` : 'tournament_draft_new';
+      localStorage.removeItem(key);
+    }
+    this.location.back();
   }
 
   // ---- UI Helpers ----
   ngOnDestroy() {
+    if (this.formChangesSub) {
+      this.formChangesSub.unsubscribe();
+    }
     if (isPlatformBrowser(this.platformId)) {
       document.body.style.overflow = 'auto';
     }

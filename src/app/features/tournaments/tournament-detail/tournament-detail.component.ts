@@ -2,7 +2,6 @@ import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { BackLinkComponent  } from '@shared/ui';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -26,6 +25,7 @@ import {
   heroXMark,
   heroEnvelope,
   heroLink,
+  heroChevronRight,
 } from '@ng-icons/heroicons/outline';
 
 @Component({
@@ -34,7 +34,6 @@ import {
   imports: [
     CommonModule,
     RouterModule,
-    BackLinkComponent,
     UserHovercardDirective,
     NgIconComponent,
   ],
@@ -55,6 +54,7 @@ import {
       heroXMark,
       heroEnvelope,
       heroLink,
+      heroChevronRight,
     }),
   ],
   templateUrl: './tournament-detail.component.html'

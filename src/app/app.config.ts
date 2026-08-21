@@ -3,6 +3,7 @@ import {
   provideBrowserGlobalErrorListeners,
   provideAppInitializer,
   inject,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withPreloading, PreloadAllModules } from '@angular/router';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
@@ -20,6 +21,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZonelessChangeDetection(),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withPreloading(PreloadAllModules)),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor, httpErrorInterceptor, loadingInterceptor])),

@@ -1,8 +1,8 @@
-<div class="mx-auto px-8 py-10">
+<div class="max-w-7xl mx-auto px-8 py-10">
   <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
-      <h1 class="text-4xl md:text-5xl mb-2">My events</h1>
-      <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Manage your upcoming,
+      <h1 class="text-4xl md:text-5xl mb-2">My Events</h1>
+      <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">manage your upcoming,
         ongoing, and completed chess events.</p>
     </div>
     <div class="flex items-center gap-4">
@@ -27,7 +27,7 @@
             [class.text-green-500]="tournament.status === 'ongoing'"
             [class.bg-blue-500/10]="tournament.status === 'upcoming'"
             [class.text-blue-500]="tournament.status === 'upcoming'"
-            [class.bg-subtle0/10]="tournament.status === 'past'" [class.]="tournament.status === 'past'">
+            [class.bg-slate-500/10]="tournament.status === 'past'" [class.text-slate-500]="tournament.status === 'past'">
             {{ tournament.status }}
           </span>
         </div>

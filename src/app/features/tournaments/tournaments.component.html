@@ -1,64 +1,73 @@
-<div class="flex-1 flex flex-col">
-  <div class="px-4 md:px-16 py-8 w-full flex-1">
-    <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
-      <div class="flex-1">
-        <h1 class="text-4xl md:text-5xl mb-2">Events</h1>
-        <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Browse upcoming, ongoing,
-          and past chess events across the Philippines.</p>
-      </div>
-    </header>
+<div appFloatingCursorContainer class="flex-1 flex flex-col max-w-7xl mx-auto px-4 md:px-16 py-8 relative">
 
-    <!-- Search & Filter Bar -->
-    <div class="flex gap-3 flex-wrap md:flex-nowrap items-center mb-6">
-      <!-- Tab Dropdown (Mobile & Desktop) -->
-      <div class="relative" #tabDropdownContainer>
-        <button (click)="toggleTabDropdown()"
-          class="flex items-center justify-between px-4 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 font-semibold whitespace-nowrap">
+  <!-- Page Header -->
+  <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div class="flex-1">
+      <h1 class="text-4xl md:text-5xl mb-2 text-content">Events</h1>
+      <p class="text-muted text-sm md:text-base leading-relaxed max-w-3xl">
+        Browse upcoming, ongoing, and past chess events across the Philippines.
+      </p>
+    </div>
+  </header>
+
+  <!-- Search & Filter Bar -->
+  <div class="flex gap-3 flex-wrap md:flex-nowrap items-center mb-6">
+    <!-- Tab Dropdown -->
+    <div class="relative" #tabDropdownContainer>
+      <button (click)="toggleTabDropdown()"
+        class="flex items-center justify-between px-4 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 font-semibold whitespace-nowrap cursor-pointer">
+        <span class="flex items-center gap-2">
+          @if (activeTab() === 'ongoing') {
+          <span class="w-2 h-2 rounded-full bg-green-500"></span>
+          }
+          {{ activeTab() | titlecase }}
+        </span>
+        <ng-icon name="heroChevronDown" class="w-5 h-5 ml-2" [class.rotate-180]="isTabDropdownOpen()"></ng-icon>
+      </button>
+
+      @if (isTabDropdownOpen()) {
+      <div
+        class="absolute top-full left-0 mt-1 bg-main border border-border-base rounded-xl z-20 overflow-hidden min-w-[140px] shadow-lg">
+        <button (click)="setTab('upcoming')"
+          class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-subtle cursor-pointer text-left"
+          [ngClass]="{ 'text-accent': activeTab() === 'upcoming' }">
+          <span>Upcoming</span>
+        </button>
+        <button (click)="setTab('ongoing')"
+          class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-subtle cursor-pointer text-left"
+          [ngClass]="{ 'text-accent': activeTab() === 'ongoing' }">
           <span class="flex items-center gap-2">
-            @if (activeTab() === 'ongoing') {
             <span class="w-2 h-2 rounded-full bg-green-500"></span>
-            }
-            {{ activeTab() | titlecase }}
+            Ongoing
           </span>
-          <ng-icon name="heroChevronDown" class="w-5 h-5 ml-2" [class.rotate-180]="isTabDropdownOpen()"></ng-icon>
         </button>
+        <button (click)="setTab('past')"
+          class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-subtle cursor-pointer text-left"
+          [ngClass]="{ 'text-accent': activeTab() === 'past' }">
+          <span>Past</span>
+        </button>
+      </div>
+      }
+    </div>
 
-        @if (isTabDropdownOpen()) {
-        <div class="absolute top-full left-0 mt-1 bg-main border border-border-base rounded-xl z-20 overflow-hidden">
-          <button (click)="setTab('upcoming')"
-            class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-subtle "
-            [ngClass]="{ 'text-accent': activeTab() === 'upcoming' }">
-            <span>Upcoming</span>
-          </button>
-          <button (click)="setTab('ongoing')"
-            class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-subtle "
-            [ngClass]="{ 'text-accent': activeTab() === 'ongoing' }">
-            <span class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-green-500"></span>
-              Ongoing
-            </span>
-          </button>
-          <button (click)="setTab('past')"
-            class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-subtle "
-            [ngClass]="{ 'text-accent': activeTab() === 'past' }">
-            <span>Past</span>
-          </button>
-        </div>
-        }
-      </div>
-      <div class="relative flex-1">
-        <ng-icon name="heroMagnifyingGlass"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"></ng-icon>
-        <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search tournaments..."
-          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50  " />
-        @if (searchQuery()) {
-        <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
-          <ng-icon name="heroXMark" class="w-4 h-4"></ng-icon>
-        </button>
-        }
-      </div>
+    <!-- Search Input -->
+    <div class="relative flex-1">
+      <ng-icon name="heroMagnifyingGlass"
+        class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"></ng-icon>
+      <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search tournaments..."
+        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+      @if (searchQuery()) {
+      <button (click)="clearSearch()"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content cursor-pointer">
+        <ng-icon name="heroXMark" class="w-4 h-4"></ng-icon>
+      </button>
+      }
+    </div>
+
+    <!-- Sort Dropdown -->
+    <div class="relative w-48 shrink-0">
       <select [value]="sortBy()" (change)="onSortChange($event)"
-        class="w-40 px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50  appearance-none bg-no-repeat bg-right pr-8"
+        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8 cursor-pointer"
         style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
@@ -68,154 +77,282 @@
         <option value="recently_posted">Recently Posted</option>
         <option value="starting_soon">Starting Soon</option>
       </select>
-
     </div>
   </div>
 
   <!-- Results Info -->
   @if (!loading() && filteredTournaments().length > 0) {
-  <p class="text-xs text-muted mb-4 px-8 md:px-16">
+  <p class="text-xs text-muted mb-6">
     Showing {{ paginatedTournaments().length }} of {{ filteredTournaments().length }} tournament{{
     filteredTournaments().length !== 1 ? 's' : ''
     }}
   </p>
   }
 
-  <!-- Tournament Cards -->
+  <!-- Content States -->
   @if (loading()) {
-
+  <div class="min-h-96 flex items-center justify-center">
+  </div>
   } @else if (paginatedTournaments().length === 0) {
-  <div class="flex-1 flex flex-col items-center justify-center bg-main rounded-4xl p-16 text-center mx-8 md:mx-16">
-    <div class="w-16 h-16 bg-accent/5 rounded-full flex items-center justify-center mb-6">
-      <ng-icon name="heroCalendar" class="w-8 h-8 text-accent"></ng-icon>
+  <div class="bg-main rounded-xl border border-border-base p-12 text-center my-8">
+    <div class="w-16 h-16 bg-accent/5 rounded-full flex items-center justify-center mb-6 mx-auto">
+      <ng-icon name="heroCalendar" class="w-8 h-8"></ng-icon>
     </div>
-    <h3 class="text-2xl mb-2">No tournaments found</h3>
-    <p class="text-muted text-base max-w-md">
+    <h3 class="text-lg font-medium mb-2 text-content">No tournaments found</h3>
+    <p class="text-muted text-sm/6 mb-6">
       Try adjusting your search terms or filter by a different tab to find chess events.
     </p>
   </div>
   } @else {
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 px-8 md:px-16">
-    @for (tournament of paginatedTournaments(); track tournament.id) {
-    <div class="card-perspective h-[380px]">
+  <!-- Tournament Grid (Asymmetrical Bento Layout) -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 grid-flow-row-dense">
+    @for (tournament of paginatedTournaments(); track tournament.id; let idx = $index) {
+
+    <!-- Card 3D Flip Outer wrapper -->
+    <div class="card-perspective h-[380px]" [ngClass]="{ 'md:col-span-2': idx === 0 && currentPage() === 1 }">
       <div class="card-inner" [class.card-flipped]="isFlipped(tournament.id)">
-        <!-- Card Front -->
-        <div class="card-front overflow-hidden flex flex-col group">
-          <!-- Card Content -->
-          <div class="p-4 md:p-5 pt-4 flex flex-col flex-1">
-            <div class="flex gap-4 flex-1 mb-6">
-              <!-- Date Sidebar -->
-              <div class="flex flex-col items-center justify-start pt-1 shrink-0 w-14 border-r border-border-base pr-4">
-                <span class="text-xs font-semibold ">
-                  {{ tournament.dates.start | date : 'MMM' }}
-                </span>
-                <span class="text-2xl font-semibold">
-                  {{ tournament.dates.start | date : 'dd' }}
-                </span>
-              </div>
 
-              <!-- Details Area -->
-              <div class="flex flex-col flex-1 min-w-0">
-                <!-- Title -->
-                <h2 class="text-base md:text-lg font-semibold  h-14 mb-1" [title]="tournament.name">
-                  {{ tournament.name }}
-                </h2>
+        <!-- CARD FRONT -->
+        <!-- Featured Layout -->
+        @if (idx === 0 && currentPage() === 1) {
+        <div [routerLink]="['/events', tournament.id]" appFloatingCursorTrigger="Details" cursorIcon="heroEye"
+          class="card-front group relative p-[1.5px] bg-white/10 hover:bg-white/30 transition-all duration-300 octagon-clip flex flex-col h-full cursor-none cursor-pointer">
 
-                <!-- Location -->
-                <div class="text-sm/6 font-semibold truncate mb-3">
-                  {{ tournament.location }}
-                </div>
-
-                <!-- Metadata Chips -->
-                <div class="flex flex-wrap gap-1.5 mt-auto pb-1">
-                  <span class="px-2.5 py-1 bg-subtle rounded-lg text-xs font-semibold ">
-                    {{ tournament.format }}
-                  </span>
-                  <span class="px-2.5 py-1 bg-subtle rounded-lg text-xs font-semibold ">
-                    {{ tournament.timeControl }}
-                  </span>
-                  @if (tournament.creator) {
-                  <span class="px-2.5 py-1 bg-accent/10 rounded-lg text-xs font-semibold ">
-                    By {{ tournament.creator.name }}
-                  </span>
-                  }
-                </div>
-              </div>
+          <article
+            class="bg-content text-white octagon-clip p-6 flex flex-col sm:flex-row gap-6 justify-between h-full w-full overflow-hidden relative">
+            <!-- Ambient watermark piece -->
+            <div
+              class="absolute -bottom-16 -right-16 text-[280px] select-none font-serif text-white/10 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-65 transition-all duration-700 pointer-events-none">
+              {{ getChessPieceSymbol(idx) }}
             </div>
 
-            <!-- Bottom Row -->
-            <div class="mt-auto flex flex-col gap-3">
-              <div class="flex items-center justify-between gap-2">
-                @if (tournament.status === 'ongoing') {
-                <div class="flex items-center gap-2">
-                  <div class="w-16 md:w-20 h-1.5 bg-subtle rounded-full overflow-hidden">
-                    <div class="h-full bg-green-500 rounded-full" [style.width.%]="
-                              (tournament.participants.current / tournament.participants.max) * 100
-                            "></div>
-                  </div>
-                  <span class="text-xs text-muted">{{ tournament.participants.current }}/{{ tournament.participants.max
-                    }}</span>
-                </div>
-                } @else if (tournament.status === 'upcoming') {
-                <span class="text-xs font-semibold">Prize Pool: {{ formatPrizePool(tournament.prizePool) }}</span>
-                } @else {
-                <div class="flex items-center gap-1 text-xs">
-                  <ng-icon name="heroStar" class="w-4 h-4 text-yellow-500"></ng-icon>
-                  <span class="font-semibold line-clamp-1">{{ tournament.winner }}</span>
-                </div>
-                }
+            <!-- Left side details -->
+            <div class="flex-1 relative z-10 flex flex-col justify-between min-w-0">
 
-                <div class="flex gap-2">
+              <!-- Date & Header details -->
+              <div class="flex gap-4">
+                <!-- Date badge -->
+                <div class="flex flex-col items-center justify-start shrink-0 w-14 border-r border-white/10 pr-4">
+                  <span class="text-xs font-semibold text-slate-400 uppercase">
+                    {{ tournament.dates.start | date : 'MMM' }}
+                  </span>
+                  <span class="text-2xl font-bold text-white">
+                    {{ tournament.dates.start | date : 'dd' }}
+                  </span>
+                </div>
+
+                <!-- Title & Location -->
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center flex-wrap gap-2 mb-2">
+                    <span class="px-2.5 py-0.5 bg-accent/20 rounded-full text-xs font-bold inline-block">
+                      FEATURED EVENT
+                    </span>
+                    <span class="text-xs font-semibold text-slate-400 tracking-wide uppercase">
+                      {{ tournament.format }} • {{ tournament.timeControl }}
+                    </span>
+                  </div>
+                  <h3 class="text-xl md:text-2xl font-bold text-white leading-snug line-clamp-2"
+                    [title]="tournament.name">
+                    {{ tournament.name }}
+                  </h3>
+                  <p class="text-slate-300 text-sm mt-1 truncate">
+                    {{ tournament.location }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Metadata / Description -->
+              <div class="flex flex-col gap-2 my-4">
+                <p class="text-slate-300 text-sm leading-relaxed line-clamp-2 max-w-xl">
+                  {{ tournament.description || 'Join us for this premium chess event. Check details for format, rounds,
+                  eligibility, and prizes.' }}
+                </p>
+              </div>
+
+              <!-- Bottom Status & Action Buttons -->
+              <div class="pt-4 border-t border-white/5 flex items-center justify-between gap-4">
+                <div>
+                  @if (tournament.status === 'ongoing') {
+                  <div class="flex items-center gap-2">
+                    <div class="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div class="h-full bg-green-500 rounded-full" [style.width.%]="
+                                (tournament.participants.current / tournament.participants.max) * 100
+                              "></div>
+                    </div>
+                    <span class="text-xs text-slate-400 font-semibold">{{ tournament.participants.current }}/{{
+                      tournament.participants.max }} players</span>
+                  </div>
+                  } @else if (tournament.status === 'upcoming' && tournament.prizePool && tournament.prizePool !== '0'
+                  && tournament.prizePool !== '0.00') {
+                  <span class="text-xs font-semibold text-slate-300 tracking-wider">
+                    PRIZE POOL: <span class="text-accent font-bold">{{ formatPrizePool(tournament.prizePool) }}</span>
+                  </span>
+                  }
+                </div>
+
+                <div class="flex gap-2 relative z-20" (click)="$event.stopPropagation()">
                   @if (getTournamentThumbnail(tournament)) {
-                  <button appButton variant="ghost" class="text-xs" (click)="toggleFlip(tournament.id)">
-                    Poster
+                  <button (click)="$event.stopPropagation(); toggleFlip(tournament.id)"
+                    class="w-8 h-8 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+                    title="View Poster">
+                    <ng-icon name="heroPhoto" class="w-4 h-4"></ng-icon>
                   </button>
                   }
-                  <a appButton variant="primary" class="text-xs" [routerLink]="['/events', tournament.id]">
-                    Details
+                  <a [routerLink]="['/events', tournament.id]"
+                    class="w-8 h-8 rounded-full bg-accent hover:bg-accent/90 text-white flex items-center justify-center transition-all cursor-pointer"
+                    title="View Details">
+                    <ng-icon name="heroEye" class="w-4 h-4"></ng-icon>
                   </a>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Card Back (Poster Only) -->
+            <!-- Right side: Poster / Thumbnail -->
+            <div
+              class="w-48 h-full bg-white/5 border border-white/10 rounded-2xl overflow-hidden shrink-0 shadow-lg relative self-stretch hidden sm:flex items-center justify-center">
+              @if (getTournamentThumbnail(tournament); as thumb) {
+              <img [src]="thumb" [alt]="tournament.name" class="w-full h-full object-cover" />
+              } @else {
+              <div class="w-full h-full flex flex-col items-center justify-center bg-white/5 text-white/40 p-4">
+                <span class="text-4xl mb-2">♟</span>
+                <span class="text-xs font-semibold tracking-wider">{{ getInitials(tournament.name) }}</span>
+              </div>
+              }
+            </div>
+          </article>
+        </div>
+        }
+
+        <!-- Standard Layout -->
+        @else {
+        <div [routerLink]="['/events', tournament.id]" appFloatingCursorTrigger="Details" cursorIcon="heroEye"
+          class="card-front group relative p-[1.5px] bg-white/10 hover:bg-white/30 transition-all duration-300 octagon-clip flex flex-col h-full cursor-none cursor-pointer">
+
+          <article
+            class="bg-content text-white octagon-clip p-6 flex flex-col justify-between h-full w-full overflow-hidden relative">
+            <!-- Ambient watermark piece -->
+            <div
+              class="absolute -bottom-12 -right-12 text-[180px] select-none font-serif text-white/10 group-hover:scale-110 group-hover:rotate-12 group-hover:opacity-65 transition-all duration-700 pointer-events-none">
+              {{ getChessPieceSymbol(idx) }}
+            </div>
+
+            <!-- Content Area -->
+            <div class="relative z-10 flex flex-col h-full justify-between">
+
+              <!-- Date & Header details -->
+              <div class="flex gap-4">
+                <!-- Date badge -->
+                <div class="flex flex-col items-center justify-start shrink-0 w-14 border-r border-white/10 pr-4">
+                  <span class="text-xs font-semibold text-slate-400 uppercase">
+                    {{ tournament.dates.start | date : 'MMM' }}
+                  </span>
+                  <span class="text-2xl font-bold text-white">
+                    {{ tournament.dates.start | date : 'dd' }}
+                  </span>
+                </div>
+
+                <!-- Title & Location -->
+                <div class="min-w-0 flex-1">
+                  <span class="text-xs font-semibold text-slate-400 tracking-wide uppercase block mb-1">
+                    {{ tournament.format }} • {{ tournament.timeControl }}
+                  </span>
+                  <h3 class="text-lg font-bold text-white leading-snug line-clamp-2" [title]="tournament.name">
+                    {{ tournament.name }}
+                  </h3>
+                  <p class="text-slate-300 text-sm mt-1 truncate">
+                    {{ tournament.location }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Metadata / Description -->
+              <div class="flex flex-col gap-2 my-4">
+                <p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
+                  {{ tournament.description || 'Join us for this premium chess event. Check details for format, rounds,
+                  eligibility, and prizes.' }}
+                </p>
+              </div>
+
+              <!-- Bottom Row -->
+              <div class="mt-auto pt-4 border-t border-white/5 flex items-center justify-between gap-4">
+                <div>
+                  @if (tournament.status === 'ongoing') {
+                  <div class="flex items-center gap-2">
+                    <div class="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                      <div class="h-full bg-green-500 rounded-full" [style.width.%]="
+                                (tournament.participants.current / tournament.participants.max) * 100
+                              "></div>
+                    </div>
+                    <span class="text-xs text-slate-400 font-semibold">{{ tournament.participants.current }}/{{
+                      tournament.participants.max }} players</span>
+                  </div>
+                  } @else if (tournament.status === 'upcoming' && tournament.prizePool && tournament.prizePool !== '0'
+                  && tournament.prizePool !== '0.00') {
+                  <span class="text-xs font-semibold text-slate-300 tracking-wider">
+                    PRIZE POOL: <span class="text-accent font-bold">{{ formatPrizePool(tournament.prizePool) }}</span>
+                  </span>
+                  }
+                </div>
+
+                <div class="flex gap-2 relative z-20" (click)="$event.stopPropagation()">
+                  @if (getTournamentThumbnail(tournament)) {
+                  <button (click)="$event.stopPropagation(); toggleFlip(tournament.id)"
+                    class="w-8 h-8 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+                    title="View Poster">
+                    <ng-icon name="heroPhoto" class="w-4 h-4"></ng-icon>
+                  </button>
+                  }
+                  <a [routerLink]="['/events', tournament.id]"
+                    class="w-8 h-8 rounded-full bg-accent hover:bg-accent/90 text-white flex items-center justify-center transition-all cursor-pointer"
+                    title="View Details">
+                    <ng-icon name="heroEye" class="w-4 h-4"></ng-icon>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+        }
+
+        <!-- CARD BACK -->
         <div class="card-back overflow-hidden flex flex-col group">
           @if (getTournamentThumbnail(tournament); as thumb) {
-          <div class="relative flex-1 bg-content overflow-hidden">
+          <div (click)="openPoster(thumb)" 
+               appFloatingCursorTrigger="Zoom" 
+               cursorIcon="heroMagnifyingGlass"
+               class="relative flex-1 bg-content overflow-hidden rounded-2xl border-2 border-border-base cursor-none cursor-pointer">
             <img [src]="thumb" class="w-full h-full object-contain object-top" [alt]="tournament.name + ' Poster'" />
 
             <!-- Overlay Controls -->
             <div
-              class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100   flex flex-col justify-end p-6">
+              class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 flex flex-col justify-end p-6 transition-all duration-300">
               <h3 class="text-white font-semibold text-lg mb-4">{{ tournament.name }}</h3>
               <div class="flex gap-3">
-                <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium
-                  text-[16px] leading-5 cursor-pointer class="flex-1" (click)="openPoster(thumb)">
-                  View Full Poster
-                </button>
-                <button appButton variant="outline" class="flex-1" (click)="toggleFlip(tournament.id)">
+                <button appButton variant="outline"
+                  class="flex-1 text-white border-white/20 hover:bg-white/10 hover:text-white"
+                  (click)="$event.stopPropagation(); toggleFlip(tournament.id)">
                   Back
                 </button>
               </div>
             </div>
 
             <!-- Quick Close Button (Top Right) -->
-            <button (click)="toggleFlip(tournament.id)"
-              class="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 z-10 flex items-center justify-center">
+            <button (click)="$event.stopPropagation(); toggleFlip(tournament.id)"
+              class="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/80 z-10 flex items-center justify-center cursor-pointer">
               <ng-icon name="heroXMark" class="w-5 h-5"></ng-icon>
             </button>
           </div>
           } @else {
-          <div class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-subtle ">
-            <p class=" mb-6">No poster available for this event.</p>
+          <div
+            class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-subtle border-2 border-border-base rounded-2xl">
+            <p class="text-muted mb-6">No poster available for this event.</p>
             <button appButton variant="outline" (click)="toggleFlip(tournament.id)">
               Go Back
             </button>
           </div>
           }
         </div>
+
       </div>
     </div>
     }
@@ -226,7 +363,7 @@
   @if (!loading() && totalPages() > 1) {
   <div class="flex items-center justify-center gap-1 mt-8">
     <button (click)="prevPage()" [disabled]="currentPage() === 1"
-      class="px-3 py-2 text-sm/6  rounded-lg border border-border-base  disabled: disabled:cursor-not-allowed hover:bg-subtle flex items-center justify-center">
+      class="px-3 py-2 text-sm/6 rounded-lg border border-border-base disabled:disabled:cursor-not-allowed hover:bg-subtle flex items-center justify-center cursor-pointer">
       <ng-icon name="heroChevronLeft" class="w-4 h-4"></ng-icon>
     </button>
 
@@ -234,10 +371,10 @@
     @if (page === '...') {
     <span class="px-3 py-2 text-sm/6 text-muted">...</span>
     } @else {
-    <button (click)="goToPage(page)" class="min-w-[36px] px-3 py-2 text-sm/6  rounded-lg border " [ngClass]="{
+    <button (click)="goToPage(page)" class="min-w-[36px] px-3 py-2 text-sm/6 rounded-lg border cursor-pointer"
+      [ngClass]="{
               'bg-accent border-accent text-main': currentPage() === page,
-              'border-border-base hover:bg-subtle':
-                currentPage() !== page,
+              'border-border-base hover:bg-subtle': currentPage() !== page
             }">
       {{ page }}
     </button>
@@ -245,28 +382,29 @@
     }
 
     <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
-      class="px-3 py-2 text-sm/6  rounded-lg border border-border-base  disabled: disabled:cursor-not-allowed hover:bg-subtle flex items-center justify-center">
+      class="px-3 py-2 text-sm/6 rounded-lg border border-border-base disabled:disabled:cursor-not-allowed hover:bg-subtle flex items-center justify-center cursor-pointer">
       <ng-icon name="heroChevronRight" class="w-4 h-4"></ng-icon>
     </button>
   </div>
   }
 </div>
 
-
 <!-- Poster Lightbox Overlay -->
 @if (selectedPoster(); as url) {
-<div class="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4 md:p-12   "
+<div class="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4 md:p-12"
   (click)="closePoster()">
   <!-- Close Button -->
   <button
-    class="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 z-[110] flex items-center justify-center"
+    class="absolute top-6 right-6 p-3 rounded-full bg-white/10 text-white hover:bg-white/20 z-[110] flex items-center justify-center cursor-pointer"
     (click)="closePoster()">
     <ng-icon name="heroXMark" class="w-8 h-8"></ng-icon>
   </button>
 
   <!-- Poster Image -->
   <div class="relative w-full h-full flex items-center justify-center" (click)="$event.stopPropagation()">
-    <img [src]="url" class="max-w-full max-h-full object-contain  rounded-lg" alt="Full Size Poster" />
+    <img [src]="url" class="max-w-full max-h-full object-contain rounded-lg" alt="Full Size Poster" />
   </div>
 </div>
 }
+
+<app-floating-cursor></app-floating-cursor>

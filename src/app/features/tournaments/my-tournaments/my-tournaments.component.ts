@@ -1,5 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, of } from 'rxjs';
+import { debounceTime, catchError, switchMap, tap } from 'rxjs/operators';
 import { TournamentService } from '../../../core/services/tournament.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Tournament } from '../../../core/models/tournament.model';
@@ -22,32 +25,39 @@ import { heroTrophy } from '@ng-icons/heroicons/outline';
   ],
   templateUrl: './my-tournaments.component.html',
 })
-export class MyTournamentsComponent implements OnInit {
+export class MyTournamentsComponent {
   private tournamentService = inject(TournamentService);
   private toastService = inject(ToastService);
+  private platformId = inject(PLATFORM_ID);
 
-  tournaments = signal<Tournament[]>([]);
+  private refresh$ = new BehaviorSubject<void>(undefined);
+
   loading = signal(true);
-
   deleteTarget = signal<Tournament | null>(null);
   deleting = signal(false);
 
-  ngOnInit() {
-    this.loadTournaments();
-  }
+  tournaments = toSignal(
+    this.refresh$.pipe(
+      debounceTime(100),
+      tap(() => this.loading.set(true)),
+      switchMap(() => {
+        if (!isPlatformBrowser(this.platformId)) {
+          return of([] as Tournament[]);
+        }
+        return this.tournamentService.getMyTournaments().pipe(
+          catchError(() => {
+            this.toastService.show('Failed to load tournaments', 'error');
+            return of([] as Tournament[]);
+          })
+        );
+      }),
+      tap(() => this.loading.set(false))
+    ),
+    { initialValue: [] as Tournament[] }
+  );
 
-  private loadTournaments() {
-    this.loading.set(true);
-    this.tournamentService.getMyTournaments().subscribe({
-      next: (data) => {
-        this.tournaments.set(data);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.toastService.show('Failed to load tournaments', 'error');
-        this.loading.set(false);
-      },
-    });
+  loadTournaments() {
+    this.refresh$.next();
   }
 
   requestDelete(tournament: Tournament) {
@@ -85,4 +95,3 @@ export class MyTournamentsComponent implements OnInit {
     });
   }
 }
-

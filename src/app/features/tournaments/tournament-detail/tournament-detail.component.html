@@ -1,19 +1,27 @@
 @if (tournament(); as tournament) {
-<div class="mx-auto">
+<div class="max-w-7xl mx-auto">
   <!-- Header -->
   <div class="px-8 pt-8 pb-4">
-    <app-back-link text="Back to Events" link="/events"></app-back-link>
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="flex items-center gap-2 text-sm/6 text-muted">
+        <li>
+          <a routerLink="/events" class="font-medium transition-colors">
+            Events
+          </a>
+        </li>
+        <li class="flex items-center">
+          <ng-icon name="heroChevronRight" class="w-3.5 h-3.5 text-muted/60"></ng-icon>
+        </li>
+        <li class="font-medium text-content truncate max-w-[200px] md:max-w-md" [title]="tournament.name">
+          {{ tournament.name }}
+        </li>
+      </ol>
+    </nav>
 
     <h1 class="text-3xl md:text-4xl font-semibold   max-w-3xl">
       {{ tournament.name }}
     </h1>
-    @if (tournament.creator) {
-    <a [routerLink]="['/user', tournament.creator.name]" [appUserHovercard]="tournament.creator.name" target="_blank"
-      rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm/6  hover:text-accent  mt-1">
-      <ng-icon name="heroUser" class="w-4 h-4"></ng-icon>
-      Created by <span class="font-semibold">{{ tournament.creator.name }}</span>
-    </a>
-    }
 
     <!-- View Counter, Bookmark, Share Bar -->
     <div class="flex items-center gap-4 mt-3 text-sm/6  ">
@@ -23,14 +31,14 @@
       </span>
 
       <button (click)="toggleBookmark()" [disabled]="!authService.isAuthenticated()"
-        class="flex items-center gap-1.5 hover:text-accent  disabled: disabled:cursor-not-allowed"
-        [class.text-accent]="isBookmarked()" [class.font-semibold]="isBookmarked()">
+        class="flex items-center gap-1.5 cursor-pointer" [class.text-accent]="isBookmarked()"
+        [class.font-semibold]="isBookmarked()">
         <ng-icon name="heroBookmark" class="w-4 h-4"></ng-icon>
         {{ isBookmarked() ? 'Bookmarked' : 'Bookmark' }}
       </button>
 
       <div class="relative">
-        <button (click)="toggleShareMenu()" class="flex items-center gap-1.5 hover:text-accent ">
+        <button (click)="toggleShareMenu()" class="flex items-center gap-1.5 cursor-pointer">
           <ng-icon name="heroShare" class="w-4 h-4"></ng-icon>
           Share
         </button>
@@ -71,7 +79,8 @@
       <div class="md:col-span-2 space-y-8">
         @if (tournament.poster_settings?.useCustomPoster && tournament.poster_settings?.customPosterUrl) {
         <div class="max-w-lg mb-10 mx-auto md:mx-0">
-          <img [src]="tournament.poster_settings.customPosterUrl" alt="Tournament Poster" class="w-full rounded-xl shadow-lg border border-border-base" />
+          <img [src]="tournament.poster_settings.customPosterUrl" alt="Tournament Poster"
+            class="w-full rounded-xl shadow-lg border border-border-base" />
         </div>
         }
 
@@ -80,7 +89,7 @@
             <ng-icon name="heroInformationCircle" class="w-5 h-5 text-accent"></ng-icon>
             About This Event
           </h2>
-          <p class="text-muted  ">
+          <p class="whitespace-pre-line">
             {{ tournament.description }}
           </p>
         </section>
@@ -91,7 +100,7 @@
             How To Join
           </h2>
           @if (tournament.registrationInstructions) {
-          <div class="text-muted   whitespace-pre-line">
+          <div class=" whitespace-pre-line">
             {{ tournament.registrationInstructions }}
           </div>
           } @else {
@@ -277,7 +286,7 @@
                   } @else {
                   <div>
                     <span class="font-semibold  ">{{ awardKey }}:</span>
-                    <span class="text-muted  ml-1">{{
+                    <span class="ml-1">{{
                       getSimpleAward(
                       tournament.categories![catKey].specialAwards![awardKey]
                       )
@@ -385,8 +394,7 @@
                     </span>
                   </td>
                   <td class="px-4 py-3   font-semibold">
-                    <a [routerLink]="['/user', entry.player]" [appUserHovercard]="entry.player"
-                      class="hover:text-accent ">
+                    <a [routerLink]="['/user', entry.player]" [appUserHovercard]="entry.player" class="">
                       {{ entry.player }}
                     </a>
                   </td>
@@ -404,11 +412,7 @@
 
       <!-- Right Column -->
       <div class="space-y-6">
-        <div class="p-5">
-          <h3 class="font-semibold   mb-3 flex items-center gap-2">
-            <ng-icon name="heroCalendar" class="w-4 h-4 text-accent"></ng-icon>
-            Key Information
-          </h3>
+        <div class="border-2 border-border-base rounded-2xl p-5">
           <div class="space-y-3 text-sm/6">
             <div>
               <span>Dates</span>
@@ -436,38 +440,22 @@
               </p>
             </div>
             }
-            @if (tournament.creator) {
-            <div class="pt-3 border-t border-border-base ">
-              <span>Created by</span>
-              <a [routerLink]="['/user', tournament.creator.name]" [appUserHovercard]="tournament.creator.name"
-                target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 mt-1 hover:text-accent ">
-                <span
-                  class="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-white text-xs font-semibold shrink-0">
-                  {{ tournament.creator.name.charAt(0).toUpperCase() }}
-                </span>
-                <span class="font-semibold  ">{{
-                  tournament.creator.name
-                  }}</span>
-              </a>
-            </div>
-            }
           </div>
         </div>
 
-        <div class="p-5">
+        <div class="border-2 border-border-base rounded-2xl p-5">
           <h3 class="font-semibold   mb-3 flex items-center gap-2">
-            <ng-icon name="heroUser" class="w-4 h-4 text-accent"></ng-icon>
             Organizer
           </h3>
           <div class="space-y-2 text-sm/6">
             <p class="font-semibold  ">{{ tournament.organizer }}</p>
             <div class="flex items-center gap-1 text-muted ">
-              <ng-icon name="heroEnvelope" class="w-4 h-4"></ng-icon>
+              Source
               {{ tournament.contact }}
             </div>
             @if (tournament.link) {
             <a [href]="tournament.link" target="_blank" rel="noopener noreferrer"
-              class="flex items-center gap-1 text-accent hover:text-accent ">
+              class="flex items-center gap-1 text-accent ">
               <ng-icon name="heroLink" class="w-4 h-4"></ng-icon>
               View Updates
             </a>
@@ -480,7 +468,7 @@
 
   <!-- Disclaimer Footer -->
   <div class="px-8 pb-8">
-    <div class="p-5">
+    <div class="border-2 border-border-base rounded-2xl p-5">
       <div class="flex items-start gap-3">
         <div>
           <p class="text-md font-semibold   mb-1">Disclaimer</p>

@@ -14,14 +14,27 @@ import {
   heroStar,
   heroChevronLeft,
   heroChevronRight,
+  heroEye,
+  heroBookOpen,
+  heroPhoto,
 } from '@ng-icons/heroicons/outline';
+import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
+import { FloatingCursorComponent } from '@shared/ui';
 
 const ITEMS_PER_PAGE = 9;
 
 @Component({
   selector: 'app-tournaments',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent, NgIconComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ButtonComponent,
+    NgIconComponent,
+    FloatingCursorContainerDirective,
+    FloatingCursorTriggerDirective,
+    FloatingCursorComponent,
+  ],
   providers: [
     provideIcons({
       heroChevronDown,
@@ -31,6 +44,9 @@ const ITEMS_PER_PAGE = 9;
       heroStar,
       heroChevronLeft,
       heroChevronRight,
+      heroEye,
+      heroBookOpen,
+      heroPhoto,
     }),
   ],
   templateUrl: './tournaments.component.html',
@@ -319,6 +335,21 @@ export class TournamentsComponent implements OnInit {
     ) {
       this.isTabDropdownOpen.set(false);
     }
+  }
+
+  getChessPieceSymbol(index: number): string {
+    const symbols = ['♔', '♕', '♖', '♗', '♘', '♙'];
+    return symbols[index % symbols.length];
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '';
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .substring(0, 2)
+      .toUpperCase();
   }
 }
 
