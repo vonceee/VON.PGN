@@ -1,17 +1,17 @@
 <div class="flex-1 flex flex-col min-h-0">
   <div class="flex-1 overflow-y-auto p-6 space-y-4">
     <!-- Chapter Name -->
-    <div class="flex flex-col gap-2">
-      <label for="chapter_name" class="font-medium text-sm/6">Chapter name</label>
+    <div class="flex flex-col">
+      <label for="chapter_name" class="font-medium text-sm/6 uppercase">Chapter name</label>
       <input type="text" id="chapter_name" [ngModel]="newChapterName()" (ngModelChange)="newChapterName.set($event)"
         placeholder="e.g. Opening Analysis"
-        class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-muted" />
+        class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-gray-500" />
     </div>
 
     <!-- Orientation (Hidden for PGN) -->
     @if (newChapterActiveTab() !== 'pgn') {
-    <div class="flex flex-col gap-2">
-      <label for="orientation" class="font-medium text-sm/6">Orientation</label>
+    <div class="flex flex-col">
+      <label for="orientation" class="font-medium text-sm/6 uppercase">Orientation</label>
       <div class="relative w-full">
         <select id="orientation" [value]="newChapterOrientation()"
           (change)="onOrientationChange($any($event.target).value)"
@@ -29,8 +29,8 @@
     }
 
     <!-- Chapter Source (Type) Dropdown -->
-    <div class="flex flex-col gap-2">
-      <label for="chapter_source" class="font-medium text-sm/6">Type</label>
+    <div class="flex flex-col">
+      <label for="chapter_source" class="font-medium text-sm/6 uppercase">Type</label>
       <div class="relative w-full">
         <select id="chapter_source" [value]="newChapterActiveTab()" (change)="onTabChange($any($event.target).value)"
           class="w-full px-3 py-2 bg-surface border border-border-base rounded-md text-sm/6 appearance-none bg-no-repeat bg-right pr-8 focus:outline-none cursor-pointer"
@@ -50,7 +50,7 @@
     @if (newChapterActiveTab() === 'fen') {
     <div class="space-y-3">
       <input type="text" [ngModel]="newChapterFen()" (ngModelChange)="newChapterFen.set($event)"
-        class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-muted" />
+        class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-gray-500" />
     </div>
     }
 
@@ -71,17 +71,17 @@
 
       <textarea [ngModel]="newChapterPgn()" (ngModelChange)="newChapterPgn.set($event)" rows="4"
         placeholder="Paste PGN here..."
-        class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-main outline-none resize-none placeholder:text-muted"></textarea>
+        class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-main outline-none resize-none placeholder:text-gray-500"></textarea>
     </div>
     }
   </div>
 
   <!-- Actions Footer -->
-  <div class="p-6 pt-4 border-t border-border-base shrink-0">
+  <div class="p-6 shrink-0 flex justify-end">
     <button
-      class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px] leading-5 cursor-pointer"
       (click)="submitNewChapter()" [disabled]="!isNewChapterFormValid()">
-      Create chapter
+      Create
     </button>
   </div>
 </div>

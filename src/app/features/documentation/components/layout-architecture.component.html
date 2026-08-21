@@ -1,21 +1,26 @@
 <h2 class="text-3xl font-semibold mb-6 border-b border-border-base pb-4">
   Layout Architecture
 </h2>
-<div class="prose prose-slate max-w-none text-muted">
+<div class="prose prose-slate max-w-none text-gray-500">
   <p class="text-lg leading-relaxed mb-6">
-    The application layout in vonchess is built to support both standard responsive web content and full-screen immersive workspaces (like chess analysis boards and drills).
+    The application layout in vonchess is built to support both standard responsive web content and full-screen
+    immersive workspaces (like chess analysis boards and drills).
   </p>
 
   <div class="space-y-8 my-8">
     <div id="layout-shell" class="border-l-4 border-accent pl-6 py-1">
       <h3 class="text-xl font-semibold text-content mb-2">Main Layout Shell</h3>
-      <p class="text-sm leading-relaxed text-muted mb-4">
-        The top-level shell of the application is managed by <code>MainLayoutComponent</code>. Its structure divides the viewport vertically:
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        The top-level shell of the application is managed by <code>MainLayoutComponent</code>. Its structure divides the
+        viewport vertically:
       </p>
       <ul class="list-disc pl-5 text-sm space-y-2 mb-4">
-        <li><strong>Sticky Header</strong>: Houses primary navigation dropdowns and search bars, with a fixed height and z-index.</li>
-        <li><strong>Main Content Container</strong>: Fills remaining vertical space with scroll isolation (<code>flex-1 overflow-y-auto</code>).</li>
-        <li><strong>Conditional Footer</strong>: Stays at the bottom of the content container unless hidden dynamically.</li>
+        <li><strong>Sticky Header</strong>: Houses primary navigation dropdowns and search bars, with a fixed height and
+          z-index.</li>
+        <li><strong>Main Content Container</strong>: Fills remaining vertical space with scroll isolation
+          (<code>flex-1 overflow-y-auto</code>).</li>
+        <li><strong>Conditional Footer</strong>: Stays at the bottom of the content container unless hidden dynamically.
+        </li>
       </ul>
       <pre
         class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
@@ -37,8 +42,9 @@
 
     <div id="footer-visibility" class="border-l-4 border-accent pl-6 py-1">
       <h3 class="text-xl font-semibold text-content mb-2">Dynamic Footer Visibility</h3>
-      <p class="text-sm leading-relaxed text-muted mb-4">
-        The footer is displayed only on the homepage to keep other workspace and content interfaces clean and distraction-free. This is handled by subscribing to router navigation events:
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        The footer is displayed only on the homepage to keep other workspace and content interfaces clean and
+        distraction-free. This is handled by subscribing to router navigation events:
       </p>
       <pre
         class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
@@ -57,8 +63,9 @@ this.router.events.pipe(
 
     <div id="fluid-layout" class="border-l-4 border-accent pl-6 py-1">
       <h3 class="text-xl font-semibold text-content mb-2">Fluid Layout System</h3>
-      <p class="text-sm leading-relaxed text-muted mb-4">
-        For complex multi-column boards, <code>LayoutService</code> offers fluid layouts via an Angular signal. Workspace components toggle the fluid layout programmatically during lifecycle hooks:
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        For complex multi-column boards, <code>LayoutService</code> offers fluid layouts via an Angular signal.
+        Workspace components toggle the fluid layout programmatically during lifecycle hooks:
       </p>
       <pre
         class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm">
@@ -78,13 +85,17 @@ export class LayoutService {{ '{' }}
 
     <div class="border-l-4 border-accent pl-6 py-1">
       <h3 class="text-xl font-semibold text-content mb-2">Tactics & Chessboard Responsive Layout</h3>
-      <p class="text-sm leading-relaxed text-muted mb-4">
-        The workspace layout for puzzles and woodpecker training screens is optimized for both strict viewport alignment on desktop/laptop viewports and fluid scrollable stacking on mobile devices.
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        The workspace layout for puzzles and woodpecker training screens is optimized for both strict viewport alignment
+        on desktop/laptop viewports and fluid scrollable stacking on mobile devices.
       </p>
-      
+
       <h4 class="text-sm font-semibold text-content mb-2">1. Layout Grid & Vertical Stretching</h4>
-      <p class="text-xs leading-relaxed text-muted mb-4">
-        To prevent height calculation loops that cause the chessboard to overflow or coordinates to be clipped at the top and bottom, the main grid uses <code>items-stretch</code> (implicit default) on desktop viewports. The left board column is set to <code>1fr</code> to take up all remaining width, and the entire grid is restricted to <code>max-w-[1080px] mx-auto</code> to center the workspace horizontally on large screens:
+      <p class="text-xs leading-relaxed text-gray-500 mb-4">
+        To prevent height calculation loops that cause the chessboard to overflow or coordinates to be clipped at the
+        top and bottom, the main grid uses <code>items-stretch</code> (implicit default) on desktop viewports. The left
+        board column is set to <code>1fr</code> to take up all remaining width, and the entire grid is restricted to
+        <code>max-w-[1080px] mx-auto</code> to center the workspace horizontally on large screens:
       </p>
       <pre
         class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
@@ -117,8 +128,10 @@ export class LayoutService {{ '{' }}
       </pre>
 
       <h4 class="text-sm font-semibold text-content mb-2">2. Parent-Dimension Sizing Calculation</h4>
-      <p class="text-xs leading-relaxed text-muted mb-4">
-        Rather than estimating the available workspace height using viewport math, <code>ChessBoardComponent</code> measures its parent element's actual dimensions directly from the DOM, and fallbacks are used as a fallback if the layout hasn't settled:
+      <p class="text-xs leading-relaxed text-gray-500 mb-4">
+        Rather than estimating the available workspace height using viewport math, <code>ChessBoardComponent</code>
+        measures its parent element's actual dimensions directly from the DOM, and fallbacks are used as a fallback if
+        the layout hasn't settled:
       </p>
       <pre
         class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
@@ -137,8 +150,10 @@ const maxPossible = Math.max(this.minSize, Math.min(maxWidthConstraint, maxHeigh
       </pre>
 
       <h4 class="text-sm font-semibold text-content mb-2">3. Manual Sizing State</h4>
-      <p class="text-xs leading-relaxed text-muted mb-4">
-        By keeping <code>manualSize</code> set to <code>null</code> during automatic size updates, the chessboard is free to shrink and grow dynamically on window resize events, and is only locked if the user drags the manual resize handle.
+      <p class="text-xs leading-relaxed text-gray-500 mb-4">
+        By keeping <code>manualSize</code> set to <code>null</code> during automatic size updates, the chessboard is
+        free to shrink and grow dynamically on window resize events, and is only locked if the user drags the manual
+        resize handle.
       </p>
     </div>
   </div>

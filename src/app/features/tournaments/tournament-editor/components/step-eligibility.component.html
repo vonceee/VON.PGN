@@ -8,26 +8,16 @@
   <div class="space-y-4">
     @for (control of eligibilityArray.controls; track $index; let i = $index) {
     <div class="flex gap-3 items-center">
-      <input
-        type="text"
-        [formControl]="eligibilityControl(i)"
-        placeholder="e.g. 2200 & Below"
-        class="flex-1 pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50"
-      />
-      <button
-        type="button"
-        (click)="removeItem.emit(i)"
-        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
-      >
+      <input type="text" [formControl]="eligibilityControl(i)" placeholder="e.g. 2200 & Below"
+        class="flex-1 pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
+      <button type="button" (click)="removeItem.emit(i)"
+        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
         ✕
       </button>
     </div>
     }
-    <button
-      type="button"
-      (click)="addItem.emit()"
-      class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer w-full"
-    >
+    <button type="button" (click)="addItem.emit()"
+      class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-subtle transition-all cursor-pointer w-full">
       + Add Requirement
     </button>
   </div>

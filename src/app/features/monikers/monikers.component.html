@@ -4,7 +4,7 @@
   <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
       <h1 class="text-4xl md:text-5xl mb-2 text-content">Chess Player Monickers</h1>
-      <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
+      <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
         explore the famous nicknames of chess grandmasters and the stories behind them.
       </p>
     </div>
@@ -14,15 +14,16 @@
   <div class="flex gap-3 flex-wrap md:flex-nowrap items-center mb-6">
     <div class="relative flex-1">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-        class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none">
+        class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none">
         <path fill-rule="evenodd"
           d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
           clip-rule="evenodd" />
       </svg>
       <input type="text" [value]="searchQuery()" (input)="onSearch($event)" placeholder="Search monikers..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
-      <button (click)="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
+      <button (click)="clearSearch()"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-content">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
           <path
             d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -158,13 +159,14 @@
   } @else {
   <!-- Empty Search State -->
   <div class="bg-main rounded-xl border border-border-base p-12 text-center my-8">
-    <div class="w-12 h-12 rounded-full bg-subtle flex items-center justify-center mx-auto mb-4 text-muted">
+    <div class="w-12 h-12 rounded-full bg-subtle flex items-center justify-center mx-auto mb-4 text-gray-500">
       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
     </div>
     <h3 class="text-lg font-medium mb-1 text-content">No monikers match your query</h3>
-    <p class="text-muted text-sm mb-6">Try searching for a different player name, moniker title, or reset filters.</p>
+    <p class="text-gray-500 text-sm mb-6">Try searching for a different player name, moniker title, or reset filters.
+    </p>
     <button appButton variant="outline" (click)="resetFilters()">
       Reset search & filters
     </button>

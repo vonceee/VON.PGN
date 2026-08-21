@@ -88,7 +88,7 @@ import { filter, map, startWith } from 'rxjs';
             <div class="h-8 w-px bg-subtle mx-2"></div>
 
             <div class="flex items-center gap-3 pl-2 group cursor-pointer">
-              <div class="w-10 h-10 rounded bg-subtle flex items-center justify-center text-muted font-semibold overflow-hidden">
+              <div class="w-10 h-10 rounded bg-subtle flex items-center justify-center text-gray-500 font-semibold overflow-hidden">
                 @if (user()?.avatar) {
                   <img [src]="user()?.avatar" class="w-full h-full object-cover">
                 } @else {
@@ -97,7 +97,7 @@ import { filter, map, startWith } from 'rxjs';
               </div>
               <div class="hidden sm:block text-left">
                 <div class="text-sm/6 font-semibold mb-1">{{ user()?.name }}</div>
-                <div class="text-xs font-semibold text-muted ">Super Admin</div>
+                <div class="text-xs font-semibold text-gray-500 ">Super Admin</div>
               </div>
               
             </div>

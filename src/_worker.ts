@@ -17,7 +17,7 @@ function getFallbackErrorPage(): Response {
       --bg-main: #ffffff;
       --bg-subtle: #f8fafc;
       --text-content: #0f172a;
-      --text-muted: #64748b;
+      --text-gray-500: #64748b;
       --accent: #2563eb;
       --accent-hover: #1d4ed8;
       --border-base: #e2e8f0;
@@ -82,7 +82,7 @@ function getFallbackErrorPage(): Response {
     }
     p {
       font-size: 16px;
-      color: var(--text-muted);
+      color: var(--text-gray-500);
       line-height: 1.6;
       margin-bottom: 32px;
     }
@@ -110,7 +110,7 @@ function getFallbackErrorPage(): Response {
     .footer-note {
       margin-top: 24px;
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--text-gray-500);
     }
   </style>
   <script>

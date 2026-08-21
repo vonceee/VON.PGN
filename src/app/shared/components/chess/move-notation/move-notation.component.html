@@ -44,7 +44,7 @@
         <!-- Main Move Pair Row -->
         <div class="grid grid-cols-[3rem_1fr_1fr] items-center bg-surface rounded-4xl">
           <!-- Move Number -->
-          <span class="text-sm/6 font-medium text-muted select-none text-right pr-4">
+          <span class="text-sm/6 font-medium text-gray-500 select-none text-right pr-4">
             {{ turn.moveNumber }}.
           </span>
 
@@ -77,9 +77,9 @@
               </span>
             </button>
             } @else if (turn.showWhiteEllipsis) {
-            <span class="text-muted/50 select-none px-3 py-1.5 font-medium">...</span>
+            <span class="text-gray-500/50 select-none px-3 py-1.5 font-medium">...</span>
             } @else {
-            <span class="text-muted/30 select-none px-3 py-1.5">—</span>
+            <span class="text-gray-500/30 select-none px-3 py-1.5">—</span>
             }
           </div>
 
@@ -112,9 +112,9 @@
               </span>
             </button>
             } @else if (turn.showBlackEllipsis) {
-            <span class="text-muted/50 select-none px-3 py-1.5 font-medium">...</span>
+            <span class="text-gray-500/50 select-none px-3 py-1.5 font-medium">...</span>
             } @else {
-            <span class="text-muted/30 select-none px-3 py-1.5">—</span>
+            <span class="text-gray-500/30 select-none px-3 py-1.5">—</span>
             }
           </div>
         </div>
@@ -125,7 +125,7 @@
         @if (node.variations && node.variations.length > 0) {
         <div class="pl-4 pr-4 py-1 flex flex-col gap-1 bg-subtle/20 mx-2 my-0.5">
           <!-- Variations -->
-          <div class="variation-tree-block flex flex-col gap-1 w-full text-xs text-muted/80 py-0.5">
+          <div class="variation-tree-block flex flex-col gap-1 w-full text-xs text-gray-500/80 py-0.5">
             @for (variation of node.variations; track $index) {
             <div class="variation-branch-item relative pl-5 py-1 flex flex-wrap items-baseline">
               <ng-container
@@ -142,7 +142,7 @@
         @if (node.variations && node.variations.length > 0) {
         <div class="pr-4 py-1 flex flex-col gap-1 bg-subtle/20 mx-2 my-0.5">
           <!-- Variations -->
-          <div class="variation-tree-block flex flex-col gap-1 w-full text-xs text-muted/80 py-0.5">
+          <div class="variation-tree-block flex flex-col gap-1 w-full text-xs text-gray-500/80 py-0.5">
             @for (variation of node.variations; track $index) {
             <div class="variation-branch-item relative pl-5 py-1 flex flex-wrap items-baseline">
               <ng-container
@@ -158,7 +158,7 @@
 
       @if (result() && result() !== '*') {
       <div class="text-center py-2 border-t border-border-base mt-2">
-        <span class="text-sm/6 font-medium text-muted select-text">
+        <span class="text-sm/6 font-medium text-gray-500 select-text">
           {{ result() }}
         </span>
       </div>
@@ -175,7 +175,7 @@
       </div>
       @if (result() && result() !== '*') {
       <div class="text-center py-2 border-t border-border-base mt-2">
-        <span class="text-sm/6 font-medium text-muted select-text">
+        <span class="text-sm/6 font-medium text-gray-500 select-text">
           {{ result() }}
         </span>
       </div>
@@ -192,11 +192,11 @@
     <span class="inline-block whitespace-nowrap mr-1">
       <!-- Move Number -->
       @if (node.ply % 2 !== 0) {
-      <span class="text-xs select-none text-muted mr-0.5 ml-0.5" [class.text-base]="isMainline"
+      <span class="text-xs select-none text-gray-500 mr-0.5 ml-0.5" [class.text-base]="isMainline"
         [class.text-sm/6]="!isMainline">{{ (node.ply + 1) / 2 }}.</span>
       } @else if ($firstNode || (i > 0 && ((nodes[i-1].comments && nodes[i-1].comments.length > 0) || (activeLayout()
       === 'tree' && nodes[i-1].variations && nodes[i-1].variations.length > 0)))) {
-      <span class="text-xs select-none text-muted mr-0.5 ml-0.5" [class.text-base]="isMainline"
+      <span class="text-xs select-none text-gray-500 mr-0.5 ml-0.5" [class.text-base]="isMainline"
         [class.text-sm/6]="!isMainline">{{ node.ply / 2 }}...</span>
       }
 
@@ -206,7 +206,7 @@
               ? 'active-move bg-content text-main font-medium'
               : activeContinuationSet().has(node.fen + '_' + node.ply)
                 ? 'bg-amber-500/10 !text-amber-800'
-                : (isMainline ? 'hover:bg-subtle transition-colors' : 'text-muted hover:bg-subtle transition-colors')
+                : (isMainline ? 'hover:bg-subtle transition-colors' : 'text-gray-500 hover:bg-subtle transition-colors')
           " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm/6]="!isMainline"
         class="text-left hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
         <span class="inline-flex items-center gap-0.5">
@@ -246,12 +246,12 @@
     <span class="inline">
       @for (variation of node.variations; track $index) {
       <span class="inline italic">
-        <span class="text-muted/40 mx-1">(</span>
+        <span class="text-gray-500/40 mx-1">(</span>
         <ng-container *ngTemplateOutlet="
                         renderNodes;
                         context: { nodes: variation, isMainline: false }
                       "></ng-container>
-        <span class="text-muted/40 mx-1">)</span>
+        <span class="text-gray-500/40 mx-1">)</span>
       </span>
       }
     </span>
@@ -272,7 +272,7 @@
                 ? 'bg-accent text-white rounded-4xl'
                 : 'bg-subtle rounded-4xl'
             "
-        class="px-3.5 py-1.5 font-medium text-sm/6  flex items-center gap-2.5 cursor-pointer hover:bg-accent hover:text-white">
+        class="px-3.5 py-1.5 font-medium text-sm/6 uppercase  flex items-center gap-2.5 cursor-pointer hover:bg-accent hover:text-white">
         <span class="opacity-50 font-medium text-xs">{{
           option.ply % 2 !== 0 ? (option.ply + 1) / 2 : option.ply / 2 + '...'
           }}</span>

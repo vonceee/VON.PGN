@@ -1,0 +1,6 @@
+- [x] Create the Lobby UI & invite partner flow
+- [x] Implement simulated queue matching radar screen
+- [x] Implement matchup VS countdown page
+- [x] Integrate GMs bot list & search
+- [x] Integrate matchmaking states into the gameplay component
+- [x] Build and verify compilation compiles cleanly

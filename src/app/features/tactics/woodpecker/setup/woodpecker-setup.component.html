@@ -5,7 +5,8 @@
     <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div class="flex-1">
         <h1 class="text-4xl md:text-5xl mb-2">Configure training session</h1>
-        <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Define your puzzle count,
+        <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Define your puzzle
+          count,
           rating filters, and tactical themes to lock in a new
           set.</p>
       </div>
@@ -16,7 +17,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Session Name -->
-        <div class="flex flex-col gap-2 md:col-span-2">
+        <div class="flex flex-col md:col-span-2">
           <label for="name" class="text-base font-medium">Session name</label>
           <input type="text" id="name" formControlName="name" placeholder="e.g. Fork & Pins Sprint"
             class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none" />
@@ -26,7 +27,7 @@
         </div>
 
         <!-- Puzzle Size Selector Dropdown -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col">
           <label for="total_puzzles" class="text-base font-medium">Select puzzle count</label>
           <div class="relative w-full">
             <select id="total_puzzles" formControlName="total_puzzles"
@@ -44,7 +45,7 @@
         </div>
 
         <!-- Theme Selector Dropdown -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col">
           <label for="theme" class="text-base font-medium">Select tactical theme</label>
           <div class="relative w-full">
             <select id="theme" formControlName="theme"
@@ -69,7 +70,7 @@
         </div>
 
         <!-- Elo Target Range Preset Dropdown -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col">
           <label for="rating_preset" class="text-base font-medium">Elo target range</label>
           <div class="relative w-full">
             <select id="rating_preset" [value]="getSelectedPresetValue()" (change)="onRatingPresetChange($event)"
@@ -91,8 +92,8 @@
         <div class="flex flex-col justify-end">
           @if (ratingRangeMode() === 'custom') {
           <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col gap-2">
-              <label for="rating_min" class="text-xs text-muted">Minimum Elo</label>
+            <div class="flex flex-col">
+              <label for="rating_min" class="text-xs text-gray-500">Minimum Elo</label>
               <input type="number" id="rating_min" formControlName="rating_min"
                 class="px-4 py-3 rounded-xl border border-border-base bg-main font-medium outline-none" />
               @if (setupForm.get('rating_min')?.touched && setupForm.get('rating_min')?.invalid) {
@@ -100,8 +101,8 @@
               }
             </div>
 
-            <div class="flex flex-col gap-2">
-              <label for="rating_max" class="text-xs text-muted">Maximum Elo</label>
+            <div class="flex flex-col">
+              <label for="rating_max" class="text-xs text-gray-500">Maximum Elo</label>
               <input type="number" id="rating_max" formControlName="rating_max"
                 class="px-4 py-3 rounded-xl border border-border-base bg-main font-medium outline-none" />
               @if (setupForm.get('rating_max')?.touched && setupForm.get('rating_max')?.invalid) {

@@ -84,7 +84,7 @@
             @if ((activeNode.comments && activeNode.comments.length > 0) || (activeNode.preComments &&
             activeNode.preComments.length > 0)) {
             <!-- Dedicated Commentary Section -->
-            <div class="p-4 bg-amber-500/10 flex flex-col gap-2 shrink-0 select-text">
+            <div class="p-4 bg-amber-500/10 flex flex-col shrink-0 select-text">
               <div class="flex justify-between">
                 <div class="flex items-center gap-2">
                   <span class="text-4xl font-medium">
@@ -93,7 +93,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto pr-1">
+              <div class="flex flex-col.5 max-h-40 overflow-y-auto pr-1">
                 <!-- Pre-move comments -->
                 @if (activeNode.preComments && activeNode.preComments.length > 0) {
                 <div class="text-md pl-3 py-0.5">
@@ -112,8 +112,8 @@
             } @else if (facade.moveTree().length > 0 && facade.moveTree()[0].preComments &&
             facade.moveTree()[0].preComments!.length > 0) {
             <!-- Start Position Commentary Section (Introduction) -->
-            <div class="p-4 bg-amber-500/10 flex flex-col gap-2 shrink-0 select-text">
-              <div class="flex flex-col gap-2.5 max-h-40 overflow-y-auto pr-1">
+            <div class="p-4 bg-amber-500/10 flex flex-col shrink-0 select-text">
+              <div class="flex flex-col.5 max-h-40 overflow-y-auto pr-1">
                 <div class="text-md font-semibold text-amber-800 dark:text-amber-300">Introduction</div>
                 <div class="text-md">
                   {{ facade.moveTree()[0].preComments![0] }}
@@ -253,7 +253,7 @@
       [title]="facade.isClassActive() ? 'End Class Session' : 'Start Class Session'"
       class="p-2 rounded-full transition-colors cursor-pointer flex items-center justify-center"
       [class.text-rose-500]="facade.isClassActive()" [class.bg-rose-500\/10]="facade.isClassActive()"
-      [class.text-muted]="!facade.isClassActive()">
+      [class.text-gray-500]="!facade.isClassActive()">
       <ng-icon [name]="facade.isClassActive() ? 'heroStop' : 'heroPlay'" class="text-lg"></ng-icon>
     </button>
     } @else if (facade.isClassActive()) {

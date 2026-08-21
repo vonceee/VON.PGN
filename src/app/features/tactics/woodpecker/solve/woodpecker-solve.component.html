@@ -15,7 +15,7 @@
         </svg>
       </div>
       <h2 class="text-3xl mb-2">Training session complete!</h2>
-      <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl mb-8">
+      <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl mb-8">
         You completed all 4 repetition cycles of <strong>{{ session()?.name }}</strong>!
       </p>
 
@@ -42,7 +42,8 @@
     <!-- Left Column: Interactive Chess Board -->
     <div class="flex-1 flex items-center justify-center min-h-0 min-w-0">
       @if (currentPuzzle()) {
-      <div class="board-container-parent w-full aspect-square lg:aspect-auto h-auto lg:h-full max-w-[620px] max-h-[620px] flex items-center justify-center">
+      <div
+        class="board-container-parent w-full aspect-square lg:aspect-auto h-auto lg:h-full max-w-[620px] max-h-[620px] flex items-center justify-center">
         <app-tactics-board [puzzle]="currentPuzzle()!" [exploreMode]="status() === 'failed'" [retryMode]="false"
           (puzzleSolved)="onPuzzleSolved()" (puzzleFailed)="onPuzzleFailed()" (wrongMove)="onWrongMove()"
           (moveMade)="onPuzzleMoveMade($event)" (userColorChange)="onUserColorChange($event)"
@@ -77,13 +78,13 @@
         <!-- Digital Readout Timer -->
         <div class="bg-subtle rounded-xl p-4 border border-slate-100 flex items-center justify-between">
           <div>
-            <span class="text-xs text-muted block mb-0.5">Cycle timer</span>
+            <span class="text-xs text-gray-500 block mb-0.5">Cycle timer</span>
             <span class="text-3xl font-medium">{{ formatTime(cycleTimeElapsed()) }}</span>
           </div>
           <div class="text-right">
-            <span class="text-xs text-muted block mb-0.5">Puzzle Index</span>
+            <span class="text-xs text-gray-500 block mb-0.5">Puzzle Index</span>
             <span class="text-2xl font-medium">
-              {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-muted text-sm/6">/
+              {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-gray-500 text-sm/6">/
                 {{ session()?.total_puzzles }}</span>
             </span>
           </div>
@@ -96,7 +97,7 @@
               [style.width.%]="(((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)">
             </div>
           </div>
-          <div class="flex justify-between text-xs text-muted">
+          <div class="flex justify-between text-xs text-gray-500">
             <span>Progress</span>
             <span>
               {{ Math.round((((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)) }}%
@@ -108,7 +109,7 @@
         <!-- Accuracy so far in active cycle -->
         <div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4">
           <div>
-            <span class="text-xs text-muted block">Accuracy</span>
+            <span class="text-xs text-gray-500 block">Accuracy</span>
             <span class="text-base font-semibold">
               @if (currentCycle(); as cycle) {
               {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}%
@@ -118,7 +119,7 @@
             </span>
           </div>
           <div>
-            <span class="text-xs text-muted block">Correct Puzzles</span>
+            <span class="text-xs text-gray-500 block">Correct Puzzles</span>
             <span class="text-base font-semibold">
               {{ currentCycle()?.total_correct ?? 0 }} / {{ currentCycle()?.total_solved ?? 0 }}
             </span>
@@ -183,7 +184,7 @@
         <!-- Celebration Title -->
         <div>
           <h3 class="text-2xl font-semibold mb-1">Cycle completed!</h3>
-          <p class="text-sm/6 text-muted">You finished all puzzles in Cycle {{ stats.cycleNumber }}.</p>
+          <p class="text-sm/6 text-gray-500">You finished all puzzles in Cycle {{ stats.cycleNumber }}.</p>
         </div>
 
 
@@ -191,13 +192,13 @@
         <!-- Diagnostic Metrics -->
         <div class="grid grid-cols-2 gap-4 w-full bg-subtle border border-slate-100 rounded-2xl p-4 text-left">
           <div>
-            <span class="text-xs text-muted block mb-0.5">Accuracy</span>
+            <span class="text-xs text-gray-500 block mb-0.5">Accuracy</span>
             <span class="text-lg font-medium">{{ stats.accuracy }}%</span>
             <span class="text-xs block">{{ stats.totalCorrect }} / {{ stats.totalPuzzles }}
               correct</span>
           </div>
           <div>
-            <span class="text-xs text-muted block mb-0.5">Total Time</span>
+            <span class="text-xs text-gray-500 block mb-0.5">Total Time</span>
             <span class="text-lg font-medium">{{ formatTime(stats.totalTime) }}</span>
             <span class="text-xs block">Avg {{ Math.round(stats.totalTime / stats.totalPuzzles) }}s
               per puzzle</span>
@@ -205,12 +206,12 @@
         </div>
 
         <!-- Woodpecker Spaced Repetition explanation message -->
-        @if (stats.cycleNumber < 4) { <p class="text-md text-muted max-w-sm">
+        @if (stats.cycleNumber < 4) { <p class="text-md text-gray-500 max-w-sm">
           Your next goal is <strong>Cycle {{ stats.cycleNumber + 1 }}</strong>. Aim to complete the exact same set in
           <strong>{{ formatTime(Math.round(stats.totalTime / 2)) }}</strong> (half the time!) with even higher accuracy.
           </p>
           } @else {
-          <p class="text-xs text-muted max-w-sm">
+          <p class="text-xs text-gray-500 max-w-sm">
             Incredible effort! You completed the full 4 cycles of Axel Smith's tactical spaced-repetition program. Check
             out your detailed timeline diagnostic results on the dashboard!
           </p>

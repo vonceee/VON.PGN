@@ -13,7 +13,7 @@
         class="bg-transparent outline-none text-sm/6 font-medium placeholder-muted w-full" />
 
       @if (isSearching()) {
-      
+
       }
     </div>
 
@@ -33,7 +33,7 @@
       }
     </div>
     } @else if (searchQuery().length >= 2 && !isSearching()) {
-    <div class="text-center py-6 text-sm/6 text-muted bg-subtle rounded-3xl">
+    <div class="text-center py-6 text-sm/6 text-gray-500 bg-subtle rounded-3xl">
       user not found.
     </div>
     }
@@ -43,10 +43,10 @@
   @if (selectedUser(); as selected) {
   <div class="flex items-center justify-between bg-accent/5 px-4 py-2.5 rounded-2xl border border-accent/20">
     <div class="flex flex-col">
-      <span class="text-xs text-muted">add user?</span>
+      <span class="text-xs text-gray-500">add user?</span>
       <span class="text-sm/6 font-semibold">{{ selected.username }}</span>
     </div>
-    <button (click)="clearSelection()" class="text-muted hover:text-rose-500 transition-colors p-1"
+    <button (click)="clearSelection()" class="text-gray-500 hover:text-rose-500 transition-colors p-1"
       title="Clear selection">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

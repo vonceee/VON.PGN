@@ -19,7 +19,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         <div class="flex items-center gap-4 bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/20">
           <div>
             <p class="text-sm/6 font-medium">Incoming Request</p>
-            <p class="text-xs text-muted">A student wants to interact with the board.</p>
+            <p class="text-xs text-gray-500">A student wants to interact with the board.</p>
           </div>
         </div>
 

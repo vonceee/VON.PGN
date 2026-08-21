@@ -59,7 +59,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         </div>
 
         <!-- Editor Brush Action (Move / Delete) -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col">
           <div class="grid grid-cols-2 gap-2">
             <button 
               appButton
@@ -81,7 +81,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         </div>
 
         <!-- Turn Selection -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col">
           <div class="grid grid-cols-2 gap-2">
             <button 
               appButton
@@ -103,7 +103,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         </div>
 
         <!-- Castling rights -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col">
           <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-subtle/30 border border-border-base rounded-xl">
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
               <input type="checkbox" [ngModel]="whiteKingside()" (ngModelChange)="whiteKingside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
@@ -125,7 +125,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         </div>
 
         <!-- Board Actions -->
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col">
           <div class="grid grid-cols-2 gap-2">
             <button 
               appButton

@@ -378,6 +378,16 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'bughouse',
+        loadComponent: () => import('./features/bughouse/bughouse.component').then((m) => m.BughouseComponent),
+        title: 'Vonchess.net • Bughouse',
+        data: {
+          description:
+            'Play Bughouse chess — a thrilling 2v2 chess variant with partners, drops, and pocket pieces.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'tactics',
         loadComponent: () =>
           import('./features/tactics/selection/tactics-selection.component').then((m) => m.TacticsSelectionComponent),

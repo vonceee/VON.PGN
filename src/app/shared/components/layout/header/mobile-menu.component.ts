@@ -58,7 +58,7 @@ import { Router } from '@angular/router';
         <button
           (click)="close.emit()"
           aria-label="Close menu"
-          class="p-1.5 cursor-pointer relative group text-muted transition-colors flex items-center justify-center rounded-lg hover:bg-subtle shrink-0"
+          class="p-1.5 cursor-pointer relative group text-gray-500 transition-colors flex items-center justify-center rounded-lg hover:bg-subtle shrink-0"
         >
           <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -70,8 +70,8 @@ import { Router } from '@angular/router';
       <div class="flex-1 p-6 md:p-8 overflow-y-auto">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
           @for (group of linkGroups; track group.title) {
-            <div class="flex flex-col gap-2">
-              <span class="text-xs font-bold text-muted uppercase block mb-1">
+            <div class="flex flex-col">
+              <span class="text-xs font-bold text-gray-500 uppercase block mb-1">
                 {{ group.title }}
               </span>
               <div class="flex flex-col gap-0.5">
@@ -82,7 +82,7 @@ import { Router } from '@angular/router';
                     routerLinkActive="bg-subtle text-accent font-semibold"
                     [routerLinkActiveOptions]="{ exact: !link.queryParams }"
                     (click)="close.emit()"
-                    class="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all duration-200"
+                    class="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-content hover:bg-subtle transition-all duration-200"
                   >
                     <span>{{ link.label }}</span>
                   </a>
@@ -99,7 +99,7 @@ import { Router } from '@angular/router';
           <!-- User Profile Card -->
           <div class="flex items-center gap-3 px-3.5 py-2.5 mb-4 bg-main rounded-xl border border-border-base">
             <div class="w-8 h-8 rounded-full bg-subtle flex items-center justify-center">
-              <svg class="w-5 h-5 text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
@@ -115,7 +115,7 @@ import { Router } from '@angular/router';
               routerLinkActive="bg-subtle text-accent font-semibold"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="close.emit()"
-              class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all duration-200"
+              class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-content hover:bg-subtle transition-all duration-200"
             >
               Profile
             </a>
@@ -126,7 +126,7 @@ import { Router } from '@angular/router';
                 routerLinkActive="bg-subtle text-accent font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all duration-200"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-content hover:bg-subtle transition-all duration-200"
               >
                 My Tournaments
               </a>
@@ -138,7 +138,7 @@ import { Router } from '@angular/router';
                 routerLinkActive="bg-subtle text-accent font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-muted hover:text-content hover:bg-subtle transition-all duration-200"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-content hover:bg-subtle transition-all duration-200"
               >
                 Admin Panel
               </a>
@@ -234,6 +234,7 @@ export class MobileMenuComponent {
       links: [
         { path: '/tactics', label: 'Tactics' },
         { path: '/study/drills', label: 'Opening drills' },
+        { path: '/bughouse', label: 'Bughouse' },
       ],
     },
     {

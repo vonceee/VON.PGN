@@ -20,21 +20,21 @@
       </div>
       <form [formGroup]="lessonForm" (ngSubmit)="saveLesson()">
         <div class="mb-4">
-          <label class="block text-sm/6  text-muted mb-1.5">Title</label>
+          <label class="block text-sm/6  text-gray-500 mb-1.5">Title</label>
           <input type="text" formControlName="title"
             class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none "
             placeholder="e.g. The Pawn" />
         </div>
 
         <div class="mb-4">
-          <label class="block text-sm/6  text-muted mb-1.5">Slug (optional)</label>
+          <label class="block text-sm/6  text-gray-500 mb-1.5">Slug (optional)</label>
           <input type="text" formControlName="slug"
             class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none "
             placeholder="e.g. the-pawn" />
         </div>
 
         <div class="mb-0">
-          <label class="block text-sm/6  text-muted mb-1.5">Order</label>
+          <label class="block text-sm/6  text-gray-500 mb-1.5">Order</label>
           <input type="number" formControlName="order"
             class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none " min="1" />
         </div>
@@ -71,7 +71,7 @@
 
             <div *ngIf="block.get('type')?.value === 'text'">
               <div class="mb-4">
-                <label class="block text-sm/6  text-muted mb-1.5">HTML Content</label>
+                <label class="block text-sm/6  text-gray-500 mb-1.5">HTML Content</label>
                 <textarea formControlName="content"
                   class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none  box-border"
                   rows="4" placeholder="<p>Text goes here</p>"></textarea>
@@ -80,13 +80,13 @@
 
             <div *ngIf="block.get('type')?.value === 'board'" formGroupName="task">
               <div class="mb-4">
-                <label class="block text-sm/6  text-muted mb-1.5">Lichess URL / Study Link</label>
+                <label class="block text-sm/6  text-gray-500 mb-1.5">Lichess URL / Study Link</label>
                 <input type="text" formControlName="lichessUrl"
                   class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none "
                   placeholder="https://lichess.org/study/..." />
               </div>
               <div class="mb-0">
-                <label class="block text-sm/6  text-muted mb-1.5">Instructions</label>
+                <label class="block text-sm/6  text-gray-500 mb-1.5">Instructions</label>
                 <textarea formControlName="instructions"
                   class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none  box-border"
                   rows="2" placeholder="Move the pawn..."></textarea>

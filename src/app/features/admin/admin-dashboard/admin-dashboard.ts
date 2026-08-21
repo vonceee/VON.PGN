@@ -25,7 +25,7 @@ export class AdminDashboardComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.adminService.getCourses().subscribe({
         next: (data) => this.coursesCount.set(data.length),
-        error: () => {}
+        error: () => { }
       });
 
       this.loadRecentEnrollments();
@@ -38,7 +38,7 @@ export class AdminDashboardComponent implements OnInit {
         // Just take the last 5
         this.recentEnrollments.set(data.slice(0, 5));
       },
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -49,7 +49,7 @@ export class AdminDashboardComponent implements OnInit {
       case 'confirmed': return 'bg-emerald-100 text-emerald-700';
       case 'paid': return 'bg-indigo-100 text-indigo-700';
       case 'cancelled': return 'bg-rose-100 text-rose-700';
-      default: return 'bg-subtle text-muted';
+      default: return 'bg-subtle text-gray-500';
     }
   }
-}
+}

@@ -14,7 +14,7 @@
                   {{ whitePlayer().title }}
                 </span>
                 }
-                <span class="text-sm/6 truncate font-medium" [class.text-muted]="whitePlayer().isPlaceholder"
+                <span class="text-sm/6 truncate font-medium" [class.text-gray-500]="whitePlayer().isPlaceholder"
                   [class.italic]="whitePlayer().isPlaceholder">
                   {{ whitePlayer().name }}
                 </span>
@@ -27,7 +27,7 @@
           <!-- Clock Pill -->
           @if (facade.whiteClock()) {
           <div class="flex items-center justify-center p-2.5 px-4 rounded-4xl bg-subtle text-xs shrink-0 min-w-[72px]"
-            [class.text-muted]="facade.activeColor() !== 'w'">
+            [class.text-gray-500]="facade.activeColor() !== 'w'">
             {{ facade.whiteClock() }}
           </div>
           }
@@ -44,7 +44,7 @@
                   {{ blackPlayer().title }}
                 </span>
                 }
-                <span class="text-sm/6 truncate font-medium" [class.text-muted]="blackPlayer().isPlaceholder"
+                <span class="text-sm/6 truncate font-medium" [class.text-gray-500]="blackPlayer().isPlaceholder"
                   [class.italic]="blackPlayer().isPlaceholder">
                   {{ blackPlayer().name }}
                 </span>
@@ -57,7 +57,7 @@
           <!-- Clock Pill -->
           @if (facade.blackClock()) {
           <div class="flex items-center justify-center p-2.5 px-4 rounded-4xl bg-subtle text-xs shrink-0 min-w-[72px]"
-            [class.text-muted]="facade.activeColor() !== 'b'">
+            [class.text-gray-500]="facade.activeColor() !== 'b'">
             {{ facade.blackClock() }}
           </div>
           }
@@ -66,14 +66,15 @@
 
       <!-- Additional Details Section -->
       @if (metadataItems().length > 0) {
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col">
         @for (item of metadataItems(); track item.label) {
-        <div class="flex flex-col gap-2 p-4 border border-border-base rounded-xl select-none">
+        <div class="flex flex-col p-4 border border-border-base rounded-xl select-none">
           <span class="text-xs font-medium flex items-center gap-1.5">
             <ng-icon [name]="item.icon" class="text-xs"></ng-icon>
             {{ item.label }}
           </span>
-          <span class="text-xs font-medium" [class.text-muted]="item.isPlaceholder" [class.italic]="item.isPlaceholder">
+          <span class="text-xs font-medium" [class.text-gray-500]="item.isPlaceholder"
+            [class.italic]="item.isPlaceholder">
             {{ item.value }}
           </span>
         </div>

@@ -1,7 +1,7 @@
 <div class="h-full w-full flex flex-col">
   @if (isLoading()) {
   <div class="flex-1 flex items-center justify-center">
-    
+
   </div>
   } @else if (error()) {
   <div class="flex-1 flex items-center justify-center">
@@ -90,14 +90,14 @@
       <!-- Ratings Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Tactics -->
-        <div class="bg-subtle rounded-4xl p-6 flex flex-col gap-2 hover:border-accent">
-          <span class="text-xs font-semibold text-muted">Tactics</span>
+        <div class="bg-subtle rounded-4xl p-6 flex flex-col hover:border-accent">
+          <span class="text-xs font-semibold text-gray-500">Tactics</span>
           <div class="text-3xl flex items-baseline gap-1">
             {{ profile.progress.puzzleRating }}
             @if (profile.progress.totalPuzzlesSolved < 10) { <span class="text-xl font-semibold">?</span>
               }
           </div>
-          <span class="text-xs text-muted">{{ profile.progress.totalPuzzlesSolved }} puzzles</span>
+          <span class="text-xs text-gray-500">{{ profile.progress.totalPuzzlesSolved }} puzzles</span>
         </div>
       </div>
 
@@ -122,19 +122,19 @@
           class="text-xs font-semibold  pb-1 border-b-2  cursor-pointer"
           [class.border-accent]="activeTab() === 'followers'" [class.]="activeTab() === 'followers'"
           [class.]="activeTab() === 'followers'" [class.border-transparent]="activeTab() !== 'followers'"
-          [class.]="activeTab() !== 'followers'" [class.hover:text-muted]="activeTab() !== 'followers'">
+          [class.]="activeTab() !== 'followers'" [class.hover:text-gray-500]="activeTab() !== 'followers'">
           Followers
         </button>
         <button (click)="activeTab.set('following'); loadTabUsers()"
           class="text-xs font-semibold  pb-1 border-b-2  cursor-pointer"
           [class.border-accent]="activeTab() === 'following'" [class.]="activeTab() === 'following'"
           [class.]="activeTab() === 'following'" [class.border-transparent]="activeTab() !== 'following'"
-          [class.]="activeTab() !== 'following'" [class.hover:text-muted]="activeTab() !== 'following'">
+          [class.]="activeTab() !== 'following'" [class.hover:text-gray-500]="activeTab() !== 'following'">
           Following
         </button>
       </div>
       <button (click)="closeFollowModal()"
-        class="p-1.5 rounded-lg  hover:text-muted  hover:bg-subtle   cursor-pointer flex items-center justify-center">
+        class="p-1.5 rounded-lg  hover:text-gray-500  hover:bg-subtle   cursor-pointer flex items-center justify-center">
         <ng-icon name="heroXMark" class="w-5 h-5"></ng-icon>
       </button>
     </div>
@@ -146,17 +146,17 @@
         <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 shrink-0"></ng-icon>
         <input type="text" [value]="tabSearchQuery()" (input)="onTabSearch($event)"
           [placeholder]="'Search ' + activeTab() + '...'"
-          class="ml-2 bg-transparent outline-none text-sm/6   placeholder:text-muted  w-full" />
+          class="ml-2 bg-transparent outline-none text-sm/6   placeholder:text-gray-500  w-full" />
       </div>
     </div>
 
     <!-- User List -->
     <div class="flex-1 overflow-y-auto px-5 py-4">
       @if (tabLoading()) {
-      
+
       } @else if (tabUsers().length === 0) {
       <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border  border-border-base ">
-        <ng-icon name="heroUsers" class="w-10 h-10 text-muted"></ng-icon>
+        <ng-icon name="heroUsers" class="w-10 h-10 text-gray-500"></ng-icon>
         <p class="text-sm/6">
           @if (tabSearchQuery()) {
           No results found
@@ -173,7 +173,7 @@
         <div class="flex items-center gap-3 p-3 rounded-xl    group">
           <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
             [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
-            class="w-10 h-10 rounded-full bg-subtle  flex items-center justify-center border border-border-base  text-sm/6 font-semibold text-muted  shrink-0">
+            class="w-10 h-10 rounded-full bg-subtle  flex items-center justify-center border border-border-base  text-sm/6 font-semibold text-gray-500  shrink-0">
             {{ userItem.username.charAt(0) || 'U' }}
           </a>
           <div class="flex-1 min-w-0">
@@ -188,7 +188,7 @@
             class="px-3 py-1.5 rounded-lg text-xs font-semibold   cursor-pointer shrink-0"
             [class.bg-accent]="!userItem.is_following" [class.text-white]="!userItem.is_following"
             [class.hover:bg-accent]="!userItem.is_following" [class.bg-subtle]="userItem.is_following"
-            [class./10]="userItem.is_following" [class.text-muted]="userItem.is_following"
+            [class./10]="userItem.is_following" [class.text-gray-500]="userItem.is_following"
             [class.]="userItem.is_following" [class.hover:bg-red-50]="userItem.is_following"
             [class.]="userItem.is_following" [class.border]="userItem.is_following"
             [class.border-border-base]="userItem.is_following" [class.]="userItem.is_following"
@@ -210,7 +210,7 @@
         <button (click)="loadMoreTabUsers()" [disabled]="isLoadingMore()"
           class="px-4 py-2 text-sm/6 font-semibold text-accent hover:text-accent/80  cursor-pointer disabled:opacity-50">
           @if (isLoadingMore()) {
-           Loading...
+          Loading...
           } @else {
           Load more
           }

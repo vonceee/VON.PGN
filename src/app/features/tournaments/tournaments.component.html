@@ -4,7 +4,7 @@
   <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
       <h1 class="text-4xl md:text-5xl mb-2 text-content">Events</h1>
-      <p class="text-muted text-sm md:text-base leading-relaxed max-w-3xl">
+      <p class="text-gray-500 text-sm md:text-base leading-relaxed max-w-3xl">
         Browse upcoming, ongoing, and past chess events across the Philippines.
       </p>
     </div>
@@ -53,12 +53,12 @@
     <!-- Search Input -->
     <div class="relative flex-1">
       <ng-icon name="heroMagnifyingGlass"
-        class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none"></ng-icon>
+        class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"></ng-icon>
       <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search tournaments..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()"
-        class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content cursor-pointer">
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-content cursor-pointer">
         <ng-icon name="heroXMark" class="w-4 h-4"></ng-icon>
       </button>
       }
@@ -82,7 +82,7 @@
 
   <!-- Results Info -->
   @if (!loading() && filteredTournaments().length > 0) {
-  <p class="text-xs text-muted mb-6">
+  <p class="text-xs text-gray-500 mb-6">
     Showing {{ paginatedTournaments().length }} of {{ filteredTournaments().length }} tournament{{
     filteredTournaments().length !== 1 ? 's' : ''
     }}
@@ -99,7 +99,7 @@
       <ng-icon name="heroCalendar" class="w-8 h-8"></ng-icon>
     </div>
     <h3 class="text-lg font-medium mb-2 text-content">No tournaments found</h3>
-    <p class="text-muted text-sm/6 mb-6">
+    <p class="text-gray-500 text-sm/6 mb-6">
       Try adjusting your search terms or filter by a different tab to find chess events.
     </p>
   </div>
@@ -162,7 +162,7 @@
               </div>
 
               <!-- Metadata / Description -->
-              <div class="flex flex-col gap-2 my-4">
+              <div class="flex flex-col my-4">
                 <p class="text-slate-300 text-sm leading-relaxed line-clamp-2 max-w-xl">
                   {{ tournament.description || 'Join us for this premium chess event. Check details for format, rounds,
                   eligibility, and prizes.' }}
@@ -266,7 +266,7 @@
               </div>
 
               <!-- Metadata / Description -->
-              <div class="flex flex-col gap-2 my-4">
+              <div class="flex flex-col my-4">
                 <p class="text-slate-300 text-sm leading-relaxed line-clamp-3">
                   {{ tournament.description || 'Join us for this premium chess event. Check details for format, rounds,
                   eligibility, and prizes.' }}
@@ -317,10 +317,8 @@
         <!-- CARD BACK -->
         <div class="card-back overflow-hidden flex flex-col group">
           @if (getTournamentThumbnail(tournament); as thumb) {
-          <div (click)="openPoster(thumb)" 
-               appFloatingCursorTrigger="Zoom" 
-               cursorIcon="heroMagnifyingGlass"
-               class="relative flex-1 bg-content overflow-hidden rounded-2xl border-2 border-border-base cursor-none cursor-pointer">
+          <div (click)="openPoster(thumb)" appFloatingCursorTrigger="Zoom" cursorIcon="heroMagnifyingGlass"
+            class="relative flex-1 bg-content overflow-hidden rounded-2xl border-2 border-border-base cursor-none cursor-pointer">
             <img [src]="thumb" class="w-full h-full object-contain object-top" [alt]="tournament.name + ' Poster'" />
 
             <!-- Overlay Controls -->
@@ -345,7 +343,7 @@
           } @else {
           <div
             class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-subtle border-2 border-border-base rounded-2xl">
-            <p class="text-muted mb-6">No poster available for this event.</p>
+            <p class="text-gray-500 mb-6">No poster available for this event.</p>
             <button appButton variant="outline" (click)="toggleFlip(tournament.id)">
               Go Back
             </button>
@@ -369,7 +367,7 @@
 
     @for (page of pages(); track page === '...' ? $index : page) {
     @if (page === '...') {
-    <span class="px-3 py-2 text-sm/6 text-muted">...</span>
+    <span class="px-3 py-2 text-sm/6 text-gray-500">...</span>
     } @else {
     <button (click)="goToPage(page)" class="min-w-[36px] px-3 py-2 text-sm/6 rounded-lg border cursor-pointer"
       [ngClass]="{

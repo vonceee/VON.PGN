@@ -18,16 +18,16 @@
           <div>
             <h3 class="text-sm/6 font-semibold    mb-4">Social</h3>
             <div class="flex flex-col gap-3">
-              <a href="#" class="text-muted  hover:  ">
+              <a href="#" class="text-gray-500  hover:  ">
                 Twitter (X)
               </a>
-              <a href="#" class="text-muted  hover:  ">
+              <a href="#" class="text-gray-500  hover:  ">
                 YouTube
               </a>
-              <a href="#" class="text-muted  hover:  ">
+              <a href="#" class="text-gray-500  hover:  ">
                 Discord
               </a>
-              <a href="#" class="text-muted  hover:  ">
+              <a href="#" class="text-gray-500  hover:  ">
                 GitHub
               </a>
             </div>
@@ -36,13 +36,13 @@
           <div>
             <h3 class="text-sm/6 font-semibold    mb-4">Related</h3>
             <div class="flex flex-col gap-3">
-              <a routerLink="/about" class="text-muted  hover:  ">
+              <a routerLink="/about" class="text-gray-500  hover:  ">
                 About vonchess
               </a>
-              <a routerLink="/documentation" class="text-muted  hover:  ">
+              <a routerLink="/documentation" class="text-gray-500  hover:  ">
                 Documentation
               </a>
-              <a routerLink="/privacy-policy" class="text-muted  hover:  ">
+              <a routerLink="/privacy-policy" class="text-gray-500  hover:  ">
                 Privacy Policy
               </a>
             </div>
@@ -58,7 +58,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <h3 class="text-xl font-semibold   mb-2">Message Sent</h3>
-            <p class="text-muted ">Thank you for reaching out. We'll get back to you as soon as possible.</p>
+            <p class="text-gray-500 ">Thank you for reaching out. We'll get back to you as soon as possible.</p>
           </div>
           } @else {
           <form (ngSubmit)="onSubmit()" class="space-y-6">
@@ -67,13 +67,13 @@
                 <label for="name" class="block text-sm/6    mb-2">Name</label>
                 <input id="name" type="text" required [ngModel]="form().name"
                   (ngModelChange)="updateField('name', $event)" name="name" placeholder="Your name"
-                  class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-muted  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent " />
+                  class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-gray-500  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent " />
               </div>
               <div>
                 <label for="email" class="block text-sm/6    mb-2">Email</label>
                 <input id="email" type="email" required [ngModel]="form().email"
                   (ngModelChange)="updateField('email', $event)" name="email" placeholder="you@example.com"
-                  class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-muted  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent " />
+                  class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-gray-500  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent " />
               </div>
             </div>
 
@@ -81,7 +81,7 @@
               <label for="subject" class="block text-sm/6    mb-2">Subject</label>
               <input id="subject" type="text" required [ngModel]="form().subject"
                 (ngModelChange)="updateField('subject', $event)" name="subject" placeholder="What's this about?"
-                class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-muted  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent " />
+                class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-gray-500  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent " />
             </div>
 
             <div>
@@ -89,7 +89,7 @@
               <textarea id="message" required rows="6" [ngModel]="form().message"
                 (ngModelChange)="updateField('message', $event)" name="message"
                 placeholder="Tell us what's on your mind..."
-                class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-muted  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent  resize-none"></textarea>
+                class="w-full px-4 py-3 rounded-lg border border-border-base  bg-white    placeholder:text-gray-500  focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent  resize-none"></textarea>
             </div>
 
             <button type="submit" [disabled]="submitting()"

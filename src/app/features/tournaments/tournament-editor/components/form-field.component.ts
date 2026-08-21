@@ -161,8 +161,8 @@ export class FormFieldComponent implements ControlValueAccessor {
 
   value: any = '';
   formattedValue = '';
-  private _onChange: any = () => {};
-  private _onTouched: any = () => {};
+  private _onChange: any = () => { };
+  private _onTouched: any = () => { };
 
   get hasError(): boolean {
     return !!this.errorMessage;
@@ -177,7 +177,7 @@ export class FormFieldComponent implements ControlValueAccessor {
   }
 
   get inputClasses(): string {
-    const base = 'block w-full pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 ';
+    const base = 'block w-full pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 ';
     if (this.hasError) {
       return base + ' border-red-500 focus:ring-red-500/50';
     }
@@ -185,7 +185,7 @@ export class FormFieldComponent implements ControlValueAccessor {
   }
 
   get textareaClasses(): string {
-    const base = 'block w-full pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 pb-6';
+    const base = 'block w-full pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 pb-6';
     if (this.hasError) {
       return base + ' border-red-500 focus:ring-red-500/50';
     }
@@ -193,7 +193,7 @@ export class FormFieldComponent implements ControlValueAccessor {
   }
 
   get urlClasses(): string {
-    const base = 'flex-1 pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 ';
+    const base = 'flex-1 pl-3 pr-3 py-2.5 bg-white border rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 ';
     if (this.hasError) {
       return base + ' border-red-500 focus:ring-red-500/50';
     }
@@ -244,7 +244,7 @@ export class FormFieldComponent implements ControlValueAccessor {
   onCurrencyInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/[^\d.]/g, '');
-    
+
     const parts = value.split('.');
     if (parts.length > 2) {
       value = parts[0] + '.' + parts.slice(1).join('');

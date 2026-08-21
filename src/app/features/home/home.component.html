@@ -81,8 +81,8 @@
   <div #toolsSection class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 md:mb-24 md:pr-20 lg:pr-28">
     <!-- Card 1: Opening Repertoire -->
     @if (activeCategory() === 'all' || activeCategory() === 'openings') {
-    <div routerLink="/study" [queryParams]="{ category: 'opening_repertoire' }"
-      appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
+    <div routerLink="/study" [queryParams]="{ category: 'opening_repertoire' }" appFloatingCursorTrigger="Explore"
+      cursorIcon="heroPlay"
       class="bg-content border border-white/10 rounded-3xl p-5 md:p-7 hover:border-white/30 transition-all duration-300 cursor-none flex flex-col justify-between min-h-[170px] md:h-56 md:rounded-4xl group">
       <div>
         <div class="flex items-center justify-between mb-4">
@@ -100,8 +100,7 @@
 
     <!-- Card 2: Tactics & Puzzles -->
     @if (activeCategory() === 'all' || activeCategory() === 'tactics') {
-    <div routerLink="/tactics"
-      appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
+    <div routerLink="/tactics" appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
       class="bg-content border border-white/10 rounded-3xl p-5 md:p-7 hover:border-white/30 transition-all duration-300 cursor-none flex flex-col justify-between min-h-[170px] md:h-56 md:rounded-4xl group">
       <div>
         <div class="flex items-center justify-between mb-4">
@@ -119,8 +118,7 @@
 
     <!-- Card 3: Guess the Game -->
     @if (activeCategory() === 'all' || activeCategory() === 'tactics') {
-    <div routerLink="/tactics/guess"
-      appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
+    <div routerLink="/tactics/guess" appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
       class="bg-content border border-white/10 rounded-3xl p-5 md:p-7 hover:border-white/30 transition-all duration-300 cursor-none flex flex-col justify-between min-h-[170px] md:h-56 md:rounded-4xl group">
       <div>
         <div class="flex items-center justify-between mb-4">
@@ -136,8 +134,7 @@
 
     <!-- Card 4: World Championships -->
     @if (activeCategory() === 'all' || activeCategory() === 'analysis') {
-    <div routerLink="/world-championships"
-      appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
+    <div routerLink="/world-championships" appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
       class="bg-content border border-white/10 rounded-3xl p-5 md:p-7 hover:border-white/30 transition-all duration-300 cursor-none flex flex-col justify-between min-h-[170px] md:h-56 md:rounded-4xl group">
       <div>
         <div class="flex items-center justify-between mb-4">
@@ -153,8 +150,7 @@
 
     <!-- Card 5: Swiss & Arena Tournaments -->
     @if (activeCategory() === 'all' || activeCategory() === 'tournaments') {
-    <div routerLink="/events"
-      appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
+    <div routerLink="/events" appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
       class="bg-content border border-white/10 rounded-3xl p-5 md:p-7 hover:border-white/30 transition-all duration-300 cursor-none flex flex-col justify-between min-h-[170px] md:h-56 md:rounded-4xl group">
       <div>
         <div class="flex items-center justify-between mb-4">
@@ -173,8 +169,7 @@
 
     <!-- Card 6: Interactive Study Board -->
     @if (activeCategory() === 'all' || activeCategory() === 'analysis') {
-    <div routerLink="/study"
-      appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
+    <div routerLink="/study" appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
       class="bg-content border border-white/10 rounded-3xl p-5 md:p-7 hover:border-white/30 transition-all duration-300 cursor-none flex flex-col justify-between min-h-[170px] md:h-56 md:rounded-4xl group">
       <div>
         <div class="flex items-center justify-between mb-4">
@@ -195,7 +190,7 @@
       Built for chess players <br />
       <span class="font-normal text-blue-600">for the modern era</span>
     </h2>
-    <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl mx-auto md:mx-0">
+    <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl mx-auto md:mx-0">
       vonchess is designed for chess improvement, whether you're a professional coach organizing
       repertoires, a competitive player sharpening chess skills, or a casual enjoyer diving into chess history.
     </p>
@@ -235,7 +230,7 @@
         <h3 class="text-lg md:text-xl font-medium text-content mb-1">
           {{ slide.title }}
         </h3>
-        <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest mb-4 max-w-2xl mx-auto md:mx-0">
+        <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest mb-4 max-w-2xl mx-auto md:mx-0">
           {{ slide.description }}
         </p>
       </div>

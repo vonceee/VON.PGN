@@ -17,7 +17,7 @@
       </h1>
 
       @if (!isEditingEmail) {
-      <p class="text-muted  mb-8 ">
+      <p class="text-gray-500  mb-8 ">
         we've sent a link to
         <span class="font-semibold ">{{
           unverifiedEmail() || 'your email address'
@@ -32,7 +32,7 @@
         <label class="block text-sm/6  mb-2">Update Email Address</label>
         <div class="flex gap-2">
           <input type="email" [(ngModel)]="newEmailInput"
-            class="flex-1 px-3 py-2 bg-white  border border-border-base  rounded-lg text-sm/6 focus:ring-2 focus:ring-accent focus:border-transparent outline-none placeholder:text-muted  "
+            class="flex-1 px-3 py-2 bg-white  border border-border-base  rounded-lg text-sm/6 focus:ring-2 focus:ring-accent focus:border-transparent outline-none placeholder:text-gray-500  "
             placeholder="Enter new email" (keyup.enter)="updateEmail()" />
           <button (click)="updateEmail()" [disabled]="isUpdatingEmail || !newEmailInput"
             class="px-4 py-2 bg-black hover:bg-content   text-white  rounded-lg text-sm/6 font-semibold disabled:opacity-50 ">
@@ -74,7 +74,7 @@
         <h2 class="text-4xl xl:text-5xl   leading-[1.1]">
           MASTER THE GAME OF <span class="text-accent">CHESS.</span>
         </h2>
-        <p class="mt-4 text-muted  ">
+        <p class="mt-4 text-gray-500  ">
           PLAY AND LEARN ON vonchess — THE ULTIMATE <br class="hidden xl:block" />
           PLATFORM FOR PLAYERS WHO AIM FOR THE <span class="text-accent">TOP.</span>
         </p>
@@ -85,16 +85,16 @@
       <div class="flex items-center gap-2 text-accent mb-2 font-semibold text-sm/6">
         Support our mission
       </div>
-      <p class="text-muted text-xs  max-w-md">
+      <p class="text-gray-500 text-xs  max-w-md">
         If you like the website, consider supporting us. Your donations help us keep the servers
         running and the puzzles fresh!
       </p>
 
-      <div class="mt-8 flex justify-between items-center text-xs text-muted ">
-        <span>Need help? <a href="#" class="text-muted hover:text-accent">visit our FAQ</a></span>
+      <div class="mt-8 flex justify-between items-center text-xs text-gray-500 ">
+        <span>Need help? <a href="#" class="text-gray-500 hover:text-accent">visit our FAQ</a></span>
         <div class="flex gap-4">
-          <a href="#" class="hover:text-muted">Twitter</a>
-          <a href="#" class="hover:text-muted">Discord</a>
+          <a href="#" class="hover:text-gray-500">Twitter</a>
+          <a href="#" class="hover:text-gray-500">Discord</a>
         </div>
       </div>
     </div>

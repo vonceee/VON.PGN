@@ -7,16 +7,16 @@
   <!-- Dialog Body (scrollable) -->
   <div class="flex-1 overflow-y-auto p-8 space-y-6">
     <!-- Study Name -->
-    <div class="flex flex-col gap-2">
-      <label for="study_name" class="font-medium text-sm/6">Study name</label>
+    <div class="flex flex-col">
+      <label for="study_name" class="font-medium text-sm/6 uppercase">Study name</label>
       <input type="text" id="study_name" [(ngModel)]="name" maxlength="100" placeholder="e.g. My Openings Analysis"
-        class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-muted"
+        class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-gray-500"
         autofocus />
     </div>
 
     <!-- Visibility -->
-    <div class="flex flex-col gap-2">
-      <label for="visibility" class="font-medium text-sm/6">Visibility</label>
+    <div class="flex flex-col">
+      <label for="visibility" class="font-medium text-sm/6 uppercase">Visibility</label>
       <div class="relative w-full">
         <select id="visibility" [value]="visibility()" (change)="visibility.set($any($event.target).value)"
           class="w-full px-3 py-2 bg-surface border border-border-base rounded-md text-sm/6 appearance-none bg-no-repeat bg-right pr-8 focus:outline-none cursor-pointer"
@@ -33,8 +33,8 @@
     </div>
 
     <!-- Category Selection -->
-    <div class="flex flex-col gap-2">
-      <label for="category" class="font-medium text-sm/6">Category</label>
+    <div class="flex flex-col">
+      <label for="category" class="font-medium text-sm/6 uppercase">Category</label>
       <div class="relative w-full">
         <select id="category" [value]="category()" (change)="category.set($any($event.target).value)"
           class="w-full px-3 py-2 bg-surface border border-border-base rounded-md text-sm/6 appearance-none bg-no-repeat bg-right pr-8 focus:outline-none cursor-pointer"
@@ -53,8 +53,8 @@
 
     <!-- Repertoire Orientation Selector (Only visible for Opening Repertoires) -->
     @if (category() === 'opening_repertoire') {
-    <div class="flex flex-col gap-2">
-      <label for="orientation" class="font-medium text-sm/6">Repertoire For?</label>
+    <div class="flex flex-col">
+      <label for="orientation" class="font-medium text-sm/6 uppercase">Repertoire For?</label>
       <div class="relative w-full">
         <select id="orientation" [value]="orientation()" (change)="orientation.set($any($event.target).value)"
           class="w-full px-3 py-2 bg-surface border border-border-base rounded-md text-sm/6 appearance-none bg-no-repeat bg-right pr-8 focus:outline-none cursor-pointer"

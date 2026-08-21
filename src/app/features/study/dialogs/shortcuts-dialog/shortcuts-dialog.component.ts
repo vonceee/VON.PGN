@@ -10,7 +10,7 @@ import { DialogRef } from '@angular/cdk/dialog';
     <div class="bg-main rounded-4xl max-w-xl max-h-[90vh] flex flex-col relative overflow-hidden">
       <div class="p-6 pb-0 flex items-center justify-between shrink-0">
         <h2 class="text-2xl">Keyboard shortcuts</h2>
-        <button (click)="dialogRef.close()" class="text-muted cursor-pointer transition-colors" title="Close">
+        <button (click)="dialogRef.close()" class="text-gray-500 cursor-pointer transition-colors" title="Close">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -29,7 +29,7 @@ import { DialogRef } from '@angular/cdk/dialog';
                   </span>
                   <div class="flex items-center gap-2">
                     @if (item.symbol) {
-                      <span class="text-xs text-muted bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
+                      <span class="text-xs text-gray-500 bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     }
                     <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold">{{ item.key }}</kbd>
                   </div>
@@ -47,9 +47,9 @@ import { DialogRef } from '@angular/cdk/dialog';
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
-                    <span class="text-xs text-muted bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
+                    <span class="text-xs text-gray-500 bg-subtle px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     <div class="flex items-center gap-1">
-                      <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold text-muted">Shift</kbd>
+                      <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold text-gray-500">Shift</kbd>
                       <span class="text-xs">+</span>
                       <kbd class="w-6 h-6 flex items-center justify-center bg-surface border border-border-base rounded text-xs font-semibold">{{ item.key }}</kbd>
                     </div>
@@ -69,7 +69,7 @@ import { DialogRef } from '@angular/cdk/dialog';
                   </span>
                   <div class="flex items-center gap-1">
                     @for (key of item.keys; track $index) {
-                       <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold text-muted">{{ key }}</kbd>
+                       <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold text-gray-500">{{ key }}</kbd>
                        @if (!$last) { <span class="text-xs mx-0.5">/</span> }
                     }
                   </div>

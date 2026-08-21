@@ -40,7 +40,7 @@ import { BoardThemeService } from '../../../../core/services/board-theme.service
       <div class="board-container-wrapper relative" [class.no-coords]="hideCoordinates">
         <div class="board-tiles-container relative w-full h-full">
           <div #boardEl class="board-container">
-            <div class="absolute inset-0 flex items-center justify-center text-muted opacity-20 pointer-events-none">
+            <div class="absolute inset-0 flex items-center justify-center text-gray-500 opacity-20 pointer-events-none">
               {{ isEditor ? 'Editor Board' : 'Loading...' }}
             </div>
           </div>

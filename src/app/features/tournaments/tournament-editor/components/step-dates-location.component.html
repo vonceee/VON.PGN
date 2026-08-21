@@ -25,13 +25,13 @@
     [charLimit]="255" [errorMessage]="getError('location')"></app-form-field>
 
   <div class="space-y-1.5">
-    <label class="field-label block text-sm/6  text-muted ">Google Maps Link <span class="">(Optional)</span></label>
+    <label class="field-label block text-sm/6  text-gray-500 ">Google Maps Link <span class="">(Optional)</span></label>
     <div class="flex gap-2">
       <input type="text" [ngModel]="mapsLink()" (ngModelChange)="mapsLink.set($event)"
         [ngModelOptions]="{ standalone: true }" placeholder="Paste Google Maps URL to verify location"
-        class="flex-1 pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="flex-1 pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
       <button type="button" (click)="parseMapsLink.emit()" [disabled]="mapsLinkLoading()"
-        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-muted hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
         @if (mapsLinkLoading()) {
         <div class="w-4 h-4 border-4 border-current border-t-transparent rounded-full animate-spin shrink-0"></div>
         }

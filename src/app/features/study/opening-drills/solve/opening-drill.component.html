@@ -23,12 +23,12 @@
           <div>
             <h2 class="text-2xl font-medium">{{ selectedStudy()?.name }}</h2>
             <div class="flex items-center gap-2 mt-2">
-              <span class="text-sm/6 font-medium text-muted">{{ currentChapter()?.name }}</span>
+              <span class="text-sm/6 font-medium text-gray-500">{{ currentChapter()?.name }}</span>
             </div>
             @if (selectedStudy(); as study) {
             <div class="mt-2.5">
               <a [routerLink]="['/study', study.id]"
-                class="text-sm/6 text-muted underline flex items-center gap-1 font-medium w-max">
+                class="text-sm/6 text-gray-500 underline flex items-center gap-1 font-medium w-max">
                 {{ selectedStudy()?.name }}
               </a>
             </div>
@@ -41,15 +41,15 @@
         <!-- Digital Readout Timer / Metrics -->
         <div class="bg-subtle rounded-xl p-4 flex items-center justify-between relative">
           <div>
-            <span class="text-xs text-muted block">Accuracy</span>
+            <span class="text-xs text-gray-500 block">Accuracy</span>
             <span class="text-2xl font-medium">
               {{ drillAccuracy() }}%
             </span>
           </div>
           <div class="text-right">
-            <span class="text-xs text-muted block">Variations</span>
+            <span class="text-xs text-gray-500 block">Variations</span>
             <span class="text-2xl font-medium">
-              {{ currentPathIndex() + 1 }} <span class="text-muted text-sm/6">/ {{ drillPaths().length
+              {{ currentPathIndex() + 1 }} <span class="text-gray-500 text-sm/6">/ {{ drillPaths().length
                 }}</span>
             </span>
           </div>
@@ -61,7 +61,7 @@
             <div class="bg-accent h-full rounded-full transition-all duration-500"
               [style.width.%]="((currentChapterIndex() + 1) / chapters().length) * 100"></div>
           </div>
-          <div class="flex justify-between text-xs text-muted">
+          <div class="flex justify-between text-xs text-gray-500">
             <span>{{ currentChapterIndex() + 1 }} of {{ chapters().length }}</span>
           </div>
         </div>
@@ -91,7 +91,7 @@
         }
 
         <!-- Action Buttons -->
-        <div class="flex flex-col gap-2 transition-all duration-300 p-2 rounded-xl border border-transparent relative">
+        <div class="flex flex-col transition-all duration-300 p-2 rounded-xl border border-transparent relative">
           @if (isRetryMode()) {
           <button appButton variant="outline" (click)="cancelRetry()">
             Back to Summary
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <p class="text-muted text-base mb-8">
+    <p class="text-gray-500 text-base mb-8">
       Practice session complete for <strong class="font-medium">{{ selectedStudy()?.name }}</strong>.
     </p>
 
@@ -127,17 +127,17 @@
     <div class="rounded-4xl p-6 w-full mb-10 bg-subtle">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
         <div>
-          <span class="text-xs text-muted block mb-1">Accuracy</span>
+          <span class="text-xs text-gray-500 block mb-1">Accuracy</span>
           <span class="text-4xl font-medium transition-colors">
             {{ drillAccuracy() }}%
           </span>
         </div>
         <div>
-          <span class="text-xs text-muted block mb-1">Correct moves</span>
+          <span class="text-xs text-gray-500 block mb-1">Correct moves</span>
           <span class="text-4xl font-medium">{{ correctCount() }}</span>
         </div>
         <div>
-          <span class="text-xs text-muted block mb-1">Incorrect moves</span>
+          <span class="text-xs text-gray-500 block mb-1">Incorrect moves</span>
           <span class="text-4xl font-medium font-medium" [class.text-rose-600]="drillMistakes().length > 0"
             [class.text-emerald-600]="drillMistakes().length === 0">
             {{ drillMistakes().length }}
@@ -175,7 +175,7 @@
                 {{ mistake.chapterName }}
               </span>
               @if (mistake.movesBefore.length > 0) {
-              <span class="text-xs text-muted truncate max-w-xs md:max-w-md">
+              <span class="text-xs text-gray-500 truncate max-w-xs md:max-w-md">
                 After: {{ mistake.movesBefore.join(' ') }}
               </span>
               }

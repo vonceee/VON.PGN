@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
     <h2 class="text-3xl font-semibold mb-6 border-b border-border-base pb-4">
       API Reference
     </h2>
-    <div class="prose prose-slate max-w-none text-muted">
+    <div class="prose prose-slate max-w-none text-gray-500">
       <p class="text-lg leading-relaxed mb-6">
         Developers can programmatically integrate with the vonchess platform to fetch player stats, studies, and
         repertoires.
@@ -25,7 +25,7 @@ import { CommonModule } from '@angular/common';
               <th class="p-4 font-semibold">Description</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-border-base text-muted">
+          <tbody class="divide-y divide-border-base text-gray-500">
             <tr>
               <td class="p-4 font-mono text-content">GET</td>
               <td class="p-4 font-mono">/api/v1/profile</td>
@@ -58,4 +58,4 @@ import { CommonModule } from '@angular/common';
     </div>
   `
 })
-export class ApiReferenceComponent {}
+export class ApiReferenceComponent { }

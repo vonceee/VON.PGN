@@ -47,15 +47,15 @@ import { AuthService } from '../../../core/services/auth.service';
             @if (isCameraOff()) {
               <div class="absolute inset-0 bg-subtle flex flex-col items-center justify-center">
                 <div class="w-12 h-12 rounded-full bg-surface border border-border-base flex items-center justify-center mb-1.5">
-                  <ng-icon name="heroUser" size="1.5rem" class="text-muted"></ng-icon>
+                  <ng-icon name="heroUser" size="1.5rem" class="text-gray-500"></ng-icon>
                 </div>
-                <span class="text-xstext-muted font-medium">Camera Off</span>
+                <span class="text-xstext-gray-500 font-medium">Camera Off</span>
               </div>
             }
           } @else {
-            <div class="text-muted text-xs flex flex-col items-center">
+            <div class="text-gray-500 text-xs flex flex-col items-center">
               <div class="w-10 h-10 rounded-full bg-surface flex items-center justify-center mb-2">
-                <ng-icon name="heroVideoCameraSlash" size="1.25rem" class="text-muted"></ng-icon>
+                <ng-icon name="heroVideoCameraSlash" size="1.25rem" class="text-gray-500"></ng-icon>
               </div>
               <span class="text-xsfont-medium">Connecting camera...</span>
             </div>

@@ -25,7 +25,7 @@ interface EditorGame {
       
       <!-- Back Link -->
       <div class="mb-8">
-        <a routerLink="/blog" class="text-sm/6 font-medium text-muted hover:text-content hover:underline flex items-center gap-1">
+        <a routerLink="/blog" class="text-sm/6 font-medium text-gray-500 hover:text-content hover:underline flex items-center gap-1">
           ← Back to blogs
         </a>
       </div>
@@ -36,7 +36,7 @@ interface EditorGame {
           <h1 class="text-4xl md:text-5xl mb-2">
             {{ isEditMode() ? 'Edit blog post' : 'Create new blog post' }}
           </h1>
-          <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
+          <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
             {{ isEditMode() ? 'Update your post and manage interactive games.' : 'Write articles, draft ideas, and insert chess games.' }}
           </p>
         </div>
@@ -53,7 +53,7 @@ interface EditorGame {
           <div class="bg-main rounded-xl border border-border-base p-6 md:p-8 space-y-6">
             
             <!-- Title -->
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
               <label class="text-sm/6 font-semibold">Title</label>
               <input
                 type="text"
@@ -64,7 +64,7 @@ interface EditorGame {
             </div>
 
             <!-- Summary / Excerpt -->
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
               <label class="text-sm/6 font-semibold">Summary (optional)</label>
               <textarea
                 [(ngModel)]="summary"
@@ -75,7 +75,7 @@ interface EditorGame {
             </div>
 
             <!-- Editor Body with Markdown Toolbar -->
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
               <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border-base pb-3">
                 <label class="text-sm/6 font-semibold">Body content (Markdown)</label>
                 
@@ -90,7 +90,7 @@ interface EditorGame {
                     <button class="px-2.5 py-1 rounded-full hover:bg-main font-medium cursor-pointer">Insert game</button>
                     <!-- Dropdown for games -->
                     <div class="absolute bottom-full right-0 mb-2 w-48 bg-main border border-border-base rounded-xl shadow-lg p-2 invisible group-hover/insert:visible opacity-0 group-hover/insert:opacity-100 transition-all z-10 flex flex-col gap-1">
-                      <span *ngIf="games().length === 0" class="text-sm/6 text-muted text-center py-2">No games added yet</span>
+                      <span *ngIf="games().length === 0" class="text-sm/6 text-gray-500 text-center py-2">No games added yet</span>
                       <button
                         *ngFor="let g of games(); let idx = index"
                         (click)="insertGameTag(idx)"
@@ -158,7 +158,7 @@ interface EditorGame {
             
             <!-- Game adding inputs -->
             <div class="space-y-3 p-4 bg-subtle/25 rounded-xl border border-border-base">
-              <h4 class="text-xs font-semibold text-muted uppercase">Add a chess game</h4>
+              <h4 class="text-xs font-semibold text-gray-500 uppercase">Add a chess game</h4>
               
               <div class="flex flex-col gap-1.5">
                 <input
@@ -190,9 +190,9 @@ interface EditorGame {
 
             <!-- List of Games -->
             <div class="space-y-2">
-              <h4 class="text-xs font-semibold text-muted uppercase">Games in this post</h4>
+              <h4 class="text-xs font-semibold text-gray-500 uppercase">Games in this post</h4>
               
-              <div *ngIf="games().length === 0" class="text-sm/6 text-muted text-center py-4 border border-dashed border-border-base rounded-xl">
+              <div *ngIf="games().length === 0" class="text-sm/6 text-gray-500 text-center py-4 border border-dashed border-border-base rounded-xl">
                 No games added yet.
               </div>
 
@@ -204,7 +204,7 @@ interface EditorGame {
                     </span>
                     <span class="text-sm/6 font-semibold truncate">{{ g.title || 'Untitled Game' }}</span>
                   </div>
-                  <p class="text-sm/6 text-muted truncate mt-1 max-w-[250px]">{{ g.pgn.substring(0, 40) }}...</p>
+                  <p class="text-sm/6 text-gray-500 truncate mt-1 max-w-[250px]">{{ g.pgn.substring(0, 40) }}...</p>
                 </div>
                 <button
                   (click)="removeGame(idx)"
@@ -223,7 +223,7 @@ interface EditorGame {
             <div class="space-y-4">
               <h1 class="text-2xl md:text-3xl font-medium">{{ title() || 'Post Title' }}</h1>
               
-              <div *ngIf="summary()" class="p-4 bg-subtle/25 border-l-4 border-accent rounded-r-xl text-muted text-sm/6 italic">
+              <div *ngIf="summary()" class="p-4 bg-subtle/25 border-l-4 border-accent rounded-r-xl text-gray-500 text-sm/6 italic">
                 {{ summary() }}
               </div>
 
@@ -240,13 +240,13 @@ interface EditorGame {
                       <span class="text-xs font-semibold">
                         [Interactive Chessboard: Game #{{ block.index }}]
                       </span>
-                      <span class="text-sm/6 text-muted mt-1 truncate max-w-[300px]">
+                      <span class="text-sm/6 text-gray-500 mt-1 truncate max-w-[300px]">
                         {{ games()[block.index!]?.title || 'Untitled Game' }}
                       </span>
                     </div>
                   }
                 }
-                <div *ngIf="content().trim() === ''" class="text-muted text-center py-8">
+                <div *ngIf="content().trim() === ''" class="text-gray-500 text-center py-8">
                   Start typing in the body field to see live article preview.
                 </div>
               </div>

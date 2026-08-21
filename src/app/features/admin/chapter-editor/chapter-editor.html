@@ -20,14 +20,14 @@
       </div>
       <form [formGroup]="chapterForm" (ngSubmit)="saveChapter()">
         <div class="mb-4">
-          <label class="block text-sm/6  text-muted mb-1.5">Title</label>
+          <label class="block text-sm/6  text-gray-500 mb-1.5">Title</label>
           <input type="text" formControlName="title"
             class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none "
             placeholder="e.g. The Pieces" />
         </div>
 
         <div class="mb-4">
-          <label class="block text-sm/6  text-muted mb-1.5">Order (Sequence Number)</label>
+          <label class="block text-sm/6  text-gray-500 mb-1.5">Order (Sequence Number)</label>
           <input type="number" formControlName="order"
             class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none " min="1" />
         </div>

@@ -43,8 +43,8 @@ import { heroPuzzlePiece } from '@ng-icons/heroicons/outline';
         <div class="flex items-center justify-start gap-2 mb-4 px-1">
           @for (type of ratingTypes; track type.id) {
             <div class="flex items-center gap-1.5" [title]="type.label">
-              <ng-icon [name]="type.icon" class="text-base text-muted"></ng-icon>
-              <span class="text-xs text-muted">Tactics:</span>
+              <ng-icon [name]="type.icon" class="text-base text-gray-500"></ng-icon>
+              <span class="text-xs text-gray-500">Tactics:</span>
               <span class="text-sm/6 font-semibold">
                 {{ getRating(type.id) }}
               </span>

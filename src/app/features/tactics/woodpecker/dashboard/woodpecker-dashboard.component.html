@@ -7,12 +7,12 @@
         <h1 class="text-4xl md:text-5xl mb-2 flex items-center gap-2">
           <span>Woodpecker method</span>
           <button (click)="toggleExplanation()"
-            class="p-1 rounded-full text-muted hover:bg-subtle transition-colors duration-200 cursor-pointer flex items-center justify-center"
+            class="p-1 rounded-full text-gray-500 hover:bg-subtle transition-colors duration-200 cursor-pointer flex items-center justify-center"
             title="What is Woodpecker method?">
             <ng-icon name="heroInformationCircle" class="text-xl md:text-2xl"></ng-icon>
           </button>
         </h1>
-        <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">A specialized form of
+        <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">A specialized form of
           spaced repetition designed by GM Axel Smith and IM Hans Tikkanen to burn chess patterns into your
           subconscious.</p>
       </div>
@@ -47,7 +47,7 @@
           </svg>
         </div>
         <h3 class="text-2xl mb-2">No active sessions</h3>
-        <p class="text-muted text-base max-w-md mb-8">
+        <p class="text-gray-500 text-base max-w-md mb-8">
           Start a Woodpecker training session to burn tactical patterns into your subconscious with spaced repetition.
         </p>
         <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-content text-white font-medium text-[16px]
@@ -71,7 +71,7 @@
                 <h3 class="text-xl font-medium">{{ session.name }}</h3>
               </div>
               <button (click)="abandonSession(session.id, $event)"
-                class="text-muted hover:text-red-500 hover:underline cursor-pointer px-2" title="Abandon Session">
+                class="text-gray-500 hover:text-red-500 hover:underline cursor-pointer px-2" title="Abandon Session">
                 Abandon session
               </button>
             </div>
@@ -79,24 +79,24 @@
             <!-- Meta Tags -->
             <div class="flex flex-wrap gap-2 mb-6">
               <span
-                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-muted font-medium">
+                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-gray-500 font-medium">
                 {{ getThemeDisplayName(session.theme) }}
               </span>
               @if (session.rating_min || session.rating_max) {
               <span
-                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-muted font-medium">
+                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-gray-500 font-medium">
                 {{ session.rating_min ?? '0' }} - {{ session.rating_max ?? '∞' }} Elo
               </span>
               }
               <span
-                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-muted font-medium">
+                class="px-2.5 py-1 text-xs rounded-full border border-border-base border-2 border-border-base text-gray-500 font-medium">
                 {{ session.total_puzzles }} puzzles
               </span>
             </div>
 
             <!-- Progress Bar -->
             <div class="mb-6">
-              <div class="flex justify-between items-center text-sm/6 font-medium text-muted mb-1.5">
+              <div class="flex justify-between items-center text-sm/6 font-medium text-gray-500 mb-1.5">
                 <span>Puzzles solved</span>
                 <span>{{ getProgressPercentage(session) }}%</span>
               </div>
@@ -109,7 +109,7 @@
             <!-- Side stats (Accuracy / Total Time) -->
             <div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 mb-6">
               <div>
-                <span class="text-xs text-muted block">Current Time</span>
+                <span class="text-xs text-gray-500 block">Current Time</span>
                 <span class="text-lg font-medium">
                   @if (session.cycles && session.cycles[session.current_cycle_number - 1]) {
                   {{ formatTime(session.cycles[session.current_cycle_number - 1].total_time_seconds) }}
@@ -119,7 +119,7 @@
                 </span>
               </div>
               <div>
-                <span class="text-xs text-muted block">Accuracy</span>
+                <span class="text-xs text-gray-500 block">Accuracy</span>
                 <span class="text-lg font-medium">
                   {{ getOverallAccuracy(session) }}%
                 </span>
@@ -154,22 +154,22 @@
                 <span class="text-xs font-semibold rounded-full uppercase"
                   [class.text-green-600]="session.status === 'completed'"
                   [class.text-orange-500]="session.status === 'active'"
-                  [class.text-muted]="session.status === 'abandoned'">
+                  [class.text-gray-500]="session.status === 'abandoned'">
                   {{ session.status }}
                 </span>
-                <span class="text-xs text-muted">Created on {{ session.created_at | date:'mediumDate' }}</span>
+                <span class="text-xs text-gray-500">Created on {{ session.created_at | date:'mediumDate' }}</span>
               </div>
               <h3 class="text-xl font-medium">{{ session.name }}</h3>
             </div>
 
             <div class="flex flex-wrap items-center gap-6 text-sm/6">
-              <span class="text-muted">Theme: <strong class="font-medium">{{
+              <span class="text-gray-500">Theme: <strong class="font-medium">{{
                   getThemeDisplayName(session.theme) }}</strong></span>
-              <span class="text-muted">Puzzles: <strong class="font-medium">{{ session.total_puzzles
+              <span class="text-gray-500">Puzzles: <strong class="font-medium">{{ session.total_puzzles
                   }}</strong></span>
               @if (session.status !== 'active') {
               <button (click)="deleteSession(session.id, $event)"
-                class="text-muted hover:text-red-500 hover:underline cursor-pointer flex items-center gap-1.5 px-2"
+                class="text-gray-500 hover:text-red-500 hover:underline cursor-pointer flex items-center gap-1.5 px-2"
                 title="Delete Session History">
                 Delete history
               </button>
@@ -192,19 +192,19 @@
 
                 <div class="space-y-2">
                   <div class="flex justify-between text-sm/6">
-                    <span class="text-muted">Accuracy:</span>
+                    <span class="text-gray-500">Accuracy:</span>
                     <span class="font-medium">
                       {{ getCycleAccuracy(cycle) }}%
                     </span>
                   </div>
                   <div class="flex justify-between text-sm/6">
-                    <span class="text-muted">Time Spent:</span>
+                    <span class="text-gray-500">Time Spent:</span>
                     <span class="font-medium">
                       {{ formatTime(cycle.total_time_seconds) }}
                     </span>
                   </div>
                   <div class="flex justify-between text-sm/6">
-                    <span class="text-muted">Correct:</span>
+                    <span class="text-gray-500">Correct:</span>
                     <span class="font-medium">{{ cycle.total_correct }} / {{ cycle.total_solved }}</span>
                   </div>
                 </div>
@@ -214,7 +214,7 @@
               <!-- Render placeholders for uncompleted cycles -->
               @if (session.cycles && session.cycles.length < 4 && session.status !=='abandoned' ) { @for (cycleNum of
                 getMissingCycles(session); track cycleNum) { <div
-                class="bg-subtle/50 rounded-xl p-4 border border-dashed border-border-base flex flex-col items-center justify-center min-h-[110px] text-muted text-xs">
+                class="bg-subtle/50 rounded-xl p-4 border border-dashed border-border-base flex flex-col items-center justify-center min-h-[110px] text-gray-500 text-xs">
                 Cycle {{ cycleNum }}
                 <span class="text-xs mt-1">Pending progression</span>
             </div>
@@ -239,7 +239,7 @@
       <div class="flex items-start gap-4">
         <div>
           <h3 class="text-xl font-semibold mb-2">Abandon session?</h3>
-          <p class="text-md text-muted">
+          <p class="text-md text-gray-500">
             Are you sure you want to abandon this Woodpecker training session? This cannot be undone, and all diagnostic
             metrics for this session will be permanently archived.
           </p>
@@ -275,7 +275,7 @@
       <div class="flex items-start gap-4">
         <div>
           <h3 class="text-xl font-semibold mb-2">Delete session history?</h3>
-          <p class="text-md text-muted">
+          <p class="text-md text-gray-500">
             Are you sure you want to permanently delete this Woodpecker training history and diagnostics? This action is
             irreversible, and all performance metrics for this session will be lost forever.
           </p>

@@ -25,137 +25,139 @@
         <div class="w-full lg:w-[400px] flex flex-col justify-center min-h-0">
           <div
             class="w-full h-auto lg:h-[400px] max-h-[620px] mt-4 lg:mt-0 flex flex-col min-h-0 overflow-hidden border-2 border-border-base rounded-4xl bg-main">
-          <div class="flex flex-col overflow-hidden w-full h-full">
-            <!-- Top Section: Stats or Guest Prompt -->
-            <div class="p-4 md:p-6 flex flex-col gap-4 shrink-0">
-              @if (currentUser()) {
-              <div class="flex items-center justify-between w-full">
-                <!-- Rating & Streak (Left Group) -->
-                <div class="flex items-center gap-4">
-                  <!-- Rating -->
-                  <div class="flex items-center gap-2">
-                    <span class="text-2xl font-medium">{{ userRating() }}</span>
-                    @if (status() !== 'playing' && ratingChange() !== null) {
-                    <span class="text-2xl font-medium" [class.text-green-500]="(ratingChange() || 0) > 0"
-                      [class.text-red-500]="(ratingChange() || 0) < 0">
-                      {{ (ratingChange() || 0) > 0 ? '+' : '' }}{{ ratingChange() }}
-                    </span>
-                    }
+            <div class="flex flex-col overflow-hidden w-full h-full">
+              <!-- Top Section: Stats or Guest Prompt -->
+              <div class="p-4 md:p-6 flex flex-col gap-4 shrink-0">
+                @if (currentUser()) {
+                <div class="flex items-center justify-between w-full">
+                  <!-- Rating & Streak (Left Group) -->
+                  <div class="flex items-center gap-4">
+                    <!-- Rating -->
+                    <div class="flex items-center gap-2">
+                      <span class="text-2xl font-medium">{{ userRating() }}</span>
+                      @if (status() !== 'playing' && ratingChange() !== null) {
+                      <span class="text-2xl font-medium" [class.text-green-500]="(ratingChange() || 0) > 0"
+                        [class.text-red-500]="(ratingChange() || 0) < 0">
+                        {{ (ratingChange() || 0) > 0 ? '+' : '' }}{{ ratingChange() }}
+                      </span>
+                      }
+                    </div>
+
+                    <!-- Streak -->
+                    <div class="flex items-center gap-1.5">
+                      <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                          d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+                          clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-2xl text-orange-400 font-semibold">{{ userStreak() }}</span>
+                    </div>
                   </div>
 
-                  <!-- Streak -->
-                  <div class="flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd"
-                        d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
-                        clip-rule="evenodd" />
-                    </svg>
-                    <span class="text-2xl text-orange-400 font-semibold">{{ userStreak() }}</span>
+                  <!-- Color to Play (Right) -->
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-3 rounded-full shrink-0 border" [class.bg-slate-250]="userColor() === 'white'"
+                      [class.bg-slate-950]="userColor() === 'black'"></div>
                   </div>
                 </div>
+                } @else {
+                <div class="flex items-center justify-between w-full">
+                  <!-- Guest Info (Left) -->
+                  <div>
+                    <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
+                      sign in to save progress
+                    </p>
+                  </div>
 
-                <!-- Color to Play (Right) -->
-                <div class="flex items-center gap-2.5">
-                  <div class="w-3 h-3 rounded-full shrink-0 border" [class.bg-slate-250]="userColor() === 'white'"
-                    [class.bg-slate-950]="userColor() === 'black'"></div>
+                  <!-- Color to Play (Right) -->
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-3 h-3 rounded-full shrink-0 border border-border-base"
+                      [class.bg-slate-150]="userColor() === 'white'" [class.bg-slate-950]="userColor() === 'black'">
+                    </div>
+                  </div>
                 </div>
+                }
+
               </div>
-              } @else {
-              <div class="flex items-center justify-between w-full">
-                <!-- Guest Info (Left) -->
-                <div>
-                  <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">
-                    sign in to save progress
-                  </p>
+
+              <!-- Middle Section: Puzzle moves notation (Hidden on mobile) -->
+              <div class="hidden md:flex flex-1 flex-col min-h-0 overflow-hidden">
+                @if (pgnMoves().length > 0) {
+                <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moves]="pgnMoves()"
+                  [currentFen]="currentFen()" [currentPly]="currentPly()" [initialFen]="currentPuzzle()?.fen || ''"
+                  [initialPly]="puzzleStartPly()" [showNavigation]="true"
+                  (navigate)="goToMove($event)"></app-move-notation>
+                }
+              </div>
+
+              <!-- Stockfish Local Engine Evaluation Lines -->
+              @if (isEngineActive() && status() !== 'playing') {
+              <div class="border-t border-border-base bg-subtle shrink-0">
+                @if (fenError()) {
+                <div class="text-xs text-rose-600 font-semibold p-4 bg-rose-50 border-b border-border-base">
+                  FEN Error: {{ fenError() }}
                 </div>
-
-                <!-- Color to Play (Right) -->
-                <div class="flex items-center gap-2.5">
-                  <div class="w-3 h-3 rounded-full shrink-0 border border-border-base"
-                    [class.bg-slate-150]="userColor() === 'white'" [class.bg-slate-950]="userColor() === 'black'"></div>
+                }
+                <div
+                  class="text-[10px] text-gray-500 font-mono px-4 py-1.5 border-b border-border-base bg-white/40 truncate select-all"
+                  [title]="currentFen()">
+                  FEN: {{ currentFen() }}
                 </div>
+                <app-study-analysis [isEngineActive]="isEngineActive()" [isEngineError]="isEngineError()"
+                  [engineEval]="engineEval()" [engineDepth]="engineDepth()" [formattedNps]="formattedNps()"
+                  [showEngineSettings]="showEngineSettings()" [multiPvCount]="multiPv()" [searchMode]="searchMode()"
+                  [enginePvLines]="formattedPvLines()" [currentPly]="currentPly()"
+                  (toggleEngine)="isEngineActive.set(!isEngineActive())" (retryEngine)="engineService.restart()"
+                  (toggleSettings)="showEngineSettings.set(!showEngineSettings())"
+                  (multiPvChange)="engineService.setMultiPv($event)"></app-study-analysis>
               </div>
               }
 
-            </div>
-
-            <!-- Middle Section: Puzzle moves notation (Hidden on mobile) -->
-            <div class="hidden md:flex flex-1 flex-col min-h-0 overflow-hidden">
-              @if (pgnMoves().length > 0) {
-              <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moves]="pgnMoves()"
-                [currentFen]="currentFen()" [currentPly]="currentPly()" [initialFen]="currentPuzzle()?.fen || ''"
-                [initialPly]="puzzleStartPly()" [showNavigation]="true"
-                (navigate)="goToMove($event)"></app-move-notation>
-              }
-            </div>
-
-            <!-- Stockfish Local Engine Evaluation Lines -->
-            @if (isEngineActive() && status() !== 'playing') {
-            <div class="border-t border-border-base bg-subtle shrink-0">
-              @if (fenError()) {
-              <div class="text-xs text-rose-600 font-semibold p-4 bg-rose-50 border-b border-border-base">
-                FEN Error: {{ fenError() }}
-              </div>
-              }
-              <div class="text-[10px] text-muted font-mono px-4 py-1.5 border-b border-border-base bg-white/40 truncate select-all" [title]="currentFen()">
-                FEN: {{ currentFen() }}
-              </div>
-              <app-study-analysis [isEngineActive]="isEngineActive()" [isEngineError]="isEngineError()"
-                [engineEval]="engineEval()" [engineDepth]="engineDepth()"
-                [formattedNps]="formattedNps()" [showEngineSettings]="showEngineSettings()"
-                [multiPvCount]="multiPv()" [searchMode]="searchMode()"
-                [enginePvLines]="formattedPvLines()" [currentPly]="currentPly()"
-                (toggleEngine)="isEngineActive.set(!isEngineActive())"
-                (retryEngine)="engineService.restart()"
-                (toggleSettings)="showEngineSettings.set(!showEngineSettings())"
-                (multiPvChange)="engineService.setMultiPv($event)"></app-study-analysis>
-            </div>
-            }
-
-            <!-- Puzzle History Strip -->
-            @if (currentUser() && recentPuzzleHistory().length > 0) {
-            <div class="p-4 flex flex-wrap gap-2 shrink-0">
-              @for (attempt of recentPuzzleHistory(); track attempt.id) {
-              <button (click)="selectHistoryPuzzle(attempt.puzzle_id)" [class.bg-green-100]="attempt.rating_change >= 0"
-                [class.text-green-700]="attempt.rating_change >= 0" [class.bg-red-100]="attempt.rating_change < 0"
-                [class.text-red-700]="attempt.rating_change < 0"
-                [class.ring-2]="currentPuzzle()?.id === attempt.puzzle_id"
-                [class.ring-accent]="currentPuzzle()?.id === attempt.puzzle_id"
-                class="px-2.5 py-1 cursor-pointer rounded-xl text-xs font-medium shrink-0">
-                {{ attempt.rating_change >= 0 ? '+' : '' }}{{ attempt.rating_change }}
-              </button>
-              }
-            </div>
-            }
-
-            <!-- Bottom Actions Section (Next / Reveal Answer) -->
-            @if (status() !== 'playing') {
-            <div class="p-4 md:p-6 bg-main flex items-center justify-between gap-3 shrink-0 border-t border-border-base">
-              <div class="flex items-center gap-3">
-                <app-toggle [checked]="isEngineActive()" (checkedChange)="isEngineActive.set($event)"
-                  title="Toggle Local Evaluation"></app-toggle>
-                <span class="text-sm font-semibold text-muted">Engine</span>
-              </div>
-              
-              <div class="flex items-center gap-3">
-                @if (status() === 'failed' && !hasRevealedSolution()) {
-                <button (click)="revealSolution()" title="Reveal Answer"
-                  class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
-                  <ng-icon name="heroEye" class="text-3xl"></ng-icon>
+              <!-- Puzzle History Strip -->
+              @if (currentUser() && recentPuzzleHistory().length > 0) {
+              <div class="p-4 flex flex-wrap gap-2 shrink-0">
+                @for (attempt of recentPuzzleHistory(); track attempt.id) {
+                <button (click)="selectHistoryPuzzle(attempt.puzzle_id)"
+                  [class.bg-green-100]="attempt.rating_change >= 0" [class.text-green-700]="attempt.rating_change >= 0"
+                  [class.bg-red-100]="attempt.rating_change < 0" [class.text-red-700]="attempt.rating_change < 0"
+                  [class.ring-2]="currentPuzzle()?.id === attempt.puzzle_id"
+                  [class.ring-accent]="currentPuzzle()?.id === attempt.puzzle_id"
+                  class="px-2.5 py-1 cursor-pointer rounded-xl text-xs font-medium shrink-0">
+                  {{ attempt.rating_change >= 0 ? '+' : '' }}{{ attempt.rating_change }}
                 </button>
                 }
-                <button
-                  class="px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  (click)="loadNextPuzzle()">
-                  Next puzzle
-                </button>
               </div>
+              }
+
+              <!-- Bottom Actions Section (Next / Reveal Answer) -->
+              @if (status() !== 'playing') {
+              <div
+                class="p-4 md:p-6 bg-main flex items-center justify-between gap-3 shrink-0 border-t border-border-base">
+                <div class="flex items-center gap-3">
+                  <app-toggle [checked]="isEngineActive()" (checkedChange)="isEngineActive.set($event)"
+                    title="Toggle Local Evaluation"></app-toggle>
+                  <span class="text-sm font-semibold text-gray-500">Engine</span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  @if (status() === 'failed' && !hasRevealedSolution()) {
+                  <button (click)="revealSolution()" title="Reveal Answer"
+                    class="p-2 rounded-full transition-colors cursor-pointer hover:bg-subtle flex items-center justify-center">
+                    <ng-icon name="heroEye" class="text-3xl"></ng-icon>
+                  </button>
+                  }
+                  <button
+                    class="px-6 py-3.5 rounded-full bg-content text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    (click)="loadNextPuzzle()">
+                    Next puzzle
+                  </button>
+                </div>
+              </div>
+              }
             </div>
-            }
           </div>
         </div>
       </div>
-    </div>
     </div>
     }
   </div>

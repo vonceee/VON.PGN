@@ -117,7 +117,7 @@
   @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
   <button (click)="toggleVideoCall()" [attr.aria-label]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
     [class.text-rose-500]="webrtc.isCallActive()" [class.bg-subtle]="webrtc.isCallActive()"
-    [class.rounded-full]="webrtc.isCallActive()" [class.text-muted]="!webrtc.isCallActive()"
+    [class.rounded-full]="webrtc.isCallActive()" [class.text-gray-500]="!webrtc.isCallActive()"
     class="p-2.5 rounded-xl transition-all cursor-pointer hover:bg-subtle flex items-center justify-center relative group">
     <ng-icon [name]="webrtc.isCallActive() ? 'heroPhoneXMark' : 'heroPhone'" class="text-xl"></ng-icon>
     <div
@@ -140,7 +140,7 @@
   <div class="flex-1 min-h-0 flex flex-col relative gap-4">
     @if (isExpanded() && isCollapsed()) {
     <div class="flex items-center justify-end p-2 bg-main rounded-xl border border-border-base shrink-0">
-      <button (click)="isExpanded.set(false)" class="p-1 hover:bg-subtle rounded-lg cursor-pointer text-muted">
+      <button (click)="isExpanded.set(false)" class="p-1 hover:bg-subtle rounded-lg cursor-pointer text-gray-500">
         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>

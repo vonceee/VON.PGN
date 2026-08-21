@@ -21,7 +21,7 @@
       <button type="button" (click)="scrollToSection(section.id)" [class]="
           activeSection() === section.id
             ? 'text-accent bg-subtle rounded-full'
-            : 'text-muted hover:bg-subtle rounded-xl'
+            : 'text-gray-500 hover:bg-subtle rounded-xl'
         " class="p-3 transition-all cursor-pointer border-none flex items-center justify-center relative group">
         <ng-icon [name]="section.icon" class="text-xl"></ng-icon>
         <div
@@ -39,13 +39,13 @@
           <header class="flex-1">
             <h1 class="text-3xl md:text-4xl mb-1">{{ tournamentId() ? 'Update tournament' : 'Create new tournament' }}
             </h1>
-            <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Fill in the details
+            <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Fill in the details
               below to publish your chess event.</p>
           </header>
 
           <div class="flex items-center gap-3 shrink-0">
             <button type="button" (click)="discardChanges()"
-              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-muted hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
               Discard Changes
             </button>
 
@@ -145,7 +145,7 @@
 
       <div class="p-6 px-10 flex justify-between items-center gap-6">
         <button type="button" (click)="closeReviewModal()"
-          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-muted hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-content transition-colors font-medium text-[16px] leading-5 cursor-pointer">
           Back to Editing
         </button>
         <button type="button" (click)="executeSave()" [disabled]="saving()"

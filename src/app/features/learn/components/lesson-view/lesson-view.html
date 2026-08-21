@@ -31,11 +31,11 @@
     </div>
     <div class="mt-4 flex flex-col gap-4 text-sm/6">
       <div class="flex flex-wrap items-center gap-3">
-        <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-muted ">
+        <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-gray-500 ">
           <span class="font-semibold  ">Estimated time:</span>
           <span>{{ estimatedTime }}</span>
         </span>
-        <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-muted ">
+        <span class="inline-flex items-center gap-2 rounded-full bg-subtle /70 px-3 py-1.5 text-gray-500 ">
           <span class="font-semibold  ">Difficulty:</span>
           <span>{{ difficulty }}</span>
         </span>
@@ -44,7 +44,7 @@
         <div class="flex flex-wrap gap-2">
           @for (prereq of prerequisites; track prereq) {
           <span
-            class="inline-flex items-center rounded-full border border-border-base  bg-white  px-3 py-1 text-sm/6 text-muted ">
+            class="inline-flex items-center rounded-full border border-border-base  bg-white  px-3 py-1 text-sm/6 text-gray-500 ">
             {{ prereq }}
           </span>
           }
@@ -115,7 +115,7 @@
           <div
             class="absolute right-0 sm:left-auto mt-2 w-56 bg-white  border border-border-base rounded-lg  z-50 p-4 flex flex-col gap-4"
             [style.top]="'100%'">
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
               <label class="text-xs font-semibold ">Voice Selection</label>
               <select
                 class="text-xs text-black bg-white border border-border-base rounded-lg px-3 py-2 w-full cursor-pointer appearance-none"
@@ -127,7 +127,7 @@
                 }
               </select>
             </div>
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
               <label class="text-xs font-semibold ">Playback Speed</label>
               <select
                 class="text-xs text-black bg-white border border-border-base rounded-lg px-3 py-2 w-full cursor-pointer appearance-none"

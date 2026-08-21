@@ -26,7 +26,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['Event']"
               placeholder="e.g. World Chess Championship"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <!-- Date -->
@@ -36,7 +36,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['Date']"
               placeholder="YYYY.MM.DD"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           
@@ -47,7 +47,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['WhiteTitle']"
               placeholder="GM"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <div class="md:col-span-2 space-y-2">
@@ -56,7 +56,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['White']"
               placeholder="Full Name"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <div class="md:col-span-1 space-y-2">
@@ -65,7 +65,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['WhiteElo']"
               placeholder="Rating"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
 
@@ -76,7 +76,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['BlackTitle']"
               placeholder="GM"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <div class="md:col-span-2 space-y-2">
@@ -85,7 +85,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['Black']"
               placeholder="Full Name"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <div class="md:col-span-1 space-y-2">
@@ -94,7 +94,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['BlackElo']"
               placeholder="Rating"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
 
@@ -105,7 +105,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['Round']"
               placeholder="e.g. 1.1"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <!-- Result -->
@@ -121,7 +121,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
                 <option value="0-1">0-1 (Black Wins)</option>
                 <option value="1/2-1/2">1/2-1/2 (Draw)</option>
               </select>
-              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                   <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
                 </svg>
@@ -135,7 +135,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['ECO']"
               placeholder="e.g. E15"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <!-- Site -->
@@ -145,7 +145,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['Site']"
               placeholder="e.g. London, ENG"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
 
@@ -156,7 +156,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
               type="text"
               [(ngModel)]="tags['StudyLink']"
               placeholder="e.g. 12 or https://vonchess.com/study/12"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-muted"
+              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
         </div>

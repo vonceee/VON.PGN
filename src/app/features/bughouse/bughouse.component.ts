@@ -1,0 +1,904 @@
+import { Component, ChangeDetectionStrategy, inject, signal, computed, effect, untracked, OnInit, OnDestroy, PLATFORM_ID, NgZone } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../environments/environment';
+import { Chess, Move } from 'chess.js';
+import { ChessBoardComponent } from '../../shared/components/chess/chess-board/chess-board.component';
+import { AudioService } from '../../core/services/audio.service';
+import { UserService } from '../../core/services/user.service';
+import { AuthService } from '../../core/services/auth.service';
+import { GameService } from '../../core/services/game.service';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import {
+  heroUsers,
+  heroArrowPath,
+  heroPlay,
+  heroPause,
+  heroInformationCircle,
+  heroCpuChip,
+  heroArrowRight,
+  heroTrash,
+  heroUserPlus,
+  heroCheckCircle,
+  heroXCircle,
+  heroMagnifyingGlass,
+} from '@ng-icons/heroicons/outline';
+
+interface MoveLogEntry {
+  board: 'A' | 'B';
+  moveNo: number;
+  turn: 'w' | 'b';
+  san: string;
+  timestamp: Date;
+}
+
+type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
+
+interface LobbyPlayer {
+  uid?: string;
+  name: string;
+  rating: number;
+  avatar?: string;
+  isOnline: boolean;
+}
+
+interface SentInvite {
+  id: string;
+  receiver: string;
+  rating: number;
+  status: 'pending' | 'accepted' | 'rejected';
+}
+
+interface IncomingInvite {
+  id: string;
+  sender: string;
+  rating: number;
+}
+
+@Component({
+  selector: 'app-bughouse',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    ChessBoardComponent,
+    NgIcon,
+  ],
+  providers: [
+    provideIcons({
+      heroUsers,
+      heroArrowPath,
+      heroPlay,
+      heroPause,
+      heroInformationCircle,
+      heroCpuChip,
+      heroArrowRight,
+      heroTrash,
+      heroUserPlus,
+      heroCheckCircle,
+      heroXCircle,
+      heroMagnifyingGlass,
+    }),
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './bughouse.component.html',
+  styleUrls: ['./bughouse.component.css'],
+})
+export class BughouseComponent implements OnInit, OnDestroy {
+  private audioService = inject(AudioService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private platformId = inject(PLATFORM_ID);
+  private ngZone = inject(NgZone);
+  private http = inject(HttpClient);
+  private route = inject(ActivatedRoute);
+  private gameService = inject(GameService);
+
+  // ── Lobby & Pairing State ──────────────────────────────────────────
+  lobbyState = signal<'lobby' | 'queuing' | 'matched' | 'playing'>('lobby');
+  lobbyType = signal<'casual' | 'ranked'>('casual');
+  partner = signal<LobbyPlayer | null>(null);
+  opponent1 = signal<LobbyPlayer | null>(null);
+  opponent2 = signal<LobbyPlayer | null>(null);
+  
+  // Searching & Invitations
+  searchQuery = signal<string>('');
+  searchResults = signal<any[]>([]);
+  isSearchingPlayers = signal<boolean>(false);
+  private searchSubject = new Subject<string>();
+
+  // New Invite Outbox/Inbox States
+  sentInvites = signal<SentInvite[]>([]);
+  incomingInvites = signal<IncomingInvite[]>([]);
+  inviteNotification = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  // Queue State
+  queueTime = signal<number>(0);
+  queueStatus = signal<string>('Searching for players...');
+  private queueInterval: any = null;
+
+  // Match Countdown
+  matchCountdown = signal<number>(5);
+  private countdownInterval: any = null;
+
+  // Current User (Active player)
+  currentUserProfile = computed(() => {
+    const user = this.authService.currentUser();
+    return {
+      name: user?.username || user?.displayName || user?.name || 'You',
+      rating: 1600,
+    };
+  });
+
+  // ── Chess Engine Instances ──────────────────────────────────────────
+  chessA = new Chess();
+  chessB = new Chess();
+
+  // ── Board FEN Signals ───────────────────────────────────────────────
+  boardAFen = signal<string>('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  boardBFen = signal<string>('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+
+  // ── Board Orientations ──────────────────────────────────────────────
+  boardAOrientation = signal<'white' | 'black'>('white');
+  boardBOrientation = signal<'white' | 'black'>('black');
+
+  // ── Pockets (Reserve Pieces) ────────────────────────────────────────
+  pocketA_W = signal<Record<PieceType, number>>({ p: 0, n: 0, b: 0, r: 0, q: 0 });
+  pocketA_B = signal<Record<PieceType, number>>({ p: 0, n: 0, b: 0, r: 0, q: 0 });
+  pocketB_W = signal<Record<PieceType, number>>({ p: 0, n: 0, b: 0, r: 0, q: 0 });
+  pocketB_B = signal<Record<PieceType, number>>({ p: 0, n: 0, b: 0, r: 0, q: 0 });
+
+  // ── Active Turn Computeds ──────────────────────────────────────────
+  turnA = computed(() => this.boardAFen().split(' ')[1] as 'w' | 'b');
+  turnB = computed(() => this.boardBFen().split(' ')[1] as 'w' | 'b');
+
+  // ── Timers (seconds) ──────────────────────────────────────────────
+  timeA_W = signal<number>(300);
+  timeA_B = signal<number>(300);
+  timeB_W = signal<number>(300);
+  timeB_B = signal<number>(300);
+
+  // ── Game Metadata ──────────────────────────────────────────────────
+  gameActive = signal<boolean>(false);
+  winner = signal<string | null>(null); // 'Team A' (P1/P2) or 'Team B' (P3/P4) or 'Draw'
+  gameEndReason = signal<string | null>(null);
+
+  // ── Move Logging ───────────────────────────────────────────────────
+  movesLog = signal<MoveLogEntry[]>([]);
+
+  // ── User Color Configuration ────────────────────────────────────────
+  userColor = signal<'w' | 'b'>('w');
+
+  // ── Interactive Drop State ─────────────────────────────────────────
+  activeDropBoard = signal<'A' | 'B' | null>(null);
+  activeDropPiece = signal<PieceType | null>(null);
+  activeDropColor = signal<'w' | 'b' | null>(null);
+
+  // ── Active Tabs ────────────────────────────────────────────────────
+  activeTab = signal<'game' | 'rules'>('game');
+
+  // ── Timers Handling ────────────────────────────────────────────────
+  private timerInterval: any = null;
+
+  constructor() {
+    // Setup Search subscription
+    this.searchSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((query) => {
+          if (query.length < 2) return of(null);
+          this.isSearchingPlayers.set(true);
+          return this.userService.searchUsers(query);
+        }),
+      )
+      .subscribe({
+        next: (results) => {
+          this.isSearchingPlayers.set(false);
+          if (results !== null) {
+            this.searchResults.set(results.map((r: any) => ({
+              uid: r.uid,
+              name: r.username,
+              rating: 1500,
+              isOnline: true,
+            })));
+          }
+        },
+        error: () => {
+          this.isSearchingPlayers.set(false);
+          this.searchResults.set([]);
+        },
+      });
+
+    // React to Socket changes reactively
+    effect(() => {
+      const s = this.gameService.socket();
+      if (s) {
+        untracked(() => {
+          if (s.connected) {
+            this.setupSocketListeners();
+          } else {
+            s.on('connect', () => {
+              this.setupSocketListeners();
+            });
+            // Setup immediately so that disconnect/errors are wired up
+            this.setupSocketListeners();
+          }
+        });
+      }
+    });
+  }
+
+  ngOnInit() {
+    this.resetGame();
+
+    // 1. Establish Socket.io connection and let the effect trigger listeners setup
+    this.gameService.connectSocket();
+
+    // 2. Read query parameters for incoming invite details (DB fallback)
+    this.route.queryParams.subscribe(params => {
+      const inviteId = params['inviteId'];
+      const sender = params['sender'];
+      const senderId = params['senderId'];
+      const rating = parseInt(params['rating'], 10) || 1600;
+
+      if (inviteId && sender && senderId) {
+        this.ngZone.run(() => {
+          const exists = this.incomingInvites().some(i => i.id === senderId);
+          if (!exists) {
+            this.incomingInvites.update(list => [...list, { id: senderId, sender, rating }]);
+            this.audioService.playNotification();
+            this.showNotification(`Incoming lobby invitation from ${sender}!`, 'info');
+          }
+        });
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.stopClocks();
+    this.stopQueueInterval();
+    this.stopCountdownInterval();
+    
+    // Clean up socket listeners
+    const s = this.gameService.socket();
+    if (s) {
+      s.off('bughouse_lobby_sync');
+      s.off('bughouse_invite_received');
+      s.off('bughouse_invite_rejected');
+      s.off('bughouse_kicked');
+      s.off('bughouse_matched');
+    }
+  }
+
+  // ── Socket Event Bindings ──────────────────────────────────────────
+  setupSocketListeners() {
+    const socket = this.gameService.socket();
+    if (!socket) return;
+
+    socket.off('bughouse_lobby_sync');
+    socket.off('bughouse_invite_received');
+    socket.off('bughouse_invite_rejected');
+    socket.off('bughouse_kicked');
+    socket.off('bughouse_matched');
+
+    socket.on('bughouse_lobby_sync', (lobby: any) => {
+      this.ngZone.run(() => {
+        if (!lobby) {
+          this.partner.set(null);
+          this.lobbyState.set('lobby');
+          this.stopQueueInterval();
+          return;
+        }
+
+        const myUser = this.authService.currentUser();
+        const myUid = String(myUser?.uid);
+
+        if (String(lobby.captain.userId) === myUid) {
+          // I am the captain: show partner if joined
+          if (lobby.partner) {
+            this.partner.set({
+              uid: String(lobby.partner.userId),
+              name: lobby.partner.userName,
+              rating: lobby.partner.rating,
+              isOnline: true
+            });
+            this.sentInvites.set([]);
+          } else {
+            this.partner.set(null);
+          }
+        } else if (lobby.partner && String(lobby.partner.userId) === myUid) {
+          // I am the partner: show captain as partner
+          this.partner.set({
+            uid: String(lobby.captain.userId),
+            name: lobby.captain.userName,
+            rating: lobby.captain.rating,
+            isOnline: true
+          });
+        }
+
+        if (lobby.status === 'waiting') {
+          this.lobbyState.set('lobby');
+          this.stopQueueInterval();
+        } else if (lobby.status === 'queued') {
+          this.lobbyState.set('queuing');
+          this.startQueueTimer();
+        } else if (lobby.status === 'matched') {
+          this.lobbyState.set('matched');
+        }
+      });
+    });
+
+    socket.on('bughouse_invite_received', (data: any) => {
+      this.ngZone.run(() => {
+        const exists = this.incomingInvites().some(i => i.id === data.lobbyId);
+        if (!exists) {
+          this.incomingInvites.update(list => [...list, {
+            id: data.lobbyId,
+            sender: data.senderName,
+            rating: 1600
+          }]);
+          this.audioService.playNotification();
+          this.showNotification(`Incoming lobby invitation from ${data.senderName}!`, 'info');
+        }
+      });
+    });
+
+    socket.on('bughouse_invite_rejected', (data: any) => {
+      this.ngZone.run(() => {
+        this.showNotification(`Invitation rejected by ${data.inviteeName}.`, 'error');
+        this.sentInvites.set([]);
+      });
+    });
+
+    socket.on('bughouse_kicked', () => {
+      this.ngZone.run(() => {
+        this.showNotification('You have been kicked from the lobby.', 'info');
+        this.partner.set(null);
+        this.lobbyState.set('lobby');
+        this.stopQueueInterval();
+      });
+    });
+
+    socket.on('bughouse_matched', (data: any) => {
+      this.ngZone.run(() => {
+        this.opponent1.set({ name: data.opponent1.name, rating: data.opponent1.rating, isOnline: true });
+        this.opponent2.set({ name: data.opponent2.name, rating: data.opponent2.rating, isOnline: true });
+        this.lobbyState.set('matched');
+        this.matchCountdown.set(5);
+        this.audioService.playBoardStart();
+
+        // Start 5s countdown
+        if (this.countdownInterval) clearInterval(this.countdownInterval);
+        this.countdownInterval = setInterval(() => {
+          this.ngZone.run(() => {
+            const count = this.matchCountdown() - 1;
+            this.matchCountdown.set(count);
+            this.audioService.playNavigationSound();
+
+            if (count <= 0) {
+              this.stopCountdownInterval();
+              this.lobbyState.set('playing');
+              this.startGame();
+            }
+          });
+        }, 1000);
+      });
+    });
+
+    // Notify microservice that we joined
+    socket.emit('bughouse_join');
+  }
+
+  // ── Lobby Actions ──────────────────────────────────────────────────
+  onSearchInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+    this.searchSubject.next(value);
+    if (value.length === 0) {
+      this.searchResults.set([]);
+    }
+  }
+
+  invitePlayer(player: LobbyPlayer) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    // Clear search query and results
+    this.searchQuery.set('');
+    this.searchResults.set([]);
+
+    // Add to Sent Invites Outbox as pending
+    const inviteId = Math.random().toString();
+    const newInvite: SentInvite = { id: inviteId, receiver: player.name, rating: player.rating, status: 'pending' };
+    this.sentInvites.update(list => [...list, newInvite]);
+    this.audioService.playNotification();
+
+    // 1. Emit live Socket.io invitation event
+    const socket = this.gameService.socket();
+    if (socket && socket.connected) {
+      socket.emit('bughouse_create_lobby');
+      socket.emit('bughouse_invite_player', {
+        receiverId: player.uid,
+        receiverName: player.name
+      });
+    }
+
+    // 2. Fallback: post Laravel database notification
+    this.http.post(`${environment.apiUrl}/bughouse/invite`, {
+      receiver_username: player.name
+    }).subscribe({
+      next: () => {
+        this.showNotification(`Invitation sent to ${player.name}!`, 'success');
+      },
+      error: () => {}
+    });
+  }
+
+  cancelSentInvite(inviteId: string) {
+    this.sentInvites.update(list => list.filter(i => i.id !== inviteId));
+    this.showNotification('Invite cancelled.', 'info');
+    this.audioService.playNotification();
+
+    const socket = this.gameService.socket();
+    if (socket && socket.connected) {
+      socket.emit('bughouse_leave_lobby');
+    }
+  }
+
+  kickPartner() {
+    this.partner.set(null);
+    this.audioService.playNotification();
+
+    const socket = this.gameService.socket();
+    if (socket && socket.connected) {
+      socket.emit('bughouse_kick_partner');
+    }
+  }
+
+  // ── Incoming Invites Handlers (User B perspective) ────────────────
+  acceptIncomingInvite(inviteId: string) {
+    const invite = this.incomingInvites().find(i => i.id === inviteId);
+    if (invite) {
+      const socket = this.gameService.socket();
+      if (socket && socket.connected && !inviteId.startsWith('sim_')) {
+        // Real socket/DB lobby invitation
+        socket.emit('bughouse_accept_invite', { lobbyId: invite.id });
+      } else {
+        // Fallback local simulation (for local test button)
+        this.partner.set({ name: invite.sender, rating: invite.rating, isOnline: true });
+        this.showNotification(`Joined lobby with partner ${invite.sender}!`, 'success');
+        this.audioService.playBoardStart();
+      }
+      this.incomingInvites.update(list => list.filter(i => i.id !== inviteId));
+    }
+  }
+
+  rejectIncomingInvite(inviteId: string) {
+    const invite = this.incomingInvites().find(i => i.id === inviteId);
+    if (invite) {
+      const socket = this.gameService.socket();
+      if (socket && socket.connected) {
+        socket.emit('bughouse_reject_invite', { lobbyId: invite.id });
+      }
+      this.incomingInvites.update(list => list.filter(i => i.id !== inviteId));
+      this.showNotification(`Rejected invite from ${invite.sender}.`, 'info');
+      this.audioService.playNotification();
+    }
+  }
+
+
+
+  showNotification(message: string, type: 'success' | 'error' | 'info') {
+    this.inviteNotification.set({ message, type });
+    setTimeout(() => {
+      this.ngZone.run(() => {
+        if (this.inviteNotification()?.message === message) {
+          this.inviteNotification.set(null);
+        }
+      });
+    }, 4000);
+  }
+
+  // ── Queue & Matchmaking Simulation ─────────────────────────────────
+  startQueue() {
+    if (!this.partner()) return;
+    const socket = this.gameService.socket();
+    if (socket && socket.connected) {
+      socket.emit('bughouse_join_queue');
+    }
+  }
+
+  cancelQueue() {
+    const socket = this.gameService.socket();
+    if (socket && socket.connected) {
+      socket.emit('bughouse_cancel_queue');
+    }
+  }
+
+  private startQueueTimer() {
+    this.queueTime.set(0);
+    this.queueStatus.set('Searching for active teams...');
+    if (this.queueInterval) clearInterval(this.queueInterval);
+    
+    this.queueInterval = setInterval(() => {
+      this.ngZone.run(() => {
+        const time = this.queueTime() + 1;
+        this.queueTime.set(time);
+
+        if (time === 2) {
+          this.queueStatus.set('Matching team average ratings...');
+        } else if (time === 4) {
+          this.queueStatus.set('Found Opponent Team. Checking connection latencies...');
+        } else if (time === 6) {
+          this.queueStatus.set('Connecting to match server...');
+        }
+      });
+    }, 1000);
+  }
+
+  private stopQueueInterval() {
+    if (this.queueInterval) {
+      clearInterval(this.queueInterval);
+      this.queueInterval = null;
+    }
+  }
+
+  private stopCountdownInterval() {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = null;
+    }
+  }
+
+  // ── Game Management ────────────────────────────────────────────────
+  resetGame() {
+    this.stopClocks();
+
+    this.chessA.reset();
+    this.chessB.reset();
+
+    this.boardAFen.set(this.chessA.fen());
+    this.boardBFen.set(this.chessB.fen());
+
+    this.pocketA_W.set({ p: 0, n: 0, b: 0, r: 0, q: 0 });
+    this.pocketA_B.set({ p: 0, n: 0, b: 0, r: 0, q: 0 });
+    this.pocketB_W.set({ p: 0, n: 0, b: 0, r: 0, q: 0 });
+    this.pocketB_B.set({ p: 0, n: 0, b: 0, r: 0, q: 0 });
+
+    this.timeA_W.set(300);
+    this.timeA_B.set(300);
+    this.timeB_W.set(300);
+    this.timeB_B.set(300);
+
+    this.gameActive.set(false);
+    this.winner.set(null);
+    this.gameEndReason.set(null);
+    this.movesLog.set([]);
+
+    this.cancelDropMode();
+    this.syncBoardOrientations();
+  }
+
+  startGame() {
+    if (this.winner()) {
+      this.resetGame();
+    }
+    this.gameActive.set(true);
+    this.audioService.playBoardStart();
+    this.startClocks();
+  }
+
+  pauseGame() {
+    this.gameActive.set(false);
+    this.stopClocks();
+  }
+
+  exitToLobby() {
+    const socket = this.gameService.socket();
+    if (socket && socket.connected) {
+      socket.emit('bughouse_leave_lobby');
+    }
+    this.resetGame();
+    this.lobbyState.set('lobby');
+  }
+
+  syncBoardOrientations() {
+    if (this.userColor() === 'w') {
+      this.boardAOrientation.set('white');
+      this.boardBOrientation.set('black');
+    } else {
+      this.boardAOrientation.set('black');
+      this.boardBOrientation.set('white');
+    }
+  }
+
+  // ── Clocks Logic ───────────────────────────────────────────────────
+  private startClocks() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.stopClocks();
+
+    this.timerInterval = setInterval(() => {
+      this.ngZone.run(() => {
+        if (!this.gameActive() || this.winner()) return;
+
+        // Board A clock decrement
+        if (this.turnA() === 'w') {
+          this.timeA_W.update(t => this.decrementClock(t, 'Team B', 'Board A White flagged'));
+        } else {
+          this.timeA_B.update(t => this.decrementClock(t, 'Team A', 'Board A Black flagged'));
+        }
+
+        // Board B clock decrement
+        if (this.turnB() === 'w') {
+          this.timeB_W.update(t => this.decrementClock(t, 'Team A', 'Board B White flagged'));
+        } else {
+          this.timeB_B.update(t => this.decrementClock(t, 'Team B', 'Board B Black flagged'));
+        }
+      });
+    }, 1000);
+  }
+
+  private stopClocks() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+
+  private decrementClock(currentTime: number, winningTeam: string, reason: string): number {
+    if (currentTime <= 1) {
+      this.endGame(winningTeam, reason);
+      return 0;
+    }
+    const nextTime = currentTime - 1;
+    if (nextTime === 15) {
+      this.audioService.playLowTime();
+    }
+    return nextTime;
+  }
+
+  private endGame(winningTeam: string | null, reason: string) {
+    this.winner.set(winningTeam);
+    this.gameEndReason.set(reason);
+    this.gameActive.set(false);
+    this.stopClocks();
+    this.audioService.playBoardEnd();
+  }
+
+  // ── Capture and Move Handling ──────────────────────────────────────
+  onBoardMoveMade(board: 'A' | 'B', event: { move: Move; fen: string }) {
+    if (!this.gameActive() || this.winner()) {
+      this.syncFens();
+      return;
+    }
+
+    const { move, fen } = event;
+    const chess = board === 'A' ? this.chessA : this.chessB;
+
+    chess.load(fen);
+
+    this.audioService.playChessMove({ san: move.san, flags: move.flags });
+
+    if (move.captured) {
+      const capPiece = move.captured as PieceType;
+      this.transferCapturedPiece(board, move.color, capPiece);
+    }
+
+    this.logMove(board, move.san);
+
+    if (board === 'A') {
+      this.boardAFen.set(chess.fen());
+    } else {
+      this.boardBFen.set(chess.fen());
+    }
+
+    this.checkGameOver(board);
+  }
+
+  private transferCapturedPiece(board: 'A' | 'B', capturerColor: 'w' | 'b', piece: PieceType) {
+    if (board === 'A') {
+      if (capturerColor === 'w') {
+        this.pocketB_B.update(p => ({ ...p, [piece]: p[piece] + 1 }));
+      } else {
+        this.pocketB_W.update(p => ({ ...p, [piece]: p[piece] + 1 }));
+      }
+    } else {
+      if (capturerColor === 'w') {
+        this.pocketA_B.update(p => ({ ...p, [piece]: p[piece] + 1 }));
+      } else {
+        this.pocketA_W.update(p => ({ ...p, [piece]: p[piece] + 1 }));
+      }
+    }
+  }
+
+  private logMove(board: 'A' | 'B', san: string) {
+    const chess = board === 'A' ? this.chessA : this.chessB;
+    const history = chess.history();
+    const moveNo = Math.ceil(history.length / 2);
+    const turnColor = chess.turn() === 'w' ? 'b' : 'w';
+
+    const entry: MoveLogEntry = {
+      board,
+      moveNo,
+      turn: turnColor,
+      san,
+      timestamp: new Date(),
+    };
+    this.movesLog.update(log => [...log, entry]);
+  }
+
+  private checkGameOver(board: 'A' | 'B') {
+    const chess = board === 'A' ? this.chessA : this.chessB;
+    if (chess.isCheckmate()) {
+      const losingColor = chess.turn();
+      if (board === 'A') {
+        const winningTeam = losingColor === 'w' ? 'Team B' : 'Team A';
+        this.endGame(winningTeam, `Checkmate on Board A`);
+      } else {
+        const winningTeam = losingColor === 'w' ? 'Team A' : 'Team B';
+        this.endGame(winningTeam, `Checkmate on Board B`);
+      }
+    } else if (chess.isDraw() || chess.isStalemate() || chess.isThreefoldRepetition() || chess.isInsufficientMaterial()) {
+      this.endGame('Draw', `Draw by rule on Board ${board}`);
+    }
+  }
+
+  private syncFens() {
+    this.boardAFen.set(this.chessA.fen());
+    this.boardBFen.set(this.chessB.fen());
+  }
+
+  // ── Drop Mode Interface ────────────────────────────────────────────
+  startDropMode(board: 'A' | 'B', piece: PieceType, color: 'w' | 'b') {
+    if (!this.gameActive() || this.winner()) return;
+
+    // Check turn
+    const activeTurn = board === 'A' ? this.turnA() : this.turnB();
+    if (activeTurn !== color) return;
+
+    // Toggle drop mode
+    if (this.activeDropBoard() === board && this.activeDropPiece() === piece) {
+      this.cancelDropMode();
+    } else {
+      this.activeDropBoard.set(board);
+      this.activeDropPiece.set(piece);
+      this.activeDropColor.set(color);
+    }
+  }
+
+  cancelDropMode() {
+    this.activeDropBoard.set(null);
+    this.activeDropPiece.set(null);
+    this.activeDropColor.set(null);
+  }
+
+  isSquareTargetable(board: 'A' | 'B', square: string): boolean {
+    if (this.activeDropBoard() !== board) return false;
+    const piece = this.activeDropPiece();
+    if (!piece) return false;
+
+    const chess = board === 'A' ? this.chessA : this.chessB;
+    if (chess.get(square as any)) return false;
+
+    // Pawn cannot be placed on 1st or 8th rank
+    if (piece === 'p') {
+      const rank = square[1];
+      if (rank === '1' || rank === '8') return false;
+    }
+
+    return true;
+  }
+
+  onGridSquareClicked(board: 'A' | 'B', square: string) {
+    if (!this.isSquareTargetable(board, square)) return;
+
+    const piece = this.activeDropPiece()!;
+    const color = this.activeDropColor()!;
+
+    this.executeDropMove(board, piece, color, square);
+    this.cancelDropMode();
+  }
+
+  executeDropMove(board: 'A' | 'B', piece: PieceType, color: 'w' | 'b', square: string) {
+    const chess = board === 'A' ? this.chessA : this.chessB;
+
+    chess.put({ type: piece, color }, square as any);
+
+    const originalFen = chess.fen();
+    const parts = originalFen.split(' ');
+    const nextTurn = parts[1] === 'w' ? 'b' : 'w';
+    const epSquare = '-';
+    const halfmove = '0';
+    let fullmove = parseInt(parts[5], 10);
+    if (parts[1] === 'b') {
+      fullmove += 1;
+    }
+    const newFen = `${parts[0]} ${nextTurn} ${parts[2]} ${epSquare} ${halfmove} ${fullmove}`;
+
+    chess.load(newFen);
+
+    this.decrementPocket(board, color, piece);
+
+    this.audioService.playChessMove({ san: `${piece.toUpperCase()}@${square}`, flags: 'n' });
+
+    const pieceName = piece.toUpperCase() === 'P' ? '' : piece.toUpperCase();
+    this.logMove(board, `${pieceName}@${square}`);
+
+    if (board === 'A') {
+      this.boardAFen.set(chess.fen());
+    } else {
+      this.boardBFen.set(chess.fen());
+    }
+
+    this.checkGameOver(board);
+  }
+
+  private decrementPocket(board: 'A' | 'B', color: 'w' | 'b', piece: PieceType) {
+    if (board === 'A') {
+      if (color === 'w') {
+        this.pocketA_W.update(p => ({ ...p, [piece]: Math.max(0, p[piece] - 1) }));
+      } else {
+        this.pocketA_B.update(p => ({ ...p, [piece]: Math.max(0, p[piece] - 1) }));
+      }
+    } else {
+      if (color === 'w') {
+        this.pocketB_W.update(p => ({ ...p, [piece]: Math.max(0, p[piece] - 1) }));
+      } else {
+        this.pocketB_B.update(p => ({ ...p, [piece]: Math.max(0, p[piece] - 1) }));
+      }
+    }
+  }
+
+  // ── Grid Generation for Drop Highlights ───────────────────────────
+  getGridSquares(board: 'A' | 'B'): string[] {
+    const orientation = board === 'A' ? this.boardAOrientation() : this.boardBOrientation();
+    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
+    if (orientation === 'white') {
+      ranks.reverse();
+    } else {
+      files.reverse();
+    }
+
+    const squares: string[] = [];
+    for (const rank of ranks) {
+      for (const file of files) {
+        squares.push(file + rank);
+      }
+    }
+    return squares;
+  }
+
+  // ── Utility Formatting Helpers ─────────────────────────────────────
+  formatTime(seconds: number): string {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    const sStr = s < 10 ? '0' + s : s;
+    return `${m}:${sStr}`;
+  }
+
+  getPocketKeys(): PieceType[] {
+    return ['q', 'r', 'b', 'n', 'p'];
+  }
+
+  getPieceLabel(type: string): string {
+    const labels: Record<string, string> = {
+      q: 'Queen',
+      r: 'Rook',
+      b: 'Bishop',
+      n: 'Knight',
+      p: 'Pawn',
+    };
+    return labels[type] || type.toUpperCase();
+  }
+
+  getPocketPieceSvg(type: PieceType, color: 'w' | 'b'): string {
+    const theme = 'cburnett';
+    const typeUpper = type.toUpperCase();
+    return `/pieces/${theme}/${color}${typeUpper}.svg`;
+  }
+}

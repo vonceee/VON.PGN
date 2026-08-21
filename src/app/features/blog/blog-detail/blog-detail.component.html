@@ -2,7 +2,7 @@
   <!-- Error State -->
   <div *ngIf="!isLoading() && errorMsg()" class="bg-main rounded-xl border border-red-200 p-8 text-center my-8">
     <h3 class="text-lg font-medium text-red-500 mb-2">Error loading post</h3>
-    <p class="text-muted text-sm/6 mb-4">{{ errorMsg() }}</p>
+    <p class="text-gray-500 text-sm/6 mb-4">{{ errorMsg() }}</p>
     <a routerLink="/blog" appButton variant="outline">Back to blogs</a>
   </div>
 
@@ -22,7 +22,7 @@
           class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
           Draft
         </span>
-        <span class="text-sm/6 text-muted">
+        <span class="text-sm/6 text-gray-500">
           {{ post.published_at ? formatDate(post.published_at) : 'Not published' }}
         </span>
       </div>
@@ -39,7 +39,7 @@
           </div>
           <div>
             <p class="text-sm/6 font-medium">{{ post.author.name }}</p>
-            <p class="text-xs text-muted">Author</p>
+            <p class="text-xs text-gray-500">Author</p>
           </div>
         </div>
 
@@ -58,7 +58,7 @@
 
     <!-- Summary Banner -->
     <div *ngIf="post.summary"
-      class="p-6 bg-subtle/20 border-l-4 border-accent rounded-r-xl text-muted italic leading-relaxed text-lg">
+      class="p-6 bg-subtle/20 border-l-4 border-accent rounded-r-xl text-gray-500 italic leading-relaxed text-lg">
       {{ post.summary }}
     </div>
 
@@ -93,7 +93,7 @@
       </div>
       <div>
         <h4 class="text-lg font-semibold mb-2">About {{ post.author.name }}</h4>
-        <p class="text-muted text-sm/6 leading-relaxed">{{ post.author.bio }}</p>
+        <p class="text-gray-500 text-sm/6 leading-relaxed">{{ post.author.bio }}</p>
       </div>
     </footer>
 

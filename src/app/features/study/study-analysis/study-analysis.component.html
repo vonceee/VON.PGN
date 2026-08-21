@@ -42,12 +42,12 @@
 @if (showEngineSettings() && isEngineActive()) {
 <div class="px-4 py-3 border-b border-border-base bg-surface     flex flex-col gap-3">
   <div class="flex justify-between">
-    <span class="text-xs font-semibold  text-muted">Lines</span>
+    <span class="text-xs font-semibold  text-gray-500">Lines</span>
     <div class="flex gap-1">
       @for (n of [1,2,3]; track n) {
       <button (click)="onMultiPvChange(n)" class="w-7 h-7 rounded-lg text-xs   " [class]="multiPvCount() === n
               ? 'bg-accent/20 border border-accent/30'
-              : 'bg-subtle text-muted border border-transparent hover:bg-surface'">
+              : 'bg-subtle text-gray-500 border border-transparent hover:bg-surface'">
         {{ n }}
       </button>
       }
@@ -69,19 +69,19 @@
       @for (m of line.moves.slice(0, 10); track $index) {
       <div class="flex items-center gap-0.5">
         @if (m.showMoveNumber) {
-        <span class="text-xs select-none text-muted">
+        <span class="text-xs select-none text-gray-500">
           {{ m.moveNumber }}{{ m.isBlack ? '...' : '.' }}
         </span>
         }
         <span [class]="$index === 0 && line.pvIndex === 0 
                 ? 'text-xs font-semibold' 
-                : 'text-xs cursor-default text-muted'">
+                : 'text-xs cursor-default text-gray-500'">
           {{ m.san }}
         </span>
       </div>
       }
       @if (line.moves.length > 10) {
-      <span class="text-xs self-center text-muted">...</span>
+      <span class="text-xs self-center text-gray-500">...</span>
       }
     </div>
   </div>
