@@ -121,7 +121,7 @@
                   [class.bg-green-100]="attempt.rating_change >= 0" [class.text-green-700]="attempt.rating_change >= 0"
                   [class.bg-red-100]="attempt.rating_change < 0" [class.text-red-700]="attempt.rating_change < 0"
                   [class.ring-2]="currentPuzzle()?.id === attempt.puzzle_id"
-                  [class.ring-accent]="currentPuzzle()?.id === attempt.puzzle_id"
+                  [class.ring-blue-600]="currentPuzzle()?.id === attempt.puzzle_id"
                   class="px-2.5 py-1 cursor-pointer rounded-xl text-xs font-medium shrink-0">
                   {{ attempt.rating_change >= 0 ? '+' : '' }}{{ attempt.rating_change }}
                 </button>

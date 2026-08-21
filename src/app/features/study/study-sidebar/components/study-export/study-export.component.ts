@@ -22,10 +22,10 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
         <div class="flex flex-col mb-4">
           <label
             class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-50 cursor-pointer transition-colors"
-            [class.bg-slate-50]="exportOption() === 'current'" [class.border-accent]="exportOption() === 'current'">
+            [class.bg-slate-50]="exportOption() === 'current'" [class.border-blue-600]="exportOption() === 'current'">
             <input type="radio" name="exportOption" value="current" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
+              class="w-4 h-4 text-blue-600 border-border-base focus:ring-blue-600 bg-transparent">
             <div class="flex flex-col">
               <span class="text-sm/6 font-medium">Current chapter</span>
               <span class="text-xs text-gray-500 mt-0.5">Export only current chapter</span>
@@ -34,10 +34,10 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
 
           <label
             class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-50 cursor-pointer transition-colors"
-            [class.bg-slate-50]="exportOption() === 'all'" [class.border-accent]="exportOption() === 'all'">
+            [class.bg-slate-50]="exportOption() === 'all'" [class.border-blue-600]="exportOption() === 'all'">
             <input type="radio" name="exportOption" value="all" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
+              class="w-4 h-4 text-blue-600 border-border-base focus:ring-blue-600 bg-transparent">
             <div class="flex flex-col">
               <span class="text-sm/6 font-medium">All chapters</span>
               <span class="text-xs text-gray-500 mt-0.5">Export all {{ study()?.chapters?.length }} chapters</span>
@@ -46,10 +46,10 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
 
           <label
             class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-50 cursor-pointer transition-colors"
-            [class.bg-slate-50]="exportOption() === 'selected'" [class.border-accent]="exportOption() === 'selected'">
+            [class.bg-slate-50]="exportOption() === 'selected'" [class.border-blue-600]="exportOption() === 'selected'">
             <input type="radio" name="exportOption" value="selected" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-accent border-border-base focus:ring-accent bg-transparent">
+              class="w-4 h-4 text-blue-600 border-border-base focus:ring-blue-600 bg-transparent">
             <div class="flex flex-col">
               <span class="text-sm/6 font-medium">Selected chapters</span>
               <span class="text-xs text-gray-500 mt-0.5">Select custom chapters to export</span>
@@ -65,10 +65,10 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
             <span>Select chapters</span>
             <div class="flex gap-2">
               <button (click)="selectAllChapters(true)"
-                class="hover:text-accent transition-colors cursor-pointer font-semibold">All</button>
+                class="hover:text-blue-600 transition-colors cursor-pointer font-semibold">All</button>
               <span>|</span>
               <button (click)="selectAllChapters(false)"
-                class="hover:text-accent transition-colors cursor-pointer font-semibold">None</button>
+                class="hover:text-blue-600 transition-colors cursor-pointer font-semibold">None</button>
             </div>
           </div>
           <div class="flex-1 overflow-y-auto space-y-1 pr-1">
@@ -78,7 +78,7 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
               [class.bg-surface]="selectedChapterIds().has(chap.id)">
               <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
                 (change)="toggleChapterSelection(chap.id)"
-                class="w-4 h-4 rounded text-accent border-border-base focus:ring-accent bg-transparent">
+                class="w-4 h-4 rounded text-blue-600 border-border-base focus:ring-blue-600 bg-transparent">
               <span class="text-sm/6 font-medium text-gray-500">{{ idx + 1 }}.</span>
               <span class="text-sm/6 font-medium truncate flex-1">{{ chap.name }}</span>
             </label>

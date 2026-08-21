@@ -181,7 +181,7 @@ export class FormFieldComponent implements ControlValueAccessor {
     if (this.hasError) {
       return base + ' border-red-500 focus:ring-red-500/50';
     }
-    return base + ' border-border-base focus:ring-accent/50';
+    return base + ' border-border-base focus:ring-blue-600/50';
   }
 
   get textareaClasses(): string {
@@ -189,7 +189,7 @@ export class FormFieldComponent implements ControlValueAccessor {
     if (this.hasError) {
       return base + ' border-red-500 focus:ring-red-500/50';
     }
-    return base + ' border-border-base focus:ring-accent/50';
+    return base + ' border-border-base focus:ring-blue-600/50';
   }
 
   get urlClasses(): string {
@@ -197,7 +197,7 @@ export class FormFieldComponent implements ControlValueAccessor {
     if (this.hasError) {
       return base + ' border-red-500 focus:ring-red-500/50';
     }
-    return base + ' border-border-base focus:ring-accent/50';
+    return base + ' border-border-base focus:ring-blue-600/50';
   }
 
   get currencyWrapperClasses(): string {
@@ -205,7 +205,7 @@ export class FormFieldComponent implements ControlValueAccessor {
     if (this.hasError) {
       return base + ' border-red-500 focus-within:ring-red-500/50';
     }
-    return base + ' border-border-base focus-within:ring-accent/50';
+    return base + ' border-border-base focus-within:ring-blue-600/50';
   }
 
   writeValue(value: any): void {

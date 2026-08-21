@@ -18,13 +18,13 @@
   <!-- Tabs (only visible for admins to manage drafts) -->
   <div *ngIf="isAdmin()" class="border-b border-border-base mb-8">
     <nav class="flex gap-6">
-      <button (click)="setTab('all')" [class.border-accent]="activeTab() === 'all'"
+      <button (click)="setTab('all')" [class.border-blue-600]="activeTab() === 'all'"
         [class.text-slate-900]="activeTab() === 'all'" [class.border-transparent]="activeTab() !== 'all'"
         [class.text-gray-500]="activeTab() !== 'all'"
         class="pb-4 text-sm/6 font-medium border-b-2 cursor-pointer transition-colors">
         All blogs
       </button>
-      <button (click)="setTab('my')" [class.border-accent]="activeTab() === 'my'"
+      <button (click)="setTab('my')" [class.border-blue-600]="activeTab() === 'my'"
         [class.text-slate-900]="activeTab() === 'my'" [class.border-transparent]="activeTab() !== 'my'"
         [class.text-gray-500]="activeTab() !== 'my'"
         class="pb-4 text-sm/6 font-medium border-b-2 cursor-pointer transition-colors">

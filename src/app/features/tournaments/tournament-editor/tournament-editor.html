@@ -20,12 +20,12 @@
       ) {
       <button type="button" (click)="scrollToSection(section.id)" [class]="
           activeSection() === section.id
-            ? 'text-accent bg-slate-50 rounded-full'
+            ? 'text-blue-600 bg-slate-50 rounded-full'
             : 'text-gray-500 hover:bg-slate-50 rounded-xl'
         " class="p-3 transition-all cursor-pointer border-none flex items-center justify-center relative group">
         <ng-icon [name]="section.icon" class="text-xl"></ng-icon>
         <div
-          class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-white border border-border-base rounded-xl text-sm font-medium text-accent whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity shadow-lg">
+          class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-white border border-border-base rounded-xl text-sm font-medium text-blue-600 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity shadow-lg">
           {{ section.label }}
         </div>
       </button>
@@ -45,7 +45,7 @@
 
           <div class="flex items-center gap-3 shrink-0">
             <button type="button" (click)="discardChanges()"
-              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-slate-900 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-blue-600/10 hover:text-slate-900 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
               Discard Changes
             </button>
 
@@ -145,7 +145,7 @@
 
       <div class="p-6 px-10 flex justify-between items-center gap-6">
         <button type="button" (click)="closeReviewModal()"
-          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-accent/10 hover:text-slate-900 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
+          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-gray-500 hover:bg-blue-600/10 hover:text-slate-900 transition-colors font-medium text-[16px] leading-5 cursor-pointer">
           Back to Editing
         </button>
         <button type="button" (click)="executeSave()" [disabled]="saving()"

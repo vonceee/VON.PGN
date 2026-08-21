@@ -20,7 +20,7 @@
           clip-rule="evenodd" />
       </svg>
       <input type="text" [value]="searchQuery()" (input)="onSearch($event)" placeholder="Search monikers..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-white border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="block w-full pl-9 pr-9 py-2.5 bg-white border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()"
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-slate-900">
@@ -34,7 +34,7 @@
 
     <div class="relative w-52 shrink-0">
       <select [value]="selectedCategory()" (change)="onCategoryChange($event)"
-        class="w-full px-3 py-2.5 border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8 cursor-pointer"
+        class="w-full px-3 py-2.5 border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-right pr-8 cursor-pointer"
         style="
             background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
             background-position: right 0.5rem center;

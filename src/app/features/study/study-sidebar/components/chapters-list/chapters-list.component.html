@@ -9,17 +9,17 @@
                 : 'hover:bg-slate-50 rounded-lg'
             }}">
       <!-- Drag Placeholder -->
-      <div *cdkDragPlaceholder class="h-10 bg-slate-50 border border-border-accent rounded-lg mx-2 my-0.5">
+      <div *cdkDragPlaceholder class="h-10 bg-slate-50 border border-border-blue-600 rounded-lg mx-2 my-0.5">
       </div>
 
       @if (currentChapter()?.id === chap.id) {
-      <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-accent"></div>
+      <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-blue-600"></div>
       }
       <div class="flex items-center gap-2 min-w-0">
         <span class="text-xs font-medium text-gray-500 shrink-0 group-active:cursor-grabbing cursor-grab">
           {{ idx + 1 }}.
         </span>
-        <span [class]="'text-sm/6 truncate ' + (currentChapter()?.id === chap.id ? 'text-accent' : 'text-slate-900')">
+        <span [class]="'text-sm/6 truncate ' + (currentChapter()?.id === chap.id ? 'text-blue-600' : 'text-slate-900')">
           {{ chap.name }}
         </span>
       </div>

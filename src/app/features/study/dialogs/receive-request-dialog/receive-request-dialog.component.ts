@@ -24,16 +24,16 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         </div>
 
         <p class="text-sm/6 font-medium">
-          <span class="text-accent font-medium">{{ data.userName }}</span> is requesting temporary board control to demonstrate moves and draw shapes.
+          <span class="text-blue-600 font-medium">{{ data.userName }}</span> is requesting temporary board control to demonstrate moves and draw shapes.
         </p>
 
         <ul class="space-y-3">
           <li class="flex items-start gap-3">
-            <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
+            <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
             <span class="text-sm/6 opacity-80">Granting control allows them to sync moves and drawings to the classroom.</span>
           </li>
           <li class="flex items-start gap-3">
-            <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
+            <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
             <span class="text-sm/6 opacity-80">You can revoke control at any time by clicking "Revoke" on the viewers tab.</span>
           </li>
         </ul>

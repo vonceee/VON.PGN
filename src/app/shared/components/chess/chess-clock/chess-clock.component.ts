@@ -21,7 +21,7 @@ import { AudioService } from '../../../../core/services/audio.service';
     <div
       class="font-semibold text-center"
       [class.text-red-500]="displayTime() < 20000"
-      [class.text-accent]="isActive() && displayTime() >= 20000"
+      [class.text-blue-600]="isActive() && displayTime() >= 20000"
       [ngClass]="sizeClasses()"
     >
       {{ displayString() }}

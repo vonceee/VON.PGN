@@ -4,7 +4,7 @@
   <nav aria-label="breadcrumb" class="text-sm/6">
     <ul class="flex items-center gap-1">
       <li>
-        <a routerLink="/roadmap" class="cursor-pointer hover:underline hover:text-accent">
+        <a routerLink="/roadmap" class="cursor-pointer hover:underline hover:text-blue-600">
           Roadmap
         </a>
       </li>
@@ -82,8 +82,8 @@
       <!-- Read Aloud + Navigation -->
       <div class="flex flex-wrap items-center gap-3">
         <button
-          class="group flex items-center gap-2 px-4 py-2 text-sm/6 font-semibold hover:text-accent hover:cursor-pointer  "
-          [class.text-accent]="isSpeaking() && !isPaused()" (click)="toggleReadAloud()">
+          class="group flex items-center gap-2 px-4 py-2 text-sm/6 font-semibold hover:text-blue-600 hover:cursor-pointer  "
+          [class.text-blue-600]="isSpeaking() && !isPaused()" (click)="toggleReadAloud()">
           @if (isSpeaking() && !isPaused()) {
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
             stroke="currentColor" class="w-4 h-4">
@@ -102,7 +102,7 @@
 
         @if (availableVoices().length > 0) {
         <div class="relative flex items-center">
-          <button class="hover:text-accent hover:cursor-pointer  " (click)="toggleSettings()"
+          <button class="hover:text-blue-600 hover:cursor-pointer  " (click)="toggleSettings()"
             title="Read Aloud Settings">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
               stroke="currentColor" class="w-5 h-5">
@@ -162,15 +162,15 @@
       @for (block of lessonData.contentBlocks; track $index) {
       @if (block.type === 'text') {
       <div class="group relative my-6 rounded-lg   border border-transparent"
-        [class.bg-accent]="activeBlockIndex() === $index" [class.]="activeBlockIndex() === $index"
-        [class.!border-accent]="activeBlockIndex() === $index" [class.shadow-sm]="activeBlockIndex() === $index"
+        [class.bg-blue-600]="activeBlockIndex() === $index" [class.]="activeBlockIndex() === $index"
+        [class.!border-blue-600]="activeBlockIndex() === $index" [class.shadow-sm]="activeBlockIndex() === $index"
         [class.px-4]="activeBlockIndex() === $index" [class.py-2]="activeBlockIndex() === $index">
         <!-- Play from here button overlay -->
         <button
-          class="absolute right-3 flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-accent opacity-0 group-hover:opacity-100 z-10"
+          class="absolute right-3 flex items-center gap-2 px-3 py-1.5 cursor-pointer hover:text-blue-600 opacity-0 group-hover:opacity-100 z-10"
           [class]="
                   activeBlockIndex() === $index
-                    ? '!opacity-100 !text-accent !border-accent'
+                    ? '!opacity-100 !text-blue-600 !border-blue-600'
                     : ''
                 " type="button" [title]="activeBlockIndex() === $index ? 'Reading...' : 'Play from here'"
           (click)="activeBlockIndex() === $index ? toggleReadAloud() : readFromBlock($index)">
@@ -226,8 +226,8 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         @for (course of suggestedCourses; track course.id) {
         <a [routerLink]="['/learn', course.id]"
-          class="group flex flex-col p-4 border border-border-base rounded-xl hover:border-accent  cursor-pointer bg-white ">
-          <h4 class="font-semibold text-lg mb-2 group-hover:text-accent">
+          class="group flex flex-col p-4 border border-border-base rounded-xl hover:border-blue-600  cursor-pointer bg-white ">
+          <h4 class="font-semibold text-lg mb-2 group-hover:text-blue-600">
             {{ course.title }}
           </h4>
           <p class="text-sm/6  ">

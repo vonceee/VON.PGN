@@ -1,8 +1,6 @@
-<div 
-  *ngIf="loadingService.isLoading()" 
-  class="fixed top-0 left-0 right-0 h-[3px] z-[10000] overflow-hidden bg-accent/10 pointer-events-none"
->
-  <div class="h-full bg-accent animate-loading-bar origin-left"></div>
+<div *ngIf="loadingService.isLoading()"
+  class="fixed top-0 left-0 right-0 h-[3px] z-[10000] overflow-hidden bg-blue-600/10 pointer-events-none">
+  <div class="h-full bg-blue-600 animate-loading-bar origin-left"></div>
 </div>
 
 <app-toast></app-toast>

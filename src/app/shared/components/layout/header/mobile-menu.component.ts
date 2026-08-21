@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
       <!-- Menu Header -->
       <div class="flex items-center gap-4 shrink-0 h-16 px-4 border-b border-border-base relative">
         <!-- Inline Search Bar -->
-        <div class="flex-1 flex items-center bg-surface/50 rounded-full px-4 py-1.5 border border-border-base focus-within:border-accent/50 focus-within:bg-white transition-all relative">
+        <div class="flex-1 flex items-center bg-surface/50 rounded-full px-4 py-1.5 border border-border-base focus-within:border-blue-600/50 focus-within:bg-white transition-all relative">
           <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 mr-2 shrink-0"></ng-icon>
           <input
             type="text"
@@ -32,7 +32,7 @@ import { Router } from '@angular/router';
             class="bg-transparent outline-none flex-1 text-sm/6 placeholder-muted"
           />
           @if (isSearching()) {
-            <div class="w-3.5 h-3.5 border-2 border-accent border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
+            <div class="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0 ml-2"></div>
           }
 
           <!-- Search Results Dropdown -->
@@ -79,7 +79,7 @@ import { Router } from '@angular/router';
                   <a
                     [routerLink]="link.path"
                     [queryParams]="link.queryParams"
-                    routerLinkActive="bg-slate-50 text-accent font-semibold"
+                    routerLinkActive="bg-slate-50 text-blue-600 font-semibold"
                     [routerLinkActiveOptions]="{ exact: !link.queryParams }"
                     (click)="close.emit()"
                     class="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
@@ -112,7 +112,7 @@ import { Router } from '@angular/router';
           <div class="flex flex-col gap-1">
             <a
               routerLink="/profile"
-              routerLinkActive="bg-slate-50 text-accent font-semibold"
+              routerLinkActive="bg-slate-50 text-blue-600 font-semibold"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="close.emit()"
               class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
@@ -123,7 +123,7 @@ import { Router } from '@angular/router';
             @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
               <a
                 routerLink="/my-events"
-                routerLinkActive="bg-slate-50 text-accent font-semibold"
+                routerLinkActive="bg-slate-50 text-blue-600 font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
                 class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
@@ -135,7 +135,7 @@ import { Router } from '@angular/router';
             @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
               <a
                 routerLink="/admin"
-                routerLinkActive="bg-slate-50 text-accent font-semibold"
+                routerLinkActive="bg-slate-50 text-blue-600 font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
                 class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
@@ -156,7 +156,7 @@ import { Router } from '@angular/router';
           <a
             routerLink="/login"
             (click)="close.emit()"
-            class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm/6 font-semibold text-white bg-accent hover:bg-accent/90 transition-colors text-center cursor-pointer"
+            class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm/6 font-semibold text-white bg-blue-600 hover:bg-blue-600/90 transition-colors text-center cursor-pointer"
           >
             Log in
           </a>

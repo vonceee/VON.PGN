@@ -14,10 +14,7 @@ function getFallbackErrorPage(): Response {
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-subtle: #f8fafc;
       --text-gray-500: #64748b;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
       --border-base: #e2e8f0;
     }
     * {
@@ -27,7 +24,6 @@ function getFallbackErrorPage(): Response {
     }
     body {
       font-family: 'Outfit', sans-serif;
-      background-color: var(--bg-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -83,7 +79,6 @@ function getFallbackErrorPage(): Response {
     }
     .btn {
       display: inline-block;
-      background-color: var(--accent);
       color: #ffffff;
       padding: 12px 32px;
       border-radius: 9999px;
@@ -96,7 +91,6 @@ function getFallbackErrorPage(): Response {
       font-family: inherit;
     }
     .btn:hover {
-      background-color: var(--accent-hover);
       transform: translateY(-1px);
     }
     .btn:active {
@@ -119,7 +113,7 @@ function getFallbackErrorPage(): Response {
   <div class="card">
     <div class="icon-container">
       <div class="icon-pulse"></div>
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round";">
         <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
         <line x1="12" y1="9" x2="12" y2="13"/>
         <line x1="12" y1="17" x2="12.01" y2="17"/>

@@ -59,7 +59,7 @@ interface EditorGame {
                 type="text"
                 [(ngModel)]="title"
                 placeholder="Enter an catchy title..."
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-accent text-base md:text-lg font-medium"
+                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-base md:text-lg font-medium"
               />
             </div>
 
@@ -70,7 +70,7 @@ interface EditorGame {
                 [(ngModel)]="summary"
                 placeholder="Brief excerpt shown in the list feed..."
                 rows="2"
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-accent text-sm/6 resize-none"
+                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-sm/6 resize-none"
               ></textarea>
             </div>
 
@@ -109,7 +109,7 @@ interface EditorGame {
                 [(ngModel)]="content"
                 placeholder="Write your article here. Use [game:0] to insert your first game inline..."
                 rows="16"
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-accent text-base leading-relaxed resize-y min-h-[350px]"
+                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-base leading-relaxed resize-y min-h-[350px]"
               ></textarea>
             </div>
             
@@ -119,7 +119,7 @@ interface EditorGame {
                 <label class="text-sm/6 font-semibold">Status:</label>
                 <select
                   [(ngModel)]="status"
-                  class="px-3 py-2 rounded-xl border border-border-base bg-white text-sm/6 outline-none focus:border-accent"
+                  class="px-3 py-2 rounded-xl border border-border-base bg-white text-sm/6 outline-none focus:border-blue-600"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
@@ -165,7 +165,7 @@ interface EditorGame {
                   type="text"
                   [(ngModel)]="newGameTitle"
                   placeholder="Game title (e.g. Kasparov vs Deep Blue)"
-                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-sm/6 outline-none focus:border-accent"
+                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-sm/6 outline-none focus:border-blue-600"
                 />
               </div>
               
@@ -174,7 +174,7 @@ interface EditorGame {
                   [(ngModel)]="newGamePgn"
                   placeholder="Paste PGN string here..."
                   rows="4"
-                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-xs outline-none focus:border-accent resize-none"
+                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-xs outline-none focus:border-blue-600 resize-none"
                 ></textarea>
               </div>
 
@@ -199,7 +199,7 @@ interface EditorGame {
               <div *ngFor="let g of games(); let idx = index" class="flex items-center justify-between p-3 rounded-xl border border-border-base bg-slate-50/10 gap-3">
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <span class="text-sm/6 font-medium px-1.5 py-0.5 rounded-full bg-accent text-main shrink-0">
+                    <span class="text-sm/6 font-medium px-1.5 py-0.5 rounded-full bg-blue-600 text-main shrink-0">
                       [game:{{ idx }}]
                     </span>
                     <span class="text-sm/6 font-semibold truncate">{{ g.title || 'Untitled Game' }}</span>
@@ -223,7 +223,7 @@ interface EditorGame {
             <div class="space-y-4">
               <h1 class="text-2xl md:text-3xl font-medium">{{ title() || 'Post Title' }}</h1>
               
-              <div *ngIf="summary()" class="p-4 bg-slate-50/25 border-l-4 border-accent rounded-r-xl text-gray-500 text-sm/6 italic">
+              <div *ngIf="summary()" class="p-4 bg-slate-50/25 border-l-4 border-blue-600 rounded-r-xl text-gray-500 text-sm/6 italic">
                 {{ summary() }}
               </div>
 
@@ -234,7 +234,7 @@ interface EditorGame {
                     <div [innerHTML]="parseMarkdown(block.content || '')" class="preview-markdown"></div>
                   } @else if (block.type === 'game') {
                     <div class="my-4 p-4 rounded-xl border border-dashed border-border-base bg-slate-50/20 flex flex-col items-center justify-center min-h-[120px] text-center">
-                      <div class="w-8 h-8 rounded-full bg-accent text-main flex items-center justify-center font-medium text-xs mb-2">
+                      <div class="w-8 h-8 rounded-full bg-blue-600 text-main flex items-center justify-center font-medium text-xs mb-2">
                         ♞
                       </div>
                       <span class="text-xs font-semibold">
@@ -265,7 +265,7 @@ interface EditorGame {
         p { margin-bottom: 1rem; line-height: 1.6; }
         ul, ol { margin-bottom: 1rem; padding-left: 1.25rem; }
         li { list-style-type: disc; margin-bottom: 0.25rem; }
-        a { color: var(--color-accent); text-decoration: underline; }
+        text-decoration: underline; }
         strong { font-weight: 600; }
         h1, h2, h3 { font-weight: 500; margin-top: 1.5rem; margin-bottom: 0.5rem; }
         h1 { font-size: 1.5rem; }
@@ -498,7 +498,7 @@ export class BlogEditorComponent implements OnInit {
 
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
-    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-accent underline">$1</a>');
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">$1</a>');
 
     const paragraphs = html.split(/\n{2,}/);
     html = paragraphs.map(p => {

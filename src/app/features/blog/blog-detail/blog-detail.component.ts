@@ -152,7 +152,7 @@ export class BlogDetailComponent implements OnInit {
     html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
 
     // Links
-    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-accent underline">$1</a>');
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline">$1</a>');
 
     // Line breaks and double spacing
     const paragraphs = html.split(/\n{2,}/);

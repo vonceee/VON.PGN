@@ -31,7 +31,7 @@
       </span>
 
       <button (click)="toggleBookmark()" [disabled]="!authService.isAuthenticated()"
-        class="flex items-center gap-1.5 cursor-pointer" [class.text-accent]="isBookmarked()"
+        class="flex items-center gap-1.5 cursor-pointer" [class.text-blue-600]="isBookmarked()"
         [class.font-semibold]="isBookmarked()">
         <ng-icon name="heroBookmark" class="w-4 h-4"></ng-icon>
         {{ isBookmarked() ? 'Bookmarked' : 'Bookmark' }}
@@ -86,7 +86,7 @@
 
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroInformationCircle" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroInformationCircle" class="w-5 h-5 text-blue-600"></ng-icon>
             About This Event
           </h2>
           <p class="whitespace-pre-line">
@@ -96,7 +96,7 @@
 
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroUsers" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroUsers" class="w-5 h-5 text-blue-600"></ng-icon>
             How To Join
           </h2>
           @if (tournament.registrationInstructions) {
@@ -113,7 +113,7 @@
         @if (mapUrl()) {
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroMapPin" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroMapPin" class="w-5 h-5 text-blue-600"></ng-icon>
             Venue Location
           </h2>
           <div class="rounded-xl overflow-hidden border border-border-base">
@@ -129,7 +129,7 @@
 
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroClipboardDocument" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroClipboardDocument" class="w-5 h-5 text-blue-600"></ng-icon>
             Format &amp; Rules
           </h2>
           <div class="flex flex-col gap-4">
@@ -163,13 +163,13 @@
         @if (tournament.eligibility && tournament.eligibility.length > 0) {
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroShieldCheck" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroShieldCheck" class="w-5 h-5 text-blue-600"></ng-icon>
             Eligibility
           </h2>
           <ul class="space-y-3">
             @for (req of tournament.eligibility; track req) {
             <li class="flex items-start gap-3 text-gray-500 ">
-              <ng-icon name="heroCheck" class="w-5 h-5 text-accent shrink-0 mt-0.5"></ng-icon>
+              <ng-icon name="heroCheck" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></ng-icon>
               {{ req }}
             </li>
             }
@@ -180,7 +180,7 @@
         @if (tournament.categories) {
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroTrophy" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroTrophy" class="w-5 h-5 text-blue-600"></ng-icon>
             Prizes by Category
           </h2>
 
@@ -198,7 +198,7 @@
               <ul class="space-y-1">
                 @for (req of tournament.categories![catKey].eligibility; track req) {
                 <li class="flex items-center gap-2 text-sm/6 text-gray-500 ">
-                  <span class="w-1 h-1 rounded-full bg-accent"></span>
+                  <span class="w-1 h-1 rounded-full bg-blue-600"></span>
                   {{ req }}
                 </li>
                 }
@@ -251,7 +251,7 @@
                 track awardKey
                 ) {
                 <div class="flex items-start gap-2 text-sm/6">
-                  <span class="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0"></span>
                   @if (
                   isSpecialAwardNested(
                   tournament.categories![catKey].specialAwards![awardKey]
@@ -304,7 +304,7 @@
         } @else if (tournament.prizePool) {
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroTrophy" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroTrophy" class="w-5 h-5 text-blue-600"></ng-icon>
             Prizes
           </h2>
           <div class="p-5">
@@ -319,7 +319,7 @@
         @if (tournament.schedule && objectKeys(tournament.schedule).length > 0) {
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroCalendar" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroCalendar" class="w-5 h-5 text-blue-600"></ng-icon>
             Schedule
           </h2>
           <div class="space-y-4">
@@ -327,7 +327,7 @@
             @if (tournament.schedule![dayKey].events.length > 0) {
             <div class="overflow-hidden">
               <div class="px-4 py-3 border-b border-border-base flex items-center gap-3">
-                <span class="text-xs font-semibold text-accent uppercase">{{
+                <span class="text-xs font-semibold text-blue-600 uppercase">{{
                   formatDayLabel(dayKey)
                   }}</span>
                 <span class="text-sm/6 text-gray-500 ">{{
@@ -362,7 +362,7 @@
         @if (tournament.status === 'past' && tournament.standings) {
         <section>
           <h2 class="text-xl font-semibold   mb-4 flex items-center gap-2">
-            <ng-icon name="heroTrophy" class="w-5 h-5 text-accent"></ng-icon>
+            <ng-icon name="heroTrophy" class="w-5 h-5 text-blue-600"></ng-icon>
             Final Standings
           </h2>
           <div class="overflow-hidden">
@@ -455,7 +455,7 @@
             </div>
             @if (tournament.link) {
             <a [href]="tournament.link" target="_blank" rel="noopener noreferrer"
-              class="flex items-center gap-1 text-accent ">
+              class="flex items-center gap-1 text-blue-600 ">
               <ng-icon name="heroLink" class="w-4 h-4"></ng-icon>
               View Updates
             </a>

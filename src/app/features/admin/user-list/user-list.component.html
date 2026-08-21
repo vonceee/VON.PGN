@@ -39,7 +39,7 @@
           @if (isLoading()) {
           <tr>
             <td colspan="5" class="px-6 py-20 text-center">
-              <div class="w-8 h-8 border-3 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4">
+              <div class="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4">
               </div>
               <span class="text-sm/6 text-gray-500 ">Loading users...</span>
             </td>
@@ -64,7 +64,7 @@
                   }
                 </div>
                 <div>
-                  <div class="font-semibold flex items-center gap-2 group-hover:text-accent  cursor-pointer"
+                  <div class="font-semibold flex items-center gap-2 group-hover:text-blue-600  cursor-pointer"
                     (click)="viewProfile(user.uid)">
                     {{ user.username }}
                     @if (user.role === 'admin') {

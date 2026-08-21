@@ -36,9 +36,9 @@ export class ButtonComponent {
       case 'danger':
         return `${base} bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors`;
       case 'ghost':
-        return `${base} bg-transparent hover:bg-accent/10 border-transparent text-gray-500`;
+        return `${base} bg-transparent hover:bg-blue-600/10 border-transparent text-gray-500`;
       default:
-        return `${base} bg-surface rounded-full hover:bg-accent/10`;
+        return `${base} bg-surface rounded-full hover:bg-blue-600/10`;
     }
   });
 

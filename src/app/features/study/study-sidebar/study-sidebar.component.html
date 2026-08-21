@@ -6,7 +6,7 @@
   <div class="flex flex-col items-center gap-3 border-2 border-border-base rounded-xl p-2">
     <!-- Chapters Section Button -->
     <button (click)="selectSection('chapters')" [attr.aria-label]="'Chapters'"
-      [class.text-accent]="activeSection() === 'chapters' && !splitSection()"
+      [class.text-blue-600]="activeSection() === 'chapters' && !splitSection()"
       [class.bg-slate-50]="activeSection() === 'chapters' && !splitSection()"
       [class.rounded-full]="activeSection() === 'chapters' && !splitSection()"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
@@ -20,7 +20,7 @@
     @if (canEdit()) {
     <!-- Add Chapter Button -->
     <button (click)="selectSection('add-chapter')" [attr.aria-label]="'Add chapter'"
-      [class.text-accent]="activeSection() === 'add-chapter'" [class.bg-slate-50]="activeSection() === 'add-chapter'"
+      [class.text-blue-600]="activeSection() === 'add-chapter'" [class.bg-slate-50]="activeSection() === 'add-chapter'"
       [class.rounded-full]="activeSection() === 'add-chapter'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
       <ng-icon name="heroPlus" class="text-xl"></ng-icon>
@@ -34,7 +34,7 @@
     @if (isOwner()) {
     <!-- Study Settings Button -->
     <button (click)="selectSection('settings')" [attr.aria-label]="'Study settings'"
-      [class.text-accent]="activeSection() === 'settings'" [class.bg-slate-50]="activeSection() === 'settings'"
+      [class.text-blue-600]="activeSection() === 'settings'" [class.bg-slate-50]="activeSection() === 'settings'"
       [class.rounded-full]="activeSection() === 'settings'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
       <ng-icon name="heroCog6Tooth" class="text-xl"></ng-icon>
@@ -50,7 +50,7 @@
 
     <!-- Members Toggle -->
     <button (click)="selectSection('members')" [attr.aria-label]="'Members'"
-      [class.text-accent]="activeSection() === 'members'" [class.bg-slate-50]="activeSection() === 'members'"
+      [class.text-blue-600]="activeSection() === 'members'" [class.bg-slate-50]="activeSection() === 'members'"
       [class.rounded-full]="activeSection() === 'members'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
       <ng-icon name="heroUsers" class="text-xl"></ng-icon>
@@ -63,7 +63,7 @@
 
     <!-- Metadata Toggle -->
     <button (click)="selectSection('metadata')" [attr.aria-label]="'Game metadata'"
-      [class.text-accent]="splitSection() === 'metadata'" [class.bg-slate-50]="splitSection() === 'metadata'"
+      [class.text-blue-600]="splitSection() === 'metadata'" [class.bg-slate-50]="splitSection() === 'metadata'"
       [class.rounded-full]="splitSection() === 'metadata'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
       <ng-icon name="heroTag" class="text-xl"></ng-icon>
@@ -76,7 +76,7 @@
     <!-- Annotate Toggle -->
     @if (canEdit()) {
     <button (click)="selectSection('annotate')" [attr.aria-label]="'Annotate move'"
-      [class.text-accent]="activeSection() === 'annotate'" [class.bg-slate-50]="activeSection() === 'annotate'"
+      [class.text-blue-600]="activeSection() === 'annotate'" [class.bg-slate-50]="activeSection() === 'annotate'"
       [class.rounded-full]="activeSection() === 'annotate'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
       <ng-icon name="heroPencilSquare" class="text-xl"></ng-icon>
@@ -88,7 +88,7 @@
     }
 
     <!-- Chat Toggle -->
-    <button (click)="selectSection('chat')" [attr.aria-label]="'Chat'" [class.text-accent]="splitSection() === 'chat'"
+    <button (click)="selectSection('chat')" [attr.aria-label]="'Chat'" [class.text-blue-600]="splitSection() === 'chat'"
       [class.bg-slate-50]="splitSection() === 'chat'" [class.rounded-full]="splitSection() === 'chat'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
       <ng-icon name="heroChatBubbleLeftRight" class="text-xl"></ng-icon>
@@ -101,7 +101,7 @@
     <!-- Share/Export PGN Toggle -->
     @if (isExportAllowed()) {
     <button (click)="selectSection('export')" [attr.aria-label]="'Export PGN'"
-      [class.text-accent]="activeSection() === 'export'" [class.bg-slate-50]="activeSection() === 'export'"
+      [class.text-blue-600]="activeSection() === 'export'" [class.bg-slate-50]="activeSection() === 'export'"
       [class.rounded-full]="activeSection() === 'export'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
       <ng-icon name="heroShare" class="text-xl"></ng-icon>

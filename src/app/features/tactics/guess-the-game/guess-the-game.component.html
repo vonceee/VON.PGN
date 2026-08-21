@@ -111,7 +111,7 @@
           <div class="flex flex-col">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()"
               placeholder="e.g Magnus vs Hikaru"
-              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50"
+              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue-600/50"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 

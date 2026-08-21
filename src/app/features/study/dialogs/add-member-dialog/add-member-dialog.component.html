@@ -7,7 +7,7 @@
   <!-- Search & Results Section -->
   <div class="relative space-y-4">
     <div
-      class="flex items-center h-11 w-full px-4 rounded-full bg-slate-50 border border-border-base focus-within:border-accent/40 focus-within:ring-1 focus-within:ring-accent/40 transition-all">
+      class="flex items-center h-11 w-full px-4 rounded-full bg-slate-50 border border-border-base focus-within:border-blue-600/40 focus-within:ring-1 focus-within:ring-blue-600/40 transition-all">
       <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)"
         placeholder="search players..." autofocus
         class="bg-transparent outline-none text-sm/6 font-medium placeholder-muted w-full" />
@@ -23,9 +23,10 @@
       @for (user of results(); track user.uid) {
       <button (click)="selectUser(user)"
         class="w-full flex items-center gap-3 px-5 py-3 text-left cursor-pointer transition-all border-b border-border-base last:border-0"
-        [class.bg-accent/10]="selectedUser()?.uid === user.uid" [class.text-accent]="selectedUser()?.uid === user.uid"
+        [class.bg-blue-600/10]="selectedUser()?.uid === user.uid"
+        [class.text-blue-600]="selectedUser()?.uid === user.uid"
         [class.hover:bg-white]="selectedUser()?.uid !== user.uid"
-        [class.hover:text-accent]="selectedUser()?.uid !== user.uid">
+        [class.hover:text-blue-600]="selectedUser()?.uid !== user.uid">
         <div class="flex flex-col min-w-0">
           <span class="text-sm/6 font-medium truncate">{{ user.username }}</span>
         </div>
@@ -41,7 +42,7 @@
 
   <!-- Selected User Preview -->
   @if (selectedUser(); as selected) {
-  <div class="flex items-center justify-between bg-accent/5 px-4 py-2.5 rounded-2xl border border-accent/20">
+  <div class="flex items-center justify-between bg-blue-600/5 px-4 py-2.5 rounded-2xl border border-blue-600/20">
     <div class="flex flex-col">
       <span class="text-xs text-gray-500">add user?</span>
       <span class="text-sm/6 font-semibold">{{ selected.username }}</span>

@@ -30,12 +30,12 @@
         class="absolute top-full left-0 mt-1 bg-white border border-border-base rounded-xl z-20 overflow-hidden min-w-[140px] shadow-lg">
         <button (click)="setTab('upcoming')"
           class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-slate-50 cursor-pointer text-left"
-          [ngClass]="{ 'text-accent': activeTab() === 'upcoming' }">
+          [ngClass]="{ 'text-blue-600': activeTab() === 'upcoming' }">
           <span>Upcoming</span>
         </button>
         <button (click)="setTab('ongoing')"
           class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-slate-50 cursor-pointer text-left"
-          [ngClass]="{ 'text-accent': activeTab() === 'ongoing' }">
+          [ngClass]="{ 'text-blue-600': activeTab() === 'ongoing' }">
           <span class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-green-500"></span>
             Ongoing
@@ -43,7 +43,7 @@
         </button>
         <button (click)="setTab('past')"
           class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-slate-50 cursor-pointer text-left"
-          [ngClass]="{ 'text-accent': activeTab() === 'past' }">
+          [ngClass]="{ 'text-blue-600': activeTab() === 'past' }">
           <span>Past</span>
         </button>
       </div>
@@ -55,7 +55,7 @@
       <ng-icon name="heroMagnifyingGlass"
         class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"></ng-icon>
       <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search tournaments..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="block w-full pl-9 pr-9 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()"
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-slate-900 cursor-pointer">
@@ -67,7 +67,7 @@
     <!-- Sort Dropdown -->
     <div class="relative w-48 shrink-0">
       <select [value]="sortBy()" (change)="onSortChange($event)"
-        class="w-full px-3 py-2.5 border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8 cursor-pointer"
+        class="w-full px-3 py-2.5 border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-right pr-8 cursor-pointer"
         style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
@@ -95,7 +95,7 @@
   </div>
   } @else if (paginatedTournaments().length === 0) {
   <div class="bg-white rounded-xl border border-border-base p-12 text-center my-8">
-    <div class="w-16 h-16 bg-accent/5 rounded-full flex items-center justify-center mb-6 mx-auto">
+    <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6 mx-auto">
       <ng-icon name="heroCalendar" class="w-8 h-8"></ng-icon>
     </div>
     <h3 class="text-lg font-medium mb-2 text-slate-900">No tournaments found</h3>
@@ -144,7 +144,7 @@
                 <!-- Title & Location -->
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center flex-wrap gap-2 mb-2">
-                    <span class="px-2.5 py-0.5 bg-accent/20 rounded-full text-xs font-bold inline-block">
+                    <span class="px-2.5 py-0.5 bg-blue-600/20 rounded-full text-xs font-bold inline-block">
                       FEATURED EVENT
                     </span>
                     <span class="text-xs font-semibold text-slate-400 tracking-wide uppercase">
@@ -185,7 +185,7 @@
                   } @else if (tournament.status === 'upcoming' && tournament.prizePool && tournament.prizePool !== '0'
                   && tournament.prizePool !== '0.00') {
                   <span class="text-xs font-semibold text-slate-300 tracking-wider">
-                    PRIZE POOL: <span class="text-accent font-bold">{{ formatPrizePool(tournament.prizePool) }}</span>
+                    PRIZE POOL: <span class="text-blue-600 font-bold">{{ formatPrizePool(tournament.prizePool) }}</span>
                   </span>
                   }
                 </div>
@@ -199,7 +199,7 @@
                   </button>
                   }
                   <a [routerLink]="['/events', tournament.id]"
-                    class="w-8 h-8 rounded-full bg-accent hover:bg-accent/90 text-white flex items-center justify-center transition-all cursor-pointer"
+                    class="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-600/90 text-white flex items-center justify-center transition-all cursor-pointer"
                     title="View Details">
                     <ng-icon name="heroEye" class="w-4 h-4"></ng-icon>
                   </a>
@@ -289,7 +289,7 @@
                   } @else if (tournament.status === 'upcoming' && tournament.prizePool && tournament.prizePool !== '0'
                   && tournament.prizePool !== '0.00') {
                   <span class="text-xs font-semibold text-slate-300 tracking-wider">
-                    PRIZE POOL: <span class="text-accent font-bold">{{ formatPrizePool(tournament.prizePool) }}</span>
+                    PRIZE POOL: <span class="text-blue-600 font-bold">{{ formatPrizePool(tournament.prizePool) }}</span>
                   </span>
                   }
                 </div>
@@ -303,7 +303,7 @@
                   </button>
                   }
                   <a [routerLink]="['/events', tournament.id]"
-                    class="w-8 h-8 rounded-full bg-accent hover:bg-accent/90 text-white flex items-center justify-center transition-all cursor-pointer"
+                    class="w-8 h-8 rounded-full bg-blue-600 hover:bg-blue-600/90 text-white flex items-center justify-center transition-all cursor-pointer"
                     title="View Details">
                     <ng-icon name="heroEye" class="w-4 h-4"></ng-icon>
                   </a>
@@ -371,7 +371,7 @@
     } @else {
     <button (click)="goToPage(page)" class="min-w-[36px] px-3 py-2 text-sm/6 rounded-lg border cursor-pointer"
       [ngClass]="{
-              'bg-accent border-accent text-main': currentPage() === page,
+              'bg-blue-600 border-blue-600 text-main': currentPage() === page,
               'border-border-base hover:bg-slate-50': currentPage() !== page
             }">
       {{ page }}

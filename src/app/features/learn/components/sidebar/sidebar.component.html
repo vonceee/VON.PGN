@@ -6,7 +6,7 @@
   </div>
 
   <div>
-    <h2 class="px-5 py-2 mt-2  select-none cursor-pointer hover:text-accent/80" (click)="onSelect('')">
+    <h2 class="px-5 py-2 mt-2  select-none cursor-pointer hover:text-blue-600/80" (click)="onSelect('')">
       {{ course.title }}
     </h2>
   </div>
@@ -29,7 +29,7 @@
                 }}" (click)="onSelect(lesson.id)">
           <!-- Active Line Indicator -->
           @if (activeLessonId === lesson.id) {
-          <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-accent"></div>
+          <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-blue-600"></div>
           }
 
           <span class="text-sm/6 ml-2">{{ lesson.title }}</span>
@@ -37,7 +37,7 @@
           <div class="flex items-center gap-2">
             <!-- Completed Indicator -->
             @if (lesson.isCompleted) {
-            <div class="w-1.5 h-1.5 rounded-full bg-accent "></div>
+            <div class="w-1.5 h-1.5 rounded-full bg-blue-600 "></div>
             }
           </div>
         </li>

@@ -27,8 +27,8 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               @for (role of pieceRoles; track role) {
                 <button 
                   class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
-                  [class.bg-accent]="isToolSelected('black', role)"
-                  [class.border-accent]="isToolSelected('black', role)"
+                  [class.bg-blue-600]="isToolSelected('black', role)"
+                  [class.border-blue-600]="isToolSelected('black', role)"
                   [class.border-transparent]="!isToolSelected('black', role)"
                   (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
                   (click)="selectTool({color: 'black', role})"
@@ -45,8 +45,8 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               @for (role of pieceRoles; track role) {
                 <button 
                   class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
-                  [class.bg-accent]="isToolSelected('white', role)"
-                  [class.border-accent]="isToolSelected('white', role)"
+                  [class.bg-blue-600]="isToolSelected('white', role)"
+                  [class.border-blue-600]="isToolSelected('white', role)"
                   [class.border-transparent]="!isToolSelected('white', role)"
                   (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
                   (click)="selectTool({color: 'white', role})"
@@ -106,19 +106,19 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         <div class="flex flex-col">
           <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-slate-50/30 border border-border-base rounded-xl">
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" [ngModel]="whiteKingside()" (ngModelChange)="whiteKingside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
+              <input type="checkbox" [ngModel]="whiteKingside()" (ngModelChange)="whiteKingside.set($event); emitChange()" class="rounded text-blue-600 border-border-base bg-transparent focus:ring-blue-600" />
               <span>White O-O</span>
             </label>
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" [ngModel]="whiteQueenside()" (ngModelChange)="whiteQueenside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
+              <input type="checkbox" [ngModel]="whiteQueenside()" (ngModelChange)="whiteQueenside.set($event); emitChange()" class="rounded text-blue-600 border-border-base bg-transparent focus:ring-blue-600" />
               <span>White O-O-O</span>
             </label>
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" [ngModel]="blackKingside()" (ngModelChange)="blackKingside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
+              <input type="checkbox" [ngModel]="blackKingside()" (ngModelChange)="blackKingside.set($event); emitChange()" class="rounded text-blue-600 border-border-base bg-transparent focus:ring-blue-600" />
               <span>Black O-O</span>
             </label>
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" [ngModel]="blackQueenside()" (ngModelChange)="blackQueenside.set($event); emitChange()" class="rounded text-accent border-border-base bg-transparent focus:ring-accent" />
+              <input type="checkbox" [ngModel]="blackQueenside()" (ngModelChange)="blackQueenside.set($event); emitChange()" class="rounded text-blue-600 border-border-base bg-transparent focus:ring-blue-600" />
               <span>Black O-O-O</span>
             </label>
           </div>
@@ -161,8 +161,8 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
                 @for (role of pieceRoles; track role) {
                   <button 
                     class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
-                    [class.bg-accent]="isToolSelected('black', role)"
-                    [class.border-accent]="isToolSelected('black', role)"
+                    [class.bg-blue-600]="isToolSelected('black', role)"
+                    [class.border-blue-600]="isToolSelected('black', role)"
                     [class.border-transparent]="!isToolSelected('black', role)"
                     (mousedown)="onPiecePaletteMouseDown($event, 'black', role)"
                     (click)="selectTool({color: 'black', role})"
@@ -179,8 +179,8 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
                 @for (role of pieceRoles; track role) {
                   <button 
                     class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg  border-2 group"
-                    [class.bg-accent]="isToolSelected('white', role)"
-                    [class.border-accent]="isToolSelected('white', role)"
+                    [class.bg-blue-600]="isToolSelected('white', role)"
+                    [class.border-blue-600]="isToolSelected('white', role)"
                     [class.border-transparent]="!isToolSelected('white', role)"
                     (mousedown)="onPiecePaletteMouseDown($event, 'white', role)"
                     (click)="selectTool({color: 'white', role})"
