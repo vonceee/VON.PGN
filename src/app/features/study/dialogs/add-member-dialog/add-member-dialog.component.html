@@ -1,4 +1,4 @@
-<div class="bg-main rounded-4xl w-full max-w-md p-8 space-y-6 relative">
+<div class="bg-white rounded-4xl w-full max-w-md p-8 space-y-6 relative">
   <!-- Dialog Header -->
   <div class="pb-4 flex items-center justify-between">
     <h2 class="text-2xl">Add study member</h2>
@@ -24,7 +24,7 @@
       <button (click)="selectUser(user)"
         class="w-full flex items-center gap-3 px-5 py-3 text-left cursor-pointer transition-all border-b border-border-base last:border-0"
         [class.bg-accent/10]="selectedUser()?.uid === user.uid" [class.text-accent]="selectedUser()?.uid === user.uid"
-        [class.hover:bg-main]="selectedUser()?.uid !== user.uid"
+        [class.hover:bg-white]="selectedUser()?.uid !== user.uid"
         [class.hover:text-accent]="selectedUser()?.uid !== user.uid">
         <div class="flex flex-col min-w-0">
           <span class="text-sm/6 font-medium truncate">{{ user.username }}</span>

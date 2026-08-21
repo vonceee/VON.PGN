@@ -14,7 +14,7 @@ export interface ConfirmDeleteDialogData {
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   template: `
-    <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative">
+    <div class="bg-white rounded-4xl w-full p-8 space-y-8 relative">
       <!-- Header -->
       <div class="pb-4 flex items-center justify-between">
         <h2 class="text-2xl">{{ data.title || 'Confirm Deletion' }}</h2>

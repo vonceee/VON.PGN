@@ -14,7 +14,6 @@ function getFallbackErrorPage(): Response {
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-main: #ffffff;
       --bg-subtle: #f8fafc;
       --text-content: #0f172a;
       --text-gray-500: #64748b;
@@ -38,7 +37,6 @@ function getFallbackErrorPage(): Response {
       padding: 24px;
     }
     .card {
-      background-color: var(--bg-main);
       border: 1px solid var(--border-base);
       border-radius: 24px;
       padding: 48px;

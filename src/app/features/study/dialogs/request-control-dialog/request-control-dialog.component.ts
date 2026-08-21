@@ -8,7 +8,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   template: `
-    <div class="bg-main rounded-4xl w-full p-8 space-y-8 relative">
+    <div class="bg-white rounded-4xl w-full p-8 space-y-8 relative">
       <!-- Header -->
       <div class="flex justify-between">
         <h2 class="text-2xl">Request board control</h2>

@@ -20,7 +20,7 @@
             clip-rule="evenodd" />
         </svg>
         <input type="text" [formControl]="searchControl" placeholder="Search themes..."
-          class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
+          class="block w-full pl-9 pr-9 py-2.5 bg-white border border-border-base bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
         @if (searchControl.value) {
         <button (click)="searchControl.setValue('')"
           class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-content">

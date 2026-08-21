@@ -39,7 +39,7 @@
 
   <!-- Empty State -->
   <div *ngIf="!isLoading() && blogs().length === 0"
-    class="bg-main rounded-xl border border-border-base p-12 text-center my-8">
+    class="bg-white rounded-xl border border-border-base p-12 text-center my-8">
     <h3 class="text-lg font-medium mb-2">No blog posts found</h3>
     <p class="text-gray-500 text-sm/6 mb-6">Check back later or check another tab.</p>
     <a *ngIf="isAdmin()" routerLink="/blog/new" appButton variant="primary">

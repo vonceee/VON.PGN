@@ -9,7 +9,7 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonComponent],
   template: `
-    <div class="bg-main rounded-4xl w-full max-h-[90vh] flex flex-col relative overflow-hidden">
+    <div class="bg-white rounded-4xl w-full max-h-[90vh] flex flex-col relative overflow-hidden">
       <!-- Dialog Header -->
       <div class="p-6 pb-0 flex items-center justify-between shrink-0">
         <h2 class="text-2xl">Edit game metadata</h2>

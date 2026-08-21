@@ -1,6 +1,6 @@
 <div class="space-y-6">
 
-  <div class="bg-main rounded-xl border border-border-base overflow-hidden">
+  <div class="bg-white rounded-xl border border-border-base overflow-hidden">
     <!-- Filters -->
     <div class="p-5 border-b border-border-base flex flex-wrap items-center gap-4 bg-subtle/50">
       <div class="relative flex-1 min-w-[240px]">
@@ -12,11 +12,11 @@
           </svg>
         </span>
         <input type="text" [formControl]="searchControl" placeholder="Search by username, name or email..."
-          class="w-full pl-10 pr-4 py-2 bg-main border border-border-base rounded-lg text-sm/6 outline-none  ">
+          class="w-full pl-10 pr-4 py-2 bg-white border border-border-base rounded-lg text-sm/6 outline-none  ">
       </div>
 
       <select [formControl]="roleFilter"
-        class="px-4 py-2 bg-main border border-border-base rounded-lg text-sm/6 outline-none  ">
+        class="px-4 py-2 bg-white border border-border-base rounded-lg text-sm/6 outline-none  ">
         <option value="">All Roles</option>
         <option value="admin">Admin</option>
         <option value="coach">Coach</option>

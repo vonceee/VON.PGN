@@ -71,7 +71,7 @@
                 </span>
                 @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
                 <span
-                  [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')"
+                  [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-white/80' : 'bg-accent/70')"
                   title="Has annotation"></span>
                 }
               </span>
@@ -106,7 +106,7 @@
                 </span>
                 @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
                 <span
-                  [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')"
+                  [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-white/80' : 'bg-accent/70')"
                   title="Has annotation"></span>
                 }
               </span>
@@ -222,7 +222,7 @@
           }
           @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
           <span
-            [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-main/80' : 'bg-accent/70')"
+            [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-white/80' : 'bg-accent/70')"
             title="Has annotation"></span>
           }
         </span>
@@ -332,7 +332,7 @@
 
   <!-- Premium Context Menu -->
   @if (contextMenuNode(); as node) {
-  <div class="fixed z-50 min-w-[200px] bg-main rounded-xl border border-border-base overflow-hidden"
+  <div class="fixed z-50 min-w-[200px] bg-white rounded-xl border border-border-base overflow-hidden"
     [style.left.px]="contextMenuPos().x" [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()"
     (contextmenu)="$event.preventDefault()">
     <button (click)="onAnnotate()"

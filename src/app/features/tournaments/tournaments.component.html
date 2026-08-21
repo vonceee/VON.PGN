@@ -15,7 +15,7 @@
     <!-- Tab Dropdown -->
     <div class="relative" #tabDropdownContainer>
       <button (click)="toggleTabDropdown()"
-        class="flex items-center justify-between px-4 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 font-semibold whitespace-nowrap cursor-pointer">
+        class="flex items-center justify-between px-4 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 font-semibold whitespace-nowrap cursor-pointer">
         <span class="flex items-center gap-2">
           @if (activeTab() === 'ongoing') {
           <span class="w-2 h-2 rounded-full bg-green-500"></span>
@@ -27,7 +27,7 @@
 
       @if (isTabDropdownOpen()) {
       <div
-        class="absolute top-full left-0 mt-1 bg-main border border-border-base rounded-xl z-20 overflow-hidden min-w-[140px] shadow-lg">
+        class="absolute top-full left-0 mt-1 bg-white border border-border-base rounded-xl z-20 overflow-hidden min-w-[140px] shadow-lg">
         <button (click)="setTab('upcoming')"
           class="w-full flex items-center px-4 py-3 text-sm/6 font-semibold hover:bg-subtle cursor-pointer text-left"
           [ngClass]="{ 'text-accent': activeTab() === 'upcoming' }">
@@ -55,7 +55,7 @@
       <ng-icon name="heroMagnifyingGlass"
         class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"></ng-icon>
       <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search tournaments..."
-        class="block w-full pl-9 pr-9 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
+        class="block w-full pl-9 pr-9 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent/50" />
       @if (searchQuery()) {
       <button (click)="clearSearch()"
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-content cursor-pointer">
@@ -67,7 +67,7 @@
     <!-- Sort Dropdown -->
     <div class="relative w-48 shrink-0">
       <select [value]="sortBy()" (change)="onSortChange($event)"
-        class="w-full px-3 py-2.5 bg-main border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8 cursor-pointer"
+        class="w-full px-3 py-2.5 border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-accent/50 appearance-none bg-no-repeat bg-right pr-8 cursor-pointer"
         style="
           background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
           background-position: right 0.5rem center;
@@ -94,7 +94,7 @@
   <div class="min-h-96 flex items-center justify-center">
   </div>
   } @else if (paginatedTournaments().length === 0) {
-  <div class="bg-main rounded-xl border border-border-base p-12 text-center my-8">
+  <div class="bg-white rounded-xl border border-border-base p-12 text-center my-8">
     <div class="w-16 h-16 bg-accent/5 rounded-full flex items-center justify-center mb-6 mx-auto">
       <ng-icon name="heroCalendar" class="w-8 h-8"></ng-icon>
     </div>

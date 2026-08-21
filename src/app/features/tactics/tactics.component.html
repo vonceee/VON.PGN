@@ -24,7 +24,7 @@
         <!-- Stats Sidebar Column -->
         <div class="w-full lg:w-[400px] flex flex-col justify-center min-h-0">
           <div
-            class="w-full h-auto lg:h-[400px] max-h-[620px] mt-4 lg:mt-0 flex flex-col min-h-0 overflow-hidden border-2 border-border-base rounded-4xl bg-main">
+            class="w-full h-auto lg:h-[400px] max-h-[620px] mt-4 lg:mt-0 flex flex-col min-h-0 overflow-hidden border-2 border-border-base rounded-4xl bg-white">
             <div class="flex flex-col overflow-hidden w-full h-full">
               <!-- Top Section: Stats or Guest Prompt -->
               <div class="p-4 md:p-6 flex flex-col gap-4 shrink-0">
@@ -132,7 +132,7 @@
               <!-- Bottom Actions Section (Next / Reveal Answer) -->
               @if (status() !== 'playing') {
               <div
-                class="p-4 md:p-6 bg-main flex items-center justify-between gap-3 shrink-0 border-t border-border-base">
+                class="p-4 md:p-6 bg-white flex items-center justify-between gap-3 shrink-0 border-t border-border-base">
                 <div class="flex items-center gap-3">
                   <app-toggle [checked]="isEngineActive()" (checkedChange)="isEngineActive.set($event)"
                     title="Toggle Local Evaluation"></app-toggle>

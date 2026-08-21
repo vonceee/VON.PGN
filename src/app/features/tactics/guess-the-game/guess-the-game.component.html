@@ -53,7 +53,7 @@
               @if (getPlayerResult(game.result, 'white'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-main border border-border-base text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-white border border-border-base text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -86,7 +86,7 @@
               @if (getPlayerResult(game.result, 'black'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-main border border-border-base text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-white border border-border-base text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -111,7 +111,7 @@
           <div class="flex flex-col">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()"
               placeholder="e.g Magnus vs Hikaru"
-              class="w-full px-3 py-2 rounded-md text-sm/6 border border-border-base bg-surface outline-none placeholder:text-gray-500"
+              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
@@ -176,7 +176,7 @@
         class="border-2 border-border-base rounded-2xl flex flex-col gap-4 pr-1 xl:self-start shrink-0 sync-board-height overflow-hidden">
 
         <!-- Move Notation Card -->
-        <div class="flex-1 flex flex-col overflow-hidden bg-main rounded-xl min-h-0">
+        <div class="flex-1 flex flex-col overflow-hidden bg-white rounded-xl min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             <app-move-notation layout="grid" [moves]="moveHistory()" [currentPly]="currentPly()"
               [currentFen]="displayFen()" [initialFen]="initialFen" [showNavigation]="false"
@@ -186,7 +186,7 @@
 
         <!-- Guess Panel Card (Only for 2-column or mobile layouts) -->
         @if (!isThreeColumn()) {
-        <div class="bg-main rounded-xl p-5 flex flex-col shrink-0 space-y-4">
+        <div class="bg-white rounded-xl p-5 flex flex-col shrink-0 space-y-4">
           <!-- If NOT in 3-column mode, render target cards inline here! -->
           <div class="grid grid-cols-2 gap-3 pb-2 select-none">
             <!-- White Player Card -->
@@ -214,7 +214,7 @@
               @if (getPlayerResult(game.result, 'white'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-main border border-border-base text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-white border border-border-base text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -247,7 +247,7 @@
               @if (getPlayerResult(game.result, 'black'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-main border border-border-base text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-white border border-border-base text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -269,7 +269,7 @@
           @if (!isGameOver()) {
           <div class="flex flex-col">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()" placeholder="Type answer..."
-              class="w-full px-4 py-2 bg-main border rounded-xl outline-none text-sm/6 font-medium transition-all duration-200"
+              class="w-full px-4 py-2 bg-white border rounded-xl outline-none text-sm/6 font-medium transition-all duration-200"
               [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
@@ -306,7 +306,7 @@
         }
 
         <!-- Toolbar (Below notation / guess panel) -->
-        <div class="p-2 flex items-center justify-between bg-main rounded-xl select-none w-full shrink-0 px-4">
+        <div class="p-2 flex items-center justify-between bg-white rounded-xl select-none w-full shrink-0 px-4">
           <!-- Flip Board Button -->
           <button (click)="flipBoard()" title="Flip Board"
             class="p-2 rounded-full transition-colors cursor-pointer text-gray-500 hover:bg-subtle flex items-center justify-center">

@@ -56,7 +56,7 @@
     <div class="w-full lg:w-[400px] flex flex-col gap-4 shrink-0 min-h-0 lg:h-full lg:overflow-y-auto mt-4 lg:mt-0">
 
       <!-- Unified Control & Diagnostics Card -->
-      <div class="bg-main rounded-4xl p-6 flex flex-col gap-6 lg:my-auto h-auto">
+      <div class="bg-white rounded-4xl p-6 flex flex-col gap-6 lg:my-auto h-auto">
 
         <!-- Header block with Rating -->
         <div class="border-b border-slate-100 pb-4 flex justify-between items-start">
@@ -69,7 +69,7 @@
             <h2 class="text-xl font-medium">{{ session()?.name }}</h2>
           </div>
           @if (currentPuzzle()?.rating) {
-          <span class="px-2.5 py-1 text-xs font-medium rounded-full border border-border-base bg-main shrink-0">
+          <span class="px-2.5 py-1 text-xs font-medium rounded-full border border-border-base bg-white shrink-0">
             {{ currentPuzzle()?.rating }} Elo
           </span>
           }
@@ -178,7 +178,7 @@
     <!-- Gorgeous Cycle Completion Overlay -->
     @if (showCompletionOverlay() && !isFinished() && completedCycleStats(); as stats) {
     <div class="absolute inset-0 flex items-center justify-center p-4 z-50" (click)="showCompletionOverlay.set(false)">
-      <div class="bg-main rounded-4xl p-8 max-w-md w-full text-center flex flex-col items-center gap-6"
+      <div class="bg-white rounded-4xl p-8 max-w-md w-full text-center flex flex-col items-center gap-6"
         (click)="$event.stopPropagation()">
 
         <!-- Celebration Title -->

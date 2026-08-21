@@ -37,7 +37,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
         (click)="close.emit()"
       ></div>
       <div
-        class="fixed top-0 right-0 z-[101] w-full max-w-sm h-full bg-main border-l border-border-base flex flex-col overflow-hidden"
+        class="fixed top-0 right-0 z-[101] w-full max-w-sm h-full bg-white border-l border-border-base flex flex-col overflow-hidden"
         [@drawerAnimation]
       >
         <!-- Header -->

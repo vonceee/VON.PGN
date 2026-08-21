@@ -50,7 +50,7 @@ interface EditorGame {
         
         <!-- Left Side: Editor Form -->
         <div class="space-y-6">
-          <div class="bg-main rounded-xl border border-border-base p-6 md:p-8 space-y-6">
+          <div class="bg-white rounded-xl border border-border-base p-6 md:p-8 space-y-6">
             
             <!-- Title -->
             <div class="flex flex-col">
@@ -59,7 +59,7 @@ interface EditorGame {
                 type="text"
                 [(ngModel)]="title"
                 placeholder="Enter an catchy title..."
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none focus:border-accent text-base md:text-lg font-medium"
+                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-accent text-base md:text-lg font-medium"
               />
             </div>
 
@@ -70,7 +70,7 @@ interface EditorGame {
                 [(ngModel)]="summary"
                 placeholder="Brief excerpt shown in the list feed..."
                 rows="2"
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none focus:border-accent text-sm/6 resize-none"
+                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-accent text-sm/6 resize-none"
               ></textarea>
             </div>
 
@@ -81,15 +81,15 @@ interface EditorGame {
                 
                 <!-- Toolbar Helpers -->
                 <div class="flex items-center gap-1 bg-subtle/50 border border-border-base rounded-full p-1 text-xs">
-                  <button (click)="insertMarkdown('bold')" class="px-2.5 py-1 rounded-full hover:bg-main font-semibold cursor-pointer">B</button>
-                  <button (click)="insertMarkdown('italic')" class="px-2.5 py-1 rounded-full hover:bg-main italic cursor-pointer">I</button>
-                  <button (click)="insertMarkdown('header')" class="px-2.5 py-1 rounded-full hover:bg-main font-medium cursor-pointer">H2</button>
-                  <button (click)="insertMarkdown('link')" class="px-2.5 py-1 rounded-full hover:bg-main hover:underline cursor-pointer">Link</button>
+                  <button (click)="insertMarkdown('bold')" class="px-2.5 py-1 rounded-full hover:bg-white font-semibold cursor-pointer">B</button>
+                  <button (click)="insertMarkdown('italic')" class="px-2.5 py-1 rounded-full hover:bg-white italic cursor-pointer">I</button>
+                  <button (click)="insertMarkdown('header')" class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">H2</button>
+                  <button (click)="insertMarkdown('link')" class="px-2.5 py-1 rounded-full hover:bg-white hover:underline cursor-pointer">Link</button>
                   <span class="w-[1px] h-4 bg-border-base mx-1"></span>
                   <div class="relative group/insert">
-                    <button class="px-2.5 py-1 rounded-full hover:bg-main font-medium cursor-pointer">Insert game</button>
+                    <button class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">Insert game</button>
                     <!-- Dropdown for games -->
-                    <div class="absolute bottom-full right-0 mb-2 w-48 bg-main border border-border-base rounded-xl shadow-lg p-2 invisible group-hover/insert:visible opacity-0 group-hover/insert:opacity-100 transition-all z-10 flex flex-col gap-1">
+                    <div class="absolute bottom-full right-0 mb-2 w-48 bg-white border border-border-base rounded-xl shadow-lg p-2 invisible group-hover/insert:visible opacity-0 group-hover/insert:opacity-100 transition-all z-10 flex flex-col gap-1">
                       <span *ngIf="games().length === 0" class="text-sm/6 text-gray-500 text-center py-2">No games added yet</span>
                       <button
                         *ngFor="let g of games(); let idx = index"
@@ -109,7 +109,7 @@ interface EditorGame {
                 [(ngModel)]="content"
                 placeholder="Write your article here. Use [game:0] to insert your first game inline..."
                 rows="16"
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-main outline-none focus:border-accent text-base leading-relaxed resize-y min-h-[350px]"
+                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-accent text-base leading-relaxed resize-y min-h-[350px]"
               ></textarea>
             </div>
             
@@ -119,7 +119,7 @@ interface EditorGame {
                 <label class="text-sm/6 font-semibold">Status:</label>
                 <select
                   [(ngModel)]="status"
-                  class="px-3 py-2 rounded-xl border border-border-base bg-main text-sm/6 outline-none focus:border-accent"
+                  class="px-3 py-2 rounded-xl border border-border-base bg-white text-sm/6 outline-none focus:border-accent"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
@@ -153,7 +153,7 @@ interface EditorGame {
         <div class="space-y-6">
           
           <!-- PGN Games Manager Card -->
-          <div class="bg-main rounded-xl border border-border-base p-6 space-y-4">
+          <div class="bg-white rounded-xl border border-border-base p-6 space-y-4">
             <h3 class="text-lg font-semibold border-b border-border-base pb-2">PGN games manager</h3>
             
             <!-- Game adding inputs -->
@@ -165,7 +165,7 @@ interface EditorGame {
                   type="text"
                   [(ngModel)]="newGameTitle"
                   placeholder="Game title (e.g. Kasparov vs Deep Blue)"
-                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-main text-sm/6 outline-none focus:border-accent"
+                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-sm/6 outline-none focus:border-accent"
                 />
               </div>
               
@@ -174,7 +174,7 @@ interface EditorGame {
                   [(ngModel)]="newGamePgn"
                   placeholder="Paste PGN string here..."
                   rows="4"
-                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-main text-xs outline-none focus:border-accent resize-none"
+                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-xs outline-none focus:border-accent resize-none"
                 ></textarea>
               </div>
 
@@ -217,7 +217,7 @@ interface EditorGame {
           </div>
 
           <!-- Live Preview Card -->
-          <div class="bg-main rounded-xl border border-border-base p-6 space-y-4">
+          <div class="bg-white rounded-xl border border-border-base p-6 space-y-4">
             <h3 class="text-lg font-semibold border-b border-border-base pb-2">Live preview</h3>
             
             <div class="space-y-4">

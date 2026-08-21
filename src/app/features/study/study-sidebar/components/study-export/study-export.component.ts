@@ -16,7 +16,7 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
     })
   ],
   template: `
-    <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-main p-4 select-none rounded-lg">
+    <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-white p-4 select-none rounded-lg">
       <div class="flex-1 flex flex-col min-h-0 overflow-y-auto pr-1">
         <!-- Radio Options -->
         <div class="flex flex-col mb-4">

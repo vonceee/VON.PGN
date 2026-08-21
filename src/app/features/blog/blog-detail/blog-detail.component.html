@@ -1,13 +1,13 @@
 <div class="max-w-4xl mx-auto px-4 py-8">
   <!-- Error State -->
-  <div *ngIf="!isLoading() && errorMsg()" class="bg-main rounded-xl border border-red-200 p-8 text-center my-8">
+  <div *ngIf="!isLoading() && errorMsg()" class="bg-white rounded-xl border border-red-200 p-8 text-center my-8">
     <h3 class="text-lg font-medium text-red-500 mb-2">Error loading post</h3>
     <p class="text-gray-500 text-sm/6 mb-4">{{ errorMsg() }}</p>
     <a routerLink="/blog" appButton variant="outline">Back to blogs</a>
   </div>
 
   <!-- Post Detail View -->
-  <article *ngIf="!isLoading() && blog() as post" class="space-y-8 bg-main rounded-xl border border-border-base p-8">
+  <article *ngIf="!isLoading() && blog() as post" class="space-y-8 bg-white rounded-xl border border-border-base p-8">
 
     <!-- Cover Image Banner -->
     <div *ngIf="post.cover_image"
@@ -78,7 +78,7 @@
       <h2 class="text-2xl mb-6">Interactive games</h2>
 
       <div class="space-y-8">
-        <div *ngFor="let g of remainingGames()" class="bg-main rounded-xl border border-border-base p-4">
+        <div *ngFor="let g of remainingGames()" class="bg-white rounded-xl border border-border-base p-4">
           <app-blog-game-viewer [pgn]="g.pgn" [title]="g.title || ''"></app-blog-game-viewer>
         </div>
       </div>
