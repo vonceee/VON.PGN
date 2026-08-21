@@ -49,7 +49,7 @@ export class AdminDashboardComponent implements OnInit {
       case 'confirmed': return 'bg-emerald-100 text-emerald-700';
       case 'paid': return 'bg-indigo-100 text-indigo-700';
       case 'cancelled': return 'bg-rose-100 text-rose-700';
-      default: return 'bg-slate-50 text-gray-500';
+      default: return 'bg-slate-200 text-gray-500';
     }
   }
 }

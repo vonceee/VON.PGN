@@ -10,7 +10,7 @@
             <div class="flex flex-col min-w-0">
               <div class="flex items-center gap-1.5 min-w-0">
                 @if (whitePlayer().title) {
-                <span class="text-xs font-medium rounded bg-slate-50 shrink-0 px-1 py-0.5 text-blue-600-foreground">
+                <span class="text-xs font-medium rounded bg-slate-200 shrink-0 px-1 py-0.5 text-blue-600-foreground">
                   {{ whitePlayer().title }}
                 </span>
                 }
@@ -26,7 +26,8 @@
           </div>
           <!-- Clock Pill -->
           @if (facade.whiteClock()) {
-          <div class="flex items-center justify-center p-2.5 px-4 rounded-4xl bg-slate-50 text-xs shrink-0 min-w-[72px]"
+          <div
+            class="flex items-center justify-center p-2.5 px-4 rounded-4xl bg-slate-200 text-xs shrink-0 min-w-[72px]"
             [class.text-gray-500]="facade.activeColor() !== 'w'">
             {{ facade.whiteClock() }}
           </div>
@@ -40,7 +41,7 @@
             <div class="flex flex-col min-w-0">
               <div class="flex items-center gap-1.5 min-w-0">
                 @if (blackPlayer().title) {
-                <span class="text-xs font-medium rounded bg-slate-50 shrink-0 px-1 py-0.5 text-blue-600-foreground">
+                <span class="text-xs font-medium rounded bg-slate-200 shrink-0 px-1 py-0.5 text-blue-600-foreground">
                   {{ blackPlayer().title }}
                 </span>
                 }
@@ -56,7 +57,8 @@
           </div>
           <!-- Clock Pill -->
           @if (facade.blackClock()) {
-          <div class="flex items-center justify-center p-2.5 px-4 rounded-4xl bg-slate-50 text-xs shrink-0 min-w-[72px]"
+          <div
+            class="flex items-center justify-center p-2.5 px-4 rounded-4xl bg-slate-200 text-xs shrink-0 min-w-[72px]"
             [class.text-gray-500]="facade.activeColor() !== 'b'">
             {{ facade.blackClock() }}
           </div>

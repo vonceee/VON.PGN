@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="flex h-full w-full rounded-sm overflow-hidden text-xs font-semibold text-white">
       <div 
-        class="bg-slate-50 flex items-center justify-center  " 
+        class="bg-slate-200 flex items-center justify-center  " 
         [style.width.%]="stats().white"
         [title]="stats().white + '% White wins'"
       >

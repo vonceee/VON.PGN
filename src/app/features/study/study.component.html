@@ -64,7 +64,7 @@
             <!-- Opening Name Header -->
             <div class="p-2 border-b border-border-base flex items-center justify-between shrink-0 select-text">
               <div class="flex items-center gap-2 overflow-hidden">
-                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-slate-50 shrink-0">
+                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-slate-200 shrink-0">
                   {{ facade.openingEco() || 'ECO' }}
                 </span>
                 <span class="text-sm/6 font-medium truncate" [title]="name">
@@ -189,7 +189,7 @@
     class="p-2 flex items-center justify-between border-2 border-border-base rounded-4xl select-none w-full shrink-0 px-4 text-slate-900">
     <!-- Flip Board Button -->
     <button (click)="flipBoard()" title="Flip Board"
-      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-50 flex items-center justify-center">
+      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
       <ng-icon name="heroArrowsRightLeft" class="text-lg"></ng-icon>
     </button>
 
@@ -198,19 +198,19 @@
     <!-- Navigation Buttons Group -->
     <div class="flex items-center gap-1.5">
       <button (click)="goToFirst()" title="First Move"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-50 flex items-center justify-center">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
         <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
       </button>
       <button (click)="facade.onPrevMove()" title="Previous Move"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-50 flex items-center justify-center">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
         <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
       </button>
       <button (click)="facade.onNextMove()" title="Next Move"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-50 flex items-center justify-center">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
         <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
       </button>
       <button (click)="goToLast()" title="Last Move"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-50 flex items-center justify-center">
+        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
         <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
       </button>
     </div>
@@ -220,7 +220,7 @@
     <!-- Viewer Count Indicator -->
     @if (facade.isOwner()) {
     <button (click)="sidebar?.selectSection('members')" title="Viewers"
-      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-50 flex items-center justify-center gap-1.5 select-none animate-none">
+      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center gap-1.5 select-none animate-none">
       <ng-icon name="heroEye" class="text-lg"></ng-icon>
       <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
     </button>
@@ -235,7 +235,7 @@
     @if (facade.canEdit()) {
     <div class="h-4 w-px bg-muted/20 shrink-0"></div>
     <button (click)="facade.onEditMetadata()" title="Edit Game Metadata"
-      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-50 flex items-center justify-center">
+      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
       <ng-icon name="heroPencil" class="text-lg"></ng-icon>
     </button>
     }

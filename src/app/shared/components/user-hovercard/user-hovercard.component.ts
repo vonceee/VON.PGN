@@ -60,11 +60,11 @@ import { heroPuzzlePiece } from '@ng-icons/heroicons/outline';
         </div>
       } @else {
         <div class="flex flex-col gap-3 ">
-          <div class="h-6 w-32 bg-slate-50 rounded-lg"></div>
+          <div class="h-6 w-32 bg-slate-200 rounded-lg"></div>
           <div class="flex items-center justify-between mb-1">
-            <div class="h-6 w-14 bg-slate-50 rounded-lg"></div>
+            <div class="h-6 w-14 bg-slate-200 rounded-lg"></div>
           </div>
-          <div class="h-4 w-48 bg-slate-50 rounded-lg"></div>
+          <div class="h-4 w-48 bg-slate-200 rounded-lg"></div>
         </div>
       }
     </div>

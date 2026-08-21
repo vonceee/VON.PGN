@@ -7,9 +7,9 @@
     <!-- Chapters Section Button -->
     <button (click)="selectSection('chapters')" [attr.aria-label]="'Chapters'"
       [class.text-blue-600]="activeSection() === 'chapters' && !splitSection()"
-      [class.bg-slate-50]="activeSection() === 'chapters' && !splitSection()"
+      [class.bg-slate-200]="activeSection() === 'chapters' && !splitSection()"
       [class.rounded-full]="activeSection() === 'chapters' && !splitSection()"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroBookOpen" class="text-xl"></ng-icon>
       <div
         class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -20,9 +20,9 @@
     @if (canEdit()) {
     <!-- Add Chapter Button -->
     <button (click)="selectSection('add-chapter')" [attr.aria-label]="'Add chapter'"
-      [class.text-blue-600]="activeSection() === 'add-chapter'" [class.bg-slate-50]="activeSection() === 'add-chapter'"
+      [class.text-blue-600]="activeSection() === 'add-chapter'" [class.bg-slate-200]="activeSection() === 'add-chapter'"
       [class.rounded-full]="activeSection() === 'add-chapter'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroPlus" class="text-xl"></ng-icon>
       <div
         class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -34,9 +34,9 @@
     @if (isOwner()) {
     <!-- Study Settings Button -->
     <button (click)="selectSection('settings')" [attr.aria-label]="'Study settings'"
-      [class.text-blue-600]="activeSection() === 'settings'" [class.bg-slate-50]="activeSection() === 'settings'"
+      [class.text-blue-600]="activeSection() === 'settings'" [class.bg-slate-200]="activeSection() === 'settings'"
       [class.rounded-full]="activeSection() === 'settings'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroCog6Tooth" class="text-xl"></ng-icon>
       <div
         class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -50,9 +50,9 @@
 
     <!-- Members Toggle -->
     <button (click)="selectSection('members')" [attr.aria-label]="'Members'"
-      [class.text-blue-600]="activeSection() === 'members'" [class.bg-slate-50]="activeSection() === 'members'"
+      [class.text-blue-600]="activeSection() === 'members'" [class.bg-slate-200]="activeSection() === 'members'"
       [class.rounded-full]="activeSection() === 'members'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroUsers" class="text-xl"></ng-icon>
       <div
         class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -63,9 +63,9 @@
 
     <!-- Metadata Toggle -->
     <button (click)="selectSection('metadata')" [attr.aria-label]="'Game metadata'"
-      [class.text-blue-600]="splitSection() === 'metadata'" [class.bg-slate-50]="splitSection() === 'metadata'"
+      [class.text-blue-600]="splitSection() === 'metadata'" [class.bg-slate-200]="splitSection() === 'metadata'"
       [class.rounded-full]="splitSection() === 'metadata'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroTag" class="text-xl"></ng-icon>
       <div
         class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -76,9 +76,9 @@
     <!-- Annotate Toggle -->
     @if (canEdit()) {
     <button (click)="selectSection('annotate')" [attr.aria-label]="'Annotate move'"
-      [class.text-blue-600]="activeSection() === 'annotate'" [class.bg-slate-50]="activeSection() === 'annotate'"
+      [class.text-blue-600]="activeSection() === 'annotate'" [class.bg-slate-200]="activeSection() === 'annotate'"
       [class.rounded-full]="activeSection() === 'annotate'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroPencilSquare" class="text-xl"></ng-icon>
       <div
         class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -89,8 +89,8 @@
 
     <!-- Chat Toggle -->
     <button (click)="selectSection('chat')" [attr.aria-label]="'Chat'" [class.text-blue-600]="splitSection() === 'chat'"
-      [class.bg-slate-50]="splitSection() === 'chat'" [class.rounded-full]="splitSection() === 'chat'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+      [class.bg-slate-200]="splitSection() === 'chat'" [class.rounded-full]="splitSection() === 'chat'"
+      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroChatBubbleLeftRight" class="text-xl"></ng-icon>
       <div
         class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -101,9 +101,9 @@
     <!-- Share/Export PGN Toggle -->
     @if (isExportAllowed()) {
     <button (click)="selectSection('export')" [attr.aria-label]="'Export PGN'"
-      [class.text-blue-600]="activeSection() === 'export'" [class.bg-slate-50]="activeSection() === 'export'"
+      [class.text-blue-600]="activeSection() === 'export'" [class.bg-slate-200]="activeSection() === 'export'"
       [class.rounded-full]="activeSection() === 'export'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroShare" class="text-xl"></ng-icon>
       <div
         class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -116,9 +116,9 @@
   <!-- Voice Call Toggle (Bottom of Menu Dock) -->
   @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
   <button (click)="toggleVideoCall()" [attr.aria-label]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
-    [class.text-rose-500]="webrtc.isCallActive()" [class.bg-slate-50]="webrtc.isCallActive()"
+    [class.text-rose-500]="webrtc.isCallActive()" [class.bg-slate-200]="webrtc.isCallActive()"
     [class.rounded-full]="webrtc.isCallActive()" [class.text-gray-500]="!webrtc.isCallActive()"
-    class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-50 flex items-center justify-center relative group">
+    class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
     <ng-icon [name]="webrtc.isCallActive() ? 'heroPhoneXMark' : 'heroPhone'" class="text-xl"></ng-icon>
     <div
       class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-border-base rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
@@ -140,7 +140,7 @@
   <div class="flex-1 min-h-0 flex flex-col relative gap-4">
     @if (isExpanded() && isCollapsed()) {
     <div class="flex items-center justify-end p-2 bg-white rounded-xl border border-border-base shrink-0">
-      <button (click)="isExpanded.set(false)" class="p-1 hover:bg-slate-50 rounded-lg cursor-pointer text-gray-500">
+      <button (click)="isExpanded.set(false)" class="p-1 hover:bg-slate-200 rounded-lg cursor-pointer text-gray-500">
         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
         </svg>

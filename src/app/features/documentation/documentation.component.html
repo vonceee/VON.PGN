@@ -6,9 +6,9 @@
     <div class="mb-8">
       <nav class="space-y-1">
         <div *ngFor="let section of sections" class="flex flex-col">
-          <button (click)="scrollTo(section.id)" [class.bg-slate-50]="activeSection === section.id"
+          <button (click)="scrollTo(section.id)" [class.bg-slate-200]="activeSection === section.id"
             [class.font-semibold]="activeSection === section.id"
-            class="w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-slate-50 transition-all duration-150 flex items-center justify-between group cursor-pointer">
+            class="w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-slate-200 transition-all duration-150 flex items-center justify-between group cursor-pointer">
             <span>{{ section.title }}</span>
             <span *ngIf="activeSection === section.id" class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
           </button>

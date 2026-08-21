@@ -59,7 +59,7 @@ import { BoardThemeService } from '../../../../core/services/board-theme.service
                 @for (piece of promotionPieces; track piece.type) {
                   <button
                     (click)="selectPromotion(piece.type)"
-                    class="w-20 h-20 flex items-center justify-center rounded-xl bg-slate-50 hover:bg-surface border border-border-base  active:scale-90"
+                    class="w-20 h-20 flex items-center justify-center rounded-xl bg-slate-200 hover:bg-surface border border-border-base  active:scale-90"
                   >
                     <img
                       [src]="getPromotionPieceUrl(piece.type, p.color)"

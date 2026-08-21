@@ -41,7 +41,7 @@ import { Router } from '@angular/router';
               @for (user of searchResults(); track user.uid) {
                 <button
                   (click)="viewUserProfile(user)"
-                  class="w-full flex items-center px-4 py-2 text-sm/6 hover:bg-slate-50 text-left transition-colors cursor-pointer"
+                  class="w-full flex items-center px-4 py-2 text-sm/6 hover:bg-slate-200 text-left transition-colors cursor-pointer"
                 >
                   <span class="font-medium truncate">{{ user.username }}</span>
                 </button>
@@ -58,7 +58,7 @@ import { Router } from '@angular/router';
         <button
           (click)="close.emit()"
           aria-label="Close menu"
-          class="p-1.5 cursor-pointer relative group text-gray-500 transition-colors flex items-center justify-center rounded-lg hover:bg-slate-50 shrink-0"
+          class="p-1.5 cursor-pointer relative group text-gray-500 transition-colors flex items-center justify-center rounded-lg hover:bg-slate-200 shrink-0"
         >
           <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -79,10 +79,10 @@ import { Router } from '@angular/router';
                   <a
                     [routerLink]="link.path"
                     [queryParams]="link.queryParams"
-                    routerLinkActive="bg-slate-50 text-blue-600 font-semibold"
+                    routerLinkActive="bg-slate-200 text-blue-600 font-semibold"
                     [routerLinkActiveOptions]="{ exact: !link.queryParams }"
                     (click)="close.emit()"
-                    class="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
+                    class="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-200 transition-all duration-200"
                   >
                     <span>{{ link.label }}</span>
                   </a>
@@ -98,7 +98,7 @@ import { Router } from '@angular/router';
         @if (authService.isAuthenticated()) {
           <!-- User Profile Card -->
           <div class="flex items-center gap-3 px-3.5 py-2.5 mb-4 bg-white rounded-xl border border-border-base">
-            <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">
+            <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
               <svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
@@ -112,10 +112,10 @@ import { Router } from '@angular/router';
           <div class="flex flex-col gap-1">
             <a
               routerLink="/profile"
-              routerLinkActive="bg-slate-50 text-blue-600 font-semibold"
+              routerLinkActive="bg-slate-200 text-blue-600 font-semibold"
               [routerLinkActiveOptions]="{ exact: true }"
               (click)="close.emit()"
-              class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
+              class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-200 transition-all duration-200"
             >
               Profile
             </a>
@@ -123,10 +123,10 @@ import { Router } from '@angular/router';
             @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
               <a
                 routerLink="/my-events"
-                routerLinkActive="bg-slate-50 text-blue-600 font-semibold"
+                routerLinkActive="bg-slate-200 text-blue-600 font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-200 transition-all duration-200"
               >
                 My Tournaments
               </a>
@@ -135,10 +135,10 @@ import { Router } from '@angular/router';
             @if (userService.currentUser()?.is_admin || authService.currentUser()?.is_admin) {
               <a
                 routerLink="/admin"
-                routerLinkActive="bg-slate-50 text-blue-600 font-semibold"
+                routerLinkActive="bg-slate-200 text-blue-600 font-semibold"
                 [routerLinkActiveOptions]="{ exact: true }"
                 (click)="close.emit()"
-                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-50 transition-all duration-200"
+                class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-200 transition-all duration-200"
               >
                 Admin Panel
               </a>

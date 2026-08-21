@@ -12,7 +12,7 @@ import { filter, map, startWith } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
   providers: [],
   template: `
-    <div class="flex min-h-screen bg-slate-50">
+    <div class="flex min-h-screen bg-slate-200">
       <!-- Sidebar -->
       <aside class="w-80 bg-white fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-border-base">
         <div class="p-8 border-b border-border-base">
@@ -30,13 +30,13 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin" routerLinkActive="bg-blue-50 text-blue-600" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-50 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin" routerLinkActive="bg-blue-50 text-blue-600" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
                 
                 <span>Dashboard</span>
               </a>
             </li>
             <li>
-              <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-50 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
                 
                 <span>Users</span>
               </a>
@@ -48,7 +48,7 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin/courses" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-50 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin/courses" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
                 
                 <span>Courses</span>
               </a>
@@ -60,14 +60,14 @@ import { filter, map, startWith } from 'rxjs';
           </div>
           <ul class="space-y-1 px-2">
             <li>
-              <a routerLink="/admin/coaches" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-50 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin/coaches" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
                 
                 <span>Coach Profiles</span>
               </a>
             </li>
 
             <li>
-              <a routerLink="/admin/academy-enrollments" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-50 hover:text-blue-600 mx-2  ">
+              <a routerLink="/admin/academy-enrollments" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
                 
                 <span>Enrollments</span>
               </a>
@@ -85,10 +85,10 @@ import { filter, map, startWith } from 'rxjs';
           </div>
 
           <div class="flex items-center gap-4">
-            <div class="h-8 w-px bg-slate-50 mx-2"></div>
+            <div class="h-8 w-px bg-slate-200 mx-2"></div>
 
             <div class="flex items-center gap-3 pl-2 group cursor-pointer">
-              <div class="w-10 h-10 rounded bg-slate-50 flex items-center justify-center text-gray-500 font-semibold overflow-hidden">
+              <div class="w-10 h-10 rounded bg-slate-200 flex items-center justify-center text-gray-500 font-semibold overflow-hidden">
                 @if (user()?.avatar) {
                   <img [src]="user()?.avatar" class="w-full h-full object-cover">
                 } @else {
@@ -104,7 +104,7 @@ import { filter, map, startWith } from 'rxjs';
           </div>
         </header>
 
-        <main class="flex-1 p-8 lg:p-12 bg-slate-50">
+        <main class="flex-1 p-8 lg:p-12 bg-slate-200">
           <div class="mx-auto w-full h-full">
             <router-outlet></router-outlet>
           </div>

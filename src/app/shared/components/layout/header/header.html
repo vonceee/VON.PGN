@@ -8,8 +8,8 @@
     <!-- Learn Dropdown -->
     <div class="group relative" routerLinkActive #learnActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">
-      <a [class.bg-slate-50]="learnActive.isActive"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+      <a [class.bg-slate-200]="learnActive.isActive"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-200 transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         <span>Learn</span>
         <ng-icon name="heroChevronDown"
           class="w-3.5 h-3.5 text-gray-500/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
@@ -54,8 +54,8 @@
     <!-- Practice Dropdown -->
     <div class="group relative" routerLinkActive #practiceActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">
-      <a [class.bg-slate-50]="practiceActive.isActive"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+      <a [class.bg-slate-200]="practiceActive.isActive"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-200 transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         <span>Practice</span>
         <ng-icon name="heroChevronDown"
           class="w-3.5 h-3.5 text-gray-500/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
@@ -86,8 +86,8 @@
     <!-- Museum Dropdown -->
     <div class="group relative" routerLinkActive #museumActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">
-      <a [class.bg-slate-50]="museumActive.isActive"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+      <a [class.bg-slate-200]="museumActive.isActive"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-200 transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         <span>Museum</span>
         <ng-icon name="heroChevronDown"
           class="w-3.5 h-3.5 text-gray-500/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
@@ -118,8 +118,8 @@
     <!-- More Dropdown -->
     <div class="group relative" routerLinkActive #moreActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">
-      <a [class.bg-slate-50]="moreActive.isActive"
-        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-50 transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
+      <a [class.bg-slate-200]="moreActive.isActive"
+        class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-200 transition-colors after:content-[''] after:absolute after:-bottom-3 after:inset-x-0 after:h-3 after:z-10">
         <span>More</span>
         <ng-icon name="heroChevronDown"
           class="w-3.5 h-3.5 text-gray-500/70 group-hover:rotate-180 transition-transform duration-200"></ng-icon>
@@ -161,7 +161,7 @@
     <!-- Desktop Search Bar -->
     <div class="relative hidden lg:block group/search" #searchContainer>
       <div
-        class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-slate-50 border border-border-base focus-within:border-blue-600/40 focus-within:bg-white transition-all">
+        class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-slate-200 border border-border-base focus-within:border-blue-600/40 focus-within:bg-white transition-all">
         <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 shrink-0 mr-2"></ng-icon>
         <input #searchInput type="text" placeholder="Search" [value]="searchQuery()" (input)="onSearchInput($event)"
           (focus)="isSearchOpen.set(true)" class="bg-transparent outline-none text-sm/6 w-full " />

@@ -92,7 +92,7 @@
 
               <!-- Stockfish Local Engine Evaluation Lines -->
               @if (isEngineActive() && status() !== 'playing') {
-              <div class="border-t border-border-base bg-slate-50 shrink-0">
+              <div class="border-t border-border-base bg-slate-200 shrink-0">
                 @if (fenError()) {
                 <div class="text-xs text-rose-600 font-semibold p-4 bg-rose-50 border-b border-border-base">
                   FEN Error: {{ fenError() }}
@@ -142,7 +142,7 @@
                 <div class="flex items-center gap-3">
                   @if (status() === 'failed' && !hasRevealedSolution()) {
                   <button (click)="revealSolution()" title="Reveal Answer"
-                    class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-50 flex items-center justify-center">
+                    class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
                     <ng-icon name="heroEye" class="text-3xl"></ng-icon>
                   </button>
                   }

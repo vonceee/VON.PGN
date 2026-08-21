@@ -1,14 +1,13 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent } from '@shared/ui';
 import { MoveNode, GLYPH_MAPPING, GlyphId } from '../../../../../core/models/study.model';
 import { StudyFacade } from '../../../services/study.facade';
 
 @Component({
   selector: 'app-study-annotate',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './study-annotate.component.html',
   host: {
     'class': 'flex flex-col min-h-0 overflow-hidden'

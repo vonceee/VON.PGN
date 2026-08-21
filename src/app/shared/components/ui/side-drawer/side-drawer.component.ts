@@ -45,7 +45,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
           <h2 class="text-xl font-medium">{{ title() }}</h2>
           <button
             (click)="close.emit()"
-            class="p-2 rounded-full hover:bg-slate-50 text-gray-500 transition-all"
+            class="p-2 rounded-full hover:bg-slate-200 text-gray-500 transition-all"
             aria-label="Close drawer"
           >
             <ng-icon name="heroXMark" class="w-6 h-6"></ng-icon>

@@ -16,7 +16,7 @@
       </p>
 
       <!-- Tournament name display -->
-      <div class="bg-slate-50  rounded-lg px-4 py-2.5 mb-4 text-center">
+      <div class="bg-slate-200  rounded-lg px-4 py-2.5 mb-4 text-center">
         <span class="font-semibold text-sm/6">{{ itemName() }}</span>
       </div>
 
@@ -36,7 +36,7 @@
 
     <!-- Actions -->
     <div class="flex gap-3 px-6 pb-6">
-      <button (click)="onCancel()" class="flex-1 px-4 py-2.5 rounded-lg  text-sm/6 bg-slate-50 hover:bg-slate-50   ">
+      <button (click)="onCancel()" class="flex-1 px-4 py-2.5 rounded-lg  text-sm/6 bg-slate-200 hover:bg-slate-200   ">
         Cancel
       </button>
       <button (click)="onConfirm()" [disabled]="!canDelete || loading()"

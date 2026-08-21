@@ -25,7 +25,7 @@
             </button>
           </div>
           <button (click)="closeFollowModal()"
-            class="p-1.5 rounded-lg hover:text-gray-500 hover:bg-slate-50 cursor-pointer">
+            class="p-1.5 rounded-lg hover:text-gray-500 hover:bg-slate-200 cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
               stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -72,7 +72,7 @@
             <div class="flex items-center gap-3 p-3 rounded-xl group">
               <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
                 [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
-                class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-sm/6 font-medium text-gray-500 shrink-0">
+                class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-sm/6 font-medium text-gray-500 shrink-0">
                 {{ userItem.username.charAt(0) || 'U' }}
               </a>
               <div class="flex-1 min-w-0">
@@ -85,7 +85,7 @@
               <button (click)="toggleTabUserFollow(userItem)"
                 class="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer shrink-0"
                 [class.bg-blue-600]="!userItem.is_following" [class.text-white]="!userItem.is_following"
-                [class.hover:bg-blue-600]="!userItem.is_following" [class.bg-slate-50]="userItem.is_following"
+                [class.hover:bg-blue-600]="!userItem.is_following" [class.bg-slate-200]="userItem.is_following"
                 [class.text-gray-500]="userItem.is_following" [class.hover:bg-red-50]="userItem.is_following"
                 [class.border]="userItem.is_following" [class.border-border-base]="userItem.is_following"
                 [class.hover:text-red-500]="userItem.is_following" [class.hover:border-red-200]="userItem.is_following">
@@ -182,7 +182,7 @@
         @if (loadingStudies()) {
         <div class="text-center py-6 text-sm/6 text-gray-500">Loading studies...</div>
         } @else if (studies().length === 0) {
-        <div class="flex-1 flex flex-col items-center justify-center bg-slate-50/30 rounded-2xl p-12 text-center">
+        <div class="flex-1 flex flex-col items-center justify-center bg-slate-200/30 rounded-2xl p-12 text-center">
           <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6">
             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -199,7 +199,7 @@
         <div class="grid grid-cols-1 gap-3">
           @for (study of studies(); track study.id) {
           <a [routerLink]="'/study/' + study.id"
-            class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 no-underline text-inherit cursor-pointer">
+            class="flex items-center justify-between p-4 rounded-2xl bg-slate-200 no-underline text-inherit cursor-pointer">
             <div class="flex flex-col min-w-0">
               <span class="font-medium truncate">{{ study.name }}</span>
               <span class="text-xs text-gray-500 mt-0.5">{{ study.chapters_count }} Chapters &middot; Updated {{
@@ -223,7 +223,7 @@
         @if (loadingBookmarks()) {
         <div class="text-center py-6 text-sm/6 text-gray-500">Loading bookmarks...</div>
         } @else if (tournaments().length === 0) {
-        <div class="flex-1 flex flex-col items-center justify-center bg-slate-50/30 rounded-2xl p-12 text-center">
+        <div class="flex-1 flex flex-col items-center justify-center bg-slate-200/30 rounded-2xl p-12 text-center">
           <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6">
             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"

@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
       <div class="overflow-x-auto border border-border-base rounded-2xl bg-white mb-8">
         <table class="w-full text-left border-collapse text-sm">
           <thead>
-            <tr class="border-b border-border-base bg-slate-50/50 text-slate-900">
+            <tr class="border-b border-border-base bg-slate-200/50 text-slate-900">
               <th class="p-4 font-semibold">Method</th>
               <th class="p-4 font-semibold">Endpoint</th>
               <th class="p-4 font-semibold">Description</th>
