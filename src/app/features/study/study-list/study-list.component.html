@@ -1,8 +1,8 @@
 <div appFloatingCursorContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
   <header class="mb-6">
     <h1 class="text-4xl md:text-5xl mb-2">Study</h1>
-    <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">interactive, collaborative
-      digital notebook designed for organizing, analyzing, and sharing chess knowledge.</p>
+    <p class="text-muted text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">digital notebook for
+      organizing, analyzing, and sharing chess knowledge.</p>
   </header>
 
   <!-- Search & Filter Bar -->
@@ -114,7 +114,8 @@
     } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       @for (study of studies(); track study.id) {
-      <div [appFloatingCursorTrigger]="getCategoryLabel(study.category)" [cursorIcon]="getCategoryIcon(study.category)" [routerLink]="'/study/' + study.id"
+      <div [appFloatingCursorTrigger]="getCategoryLabel(study.category)" [cursorIcon]="getCategoryIcon(study.category)"
+        [routerLink]="'/study/' + study.id"
         class="bg-content text-white border border-white/10 rounded-xl flex flex-col md:flex-row-reverse overflow-hidden hover:border-white/30 transition-all duration-300 cursor-none group">
         <!-- Chess Board Preview Container -->
         <div

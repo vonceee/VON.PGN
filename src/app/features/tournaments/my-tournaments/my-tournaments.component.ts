@@ -1,4 +1,4 @@
-import { Component, inject, signal, PLATFORM_ID } from '@angular/core';
+import { Component, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, of } from 'rxjs';
@@ -11,16 +11,20 @@ import { ButtonComponent } from '@shared/ui';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { FormsModule } from '@angular/forms';
 
-import { provideIcons } from '@ng-icons/core';
-import { heroTrophy } from '@ng-icons/heroicons/outline';
+import { provideIcons, NgIconComponent } from '@ng-icons/core';
+import { heroTrophy, heroEye, heroPencilSquare, heroTrash, heroPlus } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-my-tournaments',
   standalone: true,
-  imports: [CommonModule, FormsModule, ConfirmDeleteModalComponent, ButtonComponent, RouterLink],
+  imports: [CommonModule, FormsModule, ConfirmDeleteModalComponent, ButtonComponent, RouterLink, NgIconComponent],
   providers: [
     provideIcons({
       heroTrophy,
+      heroEye,
+      heroPencilSquare,
+      heroTrash,
+      heroPlus,
     }),
   ],
   templateUrl: './my-tournaments.component.html',
@@ -35,6 +39,18 @@ export class MyTournamentsComponent {
   loading = signal(true);
   deleteTarget = signal<Tournament | null>(null);
   deleting = signal(false);
+  searchQuery = signal('');
+
+  filteredTournaments = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const list = this.tournaments() || [];
+    if (!query) return list;
+    return list.filter(tournament =>
+      tournament.name.toLowerCase().includes(query) ||
+      (tournament.location && tournament.location.toLowerCase().includes(query)) ||
+      tournament.status.toLowerCase().includes(query)
+    );
+  });
 
   tournaments = toSignal(
     this.refresh$.pipe(
@@ -93,5 +109,14 @@ export class MyTournamentsComponent {
       day: 'numeric',
       year: 'numeric',
     });
+  }
+
+  onSearchInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+  }
+
+  clearSearch() {
+    this.searchQuery.set('');
   }
 }
