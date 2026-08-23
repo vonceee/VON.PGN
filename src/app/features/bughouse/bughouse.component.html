@@ -250,7 +250,7 @@
           <!-- Board Container A resizable wrapper -->
           <div
             class="bughouse-board-resize-wrapper resize-x overflow-hidden mx-auto flex flex-col gap-3 relative min-w-[280px] max-w-[700px]"
-            [style.width.px]="myBoard() === 'A' ? 500 : 380"
+            [style.--board-target-width.px]="myBoard() === 'A' ? 500 : 380"
             [class.opacity-80]="myBoard() !== 'A'">
 
             <!-- Pocket A (Top Player pieces) & Clock -->
@@ -343,7 +343,7 @@
           <!-- Board Container B resizable wrapper -->
           <div
             class="bughouse-board-resize-wrapper resize-x overflow-hidden mx-auto flex flex-col gap-3 relative min-w-[280px] max-w-[700px]"
-            [style.width.px]="myBoard() === 'B' ? 500 : 380"
+            [style.--board-target-width.px]="myBoard() === 'B' ? 500 : 380"
             [class.opacity-80]="myBoard() !== 'B'">
 
             <!-- Pocket B (Top Player pieces) & Clock -->

@@ -53,6 +53,12 @@ app-chess-board {
   }
 }
 
+.bughouse-board-resize-wrapper {
+  width: var(--board-target-width, 500px);
+  /* Cap the width to fit within viewport height (100vh - pockets - header - page padding) */
+  max-width: min(var(--board-target-width, 500px), calc(100vh - 240px));
+}
+
 /* Make parent cards fit the horizontal resizable board's width */
 .bg-white.rounded-2xl.p-6.border.border-border-base.flex.flex-col {
   width: fit-content;
