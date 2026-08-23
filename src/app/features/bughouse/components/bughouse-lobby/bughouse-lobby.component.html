@@ -1,0 +1,154 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+  <!-- Left 2 Columns: Team Setup & Search -->
+  <div class="lg:col-span-2 flex flex-col gap-8">
+    <!-- Team Slots Card -->
+    <div class="border-2 border-border-base rounded-2xl p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Slot 1: Active User -->
+        <div class="flex items-center gap-4 p-4 rounded-xl border border-border-base bg-slate-200">
+          <div class="flex-1 min-w-0">
+            <span class="font-bold block truncate">{{ currentUserProfile().name }}</span>
+          </div>
+        </div>
+
+        <!-- Slot 2: Invited Partner -->
+        @if (partner(); as p) {
+        <div class="flex items-center gap-4 p-4 rounded-xl border border-border-base bg-slate-200 relative group">
+          <div class="flex-1 min-w-0">
+            <span class="font-bold block truncate">{{ p.name }}</span>
+          </div>
+          <button (click)="kickPartner.emit()"
+            class="p-1 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer"
+            title="Kick player">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+        } @else {
+        <div
+          class="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed border-border-base hover:border-blue-600/40 bg-slate-200/50 transition-all text-center min-h-[82px]">
+          <ng-icon name="heroUserPlus" class="text-gray-500 text-2xl mb-1"></ng-icon>
+          <span class="text-xs font-semibold text-gray-500">Invite a Partner below to play</span>
+        </div>
+        }
+      </div>
+
+      <!-- Sent Outbox Invitations -->
+      @if (sentInvites().length > 0) {
+      <div class="mt-6 pt-6 border-t border-border-base flex flex-col gap-3">
+        <label class="text-xs font-bold text-gray-500 uppercase block">Sent Invitations</label>
+        <div class="space-y-3">
+          @for (invite of sentInvites(); track invite.id) {
+          <div class="flex items-center justify-between p-3.5 rounded-xl border border-border-base bg-slate-200/50">
+            <div class="flex items-center gap-3">
+              @if (invite.status === 'pending') {
+              <div class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              } @else if (invite.status === 'accepted') {
+              <ng-icon name="heroCheckCircle" class="text-green-600 text-lg"></ng-icon>
+              } @else {
+              <ng-icon name="heroXCircle" class="text-rose-500 text-lg"></ng-icon>
+              }
+              <div>
+                <span class="font-bold text-sm block leading-tight">{{ invite.receiver }}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold capitalize" [class.text-amber-500]="invite.status === 'pending'"
+                [class.text-green-600]="invite.status === 'accepted'"
+                [class.text-rose-500]="invite.status === 'rejected'">
+                {{ invite.status }}
+              </span>
+              @if (invite.status === 'pending') {
+              <button class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-border-base font-medium text-xs hover:bg-slate-200 transition-all cursor-pointer" (click)="cancelSentInvite.emit(invite.id)">
+                Cancel
+              </button>
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Players Invitation Pool -->
+    <div class="border-2 border-border-base rounded-2xl p-6 flex flex-col gap-6">
+      <div>
+        <h2 class="text-xl font-semibold mb-1">Invite Player</h2>
+        <p class="text-xs text-gray-500">Search active online players to invite to your lobby.</p>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="relative group/search">
+        <div
+          class="flex items-center h-11 w-full px-4 rounded-xl bg-slate-200 border border-border-base focus-within:border-blue-600/50 focus-within:bg-white transition-all">
+          <ng-icon name="heroMagnifyingGlass" class="w-5 h-5 text-gray-500 shrink-0 mr-3"></ng-icon>
+          <input type="text" placeholder="Search online players by username..." [value]="searchQuery()"
+            (input)="searchInput.emit($event)" class="bg-transparent outline-none text-sm w-full" />
+          @if (isSearchingPlayers()) {
+          <div class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0 ml-3">
+          </div>
+          }
+        </div>
+
+        <!-- Search Results -->
+        @if (searchResults().length > 0) {
+        <div
+          class="absolute left-0 right-0 top-full mt-2 py-2 max-h-56 overflow-y-auto bg-white border border-border-base rounded-xl z-50">
+          @for (player of searchResults(); track player.name) {
+          <div class="flex items-center justify-between px-4 py-2 hover:bg-slate-200 transition-colors">
+            <div>
+              <span class="font-semibold block text-sm">{{ player.name }}</span>
+            </div>
+            <button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 text-white font-medium text-xs leading-none cursor-pointer disabled:opacity-50 disabled:pointer-events-none transition-colors" [disabled]="partner()?.name === player.name"
+              (click)="invitePlayer.emit(player)">
+              Invite
+            </button>
+          </div>
+          }
+        </div>
+        } @else if (searchQuery().length >= 2 && !isSearchingPlayers()) {
+        <div
+          class="absolute left-0 right-0 top-full mt-2 px-4 py-3 bg-white border border-border-base rounded-xl text-xs italic text-gray-500 z-50">
+          No online players found with that username
+        </div>
+        }
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- Right Column: Settings & CTA (Span 1) -->
+  <div class="flex flex-col gap-6">
+    <!-- Game Type Panel -->
+    <div class="border-2 border-border-base rounded-2xl p-6 flex flex-col gap-6">
+      <div class="flex flex-col gap-5">
+        <div class="pt-4">
+          <!-- Play/Queue Action -->
+          <button
+            class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 text-white font-bold text-sm cursor-pointer disabled:opacity-50 disabled:pointer-events-none transition-colors hover:bg-slate-800"
+            [disabled]="!partner()" (click)="startQueue.emit()">
+            <ng-icon name="heroPlay" class="text-lg"></ng-icon>
+            Find Bughouse Match
+          </button>
+          @if (!partner()) {
+          <span class="text-[10px] text-rose-500 font-semibold mt-1.5 block text-center animate-pulse">Invite partner
+            to enable search</span>
+          }
+
+          <button
+            class="w-full flex items-center justify-center gap-2 py-2 mt-4 rounded-xl text-xs font-semibold border border-dashed border-blue-400 bg-blue-50/20 text-blue-700 hover:bg-blue-50 cursor-pointer"
+            (click)="forceStartDebugGame.emit()">
+            <ng-icon name="heroPlay" class="text-base"></ng-icon>
+            Bypass to Game (Debug)
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

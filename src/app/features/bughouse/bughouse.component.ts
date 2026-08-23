@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { Chess, Move } from 'chess.js';
-import { ChessBoardComponent } from '../../shared/components/chess/chess-board/chess-board.component';
 import { AudioService } from '../../core/services/audio.service';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -58,14 +57,22 @@ interface IncomingInvite {
   sender: string;
 }
 
+import { BughouseLobbyComponent } from './components/bughouse-lobby/bughouse-lobby.component';
+import { BughouseQueueComponent } from './components/bughouse-queue/bughouse-queue.component';
+import { BughouseMatchedComponent } from './components/bughouse-matched/bughouse-matched.component';
+import { BughouseBoardComponent } from './components/bughouse-board/bughouse-board.component';
+
 @Component({
   selector: 'app-bughouse',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    ChessBoardComponent,
     NgIcon,
+    BughouseLobbyComponent,
+    BughouseQueueComponent,
+    BughouseMatchedComponent,
+    BughouseBoardComponent,
   ],
   providers: [
     provideIcons({

@@ -1,0 +1,88 @@
+<div
+  class="bughouse-board-resize-wrapper resize-x overflow-hidden mx-auto flex flex-col gap-3 relative min-w-[280px] max-w-[700px]"
+  [style.--board-target-width.px]="myBoard() === boardId() ? 500 : 380"
+  [class.opacity-80]="myBoard() !== boardId()">
+
+  <!-- Pocket (Top Player pieces) & Clock -->
+  <div class="flex items-center justify-between gap-2 px-2 py-1 w-full">
+    <div class="flex items-center gap-2 justify-start">
+      @for (piece of getPocketKeys(); track piece) {
+      <div
+        class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
+        [class.opacity-40]="topPocket()[piece] === 0"
+        [class.cursor-pointer]="topPocket()[piece] > 0 && turn() === topColor() && myBoard() === boardId() && myColor() === topColor()"
+        [class.border-blue-600]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === topColor()"
+        [class.bg-blue-600/10]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === topColor()"
+        (click)="myBoard() === boardId() && myColor() === topColor() && topPocket()[piece] > 0 && startDropMode.emit({ board: boardId(), piece, color: topColor() })">
+        <img [src]="getPocketPieceSvg(piece, topColor())"
+          [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
+        <span
+          class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
+          {{ topPocket()[piece] }}
+        </span>
+      </div>
+      }
+    </div>
+    <div class="flex items-center justify-center py-1.5 px-3 rounded-md text-sm border-2 border-border-base shrink-0 text-semibold"
+      [class.text-rose-500]="topTime() < 20"
+      [class.bg-green-100]="turn() === topColor() && gameActive() && !winner()"
+      [class.border-green-200]="turn() === topColor() && gameActive() && !winner()">
+      {{ formatTime(topTime()) }}
+    </div>
+  </div>
+
+  <!-- Board wrapper -->
+  <div class="relative w-full aspect-square overflow-hidden">
+    <app-chess-board [fen]="fen()" [orientation]="orientation()"
+      [interactive]="gameActive() && !winner() && myBoard() === boardId() && turn() === myColor()"
+      [hideCoordinates]="true" [resizable]="false" [fluid]="true"
+      (moveMade)="moveMade.emit($event)"></app-chess-board>
+
+    <!-- Transparent Drop Overlay Grid -->
+    @if (activeDropBoard() === boardId()) {
+    <div class="absolute inset-0 z-50 bg-black/5 grid grid-cols-8 grid-rows-8">
+      @for (sq of getGridSquares(); track sq) {
+      <div class="w-full h-full flex items-center justify-center relative cursor-pointer group"
+        (click)="onGridSquareClicked(sq)">
+        @if (isSquareTargetable(sq)) {
+        <div
+          class="w-4 h-4 rounded-full bg-green-500/70 border border-white group-hover:scale-150 transition-transform">
+        </div>
+        <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
+        </div>
+        }
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- Pocket (Bottom Player pieces) & Clock -->
+  <div class="flex items-center justify-between gap-2 px-2 py-1 w-full">
+    <div class="flex items-center gap-2 justify-start">
+      @for (piece of getPocketKeys(); track piece) {
+      <div
+        class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
+        [class.opacity-40]="bottomPocket()[piece] === 0"
+        [class.cursor-pointer]="bottomPocket()[piece] > 0 && turn() === bottomColor() && myBoard() === boardId() && myColor() === bottomColor()"
+        [class.border-blue-600]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === bottomColor()"
+        [class.bg-blue-600/10]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === bottomColor()"
+        (click)="myBoard() === boardId() && myColor() === bottomColor() && bottomPocket()[piece] > 0 && startDropMode.emit({ board: boardId(), piece, color: bottomColor() })">
+        <img [src]="getPocketPieceSvg(piece, bottomColor())"
+          [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
+        <span
+          class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
+          {{ bottomPocket()[piece] }}
+        </span>
+      </div>
+      }
+    </div>
+    <div class="flex items-center justify-center py-1.5 px-3 rounded-md text-sm border-2 border-border-base shrink-0 text-semibold"
+      [class.text-rose-500]="bottomTime() < 20"
+      [class.bg-green-100]="turn() === bottomColor() && gameActive() && !winner()"
+      [class.border-green-200]="turn() === bottomColor() && gameActive() && !winner()">
+      {{ formatTime(bottomTime()) }}
+    </div>
+  </div>
+
+</div>
