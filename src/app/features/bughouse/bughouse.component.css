@@ -1,8 +1,3 @@
-/* Chessboard wrapper styles */
-app-chess-board {
-  width: 100%;
-  height: 100%;
-}
 
 /* Matchmaking Radar View (Static) */
 .radar-container {
@@ -51,12 +46,6 @@ app-chess-board {
     flex-direction: row;
     align-items: flex-start;
   }
-}
-
-.bughouse-board-resize-wrapper {
-  width: var(--board-target-width, 500px);
-  /* Cap the width to fit within viewport height (100vh - pockets - header - page padding) */
-  max-width: min(var(--board-target-width, 500px), calc(100vh - 240px));
 }
 
 /* Make parent cards fit the horizontal resizable board's width */

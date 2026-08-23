@@ -11,6 +11,7 @@ type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
   imports: [CommonModule, ChessBoardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bughouse-board.component.html',
+  styleUrl: './bughouse-board.component.css',
 })
 export class BughouseBoardComponent {
   boardId = input.required<'A' | 'B'>();
