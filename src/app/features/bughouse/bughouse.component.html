@@ -5,30 +5,20 @@
     <!-- Left 2 Columns: Team Setup & Search -->
     <div class="lg:col-span-2 flex flex-col gap-8">
       <!-- Team Slots Card -->
-      <div class="bg-white border border-border-base rounded-2xl p-6 shadow-sm">
+      <div class="border-2 border-border-base rounded-2xl p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Slot 1: Active User -->
           <div class="flex items-center gap-4 p-4 rounded-xl border border-border-base bg-slate-200">
-            <div
-              class="w-12 h-12 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-lg shadow-sm border border-blue-200">
-              U
-            </div>
             <div class="flex-1 min-w-0">
               <span class="font-bold block truncate">{{ currentUserProfile().name }}</span>
-              <span class="text-xs text-gray-500 block">Board A (White)</span>
             </div>
           </div>
 
           <!-- Slot 2: Invited Partner -->
           @if (partner(); as p) {
           <div class="flex items-center gap-4 p-4 rounded-xl border border-border-base bg-slate-200 relative group">
-            <div
-              class="w-12 h-12 rounded-full bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-lg shadow-sm border border-purple-200">
-              {{ p.name[0] }}
-            </div>
             <div class="flex-1 min-w-0">
               <span class="font-bold block truncate">{{ p.name }}</span>
-              <span class="text-xs text-gray-500 block">Board B (Black)</span>
             </div>
             <button (click)="kickPartner()"
               class="p-1 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer"
@@ -89,7 +79,7 @@
       </div>
 
       <!-- Players Invitation Pool -->
-      <div class="bg-white border border-border-base rounded-2xl p-6 shadow-sm flex flex-col gap-6">
+      <div class="border-2 border-border-base rounded-2xl p-6 flex flex-col gap-6">
         <div>
           <h2 class="text-xl font-semibold mb-1">Invite Player</h2>
           <p class="text-xs text-gray-500">Search active online players to invite to your lobby.</p>
@@ -111,7 +101,7 @@
           <!-- Search Results -->
           @if (searchResults().length > 0) {
           <div
-            class="absolute left-0 right-0 top-full mt-2 py-2 max-h-56 overflow-y-auto bg-white border border-border-base rounded-xl shadow-lg z-50">
+            class="absolute left-0 right-0 top-full mt-2 py-2 max-h-56 overflow-y-auto bg-white border border-border-base rounded-xl z-50">
             @for (player of searchResults(); track player.name) {
             <div class="flex items-center justify-between px-4 py-2 hover:bg-slate-200 transition-colors">
               <div>
@@ -126,7 +116,7 @@
           </div>
           } @else if (searchQuery().length >= 2 && !isSearchingPlayers()) {
           <div
-            class="absolute left-0 right-0 top-full mt-2 px-4 py-3 bg-white border border-border-base rounded-xl shadow-lg text-xs italic text-gray-500 z-50">
+            class="absolute left-0 right-0 top-full mt-2 px-4 py-3 bg-white border border-border-base rounded-xl text-xs italic text-gray-500 z-50">
             No online players found with that username
           </div>
           }
@@ -139,9 +129,9 @@
     <!-- Right Column: Settings & CTA (Span 1) -->
     <div class="flex flex-col gap-6">
       <!-- Game Type Panel -->
-      <div class="bg-white border border-border-base rounded-2xl p-6 shadow-sm flex flex-col gap-6">
+      <div class="border-2 border-border-base rounded-2xl p-6 flex flex-col gap-6">
         <div class="flex flex-col gap-5">
-          <div class="pt-4 border-t border-border-base">
+          <div class="pt-4">
             <!-- Play/Queue Action -->
             <button appButton variant="primary"
               class="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm"
@@ -219,7 +209,7 @@
       <!-- VS (Center) -->
       <div class="col-span-1 flex flex-col items-center justify-center">
         <div
-          class="w-14 h-14 rounded-full bg-slate-900 border-4 border-white text-white font-extrabold flex items-center justify-center text-lg shadow-md tracking-normal">
+          class="w-14 h-14 rounded-full bg-slate-900 border-4 border-white text-white font-extrabold flex items-center justify-center text-lg tracking-normal">
           VS
         </div>
       </div>
@@ -252,276 +242,198 @@
   <!-- ==================== PLAYING STATE ==================== -->
   @if (lobbyState() === 'playing') {
   <div class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-8 items-start">
-
-      <!-- Left Column: Boards Container -->
-      <div class="bughouse-boards-container">
+    <!-- Boards Container -->
+    <div class="bughouse-boards-container">
 
         <!-- ==================== BOARD A ==================== -->
-        <div class="bg-white rounded-2xl p-6 border border-border-base shadow-sm relative" [style.order]="myBoard() === 'A' ? 1 : 2">
-          <div class="flex flex-col gap-3">
+        <div class="relative" [style.order]="myBoard() === 'A' ? 1 : 2">
+          <!-- Board Container A resizable wrapper -->
+          <div
+            class="bughouse-board-resize-wrapper resize-x overflow-hidden mx-auto flex flex-col gap-3 relative min-w-[280px] max-w-[700px]"
+            [style.width.px]="myBoard() === 'A' ? 500 : 380"
+            [class.opacity-80]="myBoard() !== 'A'">
 
-            <!-- Pocket A (Top Player pieces) -->
-            <div class="flex items-center justify-center gap-2 px-2 py-1" [class.opacity-80]="myBoard() !== 'A'"
-              [class.scale-95]="myBoard() !== 'A'">
-              @for (piece of getPocketKeys(); track piece) {
-              <div
-                class="relative flex items-center justify-center w-9 h-9 rounded-lg border border-border-base bg-white transition-all"
-                [class.opacity-40]="(boardAOrientation() === 'white' ? pocketA_B() : pocketA_W())[piece] === 0"
-                [class.cursor-pointer]="(boardAOrientation() === 'white' ? pocketA_B() : pocketA_W())[piece] > 0 && turnA() === (boardAOrientation() === 'white' ? 'b' : 'w') && myBoard() === 'A' && myColor() === (boardAOrientation() === 'white' ? 'b' : 'w')"
-                [class.border-blue-600]="activeDropBoard() === 'A' && activeDropPiece() === piece && activeDropColor() === (boardAOrientation() === 'white' ? 'b' : 'w')"
-                [class.bg-blue-600/10]="activeDropBoard() === 'A' && activeDropPiece() === piece && activeDropColor() === (boardAOrientation() === 'white' ? 'b' : 'w')"
-                (click)="myBoard() === 'A' && myColor() === (boardAOrientation() === 'white' ? 'b' : 'w') && (boardAOrientation() === 'white' ? pocketA_B() : pocketA_W())[piece] > 0 && startDropMode('A', piece, (boardAOrientation() === 'white' ? 'b' : 'w'))">
-                <img [src]="getPocketPieceSvg(piece, (boardAOrientation() === 'white' ? 'b' : 'w'))"
-                  [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
-                <span
-                  class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
-                  {{ (boardAOrientation() === 'white' ? pocketA_B() : pocketA_W())[piece] }}
-                </span>
+            <!-- Pocket A (Top Player pieces) & Clock -->
+            <div class="flex items-center justify-between gap-2 px-2 py-1 w-full">
+              <div class="flex items-center gap-2 justify-start">
+                @for (piece of getPocketKeys(); track piece) {
+                <div
+                  class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
+                  [class.opacity-40]="(boardAOrientation() === 'white' ? pocketA_B() : pocketA_W())[piece] === 0"
+                  [class.cursor-pointer]="(boardAOrientation() === 'white' ? pocketA_B() : pocketA_W())[piece] > 0 && turnA() === (boardAOrientation() === 'white' ? 'b' : 'w') && myBoard() === 'A' && myColor() === (boardAOrientation() === 'white' ? 'b' : 'w')"
+                  [class.border-blue-600]="activeDropBoard() === 'A' && activeDropPiece() === piece && activeDropColor() === (boardAOrientation() === 'white' ? 'b' : 'w')"
+                  [class.bg-blue-600/10]="activeDropBoard() === 'A' && activeDropPiece() === piece && activeDropColor() === (boardAOrientation() === 'white' ? 'b' : 'w')"
+                  (click)="myBoard() === 'A' && myColor() === (boardAOrientation() === 'white' ? 'b' : 'w') && (boardAOrientation() === 'white' ? pocketA_B() : pocketA_W())[piece] > 0 && startDropMode('A', piece, (boardAOrientation() === 'white' ? 'b' : 'w'))">
+                  <img [src]="getPocketPieceSvg(piece, (boardAOrientation() === 'white' ? 'b' : 'w'))"
+                    [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
+                  <span
+                    class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
+                    {{ (boardAOrientation() === 'white' ? pocketA_B() : pocketA_W())[piece] }}
+                  </span>
+                </div>
+                }
               </div>
-              }
+              <div class="flex items-center justify-center py-1.5 px-3 rounded-md text-sm border-2 border-border-base shrink-0 text-semibold"
+                [class.text-rose-500]="(boardAOrientation() === 'white' ? timeA_B() : timeA_W()) < 20"
+                [class.bg-green-100]="turnA() === (boardAOrientation() === 'white' ? 'b' : 'w') && gameActive() && !winner()"
+                [class.border-green-200]="turnA() === (boardAOrientation() === 'white' ? 'b' : 'w') && gameActive() && !winner()">
+                {{ formatTime(boardAOrientation() === 'white' ? timeA_B() : timeA_W()) }}
+              </div>
             </div>
 
-            <!-- Board Container A resizable wrapper -->
-            <div
-              class="bughouse-board-resize-wrapper resize-x overflow-hidden aspect-square mx-auto flex items-center justify-center relative min-w-[280px] max-w-[700px]"
-              [style.width.px]="myBoard() === 'A' ? 500 : 380">
+            <!-- Board wrapper -->
+            <div class="relative w-full aspect-square overflow-hidden">
+              <app-chess-board [fen]="boardAFen()" [orientation]="boardAOrientation()"
+                [interactive]="gameActive() && !winner() && myBoard() === 'A' && turnA() === myColor()"
+                [hideCoordinates]="true" [resizable]="false" [fluid]="true"
+                (moveMade)="onBoardMoveMade('A', $event)"></app-chess-board>
 
-              <div class="relative w-full h-full overflow-hidden border border-border-base rounded-xl">
-                <app-chess-board [fen]="boardAFen()" [orientation]="boardAOrientation()"
-                  [interactive]="gameActive() && !winner() && myBoard() === 'A' && turnA() === myColor()"
-                  [hideCoordinates]="true" [resizable]="false" [fluid]="true"
-                  (moveMade)="onBoardMoveMade('A', $event)"></app-chess-board>
-
-                <!-- Transparent Drop Overlay Grid for Board A -->
-                @if (activeDropBoard() === 'A') {
-                <div class="absolute inset-0 z-50 bg-black/5 grid grid-cols-8 grid-rows-8">
-                  @for (sq of getGridSquares('A'); track sq) {
-                  <div class="w-full h-full flex items-center justify-center relative cursor-pointer group"
-                    (click)="onGridSquareClicked('A', sq)">
-                    @if (isSquareTargetable('A', sq)) {
-                    <div
-                      class="w-4 h-4 rounded-full bg-green-500/70 border border-white group-hover:scale-150 transition-transform">
-                    </div>
-                    <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                    </div>
-                    }
+              <!-- Transparent Drop Overlay Grid for Board A -->
+              @if (activeDropBoard() === 'A') {
+              <div class="absolute inset-0 z-50 bg-black/5 grid grid-cols-8 grid-rows-8">
+                @for (sq of getGridSquares('A'); track sq) {
+                <div class="w-full h-full flex items-center justify-center relative cursor-pointer group"
+                  (click)="onGridSquareClicked('A', sq)">
+                  @if (isSquareTargetable('A', sq)) {
+                  <div
+                    class="w-4 h-4 rounded-full bg-green-500/70 border border-white group-hover:scale-150 transition-transform">
+                  </div>
+                  <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
                   </div>
                   }
                 </div>
                 }
               </div>
+              }
             </div>
 
-            <!-- Pocket A (Bottom Player pieces) -->
-            <div class="flex items-center justify-center gap-2 px-2 py-1" [class.opacity-80]="myBoard() !== 'A'"
-              [class.scale-95]="myBoard() !== 'A'">
-              @for (piece of getPocketKeys(); track piece) {
-              <div
-                class="relative flex items-center justify-center w-9 h-9 rounded-lg border border-border-base bg-white transition-all"
-                [class.opacity-40]="(boardAOrientation() === 'white' ? pocketA_W() : pocketA_B())[piece] === 0"
-                [class.cursor-pointer]="(boardAOrientation() === 'white' ? pocketA_W() : pocketA_B())[piece] > 0 && turnA() === (boardAOrientation() === 'white' ? 'w' : 'b') && myBoard() === 'A' && myColor() === (boardAOrientation() === 'white' ? 'w' : 'b')"
-                [class.border-blue-600]="activeDropBoard() === 'A' && activeDropPiece() === piece && activeDropColor() === (boardAOrientation() === 'white' ? 'w' : 'b')"
-                [class.bg-blue-600/10]="activeDropBoard() === 'A' && activeDropPiece() === piece && activeDropColor() === (boardAOrientation() === 'white' ? 'w' : 'b')"
-                (click)="myBoard() === 'A' && myColor() === (boardAOrientation() === 'white' ? 'w' : 'b') && (boardAOrientation() === 'white' ? pocketA_W() : pocketA_B())[piece] > 0 && startDropMode('A', piece, (boardAOrientation() === 'white' ? 'w' : 'b'))">
-                <img [src]="getPocketPieceSvg(piece, (boardAOrientation() === 'white' ? 'w' : 'b'))"
-                  [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
-                <span
-                  class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
-                  {{ (boardAOrientation() === 'white' ? pocketA_W() : pocketA_B())[piece] }}
-                </span>
+            <!-- Pocket A (Bottom Player pieces) & Clock -->
+            <div class="flex items-center justify-between gap-2 px-2 py-1 w-full">
+              <div class="flex items-center gap-2 justify-start">
+                @for (piece of getPocketKeys(); track piece) {
+                <div
+                  class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
+                  [class.opacity-40]="(boardAOrientation() === 'white' ? pocketA_W() : pocketA_B())[piece] === 0"
+                  [class.cursor-pointer]="(boardAOrientation() === 'white' ? pocketA_W() : pocketA_B())[piece] > 0 && turnA() === (boardAOrientation() === 'white' ? 'w' : 'b') && myBoard() === 'A' && myColor() === (boardAOrientation() === 'white' ? 'w' : 'b')"
+                  [class.border-blue-600]="activeDropBoard() === 'A' && activeDropPiece() === piece && activeDropColor() === (boardAOrientation() === 'white' ? 'w' : 'b')"
+                  [class.bg-blue-600/10]="activeDropBoard() === 'A' && activeDropPiece() === piece && activeDropColor() === (boardAOrientation() === 'white' ? 'w' : 'b')"
+                  (click)="myBoard() === 'A' && myColor() === (boardAOrientation() === 'white' ? 'w' : 'b') && (boardAOrientation() === 'white' ? pocketA_W() : pocketA_B())[piece] > 0 && startDropMode('A', piece, (boardAOrientation() === 'white' ? 'w' : 'b'))">
+                  <img [src]="getPocketPieceSvg(piece, (boardAOrientation() === 'white' ? 'w' : 'b'))"
+                    [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
+                  <span
+                    class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
+                    {{ (boardAOrientation() === 'white' ? pocketA_W() : pocketA_B())[piece] }}
+                  </span>
+                </div>
+                }
               </div>
-              }
+              <div class="flex items-center justify-center py-1.5 px-3 rounded-md text-sm border-2 border-border-base shrink-0 text-semibold"
+                [class.text-rose-500]="(boardAOrientation() === 'white' ? timeA_W() : timeA_B()) < 20"
+                [class.bg-green-100]="turnA() === (boardAOrientation() === 'white' ? 'w' : 'b') && gameActive() && !winner()"
+                [class.border-green-200]="turnA() === (boardAOrientation() === 'white' ? 'w' : 'b') && gameActive() && !winner()">
+                {{ formatTime(boardAOrientation() === 'white' ? timeA_W() : timeA_B()) }}
+              </div>
             </div>
 
           </div>
         </div>
 
         <!-- ==================== BOARD B ==================== -->
-        <div class="bg-white rounded-2xl p-6 border border-border-base shadow-sm relative" [style.order]="myBoard() === 'B' ? 1 : 2">
-          <div class="flex flex-col gap-3">
+        <div class="relative" [style.order]="myBoard() === 'B' ? 1 : 2">
+          <!-- Board Container B resizable wrapper -->
+          <div
+            class="bughouse-board-resize-wrapper resize-x overflow-hidden mx-auto flex flex-col gap-3 relative min-w-[280px] max-w-[700px]"
+            [style.width.px]="myBoard() === 'B' ? 500 : 380"
+            [class.opacity-80]="myBoard() !== 'B'">
 
-            <!-- Pocket B (Top Player pieces) -->
-            <div class="flex items-center justify-center gap-2 px-2 py-1" [class.opacity-80]="myBoard() !== 'B'"
-              [class.scale-95]="myBoard() !== 'B'">
-              @for (piece of getPocketKeys(); track piece) {
-              <div
-                class="relative flex items-center justify-center w-9 h-9 rounded-lg border border-border-base bg-white transition-all"
-                [class.opacity-40]="(boardBOrientation() === 'white' ? pocketB_B() : pocketB_W())[piece] === 0"
-                [class.cursor-pointer]="(boardBOrientation() === 'white' ? pocketB_B() : pocketB_W())[piece] > 0 && turnB() === (boardBOrientation() === 'white' ? 'b' : 'w') && myBoard() === 'B' && myColor() === (boardBOrientation() === 'white' ? 'b' : 'w')"
-                [class.border-blue-600]="activeDropBoard() === 'B' && activeDropPiece() === piece && activeDropColor() === (boardBOrientation() === 'white' ? 'b' : 'w')"
-                [class.bg-blue-600/10]="activeDropBoard() === 'B' && activeDropPiece() === piece && activeDropColor() === (boardBOrientation() === 'white' ? 'b' : 'w')"
-                (click)="myBoard() === 'B' && myColor() === (boardBOrientation() === 'white' ? 'b' : 'w') && (boardBOrientation() === 'white' ? pocketB_B() : pocketB_W())[piece] > 0 && startDropMode('B', piece, (boardBOrientation() === 'white' ? 'b' : 'w'))">
-                <img [src]="getPocketPieceSvg(piece, (boardBOrientation() === 'white' ? 'b' : 'w'))"
-                  [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
-                <span
-                  class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
-                  {{ (boardBOrientation() === 'white' ? pocketB_B() : pocketB_W())[piece] }}
-                </span>
+            <!-- Pocket B (Top Player pieces) & Clock -->
+            <div class="flex items-center justify-between gap-2 px-2 py-1 w-full">
+              <div class="flex items-center gap-2 justify-start">
+                @for (piece of getPocketKeys(); track piece) {
+                <div
+                  class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
+                  [class.opacity-40]="(boardBOrientation() === 'white' ? pocketB_B() : pocketB_W())[piece] === 0"
+                  [class.cursor-pointer]="(boardBOrientation() === 'white' ? pocketB_B() : pocketB_W())[piece] > 0 && turnB() === (boardBOrientation() === 'white' ? 'b' : 'w') && myBoard() === 'B' && myColor() === (boardBOrientation() === 'white' ? 'b' : 'w')"
+                  [class.border-blue-600]="activeDropBoard() === 'B' && activeDropPiece() === piece && activeDropColor() === (boardBOrientation() === 'white' ? 'b' : 'w')"
+                  [class.bg-blue-600/10]="activeDropBoard() === 'B' && activeDropPiece() === piece && activeDropColor() === (boardBOrientation() === 'white' ? 'b' : 'w')"
+                  (click)="myBoard() === 'B' && myColor() === (boardBOrientation() === 'white' ? 'b' : 'w') && (boardBOrientation() === 'white' ? pocketB_B() : pocketB_W())[piece] > 0 && startDropMode('B', piece, (boardBOrientation() === 'white' ? 'b' : 'w'))">
+                  <img [src]="getPocketPieceSvg(piece, (boardBOrientation() === 'white' ? 'b' : 'w'))"
+                    [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
+                  <span
+                    class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
+                    {{ (boardBOrientation() === 'white' ? pocketB_B() : pocketB_W())[piece] }}
+                  </span>
+                </div>
+                }
               </div>
-              }
+              <div class="flex items-center justify-center py-1.5 px-3 rounded-md text-sm border-2 border-border-base shrink-0 text-semibold"
+                [class.text-rose-500]="(boardBOrientation() === 'white' ? timeB_B() : timeB_W()) < 20"
+                [class.bg-green-100]="turnB() === (boardBOrientation() === 'white' ? 'b' : 'w') && gameActive() && !winner()"
+                [class.border-green-200]="turnB() === (boardBOrientation() === 'white' ? 'b' : 'w') && gameActive() && !winner()">
+                {{ formatTime(boardBOrientation() === 'white' ? timeB_B() : timeB_W()) }}
+              </div>
             </div>
 
-            <!-- Board Container B resizable wrapper -->
-            <div
-              class="bughouse-board-resize-wrapper resize-x overflow-hidden aspect-square mx-auto flex items-center justify-center relative min-w-[280px] max-w-[700px]"
-              [style.width.px]="myBoard() === 'B' ? 500 : 380">
+            <!-- Board wrapper -->
+            <div class="relative w-full aspect-square overflow-hidden">
+              <app-chess-board [fen]="boardBFen()" [orientation]="boardBOrientation()"
+                [interactive]="gameActive() && !winner() && myBoard() === 'B' && turnB() === myColor()"
+                [hideCoordinates]="true" [resizable]="false" [fluid]="true"
+                (moveMade)="onBoardMoveMade('B', $event)"></app-chess-board>
 
-              <div class="relative w-full h-full overflow-hidden border border-border-base rounded-xl">
-                <app-chess-board [fen]="boardBFen()" [orientation]="boardBOrientation()"
-                  [interactive]="gameActive() && !winner() && myBoard() === 'B' && turnB() === myColor()"
-                  [hideCoordinates]="true" [resizable]="false" [fluid]="true"
-                  (moveMade)="onBoardMoveMade('B', $event)"></app-chess-board>
-
-                <!-- Transparent Drop Overlay Grid for Board B -->
-                @if (activeDropBoard() === 'B') {
-                <div class="absolute inset-0 z-50 bg-black/5 grid grid-cols-8 grid-rows-8">
-                  @for (sq of getGridSquares('B'); track sq) {
-                  <div class="w-full h-full flex items-center justify-center relative cursor-pointer group"
-                    (click)="onGridSquareClicked('B', sq)">
-                    @if (isSquareTargetable('B', sq)) {
-                    <div
-                      class="w-4 h-4 rounded-full bg-green-500/70 border border-white group-hover:scale-150 transition-transform">
-                    </div>
-                    <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                    </div>
-                    }
+              <!-- Transparent Drop Overlay Grid for Board B -->
+              @if (activeDropBoard() === 'B') {
+              <div class="absolute inset-0 z-50 bg-black/5 grid grid-cols-8 grid-rows-8">
+                @for (sq of getGridSquares('B'); track sq) {
+                <div class="w-full h-full flex items-center justify-center relative cursor-pointer group"
+                  (click)="onGridSquareClicked('B', sq)">
+                  @if (isSquareTargetable('B', sq)) {
+                  <div
+                    class="w-4 h-4 rounded-full bg-green-500/70 border border-white group-hover:scale-150 transition-transform">
+                  </div>
+                  <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
                   </div>
                   }
                 </div>
                 }
               </div>
-            </div>
-
-            <!-- Pocket B (Bottom Player pieces) -->
-            <div class="flex items-center justify-center gap-2 px-2 py-1" [class.opacity-80]="myBoard() !== 'B'"
-              [class.scale-95]="myBoard() !== 'B'">
-              @for (piece of getPocketKeys(); track piece) {
-              <div
-                class="relative flex items-center justify-center w-9 h-9 rounded-lg border border-border-base bg-white transition-all"
-                [class.opacity-40]="(boardBOrientation() === 'white' ? pocketB_W() : pocketB_B())[piece] === 0"
-                [class.cursor-pointer]="(boardBOrientation() === 'white' ? pocketB_W() : pocketB_B())[piece] > 0 && turnB() === (boardBOrientation() === 'white' ? 'w' : 'b') && myBoard() === 'B' && myColor() === (boardBOrientation() === 'white' ? 'w' : 'b')"
-                [class.border-blue-600]="activeDropBoard() === 'B' && activeDropPiece() === piece && activeDropColor() === (boardBOrientation() === 'white' ? 'w' : 'b')"
-                [class.bg-blue-600/10]="activeDropBoard() === 'B' && activeDropPiece() === piece && activeDropColor() === (boardBOrientation() === 'white' ? 'w' : 'b')"
-                (click)="myBoard() === 'B' && myColor() === (boardBOrientation() === 'white' ? 'w' : 'b') && (boardBOrientation() === 'white' ? pocketB_W() : pocketB_B())[piece] > 0 && startDropMode('B', piece, (boardBOrientation() === 'white' ? 'w' : 'b'))">
-                <img [src]="getPocketPieceSvg(piece, (boardBOrientation() === 'white' ? 'w' : 'b'))"
-                  [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
-                <span
-                  class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
-                  {{ (boardBOrientation() === 'white' ? pocketB_W() : pocketB_B())[piece] }}
-                </span>
-              </div>
               }
             </div>
 
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Right Column: Sidebar (Player Names & Clocks metadata style) -->
-      <div class="bg-white border border-border-base rounded-2xl p-6 shadow-sm flex flex-col gap-6 w-full xl:w-[320px] shrink-0 select-none">
-        
-        <!-- Board A Metadata Card -->
-        <div class="flex flex-col gap-4">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Board A</h3>
-          
-          <div class="flex flex-col gap-3">
-            <!-- Board A White Player -->
-            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-border-base">
-              <div class="flex items-center gap-3 min-w-0">
-                <span class="w-2.5 h-2.5 rounded-full bg-white shrink-0 border border-slate-300"></span>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-sm font-semibold truncate text-slate-800" [title]="boardAOrientation() === 'white' ? boardAWhiteName() : boardABlackName()">
-                    {{ boardAOrientation() === 'white' ? boardAWhiteName() : boardABlackName() }}
+            <!-- Pocket B (Bottom Player pieces) & Clock -->
+            <div class="flex items-center justify-between gap-2 px-2 py-1 w-full">
+              <div class="flex items-center gap-2 justify-start">
+                @for (piece of getPocketKeys(); track piece) {
+                <div
+                  class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
+                  [class.opacity-40]="(boardBOrientation() === 'white' ? pocketB_W() : pocketB_B())[piece] === 0"
+                  [class.cursor-pointer]="(boardBOrientation() === 'white' ? pocketB_W() : pocketB_B())[piece] > 0 && turnB() === (boardBOrientation() === 'white' ? 'w' : 'b') && myBoard() === 'B' && myColor() === (boardBOrientation() === 'white' ? 'w' : 'b')"
+                  [class.border-blue-600]="activeDropBoard() === 'B' && activeDropPiece() === piece && activeDropColor() === (boardBOrientation() === 'white' ? 'w' : 'b')"
+                  [class.bg-blue-600/10]="activeDropBoard() === 'B' && activeDropPiece() === piece && activeDropColor() === (boardBOrientation() === 'white' ? 'w' : 'b')"
+                  (click)="myBoard() === 'B' && myColor() === (boardBOrientation() === 'white' ? 'w' : 'b') && (boardBOrientation() === 'white' ? pocketB_W() : pocketB_B())[piece] > 0 && startDropMode('B', piece, (boardBOrientation() === 'white' ? 'w' : 'b'))">
+                  <img [src]="getPocketPieceSvg(piece, (boardBOrientation() === 'white' ? 'w' : 'b'))"
+                    [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
+                  <span
+                    class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-slate-900 text-white text-[9px] font-bold border border-white">
+                    {{ (boardBOrientation() === 'white' ? pocketB_W() : pocketB_B())[piece] }}
                   </span>
                 </div>
+                }
               </div>
-              
-              <!-- Clock A White -->
-              <div class="flex items-center justify-center py-1.5 px-3 rounded-full font-mono text-sm font-bold bg-slate-200 border border-border-base shrink-0 min-w-[65px]"
-                [class.text-rose-500]="(boardAOrientation() === 'white' ? timeA_W() : timeA_B()) < 20"
-                [class.bg-green-100]="turnA() === 'w' && gameActive() && !winner()"
-                [class.border-green-200]="turnA() === 'w' && gameActive() && !winner()">
-                {{ formatTime(boardAOrientation() === 'white' ? timeA_W() : timeA_B()) }}
-              </div>
-            </div>
-
-            <!-- Board A Black Player -->
-            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-border-base">
-              <div class="flex items-center gap-3 min-w-0">
-                <span class="w-2.5 h-2.5 rounded-full bg-slate-900 shrink-0"></span>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-sm font-semibold truncate text-slate-800" [title]="boardAOrientation() === 'white' ? boardABlackName() : boardAWhiteName()">
-                    {{ boardAOrientation() === 'white' ? boardABlackName() : boardAWhiteName() }}
-                  </span>
-                </div>
-              </div>
-              
-              <!-- Clock A Black -->
-              <div class="flex items-center justify-center py-1.5 px-3 rounded-full font-mono text-sm font-bold bg-slate-200 border border-border-base shrink-0 min-w-[65px]"
-                [class.text-rose-500]="(boardAOrientation() === 'white' ? timeA_B() : timeA_W()) < 20"
-                [class.bg-green-100]="turnA() === 'b' && gameActive() && !winner()"
-                [class.border-green-200]="turnA() === 'b' && gameActive() && !winner()">
-                {{ formatTime(boardAOrientation() === 'white' ? timeA_B() : timeA_W()) }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="h-px bg-slate-100"></div>
-
-        <!-- Board B Metadata Card -->
-        <div class="flex flex-col gap-4">
-          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Board B</h3>
-          
-          <div class="flex flex-col gap-3">
-            <!-- Board B White Player -->
-            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-border-base">
-              <div class="flex items-center gap-3 min-w-0">
-                <span class="w-2.5 h-2.5 rounded-full bg-white shrink-0 border border-slate-300"></span>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-sm font-semibold truncate text-slate-800" [title]="boardBOrientation() === 'white' ? boardBWhiteName() : boardBBlackName()">
-                    {{ boardBOrientation() === 'white' ? boardBWhiteName() : boardBBlackName() }}
-                  </span>
-                </div>
-              </div>
-              
-              <!-- Clock B White -->
-              <div class="flex items-center justify-center py-1.5 px-3 rounded-full font-mono text-sm font-bold bg-slate-200 border border-border-base shrink-0 min-w-[65px]"
+              <div class="flex items-center justify-center py-1.5 px-3 rounded-md text-sm border-2 border-border-base shrink-0 text-semibold"
                 [class.text-rose-500]="(boardBOrientation() === 'white' ? timeB_W() : timeB_B()) < 20"
-                [class.bg-green-100]="turnB() === 'w' && gameActive() && !winner()"
-                [class.border-green-200]="turnB() === 'w' && gameActive() && !winner()">
+                [class.bg-green-100]="turnB() === (boardBOrientation() === 'white' ? 'w' : 'b') && gameActive() && !winner()"
+                [class.border-green-200]="turnB() === (boardBOrientation() === 'white' ? 'w' : 'b') && gameActive() && !winner()">
                 {{ formatTime(boardBOrientation() === 'white' ? timeB_W() : timeB_B()) }}
               </div>
             </div>
 
-            <!-- Board B Black Player -->
-            <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-border-base">
-              <div class="flex items-center gap-3 min-w-0">
-                <span class="w-2.5 h-2.5 rounded-full bg-slate-900 shrink-0"></span>
-                <div class="flex flex-col min-w-0">
-                  <span class="text-sm font-semibold truncate text-slate-800" [title]="boardBOrientation() === 'white' ? boardBBlackName() : boardBWhiteName()">
-                    {{ boardBOrientation() === 'white' ? boardBBlackName() : boardBWhiteName() }}
-                  </span>
-                </div>
-              </div>
-              
-              <!-- Clock B Black -->
-              <div class="flex items-center justify-center py-1.5 px-3 rounded-full font-mono text-sm font-bold bg-slate-200 border border-border-base shrink-0 min-w-[65px]"
-                [class.text-rose-500]="(boardBOrientation() === 'white' ? timeB_B() : timeB_W()) < 20"
-                [class.bg-green-100]="turnB() === 'b' && gameActive() && !winner()"
-                [class.border-green-200]="turnB() === 'b' && gameActive() && !winner()">
-                {{ formatTime(boardBOrientation() === 'white' ? timeB_B() : timeB_W()) }}
-              </div>
-            </div>
           </div>
         </div>
 
       </div>
 
     </div>
-  </div>
   }
 
   <!-- Floating Incoming Invitations Overlay (Top-Right Toast Stack) -->
@@ -529,13 +441,9 @@
   <div class="fixed top-6 right-6 z-[110] flex flex-col gap-4 w-full max-w-sm pointer-events-none">
     @for (invite of incomingInvites(); track invite.id) {
     <div
-      class="pointer-events-auto bg-slate-900 border border-slate-800 text-white rounded-2xl p-4 shadow-xl flex flex-col gap-3.5">
+      class="pointer-events-auto bg-slate-900 border border-slate-800 text-white rounded-2xl p-4 flex flex-col gap-3.5">
       <div class="flex items-start justify-between">
         <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 font-bold flex items-center justify-center border border-blue-500/30">
-            {{ invite.sender[0] }}
-          </div>
           <div>
             <span class="font-bold text-sm block leading-tight text-white">{{ invite.sender }}</span>
             <span class="text-xs text-slate-400">Invites you to pair</span>
@@ -563,7 +471,7 @@
   <!-- Temporary Banner Toast Notifications (Success / Warning / Info) -->
   @if (inviteNotification(); as notif) {
   <div class="fixed bottom-6 right-6 z-[110] pointer-events-none">
-    <div class="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg text-sm font-semibold"
+    <div class="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-semibold"
       [class.bg-green-50]="notif.type === 'success'" [class.text-green-800]="notif.type === 'success'"
       [class.border-green-200]="notif.type === 'success'" [class.bg-rose-50]="notif.type === 'error'"
       [class.text-rose-800]="notif.type === 'error'" [class.border-rose-200]="notif.type === 'error'"
@@ -584,7 +492,7 @@
   <!-- Winner/Game Over Overlay Modal -->
   @if (winner()) {
   <div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 p-4">
-    <div class="w-full max-w-md rounded-2xl bg-white p-8 border border-border-base shadow-xl text-center">
+    <div class="w-full max-w-md rounded-2xl bg-white p-8 border border-border-base text-center">
       <h2 class="text-3xl font-semibold mb-2">Game Over</h2>
 
       @if (winner() === 'Draw') {

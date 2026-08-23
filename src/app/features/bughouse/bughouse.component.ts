@@ -44,7 +44,6 @@ type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
 interface LobbyPlayer {
   uid?: string;
   name: string;
-  avatar?: string;
   isOnline: boolean;
 }
 
