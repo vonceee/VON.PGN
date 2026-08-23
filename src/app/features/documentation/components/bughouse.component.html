@@ -1,0 +1,225 @@
+<h2 class="text-3xl font-semibold mb-6 border-b border-border-base pb-4">
+  Bughouse Chess
+</h2>
+<div class="prose prose-slate max-w-none text-gray-500">
+  <p class="text-lg leading-relaxed mb-6">
+    Bughouse is a 2v2 real-time chess variant played across two boards simultaneously. Partners share captured pieces,
+    creating a fast-paced, deeply strategic team experience. This guide covers the full lifecycle — from forming a team
+    to playing a match.
+  </p>
+
+  <div class="space-y-10 my-8">
+
+    <!-- ── OVERVIEW ── -->
+    <div id="bughouse-overview" class="border-l-4 border-blue-600 pl-6 py-1">
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Overview &amp; Team Structure</h3>
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        A Bughouse match involves four players split into two teams of two (Team A vs Team B). Each team controls one
+        board per player, and the boards are paired:
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="p-4 rounded-xl bg-white border border-border-base flex flex-col gap-1">
+          <span class="text-xs font-bold uppercase text-blue-600 mb-1">Team A</span>
+          <p class="text-sm text-gray-500 m-0">
+            <strong class="text-slate-800">You</strong> — Board A, White<br>
+            <strong class="text-slate-800">Your Partner</strong> — Board B, Black
+          </p>
+        </div>
+        <div class="p-4 rounded-xl bg-white border border-border-base flex flex-col gap-1">
+          <span class="text-xs font-bold uppercase text-purple-600 mb-1">Team B (Opponents)</span>
+          <p class="text-sm text-gray-500 m-0">
+            <strong class="text-slate-800">Opponent 1</strong> — Board A, Black<br>
+            <strong class="text-slate-800">Opponent 2</strong> — Board B, White
+          </p>
+        </div>
+      </div>
+      <p class="text-sm leading-relaxed text-gray-500">
+        Partners share a piece pocket: pieces you capture on your board flow into your partner's reserve and vice versa.
+        Coordination between partners is the core strategic layer of Bughouse.
+      </p>
+    </div>
+
+    <!-- ── INVITE SYSTEM ── -->
+    <div id="bughouse-invite" class="border-l-4 border-blue-600 pl-6 py-1">
+      <h3 class="text-xl font-semibold text-slate-900 mb-3">Invite System</h3>
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        Before entering the match queue you must have an accepted partner. The lobby provides a real-time invite flow
+        built on WebSockets — no page refreshes needed.
+      </p>
+
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">1. Sending an Invite</h4>
+      <ol class="list-decimal pl-5 text-sm space-y-2 text-gray-500 mb-4">
+        <li>Open the <a routerLink="/bughouse" class="text-blue-600 underline font-medium">Bughouse Lobby</a> and switch
+          to the <strong class="text-slate-800">Game</strong> tab.</li>
+        <li>Type any part of a username in the <strong class="text-slate-800">Invite Player</strong> search bar —
+          results show only currently online users.</li>
+        <li>Click <strong class="text-slate-800">Invite</strong> next to the player. An entry with a
+          <span class="inline-flex items-center gap-1 font-semibold text-amber-500">spinning indicator • Pending</span>
+          status will appear in the <em>Sent Invitations</em> outbox.
+        </li>
+        <li>You can send invites to multiple players simultaneously and cancel any pending invite at any time with the
+          <strong class="text-slate-800">Cancel</strong> button.</li>
+      </ol>
+
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">2. Receiving an Invite</h4>
+      <p class="text-sm leading-relaxed text-gray-500 mb-3">
+        Incoming invitations appear as a floating toast stack in the <strong class="text-slate-800">top-right corner
+        </strong> of any page — you do not need to be on the Bughouse page to see them. Each toast shows:
+      </p>
+      <ul class="list-disc pl-5 text-sm space-y-1.5 text-gray-500 mb-4">
+        <li>The sender's username and their current rating.</li>
+        <li>A <strong class="text-slate-800">2v2 Partner</strong> badge confirming the invite type.</li>
+        <li><strong class="text-green-700">Accept</strong> and <strong class="text-rose-600">Reject</strong> action
+          buttons.</li>
+      </ul>
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        Accepting an invite sets you as the inviter's partner and fills the Partner slot in their lobby. Any other
+        pending invites they sent are automatically invalidated. Both players see the partner slot update in real time.
+      </p>
+
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">3. Invite Lifecycle &amp; Edge Cases</h4>
+      <div class="overflow-x-auto mb-4">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-slate-100 text-slate-900">
+              <th class="text-left px-4 py-2.5 font-semibold rounded-tl-lg border border-border-base">Event</th>
+              <th class="text-left px-4 py-2.5 font-semibold rounded-tr-lg border border-border-base">Outcome</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-500">
+            <tr class="border-b border-border-base">
+              <td class="px-4 py-2.5 border border-border-base">Receiver accepts</td>
+              <td class="px-4 py-2.5 border border-border-base">Sender's outbox shows <span class="text-green-600 font-semibold">Accepted</span>; partner slot fills instantly</td>
+            </tr>
+            <tr class="border-b border-border-base">
+              <td class="px-4 py-2.5 border border-border-base">Receiver rejects</td>
+              <td class="px-4 py-2.5 border border-border-base">Outbox shows <span class="text-rose-500 font-semibold">Rejected</span>; sender can invite someone else</td>
+            </tr>
+            <tr class="border-b border-border-base">
+              <td class="px-4 py-2.5 border border-border-base">Sender cancels a pending invite</td>
+              <td class="px-4 py-2.5 border border-border-base">Toast disappears from receiver's screen immediately</td>
+            </tr>
+            <tr class="border-b border-border-base">
+              <td class="px-4 py-2.5 border border-border-base">Partner slot already filled</td>
+              <td class="px-4 py-2.5 border border-border-base">The <strong>Invite</strong> button is disabled for the current partner; sender must kick them first</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2.5 border border-border-base">Captain kicks partner</td>
+              <td class="px-4 py-2.5 border border-border-base">Slot empties; both sides see the update in real time via WebSocket push</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── QUEUING ── -->
+    <div id="bughouse-queue" class="border-l-4 border-blue-600 pl-6 py-1">
+      <h3 class="text-xl font-semibold text-slate-900 mb-3">Matchmaking Queue</h3>
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        Once your partner slot is filled, the <strong class="text-slate-800">Find Bughouse Match</strong> button
+        activates. The queue is team-based — both you and your partner enter as a unit and are matched against another
+        complete team of two.
+      </p>
+
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">Entering the Queue</h4>
+      <ol class="list-decimal pl-5 text-sm space-y-2 text-gray-500 mb-6">
+        <li>Click <strong class="text-slate-800">Find Bughouse Match</strong>. The UI transitions to the
+          <em>Searching</em> state — a radar pulse animation and a live elapsed-time counter (<code
+            class="bg-white border border-border-base px-1 rounded text-xs">queueTime()</code> in seconds) are shown.
+        </li>
+        <li>A real-time status message (<code class="bg-white border border-border-base px-1 rounded text-xs">queueStatus()</code>)
+          is broadcast from the server — it may update to reflect queue depth, estimated wait, or partner sync state.
+        </li>
+        <li>You can click <strong class="text-slate-800">Cancel Search</strong> at any time to leave the queue. Your
+          partner slot is preserved — you do not need to re-invite.</li>
+      </ol>
+
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">Match Found &amp; Countdown</h4>
+      <p class="text-sm leading-relaxed text-gray-500 mb-3">
+        When the server pairs two full teams, both sides transition to the <em>Match Found</em> screen which displays:
+      </p>
+      <ul class="list-disc pl-5 text-sm space-y-1.5 text-gray-500 mb-4">
+        <li>All four players (Team A on the left, Team B on the right) with their ratings.</li>
+        <li>A 5-second SVG ring countdown. When it reaches zero the game starts automatically.</li>
+      </ul>
+      <p class="text-sm leading-relaxed text-gray-500">
+        No manual "ready" confirmation is required — the countdown handles synchronization for all four players.
+      </p>
+    </div>
+
+    <!-- ── GAMEPLAY ── -->
+    <div id="bughouse-gameplay" class="border-l-4 border-blue-600 pl-6 py-1">
+      <h3 class="text-xl font-semibold text-slate-900 mb-3">Gameplay Mechanics</h3>
+
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">Piece Pockets &amp; Drops</h4>
+      <p class="text-sm leading-relaxed text-gray-500 mb-3">
+        Above and below each board you will see a <strong class="text-slate-800">Pocket</strong> row displaying the
+        available piece inventory for both players on that board. Each piece tile shows a count badge.
+      </p>
+      <ul class="list-disc pl-5 text-sm space-y-2 text-gray-500 mb-4">
+        <li><strong class="text-slate-800">Receiving pieces:</strong> When your partner captures a piece on their board,
+          it instantly appears in your pocket (count increments in real time).</li>
+        <li><strong class="text-slate-800">Dropping pieces:</strong> On your turn, click any piece in your pocket with a
+          count &gt; 0. A green-dot overlay grid appears on the board — click a valid empty square to complete the drop.
+          This uses your full turn.</li>
+        <li><strong class="text-slate-800">Drop restrictions:</strong> Pawns cannot be dropped on the 1st or 8th rank.
+          A promoted pawn reverts to a pawn when re-captured and passed to the opponent's partner.</li>
+        <li><strong class="text-slate-800">Cancelling a drop:</strong> Click the same piece tile again (or any other
+          square outside the grid) to deselect without dropping.</li>
+      </ul>
+
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">Clocks &amp; Time Control</h4>
+      <p class="text-sm leading-relaxed text-gray-500 mb-4">
+        Each player has an independent clock displayed next to their name on the board panel. Clocks turn
+        <span class="text-rose-500 font-semibold">red</span> when fewer than 20 seconds remain. Running out of time
+        ends the entire match — not just the individual board.
+      </p>
+
+      <h4 class="text-sm font-semibold text-slate-900 mb-2">Win Conditions</h4>
+      <ul class="list-disc pl-5 text-sm space-y-1.5 text-gray-500 mb-4">
+        <li><strong class="text-slate-800">Checkmate</strong> on either board ends the match instantly in favour of the
+          checkmating team.</li>
+        <li><strong class="text-slate-800">Flag fall</strong> (clock expiry) on any player ends the match instantly in
+          favour of the opposing team.</li>
+        <li>Results are team-wide — winning one board wins the match for both partners.</li>
+      </ul>
+    </div>
+
+    <!-- ── NOTIFICATIONS ── -->
+    <div id="bughouse-notifications" class="border-l-4 border-blue-600 pl-6 py-1">
+      <h3 class="text-xl font-semibold text-slate-900 mb-2">Toast Notifications</h3>
+      <p class="text-sm leading-relaxed text-gray-500 mb-3">
+        The Bughouse system surfaces three categories of toast banner that slide in from the bottom-right:
+      </p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-slate-100 text-slate-900">
+              <th class="text-left px-4 py-2.5 font-semibold border border-border-base rounded-tl-lg">Type</th>
+              <th class="text-left px-4 py-2.5 font-semibold border border-border-base">Style</th>
+              <th class="text-left px-4 py-2.5 font-semibold border border-border-base rounded-tr-lg">Triggers</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-500">
+            <tr class="border-b border-border-base">
+              <td class="px-4 py-2.5 border border-border-base font-semibold text-green-700">Success</td>
+              <td class="px-4 py-2.5 border border-border-base">Green background, check icon</td>
+              <td class="px-4 py-2.5 border border-border-base">Partner accepted invite; invite cancelled</td>
+            </tr>
+            <tr class="border-b border-border-base">
+              <td class="px-4 py-2.5 border border-border-base font-semibold text-rose-600">Error</td>
+              <td class="px-4 py-2.5 border border-border-base">Rose background, X-circle icon</td>
+              <td class="px-4 py-2.5 border border-border-base">Invite rejected; WebSocket failure</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2.5 border border-border-base font-semibold text-blue-500">Info</td>
+              <td class="px-4 py-2.5 border border-border-base">Dark (slate-900) background, info icon</td>
+              <td class="px-4 py-2.5 border border-border-base">Queue status updates; match found; partner kicked</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

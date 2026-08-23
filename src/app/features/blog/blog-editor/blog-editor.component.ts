@@ -265,7 +265,7 @@ interface EditorGame {
         p { margin-bottom: 1rem; line-height: 1.6; }
         ul, ol { margin-bottom: 1rem; padding-left: 1.25rem; }
         li { list-style-type: disc; margin-bottom: 0.25rem; }
-        text-decoration: underline; }
+        a { text-decoration: underline; }
         strong { font-weight: 600; }
         h1, h2, h3 { font-weight: 500; margin-top: 1.5rem; margin-bottom: 0.5rem; }
         h1 { font-size: 1.5rem; }

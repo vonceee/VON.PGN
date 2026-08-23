@@ -15,6 +15,7 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs
 import {
   heroUsers,
   heroArrowPath,
+  heroArrowLeft,
   heroPlay,
   heroPause,
   heroInformationCircle,
@@ -25,6 +26,9 @@ import {
   heroCheckCircle,
   heroXCircle,
   heroMagnifyingGlass,
+  heroFlag,
+  heroChevronLeft,
+  heroChevronRight,
 } from '@ng-icons/heroicons/outline';
 
 interface MoveLogEntry {
@@ -40,7 +44,6 @@ type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
 interface LobbyPlayer {
   uid?: string;
   name: string;
-  rating: number;
   avatar?: string;
   isOnline: boolean;
 }
@@ -48,14 +51,12 @@ interface LobbyPlayer {
 interface SentInvite {
   id: string;
   receiver: string;
-  rating: number;
   status: 'pending' | 'accepted' | 'rejected';
 }
 
 interface IncomingInvite {
   id: string;
   sender: string;
-  rating: number;
 }
 
 @Component({
@@ -71,6 +72,7 @@ interface IncomingInvite {
     provideIcons({
       heroUsers,
       heroArrowPath,
+      heroArrowLeft,
       heroPlay,
       heroPause,
       heroInformationCircle,
@@ -81,6 +83,9 @@ interface IncomingInvite {
       heroCheckCircle,
       heroXCircle,
       heroMagnifyingGlass,
+      heroFlag,
+      heroChevronLeft,
+      heroChevronRight,
     }),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -99,6 +104,17 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
   // ── Lobby & Pairing State ──────────────────────────────────────────
   lobbyState = signal<'lobby' | 'queuing' | 'matched' | 'playing'>('lobby');
+
+  // ── Active game identity (set by bughouse_game_start) ─────────────
+  gameId   = signal<string | null>(null);
+  myBoard  = signal<'A' | 'B' | null>(null);
+  myColor  = signal<'w' | 'b' | null>(null);
+
+  // Board player name labels (set from bughouse_game_start, used in the UI)
+  boardAWhiteName = signal<string>('');
+  boardABlackName = signal<string>('');
+  boardBWhiteName = signal<string>('');
+  boardBBlackName = signal<string>('');
   lobbyType = signal<'casual' | 'ranked'>('casual');
   partner = signal<LobbyPlayer | null>(null);
   opponent1 = signal<LobbyPlayer | null>(null);
@@ -129,7 +145,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
     const user = this.authService.currentUser();
     return {
       name: user?.username || user?.displayName || user?.name || 'You',
-      rating: 1600,
     };
   });
 
@@ -179,6 +194,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
   // ── Active Tabs ────────────────────────────────────────────────────
   activeTab = signal<'game' | 'rules'>('game');
+  isSidebarExpanded = signal<boolean>(true);
 
   // ── Timers Handling ────────────────────────────────────────────────
   private timerInterval: any = null;
@@ -202,7 +218,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
             this.searchResults.set(results.map((r: any) => ({
               uid: r.uid,
               name: r.username,
-              rating: 1500,
               isOnline: true,
             })));
           }
@@ -243,13 +258,12 @@ export class BughouseComponent implements OnInit, OnDestroy {
       const inviteId = params['inviteId'];
       const sender = params['sender'];
       const senderId = params['senderId'];
-      const rating = parseInt(params['rating'], 10) || 1600;
 
       if (inviteId && sender && senderId) {
         this.ngZone.run(() => {
           const exists = this.incomingInvites().some(i => i.id === senderId);
           if (!exists) {
-            this.incomingInvites.update(list => [...list, { id: senderId, sender, rating }]);
+            this.incomingInvites.update(list => [...list, { id: senderId, sender }]);
             this.audioService.playNotification();
             this.showNotification(`Incoming lobby invitation from ${sender}!`, 'info');
           }
@@ -262,7 +276,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.stopClocks();
     this.stopQueueInterval();
     this.stopCountdownInterval();
-    
+
     // Clean up socket listeners
     const s = this.gameService.socket();
     if (s) {
@@ -271,6 +285,11 @@ export class BughouseComponent implements OnInit, OnDestroy {
       s.off('bughouse_invite_rejected');
       s.off('bughouse_kicked');
       s.off('bughouse_matched');
+      s.off('bughouse_game_start');
+      s.off('bughouse_move_broadcast');
+      s.off('bughouse_clock_tick');
+      s.off('bughouse_game_over');
+      s.off('bughouse_opponent_disconnected');
     }
   }
 
@@ -284,6 +303,11 @@ export class BughouseComponent implements OnInit, OnDestroy {
     socket.off('bughouse_invite_rejected');
     socket.off('bughouse_kicked');
     socket.off('bughouse_matched');
+    socket.off('bughouse_game_start');
+    socket.off('bughouse_move_broadcast');
+    socket.off('bughouse_clock_tick');
+    socket.off('bughouse_game_over');
+    socket.off('bughouse_opponent_disconnected');
 
     socket.on('bughouse_lobby_sync', (lobby: any) => {
       this.ngZone.run(() => {
@@ -303,7 +327,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
             this.partner.set({
               uid: String(lobby.partner.userId),
               name: lobby.partner.userName,
-              rating: lobby.partner.rating,
               isOnline: true
             });
             this.sentInvites.set([]);
@@ -315,7 +338,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
           this.partner.set({
             uid: String(lobby.captain.userId),
             name: lobby.captain.userName,
-            rating: lobby.captain.rating,
             isOnline: true
           });
         }
@@ -338,8 +360,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         if (!exists) {
           this.incomingInvites.update(list => [...list, {
             id: data.lobbyId,
-            sender: data.senderName,
-            rating: 1600
+            sender: data.senderName
           }]);
           this.audioService.playNotification();
           this.showNotification(`Incoming lobby invitation from ${data.senderName}!`, 'info');
@@ -365,8 +386,8 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
     socket.on('bughouse_matched', (data: any) => {
       this.ngZone.run(() => {
-        this.opponent1.set({ name: data.opponent1.name, rating: data.opponent1.rating, isOnline: true });
-        this.opponent2.set({ name: data.opponent2.name, rating: data.opponent2.rating, isOnline: true });
+        this.opponent1.set({ name: data.opponent1.name, isOnline: true });
+        this.opponent2.set({ name: data.opponent2.name, isOnline: true });
         this.lobbyState.set('matched');
         this.matchCountdown.set(5);
         this.audioService.playBoardStart();
@@ -386,6 +407,127 @@ export class BughouseComponent implements OnInit, OnDestroy {
             }
           });
         }, 1000);
+      });
+    });
+
+    // ── Gameplay: server sends game_start after countdown ──────────────
+    socket.on('bughouse_game_start', (data: any) => {
+      this.ngZone.run(() => {
+        // Use server-supplied assignment directly — avoids UID format mismatch
+        const myBoard: 'A' | 'B' = data.yourBoard ?? 'A';
+        const myColor: 'w' | 'b' = data.yourColor ?? 'w';
+
+        this.gameId.set(data.gameId);
+        this.myBoard.set(myBoard);
+        this.myColor.set(myColor);
+        this.userColor.set(myColor);
+
+        // Build board player name labels from full player list
+        const colorsMap: Record<string, { board: string; color: string }> = data.colors ?? {};
+        const allPlayers: { id: string; name: string }[] = [
+          { id: String(data.teamA.captainId), name: data.teamA.captainName },
+          { id: String(data.teamA.partnerId), name: data.teamA.partnerName },
+          { id: String(data.teamB.captainId), name: data.teamB.captainName },
+          { id: String(data.teamB.partnerId), name: data.teamB.partnerName },
+        ];
+        for (const player of allPlayers) {
+          const a = colorsMap[player.id];
+          if (!a) continue;
+          if (a.board === 'A' && a.color === 'w') this.boardAWhiteName.set(player.name);
+          if (a.board === 'A' && a.color === 'b') this.boardABlackName.set(player.name);
+          if (a.board === 'B' && a.color === 'w') this.boardBWhiteName.set(player.name);
+          if (a.board === 'B' && a.color === 'b') this.boardBBlackName.set(player.name);
+        }
+
+        this.syncBoardOrientations();
+
+        this.chessA.load(data.boardAFen);
+        this.chessB.load(data.boardBFen);
+        this.boardAFen.set(data.boardAFen);
+        this.boardBFen.set(data.boardBFen);
+
+        // Restore pockets from server state
+        this.pocketA_W.set({ ...data.pockets.A_W });
+        this.pocketA_B.set({ ...data.pockets.A_B });
+        this.pocketB_W.set({ ...data.pockets.B_W });
+        this.pocketB_B.set({ ...data.pockets.B_B });
+
+        // Set clocks from server
+        this.timeA_W.set(data.clocks.A_W);
+        this.timeA_B.set(data.clocks.A_B);
+        this.timeB_W.set(data.clocks.B_W);
+        this.timeB_B.set(data.clocks.B_B);
+
+        // Server is the clock authority — do NOT start local clocks here
+        this.gameActive.set(true);
+      });
+    });
+
+    // ── Gameplay: server relays a validated move to all 4 clients ─────
+    socket.on('bughouse_move_broadcast', (data: any) => {
+      this.ngZone.run(() => {
+        const myUid    = String(this.authService.currentUser()?.uid);
+        const isMyMove = data.senderId === myUid;
+
+        // Update the chess instance and board FEN signal
+        if (data.board === 'A') {
+          this.chessA.load(data.fen);
+          this.boardAFen.set(data.fen);
+        } else {
+          this.chessB.load(data.fen);
+          this.boardBFen.set(data.fen);
+        }
+
+        // Apply authoritative full pocket state from server
+        this.pocketA_W.set({ ...data.pockets.A_W });
+        this.pocketA_B.set({ ...data.pockets.A_B });
+        this.pocketB_W.set({ ...data.pockets.B_W });
+        this.pocketB_B.set({ ...data.pockets.B_B });
+
+        // Play audio only for remote moves (local moves already triggered audio)
+        if (!isMyMove) {
+          this.audioService.playChessMove({ san: data.move.san, flags: data.move.flags ?? 'n' });
+        }
+
+        // Log the move for all clients (single source of truth)
+        this.logMoveFromBroadcast(data.board, data.move.san, data.move.color);
+      });
+    });
+
+    // ── Gameplay: server clock tick ───────────────────────────────────
+    socket.on('bughouse_clock_tick', (data: any) => {
+      this.ngZone.run(() => {
+        const prev_A_W = this.timeA_W();
+        const prev_B_W = this.timeB_W();
+        const prev_A_B = this.timeA_B();
+        const prev_B_B = this.timeB_B();
+
+        this.timeA_W.set(data.clocks.A_W);
+        this.timeA_B.set(data.clocks.A_B);
+        this.timeB_W.set(data.clocks.B_W);
+        this.timeB_B.set(data.clocks.B_B);
+
+        // Low-time audio cue (crossing 15s)
+        if ((prev_A_W > 15 && data.clocks.A_W <= 15) ||
+            (prev_A_B > 15 && data.clocks.A_B <= 15) ||
+            (prev_B_W > 15 && data.clocks.B_W <= 15) ||
+            (prev_B_B > 15 && data.clocks.B_B <= 15)) {
+          this.audioService.playLowTime();
+        }
+      });
+    });
+
+    // ── Gameplay: server declares game over ───────────────────────────
+    socket.on('bughouse_game_over', (data: any) => {
+      this.ngZone.run(() => {
+        this.endGame(data.winner, data.reason);
+      });
+    });
+
+    // ── Gameplay: opponent disconnected mid-game ───────────────────────
+    socket.on('bughouse_opponent_disconnected', (data: any) => {
+      this.ngZone.run(() => {
+        this.showNotification(`${data.playerName} disconnected from the game.`, 'info');
       });
     });
 
@@ -412,7 +554,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
     // Add to Sent Invites Outbox as pending
     const inviteId = Math.random().toString();
-    const newInvite: SentInvite = { id: inviteId, receiver: player.name, rating: player.rating, status: 'pending' };
+    const newInvite: SentInvite = { id: inviteId, receiver: player.name, status: 'pending' };
     this.sentInvites.update(list => [...list, newInvite]);
     this.audioService.playNotification();
 
@@ -468,7 +610,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         socket.emit('bughouse_accept_invite', { lobbyId: invite.id });
       } else {
         // Fallback local simulation (for local test button)
-        this.partner.set({ name: invite.sender, rating: invite.rating, isOnline: true });
+        this.partner.set({ name: invite.sender, isOnline: true });
         this.showNotification(`Joined lobby with partner ${invite.sender}!`, 'success');
         this.audioService.playBoardStart();
       }
@@ -529,7 +671,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         this.queueTime.set(time);
 
         if (time === 2) {
-          this.queueStatus.set('Matching team average ratings...');
+          this.queueStatus.set('Matching team players...');
         } else if (time === 4) {
           this.queueStatus.set('Found Opponent Team. Checking connection latencies...');
         } else if (time === 6) {
@@ -588,12 +730,19 @@ export class BughouseComponent implements OnInit, OnDestroy {
     }
     this.gameActive.set(true);
     this.audioService.playBoardStart();
-    this.startClocks();
+    // NOTE: clocks are driven by server bughouse_clock_tick events — do NOT start local clocks.
   }
 
   pauseGame() {
     this.gameActive.set(false);
     this.stopClocks();
+  }
+
+  resignGame() {
+    const socket = this.gameService.socket();
+    if (socket?.connected && this.gameId()) {
+      socket.emit('bughouse_resign', { gameId: this.gameId() });
+    }
   }
 
   exitToLobby() {
@@ -602,16 +751,57 @@ export class BughouseComponent implements OnInit, OnDestroy {
       socket.emit('bughouse_leave_lobby');
     }
     this.resetGame();
+    this.gameId.set(null);
+    this.myBoard.set(null);
+    this.myColor.set(null);
     this.lobbyState.set('lobby');
   }
 
+  forceStartDebugGame() {
+    this.gameId.set('debug_game_' + Math.floor(Math.random() * 1000));
+    this.myBoard.set('A');
+    this.myColor.set('w');
+    this.userColor.set('w');
+
+    this.boardAWhiteName.set('White P1 (You)');
+    this.boardABlackName.set('Black P2');
+    this.boardBWhiteName.set('White P3 (Teammate)');
+    this.boardBBlackName.set('Black P4');
+
+    this.syncBoardOrientations();
+
+    const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+    this.chessA.load(startFen);
+    this.chessB.load(startFen);
+    this.boardAFen.set(startFen);
+    this.boardBFen.set(startFen);
+
+    this.pocketA_W.set({ p: 1, n: 1, b: 1, r: 1, q: 1 });
+    this.pocketA_B.set({ p: 1, n: 1, b: 1, r: 1, q: 1 });
+    this.pocketB_W.set({ p: 1, n: 1, b: 1, r: 1, q: 1 });
+    this.pocketB_B.set({ p: 1, n: 1, b: 1, r: 1, q: 1 });
+
+    this.timeA_W.set(300);
+    this.timeA_B.set(300);
+    this.timeB_W.set(300);
+    this.timeB_B.set(300);
+
+    this.gameActive.set(true);
+    this.lobbyState.set('playing');
+  }
+
   syncBoardOrientations() {
-    if (this.userColor() === 'w') {
-      this.boardAOrientation.set('white');
-      this.boardBOrientation.set('black');
-    } else {
-      this.boardAOrientation.set('black');
+    const board = this.myBoard();
+    const color = this.myColor() ?? 'w';
+
+    if (board === 'A') {
+      // Own board: own color at bottom. Observer board: always White at bottom.
+      this.boardAOrientation.set(color === 'w' ? 'white' : 'black');
       this.boardBOrientation.set('white');
+    } else {
+      // Own board: own color at bottom. Observer board: always White at bottom.
+      this.boardAOrientation.set('white');
+      this.boardBOrientation.set(color === 'w' ? 'white' : 'black');
     }
   }
 
@@ -669,61 +859,69 @@ export class BughouseComponent implements OnInit, OnDestroy {
   }
 
   // ── Capture and Move Handling ──────────────────────────────────────
-  onBoardMoveMade(board: 'A' | 'B', event: { move: Move; fen: string }) {
+  onBoardMoveMade(board: 'A' | 'B', event: { move: Move; fen: string; uci?: string }) {
     if (!this.gameActive() || this.winner()) {
       this.syncFens();
       return;
     }
 
+    // Only allow moves on the board this player is assigned to
+    if (this.myBoard() !== board) return;
+
     const { move, fen } = event;
     const chess = board === 'A' ? this.chessA : this.chessB;
 
+    // Update local chess instance immediately (ChessBoardComponent already made the move)
     chess.load(fen);
+    if (board === 'A') this.boardAFen.set(chess.fen());
+    else               this.boardBFen.set(chess.fen());
 
+    // Play audio immediately for the local player
     this.audioService.playChessMove({ san: move.san, flags: move.flags });
 
-    if (move.captured) {
-      const capPiece = move.captured as PieceType;
-      this.transferCapturedPiece(board, move.color, capPiece);
+    // Emit to server — server validates, applies pocket transfer, checks game-over, broadcasts
+    const socket = this.gameService.socket();
+    if (socket?.connected) {
+      socket.emit('bughouse_move', {
+        gameId:  this.gameId(),
+        board,
+        move: {
+          san:      move.san,
+          flags:    move.flags,
+          color:    move.color,
+          captured: move.captured ?? null,
+        },
+        fen,
+      });
     }
-
-    this.logMove(board, move.san);
-
-    if (board === 'A') {
-      this.boardAFen.set(chess.fen());
-    } else {
-      this.boardBFen.set(chess.fen());
-    }
-
-    this.checkGameOver(board);
+    // Pocket transfer and game-over are handled by the server;
+    // results arrive via bughouse_move_broadcast / bughouse_game_over.
   }
 
-  private transferCapturedPiece(board: 'A' | 'B', capturerColor: 'w' | 'b', piece: PieceType) {
-    if (board === 'A') {
-      if (capturerColor === 'w') {
-        this.pocketB_B.update(p => ({ ...p, [piece]: p[piece] + 1 }));
-      } else {
-        this.pocketB_W.update(p => ({ ...p, [piece]: p[piece] + 1 }));
-      }
-    } else {
-      if (capturerColor === 'w') {
-        this.pocketA_B.update(p => ({ ...p, [piece]: p[piece] + 1 }));
-      } else {
-        this.pocketA_W.update(p => ({ ...p, [piece]: p[piece] + 1 }));
-      }
-    }
+  /**
+   * Apply a full authoritative pocket state broadcast from the server.
+   * The server sends all 4 pockets after every move/drop.
+   */
+  private applyPocketUpdate(pockets: Record<string, Record<PieceType, number>>) {
+    if (pockets['A_W']) this.pocketA_W.set({ ...pockets['A_W'] } as Record<PieceType, number>);
+    if (pockets['A_B']) this.pocketA_B.set({ ...pockets['A_B'] } as Record<PieceType, number>);
+    if (pockets['B_W']) this.pocketB_W.set({ ...pockets['B_W'] } as Record<PieceType, number>);
+    if (pockets['B_B']) this.pocketB_B.set({ ...pockets['B_B'] } as Record<PieceType, number>);
   }
 
-  private logMove(board: 'A' | 'B', san: string) {
-    const chess = board === 'A' ? this.chessA : this.chessB;
+  /**
+   * Log a move received from the server broadcast.
+   * All 4 clients log from the same broadcast to keep logs in sync.
+   */
+  private logMoveFromBroadcast(board: 'A' | 'B', san: string, moveColor: 'w' | 'b') {
+    const chess  = board === 'A' ? this.chessA : this.chessB;
     const history = chess.history();
-    const moveNo = Math.ceil(history.length / 2);
-    const turnColor = chess.turn() === 'w' ? 'b' : 'w';
+    const moveNo  = Math.ceil(history.length / 2) || 1;
 
     const entry: MoveLogEntry = {
       board,
       moveNo,
-      turn: turnColor,
+      turn: moveColor,
       san,
       timestamp: new Date(),
     };
@@ -798,59 +996,25 @@ export class BughouseComponent implements OnInit, OnDestroy {
     const piece = this.activeDropPiece()!;
     const color = this.activeDropColor()!;
 
-    this.executeDropMove(board, piece, color, square);
-    this.cancelDropMode();
-  }
-
-  executeDropMove(board: 'A' | 'B', piece: PieceType, color: 'w' | 'b', square: string) {
-    const chess = board === 'A' ? this.chessA : this.chessB;
-
-    chess.put({ type: piece, color }, square as any);
-
-    const originalFen = chess.fen();
-    const parts = originalFen.split(' ');
-    const nextTurn = parts[1] === 'w' ? 'b' : 'w';
-    const epSquare = '-';
-    const halfmove = '0';
-    let fullmove = parseInt(parts[5], 10);
-    if (parts[1] === 'b') {
-      fullmove += 1;
+    // Emit drop to server; server validates, applies, and broadcasts back to all 4 clients
+    const socket = this.gameService.socket();
+    if (socket?.connected) {
+      socket.emit('bughouse_drop', {
+        gameId: this.gameId(),
+        board,
+        piece,
+        square,
+        color,
+      });
     }
-    const newFen = `${parts[0]} ${nextTurn} ${parts[2]} ${epSquare} ${halfmove} ${fullmove}`;
-
-    chess.load(newFen);
-
-    this.decrementPocket(board, color, piece);
-
+    // Play audio immediately for the local player
     this.audioService.playChessMove({ san: `${piece.toUpperCase()}@${square}`, flags: 'n' });
-
-    const pieceName = piece.toUpperCase() === 'P' ? '' : piece.toUpperCase();
-    this.logMove(board, `${pieceName}@${square}`);
-
-    if (board === 'A') {
-      this.boardAFen.set(chess.fen());
-    } else {
-      this.boardBFen.set(chess.fen());
-    }
-
-    this.checkGameOver(board);
+    this.cancelDropMode();
+    // Board FEN, pocket decrement, and game-over check arrive via bughouse_move_broadcast / bughouse_game_over
   }
 
-  private decrementPocket(board: 'A' | 'B', color: 'w' | 'b', piece: PieceType) {
-    if (board === 'A') {
-      if (color === 'w') {
-        this.pocketA_W.update(p => ({ ...p, [piece]: Math.max(0, p[piece] - 1) }));
-      } else {
-        this.pocketA_B.update(p => ({ ...p, [piece]: Math.max(0, p[piece] - 1) }));
-      }
-    } else {
-      if (color === 'w') {
-        this.pocketB_W.update(p => ({ ...p, [piece]: Math.max(0, p[piece] - 1) }));
-      } else {
-        this.pocketB_B.update(p => ({ ...p, [piece]: Math.max(0, p[piece] - 1) }));
-      }
-    }
-  }
+  // decrementPocket removed — server is the authoritative pocket owner.
+  // Pocket state is applied only via applyPocketUpdate() from bughouse_move_broadcast.
 
   // ── Grid Generation for Drop Highlights ───────────────────────────
   getGridSquares(board: 'A' | 'B'): string[] {

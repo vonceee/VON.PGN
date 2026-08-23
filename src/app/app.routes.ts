@@ -296,6 +296,13 @@ export const routes: Routes = [
                 (m) => m.UiComponentsComponent,
               ),
           },
+          {
+            path: 'bughouse',
+            loadComponent: () =>
+              import('./features/documentation/components/bughouse.component').then(
+                (m) => m.BughouseDocComponent,
+              ),
+          },
         ]
       },
       {
@@ -536,13 +543,17 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'games/:gameId/review',
-        redirectTo: 'study',
-        pathMatch: 'full',
+        path: 'game/:gameId',
+        loadComponent: () =>
+          import('./features/game/game.component').then((m) => m.GameComponent),
+        canActivate: [authGuard],
+        title: 'Vonchess.net • Game',
+        data: { description: 'Play a live chess game on vonchess.' },
+        resolve: { seo: seoResolver },
       },
       {
         path: 'play/:gameId',
-        redirectTo: 'study',
+        redirectTo: 'game/:gameId',
         pathMatch: 'full',
       },
       {

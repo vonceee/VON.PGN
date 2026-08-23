@@ -81,6 +81,17 @@ export class DocumentationComponent {
         { title: 'Core Endpoints', id: 'core-endpoints' },
         { title: 'Sample JSON Response', id: 'sample-response' }
       ]
+    },
+    {
+      title: 'Bughouse Chess',
+      id: 'bughouse',
+      subtopics: [
+        { title: 'Overview & Team Structure', id: 'bughouse-overview' },
+        { title: 'Invite System', id: 'bughouse-invite' },
+        { title: 'Matchmaking Queue', id: 'bughouse-queue' },
+        { title: 'Gameplay Mechanics', id: 'bughouse-gameplay' },
+        { title: 'Toast Notifications', id: 'bughouse-notifications' },
+      ]
     }
   ];
 

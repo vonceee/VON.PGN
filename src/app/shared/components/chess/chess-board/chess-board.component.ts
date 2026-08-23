@@ -196,6 +196,13 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   @Input() fen: string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
   @Input() orientation: 'white' | 'black' = 'white';
   @Input() interactive: boolean = true;
+  /**
+   * Server-supplied legal destinations (Lila pattern).
+   * Record<from, to[]> e.g. { e2: ['e3','e4'], d1: ['c2','b3'] }
+   * When provided, Chessground uses this map instead of computing moves locally.
+   * Set to null to lock the board (opponent's turn or spectating).
+   */
+  @Input() possibleMoves: Record<string, string[]> | null = null;
   @Input() minSize: number = 240;
   @Input() maxSize: number = 1000;
   @Input() syncedShapes: any[] = [];
@@ -210,7 +217,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   glyphs = input<{ square: string; symbol: string; class: string }[]>([]);
 
   @Output() fenChange = new EventEmitter<string>();
-  @Output() moveMade = new EventEmitter<{ move: Move; fen: string }>();
+  @Output() moveMade = new EventEmitter<{ move: Move; fen: string; uci: string }>();
   @Output() sizeChange = new EventEmitter<number>();
   @Output() shapeDrawn = new EventEmitter<any[]>();
   @Output() preMoveCancelled = new EventEmitter<void>();
@@ -419,9 +426,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
           this.isProgrammaticSet = false;
         }
       }
-      if (changes['interactive']) {
-        this.syncBoard();
-      }
+    if (changes['interactive'] || changes['possibleMoves']) {
+      this.syncBoard();
+    }
       if (changes['configOverride']) {
         this.applyConfigOverride(this.configOverride || {});
       }
@@ -525,8 +532,16 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
         turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
         movable: {
           free: this.isEditor,
-          color: this.interactive ? 'both' : undefined,
-          dests: (this.interactive && !this.isEditor) ? this.getLegalMoves() : new Map(),
+          // Use server-supplied dests when possibleMoves is set (Lila pattern);
+          // fall back to local chess.js computation for analysis/study boards.
+          color: this.interactive
+            ? (this.possibleMoves !== null ? this.chess.turn() === 'w' ? 'white' : 'black' : 'both')
+            : undefined,
+          dests: this.interactive && !this.isEditor
+            ? (this.possibleMoves !== null
+                ? this.toDestsMap(this.possibleMoves)
+                : this.getLegalMoves())
+            : new Map(),
           showDests: !this.isEditor,
         },
         selectable: { enabled: this.interactive },
@@ -567,6 +582,11 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
     };
     const colorName = color === 'w' ? 'white' : 'black';
     return `${typeMap[type]} ${colorName}`;
+  }
+
+  /** Converts the server's Record<from, to[]> format to the Map<Key, Key[]> Chessground expects. */
+  private toDestsMap(dests: Record<string, string[]>): Map<Key, Key[]> {
+    return new Map(Object.entries(dests) as [Key, Key[]][]);
   }
 
   private getLegalMoves(): Map<Key, Key[]> {
@@ -628,8 +648,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
       const move = this.chess.move({ from, to, promotion: promotion as any });
       if (move) {
         this.syncBoard();
+        const uci = from + to + (move.promotion ?? '');
         this.fenChange.emit(this.chess.fen());
-        this.moveMade.emit({ move, fen: this.chess.fen() });
+        this.moveMade.emit({ move, fen: this.chess.fen(), uci });
       }
     } catch {
       this.syncBoard();
