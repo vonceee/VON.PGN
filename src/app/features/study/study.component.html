@@ -31,11 +31,11 @@
           (mouseup)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseUp() : null"
           (mouseleave)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseUp() : null">
           <app-chess-board #board [fluid]="true" [resizable]="false"
-            [fen]="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.newChapterFen() || '' : facade.currentFen()"
-            [orientation]="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.newChapterOrientation() || 'white' : facade.boardOrientation()"
+            [fen]="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.getEditorFen() : facade.currentFen()"
+            [orientation]="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.getEditorOrientation() : facade.boardOrientation()"
             [interactive]="(sidebar && sidebar.isBoardEditorActive()) ? true : facade.boardInteractive()"
             [isEditor]="(sidebar && sidebar.isBoardEditorActive()) || false"
-            (fenChange)="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.newChapterFen.set($event) : null"
+            (fenChange)="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.setEditorFen($event) : null"
             (moveMade)="onMoveMade($event)" (shapeDrawn)="facade.onShapeDrawn($event)" (prevMove)="facade.onPrevMove()"
             (nextMove)="facade.onNextMove()" [syncedShapes]="facade.mergedShapes()"
             [lastMove]="facade.lastMoveSquares()"></app-chess-board>
@@ -52,9 +52,9 @@
       <!-- Right Column: Notation & Info -->
       <div class="flex flex-col gap-4 overflow-hidden sync-board-height">
         @if (sidebar && sidebar.isBoardEditorActive()) {
-        <app-board-editor #rightEditor [mainBoard]="board" [fen]="sidebar.newChapterFen() || ''"
-          (fenChange)="sidebar ? sidebar.newChapterFen.set($event) : null"
-          [orientation]="sidebar.newChapterOrientation() || 'white'"></app-board-editor>
+        <app-board-editor #rightEditor [mainBoard]="board" [fen]="sidebar.getEditorFen()"
+          (fenChange)="sidebar ? sidebar.setEditorFen($event) : null"
+          [orientation]="sidebar.getEditorOrientation()"></app-board-editor>
         } @else {
         <!-- Notation & Commentary Card -->
         <div

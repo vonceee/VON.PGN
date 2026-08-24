@@ -1,7 +1,8 @@
-import { Component, input, output, signal, effect } from '@angular/core';
+import { Component, input, output, signal, effect, inject, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Study } from '../../../../../core/models/study.model';
+import { StudyNavigationFacade } from '../../../services/study-navigation.facade';
 
 @Component({
   selector: 'app-study-settings',
@@ -13,7 +14,24 @@ export class StudySettingsComponent {
   study = input.required<Study | null>();
   isOwner = input.required<boolean>();
 
-  settingsSaved = output<{ name: string; visibility: string; engine_visibility: string; export_visibility: string; category: string; orientation: string }>();
+  private navFacade = inject(StudyNavigationFacade);
+
+  // Two-way bindings with sidebar signals
+  settingsPreviewFen = model<string>('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  settingsPreviewLastMove = model<string | null>(null);
+  settingsOrientation = model<'white' | 'black'>('white');
+  isEditingPreview = model<boolean>(false);
+
+  settingsSaved = output<{ 
+    name: string; 
+    visibility: string; 
+    engine_visibility: string; 
+    export_visibility: string; 
+    category: string; 
+    orientation: string;
+    preview_fen?: string;
+    preview_last_move?: string;
+  }>();
   chatCleared = output<void>();
   studyDeleted = output<void>();
   cancelled = output<void>();
@@ -23,10 +41,12 @@ export class StudySettingsComponent {
   settingsEngineVisibility = signal<'everyone' | 'owner'>('everyone');
   settingsExportVisibility = signal<'everyone' | 'owner'>('owner');
   settingsCategory = signal<'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>('general');
-  settingsOrientation = signal<'white' | 'black'>('white');
+
   isConfirmingDeleteStudy = signal(false);
   deleteStudyConfirmText = signal('');
   isChatCleared = signal(false);
+
+  private fenBackup = '';
 
   constructor() {
     effect(() => {
@@ -37,9 +57,29 @@ export class StudySettingsComponent {
         this.settingsEngineVisibility.set(s.engine_visibility || 'everyone');
         this.settingsExportVisibility.set(s.export_visibility || 'owner');
         this.settingsCategory.set(s.category || 'general');
-        this.settingsOrientation.set(s.orientation || 'white');
       }
     });
+  }
+
+  useCurrentBoardPosition() {
+    const fen = this.navFacade.currentFen();
+    const uci = this.navFacade.currentNode()?.uci || null;
+    this.settingsPreviewFen.set(fen);
+    this.settingsPreviewLastMove.set(uci);
+  }
+
+  openPreviewBoardEditor() {
+    this.fenBackup = this.settingsPreviewFen();
+    this.isEditingPreview.set(true);
+  }
+
+  savePreviewBoardPosition() {
+    this.isEditingPreview.set(false);
+  }
+
+  cancelPreviewBoardEditor() {
+    this.settingsPreviewFen.set(this.fenBackup);
+    this.isEditingPreview.set(false);
   }
 
   onCancel() {
@@ -63,7 +103,9 @@ export class StudySettingsComponent {
       engine_visibility: this.settingsEngineVisibility(),
       export_visibility: this.settingsExportVisibility(),
       category: this.settingsCategory(),
-      orientation: this.settingsCategory() === 'opening_repertoire' ? this.settingsOrientation() : 'white'
+      orientation: this.settingsCategory() === 'opening_repertoire' ? this.settingsOrientation() : 'white',
+      preview_fen: this.settingsPreviewFen(),
+      preview_last_move: this.settingsPreviewLastMove() || undefined
     });
   }
 }

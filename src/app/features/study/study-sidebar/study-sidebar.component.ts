@@ -1,4 +1,4 @@
-import { Component, inject, DestroyRef, signal, computed, input } from '@angular/core';
+import { Component, inject, DestroyRef, signal, computed, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -98,7 +98,50 @@ export class StudySidebarComponent {
   newChapterOrientation = signal<'white' | 'black'>('white');
   newChapterActiveTab = signal<ChapterTab>('empty');
 
-  isBoardEditorActive = computed(() => this.activeSection() === 'add-chapter' && this.newChapterActiveTab() === 'editor');
+  // Preview Board Editor shared state
+  settingsPreviewFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  settingsPreviewLastMove = signal<string | null>(null);
+  settingsOrientation = signal<'white' | 'black'>('white');
+  isSettingsEditorActive = signal(false);
+
+  constructor() {
+    effect(() => {
+      const s = this.study();
+      if (s) {
+        this.settingsPreviewFen.set(s.preview_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+        this.settingsPreviewLastMove.set(s.preview_last_move || null);
+        this.settingsOrientation.set(s.orientation || 'white');
+      }
+    });
+  }
+
+  isBoardEditorActive = computed(() => 
+    (this.activeSection() === 'add-chapter' && this.newChapterActiveTab() === 'editor') ||
+    (this.activeSection() === 'settings' && this.isSettingsEditorActive())
+  );
+
+  getEditorFen(): string {
+    if (this.activeSection() === 'settings') {
+      return this.settingsPreviewFen() || '';
+    }
+    return this.newChapterFen() || '';
+  }
+
+  getEditorOrientation(): 'white' | 'black' {
+    if (this.activeSection() === 'settings') {
+      return this.settingsOrientation() || 'white';
+    }
+    return this.newChapterOrientation() || 'white';
+  }
+
+  setEditorFen(fen: string) {
+    if (this.activeSection() === 'settings') {
+      this.settingsPreviewFen.set(fen);
+      this.settingsPreviewLastMove.set(null); // Clear last move coordinates for custom positions
+    } else {
+      this.newChapterFen.set(fen);
+    }
+  }
 
   isExportAllowed = computed(() => {
     const s = this.study();
@@ -297,7 +340,16 @@ export class StudySidebarComponent {
     }
   }
 
-  handleSettingsSaved(payload: { name: string; visibility: string; engine_visibility: string; export_visibility: string; category: string; orientation: string }) {
+  handleSettingsSaved(payload: { 
+    name: string; 
+    visibility: string; 
+    engine_visibility: string; 
+    export_visibility: string; 
+    category: string; 
+    orientation: string;
+    preview_fen?: string;
+    preview_last_move?: string;
+  }) {
     const s = this.study();
     if (!s) return;
 

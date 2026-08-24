@@ -183,6 +183,10 @@
     @case ('settings') {
     <div class="flex-1 flex flex-col min-h-0 border-2 border-border-base rounded-xl overflow-hidden relative">
       <app-study-settings class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
+        [(settingsPreviewFen)]="settingsPreviewFen"
+        [(settingsPreviewLastMove)]="settingsPreviewLastMove"
+        [(settingsOrientation)]="settingsOrientation"
+        [(isEditingPreview)]="isSettingsEditorActive"
         (settingsSaved)="handleSettingsSaved($event)" (chatCleared)="handleChatCleared()"
         (studyDeleted)="handleStudyDeleted()" (cancelled)="selectSection('chapters')">
       </app-study-settings>

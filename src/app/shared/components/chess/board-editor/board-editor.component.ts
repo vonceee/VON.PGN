@@ -18,7 +18,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
   template: `
     @if (mainBoard) {
       <!-- Dedicated Right-Column Editor Tools Stack -->
-      <div class="flex flex-col gap-6 w-full p-6 bg-white rounded-xl border border-border-base/40 h-full overflow-y-auto select-none">        
+      <div class="flex flex-col gap-6 w-full p-6 rounded-xl border-2 border-border-base h-full overflow-y-auto select-none">        
         <!-- Pieces Palette -->
         <div class="flex flex-col gap-4">
           <!-- Black Pieces -->
