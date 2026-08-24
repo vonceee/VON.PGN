@@ -9,6 +9,7 @@ import { AudioService } from '../../core/services/audio.service';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { GameService } from '../../core/services/game.service';
+import { BughouseInviteService } from '../../core/services/bughouse-invite.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import {
@@ -107,6 +108,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private gameService = inject(GameService);
+  private bughouseInviteService = inject(BughouseInviteService);
 
   // ── Lobby & Pairing State ──────────────────────────────────────────
   lobbyState = signal<'lobby' | 'queuing' | 'matched' | 'playing'>('lobby');
@@ -134,7 +136,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
   // New Invite Outbox/Inbox States
   sentInvites = signal<SentInvite[]>([]);
-  incomingInvites = signal<IncomingInvite[]>([]);
+  incomingInvites = this.bughouseInviteService.incomingInvites;
   inviteNotification = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // Queue State
@@ -287,7 +289,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
     const s = this.gameService.socket();
     if (s) {
       s.off('bughouse_lobby_sync');
-      s.off('bughouse_invite_received');
       s.off('bughouse_invite_rejected');
       s.off('bughouse_kicked');
       s.off('bughouse_matched');
@@ -305,7 +306,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
     if (!socket) return;
 
     socket.off('bughouse_lobby_sync');
-    socket.off('bughouse_invite_received');
     socket.off('bughouse_invite_rejected');
     socket.off('bughouse_kicked');
     socket.off('bughouse_matched');
@@ -360,19 +360,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
       });
     });
 
-    socket.on('bughouse_invite_received', (data: any) => {
-      this.ngZone.run(() => {
-        const exists = this.incomingInvites().some(i => i.id === data.lobbyId);
-        if (!exists) {
-          this.incomingInvites.update(list => [...list, {
-            id: data.lobbyId,
-            sender: data.senderName
-          }]);
-          this.audioService.playNotification();
-          this.showNotification(`Incoming lobby invitation from ${data.senderName}!`, 'info');
-        }
-      });
-    });
+
 
     socket.on('bughouse_invite_rejected', (data: any) => {
       this.ngZone.run(() => {
@@ -586,6 +574,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
   }
 
   cancelSentInvite(inviteId: string) {
+    const invite = this.sentInvites().find(i => i.id === inviteId);
     this.sentInvites.update(list => list.filter(i => i.id !== inviteId));
     this.showNotification('Invite cancelled.', 'info');
     this.audioService.playNotification();
@@ -593,6 +582,12 @@ export class BughouseComponent implements OnInit, OnDestroy {
     const socket = this.gameService.socket();
     if (socket && socket.connected) {
       socket.emit('bughouse_leave_lobby');
+    }
+
+    if (invite) {
+      this.http.post(`${environment.apiUrl}/bughouse/cancel-invite`, {
+        receiver_username: invite.receiver
+      }).subscribe();
     }
   }
 
@@ -608,32 +603,30 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
   // ── Incoming Invites Handlers (User B perspective) ────────────────
   acceptIncomingInvite(inviteId: string) {
-    const invite = this.incomingInvites().find(i => i.id === inviteId);
-    if (invite) {
-      const socket = this.gameService.socket();
-      if (socket && socket.connected && !inviteId.startsWith('sim_')) {
-        // Real socket/DB lobby invitation
-        socket.emit('bughouse_accept_invite', { lobbyId: invite.id });
-      } else {
-        // Fallback local simulation (for local test button)
+    if (inviteId.startsWith('sim_')) {
+      // Fallback local simulation (for local test button)
+      const invite = this.incomingInvites().find(i => i.id === inviteId);
+      if (invite) {
         this.partner.set({ name: invite.sender, isOnline: true });
         this.showNotification(`Joined lobby with partner ${invite.sender}!`, 'success');
         this.audioService.playBoardStart();
       }
-      this.incomingInvites.update(list => list.filter(i => i.id !== inviteId));
+      this.bughouseInviteService.incomingInvites.update(list => list.filter(i => i.id !== inviteId));
+    } else {
+      this.bughouseInviteService.acceptInvite(inviteId);
     }
   }
 
   rejectIncomingInvite(inviteId: string) {
-    const invite = this.incomingInvites().find(i => i.id === inviteId);
-    if (invite) {
-      const socket = this.gameService.socket();
-      if (socket && socket.connected) {
-        socket.emit('bughouse_reject_invite', { lobbyId: invite.id });
+    if (inviteId.startsWith('sim_')) {
+      const invite = this.incomingInvites().find(i => i.id === inviteId);
+      if (invite) {
+        this.showNotification(`Rejected invite from ${invite.sender}.`, 'info');
+        this.audioService.playNotification();
       }
-      this.incomingInvites.update(list => list.filter(i => i.id !== inviteId));
-      this.showNotification(`Rejected invite from ${invite.sender}.`, 'info');
-      this.audioService.playNotification();
+      this.bughouseInviteService.incomingInvites.update(list => list.filter(i => i.id !== inviteId));
+    } else {
+      this.bughouseInviteService.rejectInvite(inviteId);
     }
   }
 

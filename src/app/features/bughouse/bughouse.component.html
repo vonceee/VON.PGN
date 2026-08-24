@@ -92,37 +92,7 @@
   </div>
   }
 
-  <!-- Floating Incoming Invitations Overlay (Top-Right Toast Stack) -->
-  @if (incomingInvites().length > 0) {
-  <div class="fixed top-6 right-6 z-[110] flex flex-col gap-4 w-full max-w-sm pointer-events-none">
-    @for (invite of incomingInvites(); track invite.id) {
-    <div
-      class="pointer-events-auto bg-slate-900 border border-slate-800 text-white rounded-2xl p-4 flex flex-col gap-3.5">
-      <div class="flex items-start justify-between">
-        <div class="flex items-center gap-3">
-          <div>
-            <span class="font-bold text-sm block leading-tight text-white">{{ invite.sender }}</span>
-            <span class="text-xs text-slate-400">Invites you to pair</span>
-          </div>
-        </div>
-        <span
-          class="text-[9px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30">2v2
-          Partner</span>
-      </div>
-      <div class="flex gap-2">
-        <button (click)="acceptIncomingInvite(invite.id)"
-          class="flex-1 py-1.5 px-3 rounded-lg bg-green-600 hover:bg-green-500 text-white text-xs font-bold transition-colors cursor-pointer text-center">
-          Accept
-        </button>
-        <button (click)="rejectIncomingInvite(invite.id)"
-          class="flex-1 py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors cursor-pointer text-center border border-slate-700">
-          Reject
-        </button>
-      </div>
-    </div>
-    }
-  </div>
-  }
+
 
   <!-- Temporary Banner Toast Notifications (Success / Warning / Info) -->
   @if (inviteNotification(); as notif) {

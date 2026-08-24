@@ -1,12 +1,12 @@
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 border-2 border-border-base rounded-xl">
 
   <!-- Left 2 Columns: Team Setup & Search -->
   <div class="lg:col-span-2 flex flex-col gap-8">
     <!-- Team Slots Card -->
-    <div class="border-2 border-border-base rounded-2xl p-6">
+    <div class="p-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Slot 1: Active User -->
-        <div class="flex items-center gap-4 p-4 rounded-xl border border-border-base bg-slate-200">
+        <div class="flex items-center gap-4 p-4 rounded-xl border-2 border-border-base">
           <div class="flex-1 min-w-0">
             <span class="font-bold block truncate">{{ currentUserProfile().name }}</span>
           </div>
@@ -14,7 +14,7 @@
 
         <!-- Slot 2: Invited Partner -->
         @if (partner(); as p) {
-        <div class="flex items-center gap-4 p-4 rounded-xl border border-border-base bg-slate-200 relative group">
+        <div class="flex items-center gap-4 p-4 rounded-xl border-2 border-border-base relative group">
           <div class="flex-1 min-w-0">
             <span class="font-bold block truncate">{{ p.name }}</span>
           </div>
@@ -76,19 +76,17 @@
     </div>
 
     <!-- Players Invitation Pool -->
-    <div class="border-2 border-border-base rounded-2xl p-6 flex flex-col gap-6">
+    <div class="p-6 flex flex-col gap-4">
       <div>
-        <h2 class="text-xl font-semibold mb-1">Invite Player</h2>
-        <p class="text-xs text-gray-500">Search active online players to invite to your lobby.</p>
+        <h2 class="text-lg font-medium">Invite</h2>
       </div>
 
       <!-- Search Bar -->
       <div class="relative group/search">
         <div
-          class="flex items-center h-11 w-full px-4 rounded-xl bg-slate-200 border border-border-base focus-within:border-blue-600/50 focus-within:bg-white transition-all">
-          <ng-icon name="heroMagnifyingGlass" class="w-5 h-5 text-gray-500 shrink-0 mr-3"></ng-icon>
-          <input type="text" placeholder="Search online players by username..." [value]="searchQuery()"
-            (input)="searchInput.emit($event)" class="bg-transparent outline-none text-sm w-full" />
+          class="flex items-center w-full">
+          <input type="text" placeholder="Search" [value]="searchQuery()"
+            (input)="searchInput.emit($event)" class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
           @if (isSearchingPlayers()) {
           <div class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0 ml-3">
           </div>
@@ -118,16 +116,14 @@
         </div>
         }
       </div>
-
-
     </div>
   </div>
 
   <!-- Right Column: Settings & CTA (Span 1) -->
   <div class="flex flex-col gap-6">
     <!-- Game Type Panel -->
-    <div class="border-2 border-border-base rounded-2xl p-6 flex flex-col gap-6">
-      <div class="flex flex-col gap-5">
+    <div class="p-6 flex flex-col gap-2">
+      <div class="flex flex-col gap-2">
         <div class="pt-4">
           <!-- Play/Queue Action -->
           <button

@@ -58,13 +58,4 @@ export class NotificationService {
       })
     );
   }
-
-  markAllAsRead(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/mark-all-read`, {}).pipe(
-      tap(() => {
-        this.notifications.update(prev => prev.map(n => ({ ...n, read_at: new Date().toISOString() })));
-        this.unreadCount.set(0);
-      })
-    );
-  }
 }

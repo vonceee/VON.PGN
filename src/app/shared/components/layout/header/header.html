@@ -192,14 +192,62 @@
       }
     </div>
     @if (authService.isAuthenticated()) {
+    <!-- Bughouse Invites Dropdown -->
+    <div class="relative hidden md:block" #invitesContainer>
+      <button (click)="toggleInvites()"
+        class="flex items-center gap-2 group cursor-pointer relative" aria-label="Bughouse Invitations">
+        <ng-icon name="heroBugAnt" class="text-2xl"></ng-icon>
+        @if (bughouseInviteService.incomingInvites().length > 0) {
+        <span
+          class="absolute -top-1.5 -right-1.5 w-4 h-4 flex items-center justify-center bg-blue-600 text-white text-[9px] font-medium rounded-full">
+          {{ bughouseInviteService.incomingInvites().length }}
+        </span>
+        }
+      </button>
+
+      @if (isInvitesOpen()) {
+      <div
+        class="absolute right-0 top-full mt-2 w-80 bg-slate-900 text-white rounded-xl z-50 overflow-hidden flex flex-col">
+        <div class="max-h-96 overflow-y-auto">
+          @if (bughouseInviteService.incomingInvites().length === 0) {
+          <div class="px-4 py-8 text-center text-sm italic text-white/50">No pending invites</div>
+          } @else {
+          @for (invite of bughouseInviteService.incomingInvites(); track invite.id) {
+          <div class="px-4 py-3 last:border-0 hover:bg-white/5 transition-colors">
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <span class="font-bold text-md block leading-tight text-white">{{ invite.sender }}</span>
+                <span class="text-xs text-white">Bughouse</span>
+              </div>
+              <div class="flex gap-2">
+                <button (click)="bughouseInviteService.acceptInvite(invite.id); isInvitesOpen.set(false)"
+                  class="p-1.5 rounded-lg text-green-400 hover:bg-green-600 hover:text-white transition-all cursor-pointer flex items-center justify-center border-2 border-border-base"
+                  aria-label="Accept">
+                  <ng-icon name="heroCheck" class="text-lg" strokeWidth="5"></ng-icon>
+                </button>
+                <button (click)="bughouseInviteService.rejectInvite(invite.id)"
+                  class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-600 hover:text-white transition-all cursor-pointer flex items-center justify-center border-2 border-border-base"
+                  aria-label="Reject">
+                  <ng-icon name="heroXMark" class="text-lg" strokeWidth="5"></ng-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          }
+          }
+        </div>
+      </div>
+      }
+    </div>
+
     <!-- Notifications Dropdown -->
     <div class="relative hidden md:block">
       <button (click)="toggleNotifications()"
-        class="flex items-center gap-1.5 px-3 py-1.5 cursor-pointer relative group" aria-label="Notifications">
+        class="flex items-center gap-2 group cursor-pointer relative" aria-label="Notifications">
         <ng-icon name="heroBell" class="text-2xl"></ng-icon>
         @if (notificationService.unreadCount() > 0) {
         <span
-          class="absolute top-1.5 right-1.5 px-1 py-0.5 min-w-[1rem] h-4 flex items-center justify-center bg-rose-600 text-white text-[9px] font-medium rounded-full border border-[var(--color-main)]">
+          class="absolute -top-1.5 -right-1.5 w-4 h-4 flex items-center justify-center bg-blue-600 text-white text-[9px] font-medium rounded-full">
           {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
         </span>
         }
@@ -207,16 +255,7 @@
 
       @if (isNotificationsOpen()) {
       <div
-        class="absolute right-0 top-full mt-2 w-80 bg-slate-900 text-white border border-white/10 rounded-xl z-50 overflow-hidden flex flex-col shadow-md">
-        <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between">
-          <span class="text-sm/6">Notifications</span>
-          @if (notificationService.unreadCount() > 0) {
-          <button (click)="notificationService.markAllAsRead().subscribe()"
-            class="text-xs hover:underline text-white/80 hover:text-white">Mark all as
-            read</button>
-          }
-        </div>
-
+        class="absolute right-0 top-full mt-2 w-80 bg-slate-900 text-white rounded-xl z-50 overflow-hidden flex flex-col">
         <div class="max-h-96 overflow-y-auto">
           <!-- Notifications -->
           @if (notificationService.isLoading() && notificationService.notifications().length === 0) {
@@ -239,7 +278,7 @@
 
     <div class="relative hidden md:block" #profileContainer>
       <button (click)="toggleProfileDropdown()"
-        class="flex items-center gap-2 group cursor-pointer focus:outline-none relative">
+        class="flex items-center gap-2 group cursor-pointer relative">
         <div class="flex items-center gap-1.5">
           <ng-icon name="heroUserCircle" class="text-2xl group-transition-colors 4xl:hidden"></ng-icon>
           <span class="hidden 4xl:inline text-sm/6 font-medium transition-colors">
