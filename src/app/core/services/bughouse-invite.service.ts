@@ -48,6 +48,7 @@ export class BughouseInviteService {
             socket.emit('bughouse_sync_invites');
           };
 
+          socket.off('connect');
           if (socket.connected) {
             emitSync();
           } else {

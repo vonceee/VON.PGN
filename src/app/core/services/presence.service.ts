@@ -39,6 +39,7 @@ export class PresenceService {
             this.updateLocalPresence(data.userId, data.online);
           });
 
+          socket.off('site_stats');
           socket.on('site_stats', (data: { nbPlayers: number, nbGames: number, topGames?: any[], topGameId?: string }) => {
             this.nbPlayers.set(data.nbPlayers);
             this.nbGames.set(data.nbGames);
