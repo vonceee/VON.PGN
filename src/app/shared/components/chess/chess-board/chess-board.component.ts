@@ -408,12 +408,13 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
       }
     }
 
+    if (changes['orientation'] && this.cgApi) {
+      this.cgApi.set({ orientation: this.orientation });
+    }
+
     if (this.initialized) {
       if (changes['fen'] && !changes['fen'].isFirstChange()) {
         this.syncBoard();
-      }
-      if (changes['orientation'] && !changes['orientation'].isFirstChange()) {
-        this.cgApi.set({ orientation: this.orientation });
       }
       if (changes['syncedShapes'] && !changes['syncedShapes'].isFirstChange()) {
         this.isProgrammaticSet = true;

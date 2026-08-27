@@ -793,13 +793,17 @@ export class BughouseComponent implements OnInit, OnDestroy {
     const board = this.myBoard();
     const color = this.myColor() ?? 'w';
 
-    if (board === 'A') {
-      // Own board: own color at bottom. Observer board: always White at bottom.
-      this.boardAOrientation.set(color === 'w' ? 'white' : 'black');
-      this.boardBOrientation.set('white');
-    } else {
-      // Own board: own color at bottom. Observer board: always White at bottom.
+    if (!board) {
       this.boardAOrientation.set('white');
+      this.boardBOrientation.set('white');
+      return;
+    }
+
+    if (board === 'A') {
+      this.boardAOrientation.set(color === 'w' ? 'white' : 'black');
+      this.boardBOrientation.set(color === 'w' ? 'black' : 'white');
+    } else {
+      this.boardAOrientation.set(color === 'w' ? 'black' : 'white');
       this.boardBOrientation.set(color === 'w' ? 'white' : 'black');
     }
   }
