@@ -51,7 +51,7 @@
       {{ searchQuery() ? 'Try adjusting your search terms.' : 'Create a chess tournament event to start managing it.' }}
     </p>
     @if (!searchQuery()) {
-    <a appButton variant="primary" routerLink="/my-events/new">
+    <a routerLink="/my-events/new">
       Create an event
     </a>
     }

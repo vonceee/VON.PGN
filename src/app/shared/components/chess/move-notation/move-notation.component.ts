@@ -12,7 +12,6 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ButtonComponent } from '@shared/ui';
 import { MoveNode, GLYPH_MAPPING } from '../../../../core/models/study.model';
 import { buildTreeFromMoves, findNodeContext } from '../../../../core/utils/chess-tree.utils';
 import { AudioService } from '../../../../core/services/audio.service';
@@ -20,7 +19,7 @@ import { AudioService } from '../../../../core/services/audio.service';
 @Component({
   selector: 'app-move-notation',
   standalone: true,
-  imports: [CommonModule, ButtonComponent],
+  imports: [CommonModule],
   templateUrl: './move-notation.component.html',
   host: {
     class: 'flex flex-col min-h-0 h-full',

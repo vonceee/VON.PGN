@@ -3,13 +3,13 @@
   @if (showNavigation()) {
   <div class="flex-none flex items-center justify-between p-4 border-b border-border-base">
     <div class="flex items-center gap-4">
-      <button appButton (click)="navigate.emit(initialPly())" [disabled]="currentPly() <= initialPly()">
+      <button (click)="navigate.emit(initialPly())" [disabled]="currentPly() <= initialPly()">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="11 17 6 12 11 7" />
           <polyline points="18 17 13 12 18 7" />
         </svg>
       </button>
-      <button appButton (click)="onNavigateBack()" [disabled]="!navigationCtx().parent && currentPly() <= initialPly()">
+      <button (click)="onNavigateBack()" [disabled]="!navigationCtx().parent && currentPly() <= initialPly()">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="15 18 9 12 15 6" />
         </svg>
@@ -17,12 +17,12 @@
     </div>
 
     <div class="flex items-center gap-0.5">
-      <button appButton (click)="onNavigateNext()" [disabled]="nextOptions().length === 0">
+      <button (click)="onNavigateNext()" [disabled]="nextOptions().length === 0">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </button>
-      <button appButton
+      <button
         (click)="navigate.emit(effectiveTree().length > 0 ? effectiveTree()[effectiveTree().length - 1].ply : initialPly())"
         [disabled]="isLastMove()">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">

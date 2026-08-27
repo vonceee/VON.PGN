@@ -7,7 +7,6 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { CreateStudyDialogComponent } from '../dialogs/create-study-dialog/create-study-dialog.component';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent } from '@shared/ui';
 import { effect } from '@angular/core';
 import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -35,7 +34,6 @@ import { FloatingCursorComponent } from '@shared/ui';
     CommonModule,
     RouterModule,
     FormsModule,
-    ButtonComponent,
     DialogModule,
     ChessBoardComponent,
     NgIconComponent,

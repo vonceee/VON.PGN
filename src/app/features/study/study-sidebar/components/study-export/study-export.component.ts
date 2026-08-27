@@ -4,12 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroDocumentArrowDown } from '@ng-icons/heroicons/outline';
 import { Study, StudyChapter } from '../../../../../core/models/study.model';
-import { ButtonComponent } from '../../../../../shared/components/ui/button/button.component';
 
 @Component({
   selector: 'app-study-export',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgIconComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, NgIconComponent],
   providers: [
     provideIcons({
       heroDocumentArrowDown
@@ -89,8 +88,9 @@ import { ButtonComponent } from '../../../../../shared/components/ui/button/butt
       </div>
 
       <!-- Action Button -->
-      <button appButton variant="primary" (click)="performExport()"
-        [disabled]="exportOption() === 'selected' && selectedChapterIds().size === 0" class="w-full shrink-0 animate-none">
+      <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+       (click)="performExport()"
+        [disabled]="exportOption() === 'selected' && selectedChapterIds().size === 0">
         <ng-icon name="heroDocumentArrowDown" class="text-md"></ng-icon>
         <span>Export PGN</span>
       </button>

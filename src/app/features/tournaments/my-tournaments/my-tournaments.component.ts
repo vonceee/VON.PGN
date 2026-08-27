@@ -7,7 +7,6 @@ import { TournamentService } from '../../../core/services/tournament.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Tournament } from '../../../core/models/tournament.model';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent } from '@shared/ui';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { FormsModule } from '@angular/forms';
 
@@ -17,7 +16,7 @@ import { heroTrophy, heroEye, heroPencilSquare, heroTrash, heroPlus } from '@ng-
 @Component({
   selector: 'app-my-tournaments',
   standalone: true,
-  imports: [CommonModule, FormsModule, ConfirmDeleteModalComponent, ButtonComponent, RouterLink, NgIconComponent],
+  imports: [CommonModule, FormsModule, ConfirmDeleteModalComponent, RouterLink, NgIconComponent],
   providers: [
     provideIcons({
       heroTrophy,

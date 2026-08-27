@@ -2,9 +2,8 @@ import { Component, Input, Output, EventEmitter, signal, computed, ViewChild, ef
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChessBoardComponent } from '../chess-board/chess-board.component';
-import { ButtonComponent } from '../../ui/button/button.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark } from '@ng-icons/heroicons/outline';
+import { heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark, heroHandRaised } from '@ng-icons/heroicons/outline';
 import { dragNewPiece } from 'chessground/drag';
 import { Role, Color, Key } from 'chessground/types';
 
@@ -13,8 +12,8 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 @Component({
   selector: 'app-board-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChessBoardComponent, ButtonComponent],
-  providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark })],
+  imports: [CommonModule, FormsModule, ChessBoardComponent, NgIconComponent],
+  providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark, heroHandRaised })],
   template: `
     @if (mainBoard) {
       <!-- Dedicated Right-Column Editor Tools Stack -->
@@ -58,44 +57,83 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
           </div>
         </div>
 
-        <!-- Editor Brush Action (Move / Delete) -->
-        <div class="flex flex-col">
-          <div class="grid grid-cols-2 gap-2">
-            <button 
-              appButton
-              [variant]="selectedTool() === 'hand' ? 'primary' : 'outline'"
-              (click)="selectTool('hand')"
-              class="w-full text-sm/6"
-            >
-              Move / Select
-            </button>
-            <button 
-              appButton
-              [variant]="selectedTool() === 'trash' ? 'primary' : 'outline'"
-              (click)="selectTool('trash')"
-              class="w-full text-sm/6"
-            >
-              Eraser
-            </button>
-          </div>
+        <!-- Editor Tools & Board Actions -->
+        <div class="flex items-center gap-2">
+          <button 
+            title="Move / Select"
+            class="w-10 h-10 rounded-full border flex items-center justify-center transition-colors cursor-pointer"
+            [class.bg-slate-900]="selectedTool() === 'hand'"
+            [class.text-white]="selectedTool() === 'hand'"
+            [class.border-slate-900]="selectedTool() === 'hand'"
+            [class.bg-white]="selectedTool() !== 'hand'"
+            [class.text-slate-700]="selectedTool() !== 'hand'"
+            [class.border-border-base]="selectedTool() !== 'hand'"
+            [class.hover:bg-slate-100]="selectedTool() !== 'hand'"
+            (click)="selectTool('hand')"
+          >
+            <ng-icon name="heroHandRaised" class="text-xl"></ng-icon>
+          </button>
+          <button 
+            title="Eraser"
+            class="w-10 h-10 rounded-full border flex items-center justify-center transition-colors cursor-pointer"
+            [class.bg-slate-900]="selectedTool() === 'trash'"
+            [class.text-white]="selectedTool() === 'trash'"
+            [class.border-slate-900]="selectedTool() === 'trash'"
+            [class.bg-white]="selectedTool() !== 'trash'"
+            [class.text-slate-700]="selectedTool() !== 'trash'"
+            [class.border-border-base]="selectedTool() !== 'trash'"
+            [class.hover:bg-slate-100]="selectedTool() !== 'trash'"
+            (click)="selectTool('trash')"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M22 21H7" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="m5 11 9 9" />
+            </svg>
+          </button>
+          <div class="h-6 w-px bg-slate-300 mx-1"></div>
+          <button 
+            title="Reset board"
+            class="w-10 h-10 rounded-full border border-border-base bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+            (click)="resetToInitial()"
+          >
+            <ng-icon name="heroArrowPath" class="text-xl"></ng-icon>
+          </button>
+          <button 
+            title="Clear board"
+            class="w-10 h-10 rounded-full border border-border-base bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+            (click)="clearBoard()"
+          >
+            <ng-icon name="heroTrash" class="text-xl"></ng-icon>
+          </button>
         </div>
 
         <!-- Turn Selection -->
         <div class="flex flex-col">
-          <div class="grid grid-cols-2 gap-2">
+          <div class="flex items-center gap-2">
             <button 
-              appButton
-              [variant]="turn() === 'w' ? 'primary' : 'outline'"
+              class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium text-[14px] leading-5 cursor-pointer transition-colors border"
+              [class.bg-slate-900]="turn() === 'w'"
+              [class.text-white]="turn() === 'w'"
+              [class.border-slate-900]="turn() === 'w'"
+              [class.bg-white]="turn() !== 'w'"
+              [class.text-slate-700]="turn() !== 'w'"
+              [class.border-border-base]="turn() !== 'w'"
+              [class.hover:bg-slate-100]="turn() !== 'w'"
               (click)="setTurn('w')"
-              class="w-full text-sm/6"
             >
               White to move
             </button>
             <button 
-              appButton
-              [variant]="turn() === 'b' ? 'primary' : 'outline'"
+              class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium text-[14px] leading-5 cursor-pointer transition-colors border"
+              [class.bg-slate-900]="turn() === 'b'"
+              [class.text-white]="turn() === 'b'"
+              [class.border-slate-900]="turn() === 'b'"
+              [class.bg-white]="turn() !== 'b'"
+              [class.text-slate-700]="turn() !== 'b'"
+              [class.border-border-base]="turn() !== 'b'"
+              [class.hover:bg-slate-100]="turn() !== 'b'"
               (click)="setTurn('b')"
-              class="w-full text-sm/6"
             >
               Black to move
             </button>
@@ -124,27 +162,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
           </div>
         </div>
 
-        <!-- Board Actions -->
-        <div class="flex flex-col">
-          <div class="grid grid-cols-2 gap-2">
-            <button 
-              appButton
-              variant="outline"
-              (click)="clearBoard()"
-              class="w-full text-sm/6"
-            >
-              Clear board
-            </button>
-            <button 
-              appButton
-              variant="outline"
-              (click)="resetToInitial()"
-              class="w-full text-sm/6"
-            >
-              Reset board
-            </button>
-          </div>
-        </div>
+
       </div>
     } @else {
       <!-- 2-Column Compact Layout with Left-Side Pieces -->
@@ -216,35 +234,80 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
         <!-- Column 2: Tools (4/12) -->
         <div class="lg:col-span-4 flex flex-col gap-8 pt-6">
           
-          <!-- Editor Tools -->
-          <div class="space-y-3">
-            <div class="grid grid-cols-2 gap-2">
-              <button 
-                appButton
-                [variant]="selectedTool() === 'hand' ? 'primary' : 'outline'"
-                (click)="selectTool('hand')"
-              >Move</button>
-              <button 
-                appButton
-                [variant]="selectedTool() === 'trash' ? 'primary' : 'outline'"
-                (click)="selectTool('trash')"
-              >Delete</button>
-            </div>
+          <!-- Editor Tools & Board Actions -->
+          <div class="flex items-center gap-2">
+            <button 
+              title="Move / Select"
+              class="w-10 h-10 rounded-full border flex items-center justify-center transition-colors cursor-pointer"
+              [class.bg-slate-900]="selectedTool() === 'hand'"
+              [class.text-white]="selectedTool() === 'hand'"
+              [class.border-slate-900]="selectedTool() === 'hand'"
+              [class.bg-white]="selectedTool() !== 'hand'"
+              [class.text-slate-700]="selectedTool() !== 'hand'"
+              [class.border-border-base]="selectedTool() !== 'hand'"
+              [class.hover:bg-slate-100]="selectedTool() !== 'hand'"
+              (click)="selectTool('hand')"
+            >
+              <ng-icon name="heroHandRaised" class="text-xl"></ng-icon>
+            </button>
+            <button 
+              title="Eraser"
+              class="w-10 h-10 rounded-full border flex items-center justify-center transition-colors cursor-pointer"
+              [class.bg-slate-900]="selectedTool() === 'trash'"
+              [class.text-white]="selectedTool() === 'trash'"
+              [class.border-slate-900]="selectedTool() === 'trash'"
+              [class.bg-white]="selectedTool() !== 'trash'"
+              [class.text-slate-700]="selectedTool() !== 'trash'"
+              [class.border-border-base]="selectedTool() !== 'trash'"
+              [class.hover:bg-slate-100]="selectedTool() !== 'trash'"
+              (click)="selectTool('trash')"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M22 21H7" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5 11 9 9" />
+              </svg>
+            </button>
+            <div class="h-6 w-px bg-slate-300 mx-1"></div>
+            <button 
+              title="Reset board"
+              class="w-10 h-10 rounded-full border border-border-base bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+              (click)="resetToInitial()"
+            >
+              <ng-icon name="heroArrowPath" class="text-xl"></ng-icon>
+            </button>
+            <button 
+              title="Clear board"
+              class="w-10 h-10 rounded-full border border-border-base bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+              (click)="clearBoard()"
+            >
+              <ng-icon name="heroTrash" class="text-xl"></ng-icon>
+            </button>
           </div>
 
           <!-- Turn Selection -->
-          <div class="space-y-3">
+          <div class="flex flex-col gap-2">
             <button 
-              appButton
-              [variant]="turn() === 'w' ? 'primary' : 'ghost'"
+              class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium text-[14px] leading-5 cursor-pointer transition-colors border w-full"
+              [class.bg-slate-900]="turn() === 'w'"
+              [class.text-white]="turn() === 'w'"
+              [class.border-slate-900]="turn() === 'w'"
+              [class.bg-white]="turn() !== 'w'"
+              [class.text-slate-700]="turn() !== 'w'"
+              [class.border-border-base]="turn() !== 'w'"
+              [class.hover:bg-slate-100]="turn() !== 'w'"
               (click)="setTurn('w')"
-              [class.shadow-md]="turn() === 'w'"
             >White to move</button>
             <button 
-              appButton
-              [variant]="turn() === 'b' ? 'primary' : 'ghost'"
+              class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium text-[14px] leading-5 cursor-pointer transition-colors border w-full"
+              [class.bg-slate-900]="turn() === 'b'"
+              [class.text-white]="turn() === 'b'"
+              [class.border-slate-900]="turn() === 'b'"
+              [class.bg-white]="turn() !== 'b'"
+              [class.text-slate-700]="turn() !== 'b'"
+              [class.border-border-base]="turn() !== 'b'"
+              [class.hover:bg-slate-100]="turn() !== 'b'"
               (click)="setTurn('b')"
-              [class.shadow-md]="turn() === 'b'"
             >Black to move</button>
           </div>
 

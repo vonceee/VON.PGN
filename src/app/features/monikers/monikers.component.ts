@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MonikerService } from '../../core/services/moniker.service';
 import { PlayerMoniker } from '../../core/models/moniker.model';
-import { ButtonComponent } from '@shared/ui';
 import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
 import { FloatingCursorComponent } from '@shared/ui';
 
@@ -12,7 +11,6 @@ import { FloatingCursorComponent } from '@shared/ui';
   standalone: true,
   imports: [
     CommonModule,
-    ButtonComponent,
     FloatingCursorContainerDirective,
     FloatingCursorTriggerDirective,
     FloatingCursorComponent

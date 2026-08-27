@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BlogService, Blog } from '../../../core/services/blog.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { ButtonComponent } from '@shared/ui';
 import { BlogGameViewerComponent } from '@shared/chess';
 
 interface ContentBlock {
@@ -18,7 +17,6 @@ interface ContentBlock {
   imports: [
     CommonModule,
     RouterLink,
-    ButtonComponent,
     BlogGameViewerComponent,
   ],
   templateUrl: './blog-detail.component.html',

@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogRef } from '@angular/cdk/dialog';
-import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 
 @Component({
   selector: 'app-request-control-dialog',
   standalone: true,
-  imports: [CommonModule, ButtonComponent],
+  imports: [CommonModule],
   template: `
     <div class="bg-white rounded-4xl w-full p-8 space-y-8 relative">
       <!-- Header -->
@@ -31,17 +30,19 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
         <ul class="space-y-3">
           <li class="flex items-start gap-3">
             <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0"></span>
-            <span class="text-sm/6">Request permission to interact with the chessboard?</span>
+            <span class="text-sm/6">This action will send a request to the host to grant you control of the board.</span>
           </li>
         </ul>
       </div>
 
       <!-- Footer Actions -->
-      <div class="pt-4 flex gap-4 w-full">
-        <button appButton variant="outline" class="flex-1" (click)="dialogRef.close(false)">
+      <div class="pt-4 flex gap-4 justify-end">
+        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+         (click)="dialogRef.close(false)">
           Cancel
         </button>
-        <button appButton variant="primary" class="flex-1" (click)="dialogRef.close(true)">
+        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+         (click)="dialogRef.close(true)">
           Request control
         </button>
       </div>

@@ -1,21 +1,18 @@
 <div class="bg-white rounded-4xl w-full max-w-md p-8 space-y-6 relative">
   <!-- Dialog Header -->
   <div class="pb-4 flex items-center justify-between">
-    <h2 class="text-2xl">Add study member</h2>
+    <h2 class="text-2xl">add user to study</h2>
   </div>
 
   <!-- Search & Results Section -->
   <div class="relative space-y-4">
-    <div
-      class="flex items-center h-11 w-full px-4 rounded-full bg-slate-200 border border-border-base focus-within:border-blue-600/40 focus-within:ring-1 focus-within:ring-blue-600/40 transition-all">
-      <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)"
-        placeholder="search players..." autofocus
-        class="bg-transparent outline-none text-sm/6 font-medium placeholder-muted w-full" />
+    <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)"
+      placeholder="search..." autofocus
+      class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
 
-      @if (isSearching()) {
+    @if (isSearching()) {
 
       }
-    </div>
 
     <!-- Search Results Dropdown List -->
     @if (results().length > 0) {
@@ -57,12 +54,12 @@
   }
 
   <!-- Actions -->
-  <div class="flex gap-4 pt-4">
-    <button appButton variant="outline" class="flex-1" (click)="dialogRef.close()">
+  <div class="flex gap-4 pt-4 justify-end">
+    <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all" (click)="dialogRef.close()">
       Cancel
     </button>
-    <button appButton variant="primary" class="flex-1" [disabled]="!selectedUser()" (click)="addMember()">
-      Add member
+    <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer" [disabled]="!selectedUser()" (click)="addMember()">
+      Confirm
     </button>
   </div>
 </div>

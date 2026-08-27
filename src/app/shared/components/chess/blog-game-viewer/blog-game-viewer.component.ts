@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChessBoardComponent, MoveNotationComponent } from '@shared/chess';
-import { ButtonComponent } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroChevronLeft,
@@ -28,7 +27,6 @@ import { MoveNode } from '../../../../core/models/study.model';
     CommonModule,
     ChessBoardComponent,
     MoveNotationComponent,
-    ButtonComponent,
     NgIconComponent,
   ],
   providers: [

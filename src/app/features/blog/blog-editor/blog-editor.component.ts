@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BlogService, Blog, BlogGame } from '../../../core/services/blog.service';
-import { ButtonComponent } from '@shared/ui';
 interface EditorGame {
   id?: number;
   title: string;
@@ -18,7 +17,6 @@ interface EditorGame {
     CommonModule,
     RouterLink,
     FormsModule,
-    ButtonComponent,
   ],
   template: `
     <div class="max-w-7xl mx-auto px-4 py-8">
@@ -128,21 +126,17 @@ interface EditorGame {
               
               <div class="flex items-center gap-2">
                 <button
-                  appButton
-                  variant="outline"
+                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
                   routerLink="/blog"
-                  [disabled]="isSaving()"
                 >
                   Cancel
                 </button>
                 
                 <button
-                  appButton
-                  variant="primary"
+                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
                   (click)="savePost()"
-                  [loading]="isSaving()"
                 >
-                  {{ isEditMode() ? 'Save changes' : 'Publish post' }}
+                  {{ isEditMode() ? 'Save changes' : 'Publish' }}
                 </button>
               </div>
             </div>
@@ -179,10 +173,8 @@ interface EditorGame {
               </div>
 
               <button
-                appButton
-                variant="outline"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
                 (click)="addGame()"
-                class="w-full text-xs py-2"
               >
                 + Add game to post
               </button>

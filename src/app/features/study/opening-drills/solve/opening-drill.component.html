@@ -93,7 +93,7 @@
         <!-- Action Buttons -->
         <div class="flex flex-col transition-all duration-300 p-2 rounded-xl border border-transparent relative">
           @if (isRetryMode()) {
-          <button appButton variant="outline" (click)="cancelRetry()">
+          <button (click)="cancelRetry()">
             Back to Summary
           </button>
           } @else {
@@ -185,7 +185,7 @@
                 class="font-medium text-emerald-600">{{ mistake.correctMove }}</span>
             </p>
           </div>
-          <button appButton variant="outline" class="shrink-0" (click)="retryMistakePosition(mistake)">
+          <button class="shrink-0" (click)="retryMistakePosition(mistake)">
             Retry position
           </button>
         </div>
@@ -200,7 +200,7 @@
         leading-5 cursor-pointer class="min-w-[200px]" (click)="restartRepertoire()">
         Practice again
       </button>
-      <button appButton variant="outline" class="min-w-[200px]" (click)="quitActiveDrill()">
+      <button class="min-w-[200px]" (click)="quitActiveDrill()">
         Back to selection
       </button>
     </div>

@@ -3,12 +3,11 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CoachService } from './services/coach.service';
-import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-coaches',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './coaches.component.html'
 })
 export class CoachesComponent {

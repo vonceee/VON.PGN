@@ -23,12 +23,11 @@ import { UserService } from '../../../../core/services/user.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { LessonService } from '../../../../core/services/lesson.service';
-import { ButtonComponent  } from '@shared/ui';
 
 @Component({
   selector: 'app-lesson-view',
   standalone: true,
-  imports: [InteractiveBoardComponent, RouterLink, ButtonComponent],
+  imports: [InteractiveBoardComponent, RouterLink],
   templateUrl: './lesson-view.html',
   styleUrl: './lesson-view.css',
 })

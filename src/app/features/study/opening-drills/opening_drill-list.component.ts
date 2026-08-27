@@ -7,7 +7,6 @@ import { StudyService } from '../../../core/services/study.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { environment } from '../../../../environments/environment';
 import { Study } from '../../../core/models/study.model';
-import { ButtonComponent } from '@shared/ui';
 import { ChessBoardComponent } from '@shared/chess';
 import type { Key } from 'chessground/types';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -23,7 +22,6 @@ import { FloatingCursorComponent } from '@shared/ui';
     CommonModule,
     FormsModule,
     RouterModule,
-    ButtonComponent,
     ChessBoardComponent,
     NgIconComponent,
     FloatingCursorContainerDirective,

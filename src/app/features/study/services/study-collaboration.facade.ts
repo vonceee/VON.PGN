@@ -183,7 +183,6 @@ export class StudyCollaborationFacade {
 
   joinClassSession() {
     this.studyService.hasJoinedClass.set(true);
-    this.toastService.show('Joined live classroom session!', 'success');
   }
 
   onJoinClassConfirmed() {

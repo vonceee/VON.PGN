@@ -2,17 +2,16 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 
 @Component({
   selector: 'app-edit-metadata-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonComponent],
+  imports: [CommonModule, FormsModule],
   template: `
     <div class="bg-white rounded-4xl w-full max-h-[90vh] flex flex-col relative overflow-hidden">
       <!-- Dialog Header -->
       <div class="p-6 pb-0 flex items-center justify-between shrink-0">
-        <h2 class="text-2xl">Edit game metadata</h2>
+        <h2 class="text-2xl">edit metadata</h2>
       </div>
 
       <!-- Dialog Body (scrollable) -->
@@ -164,11 +163,13 @@ import { ButtonComponent } from '../../../../shared/components/ui/button/button.
 
       <!-- Dialog Footer -->
       <div class="p-8 pt-4 flex gap-4 w-full shrink-0">
-        <button appButton variant="outline" (click)="dialogRef.close()" class="flex-1">
+        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+         (click)="dialogRef.close()">
           Cancel
         </button>
-        <button appButton variant="primary" (click)="onSave()" class="flex-1">
-          Save Changes
+        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+         (click)="onSave()">
+          Save
         </button>
       </div>
     </div>

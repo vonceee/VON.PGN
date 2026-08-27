@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { BlogService, Blog } from '../../../core/services/blog.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { ButtonComponent } from '@shared/ui';
 import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
 import { FloatingCursorComponent } from '@shared/ui';
 
@@ -14,7 +13,6 @@ import { FloatingCursorComponent } from '@shared/ui';
     CommonModule,
     RouterLink,
     RouterModule,
-    ButtonComponent,
     FloatingCursorContainerDirective,
     FloatingCursorTriggerDirective,
     FloatingCursorComponent

@@ -193,7 +193,7 @@
           <p class="text-gray-500 text-base max-w-sm mb-8">Create a collaborative chess study to start analyzing and
             saving
             your games.</p>
-          <a appButton variant="primary" routerLink="/study">Create a study</a>
+          <a routerLink="/study">Create a study</a>
         </div>
         } @else {
         <div class="grid grid-cols-1 gap-3">
@@ -232,7 +232,7 @@
           </div>
           <h3 class="text-2xl mb-2">No bookmarked tournaments</h3>
           <p class="text-gray-500 text-base max-w-sm mb-8">Browse current tournaments and save them here.</p>
-          <a appButton variant="primary" routerLink="/events">Find tournaments</a>
+          <a routerLink="/events">Find tournaments</a>
         </div>
         } @else {
         <div class="grid grid-cols-1 gap-3">
@@ -253,7 +253,7 @@
                     clip-rule="evenodd" />
                 </svg>
               </button>
-              <a appButton variant="outline" class="text-xs" [routerLink]="['/events', tournament.id]">
+              <a class="text-xs" [routerLink]="['/events', tournament.id]">
                 Details
               </a>
             </div>

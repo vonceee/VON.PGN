@@ -3,7 +3,7 @@
   <div *ngIf="!isLoading() && errorMsg()" class="bg-white rounded-xl border border-red-200 p-8 text-center my-8">
     <h3 class="text-lg font-medium text-red-500 mb-2">Error loading post</h3>
     <p class="text-gray-500 text-sm/6 mb-4">{{ errorMsg() }}</p>
-    <a routerLink="/blog" appButton variant="outline">Back to blogs</a>
+    <a routerLink="/blog">Back to blogs</a>
   </div>
 
   <!-- Post Detail View -->
@@ -45,10 +45,10 @@
 
         <!-- Admin Edit Controls -->
         <div *ngIf="isAdmin()" class="flex items-center gap-2">
-          <a [routerLink]="['/blog', post.slug, 'edit']" appButton variant="outline" class="text-sm/6">
+          <a [routerLink]="['/blog', post.slug, 'edit']" class="text-sm/6">
             Edit post
           </a>
-          <button (click)="deletePost(post.id!)" appButton variant="outline"
+          <button (click)="deletePost(post.id!)"
             class="text-sm/6 border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300">
             Delete
           </button>

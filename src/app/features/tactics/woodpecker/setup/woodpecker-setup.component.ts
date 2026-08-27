@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TacticsService } from '../../../../core/services/tactics.service';
-import { ButtonComponent } from '@shared/ui';
 import { PUZZLE_THEMES_HIERARCHY } from '../../themes/puzzle-themes.config';
 
 @Component({
@@ -13,7 +12,6 @@ import { PUZZLE_THEMES_HIERARCHY } from '../../themes/puzzle-themes.config';
     CommonModule,
     RouterLink,
     ReactiveFormsModule,
-    ButtonComponent,
   ],
   templateUrl: './woodpecker-setup.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

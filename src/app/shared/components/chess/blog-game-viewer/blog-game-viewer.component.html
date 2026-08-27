@@ -20,26 +20,26 @@
 
     <!-- Navigation Buttons -->
     <div class="flex items-center justify-center gap-2 mt-2">
-      <button appButton variant="ghost" (click)="goToFirst()" [disabled]="currentPly() === 0"
+      <button (click)="goToFirst()" [disabled]="currentPly() === 0"
         class="p-2 min-w-9 rounded-full" title="First Move">
         <ng-icon name="heroChevronDoubleLeft" class="text-md"></ng-icon>
       </button>
 
-      <button appButton variant="ghost" (click)="prevMove()" [disabled]="currentPly() === 0"
+      <button (click)="prevMove()" [disabled]="currentPly() === 0"
         class="p-2 min-w-9 rounded-full" title="Previous Move">
         <ng-icon name="heroChevronLeft" class="text-md"></ng-icon>
       </button>
 
-      <button appButton variant="ghost" (click)="flipBoard()" class="p-2 min-w-9 rounded-full" title="Flip Board">
+      <button (click)="flipBoard()" class="p-2 min-w-9 rounded-full" title="Flip Board">
         <ng-icon name="heroArrowsRightLeft" class="text-md"></ng-icon>
       </button>
 
-      <button appButton variant="ghost" (click)="nextMove()" [disabled]="currentPly() === maxPly()"
+      <button (click)="nextMove()" [disabled]="currentPly() === maxPly()"
         class="p-2 min-w-9 rounded-full" title="Next Move">
         <ng-icon name="heroChevronRight" class="text-md"></ng-icon>
       </button>
 
-      <button appButton variant="ghost" (click)="goToLast()" [disabled]="currentPly() === maxPly()"
+      <button (click)="goToLast()" [disabled]="currentPly() === maxPly()"
         class="p-2 min-w-9 rounded-full" title="Last Move">
         <ng-icon name="heroChevronDoubleRight" class="text-md"></ng-icon>
       </button>

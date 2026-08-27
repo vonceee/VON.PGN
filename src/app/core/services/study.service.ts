@@ -261,7 +261,6 @@ export class StudyService {
 
         if (isOwner) {
           this.hasJoinedClass.set(true);
-          this.toastService.show('Classroom session has started!');
         } else {
           this.hasJoinedClass.set(false);
         }
@@ -275,7 +274,6 @@ export class StudyService {
         this.lockHolderId.set(payload.lockHolderId);
         this.classStartedAt.set(null);
         this.hasJoinedClass.set(false);
-        this.toastService.show('Classroom session has ended. Free exploration restored.');
       });
 
     this.socketService.onBoardControlUpdated$

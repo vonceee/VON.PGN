@@ -4,7 +4,6 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TournamentService } from '../../core/services/tournament.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Tournament, TournamentStatus } from '../../core/models/tournament.model';
-import { ButtonComponent  } from '@shared/ui';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroChevronDown,
@@ -29,7 +28,6 @@ const ITEMS_PER_PAGE = 9;
   imports: [
     CommonModule,
     RouterModule,
-    ButtonComponent,
     NgIconComponent,
     FloatingCursorContainerDirective,
     FloatingCursorTriggerDirective,

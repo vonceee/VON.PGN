@@ -3,14 +3,11 @@
   <!-- Standardized Page Header (Inline) -->
   <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
-      <h1 class="text-4xl md:text-5xl mb-2">Chess blogs</h1>
-      <p class="text-gray-500 text-sm md:text-base leading-relaxed max-w-3xl">Insights, tutorials, and game analyses
-        from
-        the community.</p>
+      <h1 class="text-4xl md:text-5xl mb-2">Chess Blogs</h1>
     </div>
     <div class="flex items-center gap-4">
-      <a *ngIf="isAdmin()" routerLink="/blog/new" appButton variant="primary" class="whitespace-nowrap">
-        Create blog post
+      <a *ngIf="isAdmin()" routerLink="/blog/new">
+        +
       </a>
     </div>
   </header>
@@ -35,16 +32,6 @@
 
   <!-- Loading State -->
   <div *ngIf="isLoading()" class="min-h-96 flex items-center justify-center">
-  </div>
-
-  <!-- Empty State -->
-  <div *ngIf="!isLoading() && blogs().length === 0"
-    class="bg-white rounded-xl border border-border-base p-12 text-center my-8">
-    <h3 class="text-lg font-medium mb-2">No blog posts found</h3>
-    <p class="text-gray-500 text-sm/6 mb-6">Check back later or check another tab.</p>
-    <a *ngIf="isAdmin()" routerLink="/blog/new" appButton variant="primary">
-      Create first post
-    </a>
   </div>
 
   <!-- Blog Grid (Bento Layout) -->
@@ -166,11 +153,11 @@
 
   <!-- Pagination (Simple) -->
   <div *ngIf="!isLoading() && (hasPrevPage() || hasNextPage())" class="flex items-center justify-center gap-4 mt-12">
-    <button appButton variant="outline" (click)="changePage(currentPage() - 1)" [disabled]="!hasPrevPage()">
+    <button (click)="changePage(currentPage() - 1)" [disabled]="!hasPrevPage()">
       Previous
     </button>
     <span class="text-sm/6 text-gray-500">Page {{ currentPage() }} of {{ totalPages() }}</span>
-    <button appButton variant="outline" (click)="changePage(currentPage() + 1)" [disabled]="!hasNextPage()">
+    <button (click)="changePage(currentPage() + 1)" [disabled]="!hasNextPage()">
       Next
     </button>
   </div>

@@ -10,7 +10,6 @@ import { environment } from '../../../../../environments/environment';
 import { Study, StudyChapter, MoveNode } from '../../../../core/models/study.model';
 import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
 import { ChessBoardComponent } from '@shared/chess';
-import { ButtonComponent } from '@shared/ui';
 export interface MovePath {
   id: string;
   moves: MoveNode[];
@@ -31,7 +30,7 @@ export interface PracticeMistake {
 @Component({
   selector: 'app-opening-drill',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ChessBoardComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ChessBoardComponent],
   templateUrl: './opening-drill.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

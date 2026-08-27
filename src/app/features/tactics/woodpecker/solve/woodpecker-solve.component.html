@@ -34,8 +34,10 @@
         </div>
       </div>
 
-      <button appButton variant="primary" routerLink="/tactics/woodpecker">Back to
-        Dashboard</button>
+      <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+       routerLink="/tactics/woodpecker">
+       Back to Dashboard
+      </button>
     </div>
     } @else {
 
@@ -229,7 +231,7 @@
               text-[16px] leading-5 cursor-pointer (click)="startNextCycle()" class="w-full">
               Start cycle {{ stats.cycleNumber + 1 }}
             </button>
-            <button appButton variant="outline" routerLink="/tactics/woodpecker" class="w-full">
+            <button routerLink="/tactics/woodpecker" class="w-full">
               Back to dashboard
             </button>
           </div>

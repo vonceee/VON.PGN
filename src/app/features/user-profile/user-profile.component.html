@@ -37,8 +37,9 @@
               <!-- Action Buttons -->
               @if (isAuthenticated() && !isOwnProfile()) {
               <div class="flex items-center gap-2 shrink-0">
-                <button appButton [variant]="isFollowing() ? 'outline' : 'primary'" (click)="toggleFollow()"
-                  [loading]="isFollowLoading()">
+                <button [class]="isFollowing() ? 'inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all' : 
+                'inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer'"
+                 (click)="toggleFollow()">
                   @if (!isFollowLoading()) {
                   @if (isFollowing()) {
                   <!-- Check Circle icon for Following -->

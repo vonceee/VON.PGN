@@ -1,11 +1,10 @@
 import { Component, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonComponent } from '../../../../shared/components/ui/button/button.component';
 
 @Component({
   selector: 'app-join-class-dialog',
   standalone: true,
-  imports: [CommonModule, ButtonComponent],
+  imports: [CommonModule],
   templateUrl: './join-class-dialog.component.html',
   styles: [`
     :host {
