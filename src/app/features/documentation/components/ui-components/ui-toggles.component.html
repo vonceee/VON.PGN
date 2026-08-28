@@ -4,7 +4,7 @@
   <!-- Toggle Showcase -->
   <div class="bg-slate-200 border border-border-base rounded-2xl p-8 mb-8">
     <div
-      class="flex flex-wrap items-center gap-8 justify-center bg-white p-8 rounded-xl border border-border-base/60 mb-6 shadow-sm">
+      class="flex flex-wrap items-center gap-8 justify-center bg-white p-8 rounded-xl border border-border-base mb-6 shadow-sm">
       <div class="flex flex-col items-center gap-2">
         <app-toggle [checked]="isToggleActive()" (checkedChange)="isToggleActive.set($event)"></app-toggle>
         <span class="text-xs text-slate-900">Active Toggle: {{ isToggleActive() }}</span>

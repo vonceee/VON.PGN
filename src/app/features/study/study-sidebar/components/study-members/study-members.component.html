@@ -27,7 +27,7 @@
     <!-- Collaborators/Members List -->
     @for (collab of study()?.collaborators; track collab.uid) {
     <div
-      class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200 border border-border-base/5 hover:border-border-base/30 transition-all">
+      class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200 border border-border-base hover:border-border-base transition-all">
       <div class="flex items-center gap-4 min-w-0">
         <div
           class="w-8 h-8 rounded-full bg-white border border-border-base flex items-center justify-center text-gray-500 shrink-0">
@@ -84,7 +84,7 @@
     <!-- Viewers List -->
     @for (viewer of viewers(); track viewer.userId) {
     <div
-      class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200 border border-border-base/5 hover:border-border-base/30 transition-all">
+      class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200 border border-border-base hover:border-border-base transition-all">
       <div class="flex items-center gap-4 min-w-0">
         <div
           class="w-8 h-8 rounded-full bg-white border border-border-base flex items-center justify-center text-gray-500 shrink-0 relative">

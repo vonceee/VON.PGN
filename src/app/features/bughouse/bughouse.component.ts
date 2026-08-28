@@ -139,6 +139,9 @@ export class BughouseComponent implements OnInit, OnDestroy {
   incomingInvites = this.bughouseInviteService.incomingInvites;
   inviteNotification = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
+  isSpectating = signal<boolean>(false);
+  ongoingMatches = signal<any[]>([]);
+
   // Queue State
   queueTime = signal<number>(0);
   queueStatus = signal<string>('Searching for players...');
@@ -289,6 +292,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
     const s = this.gameService.socket();
     if (s) {
       s.off('bughouse_lobby_sync');
+      s.off('bughouse_active_games');
       s.off('bughouse_invite_rejected');
       s.off('bughouse_kicked');
       s.off('bughouse_matched');
@@ -306,6 +310,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
     if (!socket) return;
 
     socket.off('bughouse_lobby_sync');
+    socket.off('bughouse_active_games');
     socket.off('bughouse_invite_rejected');
     socket.off('bughouse_kicked');
     socket.off('bughouse_matched');
@@ -314,6 +319,12 @@ export class BughouseComponent implements OnInit, OnDestroy {
     socket.off('bughouse_clock_tick');
     socket.off('bughouse_game_over');
     socket.off('bughouse_opponent_disconnected');
+
+    socket.on('bughouse_active_games', (games: any[]) => {
+      this.ngZone.run(() => {
+        this.ongoingMatches.set(games);
+      });
+    });
 
     socket.on('bughouse_lobby_sync', (lobby: any) => {
       this.ngZone.run(() => {
@@ -407,14 +418,23 @@ export class BughouseComponent implements OnInit, OnDestroy {
     // ── Gameplay: server sends game_start after countdown ──────────────
     socket.on('bughouse_game_start', (data: any) => {
       this.ngZone.run(() => {
-        // Use server-supplied assignment directly — avoids UID format mismatch
-        const myBoard: 'A' | 'B' = data.yourBoard ?? 'A';
-        const myColor: 'w' | 'b' = data.yourColor ?? 'w';
+        const isSpectator = data.isSpectator ?? false;
+        this.isSpectating.set(isSpectator);
+
+        if (isSpectator) {
+          this.myBoard.set(null);
+          this.myColor.set(null);
+        } else {
+          // Use server-supplied assignment directly — avoids UID format mismatch
+          const myBoard: 'A' | 'B' = data.yourBoard ?? 'A';
+          const myColor: 'w' | 'b' = data.yourColor ?? 'w';
+
+          this.myBoard.set(myBoard);
+          this.myColor.set(myColor);
+          this.userColor.set(myColor);
+        }
 
         this.gameId.set(data.gameId);
-        this.myBoard.set(myBoard);
-        this.myColor.set(myColor);
-        this.userColor.set(myColor);
 
         // Build board player name labels from full player list
         const colorsMap: Record<string, { board: string; color: string }> = data.colors ?? {};
@@ -537,6 +557,11 @@ export class BughouseComponent implements OnInit, OnDestroy {
     if (value.length === 0) {
       this.searchResults.set([]);
     }
+  }
+
+  clearSearch() {
+    this.searchQuery.set('');
+    this.searchResults.set([]);
   }
 
   invitePlayer(player: LobbyPlayer) {
@@ -744,49 +769,29 @@ export class BughouseComponent implements OnInit, OnDestroy {
     }
   }
 
+  spectateGame(gameId: string) {
+    const socket = this.gameService.socket();
+    if (socket?.connected) {
+      socket.emit('bughouse_spectate', { gameId });
+      this.lobbyState.set('playing');
+    }
+  }
+
   exitToLobby() {
     const socket = this.gameService.socket();
     if (socket && socket.connected) {
-      socket.emit('bughouse_leave_lobby');
+      if (this.isSpectating()) {
+        socket.emit('bughouse_leave_spectate', { gameId: this.gameId() });
+      } else {
+        socket.emit('bughouse_leave_lobby');
+      }
     }
     this.resetGame();
     this.gameId.set(null);
     this.myBoard.set(null);
     this.myColor.set(null);
+    this.isSpectating.set(false);
     this.lobbyState.set('lobby');
-  }
-
-  forceStartDebugGame() {
-    this.gameId.set('debug_game_' + Math.floor(Math.random() * 1000));
-    this.myBoard.set('A');
-    this.myColor.set('w');
-    this.userColor.set('w');
-
-    this.boardAWhiteName.set('White P1 (You)');
-    this.boardABlackName.set('Black P2');
-    this.boardBWhiteName.set('White P3 (Teammate)');
-    this.boardBBlackName.set('Black P4');
-
-    this.syncBoardOrientations();
-
-    const startFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-    this.chessA.load(startFen);
-    this.chessB.load(startFen);
-    this.boardAFen.set(startFen);
-    this.boardBFen.set(startFen);
-
-    this.pocketA_W.set({ p: 1, n: 1, b: 1, r: 1, q: 1 });
-    this.pocketA_B.set({ p: 1, n: 1, b: 1, r: 1, q: 1 });
-    this.pocketB_W.set({ p: 1, n: 1, b: 1, r: 1, q: 1 });
-    this.pocketB_B.set({ p: 1, n: 1, b: 1, r: 1, q: 1 });
-
-    this.timeA_W.set(300);
-    this.timeA_B.set(300);
-    this.timeB_W.set(300);
-    this.timeB_B.set(300);
-
-    this.gameActive.set(true);
-    this.lobbyState.set('playing');
   }
 
   syncBoardOrientations() {

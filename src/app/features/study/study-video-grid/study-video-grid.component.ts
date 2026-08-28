@@ -61,7 +61,7 @@ import { AuthService } from '../../../core/services/auth.service';
             </div>
           }
           <!-- Label Overlay -->
-          <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-sm/6 font-semibold flex items-center gap-1.5">
+          <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 rounded text-sm/6 font-semibold flex items-center gap-1.5">
             <span>You</span>
             @if (isMuted()) {
               <div class="relative flex items-center justify-center">
@@ -82,7 +82,7 @@ import { AuthService } from '../../../core/services/auth.service';
               class="w-full h-full object-cover"
             ></video>
             <!-- Label Overlay -->
-            <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-sm rounded text-sm/6 font-semibold flex items-center gap-1.5">
+            <div class="absolute bottom-2 left-2 px-2 py-0.5 bg-white/80 rounded text-sm/6 font-semibold flex items-center gap-1.5">
               <span>{{ peer.userName }}</span>
             </div>
           </div>

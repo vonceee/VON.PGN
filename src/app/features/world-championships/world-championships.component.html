@@ -110,7 +110,7 @@
         </h2>
 
         <!-- Opponents Duel Card -->
-        <div class="bg-slate-200/70 rounded-xl p-3.5 border border-border-base/60 mb-4 space-y-2">
+        <div class="bg-slate-200/70 rounded-xl p-3.5 border border-border-base mb-4 space-y-2">
           <div class="flex items-center justify-between text-sm">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full" [class.bg-emerald-500]="match.winner === match.champion"
@@ -123,7 +123,7 @@
             <span class="text-xs text-gray-500 uppercase">Defender</span>
           </div>
 
-          <div class="border-t border-border-base/40 my-1"></div>
+          <div class="border-t border-border-base my-1"></div>
 
           <div class="flex items-center justify-between text-sm">
             <div class="flex items-center gap-2">
@@ -206,7 +206,7 @@
 
 <!-- Match Details Modal -->
 @if (selectedMatch(); as match) {
-<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm-in"
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40-in"
   (click)="closeDetailsModal()">
   <div
     class="bg-white border border-border-base rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-xl max-h-[90vh] overflow-y-auto relative text-slate-900"
@@ -240,11 +240,11 @@
         <span class="text-xs text-gray-500 block mb-1">Challenger</span>
         <div class="font-semibold text-slate-900 text-base">{{ match.challenger }}</div>
       </div>
-      <div class="pt-2 border-t border-border-base/60">
+      <div class="pt-2 border-t border-border-base">
         <span class="text-xs text-gray-500 block mb-1">Match Winner</span>
         <div class="font-bold text-emerald-600 dark:text-emerald-400 text-base">{{ match.winner }}</div>
       </div>
-      <div class="pt-2 border-t border-border-base/60">
+      <div class="pt-2 border-t border-border-base">
         <span class="text-xs text-gray-500 block mb-1">Final Score</span>
         <div class="font-bold text-slate-900 text-base">{{ match.score }}</div>
       </div>
@@ -252,11 +252,11 @@
 
     <!-- Match Metadata -->
     <div class="space-y-2 text-sm text-gray-500 mb-6">
-      <div class="flex justify-between border-b border-border-base/40 pb-2">
+      <div class="flex justify-between border-b border-border-base pb-2">
         <span class="font-medium text-slate-900">Format:</span>
         <span>{{ match.format }}</span>
       </div>
-      <div class="flex justify-between border-b border-border-base/40 pb-2">
+      <div class="flex justify-between border-b border-border-base pb-2">
         <span class="font-medium text-slate-900">Venue / Location:</span>
         <span>{{ match.location }}</span>
       </div>
