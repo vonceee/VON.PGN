@@ -28,10 +28,10 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      // Check for connection refused (0) or backend server/gateway errors (500, 502, 503, 504)
+      // Check for connection refused (0) or gateway/routing/service unavailable errors (502, 503, 504)
+      // Exclude generic 500 errors to prevent application bugs from locking the UI with the offline overlay
       const isServerOrConnectionError = 
         error.status === 0 || 
-        error.status === 500 || 
         error.status === 502 || 
         error.status === 503 || 
         error.status === 504;
