@@ -9,11 +9,11 @@
     </button>
   </div>
 
-  <div *ngIf="loading()" class="bg-white border border-border-base rounded-lg p-12 text-center">
-    <p>Loading lesson...</p>
-  </div>
-
-  <div *ngIf="!loading()">
+  @if (loading()) {
+    <div class="bg-white border border-border-base rounded-lg p-12 text-center">
+      <p>Loading lesson...</p>
+    </div>
+  } @else {
     <div class="bg-white border border-border-base rounded-lg p-5 mb-4">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-border-base">
         <h2 class="text-base font-semibold  m-0">Lesson Details</h2>
@@ -69,36 +69,40 @@
               </div>
             </div>
 
-            <div *ngIf="block.get('type')?.value === 'text'">
+            @if (block.get('type')?.value === 'text') {
               <div class="mb-4">
                 <label class="block text-sm/6  text-gray-500 mb-1.5">HTML Content</label>
                 <textarea formControlName="content"
                   class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none  box-border"
                   rows="4" placeholder="<p>Text goes here</p>"></textarea>
               </div>
-            </div>
+            }
 
-            <div *ngIf="block.get('type')?.value === 'board'" formGroupName="task">
-              <div class="mb-4">
-                <label class="block text-sm/6  text-gray-500 mb-1.5">Lichess URL / Study Link</label>
-                <input type="text" formControlName="lichessUrl"
-                  class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none "
-                  placeholder="https://lichess.org/study/..." />
+            @if (block.get('type')?.value === 'board') {
+              <div formGroupName="task">
+                <div class="mb-4">
+                  <label class="block text-sm/6  text-gray-500 mb-1.5">Lichess URL / Study Link</label>
+                  <input type="text" formControlName="lichessUrl"
+                    class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none "
+                    placeholder="https://lichess.org/study/..." />
+                </div>
+                <div class="mb-0">
+                  <label class="block text-sm/6  text-gray-500 mb-1.5">Instructions</label>
+                  <textarea formControlName="instructions"
+                    class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none  box-border"
+                    rows="2" placeholder="Move the pawn..."></textarea>
+                </div>
               </div>
-              <div class="mb-0">
-                <label class="block text-sm/6  text-gray-500 mb-1.5">Instructions</label>
-                <textarea formControlName="instructions"
-                  class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none  box-border"
-                  rows="2" placeholder="Move the pawn..."></textarea>
-              </div>
-            </div>
+            }
           </div>
         </ng-container>
 
-        <div *ngIf="contentBlocks.length === 0" class="text-center py-12 px-6 ">
-          <p class="text-base">No content blocks. Add a text or board block above.</p>
-        </div>
+        @if (contentBlocks.length === 0) {
+          <div class="text-center py-12 px-6 ">
+            <p class="text-base">No content blocks. Add a text or board block above.</p>
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 </div>

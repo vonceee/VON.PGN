@@ -6,11 +6,11 @@
     <button (click)="location.back()" class="admin-btn admin-btn-secondary">Back</button>
   </div>
 
-  <div *ngIf="loading()" class="admin-card admin-text-center">
-    <p>Loading course...</p>
-  </div>
-
-  <div *ngIf="!loading()">
+  @if (loading()) {
+    <div class="admin-card admin-text-center">
+      <p>Loading course...</p>
+    </div>
+  } @else {
     <div class="admin-card">
       <div class="admin-card-header">
         <h2 class="admin-card-title">Course Details</h2>
@@ -38,30 +38,34 @@
       {{ saving() ? 'Saving...' : 'Save Course' }}
     </button>
 
-    <div class="admin-card admin-mt-3" *ngIf="courseId()">
-      <div class="admin-card-header">
-        <h2 class="admin-card-title">Chapters</h2>
-        <a [routerLink]="['/admin/course', courseId(), 'chapter', 'new']" class="admin-btn admin-btn-primary admin-btn-small">+ Add Chapter</a>
-      </div>
+    @if (courseId()) {
+      <div class="admin-card admin-mt-3">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">Chapters</h2>
+          <a [routerLink]="['/admin/course', courseId(), 'chapter', 'new']" class="admin-btn admin-btn-primary admin-btn-small">+ Add Chapter</a>
+        </div>
 
-      <ul class="admin-list" *ngIf="course()?.chapters?.length">
-        <li class="admin-list-item" *ngFor="let chapter of course()?.chapters">
-          <div class="admin-list-item-content">
-            <div class="admin-list-item-title">#{{ chapter.order }} {{ chapter.title }}</div>
-            <div class="admin-list-item-meta">{{ chapter.lessons?.length || 0 }} lessons</div>
+        @if (course()?.chapters?.length) {
+          <ul class="admin-list">
+            <li class="admin-list-item" *ngFor="let chapter of course()?.chapters">
+              <div class="admin-list-item-content">
+                <div class="admin-list-item-title">#{{ chapter.order }} {{ chapter.title }}</div>
+                <div class="admin-list-item-meta">{{ chapter.lessons?.length || 0 }} lessons</div>
+              </div>
+              <div class="admin-list-item-actions">
+                <a [routerLink]="['/admin/course', courseId(), 'chapter', chapter.id]" class="admin-btn admin-btn-secondary admin-btn-small">Edit</a>
+                <button (click)="requestDeleteChapter(chapter.id)" class="admin-btn admin-btn-danger admin-btn-small">Delete</button>
+              </div>
+            </li>
+          </ul>
+        } @else {
+          <div class="admin-empty">
+            <p class="admin-empty-text">No chapters yet.</p>
           </div>
-          <div class="admin-list-item-actions">
-            <a [routerLink]="['/admin/course', courseId(), 'chapter', chapter.id]" class="admin-btn admin-btn-secondary admin-btn-small">Edit</a>
-            <button (click)="requestDeleteChapter(chapter.id)" class="admin-btn admin-btn-danger admin-btn-small">Delete</button>
-          </div>
-        </li>
-      </ul>
-
-      <div *ngIf="!course()?.chapters?.length" class="admin-empty">
-        <p class="admin-empty-text">No chapters yet.</p>
+        }
       </div>
-    </div>
-  </div>
+    }
+  }
 </div>
 
 <!-- Delete Confirmation Modal -->

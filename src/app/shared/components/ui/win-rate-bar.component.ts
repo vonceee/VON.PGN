@@ -12,21 +12,27 @@ import { CommonModule } from '@angular/common';
         [style.width.%]="stats().white"
         [title]="stats().white + '% White wins'"
       >
-        <span class="truncate px-1" *ngIf="stats().white > 15">{{ stats().white }}%</span>
+        @if (stats().white > 15) {
+          <span class="truncate px-1">{{ stats().white }}%</span>
+        }
       </div>
       <div 
         class="bg-slate-500 flex items-center justify-center   border-x border-black/5" 
         [style.width.%]="stats().draws"
         [title]="stats().draws + '% Draws'"
       >
-        <span class="truncate px-1" *ngIf="stats().draws > 15">{{ stats().draws }}%</span>
+        @if (stats().draws > 15) {
+          <span class="truncate px-1">{{ stats().draws }}%</span>
+        }
       </div>
       <div 
         class="bg-slate-900 flex items-center justify-center  " 
         [style.width.%]="stats().black"
         [title]="stats().black + '% Black wins'"
       >
-        <span class="truncate px-1" *ngIf="stats().black > 15">{{ stats().black }}%</span>
+        @if (stats().black > 15) {
+          <span class="truncate px-1">{{ stats().black }}%</span>
+        }
       </div>
     </div>
   `,

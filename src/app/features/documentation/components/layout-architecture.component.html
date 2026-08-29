@@ -32,7 +32,9 @@
       &lt;div class="w-full flex-1 mx-auto relative"&gt;
         &lt;router-outlet&gt;&lt;/router-outlet&gt;
       &lt;/div&gt;
-      &lt;app-footer *ngIf="showFooter()" class="w-full shrink-0"&gt;&lt;/app-footer&gt;
+      &#64;if (showFooter()) {{ '{' }}
+        &lt;app-footer class="w-full shrink-0"&gt;&lt;/app-footer&gt;
+      {{ '}' }}
     &lt;/div&gt;
   &lt;/main&gt;
 &lt;/div&gt;

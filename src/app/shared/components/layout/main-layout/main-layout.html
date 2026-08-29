@@ -5,7 +5,9 @@
       <div class="w-full flex-1 mx-auto relative">
         <router-outlet></router-outlet>
       </div>
-      <app-footer *ngIf="showFooter()" class="w-full shrink-0"></app-footer>
+      @if (showFooter()) {
+        <app-footer class="w-full shrink-0"></app-footer>
+      }
     </div>
   </main>
 </div>

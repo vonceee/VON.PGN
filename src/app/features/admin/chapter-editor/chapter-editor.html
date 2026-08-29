@@ -9,11 +9,11 @@
     </button>
   </div>
 
-  <div *ngIf="loading()" class="bg-white border border-border-base rounded-lg p-12 text-center">
-    <p>Loading chapter...</p>
-  </div>
-
-  <div *ngIf="!loading()">
+  @if (loading()) {
+    <div class="bg-white border border-border-base rounded-lg p-12 text-center">
+      <p>Loading chapter...</p>
+    </div>
+  } @else {
     <div class="bg-white border border-border-base rounded-lg p-5 mb-4">
       <div class="flex justify-between items-center mb-4 pb-3 border-b border-border-base">
         <h2 class="text-base font-semibold  m-0">Chapter Details</h2>
@@ -34,34 +34,38 @@
       </form>
     </div>
 
-    <div class="bg-white border border-border-base rounded-lg p-5 mb-4 mt-6" *ngIf="chapterId()">
-      <div class="flex justify-between items-center mb-4 pb-3 border-b border-border-base">
-        <h2 class="text-base font-semibold  m-0">Lessons</h2>
-        <a [routerLink]="['/admin/chapter', chapterId(), 'lesson', 'new']"
-          class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-blue-600 text-white hover:bg-blue-700">+ Add
-          Lesson</a>
-      </div>
+    @if (chapterId()) {
+      <div class="bg-white border border-border-base rounded-lg p-5 mb-4 mt-6">
+        <div class="flex justify-between items-center mb-4 pb-3 border-b border-border-base">
+          <h2 class="text-base font-semibold  m-0">Lessons</h2>
+          <a [routerLink]="['/admin/chapter', chapterId(), 'lesson', 'new']"
+            class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-blue-600 text-white hover:bg-blue-700">+ Add
+            Lesson</a>
+        </div>
 
-      <ul class="list-none p-0 m-0" *ngIf="chapter()?.lessons?.length">
-        <li class="flex justify-between items-center p-4 border border-border-base bg-white mb-2 /50"
-          *ngFor="let lesson of chapter()?.lessons">
-          <div class="flex-1">
-            <div class="font-semibold mb-1">#{{ lesson.order }} {{ lesson.title }}</div>
+        @if (chapter()?.lessons?.length) {
+          <ul class="list-none p-0 m-0">
+            <li class="flex justify-between items-center p-4 border border-border-base bg-white mb-2 /50"
+              *ngFor="let lesson of chapter()?.lessons">
+              <div class="flex-1">
+                <div class="font-semibold mb-1">#{{ lesson.order }} {{ lesson.title }}</div>
+              </div>
+              <div class="flex gap-2">
+                <a [routerLink]="['/admin/chapter', chapterId(), 'lesson', lesson.id]"
+                  class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-slate-200 hover:bg-slate-200">Edit</a>
+                  <button (click)="requestDeleteLesson(lesson.id)"
+                    class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-red-600 text-white hover:bg-red-700">Delete</button>
+              </div>
+            </li>
+          </ul>
+        } @else {
+          <div class="text-center py-12 px-6 ">
+            <p class="text-base">No lessons yet.</p>
           </div>
-          <div class="flex gap-2">
-            <a [routerLink]="['/admin/chapter', chapterId(), 'lesson', lesson.id]"
-              class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-slate-200 hover:bg-slate-200">Edit</a>
-            <button (click)="requestDeleteLesson(lesson.id)"
-              class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-red-600 text-white hover:bg-red-700">Delete</button>
-          </div>
-        </li>
-      </ul>
-
-      <div *ngIf="!chapter()?.lessons?.length" class="text-center py-12 px-6 ">
-        <p class="text-base">No lessons yet.</p>
+        }
       </div>
-    </div>
-  </div>
+    }
+  }
 </div>
 
 <!-- Delete Confirmation Modal -->

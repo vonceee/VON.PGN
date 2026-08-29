@@ -83,11 +83,13 @@
             </td>
           </tr>
 
-          <tr *ngIf="enrollments().length === 0 && !isLoading()">
-            <td colspan="5" class="px-6 py-20 text-center ">
-              No enrollments found matching your criteria.
-            </td>
-          </tr>
+          @if (enrollments().length === 0 && !isLoading()) {
+            <tr>
+              <td colspan="5" class="px-6 py-20 text-center ">
+                No enrollments found matching your criteria.
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>

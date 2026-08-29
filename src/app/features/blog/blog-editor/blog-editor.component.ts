@@ -40,215 +40,224 @@ interface EditorGame {
         </div>
       </header>
 
-      <div *ngIf="isLoading() && isEditMode()" class="min-h-96 flex items-center justify-center">
-      </div>
-
-      <!-- Main Editor Container (Side by Side layout on desktop) -->
-      <div *ngIf="!isLoading() || !isEditMode()" class="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8">
-        
-        <!-- Left Side: Editor Form -->
-        <div class="space-y-6">
-          <div class="bg-white rounded-xl border border-border-base p-6 md:p-8 space-y-6">
-            
-            <!-- Title -->
-            <div class="flex flex-col">
-              <label class="text-sm/6 font-semibold">Title</label>
-              <input
-                type="text"
-                [(ngModel)]="title"
-                placeholder="Enter an catchy title..."
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-base md:text-lg font-medium"
-              />
-            </div>
-
-            <!-- Summary / Excerpt -->
-            <div class="flex flex-col">
-              <label class="text-sm/6 font-semibold">Summary (optional)</label>
-              <textarea
-                [(ngModel)]="summary"
-                placeholder="Brief excerpt shown in the list feed..."
-                rows="2"
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-sm/6 resize-none"
-              ></textarea>
-            </div>
-
-            <!-- Editor Body with Markdown Toolbar -->
-            <div class="flex flex-col">
-              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border-base pb-3">
-                <label class="text-sm/6 font-semibold">Body content (Markdown)</label>
-                
-                <!-- Toolbar Helpers -->
-                <div class="flex items-center gap-1 bg-slate-200/50 border border-border-base rounded-full p-1 text-xs">
-                  <button (click)="insertMarkdown('bold')" class="px-2.5 py-1 rounded-full hover:bg-white font-semibold cursor-pointer">B</button>
-                  <button (click)="insertMarkdown('italic')" class="px-2.5 py-1 rounded-full hover:bg-white italic cursor-pointer">I</button>
-                  <button (click)="insertMarkdown('header')" class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">H2</button>
-                  <button (click)="insertMarkdown('link')" class="px-2.5 py-1 rounded-full hover:bg-white hover:underline cursor-pointer">Link</button>
-                  <span class="w-[1px] h-4 bg-border-base mx-1"></span>
-                  <div class="relative group/insert">
-                    <button class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">Insert game</button>
-                    <!-- Dropdown for games -->
-                    <div class="absolute bottom-full right-0 mb-2 w-48 bg-white border border-border-base rounded-xl shadow-lg p-2 invisible group-hover/insert:visible opacity-0 group-hover/insert:opacity-100 transition-all z-10 flex flex-col gap-1">
-                      <span *ngIf="games().length === 0" class="text-sm/6 text-gray-500 text-center py-2">No games added yet</span>
-                      <button
-                        *ngFor="let g of games(); let idx = index"
-                        (click)="insertGameTag(idx)"
-                        class="text-left text-xs px-3 py-2 hover:bg-slate-200 rounded-lg truncate cursor-pointer font-medium"
-                      >
-                        Game #{{ idx }} - {{ g.title || 'Untitled' }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Main text area -->
-              <textarea
-                #editorTextarea
-                [(ngModel)]="content"
-                placeholder="Write your article here. Use [game:0] to insert your first game inline..."
-                rows="16"
-                class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-base leading-relaxed resize-y min-h-[350px]"
-              ></textarea>
-            </div>
-            
-            <!-- Status & Action Buttons -->
-            <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border-base">
-              <div class="flex items-center gap-4">
-                <label class="text-sm/6 font-semibold">Status:</label>
-                <select
-                  [(ngModel)]="status"
-                  class="px-3 py-2 rounded-xl border border-border-base bg-white text-sm/6 outline-none focus:border-blue-600"
-                >
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                </select>
-              </div>
-              
-              <div class="flex items-center gap-2">
-                <button
-                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
-                  routerLink="/blog"
-                >
-                  Cancel
-                </button>
-                
-                <button
-                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
-                  (click)="savePost()"
-                >
-                  {{ isEditMode() ? 'Save changes' : 'Publish' }}
-                </button>
-              </div>
-            </div>
-          </div>
+      @if (isLoading() && isEditMode()) {
+        <div class="min-h-96 flex items-center justify-center">
         </div>
-
-        <!-- Right Side: Live Preview & Games Manager -->
-        <div class="space-y-6">
+      } @else {
+        <!-- Main Editor Container (Side by Side layout on desktop) -->
+        <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8">
           
-          <!-- PGN Games Manager Card -->
-          <div class="bg-white rounded-xl border border-border-base p-6 space-y-4">
-            <h3 class="text-lg font-semibold border-b border-border-base pb-2">PGN games manager</h3>
-            
-            <!-- Game adding inputs -->
-            <div class="space-y-3 p-4 bg-slate-200/25 rounded-xl border border-border-base">
-              <h4 class="text-xs font-semibold text-gray-500 uppercase">Add a chess game</h4>
+          <!-- Left Side: Editor Form -->
+          <div class="space-y-6">
+            <div class="bg-white rounded-xl border border-border-base p-6 md:p-8 space-y-6">
               
-              <div class="flex flex-col gap-1.5">
+              <!-- Title -->
+              <div class="flex flex-col">
+                <label class="text-sm/6 font-semibold">Title</label>
                 <input
                   type="text"
-                  [(ngModel)]="newGameTitle"
-                  placeholder="Game title (e.g. Kasparov vs Deep Blue)"
-                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-sm/6 outline-none focus:border-blue-600"
+                  [(ngModel)]="title"
+                  placeholder="Enter an catchy title..."
+                  class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-base md:text-lg font-medium"
                 />
               </div>
-              
-              <div class="flex flex-col gap-1.5">
+
+              <!-- Summary / Excerpt -->
+              <div class="flex flex-col">
+                <label class="text-sm/6 font-semibold">Summary (optional)</label>
                 <textarea
-                  [(ngModel)]="newGamePgn"
-                  placeholder="Paste PGN string here..."
-                  rows="4"
-                  class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-xs outline-none focus:border-blue-600 resize-none"
+                  [(ngModel)]="summary"
+                  placeholder="Brief excerpt shown in the list feed..."
+                  rows="2"
+                  class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-sm/6 resize-none"
                 ></textarea>
               </div>
 
-              <button
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
-                (click)="addGame()"
-              >
-                + Add game to post
-              </button>
-            </div>
-
-            <!-- List of Games -->
-            <div class="space-y-2">
-              <h4 class="text-xs font-semibold text-gray-500 uppercase">Games in this post</h4>
-              
-              <div *ngIf="games().length === 0" class="text-sm/6 text-gray-500 text-center py-4 border border-dashed border-border-base rounded-xl">
-                No games added yet.
-              </div>
-
-              <div *ngFor="let g of games(); let idx = index" class="flex items-center justify-between p-3 rounded-xl border border-border-base bg-slate-200/10 gap-3">
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm/6 font-medium px-1.5 py-0.5 rounded-full bg-blue-600 text-main shrink-0">
-                      [game:{{ idx }}]
-                    </span>
-                    <span class="text-sm/6 font-semibold truncate">{{ g.title || 'Untitled Game' }}</span>
+              <!-- Editor Body with Markdown Toolbar -->
+              <div class="flex flex-col">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border-base pb-3">
+                  <label class="text-sm/6 font-semibold">Body content (Markdown)</label>
+                  
+                  <!-- Toolbar Helpers -->
+                  <div class="flex items-center gap-1 bg-slate-200/50 border border-border-base rounded-full p-1 text-xs">
+                    <button (click)="insertMarkdown('bold')" class="px-2.5 py-1 rounded-full hover:bg-white font-semibold cursor-pointer">B</button>
+                    <button (click)="insertMarkdown('italic')" class="px-2.5 py-1 rounded-full hover:bg-white italic cursor-pointer">I</button>
+                    <button (click)="insertMarkdown('header')" class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">H2</button>
+                    <button (click)="insertMarkdown('link')" class="px-2.5 py-1 rounded-full hover:bg-white hover:underline cursor-pointer">Link</button>
+                    <span class="w-[1px] h-4 bg-border-base mx-1"></span>
+                    <div class="relative group/insert">
+                      <button class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">Insert game</button>
+                      <!-- Dropdown for games -->
+                      <div class="absolute bottom-full right-0 mb-2 w-48 bg-white border border-border-base rounded-xl shadow-lg p-2 invisible group-hover/insert:visible opacity-0 group-hover/insert:opacity-100 transition-all z-10 flex flex-col gap-1">
+                        @if (games().length === 0) {
+                          <span class="text-sm/6 text-gray-500 text-center py-2">No games added yet</span>
+                        }
+                        <button
+                          *ngFor="let g of games(); let idx = index"
+                          (click)="insertGameTag(idx)"
+                          class="text-left text-xs px-3 py-2 hover:bg-slate-200 rounded-lg truncate cursor-pointer font-medium"
+                        >
+                          Game #{{ idx }} - {{ g.title || 'Untitled' }}
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <p class="text-sm/6 text-gray-500 truncate mt-1 max-w-[250px]">{{ g.pgn.substring(0, 40) }}...</p>
                 </div>
-                <button
-                  (click)="removeGame(idx)"
-                  class="text-xs text-red-500 hover:text-red-700 font-semibold cursor-pointer shrink-0"
-                >
-                  Remove
-                </button>
+
+                <!-- Main text area -->
+                <textarea
+                  #editorTextarea
+                  [(ngModel)]="content"
+                  placeholder="Write your article here. Use [game:0] to insert your first game inline..."
+                  rows="16"
+                  class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-base leading-relaxed resize-y min-h-[350px]"
+                ></textarea>
+              </div>
+              
+              <!-- Status & Action Buttons -->
+              <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border-base">
+                <div class="flex items-center gap-4">
+                  <label class="text-sm/6 font-semibold">Status:</label>
+                  <select
+                    [(ngModel)]="status"
+                    class="px-3 py-2 rounded-xl border border-border-base bg-white text-sm/6 outline-none focus:border-blue-600"
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                  </select>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                  <button
+                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+                    routerLink="/blog"
+                  >
+                    Cancel
+                  </button>
+                  
+                  <button
+                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+                    (click)="savePost()"
+                  >
+                    {{ isEditMode() ? 'Save changes' : 'Publish' }}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- Live Preview Card -->
-          <div class="bg-white rounded-xl border border-border-base p-6 space-y-4">
-            <h3 class="text-lg font-semibold border-b border-border-base pb-2">Live preview</h3>
+          <!-- Right Side: Live Preview & Games Manager -->
+          <div class="space-y-6">
             
-            <div class="space-y-4">
-              <h1 class="text-2xl md:text-3xl font-medium">{{ title() || 'Post Title' }}</h1>
+            <!-- PGN Games Manager Card -->
+            <div class="bg-white rounded-xl border border-border-base p-6 space-y-4">
+              <h3 class="text-lg font-semibold border-b border-border-base pb-2">PGN games manager</h3>
               
-              <div *ngIf="summary()" class="p-4 bg-slate-200/25 border-l-4 border-blue-600 rounded-r-xl text-gray-500 text-sm/6 italic">
-                {{ summary() }}
+              <!-- Game adding inputs -->
+              <div class="space-y-3 p-4 bg-slate-200/25 rounded-xl border border-border-base">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase">Add a chess game</h4>
+                
+                <div class="flex flex-col gap-1.5">
+                  <input
+                    type="text"
+                    [(ngModel)]="newGameTitle"
+                    placeholder="Game title (e.g. Kasparov vs Deep Blue)"
+                    class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-sm/6 outline-none focus:border-blue-600"
+                  />
+                </div>
+                
+                <div class="flex flex-col gap-1.5">
+                  <textarea
+                    [(ngModel)]="newGamePgn"
+                    placeholder="Paste PGN string here..."
+                    rows="4"
+                    class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-xs outline-none focus:border-blue-600 resize-none"
+                  ></textarea>
+                </div>
+
+                <button
+                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+                  (click)="addGame()"
+                >
+                  + Add game to post
+                </button>
               </div>
 
-              <!-- Preview Render Blocks -->
-              <div class="prose max-w-none text-sm/6 md:text-base leading-relaxed space-y-4">
-                @for (block of previewBlocks(); track $index) {
-                  @if (block.type === 'text') {
-                    <div [innerHTML]="parseMarkdown(block.content || '')" class="preview-markdown"></div>
-                  } @else if (block.type === 'game') {
-                    <div class="my-4 p-4 rounded-xl border border-dashed border-border-base bg-slate-200/20 flex flex-col items-center justify-center min-h-[120px] text-center">
-                      <div class="w-8 h-8 rounded-full bg-blue-600 text-main flex items-center justify-center font-medium text-xs mb-2">
-                        ♞
-                      </div>
-                      <span class="text-xs font-semibold">
-                        [Interactive Chessboard: Game #{{ block.index }}]
-                      </span>
-                      <span class="text-sm/6 text-gray-500 mt-1 truncate max-w-[300px]">
-                        {{ games()[block.index!]?.title || 'Untitled Game' }}
-                      </span>
-                    </div>
-                  }
+              <!-- List of Games -->
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase">Games in this post</h4>
+                
+                @if (games().length === 0) {
+                  <div class="text-sm/6 text-gray-500 text-center py-4 border border-dashed border-border-base rounded-xl">
+                    No games added yet.
+                  </div>
                 }
-                <div *ngIf="content().trim() === ''" class="text-gray-500 text-center py-8">
-                  Start typing in the body field to see live article preview.
+
+                <div *ngFor="let g of games(); let idx = index" class="flex items-center justify-between p-3 rounded-xl border border-border-base bg-slate-200/10 gap-3">
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm/6 font-medium px-1.5 py-0.5 rounded-full bg-blue-600 text-main shrink-0">
+                        [game:{{ idx }}]
+                      </span>
+                      <span class="text-sm/6 font-semibold truncate">{{ g.title || 'Untitled Game' }}</span>
+                    </div>
+                    <p class="text-sm/6 text-gray-500 truncate mt-1 max-w-[250px]">{{ g.pgn.substring(0, 40) }}...</p>
+                  </div>
+                  <button
+                    (click)="removeGame(idx)"
+                    class="text-xs text-red-500 hover:text-red-700 font-semibold cursor-pointer shrink-0"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
             </div>
+
+            <!-- Live Preview Card -->
+            <div class="bg-white rounded-xl border border-border-base p-6 space-y-4">
+              <h3 class="text-lg font-semibold border-b border-border-base pb-2">Live preview</h3>
+              
+              <div class="space-y-4">
+                <h1 class="text-2xl md:text-3xl font-medium">{{ title() || 'Post Title' }}</h1>
+                
+                @if (summary()) {
+                  <div class="p-4 bg-slate-200/25 border-l-4 border-blue-600 rounded-r-xl text-gray-500 text-sm/6 italic">
+                    {{ summary() }}
+                  </div>
+                }
+
+                <!-- Preview Render Blocks -->
+                <div class="prose max-w-none text-sm/6 md:text-base leading-relaxed space-y-4">
+                  @for (block of previewBlocks(); track $index) {
+                    @if (block.type === 'text') {
+                      <div [innerHTML]="parseMarkdown(block.content || '')" class="preview-markdown"></div>
+                    } @else if (block.type === 'game') {
+                      <div class="my-4 p-4 rounded-xl border border-dashed border-border-base bg-slate-200/20 flex flex-col items-center justify-center min-h-[120px] text-center">
+                        <div class="w-8 h-8 rounded-full bg-blue-600 text-main flex items-center justify-center font-medium text-xs mb-2">
+                          ♞
+                        </div>
+                        <span class="text-xs font-semibold">
+                          [Interactive Chessboard: Game #{{ block.index }}]
+                        </span>
+                        <span class="text-sm/6 text-gray-500 mt-1 truncate max-w-[300px]">
+                          {{ games()[block.index!]?.title || 'Untitled Game' }}
+                        </span>
+                      </div>
+                    }
+                  }
+                  @if (content().trim() === '') {
+                    <div class="text-gray-500 text-center py-8">
+                      Start typing in the body field to see live article preview.
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
-
-      </div>
-
+      }
     </div>
   `,
   styles: [

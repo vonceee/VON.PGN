@@ -36,86 +36,89 @@
 
     <!-- Right Column: Inquiry Form -->
     <div class="lg:col-span-7 border-t lg:border-t-0 lg:border-l border-border-base pt-8 lg:pt-0 lg:pl-12">
-      <!-- Success State -->
-      <div *ngIf="isSuccess()" class="text-center py-16 space-y-6">
-        <div class="w-16 h-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto">
-          <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
+      @if (isSuccess()) {
+        <!-- Success State -->
+        <div class="text-center py-16 space-y-6">
+          <div class="w-16 h-16 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center mx-auto">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div class="space-y-2">
+            <h3 class="text-2xl font-medium">Message sent successfully</h3>
+            <p class="text-gray-500 text-sm/6">
+              Thank you for reaching out. We will get in touch with you shortly.
+            </p>
+          </div>
         </div>
-        <div class="space-y-2">
-          <h3 class="text-2xl font-medium">Message sent successfully</h3>
-          <p class="text-gray-500 text-sm/6">
-            Thank you for reaching out. We will get in touch with you shortly.
-          </p>
+      } @else {
+        <!-- Form State -->
+        <div class="space-y-6">
+          <form [formGroup]="enrollmentForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+            <!-- Name Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-2">First name</label>
+                <input type="text" formControlName="first_name"
+                  class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+                  placeholder="Juan" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-2">Last name</label>
+                <input type="text" formControlName="last_name"
+                  class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+                  placeholder="Dela Cruz" />
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-2">Email address</label>
+              <input type="email" formControlName="email"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+                placeholder="juan@example.com" />
+            </div>
+
+            <!-- Contact Number -->
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-2">Phone number</label>
+              <input type="text" formControlName="contact_number"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+                placeholder="+63 912 345 6789" />
+            </div>
+
+            <!-- Player Level Dropdown -->
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-2">Player level</label>
+              <select formControlName="chess_level"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-[right_1rem_center]"
+                style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22 stroke-width=%222%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M19 9l-7 7-7-7%22 /></svg>'); background-size: 1.25rem;">
+                <option value="New to chess">New to chess</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+
+            <!-- Message (Experience) -->
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-2">Message</label>
+              <textarea formControlName="experience" rows="4"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50 resize-none"
+                placeholder="Tell us about your chess goals..."></textarea>
+            </div>
+            <button type="submit"
+              class="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="enrollmentForm.invalid || isSubmitting()">
+              @if (isSubmitting()) {
+                <span class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+              }
+              Send message
+            </button>
+          </form>
         </div>
-      </div>
-
-      <!-- Form State -->
-      <div *ngIf="!isSuccess()" class="space-y-6">
-        <form [formGroup]="enrollmentForm" (ngSubmit)="onSubmit()" class="space-y-6">
-
-          <!-- Name Row -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-medium text-gray-500 mb-2">First name</label>
-              <input type="text" formControlName="first_name"
-                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
-                placeholder="Juan" />
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-gray-500 mb-2">Last name</label>
-              <input type="text" formControlName="last_name"
-                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
-                placeholder="Dela Cruz" />
-            </div>
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label class="block text-xs font-medium text-gray-500 mb-2">Email address</label>
-            <input type="email" formControlName="email"
-              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
-              placeholder="juan@example.com" />
-          </div>
-
-          <!-- Contact Number -->
-          <div>
-            <label class="block text-xs font-medium text-gray-500 mb-2">Phone number</label>
-            <input type="text" formControlName="contact_number"
-              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
-              placeholder="+63 912 345 6789" />
-          </div>
-
-          <!-- Player Level Dropdown -->
-          <div>
-            <label class="block text-xs font-medium text-gray-500 mb-2">Player level</label>
-            <select formControlName="chess_level"
-              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-[right_1rem_center]"
-              style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22 stroke-width=%222%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M19 9l-7 7-7-7%22 /></svg>'); background-size: 1.25rem;">
-              <option value="New to chess">New to chess</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-            </select>
-          </div>
-
-          <!-- Message (Experience) -->
-          <div>
-            <label class="block text-xs font-medium text-gray-500 mb-2">Message</label>
-            <textarea formControlName="experience" rows="4"
-              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50 resize-none"
-              placeholder="Tell us about your chess goals..."></textarea>
-          </div>
-          <button type="submit"
-            class="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            [disabled]="enrollmentForm.invalid || isSubmitting()">
-            <span *ngIf="isSubmitting()"
-              class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></span>
-            Send message
-          </button>
-        </form>
-      </div>
+      }
     </div>
 
   </div>

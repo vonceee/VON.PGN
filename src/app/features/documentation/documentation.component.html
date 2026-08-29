@@ -10,17 +10,20 @@
             [class.font-semibold]="activeSection === section.id"
             class="w-full text-left px-3 py-2.5 text-sm rounded-lg hover:bg-slate-200 transition-all duration-150 flex items-center justify-between group cursor-pointer">
             <span>{{ section.title }}</span>
-            <span *ngIf="activeSection === section.id" class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+            @if (activeSection === section.id) {
+              <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+            }
           </button>
 
           <!-- Subtopics -->
-          <div *ngIf="activeSection === section.id && section.subtopics"
-            class="ml-4 pl-3 border-l border-border-base mt-1 mb-2 space-y-1 flex flex-col">
-            <button *ngFor="let sub of section.subtopics" (click)="scrollToSubtopic(section.id, sub.id)"
-              [class.font-semibold]="activeSubtopic === sub.id" class="w-full text-left py-1.5 text-xs cursor-pointer">
-              {{ sub.title }}
-            </button>
-          </div>
+          @if (activeSection === section.id && section.subtopics) {
+            <div class="ml-4 pl-3 border-l border-border-base mt-1 mb-2 space-y-1 flex flex-col">
+              <button *ngFor="let sub of section.subtopics" (click)="scrollToSubtopic(section.id, sub.id)"
+                [class.font-semibold]="activeSubtopic === sub.id" class="w-full text-left py-1.5 text-xs cursor-pointer">
+                {{ sub.title }}
+              </button>
+            </div>
+          }
         </div>
       </nav>
     </div>

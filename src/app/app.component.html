@@ -1,9 +1,13 @@
-<div *ngIf="loadingService.isLoading()"
-  class="fixed top-0 left-0 right-0 h-[3px] z-[10000] overflow-hidden bg-blue-600/10 pointer-events-none">
-  <div class="h-full bg-blue-600 animate-loading-bar origin-left"></div>
-</div>
+@if (loadingService.isLoading()) {
+  <div class="fixed top-0 left-0 right-0 h-[3px] z-[10000] overflow-hidden bg-blue-600/10 pointer-events-none">
+    <div class="h-full bg-blue-600 animate-loading-bar origin-left"></div>
+  </div>
+}
 
 <app-toast></app-toast>
 <router-outlet></router-outlet>
 <app-network-status></app-network-status>
-<app-database-offline-overlay *ngIf="databaseStatusService.isOffline()"></app-database-offline-overlay>
+
+@if (databaseStatusService.isOffline()) {
+  <app-database-offline-overlay></app-database-offline-overlay>
+}
