@@ -4,7 +4,7 @@ import { ToastComponent, NetworkStatusComponent, DatabaseOfflineOverlayComponent
 import { AuthService } from './core/services/auth.service';
 import { GameService } from './core/services/game.service';
 import { LoadingService } from './core/services/loading.service';
-import { NetworkStatusService } from './core/services/network-status.service';
+import { DatabaseStatusService } from './core/services/database-status.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,7 +18,7 @@ export class App {
   private authService = inject(AuthService);
   private gameService = inject(GameService);
   protected loadingService = inject(LoadingService);
-  protected networkService = inject(NetworkStatusService);
+  protected databaseStatusService = inject(DatabaseStatusService);
   private router = inject(Router);
 
   protected readonly title = signal('vonchess');
@@ -37,12 +37,5 @@ export class App {
       }
     });
 
-    // Establish a global socket connection for presence and notifications
-    // once the user is authenticated and the app is initialized.
-    effect(() => {
-      if (this.authService.isInitialized() && this.authService.isAuthenticated()) {
-        this.gameService.connectSocket();
-      }
-    });
   }
 }

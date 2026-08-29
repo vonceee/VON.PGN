@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, OnDestroy, PLATFORM_ID, untracked } from '@angular/core';
+import { Injectable, inject, signal, OnDestroy, PLATFORM_ID, untracked, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -20,6 +20,19 @@ export class GameService implements OnDestroy {
   private router = inject(Router);
   private audioService = inject(AudioService);
   private platformId = inject(PLATFORM_ID);
+
+  constructor() {
+    // Manage socket connection lifecycle reactively based on auth state
+    effect(() => {
+      if (this.authService.isInitialized()) {
+        if (this.authService.isAuthenticated()) {
+          this.connectSocket();
+        } else {
+          this.disconnectSocket();
+        }
+      }
+    });
+  }
 
   private apiUrl = environment.apiUrl;
   public socket = signal<Socket | null>(null);
@@ -76,10 +89,18 @@ export class GameService implements OnDestroy {
     if (this.botMatchTimeout) {
       clearTimeout(this.botMatchTimeout);
     }
-    if (this.socket()) {
-      this.socket()?.disconnect();
-      this.socket.set(null);
-    }
+    this.disconnectSocket();
+  }
+
+  disconnectSocket(): void {
+    untracked(() => {
+      const s = this.socket();
+      if (s) {
+        s.disconnect();
+        this.socket.set(null);
+      }
+      this.isConnected.set(false);
+    });
   }
 
   // ── Public API ──────────────────────────────────────────────────

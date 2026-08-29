@@ -6,4 +6,4 @@
 <app-toast></app-toast>
 <router-outlet></router-outlet>
 <app-network-status></app-network-status>
-<app-database-offline-overlay *ngIf="networkService.databaseOffline()"></app-database-offline-overlay>
+<app-database-offline-overlay *ngIf="databaseStatusService.isOffline()"></app-database-offline-overlay>
