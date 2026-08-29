@@ -1,43 +1,48 @@
 <div appFloatingCursorContainer class="w-full min-h-screen relative py-8 px-4 md:px-0 md:pl-20 lg:pl-28 mx-auto">
 
-  <!-- Hero Section -->
-  <section #heroSection
-    class="relative overflow-hidden py-16 md:py-24 mb-16 md:mb-24 rounded-3xl flex flex-col justify-center min-h-[380px]">
-    <!-- Background 3D Canvas -->
-    <div class="absolute inset-0 pointer-events-none z-0">
-      <canvas #heroCanvas
-        class="w-full h-full block bg-transparent opacity-40 md:opacity-100 transition-opacity duration-300"></canvas>
-    </div>
+  <!-- Hero Section Grid (Stretch side-by-side) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16 md:mb-24 md:pr-20 lg:pr-28 items-stretch">
+    
+    <!-- Left Column: Hero Content Section -->
+    <section #heroSection
+      class="lg:col-span-7 relative overflow-hidden py-16 md:py-24 rounded-3xl flex flex-col justify-center min-h-[380px] w-full px-6 md:px-12 bg-slate-50 border border-slate-100">
 
-    <!-- Hero Content -->
-    <div class="relative z-10 max-w-xl text-left">
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-light text-slate-900 leading-none mb-6 text-center md:text-left">
-        Tools that <br class="hidden sm:inline" />
-        help you achieve <span class="font-normal relative inline-block text-blue-600">chess mastery<svg
-            class="inline-block w-[0.7em] h-[0.7em] text-blue-600 ml-2 align-middle animate-pawn-hop"
-            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M5 20a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z" />
-            <path d="m14.5 10 1.5 8" />
-            <path d="M7 10h10" />
-            <path d="m8 18 1.5-8" />
-            <circle cx="12" cy="6" r="4" />
-          </svg></span>
-      </h1>
+      <!-- Hero Content -->
+      <div class="relative z-10 max-w-xl text-left">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-light text-slate-900 leading-none mb-6 text-center md:text-left">
+          Tools that <br class="hidden sm:inline" />
+          help you achieve <span class="font-normal relative inline-block text-blue-600">chess mastery<svg
+              class="inline-block w-[0.7em] h-[0.7em] text-blue-600 ml-2 align-middle animate-pawn-hop"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M5 20a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1z" />
+              <path d="m14.5 10 1.5 8" />
+              <path d="M7 10h10" />
+              <path d="m8 18 1.5-8" />
+              <circle cx="12" cy="6" r="4" />
+            </svg></span>
+        </h1>
 
-      <!-- Primary Action Buttons -->
-      <div class="flex flex-wrap items-center gap-4 mt-8 justify-center md:justify-start">
-        <button (click)="toolsHeader.scrollIntoView({ behavior: 'smooth' })"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer">
-          <span>Explore Tools</span>
-        </button>
-        <a routerLink="/study"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all">
-          <span>Start Studying</span>
-        </a>
+        <!-- Primary Action Buttons -->
+        <div class="flex flex-wrap items-center gap-4 mt-8 justify-center md:justify-start">
+          <button (click)="toolsHeader.scrollIntoView({ behavior: 'smooth' })"
+            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer">
+            <span>Explore Tools</span>
+          </button>
+          <a routerLink="/study"
+            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all">
+            <span>Start Studying</span>
+          </a>
+        </div>
       </div>
+    </section>
+
+    <!-- Right Column: Creator Activity Feed Component -->
+    <div class="lg:col-span-5 w-full flex">
+      <app-creator-activity-feed class="w-full h-full flex flex-col"></app-creator-activity-feed>
     </div>
-  </section>
+
+  </div>
 
   <!-- Top Header & Category Filter Tabs -->
   <header #toolsHeader class="pt-8 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 md:pr-20 lg:pr-28">
@@ -184,75 +189,18 @@
     }
   </div>
 
-  <!-- Built For Everyone Heading Section -->
-  <section class="mb-16 md:mb-24 text-center md:text-left">
-    <h2 class="text-3xl md:text-4xl lg:text-5xl leading-tight mb-3">
-      Built for chess players <br />
-      <span class="font-normal text-blue-600">for the modern era</span>
-    </h2>
-    <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl mx-auto md:mx-0">
-      vonchess is designed for chess improvement, whether you're a professional coach organizing
-      repertoires, a competitive player sharpening chess skills, or a casual enjoyer diving into chess history.
-    </p>
-  </section>
-
-  <!-- Built For Everyone Carousel Section -->
-  <section class="mb-16 md:mb-24 text-center md:text-left">
-    <!-- Carousel Container -->
-    <div appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
-      class="relative w-[calc(100%+2rem)] -mx-4 px-4 md:w-full md:mx-0 md:px-0 overflow-hidden mb-6 cursor-none py-2">
-
-      <!-- Scrolling Slides Track -->
-      <div class="carousel-track"
-        [style.transform]="'translateX(calc(var(--slide-offset) - ' + activeCarouselIndex() + ' * (var(--slide-step) + var(--slide-gap))))'">
-        @for (slide of carouselSlides; track $index) {
-        <div [routerLink]="slide.linkUrl"
-          class="w-[var(--slide-width)] shrink-0 aspect-[16/9] rounded-3xl md:rounded-4xl bg-slate-900 border border-white/10 p-4 md:p-10 flex items-center justify-center cursor-pointer carousel-slide hover:border-white/20 overflow-hidden"
-          [class.opacity-40]="activeCarouselIndex() !== $index" [class.scale-[0.96]]="activeCarouselIndex() !== $index"
-          [class.opacity-100]="activeCarouselIndex() === $index" [class.scale-100]="activeCarouselIndex() === $index">
-          <img [src]="slide.image" [alt]="slide.title"
-            class="w-full h-full object-contain select-none carousel-slide-img rounded-xl"
-            [class.scale-[0.95]]="activeCarouselIndex() !== $index"
-            [class.scale-100]="activeCarouselIndex() === $index" />
-        </div>
-        }
-      </div>
-    </div>
-
-    <!-- Slide Details Below Image -->
-    <div class="w-full max-w-5xl grid grid-cols-1 grid-rows-1">
-      @for (slide of carouselSlides; track $index) {
-      <div class="col-start-1 row-start-1 transition-all duration-[600ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        [class.opacity-100]="activeCarouselIndex() === $index" [class.translate-y-0]="activeCarouselIndex() === $index"
-        [class.pointer-events-auto]="activeCarouselIndex() === $index"
-        [class.opacity-0]="activeCarouselIndex() !== $index" [class.translate-y-2]="activeCarouselIndex() !== $index"
-        [class.pointer-events-none]="activeCarouselIndex() !== $index">
-        <h3 class="text-lg md:text-xl font-medium text-slate-900 mb-1">
-          {{ slide.title }}
-        </h3>
-        <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest mb-4 max-w-2xl mx-auto md:mx-0">
-          {{ slide.description }}
-        </p>
-      </div>
-      }
-      <div class="flex items-center justify-center md:justify-start gap-1">
-        <button (click)="prevSlide()"
-          class="inline-flex items-center justify-center w-10 h-10 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 transition-colors duration-200 cursor-pointer focus:outline-none"
-          aria-label="Previous slide">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button (click)="nextSlide()"
-          class="inline-flex items-center justify-center w-10 h-10 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 transition-colors duration-200 cursor-pointer focus:outline-none"
-          aria-label="Next slide">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+  <!-- Built For Chess Players Storytelling Section -->
+  <section class="mb-16 md:mb-24">
+    <!-- Section Intro Header -->
+    <div class="mb-16 text-center md:text-left">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl leading-tight mb-3">
+        Built for chess players <br />
+        <span class="font-normal text-blue-600">for the modern era</span>
+      </h2>
+      <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl mx-auto md:mx-0">
+        vonchess is designed for chess improvement, whether you're a professional coach organizing
+        repertoires, a competitive player sharpening chess skills, or a casual enjoyer diving into chess history.
+      </p>
     </div>
   </section>
 

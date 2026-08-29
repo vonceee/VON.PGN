@@ -62,6 +62,8 @@ import { BughouseLobbyComponent } from './components/bughouse-lobby/bughouse-lob
 import { BughouseQueueComponent } from './components/bughouse-queue/bughouse-queue.component';
 import { BughouseMatchedComponent } from './components/bughouse-matched/bughouse-matched.component';
 import { BughouseBoardComponent } from './components/bughouse-board/bughouse-board.component';
+import { FloatingCursorContainerDirective } from '@shared/directives';
+import { FloatingCursorComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-bughouse',
@@ -74,6 +76,8 @@ import { BughouseBoardComponent } from './components/bughouse-board/bughouse-boa
     BughouseQueueComponent,
     BughouseMatchedComponent,
     BughouseBoardComponent,
+    FloatingCursorContainerDirective,
+    FloatingCursorComponent,
   ],
   providers: [
     provideIcons({

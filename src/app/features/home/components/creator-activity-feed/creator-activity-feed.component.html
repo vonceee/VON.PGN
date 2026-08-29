@@ -1,0 +1,55 @@
+<div class="w-full h-full overflow-y-auto bg-slate-900 rounded-4xl p-6 md:p-8 flex flex-col justify-between min-h-[380px] select-none relative">
+  
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col">
+      <h3 class="text-lg text-white tracking-wide">Latest Updates</h3>
+    </div>
+  </div>
+
+  <!-- Content States -->
+  <div class="flex-1 flex flex-col justify-start overflow-y-auto no-scrollbar">
+
+    <!-- Error State -->
+    @if (!isLoading() && hasError()) {
+      <div class="text-center py-6 w-full">
+        <p class="text-slate-400 text-sm mb-4">Could not load the updates feed.</p>
+        <button (click)="loadActivities()" type="button"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition-colors duration-200 cursor-pointer">
+          <span>Try Again</span>
+        </button>
+      </div>
+    }
+
+    <!-- Active List (Timeline style matching the layout screenshot) -->
+    @if (!isLoading() && !hasError() && activities().length > 0) {
+      <div class="relative border-l border-blue-600/60 ml-4 pl-7 space-y-6 w-[calc(100%-1rem)] py-2">
+        
+        @for (item of activities(); track item.id) {
+          <a [routerLink]="item.route"
+            class="relative flex flex-col items-start gap-1 group cursor-pointer w-full hover:bg-white/[0.02] p-2.5 rounded-2xl transition-all duration-300">
+            
+            <!-- Timeline Circular Icon Node -->
+            <div [class]="'absolute -left-[41px] top-3 w-6 h-6 rounded-full border flex items-center justify-center transition-colors duration-300 shrink-0 ' + getIconClass(item.type)">
+              <ng-icon [name]="getIconName(item.type)" size="0.75rem"></ng-icon>
+            </div>
+
+            <!-- Relative Time Badge (Golden, positioned at top) -->
+            <span class="text-sm font-semibold text-white leading-none">
+              {{ getRelativeTime(item.created_at) }}
+            </span>
+
+            <!-- Description with highlighted blue links -->
+            <div class="w-full">
+              <h4 class="text-sm text-slate-300 mt-1.5 leading-relaxed group-hover:text-slate-100 transition-colors duration-200">
+                @if (parseTitle(item.title); as parsed) {
+                  {{ parsed.prefix }}<span class="text-blue-400 group-hover:text-blue-300 transition-colors duration-200 font-medium">{{ parsed.highlight }}</span>
+                }
+              </h4>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </div>
+</div>

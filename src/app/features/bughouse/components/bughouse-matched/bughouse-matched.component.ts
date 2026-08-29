@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="max-w-3xl mx-auto py-12 flex flex-col items-center justify-center text-center">
-      <h2 class="text-3xl font-extrabold mb-8 uppercase tracking-wider">Match Found</h2>
+      <h2 class="text-3xl font-extrabold mb-8 uppercase tracking-widest">Match Found</h2>
 
       <div class="grid grid-cols-5 items-center justify-center w-full gap-4 mb-12">
         <!-- Team A (Left) -->

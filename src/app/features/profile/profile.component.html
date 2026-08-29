@@ -3,125 +3,18 @@
   <div class="flex-1 overflow-y-auto">
     <!-- Followers/Following Modal -->
     @if (showFollowModal()) {
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="closeFollowModal()">
-      <div class="bg-white rounded-2xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col"
-        (click)="$event.stopPropagation()">
-        <!-- Modal Header -->
-        <div class="flex items-center justify-between px-5 pt-5 pb-0">
-          <div class="flex items-center gap-4">
-            <button (click)="activeTab.set('followers'); loadTabUsers()"
-              class="text-xs font-medium pb-1 border-b-2 cursor-pointer"
-              [class.border-blue-600]="activeTab() === 'followers'"
-              [class.border-transparent]="activeTab() !== 'followers'"
-              [class.hover:text-gray-500]="activeTab() !== 'followers'">
-              Followers
-            </button>
-            <button (click)="activeTab.set('following'); loadTabUsers()"
-              class="text-xs font-medium pb-1 border-b-2 cursor-pointer"
-              [class.border-blue-600]="activeTab() === 'following'"
-              [class.border-transparent]="activeTab() !== 'following'"
-              [class.hover:text-gray-500]="activeTab() !== 'following'">
-              Following
-            </button>
-          </div>
-          <button (click)="closeFollowModal()"
-            class="p-1.5 rounded-lg hover:text-gray-500 hover:bg-slate-200 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-              stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Search -->
-        <div class="px-5 pt-4 pb-0">
-          <div class="flex items-center rounded-lg px-3 py-2">
-            <input type="text" [value]="tabSearchQuery()" (input)="onTabSearch($event)"
-              [placeholder]="'Search ' + activeTab() + '...'"
-              class="ml-2 bg-transparent outline-none text-sm/6 placeholder:text-gray-500 w-full" />
-          </div>
-        </div>
-
-        <!-- User List -->
-        <div class="flex-1 overflow-y-auto px-5 py-4">
-          @if (tabLoading()) {
-
-          } @else if (tabUsers().length === 0) {
-          <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border-border-base">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1"
-              stroke="currentColor" class="w-10 h-10 text-gray-500">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-            </svg>
-            <p class="text-sm/6">
-              @if (tabSearchQuery()) {
-              No results found
-              } @else if (activeTab() === 'followers') {
-              No followers yet
-              } @else {
-              You're not following anyone yet
-              }
-            </p>
-            @if (!tabSearchQuery() && activeTab() === 'following') {
-            <p class="text-xs">Search for users to follow them</p>
-            }
-          </div>
-          } @else {
-          <div class="flex flex-col gap-1">
-            @for (userItem of tabUsers(); track userItem.uid) {
-            <div class="flex items-center gap-3 p-3 rounded-xl group">
-              <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
-                [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
-                class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-sm/6 font-medium text-gray-500 shrink-0">
-                {{ userItem.username.charAt(0) || 'U' }}
-              </a>
-              <div class="flex-1 min-w-0">
-                <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
-                  [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
-                  class="text-sm/6 font-medium truncate block hover:text-blue-600">
-                  {{ userItem.username }}
-                </a>
-              </div>
-              <button (click)="toggleTabUserFollow(userItem)"
-                class="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer shrink-0"
-                [class.bg-blue-600]="!userItem.is_following" [class.text-white]="!userItem.is_following"
-                [class.hover:bg-blue-600]="!userItem.is_following" [class.bg-slate-200]="userItem.is_following"
-                [class.text-gray-500]="userItem.is_following" [class.hover:bg-red-50]="userItem.is_following"
-                [class.border]="userItem.is_following" [class.border-border-base]="userItem.is_following"
-                [class.hover:text-red-500]="userItem.is_following" [class.hover:border-red-200]="userItem.is_following">
-                @if (userItem.is_following) {
-                <span>Following</span>
-                } @else {
-                Follow
-                }
-              </button>
-            </div>
-            }
-          </div>
-
-          <!-- Load More -->
-          @if (tabCurrentPage() < tabLastPage()) { <div class="mt-4 flex justify-center">
-            <button (click)="loadMoreTabUsers()" [disabled]="isLoadingMore()"
-              class="px-4 py-2 text-sm/6 font-medium text-blue-600 hover:text-blue-600/80 cursor-pointer disabled:opacity-50">
-              @if (isLoadingMore()) {
-              Loading...
-              } @else {
-              Load more
-              }
-            </button>
-        </div>
-        }
-        }
-      </div>
-    </div>
-  </div>
-  }
+    <app-follow-modal
+      [userId]="profile.uid"
+      [initialTab]="activeTab()"
+      (close)="closeFollowModal()">
+    </app-follow-modal>
+    }
 
   <!-- Body: two columns -->
   <div class="flex flex-col lg:flex-row gap-8">
     <!-- Left column: Profile Details Sidebar -->
     <div class="w-full lg:w-72 shrink-0 flex flex-col gap-4">
-      <div class="border-2 border-border-base rounded-4xl p-6 flex flex-col">
+      <div class="rounded-4xl p-6 flex flex-col">
         <!-- Username & Flag -->
         <div class="flex gap-2 mb-2 justify-center">
           <span class="text-2xl font-medium">{{ profile.username }}</span>
@@ -131,7 +24,7 @@
         <!-- Verified Organizer Badge (if applicable) -->
         @if (profile.verified_organizer) {
         <div
-          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600/10 border-blue-600/20 text-xs font-medium text-blue-600 mb-4">
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600/10 border-blue-600/60/20 text-xs font-medium text-blue-600 mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
             <path fill-rule="evenodd"
               d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.446-5.188a.75.75 0 00-1.06-1.06l-3.72 3.72-1.47-1.47a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.25-4.25z"
@@ -142,7 +35,7 @@
         }
 
         <!-- Stats (Followers/Following) -->
-        <div class="w-full border-t border-b border-border-base py-4 flex justify-around text-sm/6 mb-4">
+        <div class="w-full border-t-2 border-b-2 border-blue-600/60 py-4 flex justify-around text-sm/6 mb-4">
           <button (click)="openFollowModal('followers')"
             class="hover:text-blue-600 cursor-pointer flex flex-col items-center">
             <span class="font-medium text-base">{{ formattedFollowersCount() }}</span>
@@ -171,29 +64,26 @@
     <!-- Right column: Studies & Bookmarked Events Widgets -->
     <div class="flex-1 flex flex-col gap-6">
       <!-- Studies Card -->
-      <div class="border-2 border-border-base rounded-4xl p-6 flex flex-col gap-4">
+      <div class="rounded-4xl p-6 flex flex-col gap-4">
         <div class="flex justify-between">
           <div class="flex items-center gap-2">
-            <h2 class="text-2xl">Recent studies</h2>
+            <h2 class="text-2xl">Studies</h2>
           </div>
-          <a routerLink="/study" class="text-xs font-medium text-blue-600 hover:underline">View all</a>
         </div>
 
         @if (loadingStudies()) {
         <div class="text-center py-6 text-sm/6 text-gray-500">Loading studies...</div>
         } @else if (studies().length === 0) {
-        <div class="flex-1 flex flex-col items-center justify-center bg-slate-200/30 rounded-2xl p-12 text-center">
-          <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        <div class="flex-1 flex flex-col items-center justify-center border-2 border-border-base rounded-4xl p-12 text-center bg-white">
+          <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6 text-blue-600 mx-auto">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
             </svg>
           </div>
-          <h3 class="text-2xl mb-2">No active studies yet</h3>
-          <p class="text-gray-500 text-base max-w-sm mb-8">Create a collaborative chess study to start analyzing and
-            saving
-            your games.</p>
-          <a routerLink="/study">Create a study</a>
+          <h3 class="text-2xl mb-2">No studies yet</h3>
+          <p class="text-gray-500 max-w-sm mb-8">Create a study to start analyzing your games.</p>
+          <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+           routerLink="/study">Create a study</button>
         </div>
         } @else {
         <div class="grid grid-cols-1 gap-3">
@@ -212,27 +102,26 @@
       </div>
 
       <!-- Bookmarks Card -->
-      <div class="bg-white rounded-4xl p-6 flex flex-col gap-4">
+      <div class="rounded-4xl p-6 flex flex-col gap-4">
         <div class="flex justify-between">
           <div class="flex items-center gap-2">
             <h2 class="text-2xl">Bookmarked events</h2>
           </div>
-          <a routerLink="/events" class="text-xs font-medium text-blue-600 hover:underline">Browse events</a>
         </div>
 
         @if (loadingBookmarks()) {
         <div class="text-center py-6 text-sm/6 text-gray-500">Loading bookmarks...</div>
         } @else if (tournaments().length === 0) {
-        <div class="flex-1 flex flex-col items-center justify-center bg-slate-200/30 rounded-2xl p-12 text-center">
-          <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        <div class="flex-1 flex flex-col items-center justify-center border-2 border-border-base rounded-4xl p-12 text-center bg-white">
+          <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6 text-blue-600 mx-auto">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
             </svg>
           </div>
           <h3 class="text-2xl mb-2">No bookmarked tournaments</h3>
-          <p class="text-gray-500 text-base max-w-sm mb-8">Browse current tournaments and save them here.</p>
-          <a routerLink="/events">Find tournaments</a>
+          <p class="text-gray-500 max-w-sm mb-8">Browse current tournaments and save them here.</p>
+          <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+           routerLink="/events">Find tournaments</button>
         </div>
         } @else {
         <div class="grid grid-cols-1 gap-3">

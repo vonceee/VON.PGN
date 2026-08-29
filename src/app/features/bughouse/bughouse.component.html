@@ -1,4 +1,5 @@
-<div class="max-w-7xl mx-auto p-4 md:p-8">
+<div appFloatingCursorContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
+
   @if (lobbyState() === 'lobby') {
   <app-bughouse-lobby
     [currentUserProfile]="currentUserProfile()"
@@ -166,4 +167,7 @@
     </div>
   </div>
   }
+
+  <!-- Custom Floating Cursor -->
+  <app-floating-cursor></app-floating-cursor>
 </div>

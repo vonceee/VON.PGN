@@ -64,12 +64,12 @@ export class FloatingCursorComponent implements OnInit {
     this.icon.set(icon);
     this.isVisible.set(true);
     this.cdr.detectChanges();
-    console.log('FloatingCursorComponent.show: isVisible:', this.isVisible(), 'text:', this.text(), 'icon:', this.icon());
+    // console.log('FloatingCursorComponent.show: isVisible:', this.isVisible(), 'text:', this.text(), 'icon:', this.icon());
   }
 
   hide() {
     this.isVisible.set(false);
     this.cdr.detectChanges();
-    console.log('FloatingCursorComponent.hide: isVisible:', this.isVisible());
+    // console.log('FloatingCursorComponent.hide: isVisible:', this.isVisible());
   }
 }

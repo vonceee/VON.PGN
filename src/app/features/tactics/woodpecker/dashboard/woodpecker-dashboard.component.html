@@ -1,39 +1,30 @@
-<div class="h-full w-full overflow-y-auto p-6 lg:p-8 flex flex-col">
+<div class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
   <div class="flex-1 flex flex-col">
 
-    <!-- Standardized Premium Page Header -->
     <header class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div class="flex-1">
         <h1 class="text-4xl md:text-5xl mb-2 flex items-center gap-2">
-          <span>Woodpecker method</span>
+          <span>Woodpecker Training</span>
           <button (click)="toggleExplanation()"
             class="p-1 rounded-full text-gray-500 hover:bg-slate-200 transition-colors duration-200 cursor-pointer flex items-center justify-center"
             title="What is Woodpecker method?">
             <ng-icon name="heroInformationCircle" class="text-xl md:text-2xl"></ng-icon>
           </button>
         </h1>
-        <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">A specialized form of
-          spaced repetition designed by GM Axel Smith and IM Hans Tikkanen to burn chess patterns into your
-          subconscious.</p>
       </div>
-      <div class="flex items-center gap-4">
-        <button
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all"
-          routerLink="/tactics/woodpecker/setup">
-          Create new session
-        </button>
-      </div>
+
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+        routerLink="/tactics/woodpecker/setup">
+        Create Session
+      </button>
+
     </header>
 
     @if (showExplanation()) {
     <app-woodpecker-explanation-modal (close)="toggleExplanation()"></app-woodpecker-explanation-modal>
     }
 
-    @if (isLoading()) {
-    <div class="flex-1 flex items-center justify-center">
-
-    </div>
-    } @else {
     <!-- Active Sessions Section -->
     <section class="mb-12">
       @if (sessions().length === 0) {
@@ -47,11 +38,11 @@
           </svg>
         </div>
         <h3 class="text-2xl mb-2">No active sessions</h3>
-        <p class="text-gray-500 text-base max-w-md mb-8">
-          Start a Woodpecker training session to burn tactical patterns into your subconscious with spaced repetition.
+        <p class="text-gray-500 tracking-widest max-w-md mb-8">
+          Create your first woodpecker session.
         </p>
-        <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px]
-          leading-5 cursor-pointer routerLink="/tactics/woodpecker/setup">
+        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+         routerLink="/tactics/woodpecker/setup">
           Start your first session
         </button>
       </div>
@@ -227,7 +218,7 @@
   </div>
   </section>
   }
-  }
+  
   @if (sessionToAbandon(); as sessionId) {
   <div class="fixed inset-0 flex items-center justify-center p-4 z-50" (click)="cancelAbandon()">
     <!-- Modal Container -->

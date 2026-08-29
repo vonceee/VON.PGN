@@ -2,13 +2,8 @@
   <div class="flex-1 flex flex-col mx-auto w-full">
 
     <!-- Standardized Premium Page Header -->
-    <header class="mb-12 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-      <div class="flex-1">
-        <h1 class="text-4xl md:text-5xl mb-2">Opening Drills</h1>
-        <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">Never forget an opening
-          line
-          again. Practice your repertoire through repetition.</p>
-      </div>
+    <header class="mb-6">
+      <h1 class="text-4xl md:text-5xl mb-2">Opening Drills</h1>
     </header>
 
     <!-- Search & Filter Bar -->
@@ -54,22 +49,31 @@
     } @else {
     @if (filteredRepertoires().length === 0) {
     <!-- Empty State -->
-    <div class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-border-base rounded-4xl p-16 text-center">
-      <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6">
+    <div class="flex-1 flex flex-col items-center justify-center border-2 border-border-base rounded-4xl p-16 text-center bg-white">
+      <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6 text-blue-600">
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
             d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
         </svg>
       </div>
       <h3 class="text-2xl mb-2">
-        {{ activeTab() === 'my' ? 'No opening repertoires found' : 'No public repertoires found' }}
+        {{ searchQuery() ? 'No results found' : (activeTab() === 'my' ? 'No opening repertoires found' : 'No public repertoires found') }}
       </h3>
-      <p class="text-gray-500 text-base max-w-md mb-8">
+      <p class="text-gray-500 max-w-md" [class.mb-8]="(activeTab() === 'my' && !searchQuery()) || searchQuery()">
+        @if (searchQuery()) {
+        We couldn't find any opening repertoires matching "{{ searchQuery() }}".
+        } @else {
         {{ activeTab() === 'my'
         ? 'Create a chess study and set its category to "Opening Repertoire" in its settings.'
         : 'Be the first to publish a chess study as an "Opening Repertoire" in its settings.' }}
+        }
       </p>
-      @if (activeTab() === 'my') {
+      @if (searchQuery()) {
+      <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+       (click)="clearSearch()">
+        Clear search filter
+      </button>
+      } @else if (activeTab() === 'my') {
       <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
        routerLink="/study">
         Go to studies

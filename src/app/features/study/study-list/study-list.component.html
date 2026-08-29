@@ -1,8 +1,6 @@
 <div appFloatingCursorContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
   <header class="mb-6">
     <h1 class="text-4xl md:text-5xl mb-2">Study</h1>
-    <p class="text-gray-500 text-sm md:text-base leading-relaxed tracking-widest max-w-3xl">digital notebook for
-      organizing, analyzing, and sharing chess knowledge.</p>
   </header>
 
   <!-- Search & Filter Bar -->
@@ -86,18 +84,14 @@
 
     </div>
     } @else if (studies().length === 0) {
-    <div class="flex-1 flex flex-col items-center justify-center bg-white rounded-4xl p-16 text-center">
-      <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-            d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-        </svg>
+    <div class="flex-1 flex flex-col items-center justify-center border-2 border-border-base rounded-4xl p-16 text-center bg-white">
+      <div class="w-16 h-16 bg-blue-600/5 rounded-full flex items-center justify-center mb-6 text-blue-600">
+        <ng-icon name="heroBookOpen" class="text-3xl"></ng-icon>
       </div>
       <h3 class="text-2xl mb-2">
-        {{ searchQuery() ? 'No studies found' : (activeTab() === 'my' ? 'No studies created yet' : 'No public studies
-        available') }}
+        {{ searchQuery() ? 'No studies found' : (activeTab() === 'my' ? 'No studies created yet' : 'No public studies available') }}
       </h3>
-      <p class="text-gray-500 text-base max-w-md" [class.mb-8]="activeTab() === 'my' && !searchQuery() && isLoggedIn()">
+      <p class="text-gray-500 max-w-md" [class.mb-8]="(activeTab() === 'my' && !searchQuery() && isLoggedIn()) || searchQuery()">
         @if (searchQuery()) {
         Try adjusting your search terms.
         } @else {
@@ -106,7 +100,12 @@
         : 'Be the first to create and publish a collaborative public study.' }}
         }
       </p>
-      @if (activeTab() === 'my' && !searchQuery() && isLoggedIn()) {
+      @if (searchQuery()) {
+      <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+       (click)="clearSearch()">
+        Clear search filter
+      </button>
+      } @else if (activeTab() === 'my' && isLoggedIn()) {
       <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
        (click)="createNewStudy()">
         Create a study

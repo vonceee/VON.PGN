@@ -5,21 +5,21 @@
 <!-- Basic Info -->
 <div class="border border-border-base rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-basic')">
-    <h3 class="text-sm font-bold uppercase tracking-wider m-0">Basic Information</h3>
+    <h3 class="text-sm font-bold uppercase tracking-widest m-0">Basic Information</h3>
     <span class="text-xs">Edit</span>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Name</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Name</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['name'] || '—' }}</span>
     </div>
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Status</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Status</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100 capitalize">{{ data['status'] }}</span>
     </div>
     @if (data['description']) {
     <div class="flex flex-col gap-0.5 col-span-full">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Description</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Description</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100 whitespace-pre-line">{{ data['description']
         }}</span>
     </div>
@@ -30,29 +30,29 @@
 <!-- Dates & Location -->
 <div class="border border-border-base rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-dates')">
-    <h3 class="text-sm font-bold uppercase tracking-wider m-0">Dates & Location</h3>
+    <h3 class="text-sm font-bold uppercase tracking-widest m-0">Dates & Location</h3>
     <span class="text-xs">Edit</span>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Dates</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Dates</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">
         {{ formatDate(data['dates']?.start) }} - {{ formatDate(data['dates']?.end) }}
       </span>
     </div>
     @if (data['registrationDeadline']) {
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Registration Deadline</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Registration Deadline</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ formatDate(data['registrationDeadline'])
         }}</span>
     </div>
     }
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Location</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Location</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['location'] || '—' }}</span>
     </div>
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Coordinates</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Coordinates</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['coordinates']?.lat }}, {{
         data['coordinates']?.lng }}</span>
     </div>
@@ -62,28 +62,28 @@
 <!-- Format -->
 <div class="border border-border-base rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-format')">
-    <h3 class="text-sm font-bold uppercase tracking-wider m-0">Format & Rules</h3>
+    <h3 class="text-sm font-bold uppercase tracking-widest m-0">Format & Rules</h3>
     <span class="text-xs">Edit</span>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Format</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Format</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['format'] || '—' }}</span>
     </div>
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Time Control</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Time Control</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['timeControl'] || '—' }}</span>
     </div>
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Rounds</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Rounds</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['rounds'] }}</span>
     </div>
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Registration Fee</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Registration Fee</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['entryFee'] || '—' }}</span>
     </div>
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Total Prize Pool</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Total Prize Pool</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['prizePool'] || '—' }}</span>
     </div>
   </div>
@@ -92,21 +92,21 @@
 <!-- Organizer -->
 <div class="border border-border-base rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-organizer')">
-    <h3 class="text-sm font-bold uppercase tracking-wider m-0">Organizer</h3>
+    <h3 class="text-sm font-bold uppercase tracking-widest m-0">Organizer</h3>
     <span class="text-xs">Edit</span>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Organizer</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Organizer</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['organizer'] || '—' }}</span>
     </div>
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Contact</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Contact</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['contact'] || '—' }}</span>
     </div>
     @if (data['link']) {
     <div class="flex flex-col gap-0.5">
-      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Link</span>
+      <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Link</span>
       <span class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ data['link'] }}</span>
     </div>
     }
@@ -116,7 +116,7 @@
 <!-- Registration Instructions -->
 <div class="border border-border-base rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-registration')">
-    <h3 class="text-sm font-bold uppercase tracking-wider m-0">Registration Instructions</h3>
+    <h3 class="text-sm font-bold uppercase tracking-widest m-0">Registration Instructions</h3>
     <span class="text-xs">Edit</span>
   </div>
   @if (data['registrationInstructions']) {
@@ -129,7 +129,7 @@
 <!-- Eligibility -->
 <div class="border border-border-base rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-eligibility')">
-    <h3 class="text-sm font-bold uppercase tracking-wider m-0">Eligibility</h3>
+    <h3 class="text-sm font-bold uppercase tracking-widest m-0">Eligibility</h3>
     <span class="text-xs">Edit</span>
   </div>
   @if (data['eligibility']?.length) {
@@ -149,7 +149,7 @@
 <!-- Prizes -->
 <div class="border border-border-base rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-prizes')">
-    <h3 class="text-sm font-bold uppercase tracking-wider m-0">Prizes</h3>
+    <h3 class="text-sm font-bold uppercase tracking-widest m-0">Prizes</h3>
     <span class="text-xs">Edit</span>
   </div>
   @if (data['categories']) {
@@ -176,7 +176,7 @@
 <!-- Schedule -->
 <div class="border border-border-base rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-schedule')">
-    <h3 class="text-sm font-bold uppercase tracking-wider m-0">Schedule</h3>
+    <h3 class="text-sm font-bold uppercase tracking-widest m-0">Schedule</h3>
     <span class="text-xs">Edit</span>
   </div>
   @if (data['schedule']) {

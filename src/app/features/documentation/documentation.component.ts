@@ -55,7 +55,8 @@ export class DocumentationComponent {
         { title: 'Badges', id: 'badges' },
         { title: 'Toggles', id: 'toggles' },
         { title: 'Input Fields', id: 'inputs' },
-        { title: 'Floating Cursor', id: 'floating-cursor' }
+        { title: 'Floating Cursor', id: 'floating-cursor' },
+        { title: 'Empty States', id: 'empty-states' }
       ]
     },
     {

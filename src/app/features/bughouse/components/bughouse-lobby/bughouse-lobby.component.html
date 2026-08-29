@@ -6,9 +6,9 @@
     <div class="lg:col-span-2 flex flex-col gap-8">
       
       @if (ongoingMatches().length > 0) {
-        <div class="border border-border-base rounded-xl p-8 bg-white flex flex-col gap-6">
+        <div class="border border-border-base rounded-3xl p-8 flex flex-col gap-6 bg-slate-50">
           <div class="flex items-center justify-between border-b border-border-base pb-4">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs bg-rose-50 text-rose-700 border border-rose-200">
               <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>
               Live Matches
             </span>
@@ -16,8 +16,8 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             @for (match of ongoingMatches(); track match.gameId) {
-              <div class="p-5 rounded-xl border border-border-base bg-slate-50/50 hover:bg-slate-50 transition-colors flex flex-col gap-4">
-                <div class="flex flex-col gap-2 text-sm font-semibold text-slate-955">
+              <div class="p-5 rounded-2xl border border-border-base bg-white hover:shadow-xs transition-all flex flex-col gap-4">
+                <div class="flex flex-col gap-2 text-sm text-slate-900">
                   <div class="flex items-center gap-2.5">
                     <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
                     <span>{{ match.teamA.captainName }} + {{ match.teamA.partnerName }}</span>
@@ -56,22 +56,25 @@
 
     <!-- Right Column: Matchmaking Controls & Squad Setup (Span 1) -->
     <div class="flex flex-col gap-6">
-      <div class="border border-border-base rounded-xl p-6 bg-white flex flex-col gap-5">
+      <div class="border-2 border-border-base rounded-4xl p-6 flex flex-col gap-5">
         
         <!-- Slot 1: Active User (Captain) -->
-        <div class="flex items-center gap-3 p-3 rounded-xl border border-border-base bg-slate-50 min-h-[58px]">
+        <div class="flex items-center justify-between gap-3 p-3 rounded-2xl border border-border-base bg-white min-h-[58px]">
           <div class="flex-1 min-w-0">
-            <span class="font-semibold block truncate text-sm leading-tight">{{ currentUserProfile().name }}</span>
-            <span class="text-xs text-slate-500">Host</span>
+            <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ currentUserProfile().name }}</span>
           </div>
+          <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" title="Host">
+            <path d="M2 4 5 12h14l3-8-7 4-3-6-3 6-7-4z"/>
+            <path d="M5 20h14a2 2 0 0 0 2-2V16H3v2a2 2 0 0 0 2 2z"/>
+          </svg>
         </div>
 
         <!-- Slot 2: Teammate (Partner) -->
         @if (partner(); as p) {
-        <div class="flex items-center gap-3 p-3 rounded-xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]">
+        <div class="flex items-center gap-3 p-3 rounded-2xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]">
           <div class="flex-1 min-w-0">
-            <span class="font-semibold block truncate text-sm leading-tight">{{ p.name }}</span>
-            <span class="text-xs text-slate-500">Teammate</span>
+            <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ p.name }}</span>
+            <span class="text-xs text-slate-500 font-medium">Teammate</span>
           </div>
           <button (click)="kickPartner.emit()"
             class="p-1.5 rounded-full transition-colors cursor-pointer hover:bg-rose-50 text-rose-600 flex items-center justify-center"
@@ -81,18 +84,21 @@
         </div>
         } @else {
         <div (click)="openInviteModal()"
-          class="flex items-center justify-center gap-3 p-3 rounded-xl border-2 border-dashed border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer group min-h-[58px]">
-          <ng-icon name="heroUserPlus" class="text-slate-600 text-lg transition-colors shrink-0"></ng-icon>
+          class="flex items-center justify-start gap-3 p-3 rounded-2xl border border-dashed border-slate-300 hover:bg-slate-100 hover:border-slate-400 transition-all cursor-pointer group min-h-[58px]">
+          <svg class="w-5 h-5 text-slate-500 transition-colors shrink-0 group-hover:text-slate-700" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          <span class="text-sm text-slate-500 group-hover:text-slate-700 transition-colors tracking-widest">invite a partner</span>
         </div>
         }
 
         <!-- Sent Invitations Outbox -->
         @if (sentInvites().length > 0) {
         <div class="pt-4 border-t border-border-base flex flex-col gap-3">
-          <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Sent invitations</label>
+          <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 block">Sent invitations</label>
           <div class="flex flex-col gap-2">
             @for (invite of sentInvites(); track invite.id) {
-            <div class="flex items-center justify-between p-3 rounded-xl border border-border-base bg-slate-50/50">
+            <div class="flex items-center justify-between p-3 rounded-2xl border border-border-base bg-white">
               <div class="flex items-center gap-2 min-w-0">
                 @if (invite.status === 'pending') {
                 <div class="w-4 h-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin shrink-0"></div>
@@ -119,7 +125,17 @@
 
         <!-- Find Match Action Button -->
         <button (click)="startQueue.emit()" [disabled]="!partner()"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer justify-center disabled:opacity-50 disabled:pointer-events-none mt-2">
+          class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer">
+          <svg class="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/>
+            <line x1="13" y1="19" x2="19" y2="13"/>
+            <line x1="16" y1="16" x2="20" y2="20"/>
+            <line x1="19" y1="21" x2="21" y2="19"/>
+            <polyline points="9.5 17.5 21 6 21 3 18 3 6.5 14.5"/>
+            <line x1="11" y1="19" x2="5" y2="13"/>
+            <line x1="8" y1="16" x2="4" y2="20"/>
+            <line x1="5" y1="21" x2="3" y2="19"/>
+          </svg>
           Find Match
         </button>
 
@@ -134,13 +150,13 @@
 <div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 p-4"
   (click)="closeInviteModal()">
   <!-- Modal Card -->
-  <div class="w-full max-w-lg rounded-2xl bg-white p-8 border border-border-base shadow-xl flex flex-col gap-6"
+  <div class="bg-white w-full max-w-lg rounded-3xl p-8 border border-border-base flex flex-col gap-6 shadow-xl"
     (click)="$event.stopPropagation()">
     
     <!-- Modal Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-xl font-semibold">Invite</h2>
+        <h2 class="text-xl">Invite Partner</h2>
       </div>
     </div>
 
@@ -149,7 +165,7 @@
       <div class="flex items-center w-full">
         <input type="text" placeholder="enter username..." [value]="searchQuery()"
           (input)="searchInput.emit($event)" autofocus
-          class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
+          class="block w-full pl-3 pr-3 py-2.5 border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
         @if (isSearchingPlayers()) {
         <div class="absolute right-4 w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin shrink-0"></div>
         }
@@ -157,14 +173,14 @@
 
       <!-- Search Results Area -->
       @if (searchResults().length > 0) {
-      <div class="mt-4 border border-border-base rounded-xl overflow-hidden divide-y divide-border-base max-h-60 overflow-y-auto">
+      <div class="mt-4 border border-border-base rounded-xl overflow-hidden divide-y divide-border-base max-h-60 overflow-y-auto bg-white">
         @for (player of searchResults(); track player.name) {
         <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors">
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-sm">
               {{ player.name.charAt(0).toUpperCase() }}
             </div>
-            <span class="font-semibold text-sm">{{ player.name }}</span>
+            <span class="font-semibold text-sm text-slate-900">{{ player.name }}</span>
           </div>
           <button [disabled]="partner()?.name === player.name" (click)="onInvitePlayer(player)"
             class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-white font-medium text-xs cursor-pointer disabled:opacity-50 disabled:pointer-events-none hover:bg-slate-800 transition-colors">
@@ -175,7 +191,7 @@
         }
       </div>
       } @else if (searchQuery().length >= 2 && !isSearchingPlayers()) {
-      <div class="mt-4 px-4 py-3 border border-border-base rounded-xl text-sm italic text-slate-500 text-center">
+      <div class="mt-4 px-4 py-3 border border-border-base rounded-xl text-sm/6 italic text-slate-500 text-center bg-slate-50">
         No online players found with that username
       </div>
       }

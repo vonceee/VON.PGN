@@ -1,4 +1,4 @@
-<div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
   <!-- Page Header -->
   <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
@@ -264,7 +264,7 @@
 
     <!-- Summary Description -->
     <div class="mb-6">
-      <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-2">Match Historical Overview</h3>
+      <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-widest mb-2">Match Historical Overview</h3>
       <p class="text-sm text-gray-500 leading-relaxed">
         {{ match.description }}
       </p>
@@ -273,7 +273,7 @@
     <!-- Key Highlights -->
     @if (match.keyHighlights && match.keyHighlights.length > 0) {
     <div class="mb-8">
-      <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-3">Key Highlights</h3>
+      <h3 class="text-sm font-semibold text-slate-900 uppercase tracking-widest mb-3">Key Highlights</h3>
       <ul class="space-y-2">
         @for (item of match.keyHighlights; track item) {
         <li class="flex items-start gap-2.5 text-sm text-gray-500">

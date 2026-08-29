@@ -3,18 +3,18 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { ToastService } from '../../core/services/toast.service';
-import { FollowUser } from '../../core/models/user.model';
 import { FlagIconComponent } from '@shared/ui';
 import { StudyService } from '../../core/services/study.service';
 import { TournamentService } from '../../core/services/tournament.service';
 import { Study } from '../../core/models/study.model';
 import { Tournament } from '../../core/models/tournament.model';
 import { UserHovercardDirective } from '@shared/directives';
+import { FollowModalComponent } from './components/follow-modal/follow-modal.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, UserHovercardDirective, FlagIconComponent],
+  imports: [CommonModule, RouterLink, UserHovercardDirective, FlagIconComponent, FollowModalComponent],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {
@@ -34,12 +34,6 @@ export class ProfileComponent implements OnInit {
 
   showFollowModal = signal(false);
   activeTab = signal<'followers' | 'following'>('following');
-  tabUsers = signal<FollowUser[]>([]);
-  tabLoading = signal(false);
-  tabCurrentPage = signal(1);
-  tabLastPage = signal(1);
-  tabSearchQuery = signal('');
-  isLoadingMore = signal(false);
 
   memberSince = computed(() => {
     const dateString = this.user()?.createdAt;
@@ -57,107 +51,13 @@ export class ProfileComponent implements OnInit {
     this.loadBookmarks();
   }
 
-  setTab(tab: 'followers' | 'following') {
-    this.activeTab.set(tab);
-    this.tabSearchQuery.set('');
-    this.loadTabUsers();
-  }
-
   openFollowModal(tab: 'followers' | 'following') {
     this.activeTab.set(tab);
-    this.tabSearchQuery.set('');
     this.showFollowModal.set(true);
-    this.loadTabUsers();
   }
 
   closeFollowModal() {
     this.showFollowModal.set(false);
-  }
-
-  loadTabUsers() {
-    const userId = this.user()?.uid;
-    if (!userId) return;
-
-    this.tabLoading.set(true);
-    this.tabCurrentPage.set(1);
-    this.tabUsers.set([]);
-
-    const request = this.activeTab() === 'followers'
-      ? this.userService.getFollowers(userId, 1, this.tabSearchQuery())
-      : this.userService.getFollowing(userId, 1, this.tabSearchQuery());
-
-    request.subscribe({
-      next: (res) => {
-        this.tabUsers.set(res.data);
-        this.tabCurrentPage.set(res.meta.current_page);
-        this.tabLastPage.set(res.meta.last_page);
-        this.tabLoading.set(false);
-      },
-      error: () => {
-        this.tabLoading.set(false);
-      },
-    });
-  }
-
-  loadMoreTabUsers() {
-    if (this.isLoadingMore() || this.tabCurrentPage() >= this.tabLastPage()) return;
-
-    this.isLoadingMore.set(true);
-    const nextPage = this.tabCurrentPage() + 1;
-    const userId = this.user()!.uid;
-
-    const request = this.activeTab() === 'followers'
-      ? this.userService.getFollowers(userId, nextPage, this.tabSearchQuery())
-      : this.userService.getFollowing(userId, nextPage, this.tabSearchQuery());
-
-    request.subscribe({
-      next: (res) => {
-        this.tabUsers.update((users) => [...users, ...res.data]);
-        this.tabCurrentPage.set(res.meta.current_page);
-        this.tabLastPage.set(res.meta.last_page);
-        this.isLoadingMore.set(false);
-      },
-      error: () => {
-        this.isLoadingMore.set(false);
-      },
-    });
-  }
-
-  onTabSearch(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.tabSearchQuery.set(value);
-    this.loadTabUsers();
-  }
-
-  toggleTabUserFollow(userItem: FollowUser) {
-    const userId = userItem.uid;
-    const wasFollowing = userItem.is_following;
-
-    // Optimistic update in the list
-    this.tabUsers.update((users) =>
-      users.map((u) =>
-        u.uid === userId ? { ...u, is_following: !wasFollowing } : u
-      )
-    );
-
-    const request = wasFollowing
-      ? this.userService.unfollowUser(userId)
-      : this.userService.followUser(userId);
-
-    request.subscribe({
-      next: () => {
-        // Reload profile to get updated counts
-        this.userService.loadMyProfile().subscribe();
-      },
-      error: () => {
-        // Rollback
-        this.tabUsers.update((users) =>
-          users.map((u) =>
-            u.uid === userId ? { ...u, is_following: wasFollowing } : u
-          )
-        );
-      },
-    });
   }
 
 
