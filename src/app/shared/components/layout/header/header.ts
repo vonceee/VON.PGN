@@ -1,4 +1,4 @@
-import { Component, inject, signal, HostListener, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, computed, HostListener, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -111,7 +111,8 @@ export class Header implements OnInit, OnDestroy {
   isSearchOpen = signal(false);
   isSearching = signal(false);
   isNotificationsOpen = signal(false);
-  isInvitesOpen = signal(false);
+  isInvitesOpen = this.bughouseInviteService.isInvitesOpen;
+  totalBughouseInvites = computed(() => this.bughouseInviteService.incomingInvites().length);
 
   toggleNotifications() {
     this.isInvitesOpen.set(false);

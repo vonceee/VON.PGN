@@ -9,7 +9,7 @@ import { AudioService } from '../../core/services/audio.service';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { GameService } from '../../core/services/game.service';
-import { BughouseInviteService } from '../../core/services/bughouse-invite.service';
+import { BughouseInviteService, SentInvite } from '../../core/services/bughouse-invite.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import {
@@ -47,11 +47,7 @@ interface LobbyPlayer {
   isOnline: boolean;
 }
 
-interface SentInvite {
-  id: string;
-  receiver: string;
-  status: 'pending' | 'accepted' | 'rejected';
-}
+
 
 interface IncomingInvite {
   id: string;
@@ -140,7 +136,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
   private searchSubject = new Subject<string>();
 
   // New Invite Outbox/Inbox States
-  sentInvites = signal<SentInvite[]>([]);
   incomingInvites = this.bughouseInviteService.incomingInvites;
   inviteNotification = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
@@ -353,7 +348,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
               name: lobby.partner.userName,
               isOnline: true
             });
-            this.sentInvites.set([]);
+            this.bughouseInviteService.sentInvites.set([]);
           } else {
             this.partner.set(null);
           }
@@ -384,7 +379,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
     socket.on('bughouse_invite_rejected', (data: any) => {
       this.ngZone.run(() => {
         this.showNotification(`Invitation rejected by ${data.inviteeName}.`, 'error');
-        this.sentInvites.set([]);
+        this.bughouseInviteService.sentInvites.set([]);
       });
     });
 
@@ -581,10 +576,11 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.searchResults.set([]);
 
     // Add to Sent Invites Outbox as pending
-    const inviteId = Math.random().toString();
+    const inviteId = player.uid || Math.random().toString();
     const newInvite: SentInvite = { id: inviteId, receiver: player.name, status: 'pending' };
-    this.sentInvites.update(list => [...list, newInvite]);
+    this.bughouseInviteService.sentInvites.update(list => [...list, newInvite]);
     this.audioService.playNotification();
+    this.bughouseInviteService.isInvitesOpen.set(true);
 
     // 1. Emit live Socket.io invitation event
     const socket = this.gameService.socket();
@@ -608,21 +604,8 @@ export class BughouseComponent implements OnInit, OnDestroy {
   }
 
   cancelSentInvite(inviteId: string) {
-    const invite = this.sentInvites().find(i => i.id === inviteId);
-    this.sentInvites.update(list => list.filter(i => i.id !== inviteId));
+    this.bughouseInviteService.cancelSentInvite(inviteId);
     this.showNotification('Invite cancelled.', 'info');
-    this.audioService.playNotification();
-
-    const socket = this.gameService.socket();
-    if (socket && socket.connected) {
-      socket.emit('bughouse_leave_lobby');
-    }
-
-    if (invite) {
-      this.http.post(`${environment.apiUrl}/bughouse/cancel-invite`, {
-        receiver_username: invite.receiver
-      }).subscribe();
-    }
   }
 
   kickPartner() {

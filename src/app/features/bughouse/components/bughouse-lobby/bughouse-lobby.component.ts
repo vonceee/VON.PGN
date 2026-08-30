@@ -37,7 +37,6 @@ export class BughouseLobbyComponent {
   currentUserProfile = input.required<{ name: string }>();
   partner = input<any | null>(null);
   isHost = input<boolean>(true);
-  sentInvites = input<any[]>([]);
   searchResults = input<any[]>([]);
   searchQuery = input<string>('');
   isSearchingPlayers = input<boolean>(false);
@@ -45,7 +44,6 @@ export class BughouseLobbyComponent {
 
   kickPartner = output<void>();
   leaveLobby = output<void>();
-  cancelSentInvite = output<string>();
   invitePlayer = output<any>();
   searchInput = output<Event>();
   startQueue = output<void>();

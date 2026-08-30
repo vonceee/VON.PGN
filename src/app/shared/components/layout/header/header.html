@@ -170,10 +170,10 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
         </svg>
-        @if (bughouseInviteService.incomingInvites().length > 0) {
+        @if (totalBughouseInvites() > 0) {
         <span
           class="absolute -top-1.5 -right-1.5 w-4 h-4 flex items-center justify-center bg-blue-600 text-white text-[9px] font-medium rounded-full">
-          {{ bughouseInviteService.incomingInvites().length }}
+          {{ totalBughouseInvites() }}
         </span>
         }
         <!-- Tooltip -->
@@ -183,12 +183,12 @@
           Invitations
         </div>
       </button>
-
+ 
       @if (isInvitesOpen()) {
       <div
         class="absolute right-0 top-full mt-2 w-80 bg-slate-900 text-white rounded-xl z-50 overflow-hidden flex flex-col border border-white/10">
         <div class="max-h-96 overflow-y-auto">
-          @if (bughouseInviteService.incomingInvites().length === 0) {
+          @if (bughouseInviteService.incomingInvites().length === 0 && bughouseInviteService.sentInvites().length === 0) {
           <div class="py-8 px-4 text-center">
             <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3 text-slate-300 mx-auto">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -199,27 +199,61 @@
             <p class="text-xs text-slate-400 max-w-[220px] mx-auto">You'll see study or game invites here.</p>
           </div>
           } @else {
-            @for (invite of bughouseInviteService.incomingInvites(); track invite.id) {
-            <div class="px-4 py-3 last:border-0 hover:bg-white/5 transition-colors">
-              <div class="flex items-center justify-between gap-4">
-                <div>
-                  <span class="font-bold text-md block leading-tight text-white">{{ invite.sender }}</span>
-                  <span class="text-xs text-white">Bughouse</span>
-                </div>
-                <div class="flex gap-2">
-                  <button (click)="bughouseInviteService.acceptInvite(invite.id); isInvitesOpen.set(false)"
-                    class="p-1.5 rounded-lg text-green-400 hover:bg-green-600 hover:text-white transition-all cursor-pointer flex items-center justify-center border-2 border-border-base"
-                    aria-label="Accept">
-                    <ng-icon name="heroCheck" class="text-lg" strokeWidth="5"></ng-icon>
-                  </button>
-                  <button (click)="bughouseInviteService.rejectInvite(invite.id)"
-                    class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-600 hover:text-white transition-all cursor-pointer flex items-center justify-center border-2 border-border-base"
-                    aria-label="Reject">
-                    <ng-icon name="heroXMark" class="text-lg" strokeWidth="5"></ng-icon>
-                  </button>
+            <!-- Incoming Section -->
+            @if (bughouseInviteService.incomingInvites().length > 0) {
+              <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-white/5 bg-white/5">
+                Incoming Invitations
+              </div>
+              @for (invite of bughouseInviteService.incomingInvites(); track invite.id) {
+              <div class="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 transition-colors">
+                <div class="flex items-center justify-between gap-4">
+                  <div>
+                    <span class="font-bold text-md block leading-tight text-white">{{ invite.sender }}</span>
+                    <span class="text-xs text-slate-400">Bughouse Partner</span>
+                  </div>
+                  <div class="flex gap-2">
+                    <button (click)="bughouseInviteService.acceptInvite(invite.id); isInvitesOpen.set(false)"
+                      class="p-1.5 rounded-lg text-green-400 hover:bg-green-600 hover:text-white transition-all cursor-pointer flex items-center justify-center border-2 border-border-base"
+                      aria-label="Accept">
+                      <ng-icon name="heroCheck" class="text-lg" strokeWidth="5"></ng-icon>
+                    </button>
+                    <button (click)="bughouseInviteService.rejectInvite(invite.id)"
+                      class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-600 hover:text-white transition-all cursor-pointer flex items-center justify-center border-2 border-border-base"
+                      aria-label="Reject">
+                      <ng-icon name="heroXMark" class="text-lg" strokeWidth="5"></ng-icon>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+              }
+            }
+
+            <!-- Outgoing Section -->
+            @if (bughouseInviteService.sentInvites().length > 0) {
+              <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-white/5 border-t border-white/10 bg-white/5">
+                Pending Sent Invitations
+              </div>
+              @for (invite of bughouseInviteService.sentInvites(); track invite.id) {
+              <div class="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 transition-colors">
+                <div class="flex items-center justify-between gap-4">
+                  <div class="min-w-0 flex-1">
+                    <span class="font-bold text-md block leading-tight text-white truncate">{{ invite.receiver }}</span>
+                    <span class="text-xs text-slate-400">Waiting for response...</span>
+                  </div>
+                  <div>
+                    <button 
+                      [disabled]="bughouseInviteService.cancellingInvites()[invite.id]"
+                      (click)="bughouseInviteService.cancelSentInvite(invite.id)"
+                      class="px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-500 hover:bg-red-600 hover:text-white text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:pointer-events-none flex items-center gap-1.5">
+                      @if (bughouseInviteService.cancellingInvites()[invite.id]) {
+                        <div class="w-3.5 h-3.5 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                      }
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+              }
             }
           }
         </div>
