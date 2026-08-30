@@ -1,193 +1,246 @@
 <div class="flex flex-col gap-8 w-full">
   <!-- 3-Column Layout Grid -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    
     <!-- Left Columns: Active Matches List OR Chessboards (Span 2) -->
     <div class="lg:col-span-2 flex flex-col gap-8">
-      
-      @if (ongoingMatches().length > 0) {
-        <div class="border border-border-base rounded-3xl p-8 flex flex-col gap-6 bg-slate-50">
-          <div class="flex items-center justify-between border-b border-border-base pb-4">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs bg-rose-50 text-rose-700 border border-rose-200">
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse"></span>
-              Live Matches
-            </span>
-          </div>
+      @if (tvState(); as state) {
+        <div class="flex flex-col gap-4">
+          @if (state.winner) {
+            <div class="flex justify-end pb-1">
+              <span class="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+                {{ state.winner }} Wins!
+              </span>
+            </div>
+          }
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @for (match of ongoingMatches(); track match.gameId) {
-              <div class="p-5 rounded-2xl border border-border-base bg-white hover:shadow-xs transition-all flex flex-col gap-4">
-                <div class="flex flex-col gap-2 text-sm text-slate-900">
-                  <div class="flex items-center gap-2.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                    <span>{{ match.teamA.captainName }} + {{ match.teamA.partnerName }}</span>
-                  </div>
-                  <div class="text-xs text-slate-400 font-normal pl-5">vs</div>
-                  <div class="flex items-center gap-2.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-                    <span>{{ match.teamB.captainName }} + {{ match.teamB.partnerName }}</span>
-                  </div>
-                </div>
+            <!-- ==================== BOARD A ==================== -->
+            <app-bughouse-board
+              boardId="A"
+              [fen]="state.boardA.fen"
+              [orientation]="'white'"
+              [pocketW]="state.boardA.pocketW"
+              [pocketB]="state.boardA.pocketB"
+              [timeW]="state.boardA.timeW"
+              [timeB]="state.boardA.timeB"
+              [turn]="state.boardA.turn"
+              [interactive]="false"
+              [myBoard]="null"
+              [myColor]="null"
+              [gameActive]="state.isActive"
+              [winner]="state.winner || null"
+              [whiteName]="state.boardA.whiteName"
+              [blackName]="state.boardA.blackName"
+              [activeDropBoard]="null"
+              [activeDropPiece]="null"
+              [activeDropColor]="null"
+            >
+            </app-bughouse-board>
 
-                <div class="flex items-center justify-end mt-2 pt-3 border-t border-border-base">
-                  <button (click)="spectateGame.emit(match.gameId)"
-                    class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-slate-900 text-white font-medium text-xs cursor-pointer hover:bg-slate-800 transition-colors">
-                    <ng-icon name="heroPlay" class="text-xs"></ng-icon>
-                    Watch Live
-                  </button>
-                </div>
-              </div>
-            }
+            <!-- ==================== BOARD B ==================== -->
+            <app-bughouse-board
+              boardId="B"
+              [fen]="state.boardB.fen"
+              [orientation]="'black'"
+              [pocketW]="state.boardB.pocketW"
+              [pocketB]="state.boardB.pocketB"
+              [timeW]="state.boardB.timeW"
+              [timeB]="state.boardB.timeB"
+              [turn]="state.boardB.turn"
+              [interactive]="false"
+              [myBoard]="null"
+              [myColor]="null"
+              [gameActive]="state.isActive"
+              [winner]="state.winner || null"
+              [whiteName]="state.boardB.whiteName"
+              [blackName]="state.boardB.blackName"
+              [activeDropBoard]="null"
+              [activeDropPiece]="null"
+              [activeDropColor]="null"
+            >
+            </app-bughouse-board>
           </div>
         </div>
       } @else {
         <!-- Two Chessboards (shown when no ongoing games) -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="aspect-square flex items-center justify-center">
-            <app-chess-board [fen]="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'" [interactive]="false" [hideCoordinates]="true" [resizable]="false" [fluid]="true"></app-chess-board>
+            <app-chess-board
+              [fen]="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'"
+              [interactive]="false"
+              [hideCoordinates]="true"
+              [resizable]="false"
+              [fluid]="true"
+            ></app-chess-board>
           </div>
           <div class="aspect-square flex items-center justify-center">
-            <app-chess-board [fen]="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'" [interactive]="false" [hideCoordinates]="true" [resizable]="false" [fluid]="true" [orientation]="'black'"></app-chess-board>
+            <app-chess-board
+              [fen]="'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'"
+              [interactive]="false"
+              [hideCoordinates]="true"
+              [resizable]="false"
+              [fluid]="true"
+              [orientation]="'black'"
+            ></app-chess-board>
           </div>
         </div>
       }
-
     </div>
 
     <!-- Right Column: Matchmaking Controls & Squad Setup (Span 1) -->
     <div class="flex flex-col gap-6">
       <div class="border-2 border-border-base rounded-4xl p-6 flex flex-col gap-5">
-        
         <!-- Slot 1: Lobby Host (Captain) -->
-        <div class="flex items-center justify-between gap-3 p-3 rounded-2xl border border-border-base bg-white min-h-[58px]">
-          <div class="flex-1 min-w-0">
-            <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ isHost() ? currentUserProfile().name : partner()?.name }}</span>
-            <span class="text-xs text-slate-500 font-medium">Host</span>
+        <div
+          class="flex items-center justify-between gap-3 p-3 rounded-2xl border border-border-base bg-white min-h-[58px]"
+        >
+          <div class="flex-1 min-w-0 flex items-center gap-2">
+            <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{
+              isHost() ? currentUserProfile().name : partner()?.name
+            }}</span>
+            <div
+              class="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0"
+            >
+              <svg
+                class="w-3.5 h-3.5 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M2 4 5 12h14l3-8-7 4-3-6-3 6-7-4z" />
+                <path d="M5 20h14a2 2 0 0 0 2-2V16H3v2a2 2 0 0 0 2 2z" />
+              </svg>
+              <span>Host</span>
+            </div>
           </div>
-          <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" title="Host">
-            <path d="M2 4 5 12h14l3-8-7 4-3-6-3 6-7-4z"/>
-            <path d="M5 20h14a2 2 0 0 0 2-2V16H3v2a2 2 0 0 0 2 2z"/>
-          </svg>
         </div>
 
         <!-- Slot 2: Teammate (Partner) -->
         @if (isHost()) {
           @if (partner(); as p) {
-          <div class="flex items-center gap-3 p-3 rounded-2xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]">
-            <div class="flex-1 min-w-0">
-              <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ p.name }}</span>
-              <span class="text-xs text-slate-500 font-medium">Teammate</span>
+            <div
+              class="flex items-center gap-3 p-3 rounded-2xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]"
+            >
+              <div class="flex-1 min-w-0">
+                <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{
+                  p.name
+                }}</span>
+              </div>
+              <button
+                (click)="kickPartner.emit()"
+                [disabled]="isQueuing()"
+                class="p-1.5 rounded-full transition-colors cursor-pointer hover:bg-rose-50 text-rose-600 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                title="Kick player"
+              >
+                <ng-icon name="heroTrash" class="text-lg"></ng-icon>
+              </button>
             </div>
-            <button (click)="kickPartner.emit()"
-              class="p-1.5 rounded-full transition-colors cursor-pointer hover:bg-rose-50 text-rose-600 flex items-center justify-center"
-              title="Kick player">
-              <ng-icon name="heroTrash" class="text-lg"></ng-icon>
-            </button>
-          </div>
           } @else {
-          <div (click)="openInviteModal()"
-            class="flex items-center justify-start gap-3 p-3 rounded-2xl border border-dashed border-slate-300 hover:bg-slate-100 hover:border-slate-400 transition-all cursor-pointer group min-h-[58px]">
-            <svg class="w-5 h-5 text-slate-500 transition-colors shrink-0 group-hover:text-slate-700" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            <span class="text-sm text-slate-500 group-hover:text-slate-700 transition-colors tracking-widest">invite a partner</span>
-          </div>
+            <div
+              class="flex flex-col gap-3 p-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 min-h-[58px]"
+            >
+              <div class="relative w-full">
+                <div class="flex items-center w-full relative">
+                  <input
+                    type="text"
+                    placeholder="invite a partner..."
+                    [value]="searchQuery()"
+                    (input)="searchInput.emit($event)"
+                    [disabled]="isQueuing()"
+                    class="block w-full pl-3 pr-8 py-2 border border-border-base rounded-xl text-xs placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600/50 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                  @if (isSearchingPlayers()) {
+                    <div
+                      class="absolute right-3 w-4 h-4 border-2 border-slate-900 border-t-transparent rounded-full animate-spin shrink-0"
+                    ></div>
+                  }
+                </div>
+
+                <!-- Search Results Dropdown -->
+                @if (searchResults().length > 0) {
+                  <div
+                    class="absolute left-0 right-0 mt-1 border border-border-base rounded-xl overflow-hidden divide-y divide-border-base max-h-48 overflow-y-auto bg-white z-20 shadow-lg"
+                  >
+                    @for (player of searchResults(); track player.name) {
+                      <button
+                        [disabled]="partner()?.name === player.name"
+                        (click)="onInvitePlayer(player)"
+                        class="w-full flex items-center justify-start px-3 py-2 hover:bg-slate-50 transition-colors cursor-pointer text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <span class="font-semibold text-xs text-slate-900 truncate">{{
+                          player.name
+                        }}</span>
+                      </button>
+                    }
+                  </div>
+                } @else if (searchQuery().length >= 2 && !isSearchingPlayers()) {
+                  <div
+                    class="absolute left-0 right-0 mt-1 px-3 py-2 border border-border-base rounded-xl text-[10px] italic text-slate-500 text-center bg-slate-50 z-20 shadow-md"
+                  >
+                    No online players found
+                  </div>
+                }
+              </div>
+            </div>
           }
         } @else {
-          <div class="flex items-center gap-3 p-3 rounded-2xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]">
+          <div
+            class="flex items-center gap-3 p-3 rounded-2xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]"
+          >
             <div class="flex-1 min-w-0">
-              <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ currentUserProfile().name }}</span>
-              <span class="text-xs text-slate-500 font-medium">Teammate (You)</span>
+              <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{
+                currentUserProfile().name
+              }}</span>
             </div>
-            <button (click)="leaveLobby.emit()"
+            <button
+              (click)="leaveLobby.emit()"
               class="p-1.5 rounded-full transition-colors cursor-pointer hover:bg-rose-50 text-rose-600 flex items-center justify-center"
-              title="Leave lobby">
+              title="Leave lobby"
+            >
               <ng-icon name="heroXMark" class="text-lg"></ng-icon>
             </button>
           </div>
         }
 
-
         <!-- Find Match Action Button -->
         @if (isHost()) {
-          <button (click)="startQueue.emit()" [disabled]="!partner()"
-            class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer">
-            <svg class="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/>
-              <line x1="13" y1="19" x2="19" y2="13"/>
-              <line x1="16" y1="16" x2="20" y2="20"/>
-              <line x1="19" y1="21" x2="21" y2="19"/>
-              <polyline points="9.5 17.5 21 6 21 3 18 3 6.5 14.5"/>
-              <line x1="11" y1="19" x2="5" y2="13"/>
-              <line x1="8" y1="16" x2="4" y2="20"/>
-              <line x1="5" y1="21" x2="3" y2="19"/>
-            </svg>
-            Find Match
-          </button>
+          @if (isQueuing()) {
+            <button
+              (click)="cancelQueue.emit()"
+              class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
+            >
+              Cancel Search
+            </button>
+          } @else {
+            <button
+              (click)="startQueue.emit()"
+              [disabled]="!partner()"
+              class="w-fit inline-flex items-center px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-800 transition-colors"
+            >
+              Find Match
+            </button>
+          }
         } @else {
-          <div class="flex items-center gap-2 text-sm font-medium text-slate-500 italic mt-2">
-            <div class="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin shrink-0"></div>
-            <span>Waiting for host to find match...</span>
-          </div>
-        }
-
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Modal backdrop/overlay -->
-@if (showInviteModal()) {
-<div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/50 p-4"
-  (click)="closeInviteModal()">
-  <!-- Modal Card -->
-  <div class="bg-white w-full max-w-lg rounded-3xl p-8 border border-border-base flex flex-col gap-6 shadow-xl"
-    (click)="$event.stopPropagation()">
-    
-    <!-- Modal Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-xl">Invite Partner</h2>
-      </div>
-    </div>
-
-    <!-- Search Input Bar -->
-    <div class="relative w-full">
-      <div class="flex items-center w-full">
-        <input type="text" placeholder="enter username..." [value]="searchQuery()"
-          (input)="searchInput.emit($event)" autofocus
-          class="block w-full pl-3 pr-3 py-2.5 border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
-        @if (isSearchingPlayers()) {
-        <div class="absolute right-4 w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin shrink-0"></div>
-        }
-      </div>
-
-      <!-- Search Results Area -->
-      @if (searchResults().length > 0) {
-      <div class="mt-4 border border-border-base rounded-xl overflow-hidden divide-y divide-border-base max-h-60 overflow-y-auto bg-white">
-        @for (player of searchResults(); track player.name) {
-        <div class="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-sm">
-              {{ player.name.charAt(0).toUpperCase() }}
+          @if (isQueuing()) {
+            <div class="flex items-center gap-2 text-sm font-medium text-blue-600 italic mt-2">
+              <div
+                class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0"
+              ></div>
+              <span>Teammate finding match...</span>
             </div>
-            <span class="font-semibold text-sm text-slate-900">{{ player.name }}</span>
-          </div>
-          <button [disabled]="partner()?.name === player.name" (click)="onInvitePlayer(player)"
-            class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-white font-medium text-xs cursor-pointer disabled:opacity-50 disabled:pointer-events-none hover:bg-slate-800 transition-colors">
-            <ng-icon name="heroUserPlus" class="text-xs"></ng-icon>
-            Invite
-          </button>
-        </div>
+          } @else {
+            <div class="flex items-center gap-2 text-sm font-medium text-slate-500 italic mt-2">
+              <div
+                class="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin shrink-0"
+              ></div>
+              <span>Waiting for host to find match...</span>
+            </div>
+          }
         }
       </div>
-      } @else if (searchQuery().length >= 2 && !isSearchingPlayers()) {
-      <div class="mt-4 px-4 py-3 border border-border-base rounded-xl text-sm/6 italic text-slate-500 text-center bg-slate-50">
-        No online players found with that username
-      </div>
-      }
     </div>
   </div>
 </div>
-}

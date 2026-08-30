@@ -201,9 +201,6 @@
           } @else {
             <!-- Incoming Section -->
             @if (bughouseInviteService.incomingInvites().length > 0) {
-              <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-white/5 bg-white/5">
-                Incoming Invitations
-              </div>
               @for (invite of bughouseInviteService.incomingInvites(); track invite.id) {
               <div class="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 transition-colors">
                 <div class="flex items-center justify-between gap-4">
@@ -213,12 +210,12 @@
                   </div>
                   <div class="flex gap-2">
                     <button (click)="bughouseInviteService.acceptInvite(invite.id); isInvitesOpen.set(false)"
-                      class="p-1.5 rounded-lg text-green-400 hover:bg-green-600 hover:text-white transition-all cursor-pointer flex items-center justify-center border-2 border-border-base"
+                      class="p-1.5 rounded-lg text-green-400 hover:bg-green-600 hover:text-white transition-all cursor-pointer flex items-center justify-center"
                       aria-label="Accept">
                       <ng-icon name="heroCheck" class="text-lg" strokeWidth="5"></ng-icon>
                     </button>
                     <button (click)="bughouseInviteService.rejectInvite(invite.id)"
-                      class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-600 hover:text-white transition-all cursor-pointer flex items-center justify-center border-2 border-border-base"
+                      class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-600 hover:text-white transition-all cursor-pointer flex items-center justify-center"
                       aria-label="Reject">
                       <ng-icon name="heroXMark" class="text-lg" strokeWidth="5"></ng-icon>
                     </button>
@@ -230,25 +227,29 @@
 
             <!-- Outgoing Section -->
             @if (bughouseInviteService.sentInvites().length > 0) {
-              <div class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 border-b border-white/5 border-t border-white/10 bg-white/5">
-                Pending Sent Invitations
-              </div>
               @for (invite of bughouseInviteService.sentInvites(); track invite.id) {
               <div class="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 transition-colors">
                 <div class="flex items-center justify-between gap-4">
                   <div class="min-w-0 flex-1">
                     <span class="font-bold text-md block leading-tight text-white truncate">{{ invite.receiver }}</span>
-                    <span class="text-xs text-slate-400">Waiting for response...</span>
+                    <span class="text-xs text-slate-400">waiting for response...</span>
                   </div>
                   <div>
-                    <button 
+                     <button 
                       [disabled]="bughouseInviteService.cancellingInvites()[invite.id]"
                       (click)="bughouseInviteService.cancelSentInvite(invite.id)"
-                      class="px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-500 hover:bg-red-600 hover:text-white text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:pointer-events-none flex items-center gap-1.5">
+                      class="p-1.5 rounded-lg text-rose-400 hover:bg-rose-600 hover:text-white transition-all cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:pointer-events-none"
+                      aria-label="Cancel Invite">
                       @if (bughouseInviteService.cancellingInvites()[invite.id]) {
-                        <div class="w-3.5 h-3.5 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                        <svg class="animate-spin h-5 w-5 text-rose-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
                       }
-                      Cancel
                     </button>
                   </div>
                 </div>

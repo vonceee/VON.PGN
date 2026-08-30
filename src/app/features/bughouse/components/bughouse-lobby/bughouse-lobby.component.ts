@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { ChessBoardComponent } from '../../../../shared/components/chess/chess-board/chess-board.component';
+import { BughouseBoardComponent } from '../bughouse-board/bughouse-board.component';
 import {
   heroUsers,
   heroUserPlus,
@@ -14,10 +15,36 @@ import {
   heroXMark,
 } from '@ng-icons/heroicons/outline';
 
+export interface BughouseTvState {
+  gameId: string | null;
+  isActive: boolean;
+  winner?: string | null;
+  boardA: {
+    fen: string;
+    pocketW: Record<string, number>;
+    pocketB: Record<string, number>;
+    timeW: number;
+    timeB: number;
+    turn: 'w' | 'b';
+    whiteName: string;
+    blackName: string;
+  };
+  boardB: {
+    fen: string;
+    pocketW: Record<string, number>;
+    pocketB: Record<string, number>;
+    timeW: number;
+    timeB: number;
+    turn: 'w' | 'b';
+    whiteName: string;
+    blackName: string;
+  };
+}
+
 @Component({
   selector: 'app-bughouse-lobby',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgIcon, ChessBoardComponent],
+  imports: [CommonModule, FormsModule, NgIcon, ChessBoardComponent, BughouseBoardComponent],
   providers: [
     provideIcons({
       heroUsers,
@@ -41,28 +68,20 @@ export class BughouseLobbyComponent {
   searchQuery = input<string>('');
   isSearchingPlayers = input<boolean>(false);
   ongoingMatches = input<any[]>([]);
+  isQueuing = input<boolean>(false);
+  tvState = input<BughouseTvState | null>(null);
 
   kickPartner = output<void>();
   leaveLobby = output<void>();
   invitePlayer = output<any>();
   searchInput = output<Event>();
   startQueue = output<void>();
+  cancelQueue = output<void>();
   clearSearch = output<void>();
   spectateGame = output<string>();
 
-  showInviteModal = signal<boolean>(false);
-
-  openInviteModal() {
-    this.showInviteModal.set(true);
-  }
-
-  closeInviteModal() {
-    this.showInviteModal.set(false);
-    this.clearSearch.emit();
-  }
-
   onInvitePlayer(player: any) {
     this.invitePlayer.emit(player);
-    this.closeInviteModal();
+    this.clearSearch.emit();
   }
 }

@@ -31,88 +31,89 @@ export class BughouseInviteService {
   isInvitesOpen = signal<boolean>(false);
 
   constructor() {
-    effect(() => {
+    effect((onCleanup) => {
       const socket = this.gameService.socket();
       untracked(() => {
         if (socket) {
-          // console.log('BughouseInviteService: Socket available, binding invite listeners...');
-          socket.off('bughouse_invite_received');
-          socket.off('bughouse_invite_cancelled');
-          socket.off('bughouse_invite_rejected');
-          socket.off('bughouse_lobby_sync');
+          socket.on('bughouse_invite_received', this.handleInviteReceived);
+          socket.on('bughouse_invite_cancelled', this.handleInviteCancelled);
+          socket.on('bughouse_invite_rejected', this.handleInviteRejected);
+          socket.on('bughouse_lobby_sync', this.handleLobbySync);
 
-          socket.on('bughouse_invite_received', (data: { lobbyId: string; senderId: string; senderName: string }) => {
-            console.log('BughouseInviteService: Received bughouse_invite_received event:', data);
-            // Remove any existing invite from the same sender lobby before adding to prevent duplicates
-            this.incomingInvites.update(list => [
-              ...list.filter(i => i.id !== data.lobbyId),
-              { id: data.lobbyId, sender: data.senderName }
-            ]);
-            this.audioService.playNotification();
-          });
-
-          socket.on('bughouse_invite_cancelled', (data: { lobbyId: string; senderId: string }) => {
-            console.log('BughouseInviteService: Received bughouse_invite_cancelled event:', data);
-            this.incomingInvites.update(list => list.filter(i => i.id !== data.lobbyId));
-          });
-
-          socket.on('bughouse_invite_rejected', (data: { inviteeName: string }) => {
-            console.log('BughouseInviteService: Received bughouse_invite_rejected event:', data);
-            this.sentInvites.set([]);
-            this.audioService.playNotification();
-          });
-
-          socket.on('bughouse_lobby_sync', (lobby: any) => {
-            console.log('BughouseInviteService: Received bughouse_lobby_sync event:', lobby);
-            if (!lobby) {
-              this.sentInvites.set([]);
-              return;
-            }
-            if (lobby.partner) {
-              this.sentInvites.set([]);
-            } else if (lobby.inviteeList && lobby.inviteeList.length > 0) {
-              const mapped: SentInvite[] = lobby.inviteeList.map((i: any) => ({
-                id: i.userId,
-                receiver: i.userName,
-                status: 'pending'
-              }));
-              this.sentInvites.set(mapped);
-              
-              // Clean up cancellingInvites keys that no longer exist in mapped
-              this.cancellingInvites.update(record => {
-                const next = { ...record };
-                const activeIds = new Set(mapped.map(item => item.id));
-                for (const key of Object.keys(next)) {
-                  if (!activeIds.has(key)) {
-                    delete next[key];
-                  }
-                }
-                return next;
-              });
-            } else {
-              this.sentInvites.set([]);
-            }
-          });
-
-          // Bind sync emit to connect event or fire immediately if already connected
           const emitSync = () => {
             console.log('BughouseInviteService: Emitting bughouse_sync_invites & bughouse_join. Socket connected:', socket.connected);
             socket.emit('bughouse_sync_invites');
             socket.emit('bughouse_join');
           };
 
-          socket.off('connect');
           if (socket.connected) {
             emitSync();
           } else {
-            socket.on('connect', () => {
-              emitSync();
-            });
+            socket.on('connect', emitSync);
           }
+
+          onCleanup(() => {
+            socket.off('bughouse_invite_received', this.handleInviteReceived);
+            socket.off('bughouse_invite_cancelled', this.handleInviteCancelled);
+            socket.off('bughouse_invite_rejected', this.handleInviteRejected);
+            socket.off('bughouse_lobby_sync', this.handleLobbySync);
+            socket.off('connect', emitSync);
+          });
         }
       });
     });
   }
+
+  private handleInviteReceived = (data: { lobbyId: string; senderId: string; senderName: string }) => {
+    console.log('BughouseInviteService: Received bughouse_invite_received event:', data);
+    this.incomingInvites.update(list => [
+      ...list.filter(i => i.id !== data.lobbyId),
+      { id: data.lobbyId, sender: data.senderName }
+    ]);
+    this.audioService.playNotification();
+  };
+
+  private handleInviteCancelled = (data: { lobbyId: string; senderId: string }) => {
+    console.log('BughouseInviteService: Received bughouse_invite_cancelled event:', data);
+    this.incomingInvites.update(list => list.filter(i => i.id !== data.lobbyId));
+  };
+
+  private handleInviteRejected = (data: { inviteeName: string }) => {
+    console.log('BughouseInviteService: Received bughouse_invite_rejected event:', data);
+    this.sentInvites.set([]);
+    this.audioService.playNotification();
+  };
+
+  private handleLobbySync = (lobby: any) => {
+    console.log('BughouseInviteService: Received bughouse_lobby_sync event:', lobby);
+    if (!lobby) {
+      this.sentInvites.set([]);
+      return;
+    }
+    if (lobby.partner) {
+      this.sentInvites.set([]);
+    } else if (lobby.inviteeList && lobby.inviteeList.length > 0) {
+      const mapped: SentInvite[] = lobby.inviteeList.map((i: any) => ({
+        id: i.userId,
+        receiver: i.userName,
+        status: 'pending'
+      }));
+      this.sentInvites.set(mapped);
+      
+      this.cancellingInvites.update(record => {
+        const next = { ...record };
+        const activeIds = new Set(mapped.map(item => item.id));
+        for (const key of Object.keys(next)) {
+          if (!activeIds.has(key)) {
+            delete next[key];
+          }
+        }
+        return next;
+      });
+    } else {
+      this.sentInvites.set([]);
+    }
+  };
 
   acceptInvite(lobbyId: string) {
     const socket = this.gameService.socket();
@@ -135,7 +136,6 @@ export class BughouseInviteService {
     const invite = this.sentInvites().find(i => i.id === inviteId);
     if (!invite) return;
 
-    // Optimistic UI state disabling
     this.cancellingInvites.update(record => ({
       ...record,
       [inviteId]: true

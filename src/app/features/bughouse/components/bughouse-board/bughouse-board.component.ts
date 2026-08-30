@@ -14,7 +14,7 @@ type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
   styleUrl: './bughouse-board.component.css',
 })
 export class BughouseBoardComponent {
-  boardId = input.required<'A' | 'B'>();
+   boardId = input.required<'A' | 'B'>();
   fen = input.required<string>();
   orientation = input.required<'white' | 'black'>();
   pocketW = input.required<Record<PieceType, number>>();
@@ -27,6 +27,9 @@ export class BughouseBoardComponent {
   myColor = input.required<'w' | 'b' | null>();
   gameActive = input.required<boolean>();
   winner = input.required<string | null>();
+
+  whiteName = input<string>('');
+  blackName = input<string>('');
 
   activeDropBoard = input.required<'A' | 'B' | null>();
   activeDropPiece = input.required<PieceType | null>();
@@ -52,10 +55,12 @@ export class BughouseBoardComponent {
   topPocket = computed(() => this.orientation() === 'white' ? this.pocketB() : this.pocketW());
   topTime = computed(() => this.orientation() === 'white' ? this.timeB() : this.timeW());
   topColor = computed(() => this.orientation() === 'white' ? 'b' : 'w');
+  topName = computed(() => this.orientation() === 'white' ? this.blackName() : this.whiteName());
 
   bottomPocket = computed(() => this.orientation() === 'white' ? this.pocketW() : this.pocketB());
   bottomTime = computed(() => this.orientation() === 'white' ? this.timeW() : this.timeB());
   bottomColor = computed(() => this.orientation() === 'white' ? 'w' : 'b');
+  bottomName = computed(() => this.orientation() === 'white' ? this.whiteName() : this.blackName());
 
   // Helpers
   getPocketKeys(): PieceType[] {

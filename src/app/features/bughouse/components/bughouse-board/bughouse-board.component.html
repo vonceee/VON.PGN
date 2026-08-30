@@ -4,6 +4,13 @@
   [style.--board-target-width.px]="myBoard() === boardId() ? 500 : 280"
   [class.opacity-80]="myBoard() !== boardId()">
 
+  <!-- Top Player Name (Centered) -->
+  @if (topName()) {
+    <div class="text-center text-xs font-semibold text-slate-600 truncate px-2 mb-[-6px]">
+      {{ topName() }}
+    </div>
+  }
+
   <!-- Pocket (Top Player pieces) & Clock -->
   <div class="flex items-center justify-between gap-2 py-1 w-full">
     <div class="flex items-center gap-2 justify-start">
@@ -85,5 +92,12 @@
       {{ formatTime(bottomTime()) }}
     </div>
   </div>
+
+  <!-- Bottom Player Name (Centered) -->
+  @if (bottomName()) {
+    <div class="text-center text-xs font-semibold text-slate-600 truncate px-2 mt-[-6px]">
+      {{ bottomName() }}
+    </div>
+  }
 
 </div>
