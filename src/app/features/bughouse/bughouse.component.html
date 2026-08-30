@@ -1,4 +1,15 @@
-<div appFloatingCursorContainer class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
+<div
+  appFloatingCursorContainer
+  class="relative max-w-7xl mx-auto w-full"
+  [class.px-4]="lobbyState() !== 'playing'"
+  [class.md:px-16]="lobbyState() !== 'playing'"
+  [class.py-8]="lobbyState() !== 'playing'"
+  [class.h-full]="lobbyState() === 'playing'"
+  [class.flex]="lobbyState() === 'playing'"
+  [class.flex-col]="lobbyState() === 'playing'"
+  [class.p-4]="lobbyState() === 'playing'"
+  [class.md:p-6]="lobbyState() === 'playing'"
+>
   @if (lobbyState() === 'lobby' || lobbyState() === 'queuing') {
     <app-bughouse-lobby
       [currentUserProfile]="currentUserProfile()"
@@ -36,11 +47,11 @@
 
   <!-- ==================== PLAYING STATE ==================== -->
   @if (lobbyState() === 'playing') {
-    <div class="max-w-7xl mx-auto flex flex-col gap-6">
+    <div class="w-full flex-1 flex flex-col gap-4 min-h-0 overflow-hidden">
       <!-- Header Bar with Spectator HUD & Exit button -->
       @if (isSpectating() || !gameActive() || winner()) {
         <div
-          class="flex items-center justify-between gap-4 p-4 rounded-xl border border-border-base bg-slate-50"
+          class="flex items-center justify-between gap-4 p-4 rounded-xl border border-border-base bg-slate-50 shrink-0"
         >
           <div class="flex items-center gap-3">
             @if (isSpectating()) {
@@ -68,7 +79,7 @@
       }
 
       <!-- Boards Container -->
-      <div class="bughouse-boards-container">
+      <div class="bughouse-boards-container flex-1 min-h-0 overflow-hidden w-full flex items-center justify-center">
         <!-- ==================== BOARD A ==================== -->
         <app-bughouse-board
           boardId="A"
@@ -89,6 +100,7 @@
           [activeDropBoard]="activeDropBoard()"
           [activeDropPiece]="activeDropPiece()"
           [activeDropColor]="activeDropColor()"
+          [maxBoardSize]="maxBoardSize()"
           (moveMade)="onBoardMoveMade('A', $event)"
           (startDropMode)="startDropMode($event.board, $event.piece, $event.color)"
           (pieceDropped)="onGridSquareClicked($event.board, $event.square)"
@@ -115,6 +127,7 @@
           [activeDropBoard]="activeDropBoard()"
           [activeDropPiece]="activeDropPiece()"
           [activeDropColor]="activeDropColor()"
+          [maxBoardSize]="maxBoardSize()"
           (moveMade)="onBoardMoveMade('B', $event)"
           (startDropMode)="startDropMode($event.board, $event.piece, $event.color)"
           (pieceDropped)="onGridSquareClicked($event.board, $event.square)"

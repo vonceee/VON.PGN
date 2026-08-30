@@ -1,21 +1,6 @@
 .bughouse-board-resize-wrapper {
   width: var(--board-target-width, 500px);
   min-width: 280px;
-  /* Cap the width to fit within viewport height and mobile viewport width */
-  max-width: min(var(--board-target-width, 500px), calc(100vh - 240px), calc(100vw - 32px));
-}
-
-/* For the active resizable board, allow it to be resized up to 700px, but capped by screen height and width */
-.bughouse-board-resize-wrapper.resize-x {
-  max-width: min(700px, calc(100vh - 240px), calc(100vw - 32px));
-}
-
-@media (min-width: 1024px) {
-  .bughouse-board-resize-wrapper.resize-x {
-    /* Side-by-side layout: cap the resizable board to prevent pushing teammate's board off-screen */
-    /* Accounts for teammate's board (280px) + gap (32px) + page padding/margins. We use a safe 400px offset. */
-    max-width: min(700px, calc(100vh - 240px), calc(100vw - 400px));
-  }
 }
 
 app-chess-board {

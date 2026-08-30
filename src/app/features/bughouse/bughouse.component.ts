@@ -104,6 +104,11 @@ import { BughouseQueueService } from '../../core/services/bughouse-queue.service
       heroChevronRight,
     }),
   ],
+  host: {
+    '[class.absolute]': "lobbyState() === 'playing'",
+    '[class.inset-0]': "lobbyState() === 'playing'",
+    '[class.overflow-hidden]': "lobbyState() === 'playing'",
+  },
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bughouse.component.html',
   styleUrls: ['./bughouse.component.css'],
@@ -268,10 +273,42 @@ export class BughouseComponent implements OnInit, OnDestroy {
   activeTab = signal<'game' | 'rules'>('game');
   isSidebarExpanded = signal<boolean>(true);
 
+  // ── Layout Sizing Signals and Computeds ───────────────────────────
+  windowWidth = signal<number>(1200);
+  windowHeight = signal<number>(800);
+  private resizeListener: (() => void) | null = null;
+
+  isSideBySide = computed(() => this.windowWidth() >= 1024);
+  isHeaderBarVisible = computed(() => this.isSpectating() || !this.gameActive() || !!this.winner());
+
+  maxBoardSize = computed(() => {
+    const width = this.windowWidth();
+    const height = this.windowHeight();
+    
+    // Width constraint: must not exceed window width minus other columns (partner board + padding + gaps)
+    const maxWidth = this.isSideBySide() ? (width - 400) : (width - 32);
+    
+    // Height constraint (only applies when side-by-side)
+    const headerOffset = this.isHeaderBarVisible() ? 360 : 272;
+    const maxHeight = this.isSideBySide() ? (height - headerOffset) : 9999;
+    
+    const maxPossible = Math.min(maxWidth, maxHeight);
+    return Math.max(280, Math.min(700, maxPossible));
+  });
+
   // ── Timers Handling ────────────────────────────────────────────────
   private timerInterval: any = null;
 
   constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.windowWidth.set(window.innerWidth);
+      this.windowHeight.set(window.innerHeight);
+      this.resizeListener = () => {
+        this.windowWidth.set(window.innerWidth);
+        this.windowHeight.set(window.innerHeight);
+      };
+      window.addEventListener('resize', this.resizeListener);
+    }
     // Setup Search subscription
     this.searchSubject
       .pipe(
@@ -379,6 +416,9 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.stopClocks();
     this.stopCountdownInterval();
     this.removeSocketListeners();
+    if (this.resizeListener && isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('resize', this.resizeListener);
+    }
   }
 
   private handleActiveGames = (games: any[]) => {

@@ -2,6 +2,7 @@
   class="bughouse-board-resize-wrapper overflow-hidden mx-auto flex flex-col gap-3 relative min-w-[280px]"
   [class.resize-x]="myBoard() === boardId()"
   [style.--board-target-width.px]="myBoard() === boardId() ? 500 : 280"
+  [style.maxWidth.px]="myBoard() === boardId() ? maxBoardSize() : 280"
   [class.opacity-80]="myBoard() !== boardId()">
 
   <!-- Top Player Name (Centered) -->

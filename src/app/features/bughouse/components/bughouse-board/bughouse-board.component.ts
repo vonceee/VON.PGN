@@ -34,6 +34,7 @@ export class BughouseBoardComponent {
   activeDropBoard = input.required<'A' | 'B' | null>();
   activeDropPiece = input.required<PieceType | null>();
   activeDropColor = input.required<'w' | 'b' | null>();
+  maxBoardSize = input<number>(500);
 
   moveMade = output<{ move: Move; fen: string; uci?: string }>();
   startDropMode = output<{ board: 'A' | 'B'; piece: PieceType; color: 'w' | 'b' }>();
