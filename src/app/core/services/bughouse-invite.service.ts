@@ -23,7 +23,7 @@ export class BughouseInviteService {
       const socket = this.gameService.socket();
       untracked(() => {
         if (socket) {
-          console.log('BughouseInviteService: Socket available, binding invite listeners...');
+          // console.log('BughouseInviteService: Socket available, binding invite listeners...');
           socket.off('bughouse_invite_received');
           socket.off('bughouse_invite_cancelled');
 

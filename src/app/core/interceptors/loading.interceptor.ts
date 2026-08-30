@@ -10,7 +10,6 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  // Bypass background/polling endpoints to prevent visual issues & hydration stability blocks
   const bypassUrls = ['/tv', '/game/active', '/ping'];
   const shouldBypass = bypassUrls.some(url => req.url.endsWith(url));
   if (shouldBypass) {

@@ -58,10 +58,11 @@
     <div class="flex flex-col gap-6">
       <div class="border-2 border-border-base rounded-4xl p-6 flex flex-col gap-5">
         
-        <!-- Slot 1: Active User (Captain) -->
+        <!-- Slot 1: Lobby Host (Captain) -->
         <div class="flex items-center justify-between gap-3 p-3 rounded-2xl border border-border-base bg-white min-h-[58px]">
           <div class="flex-1 min-w-0">
-            <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ currentUserProfile().name }}</span>
+            <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ isHost() ? currentUserProfile().name : partner()?.name }}</span>
+            <span class="text-xs text-slate-500 font-medium">Host</span>
           </div>
           <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" title="Host">
             <path d="M2 4 5 12h14l3-8-7 4-3-6-3 6-7-4z"/>
@@ -70,26 +71,40 @@
         </div>
 
         <!-- Slot 2: Teammate (Partner) -->
-        @if (partner(); as p) {
-        <div class="flex items-center gap-3 p-3 rounded-2xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]">
-          <div class="flex-1 min-w-0">
-            <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ p.name }}</span>
-            <span class="text-xs text-slate-500 font-medium">Teammate</span>
+        @if (isHost()) {
+          @if (partner(); as p) {
+          <div class="flex items-center gap-3 p-3 rounded-2xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]">
+            <div class="flex-1 min-w-0">
+              <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ p.name }}</span>
+              <span class="text-xs text-slate-500 font-medium">Teammate</span>
+            </div>
+            <button (click)="kickPartner.emit()"
+              class="p-1.5 rounded-full transition-colors cursor-pointer hover:bg-rose-50 text-rose-600 flex items-center justify-center"
+              title="Kick player">
+              <ng-icon name="heroTrash" class="text-lg"></ng-icon>
+            </button>
           </div>
-          <button (click)="kickPartner.emit()"
-            class="p-1.5 rounded-full transition-colors cursor-pointer hover:bg-rose-50 text-rose-600 flex items-center justify-center"
-            title="Kick player">
-            <ng-icon name="heroTrash" class="text-lg"></ng-icon>
-          </button>
-        </div>
+          } @else {
+          <div (click)="openInviteModal()"
+            class="flex items-center justify-start gap-3 p-3 rounded-2xl border border-dashed border-slate-300 hover:bg-slate-100 hover:border-slate-400 transition-all cursor-pointer group min-h-[58px]">
+            <svg class="w-5 h-5 text-slate-500 transition-colors shrink-0 group-hover:text-slate-700" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            <span class="text-sm text-slate-500 group-hover:text-slate-700 transition-colors tracking-widest">invite a partner</span>
+          </div>
+          }
         } @else {
-        <div (click)="openInviteModal()"
-          class="flex items-center justify-start gap-3 p-3 rounded-2xl border border-dashed border-slate-300 hover:bg-slate-100 hover:border-slate-400 transition-all cursor-pointer group min-h-[58px]">
-          <svg class="w-5 h-5 text-slate-500 transition-colors shrink-0 group-hover:text-slate-700" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          <span class="text-sm text-slate-500 group-hover:text-slate-700 transition-colors tracking-widest">invite a partner</span>
-        </div>
+          <div class="flex items-center gap-3 p-3 rounded-2xl border border-border-base bg-white group relative hover:border-slate-300 transition-colors min-h-[58px]">
+            <div class="flex-1 min-w-0">
+              <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{ currentUserProfile().name }}</span>
+              <span class="text-xs text-slate-500 font-medium">Teammate (You)</span>
+            </div>
+            <button (click)="leaveLobby.emit()"
+              class="p-1.5 rounded-full transition-colors cursor-pointer hover:bg-rose-50 text-rose-600 flex items-center justify-center"
+              title="Leave lobby">
+              <ng-icon name="heroXMark" class="text-lg"></ng-icon>
+            </button>
+          </div>
         }
 
         <!-- Sent Invitations Outbox -->
@@ -124,20 +139,27 @@
         }
 
         <!-- Find Match Action Button -->
-        <button (click)="startQueue.emit()" [disabled]="!partner()"
-          class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer">
-          <svg class="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/>
-            <line x1="13" y1="19" x2="19" y2="13"/>
-            <line x1="16" y1="16" x2="20" y2="20"/>
-            <line x1="19" y1="21" x2="21" y2="19"/>
-            <polyline points="9.5 17.5 21 6 21 3 18 3 6.5 14.5"/>
-            <line x1="11" y1="19" x2="5" y2="13"/>
-            <line x1="8" y1="16" x2="4" y2="20"/>
-            <line x1="5" y1="21" x2="3" y2="19"/>
-          </svg>
-          Find Match
-        </button>
+        @if (isHost()) {
+          <button (click)="startQueue.emit()" [disabled]="!partner()"
+            class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer">
+            <svg class="w-5 h-5 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/>
+              <line x1="13" y1="19" x2="19" y2="13"/>
+              <line x1="16" y1="16" x2="20" y2="20"/>
+              <line x1="19" y1="21" x2="21" y2="19"/>
+              <polyline points="9.5 17.5 21 6 21 3 18 3 6.5 14.5"/>
+              <line x1="11" y1="19" x2="5" y2="13"/>
+              <line x1="8" y1="16" x2="4" y2="20"/>
+              <line x1="5" y1="21" x2="3" y2="19"/>
+            </svg>
+            Find Match
+          </button>
+        } @else {
+          <div class="flex items-center gap-2 text-sm font-medium text-slate-500 italic mt-2">
+            <div class="w-4 h-4 border-2 border-slate-500 border-t-transparent rounded-full animate-spin shrink-0"></div>
+            <span>Waiting for host to find match...</span>
+          </div>
+        }
 
       </div>
     </div>

@@ -8,13 +8,12 @@ import { StudyService } from '../../core/services/study.service';
 import { TournamentService } from '../../core/services/tournament.service';
 import { Study } from '../../core/models/study.model';
 import { Tournament } from '../../core/models/tournament.model';
-import { UserHovercardDirective } from '@shared/directives';
 import { FollowModalComponent } from './components/follow-modal/follow-modal.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, UserHovercardDirective, FlagIconComponent, FollowModalComponent],
+  imports: [CommonModule, RouterLink, FlagIconComponent, FollowModalComponent],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {

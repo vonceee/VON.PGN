@@ -176,6 +176,12 @@
           {{ bughouseInviteService.incomingInvites().length }}
         </span>
         }
+        <!-- Tooltip -->
+        <div
+          class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1 bg-slate-900 text-white text-xs font-medium rounded-lg border border-white/10 shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-50 transition-all duration-200 transform scale-95 group-hover:scale-100"
+          [class.hidden]="isInvitesOpen()">
+          Invitations
+        </div>
       </button>
 
       @if (isInvitesOpen()) {
@@ -234,6 +240,12 @@
           {{ notificationService.unreadCount() > 9 ? '9+' : notificationService.unreadCount() }}
         </span>
         }
+        <!-- Tooltip -->
+        <div
+          class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1 bg-slate-900 text-white text-xs font-medium rounded-lg border border-white/10 shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-50 transition-all duration-200 transform scale-95 group-hover:scale-100"
+          [class.hidden]="isNotificationsOpen()">
+          Notifications
+        </div>
       </button>
 
       @if (isNotificationsOpen()) {
@@ -275,6 +287,12 @@
           <span class="hidden 4xl:inline text-sm/6 font-medium transition-colors">
             {{ userService.currentUser()?.username || 'Profile' }}
           </span>
+        </div>
+        <!-- Tooltip -->
+        <div
+          class="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-2.5 py-1 bg-slate-900 text-white text-xs font-medium rounded-lg border border-white/10 shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-50 transition-all duration-200 transform scale-95 group-hover:scale-100"
+          [class.hidden]="isProfileDropdownOpen()">
+          Profile
         </div>
       </button>
 

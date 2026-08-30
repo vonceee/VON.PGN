@@ -12,10 +12,6 @@ export class FloatingCursorContainerDirective implements AfterContentInit, OnDes
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  constructor() {
-    console.log('FloatingCursorContainerDirective constructor!');
-  }
-
   @ContentChild(FloatingCursorComponent) contentCursor?: FloatingCursorComponent;
 
   private _registeredCursor?: FloatingCursorComponent;

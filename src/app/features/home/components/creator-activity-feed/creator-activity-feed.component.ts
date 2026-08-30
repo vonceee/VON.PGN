@@ -1,22 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroBookOpen, heroClipboardDocument, heroTrophy } from '@ng-icons/heroicons/outline';
 import { ActivityLogService, ActivityItem } from '../../../../core/services/activity-log.service';
 
 @Component({
   selector: 'app-creator-activity-feed',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgIconComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './creator-activity-feed.component.html',
-  providers: [
-    provideIcons({
-      heroBookOpen,
-      heroClipboardDocument,
-      heroTrophy,
-    }),
-  ],
 })
 export class CreatorActivityFeedComponent implements OnInit {
   private activityService = inject(ActivityLogService);
@@ -46,22 +37,6 @@ export class CreatorActivityFeedComponent implements OnInit {
     });
   }
 
-  getIconName(type: 'study' | 'blog' | 'tournament'): string {
-    switch (type) {
-      case 'study':
-        return 'heroBookOpen';
-      case 'blog':
-        return 'heroClipboardDocument';
-      case 'tournament':
-        return 'heroTrophy';
-      default:
-        return 'heroBookOpen';
-    }
-  }
-
-  getIconClass(type: 'study' | 'blog' | 'tournament'): string {
-    return 'bg-slate-900 border-blue-600/60 text-white';
-  }
 
   getRelativeTime(dateStr: string): string {
     const date = new Date(dateStr);

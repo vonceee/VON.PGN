@@ -8,7 +8,16 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   
   const token = authService.getToken();
 
-  if (token && req.url.startsWith(environment.apiUrl)) {
+  const publicPaths = [
+    '/courses',
+    '/tactics/next',
+    '/activity-logs',
+  ];
+
+  const relativeUrl = req.url.replace(environment.apiUrl, '');
+  const isPublicPath = publicPaths.some(path => relativeUrl.startsWith(path));
+
+  if (token && req.url.startsWith(environment.apiUrl) && !isPublicPath) {
     const clonedRequest = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,

@@ -129,6 +129,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
   boardBBlackName = signal<string>('');
   lobbyType = signal<'casual' | 'ranked'>('casual');
   partner = signal<LobbyPlayer | null>(null);
+  isHost = signal<boolean>(true);
   opponent1 = signal<LobbyPlayer | null>(null);
   opponent2 = signal<LobbyPlayer | null>(null);
   
@@ -334,6 +335,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
       this.ngZone.run(() => {
         if (!lobby) {
           this.partner.set(null);
+          this.isHost.set(true);
           this.lobbyState.set('lobby');
           this.stopQueueInterval();
           return;
@@ -343,6 +345,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         const myUid = String(myUser?.uid);
 
         if (String(lobby.captain.userId) === myUid) {
+          this.isHost.set(true);
           // I am the captain: show partner if joined
           if (lobby.partner) {
             this.partner.set({
@@ -355,6 +358,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
             this.partner.set(null);
           }
         } else if (lobby.partner && String(lobby.partner.userId) === myUid) {
+          this.isHost.set(false);
           // I am the partner: show captain as partner
           this.partner.set({
             uid: String(lobby.captain.userId),
@@ -388,6 +392,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
       this.ngZone.run(() => {
         this.showNotification('You have been kicked from the lobby.', 'info');
         this.partner.set(null);
+        this.isHost.set(true);
         this.lobbyState.set('lobby');
         this.stopQueueInterval();
       });
@@ -795,6 +800,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.myBoard.set(null);
     this.myColor.set(null);
     this.isSpectating.set(false);
+    this.isHost.set(true);
     this.lobbyState.set('lobby');
   }
 
