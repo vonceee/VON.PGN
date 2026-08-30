@@ -48,36 +48,6 @@
   <!-- ==================== PLAYING STATE ==================== -->
   @if (lobbyState() === 'playing') {
     <div class="w-full flex-1 flex flex-col gap-4 min-h-0 overflow-hidden">
-      <!-- Header Bar with Spectator HUD & Exit button -->
-      @if (isSpectating() || !gameActive() || winner()) {
-        <div
-          class="flex items-center justify-between gap-4 p-4 rounded-xl border border-border-base bg-slate-50 shrink-0"
-        >
-          <div class="flex items-center gap-3">
-            @if (isSpectating()) {
-              <span
-                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200"
-              >
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                Spectator Mode
-              </span>
-              <span class="text-sm font-semibold text-slate-700">
-                Watching: {{ boardAWhiteName() || 'White' }} + {{ boardBBlackName() || 'Black' }} vs
-                {{ boardABlackName() || 'Black' }} + {{ boardBWhiteName() || 'White' }}
-              </span>
-            }
-          </div>
-          <div>
-            <button
-              (click)="exitToLobby()"
-              class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all cursor-pointer"
-            >
-              Exit to Lobby
-            </button>
-          </div>
-        </div>
-      }
-
       <!-- Boards Container -->
       <div class="bughouse-boards-container flex-1 min-h-0 overflow-hidden w-full flex items-center justify-center">
         <!-- ==================== BOARD A ==================== -->

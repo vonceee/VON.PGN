@@ -370,6 +370,10 @@ export class BughouseComponent implements OnInit, OnDestroy {
         socket.emit('bughouse_spectate', { gameId: currentTvId });
         
         onCleanup(() => {
+          // If we are actively playing in this game, do NOT leave the game room socket channel
+          if (currentTvId && currentTvId === this.gameId() && !this.isSpectating()) {
+            return;
+          }
           socket.emit('bughouse_leave_spectate', { gameId: currentTvId });
         });
       }
@@ -566,12 +570,15 @@ export class BughouseComponent implements OnInit, OnDestroy {
       }
 
       // 2. Check if this is the active game start payload
-      if (!data.isSpectator || data.gameId === this.gameId()) {
+      const isSpectator = data.isSpectator ?? false;
+      const myUid = String(this.authService.currentUser()?.uid);
+      const amIParticipant = !!(data.colors && data.colors[myUid]);
+
+      if ((!isSpectator && amIParticipant) || (isSpectator && !amIParticipant && data.gameId === this.gameId())) {
         // Clear TV game to save resources while playing
         this.tvGameId.set(null);
         this.resetTvGameState();
 
-        const isSpectator = data.isSpectator ?? false;
         this.isSpectating.set(isSpectator);
 
         if (isSpectator) {
@@ -585,6 +592,9 @@ export class BughouseComponent implements OnInit, OnDestroy {
           this.myBoard.set(myBoard);
           this.myColor.set(myColor);
           this.userColor.set(myColor);
+
+          // Force transition to game view
+          this.lobbyState.set('playing');
         }
 
         this.gameId.set(data.gameId);
