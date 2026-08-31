@@ -80,7 +80,8 @@ export class BughouseLobbyComponent {
   clearSearch = output<void>();
   spectateGame = output<string>();
 
-  onInvitePlayer(player: any) {
+  onInvitePlayer(player: any, event: Event) {
+    event.stopPropagation();
     this.invitePlayer.emit(player);
     this.clearSearch.emit();
   }

@@ -139,6 +139,18 @@ export class BughouseComponent implements OnInit, OnDestroy {
   boardABlackName = signal<string>('');
   boardBWhiteName = signal<string>('');
   boardBBlackName = signal<string>('');
+  teamACaptainName = signal<string>('');
+  teamAPartnerName = signal<string>('');
+  teamBCaptainName = signal<string>('');
+  teamBPartnerName = signal<string>('');
+  teamACaptainBoard = signal<string>('');
+  teamACaptainColor = signal<string>('');
+  teamAPartnerBoard = signal<string>('');
+  teamAPartnerColor = signal<string>('');
+  teamBCaptainBoard = signal<string>('');
+  teamBCaptainColor = signal<string>('');
+  teamBPartnerBoard = signal<string>('');
+  teamBPartnerColor = signal<string>('');
   lobbyType = signal<'casual' | 'ranked'>('casual');
   partner = signal<LobbyPlayer | null>(null);
   isHost = signal<boolean>(true);
@@ -260,6 +272,26 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
   // ── Move Logging ───────────────────────────────────────────────────
   movesLog = signal<MoveLogEntry[]>([]);
+  boardAMoveRows = computed(() => this.getRowsForBoard('A'));
+  boardBMoveRows = computed(() => this.getRowsForBoard('B'));
+
+  private getRowsForBoard(board: 'A' | 'B') {
+    const moves = this.movesLog().filter((m) => m.board === board);
+    const rows: { moveNo: number; w?: string; b?: string }[] = [];
+    moves.forEach((m) => {
+      let row = rows.find((r) => r.moveNo === m.moveNo);
+      if (!row) {
+        row = { moveNo: m.moveNo };
+        rows.push(row);
+      }
+      if (m.turn === 'w') {
+        row.w = m.san;
+      } else {
+        row.b = m.san;
+      }
+    });
+    return rows.sort((a, b) => a.moveNo - b.moveNo);
+  }
 
   // ── User Color Configuration ────────────────────────────────────────
   userColor = signal<'w' | 'b'>('w');
@@ -285,11 +317,20 @@ export class BughouseComponent implements OnInit, OnDestroy {
     const width = this.windowWidth();
     const height = this.windowHeight();
     
-    // Width constraint: must not exceed window width minus other columns (partner board + padding + gaps)
-    const maxWidth = this.isSideBySide() ? (width - 400) : (width - 32);
+    // In play mode on wide screens, we show the 3rd column (notation), which takes 320px
+    const showNotation = this.lobbyState() === 'playing' && width >= 1280;
+    const paddingAndGaps = showNotation ? 368 : 48; // Account for notation column + gaps/padding
+    const availableWidth = width - paddingAndGaps;
+    
+    // Width constraint: both boards are side-by-side on wide screens.
+    // Main board takes up to 100% of maxBoardSize, partner board takes up to 75% of maxBoardSize.
+    // Total width factor = 1.75
+    const maxWidth = this.isSideBySide() ? (availableWidth / 1.75) : (width - 32);
     
     // Height constraint (only applies when side-by-side)
-    const headerOffset = this.isHeaderBarVisible() ? 360 : 272;
+    // If we are currently on the play page (playing or reviewing), use the smaller header offset (272)
+    const isPlayingPage = this.lobbyState() === 'playing';
+    const headerOffset = isPlayingPage ? 272 : 360;
     const maxHeight = this.isSideBySide() ? (height - headerOffset) : 9999;
     
     const maxPossible = Math.min(maxWidth, maxHeight);
@@ -616,6 +657,33 @@ export class BughouseComponent implements OnInit, OnDestroy {
           if (a.board === 'B' && a.color === 'b') this.boardBBlackName.set(player.name);
         }
 
+        // Set Team A and Team B player names directly
+        this.teamACaptainName.set(data.teamA.captainName || '');
+        this.teamAPartnerName.set(data.teamA.partnerName || '');
+        this.teamBCaptainName.set(data.teamB.captainName || '');
+        this.teamBPartnerName.set(data.teamB.partnerName || '');
+
+        const teamACaptainInfo = colorsMap[String(data.teamA.captainId)];
+        if (teamACaptainInfo) {
+          this.teamACaptainBoard.set(teamACaptainInfo.board || '');
+          this.teamACaptainColor.set(teamACaptainInfo.color || '');
+        }
+        const teamAPartnerInfo = colorsMap[String(data.teamA.partnerId)];
+        if (teamAPartnerInfo) {
+          this.teamAPartnerBoard.set(teamAPartnerInfo.board || '');
+          this.teamAPartnerColor.set(teamAPartnerInfo.color || '');
+        }
+        const teamBCaptainInfo = colorsMap[String(data.teamB.captainId)];
+        if (teamBCaptainInfo) {
+          this.teamBCaptainBoard.set(teamBCaptainInfo.board || '');
+          this.teamBCaptainColor.set(teamBCaptainInfo.color || '');
+        }
+        const teamBPartnerInfo = colorsMap[String(data.teamB.partnerId)];
+        if (teamBPartnerInfo) {
+          this.teamBPartnerBoard.set(teamBPartnerInfo.board || '');
+          this.teamBPartnerColor.set(teamBPartnerInfo.color || '');
+        }
+
         this.syncBoardOrientations();
 
         this.chessA.load(data.boardAFen);
@@ -847,9 +915,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         receiver_username: player.name,
       })
       .subscribe({
-        next: () => {
-          this.showNotification(`Invitation sent to ${player.name}!`, 'success');
-        },
+        next: () => {},
         error: () => {},
       });
   }
@@ -957,6 +1023,18 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.winner.set(null);
     this.gameEndReason.set(null);
     this.movesLog.set([]);
+    this.teamACaptainName.set('');
+    this.teamAPartnerName.set('');
+    this.teamBCaptainName.set('');
+    this.teamBPartnerName.set('');
+    this.teamACaptainBoard.set('');
+    this.teamACaptainColor.set('');
+    this.teamAPartnerBoard.set('');
+    this.teamAPartnerColor.set('');
+    this.teamBCaptainBoard.set('');
+    this.teamBCaptainColor.set('');
+    this.teamBPartnerBoard.set('');
+    this.teamBPartnerColor.set('');
 
     this.cancelDropMode();
     this.syncBoardOrientations();
