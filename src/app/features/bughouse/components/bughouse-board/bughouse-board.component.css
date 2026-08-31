@@ -1,6 +1,6 @@
 .bughouse-board-resize-wrapper {
   width: var(--board-target-width, 500px);
-  min-width: 280px;
+  min-width: 380px;
 }
 
 app-chess-board {

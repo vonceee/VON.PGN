@@ -64,8 +64,10 @@ export class BughouseSidebarComponent {
   }
 
   formatRemainingTime(seconds: number): string {
-    const mm = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const ss = (seconds % 60).toString().padStart(2, '0');
+    if (!seconds || isNaN(seconds) || seconds <= 0) return '00:00';
+    const totalSecs = Math.round(seconds);
+    const mm = Math.floor(totalSecs / 60).toString().padStart(2, '0');
+    const ss = (totalSecs % 60).toString().padStart(2, '0');
     return `${mm}:${ss}`;
   }
 

@@ -86,10 +86,19 @@ export class BughouseBoardComponent {
   }
 
   formatTime(seconds: number): string {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    const sStr = s < 10 ? '0' + s : s;
-    return `${m}:${sStr}`;
+    if (!seconds || isNaN(seconds) || seconds <= 0) return '0:00.0';
+
+    const totalMs = Math.round(seconds * 1000);
+    const totalSeconds = Math.floor(totalMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+
+    if (seconds < 20) {
+      const tenths = Math.floor((totalMs % 1000) / 100);
+      return `${minutes}:${secs.toString().padStart(2, '0')}.${tenths}`;
+    }
+
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
   }
 
   getGridSquares(): string[] {

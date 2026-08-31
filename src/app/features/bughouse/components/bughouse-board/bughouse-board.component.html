@@ -1,14 +1,43 @@
 <div
-  class="bughouse-board-resize-wrapper overflow-hidden mx-auto flex flex-col gap-3 relative min-w-[280px]"
+  class="bughouse-board-resize-wrapper overflow-hidden mx-auto flex flex-row gap-4 items-center relative select-none"
   [class.resize-x]="true"
-  [style.--board-target-width.px]="myBoard() === boardId() ? 500 : 350"
-  [style.maxWidth.px]="myBoard() === boardId() ? maxBoardSize() : maxBoardSize() * 0.75"
+  [style.--board-target-width.px]="(myBoard() === boardId() ? 500 : 350) + 96"
+  [style.maxWidth.px]="(myBoard() === boardId() ? maxBoardSize() : maxBoardSize() * 0.75) + 96"
   [class.opacity-80]="myBoard() !== boardId()">
 
+  <!-- Left Side Clocks Column -->
+  <div class="flex flex-col items-center justify-center gap-3 shrink-0 py-2 select-none w-24">
+    <!-- Top Player Clock -->
+    <div class="text-xl font-mono font-bold tracking-wider text-center transition-colors duration-200 select-none"
+      [class.text-rose-600]="topTime() < 20"
+      [class.text-emerald-600]="turn() === topColor() && gameActive() && !winner() && topTime() >= 20"
+      [class.text-rose-500]="turn() === topColor() && gameActive() && !winner() && topTime() < 20"
+      [class.animate-pulse]="turn() === topColor() && gameActive() && !winner() && topTime() < 20"
+      [class.text-slate-400]="turn() !== topColor() && topTime() >= 20">
+      {{ formatTime(topTime()) }}
+    </div>
 
-  <!-- Pocket (Top Player pieces) & Clock -->
-  <div class="flex items-center justify-between gap-2 py-1 w-full">
-    <div class="flex items-center gap-2 justify-start">
+    <!-- Board Indicator -->
+    <div class="flex flex-col items-center justify-center select-none opacity-60">
+      <span class="text-[9px] uppercase tracking-widest font-extrabold text-slate-400">Board</span>
+      <span class="text-2xl font-black text-slate-400">{{ boardId() === 'A' ? '1' : '2' }}</span>
+    </div>
+
+    <!-- Bottom Player Clock -->
+    <div class="text-xl font-mono font-bold tracking-wider text-center transition-colors duration-200 select-none"
+      [class.text-rose-600]="bottomTime() < 20"
+      [class.text-emerald-600]="turn() === bottomColor() && gameActive() && !winner() && bottomTime() >= 20"
+      [class.text-rose-500]="turn() === bottomColor() && gameActive() && !winner() && bottomTime() < 20"
+      [class.animate-pulse]="turn() === bottomColor() && gameActive() && !winner() && bottomTime() < 20"
+      [class.text-slate-400]="turn() !== bottomColor() && bottomTime() >= 20">
+      {{ formatTime(bottomTime()) }}
+    </div>
+  </div>
+
+  <!-- Right Side Chessboard & Pockets -->
+  <div class="flex-1 min-w-0 flex flex-col gap-3">
+    <!-- Pocket (Top Player pieces) -->
+    <div class="flex items-center justify-start gap-2 py-1 w-full">
       @for (piece of getPocketKeys(); track piece) {
       <div
         class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
@@ -26,43 +55,35 @@
       </div>
       }
     </div>
-    <div class="flex items-center justify-center py-1.5 px-3 rounded-md text-sm border-2 border-border-base shrink-0 text-semibold"
-      [class.text-rose-500]="topTime() < 20"
-      [class.bg-green-100]="turn() === topColor() && gameActive() && !winner()"
-      [class.border-green-200]="turn() === topColor() && gameActive() && !winner()">
-      {{ formatTime(topTime()) }}
-    </div>
-  </div>
 
-  <!-- Board wrapper -->
-  <div class="relative w-full aspect-square overflow-hidden">
-    <app-chess-board [fen]="fen()" [orientation]="orientation()"
-      [interactive]="gameActive() && !winner() && myBoard() === boardId() && turn() === myColor()"
-      [hideCoordinates]="true" [resizable]="false" [fluid]="true"
-      (moveMade)="moveMade.emit($event)"></app-chess-board>
+    <!-- Board wrapper -->
+    <div class="relative w-full aspect-square overflow-hidden">
+      <app-chess-board [fen]="fen()" [orientation]="orientation()"
+        [interactive]="gameActive() && !winner() && myBoard() === boardId() && turn() === myColor()"
+        [hideCoordinates]="true" [resizable]="false" [fluid]="true"
+        (moveMade)="moveMade.emit($event)"></app-chess-board>
 
-    <!-- Transparent Drop Overlay Grid -->
-    @if (activeDropBoard() === boardId()) {
-    <div class="absolute inset-0 z-50 bg-black/5 grid grid-cols-8 grid-rows-8">
-      @for (sq of getGridSquares(); track sq) {
-      <div class="w-full h-full flex items-center justify-center relative cursor-pointer group"
-        (click)="onGridSquareClicked(sq)">
-        @if (isSquareTargetable(sq)) {
-        <div
-          class="w-4 h-4 rounded-full bg-green-500/70 border border-white group-hover:scale-150 transition-transform">
-        </div>
-        <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
+      <!-- Transparent Drop Overlay Grid -->
+      @if (activeDropBoard() === boardId()) {
+      <div class="absolute inset-0 z-50 bg-black/5 grid grid-cols-8 grid-rows-8">
+        @for (sq of getGridSquares(); track sq) {
+        <div class="w-full h-full flex items-center justify-center relative cursor-pointer group"
+          (click)="onGridSquareClicked(sq)">
+          @if (isSquareTargetable(sq)) {
+          <div
+            class="w-4 h-4 rounded-full bg-green-500/70 border border-white group-hover:scale-150 transition-transform">
+          </div>
+          <div class="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity">
+          </div>
+          }
         </div>
         }
       </div>
       }
     </div>
-    }
-  </div>
 
-  <!-- Pocket (Bottom Player pieces) & Clock -->
-  <div class="flex items-center justify-between gap-2 py-1 w-full">
-    <div class="flex items-center gap-2 justify-start">
+    <!-- Pocket (Bottom Player pieces) -->
+    <div class="flex items-center justify-start gap-2 py-1 w-full">
       @for (piece of getPocketKeys(); track piece) {
       <div
         class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
@@ -80,13 +101,6 @@
       </div>
       }
     </div>
-    <div class="flex items-center justify-center py-1.5 px-3 rounded-md text-sm border-2 border-border-base shrink-0 text-semibold"
-      [class.text-rose-500]="bottomTime() < 20"
-      [class.bg-green-100]="turn() === bottomColor() && gameActive() && !winner()"
-      [class.border-green-200]="turn() === bottomColor() && gameActive() && !winner()">
-      {{ formatTime(bottomTime()) }}
-    </div>
   </div>
-
 
 </div>
