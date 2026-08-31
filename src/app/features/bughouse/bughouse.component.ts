@@ -430,12 +430,16 @@ export class BughouseComponent implements OnInit, OnDestroy {
         next: (results) => {
           this.isSearchingPlayers.set(false);
           if (results !== null) {
+            const myUid = this.authService.currentUser()?.uid;
+            const myUsername = this.currentUserProfile().name;
             this.searchResults.set(
-              results.map((r: any) => ({
-                uid: r.uid,
-                name: r.username,
-                isOnline: true,
-              })),
+              results
+                .filter((r: any) => r.uid !== myUid && r.username !== myUsername)
+                .map((r: any) => ({
+                  uid: r.uid,
+                  name: r.username,
+                  isOnline: true,
+                })),
             );
           }
         },
