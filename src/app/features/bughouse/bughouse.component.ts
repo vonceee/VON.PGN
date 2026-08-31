@@ -10,6 +10,8 @@ import {
   OnDestroy,
   PLATFORM_ID,
   NgZone,
+  HostListener,
+  Injector,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -41,14 +43,19 @@ import {
   heroFlag,
   heroChevronLeft,
   heroChevronRight,
+  heroDocumentDuplicate,
 } from '@ng-icons/heroicons/outline';
 
 interface MoveLogEntry {
+  id: string;
   board: 'A' | 'B';
+  moveColor: 'w' | 'b';
   moveNo: number;
-  turn: 'w' | 'b';
   san: string;
-  timestamp: Date;
+  fen: string;
+  playerName: string;
+  remainingTime: number;
+  timestamp: number;
 }
 
 type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
@@ -102,6 +109,7 @@ import { BughouseQueueService } from '../../core/services/bughouse-queue.service
       heroFlag,
       heroChevronLeft,
       heroChevronRight,
+      heroDocumentDuplicate,
     }),
   ],
   host: {
@@ -125,9 +133,11 @@ export class BughouseComponent implements OnInit, OnDestroy {
   bughouseInviteService = inject(BughouseInviteService);
   public bughouseQueueService = inject(BughouseQueueService);
   private router = inject(Router);
+  private injector = inject(Injector);
 
   // ── Lobby & Pairing State ──────────────────────────────────────────
   lobbyState = signal<'lobby' | 'queuing' | 'matched' | 'playing'>('lobby');
+  activeSidebarTab = signal<'players' | 'moves'>('players');
 
   // ── Active game identity (set by bughouse_game_start) ─────────────
   gameId = signal<string | null>(null);
@@ -306,7 +316,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         row = { moveNo: m.moveNo };
         rows.push(row);
       }
-      if (m.turn === 'w') {
+      if (m.moveColor === 'w') {
         row.w = m.san;
       } else {
         row.b = m.san;
@@ -401,6 +411,18 @@ export class BughouseComponent implements OnInit, OnDestroy {
           this.searchResults.set([]);
         },
       });
+
+    effect(() => {
+      this.movesLog();
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const containers = document.querySelectorAll('.moves-container');
+          containers.forEach((container) => {
+            container.scrollTop = container.scrollHeight;
+          });
+        });
+      });
+    });
 
     // React to Socket changes reactively
     effect((onCleanup) => {
@@ -646,6 +668,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         this.resetTvGameState();
 
         this.isSpectating.set(isSpectator);
+        this.activeSidebarTab.set('moves');
 
         if (isSpectator) {
           this.myBoard.set(null);
@@ -728,6 +751,12 @@ export class BughouseComponent implements OnInit, OnDestroy {
         this.timeB_W.set(data.clocks.B_W);
         this.timeB_B.set(data.clocks.B_B);
 
+        if (data.movesHistory) {
+          this.movesLog.set(data.movesHistory);
+        } else {
+          this.movesLog.set([]);
+        }
+
         // Server is the clock authority — do NOT start local clocks here
         this.gameActive.set(true);
       }
@@ -775,7 +804,9 @@ export class BughouseComponent implements OnInit, OnDestroy {
         }
 
         // Log the move for all clients (single source of truth)
-        this.logMoveFromBroadcast(data.board, data.move.san, data.move.color);
+        if (data.moveEntry) {
+          this.movesLog.update((log) => [...log, data.moveEntry]);
+        }
       }
     });
   };
@@ -1102,6 +1133,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.syncBoardOrientations();
     this.rematchOffers.set([]);
     this.rematchDeclined.set(false);
+    this.activeSidebarTab.set('players');
   }
 
   resetTvGameState() {
@@ -1247,6 +1279,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.gameActive.set(false);
     this.stopClocks();
     this.audioService.playBoardEnd();
+    this.activeSidebarTab.set('players');
   }
 
   // ── Capture and Move Handling ──────────────────────────────────────
@@ -1300,23 +1333,40 @@ export class BughouseComponent implements OnInit, OnDestroy {
     if (pockets['B_B']) this.pocketB_B.set({ ...pockets['B_B'] } as Record<PieceType, number>);
   }
 
-  /**
-   * Log a move received from the server broadcast.
-   * All 4 clients log from the same broadcast to keep logs in sync.
-   */
-  private logMoveFromBroadcast(board: 'A' | 'B', san: string, moveColor: 'w' | 'b') {
-    const chess = board === 'A' ? this.chessA : this.chessB;
-    const history = chess.history();
-    const moveNo = Math.ceil(history.length / 2) || 1;
+  getPlayerNameForEntry(entry: MoveLogEntry): string {
+    if (entry.board === 'A') {
+      return entry.moveColor === 'w' ? (this.boardAWhiteName() || 'White') : (this.boardABlackName() || 'Black');
+    } else {
+      return entry.moveColor === 'w' ? (this.boardBWhiteName() || 'White') : (this.boardBBlackName() || 'Black');
+    }
+  }
 
-    const entry: MoveLogEntry = {
-      board,
-      moveNo,
-      turn: moveColor,
-      san,
-      timestamp: new Date(),
-    };
-    this.movesLog.update((log) => [...log, entry]);
+  formatRemainingTime(seconds: number): string {
+    const mm = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const ss = (seconds % 60).toString().padStart(2, '0');
+    return `${mm}:${ss}`;
+  }
+
+  copyPgn() {
+    const pgnText = this.movesLog().map((m) => {
+      const boardCode = m.board === 'A' 
+        ? (m.moveColor === 'w' ? 'A' : 'a') 
+        : (m.moveColor === 'w' ? 'B' : 'b');
+      
+      const sanFormatted = m.san.startsWith('@') ? 'P' + m.san : m.san;
+      const clk = `{[%clk ${this.formatRemainingTime(m.remainingTime)}]}`;
+      
+      return `${m.moveNo}${boardCode}. ${sanFormatted} ${clk}`;
+    }).join(' ');
+    
+    if (pgnText) {
+      navigator.clipboard.writeText(pgnText).then(() => {
+        this.showNotification('PGN copied to clipboard', 'success');
+      }).catch(err => {
+        console.error('Failed to copy PGN: ', err);
+        this.showNotification('Failed to copy PGN', 'error');
+      });
+    }
   }
 
   private checkGameOver(board: 'A' | 'B') {
