@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroDocumentDuplicate } from '@ng-icons/heroicons/outline';
 import { ToastService } from '../../../../core/services/toast.service';
-import { MoveLogEntry, BughouseTeamsState, BughouseGameOverState } from '../../bughouse.component';
+import { MoveLogEntry, BughouseTeamsState, BughouseGameOverState, BughouseRecordState } from '../../../../core/models/bughouse.model';
 
 @Component({
   selector: 'app-bughouse-sidebar',
@@ -28,6 +28,7 @@ export class BughouseSidebarComponent {
   isHost = input.required<boolean>();
   teamsState = input.required<BughouseTeamsState>();
   gameOverState = input.required<BughouseGameOverState>();
+  record = input.required<BughouseRecordState>();
 
   // Outputs
   offerRematch = output<void>();

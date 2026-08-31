@@ -202,7 +202,7 @@
             <!-- Incoming Section -->
             @if (bughouseInviteService.incomingInvites().length > 0) {
               @for (invite of bughouseInviteService.incomingInvites(); track invite.id) {
-              <div class="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 transition-colors">
+              <div class="px-4 py-3 border-b border-white/10 last:border-0">
                 <div class="flex items-center justify-between gap-4">
                   <div>
                     <span class="font-bold text-md block leading-tight text-white">{{ invite.sender }}</span>
@@ -228,7 +228,7 @@
             <!-- Outgoing Section -->
             @if (bughouseInviteService.sentInvites().length > 0) {
               @for (invite of bughouseInviteService.sentInvites(); track invite.id) {
-              <div class="px-4 py-3 border-b border-white/10 last:border-0 hover:bg-white/5 transition-colors">
+              <div class="px-4 py-3 border-b border-white/10 last:border-0">
                 <div class="flex items-center justify-between gap-4">
                   <div class="min-w-0 flex-1">
                     <span class="font-bold text-md block leading-tight text-white truncate">{{ invite.receiver }}</span>

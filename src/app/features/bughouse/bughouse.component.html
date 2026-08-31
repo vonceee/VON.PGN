@@ -1,52 +1,54 @@
 <div
   appFloatingCursorContainer
   class="w-full max-w-[1850px] mx-auto pt-6 md:p-6 md:pl-25 2xl:pl-15"
-  [class.px-4]="lobbyState() !== 'playing'"
-  [class.md:px-16]="lobbyState() !== 'playing'"
-  [class.py-8]="lobbyState() !== 'playing'"
-  [class.h-full]="lobbyState() === 'playing'"
-  [class.flex]="lobbyState() === 'playing'"
-  [class.flex-col]="lobbyState() === 'playing'"
-  [class.p-4]="lobbyState() === 'playing'"
-  [class.md:p-6]="lobbyState() === 'playing'"
+  [class.px-4]="gameStateService.lobbyState() !== 'playing'"
+  [class.md:px-16]="gameStateService.lobbyState() !== 'playing'"
+  [class.py-8]="gameStateService.lobbyState() !== 'playing'"
+  [class.h-full]="gameStateService.lobbyState() === 'playing'"
+  [class.flex]="gameStateService.lobbyState() === 'playing'"
+  [class.flex-col]="gameStateService.lobbyState() === 'playing'"
+  [class.p-4]="gameStateService.lobbyState() === 'playing'"
+  [class.md:p-6]="gameStateService.lobbyState() === 'playing'"
 >
-  @if (lobbyState() === 'lobby' || lobbyState() === 'queuing') {
+  @if (gameStateService.lobbyState() === 'lobby' || gameStateService.lobbyState() === 'queuing') {
     <app-bughouse-lobby
       [currentUserProfile]="currentUserProfile()"
-      [partner]="partner()"
-      [isHost]="isHost()"
+      [partner]="gameStateService.partner()"
+      [isHost]="gameStateService.isHost()"
       [searchResults]="searchResults()"
       [searchQuery]="searchQuery()"
       [isSearchingPlayers]="isSearchingPlayers()"
-      [ongoingMatches]="ongoingMatches()"
+      [ongoingMatches]="tvService.ongoingMatches()"
       [isQueuing]="bughouseQueueService.isQueuing()"
-      [tvState]="tvState()"
-      (kickPartner)="kickPartner()"
-      (leaveLobby)="exitToLobby()"
+      [tvState]="tvService.tvState()"
+      [record]="gameStateService.bughouseRecord()"
+      (kickPartner)="gameStateService.kickPartner()"
+      (leaveLobby)="gameStateService.exitToLobby()"
       (invitePlayer)="invitePlayer($event)"
       (searchInput)="onSearchInput($event)"
-      (startQueue)="startQueue()"
-      (cancelQueue)="cancelQueue()"
+      (startQueue)="gameStateService.startQueue()"
+      (cancelQueue)="bughouseQueueService.cancelQueue()"
       (clearSearch)="clearSearch()"
-      (spectateGame)="spectateGame($event)"
+      (spectateGame)="gameStateService.spectateGame($event)"
+      (resetRecord)="gameStateService.resetRecord()"
     >
     </app-bughouse-lobby>
   }
 
   <!-- ==================== MATCHED STATE ==================== -->
-  @if (lobbyState() === 'matched') {
+  @if (gameStateService.lobbyState() === 'matched') {
     <app-bughouse-matched
       [currentUserProfile]="currentUserProfile()"
-      [partner]="partner()"
-      [opponent1]="opponent1()"
-      [opponent2]="opponent2()"
-      [matchCountdown]="matchCountdown()"
+      [partner]="gameStateService.partner()"
+      [opponent1]="gameStateService.opponent1()"
+      [opponent2]="gameStateService.opponent2()"
+      [matchCountdown]="gameStateService.matchCountdown()"
     >
     </app-bughouse-matched>
   }
 
   <!-- ==================== PLAYING STATE ==================== -->
-  @if (lobbyState() === 'playing') {
+  @if (gameStateService.lobbyState() === 'playing') {
     <div class="w-full flex-1 grid grid-cols-1 xl:grid-cols-4 gap-6 min-h-0 overflow-hidden">
       <!-- Boards Column -->
       <div class="xl:col-span-3 flex-1 flex flex-col min-h-0 overflow-hidden">
@@ -56,27 +58,27 @@
             <span class="text-4xl font-extrabold text-slate-300 select-none">1</span>
             <app-bughouse-board
               boardId="A"
-              [fen]="boardAFen()"
-              [orientation]="boardAOrientation()"
-              [pocketW]="pocketA_W()"
-              [pocketB]="pocketA_B()"
-              [timeW]="timeA_W()"
-              [timeB]="timeA_B()"
-              [turn]="turnA()"
-              [interactive]="gameActive() && !winner() && myBoard() === 'A' && turnA() === myColor()"
-              [myBoard]="myBoard()"
-              [myColor]="myColor()"
-              [gameActive]="gameActive()"
-              [winner]="winner()"
-              [whiteName]="teamsState().boards.boardA.white"
-              [blackName]="teamsState().boards.boardA.black"
-              [activeDropBoard]="activeDropBoard()"
-              [activeDropPiece]="activeDropPiece()"
-              [activeDropColor]="activeDropColor()"
+              [fen]="gameStateService.boardAFen()"
+              [orientation]="gameStateService.boardAOrientation()"
+              [pocketW]="gameStateService.pocketA_W()"
+              [pocketB]="gameStateService.pocketA_B()"
+              [timeW]="gameStateService.timeA_W()"
+              [timeB]="gameStateService.timeA_B()"
+              [turn]="gameStateService.turnA()"
+              [interactive]="gameStateService.gameActive() && !gameStateService.winner() && gameStateService.myBoard() === 'A' && gameStateService.turnA() === gameStateService.myColor()"
+              [myBoard]="gameStateService.myBoard()"
+              [myColor]="gameStateService.myColor()"
+              [gameActive]="gameStateService.gameActive()"
+              [winner]="gameStateService.winner()"
+              [whiteName]="gameStateService.teamsState().boards.boardA.white"
+              [blackName]="gameStateService.teamsState().boards.boardA.black"
+              [activeDropBoard]="gameStateService.activeDropBoard()"
+              [activeDropPiece]="gameStateService.activeDropPiece()"
+              [activeDropColor]="gameStateService.activeDropColor()"
               [maxBoardSize]="maxBoardSize()"
-              (moveMade)="onBoardMoveMade('A', $event)"
-              (startDropMode)="startDropMode($event.board, $event.piece, $event.color)"
-              (pieceDropped)="onGridSquareClicked($event.board, $event.square)"
+              (moveMade)="gameStateService.onBoardMoveMade('A', $event)"
+              (startDropMode)="gameStateService.startDropMode($event.board, $event.piece, $event.color)"
+              (pieceDropped)="gameStateService.onGridSquareClicked($event.board, $event.square)"
             >
             </app-bughouse-board>
           </div>
@@ -86,27 +88,27 @@
             <span class="text-4xl font-extrabold text-slate-300 select-none">2</span>
             <app-bughouse-board
               boardId="B"
-              [fen]="boardBFen()"
-              [orientation]="boardBOrientation()"
-              [pocketW]="pocketB_W()"
-              [pocketB]="pocketB_B()"
-              [timeW]="timeB_W()"
-              [timeB]="timeB_B()"
-              [turn]="turnB()"
-              [interactive]="gameActive() && !winner() && myBoard() === 'B' && turnB() === myColor()"
-              [myBoard]="myBoard()"
-              [myColor]="myColor()"
-              [gameActive]="gameActive()"
-              [winner]="winner()"
-              [whiteName]="teamsState().boards.boardB.white"
-              [blackName]="teamsState().boards.boardB.black"
-              [activeDropBoard]="activeDropBoard()"
-              [activeDropPiece]="activeDropPiece()"
-              [activeDropColor]="activeDropColor()"
+              [fen]="gameStateService.boardBFen()"
+              [orientation]="gameStateService.boardBOrientation()"
+              [pocketW]="gameStateService.pocketB_W()"
+              [pocketB]="gameStateService.pocketB_B()"
+              [timeW]="gameStateService.timeB_W()"
+              [timeB]="gameStateService.timeB_B()"
+              [turn]="gameStateService.turnB()"
+              [interactive]="gameStateService.gameActive() && !gameStateService.winner() && gameStateService.myBoard() === 'B' && gameStateService.turnB() === gameStateService.myColor()"
+              [myBoard]="gameStateService.myBoard()"
+              [myColor]="gameStateService.myColor()"
+              [gameActive]="gameStateService.gameActive()"
+              [winner]="gameStateService.winner()"
+              [whiteName]="gameStateService.teamsState().boards.boardB.white"
+              [blackName]="gameStateService.teamsState().boards.boardB.black"
+              [activeDropBoard]="gameStateService.activeDropBoard()"
+              [activeDropPiece]="gameStateService.activeDropPiece()"
+              [activeDropColor]="gameStateService.activeDropColor()"
               [maxBoardSize]="maxBoardSize()"
-              (moveMade)="onBoardMoveMade('B', $event)"
-              (startDropMode)="startDropMode($event.board, $event.piece, $event.color)"
-              (pieceDropped)="onGridSquareClicked($event.board, $event.square)"
+              (moveMade)="gameStateService.onBoardMoveMade('B', $event)"
+              (startDropMode)="gameStateService.startDropMode($event.board, $event.piece, $event.color)"
+              (pieceDropped)="gameStateService.onGridSquareClicked($event.board, $event.square)"
             >
             </app-bughouse-board>
           </div>
@@ -115,20 +117,21 @@
 
       <!-- Game Notation Column -->
       <app-bughouse-sidebar
-        [(activeSidebarTab)]="activeSidebarTab"
-        [movesLog]="movesLog()"
-        [isHost]="isHost()"
-        [teamsState]="teamsState()"
-        [gameOverState]="gameOverState()"
-        (offerRematch)="offerRematch()"
-        (declineRematch)="declineRematch()"
-        (startQueue)="startQueue()"
+        [(activeSidebarTab)]="gameStateService.activeSidebarTab"
+        [movesLog]="gameStateService.movesLog()"
+        [isHost]="gameStateService.isHost()"
+        [teamsState]="gameStateService.teamsState()"
+        [gameOverState]="gameStateService.gameOverState()"
+        [record]="gameStateService.bughouseRecord()"
+        (offerRematch)="gameStateService.offerRematch()"
+        (declineRematch)="gameStateService.declineRematch()"
+        (startQueue)="gameStateService.startQueue()"
       ></app-bughouse-sidebar>
     </div>
   }
 
   <!-- Temporary Banner Toast Notifications (Success / Warning / Info) -->
-  @if (inviteNotification(); as notif) {
+  @if (gameStateService.inviteNotification(); as notif) {
     <div class="fixed bottom-6 right-6 z-[110] pointer-events-none">
       <div
         class="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-semibold"
@@ -153,8 +156,6 @@
       </div>
     </div>
   }
-
-
 
   <!-- Custom Floating Cursor -->
   <app-floating-cursor></app-floating-cursor>

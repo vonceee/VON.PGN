@@ -1,19 +1,9 @@
 import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgIcon, provideIcons } from '@ng-icons/core';
 import { ChessBoardComponent } from '../../../../shared/components/chess/chess-board/chess-board.component';
 import { BughouseBoardComponent } from '../bughouse-board/bughouse-board.component';
-import {
-  heroUsers,
-  heroUserPlus,
-  heroPlay,
-  heroCheckCircle,
-  heroXCircle,
-  heroInformationCircle,
-  heroTrash,
-  heroXMark,
-} from '@ng-icons/heroicons/outline';
+import { BughouseRecordState } from '../../../../core/models/bughouse.model';
 
 export interface BughouseTvState {
   gameId: string | null;
@@ -44,19 +34,7 @@ export interface BughouseTvState {
 @Component({
   selector: 'app-bughouse-lobby',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgIcon, ChessBoardComponent, BughouseBoardComponent],
-  providers: [
-    provideIcons({
-      heroUsers,
-      heroUserPlus,
-      heroPlay,
-      heroCheckCircle,
-      heroXCircle,
-      heroInformationCircle,
-      heroTrash,
-      heroXMark,
-    }),
-  ],
+  imports: [CommonModule, FormsModule, ChessBoardComponent, BughouseBoardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bughouse-lobby.component.html',
 })
@@ -70,6 +48,7 @@ export class BughouseLobbyComponent {
   ongoingMatches = input<any[]>([]);
   isQueuing = input<boolean>(false);
   tvState = input<BughouseTvState | null>(null);
+  record = input.required<BughouseRecordState>();
 
   kickPartner = output<void>();
   leaveLobby = output<void>();
@@ -79,6 +58,7 @@ export class BughouseLobbyComponent {
   cancelQueue = output<void>();
   clearSearch = output<void>();
   spectateGame = output<string>();
+  resetRecord = output<void>();
 
   onInvitePlayer(player: any, event: Event) {
     event.stopPropagation();

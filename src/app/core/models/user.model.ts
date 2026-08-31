@@ -11,6 +11,12 @@ export interface UserProfile {
   country_code?: string;
   daily_packs_available: number;
 
+  bughouse_stats?: {
+    wins: number;
+    draws: number;
+    losses: number;
+  };
+
   // Follow stats
   followers_count: number;
   following_count: number;
