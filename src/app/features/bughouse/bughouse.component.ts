@@ -237,6 +237,28 @@ export class BughouseComponent implements OnInit, OnDestroy {
     };
   });
 
+  // Rematch State
+  rematchOffers = signal<string[]>([]);
+  rematchDeclined = signal<boolean>(false);
+
+  myTeamLobbyId = computed(() => {
+    const myUid = this.authService.currentUser()?.uid;
+    if (!myUid) return null;
+    return this.isHost() ? String(myUid) : (this.partner()?.uid ? String(this.partner()?.uid) : null);
+  });
+
+  hasMyTeamOfferedRematch = computed(() => {
+    const myLobbyId = this.myTeamLobbyId();
+    if (!myLobbyId) return false;
+    return this.rematchOffers().includes(myLobbyId);
+  });
+
+  hasOpponentTeamOfferedRematch = computed(() => {
+    const myLobbyId = this.myTeamLobbyId();
+    if (!myLobbyId) return false;
+    return this.rematchOffers().some(id => id !== myLobbyId);
+  });
+
   // ── Chess Engine Instances ──────────────────────────────────────────
   chessA = new Chess();
   chessB = new Chess();
@@ -494,6 +516,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         this.partner.set(null);
         this.isHost.set(true);
         this.lobbyState.set('lobby');
+        this.resetGame();
         return;
       }
 
@@ -525,8 +548,10 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
       if (lobby.status === 'waiting') {
         this.lobbyState.set('lobby');
+        this.resetGame();
       } else if (lobby.status === 'queued') {
         this.lobbyState.set('queuing');
+        this.resetGame();
       } else if (lobby.status === 'matched') {
         this.lobbyState.set('matched');
       }
@@ -831,6 +856,23 @@ export class BughouseComponent implements OnInit, OnDestroy {
     });
   };
 
+  private handleRematchStatus = (data: any) => {
+    this.ngZone.run(() => {
+      if (data.gameId === this.gameId()) {
+        this.rematchOffers.set(data.offers);
+      }
+    });
+  };
+
+  private handleRematchCancelled = (data: any) => {
+    this.ngZone.run(() => {
+      if (data.gameId === this.gameId()) {
+        this.rematchDeclined.set(true);
+        this.rematchOffers.set([]);
+      }
+    });
+  };
+
   // ── Socket Event Bindings ──────────────────────────────────────────
   setupSocketListeners() {
     const socket = this.gameService.socket();
@@ -849,6 +891,8 @@ export class BughouseComponent implements OnInit, OnDestroy {
     socket.on('bughouse_game_over', this.handleGameOver);
     socket.on('bughouse_opponent_disconnected', this.handleOpponentDisconnected);
     socket.on('bughouse_error', this.handleBughouseError);
+    socket.on('bughouse_rematch_status', this.handleRematchStatus);
+    socket.on('bughouse_rematch_cancelled', this.handleRematchCancelled);
 
     // Notify microservice that we joined
     socket.emit('bughouse_join');
@@ -869,6 +913,8 @@ export class BughouseComponent implements OnInit, OnDestroy {
     socket.off('bughouse_game_over', this.handleGameOver);
     socket.off('bughouse_opponent_disconnected', this.handleOpponentDisconnected);
     socket.off('bughouse_error', this.handleBughouseError);
+    socket.off('bughouse_rematch_status', this.handleRematchStatus);
+    socket.off('bughouse_rematch_cancelled', this.handleRematchCancelled);
   }
 
   // ── Lobby Actions ──────────────────────────────────────────────────
@@ -988,6 +1034,22 @@ export class BughouseComponent implements OnInit, OnDestroy {
     }
   }
 
+  offerRematch() {
+    const socket = this.gameService.socket();
+    const gameId = this.gameId();
+    if (socket?.connected && gameId) {
+      socket.emit('bughouse_offer_rematch', { gameId });
+    }
+  }
+
+  declineRematch() {
+    const socket = this.gameService.socket();
+    const gameId = this.gameId();
+    if (socket?.connected && gameId) {
+      socket.emit('bughouse_decline_rematch', { gameId });
+    }
+  }
+
   cancelQueue() {
     this.bughouseQueueService.cancelQueue();
   }
@@ -1038,6 +1100,8 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
     this.cancelDropMode();
     this.syncBoardOrientations();
+    this.rematchOffers.set([]);
+    this.rematchDeclined.set(false);
   }
 
   resetTvGameState() {
