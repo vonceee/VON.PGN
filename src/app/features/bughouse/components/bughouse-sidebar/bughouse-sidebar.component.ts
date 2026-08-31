@@ -1,0 +1,92 @@
+import { Component, ChangeDetectionStrategy, input, output, model, computed, effect, ElementRef, viewChild, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroDocumentDuplicate } from '@ng-icons/heroicons/outline';
+import { ToastService } from '../../../../core/services/toast.service';
+import { MoveLogEntry, BughouseTeamsState, BughouseGameOverState } from '../../bughouse.component';
+
+@Component({
+  selector: 'app-bughouse-sidebar',
+  standalone: true,
+  imports: [CommonModule, NgIcon],
+  providers: [
+    provideIcons({
+      heroDocumentDuplicate,
+    }),
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './bughouse-sidebar.component.html',
+})
+export class BughouseSidebarComponent {
+  private toastService = inject(ToastService);
+
+  // Model Inputs
+  activeSidebarTab = model<'players' | 'moves'>('players');
+
+  // Standard Inputs
+  movesLog = input.required<MoveLogEntry[]>();
+  isHost = input.required<boolean>();
+  teamsState = input.required<BughouseTeamsState>();
+  gameOverState = input.required<BughouseGameOverState>();
+
+  // Outputs
+  offerRematch = output<void>();
+  declineRematch = output<void>();
+  startQueue = output<void>();
+
+  // View Child signals
+  movesContainer = viewChild<ElementRef<HTMLDivElement>>('movesContainer');
+
+  constructor() {
+    effect(() => {
+      this.movesLog();
+      if (this.activeSidebarTab() === 'moves') {
+        const container = this.movesContainer()?.nativeElement;
+        if (container) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              container.scrollTop = container.scrollHeight;
+            });
+          });
+        }
+      }
+    });
+  }
+
+  getPlayerNameForEntry(entry: MoveLogEntry): string {
+    const teams = this.teamsState();
+    if (entry.board === 'A') {
+      return entry.moveColor === 'w' ? (teams.boards.boardA.white || 'White') : (teams.boards.boardA.black || 'Black');
+    } else {
+      return entry.moveColor === 'w' ? (teams.boards.boardB.white || 'White') : (teams.boards.boardB.black || 'Black');
+    }
+  }
+
+  formatRemainingTime(seconds: number): string {
+    const mm = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const ss = (seconds % 60).toString().padStart(2, '0');
+    return `${mm}:${ss}`;
+  }
+
+  copyPgn() {
+    const pgnText = this.movesLog().map((m) => {
+      const boardCode = m.board === 'A' 
+        ? (m.moveColor === 'w' ? 'A' : 'a') 
+        : (m.moveColor === 'w' ? 'B' : 'b');
+      
+      const sanFormatted = m.san.startsWith('@') ? 'P' + m.san : m.san;
+      const clk = `{[%clk ${this.formatRemainingTime(m.remainingTime)}]}`;
+      
+      return `${m.moveNo}${boardCode}. ${sanFormatted} ${clk}`;
+    }).join(' ');
+    
+    if (pgnText) {
+      navigator.clipboard.writeText(pgnText).then(() => {
+        this.toastService.show('PGN copied to clipboard', 'success');
+      }).catch(err => {
+        console.error('Failed to copy PGN: ', err);
+        this.toastService.show('Failed to copy PGN', 'error');
+      });
+    }
+  }
+}

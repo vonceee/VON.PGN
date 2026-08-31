@@ -46,7 +46,7 @@ import {
   heroDocumentDuplicate,
 } from '@ng-icons/heroicons/outline';
 
-interface MoveLogEntry {
+export interface MoveLogEntry {
   id: string;
   board: 'A' | 'B';
   moveColor: 'w' | 'b';
@@ -58,7 +58,31 @@ interface MoveLogEntry {
   timestamp: number;
 }
 
-type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
+export interface BughousePlayerAssignment {
+  name: string;
+  color: 'w' | 'b' | string;
+  board: 'A' | 'B' | string;
+}
+
+export interface BughouseTeamsState {
+  teamA: { captain: BughousePlayerAssignment; partner: BughousePlayerAssignment };
+  teamB: { captain: BughousePlayerAssignment; partner: BughousePlayerAssignment };
+  boards: {
+    boardA: { white: string; black: string };
+    boardB: { white: string; black: string };
+  };
+}
+
+export interface BughouseGameOverState {
+  winner: string | null;
+  gameEndReason: string | null;
+  rematchDeclined: boolean;
+  rematchOffers: string[];
+  hasMyTeamOfferedRematch: boolean;
+  hasOpponentTeamOfferedRematch: boolean;
+}
+
+export type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
 
 interface LobbyPlayer {
   uid?: string;
@@ -74,6 +98,7 @@ interface IncomingInvite {
 import { BughouseLobbyComponent, BughouseTvState } from './components/bughouse-lobby/bughouse-lobby.component';
 import { BughouseMatchedComponent } from './components/bughouse-matched/bughouse-matched.component';
 import { BughouseBoardComponent } from './components/bughouse-board/bughouse-board.component';
+import { BughouseSidebarComponent } from './components/bughouse-sidebar/bughouse-sidebar.component';
 import { FloatingCursorContainerDirective } from '@shared/directives';
 import { FloatingCursorComponent } from '@shared/ui';
 import { BughouseQueueService } from '../../core/services/bughouse-queue.service';
@@ -88,6 +113,7 @@ import { BughouseQueueService } from '../../core/services/bughouse-queue.service
     BughouseLobbyComponent,
     BughouseMatchedComponent,
     BughouseBoardComponent,
+    BughouseSidebarComponent,
     FloatingCursorContainerDirective,
     FloatingCursorComponent,
   ],
@@ -144,23 +170,21 @@ export class BughouseComponent implements OnInit, OnDestroy {
   myBoard = signal<'A' | 'B' | null>(null);
   myColor = signal<'w' | 'b' | null>(null);
 
-  // Board player name labels (set from bughouse_game_start, used in the UI)
-  boardAWhiteName = signal<string>('');
-  boardABlackName = signal<string>('');
-  boardBWhiteName = signal<string>('');
-  boardBBlackName = signal<string>('');
-  teamACaptainName = signal<string>('');
-  teamAPartnerName = signal<string>('');
-  teamBCaptainName = signal<string>('');
-  teamBPartnerName = signal<string>('');
-  teamACaptainBoard = signal<string>('');
-  teamACaptainColor = signal<string>('');
-  teamAPartnerBoard = signal<string>('');
-  teamAPartnerColor = signal<string>('');
-  teamBCaptainBoard = signal<string>('');
-  teamBCaptainColor = signal<string>('');
-  teamBPartnerBoard = signal<string>('');
-  teamBPartnerColor = signal<string>('');
+  // Grouped active team & board states
+  teamsState = signal<BughouseTeamsState>({
+    teamA: {
+      captain: { name: '', color: '', board: '' },
+      partner: { name: '', color: '', board: '' },
+    },
+    teamB: {
+      captain: { name: '', color: '', board: '' },
+      partner: { name: '', color: '', board: '' },
+    },
+    boards: {
+      boardA: { white: '', black: '' },
+      boardB: { white: '', black: '' },
+    }
+  });
   lobbyType = signal<'casual' | 'ranked'>('casual');
   partner = signal<LobbyPlayer | null>(null);
   isHost = signal<boolean>(true);
@@ -268,6 +292,15 @@ export class BughouseComponent implements OnInit, OnDestroy {
     if (!myLobbyId) return false;
     return this.rematchOffers().some(id => id !== myLobbyId);
   });
+
+  gameOverState = computed<BughouseGameOverState>(() => ({
+    winner: this.winner(),
+    gameEndReason: this.gameEndReason(),
+    rematchDeclined: this.rematchDeclined(),
+    rematchOffers: this.rematchOffers(),
+    hasMyTeamOfferedRematch: this.hasMyTeamOfferedRematch(),
+    hasOpponentTeamOfferedRematch: this.hasOpponentTeamOfferedRematch(),
+  }));
 
   // ── Chess Engine Instances ──────────────────────────────────────────
   chessA = new Chess();
@@ -412,17 +445,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
         },
       });
 
-    effect(() => {
-      this.movesLog();
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const containers = document.querySelectorAll('.moves-container');
-          containers.forEach((container) => {
-            container.scrollTop = container.scrollHeight;
-          });
-        });
-      });
-    });
+    // Moves log scrolling is now handled inside BughouseSidebarComponent
 
     // React to Socket changes reactively
     effect((onCleanup) => {
@@ -690,7 +713,13 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
         // Build board player name labels from full player list
         const colorsMap: Record<string, { board: string; color: string }> = data.colors ?? {};
-        const allPlayers: { id: string; name: string }[] = [
+
+        let bAW = '';
+        let bAB = '';
+        let bBW = '';
+        let bBB = '';
+
+        const allPlayers = [
           { id: String(data.teamA.captainId), name: data.teamA.captainName },
           { id: String(data.teamA.partnerId), name: data.teamA.partnerName },
           { id: String(data.teamB.captainId), name: data.teamB.captainName },
@@ -699,38 +728,31 @@ export class BughouseComponent implements OnInit, OnDestroy {
         for (const player of allPlayers) {
           const a = colorsMap[player.id];
           if (!a) continue;
-          if (a.board === 'A' && a.color === 'w') this.boardAWhiteName.set(player.name);
-          if (a.board === 'A' && a.color === 'b') this.boardABlackName.set(player.name);
-          if (a.board === 'B' && a.color === 'w') this.boardBWhiteName.set(player.name);
-          if (a.board === 'B' && a.color === 'b') this.boardBBlackName.set(player.name);
+          if (a.board === 'A' && a.color === 'w') bAW = player.name;
+          if (a.board === 'A' && a.color === 'b') bAB = player.name;
+          if (a.board === 'B' && a.color === 'w') bBW = player.name;
+          if (a.board === 'B' && a.color === 'b') bBB = player.name;
         }
 
-        // Set Team A and Team B player names directly
-        this.teamACaptainName.set(data.teamA.captainName || '');
-        this.teamAPartnerName.set(data.teamA.partnerName || '');
-        this.teamBCaptainName.set(data.teamB.captainName || '');
-        this.teamBPartnerName.set(data.teamB.partnerName || '');
+        const teamACaptainInfo = colorsMap[String(data.teamA.captainId)] || { board: '', color: '' };
+        const teamAPartnerInfo = colorsMap[String(data.teamA.partnerId)] || { board: '', color: '' };
+        const teamBCaptainInfo = colorsMap[String(data.teamB.captainId)] || { board: '', color: '' };
+        const teamBPartnerInfo = colorsMap[String(data.teamB.partnerId)] || { board: '', color: '' };
 
-        const teamACaptainInfo = colorsMap[String(data.teamA.captainId)];
-        if (teamACaptainInfo) {
-          this.teamACaptainBoard.set(teamACaptainInfo.board || '');
-          this.teamACaptainColor.set(teamACaptainInfo.color || '');
-        }
-        const teamAPartnerInfo = colorsMap[String(data.teamA.partnerId)];
-        if (teamAPartnerInfo) {
-          this.teamAPartnerBoard.set(teamAPartnerInfo.board || '');
-          this.teamAPartnerColor.set(teamAPartnerInfo.color || '');
-        }
-        const teamBCaptainInfo = colorsMap[String(data.teamB.captainId)];
-        if (teamBCaptainInfo) {
-          this.teamBCaptainBoard.set(teamBCaptainInfo.board || '');
-          this.teamBCaptainColor.set(teamBCaptainInfo.color || '');
-        }
-        const teamBPartnerInfo = colorsMap[String(data.teamB.partnerId)];
-        if (teamBPartnerInfo) {
-          this.teamBPartnerBoard.set(teamBPartnerInfo.board || '');
-          this.teamBPartnerColor.set(teamBPartnerInfo.color || '');
-        }
+        this.teamsState.set({
+          teamA: {
+            captain: { name: data.teamA.captainName || '', color: teamACaptainInfo.color || '', board: teamACaptainInfo.board || '' },
+            partner: { name: data.teamA.partnerName || '', color: teamAPartnerInfo.color || '', board: teamAPartnerInfo.board || '' },
+          },
+          teamB: {
+            captain: { name: data.teamB.captainName || '', color: teamBCaptainInfo.color || '', board: teamBCaptainInfo.board || '' },
+            partner: { name: data.teamB.partnerName || '', color: teamBPartnerInfo.color || '', board: teamBPartnerInfo.board || '' },
+          },
+          boards: {
+            boardA: { white: bAW, black: bAB },
+            boardB: { white: bBW, black: bBB },
+          }
+        });
 
         this.syncBoardOrientations();
 
@@ -1116,18 +1138,20 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.winner.set(null);
     this.gameEndReason.set(null);
     this.movesLog.set([]);
-    this.teamACaptainName.set('');
-    this.teamAPartnerName.set('');
-    this.teamBCaptainName.set('');
-    this.teamBPartnerName.set('');
-    this.teamACaptainBoard.set('');
-    this.teamACaptainColor.set('');
-    this.teamAPartnerBoard.set('');
-    this.teamAPartnerColor.set('');
-    this.teamBCaptainBoard.set('');
-    this.teamBCaptainColor.set('');
-    this.teamBPartnerBoard.set('');
-    this.teamBPartnerColor.set('');
+    this.teamsState.set({
+      teamA: {
+        captain: { name: '', color: '', board: '' },
+        partner: { name: '', color: '', board: '' },
+      },
+      teamB: {
+        captain: { name: '', color: '', board: '' },
+        partner: { name: '', color: '', board: '' },
+      },
+      boards: {
+        boardA: { white: '', black: '' },
+        boardB: { white: '', black: '' },
+      }
+    });
 
     this.cancelDropMode();
     this.syncBoardOrientations();
@@ -1333,41 +1357,7 @@ export class BughouseComponent implements OnInit, OnDestroy {
     if (pockets['B_B']) this.pocketB_B.set({ ...pockets['B_B'] } as Record<PieceType, number>);
   }
 
-  getPlayerNameForEntry(entry: MoveLogEntry): string {
-    if (entry.board === 'A') {
-      return entry.moveColor === 'w' ? (this.boardAWhiteName() || 'White') : (this.boardABlackName() || 'Black');
-    } else {
-      return entry.moveColor === 'w' ? (this.boardBWhiteName() || 'White') : (this.boardBBlackName() || 'Black');
-    }
-  }
-
-  formatRemainingTime(seconds: number): string {
-    const mm = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const ss = (seconds % 60).toString().padStart(2, '0');
-    return `${mm}:${ss}`;
-  }
-
-  copyPgn() {
-    const pgnText = this.movesLog().map((m) => {
-      const boardCode = m.board === 'A' 
-        ? (m.moveColor === 'w' ? 'A' : 'a') 
-        : (m.moveColor === 'w' ? 'B' : 'b');
-      
-      const sanFormatted = m.san.startsWith('@') ? 'P' + m.san : m.san;
-      const clk = `{[%clk ${this.formatRemainingTime(m.remainingTime)}]}`;
-      
-      return `${m.moveNo}${boardCode}. ${sanFormatted} ${clk}`;
-    }).join(' ');
-    
-    if (pgnText) {
-      navigator.clipboard.writeText(pgnText).then(() => {
-        this.showNotification('PGN copied to clipboard', 'success');
-      }).catch(err => {
-        console.error('Failed to copy PGN: ', err);
-        this.showNotification('Failed to copy PGN', 'error');
-      });
-    }
-  }
+  // getPlayerNameForEntry, formatRemainingTime, and copyPgn moved to BughouseSidebarComponent
 
   private checkGameOver(board: 'A' | 'B') {
     const chess = board === 'A' ? this.chessA : this.chessB;
@@ -1419,28 +1409,10 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.activeDropColor.set(null);
   }
 
-  isSquareTargetable(board: 'A' | 'B', square: string): boolean {
-    if (this.activeDropBoard() !== board) return false;
-    const piece = this.activeDropPiece();
-    if (!piece) return false;
-
-    const chess = board === 'A' ? this.chessA : this.chessB;
-    if (chess.get(square as any)) return false;
-
-    // Pawn cannot be placed on 1st or 8th rank
-    if (piece === 'p') {
-      const rank = square[1];
-      if (rank === '1' || rank === '8') return false;
-    }
-
-    return true;
-  }
-
   onGridSquareClicked(board: 'A' | 'B', square: string) {
-    if (!this.isSquareTargetable(board, square)) return;
-
-    const piece = this.activeDropPiece()!;
-    const color = this.activeDropColor()!;
+    const piece = this.activeDropPiece();
+    const color = this.activeDropColor();
+    if (!piece || !color) return;
 
     // Emit drop to server; server validates, applies, and broadcasts back to all 4 clients
     const socket = this.gameService.socket();
@@ -1457,58 +1429,5 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.audioService.playChessMove({ san: `${piece.toUpperCase()}@${square}`, flags: 'n' });
     this.cancelDropMode();
     // Board FEN, pocket decrement, and game-over check arrive via bughouse_move_broadcast / bughouse_game_over
-  }
-
-  // decrementPocket removed — server is the authoritative pocket owner.
-  // Pocket state is applied only via applyPocketUpdate() from bughouse_move_broadcast.
-
-  // ── Grid Generation for Drop Highlights ───────────────────────────
-  getGridSquares(board: 'A' | 'B'): string[] {
-    const orientation = board === 'A' ? this.boardAOrientation() : this.boardBOrientation();
-    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-    const ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
-
-    if (orientation === 'white') {
-      ranks.reverse();
-    } else {
-      files.reverse();
-    }
-
-    const squares: string[] = [];
-    for (const rank of ranks) {
-      for (const file of files) {
-        squares.push(file + rank);
-      }
-    }
-    return squares;
-  }
-
-  // ── Utility Formatting Helpers ─────────────────────────────────────
-  formatTime(seconds: number): string {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    const sStr = s < 10 ? '0' + s : s;
-    return `${m}:${sStr}`;
-  }
-
-  getPocketKeys(): PieceType[] {
-    return ['q', 'r', 'b', 'n', 'p'];
-  }
-
-  getPieceLabel(type: string): string {
-    const labels: Record<string, string> = {
-      q: 'Queen',
-      r: 'Rook',
-      b: 'Bishop',
-      n: 'Knight',
-      p: 'Pawn',
-    };
-    return labels[type] || type.toUpperCase();
-  }
-
-  getPocketPieceSvg(type: PieceType, color: 'w' | 'b'): string {
-    const theme = 'cburnett';
-    const typeUpper = type.toUpperCase();
-    return `/pieces/${theme}/${color}${typeUpper}.svg`;
   }
 }

@@ -68,8 +68,8 @@
               [myColor]="myColor()"
               [gameActive]="gameActive()"
               [winner]="winner()"
-              [whiteName]="boardAWhiteName()"
-              [blackName]="boardABlackName()"
+              [whiteName]="teamsState().boards.boardA.white"
+              [blackName]="teamsState().boards.boardA.black"
               [activeDropBoard]="activeDropBoard()"
               [activeDropPiece]="activeDropPiece()"
               [activeDropColor]="activeDropColor()"
@@ -98,8 +98,8 @@
               [myColor]="myColor()"
               [gameActive]="gameActive()"
               [winner]="winner()"
-              [whiteName]="boardBWhiteName()"
-              [blackName]="boardBBlackName()"
+              [whiteName]="teamsState().boards.boardB.white"
+              [blackName]="teamsState().boards.boardB.black"
               [activeDropBoard]="activeDropBoard()"
               [activeDropPiece]="activeDropPiece()"
               [activeDropColor]="activeDropColor()"
@@ -114,274 +114,16 @@
       </div>
 
       <!-- Game Notation Column -->
-      <div class="xl:col-span-1 flex flex-col border-2 border-border-base rounded-3xl overflow-hidden h-full min-h-[300px] relative">
-        <!-- Pill Tabs Selector -->
-        <div class="flex p-3 bg-slate-50 border-b border-border-base gap-2">
-          <button
-            class="flex-1 text-center py-1.5 px-3 rounded-full text-xs font-semibold transition-all cursor-pointer select-none"
-            [class.bg-slate-900]="activeSidebarTab() === 'players'"
-            [class.text-white]="activeSidebarTab() === 'players'"
-            [class.bg-white]="activeSidebarTab() !== 'players'"
-            [class.text-slate-600]="activeSidebarTab() !== 'players'"
-            [class.border]="activeSidebarTab() !== 'players'"
-            [class.border-border-base]="activeSidebarTab() !== 'players'"
-            (click)="activeSidebarTab.set('players')"
-          >
-            Players
-          </button>
-          <button
-            class="flex-1 text-center py-1.5 px-3 rounded-full text-xs font-semibold transition-all cursor-pointer select-none"
-            [class.bg-slate-900]="activeSidebarTab() === 'moves'"
-            [class.text-white]="activeSidebarTab() === 'moves'"
-            [class.bg-white]="activeSidebarTab() !== 'moves'"
-            [class.text-slate-600]="activeSidebarTab() !== 'moves'"
-            [class.border]="activeSidebarTab() !== 'moves'"
-            [class.border-border-base]="activeSidebarTab() !== 'moves'"
-            (click)="activeSidebarTab.set('moves')"
-          >
-            Game Log
-          </button>
-        </div>
-
-        @if (activeSidebarTab() === 'players') {
-          <!-- Teams / Players Panel -->
-          <div class="flex-1 flex flex-col justify-between p-4 min-h-0 overflow-y-auto">
-            <div class="flex flex-col gap-3">
-              <!-- Team A Row -->
-              <div class="flex items-center justify-between gap-2 p-2">
-                <div class="flex-1 flex flex-col gap-2 min-w-0">
-                  <!-- Captain A -->
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-slate-300 mt-1"
-                          [class.bg-white]="teamACaptainColor() === 'w'"
-                          [class.bg-slate-950]="teamACaptainColor() === 'b'"></span>
-                    <div class="flex flex-col min-w-0">
-                      <span class="text-sm font-semibold truncate text-slate-800 leading-tight">
-                        {{ teamACaptainName() || 'Captain A' }}
-                      </span>
-                      @if (teamACaptainBoard()) {
-                        <span class="text-[11px] italic text-slate-400 mt-0.5 leading-none">
-                          Board {{ teamACaptainBoard() === 'A' ? '1' : '2' }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                  <!-- Partner A -->
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-slate-300 mt-1"
-                          [class.bg-white]="teamAPartnerColor() === 'w'"
-                          [class.bg-slate-950]="teamAPartnerColor() === 'b'"></span>
-                    <div class="flex flex-col min-w-0">
-                      <span class="text-sm font-semibold truncate text-slate-800 leading-tight">
-                        {{ teamAPartnerName() || 'Partner A' }}
-                      </span>
-                      @if (teamAPartnerBoard()) {
-                        <span class="text-[11px] italic text-slate-400 mt-0.5 leading-none">
-                          Board {{ teamAPartnerBoard() === 'A' ? '1' : '2' }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center justify-center py-1 px-2.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold shrink-0 uppercase tracking-wider border border-blue-100">
-                  Team A
-                </div>
-              </div>
-
-              <!-- Team B Row -->
-              <div class="flex items-center justify-between gap-2 p-2">
-                <div class="flex-1 flex flex-col gap-2 min-w-0">
-                  <!-- Captain B -->
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-slate-300 mt-1"
-                          [class.bg-white]="teamBCaptainColor() === 'w'"
-                          [class.bg-slate-950]="teamBCaptainColor() === 'b'"></span>
-                    <div class="flex flex-col min-w-0">
-                      <span class="text-sm font-semibold truncate text-slate-800 leading-tight">
-                        {{ teamBCaptainName() || 'Captain B' }}
-                      </span>
-                      @if (teamBCaptainBoard()) {
-                        <span class="text-[11px] italic text-slate-400 mt-0.5 leading-none">
-                          Board {{ teamBCaptainBoard() === 'A' ? '1' : '2' }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                  <!-- Partner B -->
-                  <div class="flex items-start gap-2.5 min-w-0">
-                    <span class="w-2.5 h-2.5 rounded-full shrink-0 border border-slate-300 mt-1"
-                          [class.bg-white]="teamBPartnerColor() === 'w'"
-                          [class.bg-slate-950]="teamBPartnerColor() === 'b'"></span>
-                    <div class="flex flex-col min-w-0">
-                      <span class="text-sm font-semibold truncate text-slate-800 leading-tight">
-                        {{ teamBPartnerName() || 'Partner B' }}
-                      </span>
-                      @if (teamBPartnerBoard()) {
-                        <span class="text-[11px] italic text-slate-400 mt-0.5 leading-none">
-                          Board {{ teamBPartnerBoard() === 'A' ? '1' : '2' }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center justify-center py-1 px-2.5 rounded-full bg-rose-50 text-rose-700 text-[10px] font-bold shrink-0 uppercase tracking-wider border border-rose-100">
-                  Team B
-                </div>
-              </div>
-            </div>
-
-            <!-- Game Over / Rematch / New Game Panel inline -->
-            @if (winner()) {
-              <div class="mt-4 p-4 rounded-2xl bg-slate-50 border border-border-base flex flex-col items-center justify-center gap-3">
-                <!-- Text status -->
-                <div class="text-center">
-                  <span class="text-xs font-bold text-slate-700 select-all leading-relaxed">
-                    @if (rematchDeclined()) {
-                      <span class="text-rose-600 font-extrabold uppercase">Rematch declined</span>
-                    } @else if (hasOpponentTeamOfferedRematch()) {
-                      <span class="text-green-600 font-extrabold uppercase animate-pulse">Rematch offered!</span><br/>Opponent captain wants to play again
-                    } @else if (hasMyTeamOfferedRematch()) {
-                      <span class="text-blue-600 font-extrabold uppercase">Waiting for opponent</span><br/>Offer sent to opposing captain
-                    } @else {
-                      <span class="uppercase font-extrabold text-blue-600 text-sm block mb-1">
-                        {{ winner() === 'Draw' ? 'Draw match' : winner() + ' wins!' }}
-                      </span>
-                      <span class="text-[11px] text-slate-500 font-medium block leading-none">
-                        {{ gameEndReason() }}
-                      </span>
-                    }
-                  </span>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex items-center justify-center gap-2">
-                  @if (isHost()) {
-                    @if (hasOpponentTeamOfferedRematch()) {
-                      <!-- Accept Rematch -->
-                      <button
-                        class="px-4 py-1.5 rounded-full bg-green-600 hover:bg-green-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
-                        (click)="offerRematch()"
-                      >
-                        Accept
-                      </button>
-                      <!-- Decline Rematch -->
-                      <button
-                        class="px-4 py-1.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
-                        (click)="declineRematch()"
-                      >
-                        Decline
-                      </button>
-                    } @else if (hasMyTeamOfferedRematch()) {
-                      <!-- Cancel Rematch Offer -->
-                      <button
-                        class="px-4 py-1.5 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold border border-slate-300 shadow-sm transition-colors cursor-pointer"
-                        (click)="declineRematch()"
-                      >
-                        Cancel Offer
-                      </button>
-                    } @else if (rematchDeclined()) {
-                      <!-- New Game -->
-                      <button
-                        class="px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
-                        (click)="startQueue()"
-                      >
-                        New Game
-                      </button>
-                    } @else {
-                      <!-- Offer Rematch -->
-                      <button
-                        class="px-4 py-1.5 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold border border-slate-300 shadow-sm transition-colors cursor-pointer"
-                        (click)="offerRematch()"
-                      >
-                        Rematch
-                      </button>
-                      <!-- New Game -->
-                      <button
-                        class="px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
-                        (click)="startQueue()"
-                      >
-                        New Game
-                      </button>
-                    }
-                  } @else {
-                    <!-- Partner perspective -->
-                    <div class="text-[10px] text-slate-400 font-semibold italic text-center leading-none py-1">
-                      @if (rematchDeclined()) {
-                        Rematch declined
-                      } @else if (hasMyTeamOfferedRematch()) {
-                        Captain offered rematch...
-                      } @else if (hasOpponentTeamOfferedRematch()) {
-                        Opponent offered rematch
-                      } @else {
-                        Waiting for captain...
-                      }
-                    </div>
-                  }
-                </div>
-              </div>
-            }
-          </div>
-        }
-
-        @if (activeSidebarTab() === 'moves') {
-          <!-- Header & Actions -->
-          <div class="flex items-center justify-between border-b border-border-base bg-slate-50 px-4 py-3 gap-2 shrink-0">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Game Log</span>
-            <!-- Copy BPGN Button -->
-            <button
-              class="inline-flex items-center justify-center p-1.5 rounded-lg border border-border-base bg-white hover:bg-slate-50 transition-colors text-slate-500 hover:text-slate-700 cursor-pointer"
-              (click)="copyPgn()"
-              title="Copy Game Notation (BPGN)"
-            >
-              <ng-icon name="heroDocumentDuplicate" class="w-4 h-4"></ng-icon>
-            </button>
-          </div>
-
-          <!-- Body Content -->
-          <div class="flex-1 flex flex-col min-h-0 p-4">
-            <!-- Unified Chronological Log -->
-            <div class="flex-1 overflow-y-auto flex flex-col gap-1 w-full pr-1 moves-container">
-              @for (entry of movesLog(); track entry.id) {
-                <div class="grid grid-cols-[2rem_4rem_2rem_1fr] items-center gap-1.5 hover:bg-slate-50 rounded-lg py-1 px-2 transition-colors">
-                  <!-- Cumulative overall move index -->
-                  <span class="text-[10px] text-slate-400 font-mono text-center select-none">#{{ $index + 1 }}</span>
-
-                  <!-- Board indicator badge -->
-                  <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded text-center uppercase tracking-wide border select-none"
-                        [ngClass]="entry.board === 'A' ? 'bg-blue-50 text-blue-700 border-blue-100' : 'bg-purple-50 text-purple-700 border-purple-100'">
-                    B{{ entry.board === 'A' ? '1' : '2' }}
-                  </span>
-
-                  <!-- Board-specific move number -->
-                  <span class="text-xs font-semibold text-slate-500 text-right pr-1 select-none">
-                    {{ entry.moveNo }}{{ entry.moveColor === 'w' ? '.' : '...' }}
-                  </span>
-
-                  <!-- Move and Player -->
-                  <div class="flex items-center gap-1.5 min-w-0">
-                    <!-- Color circle indicator -->
-                    <span class="w-2.5 h-2.5 rounded-full border border-slate-300 shrink-0 shadow-sm"
-                          [ngClass]="entry.moveColor === 'w' ? 'bg-white' : 'bg-slate-950'"></span>
-                    <!-- SAN -->
-                    <span class="text-sm font-semibold text-slate-800 select-all shrink-0">
-                      {{ entry.san }}
-                    </span>
-                    <!-- Player Name -->
-                    <span class="text-[10px] text-slate-400 truncate select-none">
-                      ({{ getPlayerNameForEntry(entry) }})
-                    </span>
-                  </div>
-                </div>
-              }
-              @if (movesLog().length === 0) {
-                <div class="flex-1 flex items-center justify-center text-xs text-slate-400 italic">
-                  No moves played yet.
-                </div>
-              }
-            </div>
-          </div>
-        }
-      </div>
+      <app-bughouse-sidebar
+        [(activeSidebarTab)]="activeSidebarTab"
+        [movesLog]="movesLog()"
+        [isHost]="isHost()"
+        [teamsState]="teamsState()"
+        [gameOverState]="gameOverState()"
+        (offerRematch)="offerRematch()"
+        (declineRematch)="declineRematch()"
+        (startQueue)="startQueue()"
+      ></app-bughouse-sidebar>
     </div>
   }
 
