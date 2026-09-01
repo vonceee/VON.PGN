@@ -25,18 +25,6 @@
     </app-bughouse-lobby>
   }
 
-  <!-- ==================== MATCHED STATE ==================== -->
-  @if (gameStateService.lobbyState() === 'matched') {
-    <app-bughouse-matched
-      [currentUserProfile]="currentUserProfile()"
-      [partner]="gameStateService.partner()"
-      [opponent1]="gameStateService.opponent1()"
-      [opponent2]="gameStateService.opponent2()"
-      [matchCountdown]="gameStateService.matchCountdown()"
-    >
-    </app-bughouse-matched>
-  }
-
   <!-- ==================== PLAYING STATE ==================== -->
   @if (gameStateService.lobbyState() === 'playing') {
     <app-bughouse-play></app-bughouse-play>

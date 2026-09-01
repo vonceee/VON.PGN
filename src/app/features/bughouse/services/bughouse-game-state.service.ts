@@ -112,8 +112,6 @@ export class BughouseGameStateService {
   activeDropPiece = signal<PieceType | null>(null);
   activeDropColor = signal<'w' | 'b' | null>(null);
 
-  matchCountdown = signal<number>(5);
-  private countdownInterval: any = null;
   private timerInterval: any = null;
   private lastTickTime: number = 0;
 
@@ -628,12 +626,7 @@ export class BughouseGameStateService {
     }, 4000);
   }
 
-  stopCountdownInterval() {
-    if (this.countdownInterval) {
-      clearInterval(this.countdownInterval);
-      this.countdownInterval = null;
-    }
-  }
+
 
   invitePlayer(player: LobbyPlayer) {
     if (!isPlatformBrowser(this.platformId)) return;
@@ -783,8 +776,7 @@ export class BughouseGameStateService {
           this.resetGame();
         }
       } else if (lobby.status === 'matched') {
-        // Only bughouse_matched initiates active matched countdown. If received via lobby sync outside a countdown, fallback to lobby.
-        if (this.lobbyState() !== 'playing' && this.matchCountdown() <= 0) {
+        if (this.lobbyState() !== 'playing') {
           this.lobbyState.set('lobby');
         }
       }
@@ -811,24 +803,9 @@ export class BughouseGameStateService {
     this.ngZone.run(() => {
       this.opponent1.set({ name: data.opponent1.name, isOnline: true });
       this.opponent2.set({ name: data.opponent2.name, isOnline: true });
-      this.lobbyState.set('matched');
-      this.matchCountdown.set(5);
       this.audioService.playBoardStart();
-
-      if (this.countdownInterval) clearInterval(this.countdownInterval);
-      this.countdownInterval = setInterval(() => {
-        this.ngZone.run(() => {
-          const count = this.matchCountdown() - 1;
-          this.matchCountdown.set(count);
-          this.audioService.playNavigationSound();
-
-          if (count <= 0) {
-            this.stopCountdownInterval();
-            this.lobbyState.set('playing');
-            this.startGame();
-          }
-        });
-      }, 1000);
+      this.lobbyState.set('playing');
+      this.startGame();
     });
   };
 

@@ -43,7 +43,6 @@ import { BughouseGameStateService } from './services/bughouse-game-state.service
 import { BughouseTvService } from './services/bughouse-tv.service';
 
 import { BughouseLobbyComponent } from './components/bughouse-lobby/bughouse-lobby.component';
-import { BughouseMatchedComponent } from './components/bughouse-matched/bughouse-matched.component';
 import { BughousePlayComponent } from './components/bughouse-play/bughouse-play.component';
 import { FloatingCursorContainerDirective } from '@shared/directives';
 import { FloatingCursorComponent } from '@shared/ui';
@@ -64,7 +63,6 @@ import { FloatingCursorComponent } from '@shared/ui';
     FormsModule,
     NgIcon,
     BughouseLobbyComponent,
-    BughouseMatchedComponent,
     BughousePlayComponent,
     FloatingCursorContainerDirective,
     FloatingCursorComponent,
@@ -184,7 +182,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.gameStateService.stopClocks();
-    this.gameStateService.stopCountdownInterval();
   }
 
   // ── Local Search Actions ───────────────────────────────────────────

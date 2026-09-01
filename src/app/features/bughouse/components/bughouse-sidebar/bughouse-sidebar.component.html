@@ -34,10 +34,10 @@
             } @else if (gameOverState().hasMyTeamOfferedRematch) {
               <span class="text-blue-600 font-extrabold uppercase">Waiting for opponent</span><br/>Offer sent to opposing captain
             } @else {
-              <span class="uppercase font-extrabold text-blue-600 text-sm block mb-1">
-                {{ gameOverState().winner === 'Draw' ? 'Draw match' : gameOverState().winner + ' wins!' }}
+              <span class="text-xl block leading-tight mb-2">
+                {{ getWinnerText() }}
               </span>
-              <span class="text-[11px] text-slate-500 font-medium block leading-none">
+              <span class="text-lg italic block leading-tight">
                 {{ gameOverState().gameEndReason }}
               </span>
             }
@@ -103,8 +103,6 @@
                 Captain offered rematch...
               } @else if (gameOverState().hasOpponentTeamOfferedRematch) {
                 Opponent offered rematch
-              } @else {
-                Waiting for captain...
               }
             </div>
           }

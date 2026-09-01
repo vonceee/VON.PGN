@@ -49,6 +49,19 @@ export class BughouseSidebarComponent {
     });
   }
 
+  getWinnerText(): string {
+    const winner = this.gameOverState().winner;
+    if (winner === 'Draw') return 'Draw match';
+    if (!winner) return '';
+    const teams = this.teamsState();
+    if (winner === 'Team A' && teams.teamA) {
+      return `${teams.teamA.captain.name} & ${teams.teamA.partner.name} WIN!`;
+    } else if (winner === 'Team B' && teams.teamB) {
+      return `${teams.teamB.captain.name} & ${teams.teamB.partner.name} WIN!`;
+    }
+    return `${winner} wins!`;
+  }
+
   getPlayerNameForEntry(entry: MoveLogEntry): string {
     const teams = this.teamsState();
     if (entry.board === 'A') {
