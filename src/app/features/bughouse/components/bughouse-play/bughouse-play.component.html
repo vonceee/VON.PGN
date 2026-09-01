@@ -1,0 +1,74 @@
+<div class="w-full min-h-0 overflow-hidden">
+  <!-- Boards Column -->
+    <div class="flex flex-row justify-start items-center gap-6 p-8">
+      <!-- ==================== BOARD A ==================== -->
+      <app-bughouse-board
+        #boardAComponent
+        boardId="A"
+        [fen]="gameStateService.boardAFen()"
+        [orientation]="gameStateService.boardAOrientation()"
+        [pocketW]="gameStateService.pocketA_W()"
+        [pocketB]="gameStateService.pocketA_B()"
+        [timeW]="gameStateService.timeA_W()"
+        [timeB]="gameStateService.timeA_B()"
+        [turn]="gameStateService.turnA()"
+        [interactive]="gameStateService.gameActive() && !gameStateService.winner() && gameStateService.myBoard() === 'A' && gameStateService.turnA() === gameStateService.myColor()"
+        [myBoard]="gameStateService.myBoard()"
+        [myColor]="gameStateService.myColor()"
+        [gameActive]="gameStateService.gameActive()"
+        [winner]="gameStateService.winner()"
+        [whiteName]="gameStateService.teamsState().boards.boardA.white"
+        [blackName]="gameStateService.teamsState().boards.boardA.black"
+        [activeDropBoard]="gameStateService.activeDropBoard()"
+        [activeDropPiece]="gameStateService.activeDropPiece()"
+        [activeDropColor]="gameStateService.activeDropColor()"
+        (moveMade)="gameStateService.onBoardMoveMade('A', $event)"
+        (startDropMode)="gameStateService.startDropMode($event.board, $event.piece, $event.color)"
+        (pieceDropped)="gameStateService.onGridSquareClicked($event.board, $event.square)"
+      >
+      </app-bughouse-board>
+
+      <!-- ==================== BOARD B ==================== -->
+      <app-bughouse-board
+        #boardBComponent
+        boardId="B"
+        [fen]="gameStateService.boardBFen()"
+        [orientation]="gameStateService.boardBOrientation()"
+        [pocketW]="gameStateService.pocketB_W()"
+        [pocketB]="gameStateService.pocketB_B()"
+        [timeW]="gameStateService.timeB_W()"
+        [timeB]="gameStateService.timeB_B()"
+        [turn]="gameStateService.turnB()"
+        [interactive]="gameStateService.gameActive() && !gameStateService.winner() && gameStateService.myBoard() === 'B' && gameStateService.turnB() === gameStateService.myColor()"
+        [myBoard]="gameStateService.myBoard()"
+        [myColor]="gameStateService.myColor()"
+        [gameActive]="gameStateService.gameActive()"
+        [winner]="gameStateService.winner()"
+        [whiteName]="gameStateService.teamsState().boards.boardB.white"
+        [blackName]="gameStateService.teamsState().boards.boardB.black"
+        [activeDropBoard]="gameStateService.activeDropBoard()"
+        [activeDropPiece]="gameStateService.activeDropPiece()"
+        [activeDropColor]="gameStateService.activeDropColor()"
+        (moveMade)="gameStateService.onBoardMoveMade('B', $event)"
+        (startDropMode)="gameStateService.startDropMode($event.board, $event.piece, $event.color)"
+        (pieceDropped)="gameStateService.onGridSquareClicked($event.board, $event.square)"
+      >
+      </app-bughouse-board>
+
+        <!-- Game Notation Column -->
+      <app-bughouse-sidebar
+        class="sync-bughouse-height"
+        [(activeSidebarTab)]="gameStateService.activeSidebarTab"
+        [movesLog]="gameStateService.movesLog()"
+        [isHost]="gameStateService.isHost()"
+        [teamsState]="gameStateService.teamsState()"
+        [gameOverState]="gameStateService.gameOverState()"
+        [record]="gameStateService.bughouseRecord()"
+        (offerRematch)="gameStateService.offerRematch()"
+        (declineRematch)="gameStateService.declineRematch()"
+        (startQueue)="gameStateService.startQueue()"
+        (resign)="gameStateService.resign()"
+        (offerDraw)="gameStateService.offerDraw()"
+      ></app-bughouse-sidebar>
+    </div>
+</div>

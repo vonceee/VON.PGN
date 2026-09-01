@@ -1,0 +1,7 @@
+@media (min-width: 1280px) {
+  .sync-bughouse-height {
+    display: flex;
+    flex-direction: column;
+    height: var(--bughouse-board-height) !important;
+  }
+}

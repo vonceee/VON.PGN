@@ -1,14 +1,1 @@
-.bughouse-boards-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  align-items: center;
-  justify-content: center;
-}
-
-@media (min-width: 1024px) {
-  .bughouse-boards-container {
-    flex-direction: row;
-    align-items: center;
-  }
-}
+/* Component-specific styles for the main bughouse container */

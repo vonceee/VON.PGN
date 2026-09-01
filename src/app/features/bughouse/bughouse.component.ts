@@ -44,17 +44,17 @@ import { BughouseTvService } from './services/bughouse-tv.service';
 
 import { BughouseLobbyComponent } from './components/bughouse-lobby/bughouse-lobby.component';
 import { BughouseMatchedComponent } from './components/bughouse-matched/bughouse-matched.component';
-import { BughouseBoardComponent } from './components/bughouse-board/bughouse-board.component';
-import { BughouseSidebarComponent } from './components/bughouse-sidebar/bughouse-sidebar.component';
+import { BughousePlayComponent } from './components/bughouse-play/bughouse-play.component';
 import { FloatingCursorContainerDirective } from '@shared/directives';
 import { FloatingCursorComponent } from '@shared/ui';
 
 /**
  * Controller Component for the Bughouse chess page.
  * 
- * WHY: Streamlined to handle viewport layout sizing, initial query parameter checks,
- *      and player search. Delegating gameplay, TV, queue, and invite states to dedicated
- *      services preserves cleanliness and scalability.
+ * WHY: Streamlined to handle top-level view routing (lobby, match-found, playing),
+ *      initial query parameter checks, and player search. Delegating gameplay, TV,
+ *      queue, and invite states to dedicated services and subcomponents preserves
+ *      cleanliness and eliminates template spaghetti.
  */
 @Component({
   selector: 'app-bughouse',
@@ -65,8 +65,7 @@ import { FloatingCursorComponent } from '@shared/ui';
     NgIcon,
     BughouseLobbyComponent,
     BughouseMatchedComponent,
-    BughouseBoardComponent,
-    BughouseSidebarComponent,
+    BughousePlayComponent,
     FloatingCursorContainerDirective,
     FloatingCursorComponent,
   ],
@@ -92,9 +91,7 @@ import { FloatingCursorComponent } from '@shared/ui';
     }),
   ],
   host: {
-    '[class.absolute]': "gameStateService.lobbyState() === 'playing'",
-    '[class.inset-0]': "gameStateService.lobbyState() === 'playing'",
-    '[class.overflow-hidden]': "gameStateService.lobbyState() === 'playing'",
+    class: 'absolute inset-0 overflow-hidden flex flex-col',
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bughouse.component.html',
@@ -119,32 +116,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
   isSearchingPlayers = signal<boolean>(false);
   private searchSubject = new Subject<string>();
 
-  // ── Layout Sizing Signals & Computeds ─────────────────────────────
-  windowWidth = signal<number>(1200);
-  windowHeight = signal<number>(800);
-  private resizeListener: (() => void) | null = null;
-
-  isSideBySide = computed(() => this.windowWidth() >= 1024);
-  isHeaderBarVisible = computed(() => this.gameStateService.isSpectating() || !this.gameStateService.gameActive() || !!this.gameStateService.winner());
-
-  maxBoardSize = computed(() => {
-    const width = this.windowWidth();
-    const height = this.windowHeight();
-    
-    const showNotation = this.gameStateService.lobbyState() === 'playing' && width >= 1280;
-    const paddingAndGaps = showNotation ? 368 : 48;
-    const availableWidth = width - paddingAndGaps;
-    
-    const maxWidth = this.isSideBySide() ? (availableWidth / 1.75) : (width - 32);
-    
-    const isPlayingPage = this.gameStateService.lobbyState() === 'playing';
-    const headerOffset = isPlayingPage ? 272 : 360;
-    const maxHeight = this.isSideBySide() ? (height - headerOffset) : 9999;
-    
-    const maxPossible = Math.min(maxWidth, maxHeight);
-    return Math.max(280, Math.min(700, maxPossible));
-  });
-
   // Current User Profile
   currentUserProfile = computed(() => {
     const user = this.authService.currentUser();
@@ -154,16 +125,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.windowWidth.set(window.innerWidth);
-      this.windowHeight.set(window.innerHeight);
-      this.resizeListener = () => {
-        this.windowWidth.set(window.innerWidth);
-        this.windowHeight.set(window.innerHeight);
-      };
-      window.addEventListener('resize', this.resizeListener);
-    }
-
     // Setup Search subscription
     this.searchSubject
       .pipe(
@@ -224,9 +185,6 @@ export class BughouseComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.gameStateService.stopClocks();
     this.gameStateService.stopCountdownInterval();
-    if (this.resizeListener && isPlatformBrowser(this.platformId)) {
-      window.removeEventListener('resize', this.resizeListener);
-    }
   }
 
   // ── Local Search Actions ───────────────────────────────────────────
@@ -249,3 +207,4 @@ export class BughouseComponent implements OnInit, OnDestroy {
     this.gameStateService.invitePlayer(player);
   }
 }
+

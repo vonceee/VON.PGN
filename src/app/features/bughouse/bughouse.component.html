@@ -1,15 +1,5 @@
-<div
-  appFloatingCursorContainer
-  class="w-full max-w-[1850px] mx-auto pt-6 md:p-6 md:pl-25 2xl:pl-15"
-  [class.px-4]="gameStateService.lobbyState() !== 'playing'"
-  [class.md:px-16]="gameStateService.lobbyState() !== 'playing'"
-  [class.py-8]="gameStateService.lobbyState() !== 'playing'"
-  [class.h-full]="gameStateService.lobbyState() === 'playing'"
-  [class.flex]="gameStateService.lobbyState() === 'playing'"
-  [class.flex-col]="gameStateService.lobbyState() === 'playing'"
-  [class.p-4]="gameStateService.lobbyState() === 'playing'"
-  [class.md:p-6]="gameStateService.lobbyState() === 'playing'"
->
+<div appFloatingCursorContainer>
+  <!-- ==================== LOBBY & QUEUING STATE ==================== -->
   @if (gameStateService.lobbyState() === 'lobby' || gameStateService.lobbyState() === 'queuing') {
     <app-bughouse-lobby
       [currentUserProfile]="currentUserProfile()"
@@ -49,79 +39,7 @@
 
   <!-- ==================== PLAYING STATE ==================== -->
   @if (gameStateService.lobbyState() === 'playing') {
-    <div class="w-full flex-1 grid grid-cols-1 xl:grid-cols-4 gap-6 min-h-0 overflow-hidden">
-      <!-- Boards Column -->
-      <div class="xl:col-span-3 flex-1 flex flex-col min-h-0 overflow-hidden">
-        <div class="bughouse-boards-container flex-1 min-h-0 overflow-hidden w-full flex items-center justify-start gap-6">
-          <!-- ==================== BOARD A ==================== -->
-          <app-bughouse-board
-            boardId="A"
-            [fen]="gameStateService.boardAFen()"
-            [orientation]="gameStateService.boardAOrientation()"
-            [pocketW]="gameStateService.pocketA_W()"
-            [pocketB]="gameStateService.pocketA_B()"
-            [timeW]="gameStateService.timeA_W()"
-            [timeB]="gameStateService.timeA_B()"
-            [turn]="gameStateService.turnA()"
-            [interactive]="gameStateService.gameActive() && !gameStateService.winner() && gameStateService.myBoard() === 'A' && gameStateService.turnA() === gameStateService.myColor()"
-            [myBoard]="gameStateService.myBoard()"
-            [myColor]="gameStateService.myColor()"
-            [gameActive]="gameStateService.gameActive()"
-            [winner]="gameStateService.winner()"
-            [whiteName]="gameStateService.teamsState().boards.boardA.white"
-            [blackName]="gameStateService.teamsState().boards.boardA.black"
-            [activeDropBoard]="gameStateService.activeDropBoard()"
-            [activeDropPiece]="gameStateService.activeDropPiece()"
-            [activeDropColor]="gameStateService.activeDropColor()"
-            [maxBoardSize]="maxBoardSize()"
-            (moveMade)="gameStateService.onBoardMoveMade('A', $event)"
-            (startDropMode)="gameStateService.startDropMode($event.board, $event.piece, $event.color)"
-            (pieceDropped)="gameStateService.onGridSquareClicked($event.board, $event.square)"
-          >
-          </app-bughouse-board>
-
-          <!-- ==================== BOARD B ==================== -->
-          <app-bughouse-board
-            boardId="B"
-            [fen]="gameStateService.boardBFen()"
-            [orientation]="gameStateService.boardBOrientation()"
-            [pocketW]="gameStateService.pocketB_W()"
-            [pocketB]="gameStateService.pocketB_B()"
-            [timeW]="gameStateService.timeB_W()"
-            [timeB]="gameStateService.timeB_B()"
-            [turn]="gameStateService.turnB()"
-            [interactive]="gameStateService.gameActive() && !gameStateService.winner() && gameStateService.myBoard() === 'B' && gameStateService.turnB() === gameStateService.myColor()"
-            [myBoard]="gameStateService.myBoard()"
-            [myColor]="gameStateService.myColor()"
-            [gameActive]="gameStateService.gameActive()"
-            [winner]="gameStateService.winner()"
-            [whiteName]="gameStateService.teamsState().boards.boardB.white"
-            [blackName]="gameStateService.teamsState().boards.boardB.black"
-            [activeDropBoard]="gameStateService.activeDropBoard()"
-            [activeDropPiece]="gameStateService.activeDropPiece()"
-            [activeDropColor]="gameStateService.activeDropColor()"
-            [maxBoardSize]="maxBoardSize()"
-            (moveMade)="gameStateService.onBoardMoveMade('B', $event)"
-            (startDropMode)="gameStateService.startDropMode($event.board, $event.piece, $event.color)"
-            (pieceDropped)="gameStateService.onGridSquareClicked($event.board, $event.square)"
-          >
-          </app-bughouse-board>
-        </div>
-      </div>
-
-      <!-- Game Notation Column -->
-      <app-bughouse-sidebar
-        [(activeSidebarTab)]="gameStateService.activeSidebarTab"
-        [movesLog]="gameStateService.movesLog()"
-        [isHost]="gameStateService.isHost()"
-        [teamsState]="gameStateService.teamsState()"
-        [gameOverState]="gameStateService.gameOverState()"
-        [record]="gameStateService.bughouseRecord()"
-        (offerRematch)="gameStateService.offerRematch()"
-        (declineRematch)="gameStateService.declineRematch()"
-        (startQueue)="gameStateService.startQueue()"
-      ></app-bughouse-sidebar>
-    </div>
+    <app-bughouse-play></app-bughouse-play>
   }
 
   <!-- Temporary Banner Toast Notifications (Success / Warning / Info) -->

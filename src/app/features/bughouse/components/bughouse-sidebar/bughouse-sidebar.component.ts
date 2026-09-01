@@ -1,19 +1,12 @@
 import { Component, ChangeDetectionStrategy, input, output, model, computed, effect, ElementRef, viewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroDocumentDuplicate } from '@ng-icons/heroicons/outline';
 import { ToastService } from '../../../../core/services/toast.service';
 import { MoveLogEntry, BughouseTeamsState, BughouseGameOverState, BughouseRecordState } from '../../../../core/models/bughouse.model';
 
 @Component({
   selector: 'app-bughouse-sidebar',
   standalone: true,
-  imports: [CommonModule, NgIcon],
-  providers: [
-    provideIcons({
-      heroDocumentDuplicate,
-    }),
-  ],
+  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bughouse-sidebar.component.html',
 })
@@ -34,6 +27,8 @@ export class BughouseSidebarComponent {
   offerRematch = output<void>();
   declineRematch = output<void>();
   startQueue = output<void>();
+  resign = output<void>();
+  offerDraw = output<void>();
 
   // View Child signals
   movesContainer = viewChild<ElementRef<HTMLDivElement>>('movesContainer');

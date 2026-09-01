@@ -601,6 +601,22 @@ export class BughouseGameStateService {
     }
   }
 
+  resign() {
+    const socket = this.gameService.socket();
+    const gId = this.gameId();
+    if (socket?.connected && gId) {
+      socket.emit('bughouse_resign', { gameId: gId });
+    }
+  }
+
+  offerDraw() {
+    const socket = this.gameService.socket();
+    const gId = this.gameId();
+    if (socket?.connected && gId) {
+      socket.emit('bughouse_offer_draw', { gameId: gId });
+    }
+  }
+
   showNotification(message: string, type: 'success' | 'error' | 'info') {
     this.inviteNotification.set({ message, type });
     setTimeout(() => {
@@ -757,13 +773,20 @@ export class BughouseGameStateService {
       }
 
       if (lobby.status === 'waiting') {
-        this.lobbyState.set('lobby');
-        this.resetGame();
+        if (this.lobbyState() !== 'playing') {
+          this.lobbyState.set('lobby');
+          this.resetGame();
+        }
       } else if (lobby.status === 'queued') {
         this.lobbyState.set('queuing');
-        this.resetGame();
+        if (this.lobbyState() !== 'playing') {
+          this.resetGame();
+        }
       } else if (lobby.status === 'matched') {
-        this.lobbyState.set('matched');
+        // Only bughouse_matched initiates active matched countdown. If received via lobby sync outside a countdown, fallback to lobby.
+        if (this.lobbyState() !== 'playing' && this.matchCountdown() <= 0) {
+          this.lobbyState.set('lobby');
+        }
       }
     });
   };
@@ -817,7 +840,7 @@ export class BughouseGameStateService {
 
       if ((!isSpectator && amIParticipant) || (isSpectator && !amIParticipant && data.gameId === this.gameId())) {
         this.isSpectating.set(isSpectator);
-        this.activeSidebarTab.set('moves');
+        this.activeSidebarTab.set('players');
 
         if (isSpectator) {
           this.myBoard.set(null);
