@@ -53,13 +53,13 @@ import { BoardThemeService } from '../../../../core/services/board-theme.service
               class="absolute inset-0 z-50 flex items-center justify-center    zoom-in "
             >
               <div
-                class="promotion-menu p-4 bg-surface border border-border-base rounded-2xl  flex gap-4"
+                class="promotion-menu p-4 bg-surface border border-slate-200 rounded-2xl  flex gap-4"
                 (click)="$event.stopPropagation()"
               >
                 @for (piece of promotionPieces; track piece.type) {
                   <button
                     (click)="selectPromotion(piece.type)"
-                    class="w-20 h-20 flex items-center justify-center rounded-xl bg-slate-200 hover:bg-surface border border-border-base  active:scale-90"
+                    class="w-20 h-20 flex items-center justify-center rounded-xl bg-slate-200 hover:bg-surface border border-slate-200  active:scale-90"
                   >
                     <img
                       [src]="getPromotionPieceUrl(piece.type, p.color)"

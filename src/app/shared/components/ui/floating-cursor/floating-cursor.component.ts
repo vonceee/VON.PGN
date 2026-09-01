@@ -34,7 +34,7 @@ import {
          style="will-change: transform; left: 0; top: 0; transform: translate3d(0px, 0px, 0px) translate(-50%, -50%);">
       <div [style.opacity]="isVisible() ? 1 : 0"
            [style.transform]="isVisible() ? 'scale(1)' : 'scale(0.9)'"
-           class="bg-white border border-border-base rounded-full px-7 py-3.5 flex items-center gap-3 shadow-lg select-none transition-[opacity,transform] duration-200 ease-out">
+           class="bg-white border border-slate-200 rounded-full px-7 py-3.5 flex items-center gap-3 shadow-lg select-none transition-[opacity,transform] duration-200 ease-out">
         @if (icon()) {
           <ng-icon [name]="icon()!" size="1.25rem" color="black" class="text-black shrink-0"></ng-icon>
         }

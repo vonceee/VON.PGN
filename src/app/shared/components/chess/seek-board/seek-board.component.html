@@ -2,7 +2,7 @@
   <div class="flex flex-col flex-1 overflow-y-auto">
     @for (seek of visibleSeeks; track seek.id) {
     <div
-      class="grid grid-cols-[20px_1fr_1fr_1fr] items-center gap-2.5 border-b border-border-base px-4 py-2 cursor-pointer  hover:bg-white/[0.03] last:border-b-0"
+      class="grid grid-cols-[20px_1fr_1fr_1fr] items-center gap-2.5 border-b border-slate-200 px-4 py-2 cursor-pointer  hover:bg-white/[0.03] last:border-b-0"
       [ngClass]="isMySeek(seek) ? 'border-l-2 border-l-slate-700 pl-[calc(1rem-2px)]' : ''" (click)="onSeekClick(seek)"
       [class.opacity-50]="isMySeek(seek)">
       <!-- Category icon -->
@@ -56,7 +56,7 @@
   </div>
 
   <!-- Site Stats Footer -->
-  <div class="px-4 py-3 border-t border-border-base bg-black/50 flex flex-col gap-0.5 shrink-0">
+  <div class="px-4 py-3 border-t border-slate-200 bg-black/50 flex flex-col gap-0.5 shrink-0">
     <div class="flex items-center gap-2 text-xs text-text-gray-500">
       <span class="font-bold text-text-main">{{ presenceService.nbPlayers() | number }}</span>
       <span>players online</span>

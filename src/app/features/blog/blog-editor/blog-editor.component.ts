@@ -49,7 +49,7 @@ interface EditorGame {
           
           <!-- Left Side: Editor Form -->
           <div class="space-y-6">
-            <div class="bg-white rounded-xl border border-border-base p-6 md:p-8 space-y-6">
+            <div class="bg-white rounded-xl border border-slate-200 p-6 md:p-8 space-y-6">
               
               <!-- Title -->
               <div class="flex flex-col">
@@ -58,7 +58,7 @@ interface EditorGame {
                   type="text"
                   [(ngModel)]="title"
                   placeholder="Enter an catchy title..."
-                  class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-base md:text-lg font-medium"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white outline-none focus:border-blue-600 text-base md:text-lg font-medium"
                 />
               </div>
 
@@ -69,17 +69,17 @@ interface EditorGame {
                   [(ngModel)]="summary"
                   placeholder="Brief excerpt shown in the list feed..."
                   rows="2"
-                  class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-sm/6 resize-none"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white outline-none focus:border-blue-600 text-sm/6 resize-none"
                 ></textarea>
               </div>
 
               <!-- Editor Body with Markdown Toolbar -->
               <div class="flex flex-col">
-                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-border-base pb-3">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
                   <label class="text-sm/6 font-semibold">Body content (Markdown)</label>
                   
                   <!-- Toolbar Helpers -->
-                  <div class="flex items-center gap-1 bg-slate-200/50 border border-border-base rounded-full p-1 text-xs">
+                  <div class="flex items-center gap-1 bg-slate-200/50 border border-slate-200 rounded-full p-1 text-xs">
                     <button (click)="insertMarkdown('bold')" class="px-2.5 py-1 rounded-full hover:bg-white font-semibold cursor-pointer">B</button>
                     <button (click)="insertMarkdown('italic')" class="px-2.5 py-1 rounded-full hover:bg-white italic cursor-pointer">I</button>
                     <button (click)="insertMarkdown('header')" class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">H2</button>
@@ -88,7 +88,7 @@ interface EditorGame {
                     <div class="relative group/insert">
                       <button class="px-2.5 py-1 rounded-full hover:bg-white font-medium cursor-pointer">Insert game</button>
                       <!-- Dropdown for games -->
-                      <div class="absolute bottom-full right-0 mb-2 w-48 bg-white border border-border-base rounded-xl shadow-lg p-2 invisible group-hover/insert:visible opacity-0 group-hover/insert:opacity-100 transition-all z-10 flex flex-col gap-1">
+                      <div class="absolute bottom-full right-0 mb-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg p-2 invisible group-hover/insert:visible opacity-0 group-hover/insert:opacity-100 transition-all z-10 flex flex-col gap-1">
                         @if (games().length === 0) {
                           <span class="text-sm/6 text-gray-500 text-center py-2">No games added yet</span>
                         }
@@ -110,17 +110,17 @@ interface EditorGame {
                   [(ngModel)]="content"
                   placeholder="Write your article here. Use [game:0] to insert your first game inline..."
                   rows="16"
-                  class="w-full px-4 py-3 rounded-xl border border-border-base bg-white outline-none focus:border-blue-600 text-base leading-relaxed resize-y min-h-[350px]"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white outline-none focus:border-blue-600 text-base leading-relaxed resize-y min-h-[350px]"
                 ></textarea>
               </div>
               
               <!-- Status & Action Buttons -->
-              <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border-base">
+              <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-200">
                 <div class="flex items-center gap-4">
                   <label class="text-sm/6 font-semibold">Status:</label>
                   <select
                     [(ngModel)]="status"
-                    class="px-3 py-2 rounded-xl border border-border-base bg-white text-sm/6 outline-none focus:border-blue-600"
+                    class="px-3 py-2 rounded-xl border border-slate-200 bg-white text-sm/6 outline-none focus:border-blue-600"
                   >
                     <option value="draft">Draft</option>
                     <option value="published">Published</option>
@@ -129,7 +129,7 @@ interface EditorGame {
                 
                 <div class="flex items-center gap-2">
                   <button
-                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
                     routerLink="/blog"
                   >
                     Cancel
@@ -150,11 +150,11 @@ interface EditorGame {
           <div class="space-y-6">
             
             <!-- PGN Games Manager Card -->
-            <div class="bg-white rounded-xl border border-border-base p-6 space-y-4">
-              <h3 class="text-lg font-semibold border-b border-border-base pb-2">PGN games manager</h3>
+            <div class="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
+              <h3 class="text-lg font-semibold border-b border-slate-200 pb-2">PGN games manager</h3>
               
               <!-- Game adding inputs -->
-              <div class="space-y-3 p-4 bg-slate-200/25 rounded-xl border border-border-base">
+              <div class="space-y-3 p-4 bg-slate-200/25 rounded-xl border border-slate-200">
                 <h4 class="text-xs font-semibold text-gray-500 uppercase">Add a chess game</h4>
                 
                 <div class="flex flex-col gap-1.5">
@@ -162,7 +162,7 @@ interface EditorGame {
                     type="text"
                     [(ngModel)]="newGameTitle"
                     placeholder="Game title (e.g. Kasparov vs Deep Blue)"
-                    class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-sm/6 outline-none focus:border-blue-600"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm/6 outline-none focus:border-blue-600"
                   />
                 </div>
                 
@@ -171,12 +171,12 @@ interface EditorGame {
                     [(ngModel)]="newGamePgn"
                     placeholder="Paste PGN string here..."
                     rows="4"
-                    class="w-full px-3 py-2 rounded-lg border border-border-base bg-white text-xs outline-none focus:border-blue-600 resize-none"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs outline-none focus:border-blue-600 resize-none"
                   ></textarea>
                 </div>
 
                 <button
-                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
                   (click)="addGame()"
                 >
                   + Add game to post
@@ -188,12 +188,12 @@ interface EditorGame {
                 <h4 class="text-xs font-semibold text-gray-500 uppercase">Games in this post</h4>
                 
                 @if (games().length === 0) {
-                  <div class="text-sm/6 text-gray-500 text-center py-4 border border-dashed border-border-base rounded-xl">
+                  <div class="text-sm/6 text-gray-500 text-center py-4 border border-dashed border-slate-200 rounded-xl">
                     No games added yet.
                   </div>
                 }
 
-                <div *ngFor="let g of games(); let idx = index" class="flex items-center justify-between p-3 rounded-xl border border-border-base bg-slate-200/10 gap-3">
+                <div *ngFor="let g of games(); let idx = index" class="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-200/10 gap-3">
                   <div class="min-w-0">
                     <div class="flex items-center gap-2">
                       <span class="text-sm/6 font-medium px-1.5 py-0.5 rounded-full bg-blue-600 text-main shrink-0">
@@ -214,8 +214,8 @@ interface EditorGame {
             </div>
 
             <!-- Live Preview Card -->
-            <div class="bg-white rounded-xl border border-border-base p-6 space-y-4">
-              <h3 class="text-lg font-semibold border-b border-border-base pb-2">Live preview</h3>
+            <div class="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
+              <h3 class="text-lg font-semibold border-b border-slate-200 pb-2">Live preview</h3>
               
               <div class="space-y-4">
                 <h1 class="text-2xl md:text-3xl font-medium">{{ title() || 'Post Title' }}</h1>
@@ -232,7 +232,7 @@ interface EditorGame {
                     @if (block.type === 'text') {
                       <div [innerHTML]="parseMarkdown(block.content || '')" class="preview-markdown"></div>
                     } @else if (block.type === 'game') {
-                      <div class="my-4 p-4 rounded-xl border border-dashed border-border-base bg-slate-200/20 flex flex-col items-center justify-center min-h-[120px] text-center">
+                      <div class="my-4 p-4 rounded-xl border border-dashed border-slate-200 bg-slate-200/20 flex flex-col items-center justify-center min-h-[120px] text-center">
                         <div class="w-8 h-8 rounded-full bg-blue-600 text-main flex items-center justify-center font-medium text-xs mb-2">
                           ♞
                         </div>

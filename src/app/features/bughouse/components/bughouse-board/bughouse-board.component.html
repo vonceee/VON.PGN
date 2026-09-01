@@ -48,7 +48,7 @@
     <div class="flex items-center justify-start gap-2 py-1 w-full">
       @for (piece of getPocketKeys(); track piece) {
       <div
-        class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
+        class="relative flex items-center justify-center w-9 h-9 border border-slate-200 bg-white transition-all"
         [class.opacity-40]="topPocket()[piece] === 0"
         [class.cursor-pointer]="topPocket()[piece] > 0 && turn() === topColor() && myBoard() === boardId() && myColor() === topColor()"
         [class.border-blue-600]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === topColor()"
@@ -94,7 +94,7 @@
     <div class="flex items-center justify-start gap-2 py-1 w-full">
       @for (piece of getPocketKeys(); track piece) {
       <div
-        class="relative flex items-center justify-center w-9 h-9 border border-border-base bg-white transition-all"
+        class="relative flex items-center justify-center w-9 h-9 border border-slate-200 bg-white transition-all"
         [class.opacity-40]="bottomPocket()[piece] === 0"
         [class.cursor-pointer]="bottomPocket()[piece] > 0 && turn() === bottomColor() && myBoard() === boardId() && myColor() === bottomColor()"
         [class.border-blue-600]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === bottomColor()"

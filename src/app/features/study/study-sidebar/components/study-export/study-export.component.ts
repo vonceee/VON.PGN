@@ -20,11 +20,11 @@ import { Study, StudyChapter } from '../../../../../core/models/study.model';
         <!-- Radio Options -->
         <div class="flex flex-col mb-4">
           <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-200 cursor-pointer transition-colors"
+            class="flex items-center gap-4 p-4 rounded-4xl border border-slate-200 hover:bg-slate-200 cursor-pointer transition-colors"
             [class.bg-slate-200]="exportOption() === 'current'" [class.border-blue-600]="exportOption() === 'current'">
             <input type="radio" name="exportOption" value="current" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-blue-600 border-border-base focus:ring-blue-600 bg-transparent">
+              class="w-4 h-4 text-blue-600 border-slate-200 focus:ring-blue-600 bg-transparent">
             <div class="flex flex-col">
               <span class="text-sm/6 font-medium">Current chapter</span>
               <span class="text-xs text-gray-500 mt-0.5">Export only current chapter</span>
@@ -32,11 +32,11 @@ import { Study, StudyChapter } from '../../../../../core/models/study.model';
           </label>
 
           <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-200 cursor-pointer transition-colors"
+            class="flex items-center gap-4 p-4 rounded-4xl border border-slate-200 hover:bg-slate-200 cursor-pointer transition-colors"
             [class.bg-slate-200]="exportOption() === 'all'" [class.border-blue-600]="exportOption() === 'all'">
             <input type="radio" name="exportOption" value="all" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-blue-600 border-border-base focus:ring-blue-600 bg-transparent">
+              class="w-4 h-4 text-blue-600 border-slate-200 focus:ring-blue-600 bg-transparent">
             <div class="flex flex-col">
               <span class="text-sm/6 font-medium">All chapters</span>
               <span class="text-xs text-gray-500 mt-0.5">Export all {{ study()?.chapters?.length }} chapters</span>
@@ -44,11 +44,11 @@ import { Study, StudyChapter } from '../../../../../core/models/study.model';
           </label>
 
           <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-border-base hover:bg-slate-200 cursor-pointer transition-colors"
+            class="flex items-center gap-4 p-4 rounded-4xl border border-slate-200 hover:bg-slate-200 cursor-pointer transition-colors"
             [class.bg-slate-200]="exportOption() === 'selected'" [class.border-blue-600]="exportOption() === 'selected'">
             <input type="radio" name="exportOption" value="selected" [ngModel]="exportOption()"
               (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-blue-600 border-border-base focus:ring-blue-600 bg-transparent">
+              class="w-4 h-4 text-blue-600 border-slate-200 focus:ring-blue-600 bg-transparent">
             <div class="flex flex-col">
               <span class="text-sm/6 font-medium">Selected chapters</span>
               <span class="text-xs text-gray-500 mt-0.5">Select custom chapters to export</span>
@@ -60,7 +60,7 @@ import { Study, StudyChapter } from '../../../../../core/models/study.model';
         @if (exportOption() === 'selected') {
         <div class="flex-1 flex flex-col rounded-xl p-4 mb-4">
           <div
-            class="flex items-center justify-between border-b border-border-base pb-2 mb-2 text-sm/6 font-medium text-gray-500 select-none">
+            class="flex items-center justify-between border-b border-slate-200 pb-2 mb-2 text-sm/6 font-medium text-gray-500 select-none">
             <span>Select chapters</span>
             <div class="flex gap-2">
               <button (click)="selectAllChapters(true)"
@@ -77,7 +77,7 @@ import { Study, StudyChapter } from '../../../../../core/models/study.model';
               [class.bg-surface]="selectedChapterIds().has(chap.id)">
               <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
                 (change)="toggleChapterSelection(chap.id)"
-                class="w-4 h-4 rounded text-blue-600 border-border-base focus:ring-blue-600 bg-transparent">
+                class="w-4 h-4 rounded text-blue-600 border-slate-200 focus:ring-blue-600 bg-transparent">
               <span class="text-sm/6 font-medium text-gray-500">{{ idx + 1 }}.</span>
               <span class="text-sm/6 font-medium truncate flex-1">{{ chap.name }}</span>
             </label>

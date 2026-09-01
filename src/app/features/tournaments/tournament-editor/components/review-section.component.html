@@ -3,7 +3,7 @@
 </header>
 
 <!-- Basic Info -->
-<div class="border border-border-base rounded-lg px-5 py-4 mb-4">
+<div class="border border-slate-200 rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-basic')">
     <h3 class="text-sm font-bold uppercase tracking-widest m-0">Basic Information</h3>
     <span class="text-xs">Edit</span>
@@ -28,7 +28,7 @@
 </div>
 
 <!-- Dates & Location -->
-<div class="border border-border-base rounded-lg px-5 py-4 mb-4">
+<div class="border border-slate-200 rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-dates')">
     <h3 class="text-sm font-bold uppercase tracking-widest m-0">Dates & Location</h3>
     <span class="text-xs">Edit</span>
@@ -60,7 +60,7 @@
 </div>
 
 <!-- Format -->
-<div class="border border-border-base rounded-lg px-5 py-4 mb-4">
+<div class="border border-slate-200 rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-format')">
     <h3 class="text-sm font-bold uppercase tracking-widest m-0">Format & Rules</h3>
     <span class="text-xs">Edit</span>
@@ -90,7 +90,7 @@
 </div>
 
 <!-- Organizer -->
-<div class="border border-border-base rounded-lg px-5 py-4 mb-4">
+<div class="border border-slate-200 rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-organizer')">
     <h3 class="text-sm font-bold uppercase tracking-widest m-0">Organizer</h3>
     <span class="text-xs">Edit</span>
@@ -114,7 +114,7 @@
 </div>
 
 <!-- Registration Instructions -->
-<div class="border border-border-base rounded-lg px-5 py-4 mb-4">
+<div class="border border-slate-200 rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-registration')">
     <h3 class="text-sm font-bold uppercase tracking-widest m-0">Registration Instructions</h3>
     <span class="text-xs">Edit</span>
@@ -127,7 +127,7 @@
 </div>
 
 <!-- Eligibility -->
-<div class="border border-border-base rounded-lg px-5 py-4 mb-4">
+<div class="border border-slate-200 rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-eligibility')">
     <h3 class="text-sm font-bold uppercase tracking-widest m-0">Eligibility</h3>
     <span class="text-xs">Edit</span>
@@ -147,19 +147,19 @@
 </div>
 
 <!-- Prizes -->
-<div class="border border-border-base rounded-lg px-5 py-4 mb-4">
+<div class="border border-slate-200 rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-prizes')">
     <h3 class="text-sm font-bold uppercase tracking-widest m-0">Prizes</h3>
     <span class="text-xs">Edit</span>
   </div>
   @if (data['categories']) {
   @for (cat of (data['categories'] | keyvalue); track cat.key) {
-  <div class="mt-3 bg-slate-200/50 rounded-lg p-4 border border-border-base ">
+  <div class="mt-3 bg-slate-200/50 rounded-lg p-4 border border-slate-200 ">
     <h4 class="font-semibold mb-2 capitalize">{{ cat.key.toString().replace('_', ' ') }}</h4>
     <table class="w-full text-sm/6">
       <tbody>
         @for (prize of (cat.value['prizes'] | keyvalue: comparePrizeKeys); track prize.key) {
-        <tr class="border-t border-border-base first:border-0">
+        <tr class="border-t border-slate-200 first:border-0">
           <td class="py-1.5 font-semibold capitalize">{{ prize.key.replace('_', ' ') }}</td>
           <td class="py-1.5 text-right">{{ prize.value }}</td>
         </tr>
@@ -174,22 +174,22 @@
 </div>
 
 <!-- Schedule -->
-<div class="border border-border-base rounded-lg px-5 py-4 mb-4">
+<div class="border border-slate-200 rounded-lg px-5 py-4 mb-4">
   <div class="flex justify-between items-center cursor-pointer mb-2 group" (click)="onEdit('sec-schedule')">
     <h3 class="text-sm font-bold uppercase tracking-widest m-0">Schedule</h3>
     <span class="text-xs">Edit</span>
   </div>
   @if (data['schedule']) {
   @for (day of (data['schedule'] | keyvalue); track day.key) {
-  <div class="mt-3 border border-border-base rounded-lg overflow-hidden">
-    <div class="bg-slate-200/50 px-4 py-2 border-b border-border-base">
+  <div class="mt-3 border border-slate-200 rounded-lg overflow-hidden">
+    <div class="bg-slate-200/50 px-4 py-2 border-b border-slate-200">
       <span class="text-xs font-semibold text-blue-600 uppercase">{{ day.key.toString().replace('_', ' ') }}</span>
       <span class="text-sm/6 ml-2">{{ formatDate(day.value.date) }}</span>
     </div>
     <table class="w-full text-sm/6">
       <tbody>
         @for (event of day.value.events; track event.name) {
-        <tr class="border-t border-border-base first:border-0">
+        <tr class="border-t border-slate-200 first:border-0">
           <td class="px-4 py-1.5 font-semibold">{{ event.name }}</td>
           <td class="px-4 py-1.5 text-right">{{ event.time }}</td>
         </tr>

@@ -1,7 +1,7 @@
 <!-- Explanation Modal Backdrop -->
 <div class="fixed inset-0 bg-slate-950/80 flex items-center justify-center p-4 z-50" (click)="onClose()">
   <!-- Modal Container -->
-  <div class="w-full max-w-3xl rounded-xl bg-white border border-border-base p-8 relative flex flex-col gap-6"
+  <div class="w-full max-w-3xl rounded-xl bg-white border border-slate-200 p-8 relative flex flex-col gap-6"
     (click)="$event.stopPropagation()">
     <!-- Modal Header -->
     <div class="flex items-start gap-4">
@@ -13,13 +13,13 @@
     </div>
 
     <!-- Process Timeline -->
-    <div class="flex flex-col gap-8 border-t border-border-base pt-6">
+    <div class="flex flex-col gap-8 border-t border-slate-200 pt-6">
       <!-- Step 1 -->
       <div class="flex gap-5 items-start relative">
         <!-- Connecting Line -->
         <div class="absolute left-4 top-8 bottom-[-2.5rem] w-[2px] bg-slate-200"></div>
         <div
-          class="w-8 h-8 rounded-full bg-slate-200 border border-border-base flex items-center justify-center text-sm/6 font-semibold text-gray-500 shrink-0 z-10">
+          class="w-8 h-8 rounded-full bg-slate-200 border border-slate-200 flex items-center justify-center text-sm/6 font-semibold text-gray-500 shrink-0 z-10">
           1
         </div>
         <div class="flex-1">
@@ -35,7 +35,7 @@
         <!-- Connecting Line -->
         <div class="absolute left-4 top-8 bottom-[-2.5rem] w-[2px] bg-slate-200"></div>
         <div
-          class="w-8 h-8 rounded-full bg-slate-200 border border-border-base flex items-center justify-center text-sm/6 font-semibold text-gray-500 shrink-0 z-10">
+          class="w-8 h-8 rounded-full bg-slate-200 border border-slate-200 flex items-center justify-center text-sm/6 font-semibold text-gray-500 shrink-0 z-10">
           2
         </div>
         <div class="flex-1">
@@ -49,7 +49,7 @@
       <!-- Step 3 -->
       <div class="flex gap-5 items-start">
         <div
-          class="w-8 h-8 rounded-full bg-slate-200 border border-border-base flex items-center justify-center text-sm/6 font-semibold text-gray-500 shrink-0 z-10">
+          class="w-8 h-8 rounded-full bg-slate-200 border border-slate-200 flex items-center justify-center text-sm/6 font-semibold text-gray-500 shrink-0 z-10">
           3
         </div>
         <div class="flex-1">

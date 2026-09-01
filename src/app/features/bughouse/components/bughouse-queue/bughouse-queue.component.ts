@@ -22,7 +22,7 @@ import { heroArrowPath, heroXMark } from '@ng-icons/heroicons/outline';
   template: `
     @if (queueService.isQueuing()) {
       <div
-        class="fixed bottom-6 left-6 z-toast flex items-center gap-4 p-4 rounded-2xl border border-border-base bg-white/95 backdrop-blur-md shadow-xl transition-all duration-300 animate-slide-up hover:shadow-2xl max-w-sm"
+        class="fixed bottom-6 left-6 z-toast flex items-center gap-4 p-4 rounded-2xl border border-slate-200 bg-white/95 backdrop-blur-md shadow-xl transition-all duration-300 animate-slide-up hover:shadow-2xl max-w-sm"
       >
         <!-- Pulse radar/spinner -->
         <div

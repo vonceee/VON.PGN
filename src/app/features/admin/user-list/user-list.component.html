@@ -1,8 +1,8 @@
 <div class="space-y-6">
 
-  <div class="bg-white rounded-xl border border-border-base overflow-hidden">
+  <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
     <!-- Filters -->
-    <div class="p-5 border-b border-border-base flex flex-wrap items-center gap-4 bg-slate-200/50">
+    <div class="p-5 border-b border-slate-200 flex flex-wrap items-center gap-4 bg-slate-200/50">
       <div class="relative flex-1 min-w-[240px]">
         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -12,11 +12,11 @@
           </svg>
         </span>
         <input type="text" [formControl]="searchControl" placeholder="Search by username, name or email..."
-          class="w-full pl-10 pr-4 py-2 bg-white border border-border-base rounded-lg text-sm/6 outline-none  ">
+          class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm/6 outline-none  ">
       </div>
 
       <select [formControl]="roleFilter"
-        class="px-4 py-2 bg-white border border-border-base rounded-lg text-sm/6 outline-none  ">
+        class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm/6 outline-none  ">
         <option value="">All Roles</option>
         <option value="admin">Admin</option>
         <option value="coach">Coach</option>
@@ -56,7 +56,7 @@
             <td class="px-6 py-4">
               <div class="flex items-center gap-4">
                 <div
-                  class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-gray-500 font-semibold overflow-hidden border border-border-base">
+                  class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-gray-500 font-semibold overflow-hidden border border-slate-200">
                   @if (user.avatar) {
                   <img [src]="user.avatar" class="w-full h-full object-cover">
                   } @else {
@@ -96,22 +96,22 @@
             </td>
             <td class="px-6 py-4 text-sm/6">
               <span
-                class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-200 text-gray-500 capitalize border border-border-base">
+                class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-200 text-gray-500 capitalize border border-slate-200">
                 {{ user.role }}
               </span>
             </td>
             <td class="px-6 py-4 text-right">
               <div class="flex items-center justify-end gap-2">
                 <button (click)="viewProfile(user.uid)"
-                  class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border-base hover:bg-slate-200 ">
+                  class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 hover:bg-slate-200 ">
                   Profile
                 </button>
                 <button (click)="editUser(user.uid)"
-                  class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border-base hover:bg-slate-200 ">
+                  class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 hover:bg-slate-200 ">
                   Edit
                 </button>
                 <button (click)="deleteUser(user)"
-                  class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border-base hover:bg-red-50 hover:text-red-600  ">
+                  class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 hover:bg-red-50 hover:text-red-600  ">
                   Delete
                 </button>
               </div>
@@ -123,7 +123,7 @@
       </table>
     </div>
 
-    <div class="p-5 border-t border-border-base bg-slate-200/30 flex items-center justify-between">
+    <div class="p-5 border-t border-slate-200 bg-slate-200/30 flex items-center justify-between">
       <span class="text-xs text-gray-500 ">Showing {{ users().length }} users</span>
     </div>
   </div>

@@ -37,11 +37,11 @@ import { animate, style, transition, trigger } from '@angular/animations';
         (click)="close.emit()"
       ></div>
       <div
-        class="fixed top-0 right-0 z-[101] w-full max-w-sm h-full bg-white border-l border-border-base flex flex-col overflow-hidden"
+        class="fixed top-0 right-0 z-[101] w-full max-w-sm h-full bg-white border-l border-slate-200 flex flex-col overflow-hidden"
         [@drawerAnimation]
       >
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-5 border-b border-border-base">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200">
           <h2 class="text-xl font-medium">{{ title() }}</h2>
           <button
             (click)="close.emit()"
@@ -58,7 +58,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
         </div>
         
         <!-- Footer (Optional) -->
-        <div class="p-6 border-t border-border-base bg-surface/30">
+        <div class="p-6 border-t border-slate-200 bg-surface/30">
           <ng-content select="[footer]"></ng-content>
         </div>
       </div>

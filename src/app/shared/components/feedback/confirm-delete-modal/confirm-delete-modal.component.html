@@ -1,5 +1,5 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="onCancel()">
-  <div class="bg-white  rounded-2xl w-full max-w-md mx-4 border border-border-base " (click)="$event.stopPropagation()">
+  <div class="bg-white  rounded-2xl w-full max-w-md mx-4 border border-slate-200 " (click)="$event.stopPropagation()">
     <div class="p-6">
       <!-- Warning icon -->
       <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
@@ -26,7 +26,7 @@
         class="w-full p-3 border rounded-lg focus:outline-none  text-sm/6" [class]="
           canDelete
             ? 'border-red-500 focus:border-red-500'
-            : 'border-border-base focus:border-red-400'
+            : 'border-slate-200 focus:border-red-400'
         " />
 
       @if (typedName().length > 0 && !canDelete) {

@@ -1,5 +1,5 @@
 <div class="max-w-[1200px]">
-  <div class="flex justify-between items-center mb-6 pb-4 border-b border-border-base">
+  <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-200">
     <div>
       <h1 class="text-2xl font-semibold ">{{ chapterId() ? 'Edit Chapter' : 'New Chapter' }}</h1>
     </div>
@@ -10,33 +10,33 @@
   </div>
 
   @if (loading()) {
-    <div class="bg-white border border-border-base rounded-lg p-12 text-center">
+    <div class="bg-white border border-slate-200 rounded-lg p-12 text-center">
       <p>Loading chapter...</p>
     </div>
   } @else {
-    <div class="bg-white border border-border-base rounded-lg p-5 mb-4">
-      <div class="flex justify-between items-center mb-4 pb-3 border-b border-border-base">
+    <div class="bg-white border border-slate-200 rounded-lg p-5 mb-4">
+      <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-200">
         <h2 class="text-base font-semibold  m-0">Chapter Details</h2>
       </div>
       <form [formGroup]="chapterForm" (ngSubmit)="saveChapter()">
         <div class="mb-4">
           <label class="block text-sm/6  text-gray-500 mb-1.5">Title</label>
           <input type="text" formControlName="title"
-            class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none "
+            class="w-full px-3 py-2 border border-slate-200 rounded text-sm/6 bg-white focus:outline-none "
             placeholder="e.g. The Pieces" />
         </div>
 
         <div class="mb-4">
           <label class="block text-sm/6  text-gray-500 mb-1.5">Order (Sequence Number)</label>
           <input type="number" formControlName="order"
-            class="w-full px-3 py-2 border border-border-base rounded text-sm/6 bg-white focus:outline-none " min="1" />
+            class="w-full px-3 py-2 border border-slate-200 rounded text-sm/6 bg-white focus:outline-none " min="1" />
         </div>
       </form>
     </div>
 
     @if (chapterId()) {
-      <div class="bg-white border border-border-base rounded-lg p-5 mb-4 mt-6">
-        <div class="flex justify-between items-center mb-4 pb-3 border-b border-border-base">
+      <div class="bg-white border border-slate-200 rounded-lg p-5 mb-4 mt-6">
+        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-200">
           <h2 class="text-base font-semibold  m-0">Lessons</h2>
           <a [routerLink]="['/admin/chapter', chapterId(), 'lesson', 'new']"
             class="inline-block px-3 py-1.5 rounded-lg text-xs   bg-blue-600 text-white hover:bg-blue-700">+ Add
@@ -45,7 +45,7 @@
 
         @if (chapter()?.lessons?.length) {
           <ul class="list-none p-0 m-0">
-            <li class="flex justify-between items-center p-4 border border-border-base bg-white mb-2 /50"
+            <li class="flex justify-between items-center p-4 border border-slate-200 bg-white mb-2 /50"
               *ngFor="let lesson of chapter()?.lessons">
               <div class="flex-1">
                 <div class="font-semibold mb-1">#{{ lesson.order }} {{ lesson.title }}</div>
@@ -73,7 +73,7 @@
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000]" (click)="cancelDeleteLesson()">
   <div class="bg-white rounded-lg max-w-[500px] w-[90%] max-h-[80vh] overflow-y-auto"
     (click)="$event.stopPropagation()">
-    <div class="flex justify-between items-center p-4 px-5 border-b border-border-base">
+    <div class="flex justify-between items-center p-4 px-5 border-b border-slate-200">
       <h2 class="text-lg font-semibold m-0">Delete Lesson</h2>
       <button class="bg-none border-none text-xl cursor-pointer  hover:text-slate-900"
         (click)="cancelDeleteLesson()">&times;</button>
@@ -81,7 +81,7 @@
     <div class="p-5">
       <p>Are you sure you want to delete this lesson?</p>
     </div>
-    <div class="flex gap-3 p-4 px-5 border-t border-border-base">
+    <div class="flex gap-3 p-4 px-5 border-t border-slate-200">
       <button (click)="cancelDeleteLesson()"
         class="inline-block px-4 py-2 rounded text-sm/6   bg-slate-200 hover:bg-slate-200">Cancel</button>
       <button (click)="confirmDeleteLesson()"

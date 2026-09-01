@@ -28,7 +28,7 @@ export interface ConfirmDeleteDialogData {
 
       <!-- Footer Actions -->
       <div class="pt-4 flex gap-4 w-full">
-        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all" (click)="dialogRef.close(false)">Cancel</button>
+        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all" (click)="dialogRef.close(false)">Cancel</button>
         <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer" (click)="dialogRef.close(true)">
           {{ data.confirmText || 'Delete' }}
         </button>

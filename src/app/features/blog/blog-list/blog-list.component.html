@@ -16,7 +16,7 @@
 
   <!-- Tabs (only visible for admins to manage drafts) -->
   @if (isAdmin()) {
-    <div class="border-b border-border-base mb-8">
+    <div class="border-b border-slate-200 mb-8">
       <nav class="flex gap-6">
         <button (click)="setTab('all')" [class.border-blue-600]="activeTab() === 'all'"
           [class.text-slate-900]="activeTab() === 'all'" [class.border-transparent]="activeTab() !== 'all'"

@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <h2 class="text-3xl font-semibold mb-6 border-b border-border-base pb-4">
+    <h2 class="text-3xl font-semibold mb-6 border-b border-slate-200 pb-4">
       API Reference
     </h2>
     <div class="prose prose-slate max-w-none text-gray-500">
@@ -16,10 +16,10 @@ import { CommonModule } from '@angular/common';
       </p>
 
       <h3 id="core-endpoints" class="text-xl font-semibold text-slate-900 mb-4">Core endpoints</h3>
-      <div class="overflow-x-auto border border-border-base rounded-2xl bg-white mb-8">
+      <div class="overflow-x-auto border border-slate-200 rounded-2xl bg-white mb-8">
         <table class="w-full text-left border-collapse text-sm">
           <thead>
-            <tr class="border-b border-border-base bg-slate-200/50 text-slate-900">
+            <tr class="border-b border-slate-200 bg-slate-200/50 text-slate-900">
               <th class="p-4 font-semibold">Method</th>
               <th class="p-4 font-semibold">Endpoint</th>
               <th class="p-4 font-semibold">Description</th>
@@ -46,7 +46,7 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <h3 id="sample-response" class="text-xl font-semibold text-slate-900 mb-4">Sample JSON response</h3>
-      <pre class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs text-slate-900 overflow-x-auto leading-relaxed shadow-sm"><code>{{ '{' }}
+      <pre class="bg-white border border-slate-200 rounded-2xl p-6 font-mono text-xs text-slate-900 overflow-x-auto leading-relaxed shadow-sm"><code>{{ '{' }}
   "status": "success",
   "data": {{ '{' }}
     "id": "std_8f93j2a",

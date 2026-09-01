@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <h2 class="text-3xl font-semibold mb-6 border-b border-border-base pb-4">
+    <h2 class="text-3xl font-semibold mb-6 border-b border-slate-200 pb-4">
       Core Concepts
     </h2>
     <div class="prose prose-slate max-w-none text-gray-500">

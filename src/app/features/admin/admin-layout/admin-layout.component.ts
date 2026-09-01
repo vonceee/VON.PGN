@@ -14,8 +14,8 @@ import { filter, map, startWith } from 'rxjs';
   template: `
     <div class="flex min-h-screen bg-slate-200">
       <!-- Sidebar -->
-      <aside class="w-80 bg-white fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-border-base">
-        <div class="p-8 border-b border-border-base">
+      <aside class="w-80 bg-white fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-slate-200">
+        <div class="p-8 border-b border-slate-200">
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-slate-900 rounded flex items-center justify-center text-white font-semibold">
               V
@@ -79,7 +79,7 @@ import { filter, map, startWith } from 'rxjs';
       <!-- Main Content -->
       <div class="ml-[280px] flex-1 flex flex-col min-h-screen">
         <!-- Header -->
-        <header class="sticky top-0 right-0 w-full z-40 bg-white border-b border-border-base px-8 h-20 flex items-center justify-between">
+        <header class="sticky top-0 right-0 w-full z-40 bg-white border-b border-slate-200 px-8 h-20 flex items-center justify-between">
           <div class="flex items-center gap-8">
             <h2 class="text-lg font-semibold ">{{ pageTitle() }}</h2>
           </div>

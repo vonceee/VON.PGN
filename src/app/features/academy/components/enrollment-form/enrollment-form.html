@@ -1,4 +1,4 @@
-<div class="w-full p-8 md:p-12 rounded-[2.5rem] border-2 border-border-base">
+<div class="w-full p-8 md:p-12 rounded-[2.5rem] border-2 border-slate-200">
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
 
     <!-- Left Column: Contact Details -->
@@ -28,14 +28,14 @@
       </div>
 
       <!-- Social Media placeholders -->
-      <div class="w-full flex justify-center lg:justify-start gap-4 text-gray-500 pt-4 border-t border-border-base">
+      <div class="w-full flex justify-center lg:justify-start gap-4 text-gray-500 pt-4 border-t border-slate-200">
         <a href="https://www.facebook.com/profile.php?id=61585149598227" target="_blank"
           class="hover:text-blue-600 text-xs font-medium">Facebook</a>
       </div>
     </div>
 
     <!-- Right Column: Inquiry Form -->
-    <div class="lg:col-span-7 border-t lg:border-t-0 lg:border-l border-border-base pt-8 lg:pt-0 lg:pl-12">
+    <div class="lg:col-span-7 border-t lg:border-t-0 lg:border-l border-slate-200 pt-8 lg:pt-0 lg:pl-12">
       @if (isSuccess()) {
         <!-- Success State -->
         <div class="text-center py-16 space-y-6">
@@ -61,13 +61,13 @@
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-2">First name</label>
                 <input type="text" formControlName="first_name"
-                  class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+                  class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                   placeholder="Juan" />
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-2">Last name</label>
                 <input type="text" formControlName="last_name"
-                  class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+                  class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                   placeholder="Dela Cruz" />
               </div>
             </div>
@@ -76,7 +76,7 @@
             <div>
               <label class="block text-xs font-medium text-gray-500 mb-2">Email address</label>
               <input type="email" formControlName="email"
-                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                 placeholder="juan@example.com" />
             </div>
 
@@ -84,7 +84,7 @@
             <div>
               <label class="block text-xs font-medium text-gray-500 mb-2">Phone number</label>
               <input type="text" formControlName="contact_number"
-                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
                 placeholder="+63 912 345 6789" />
             </div>
 
@@ -92,7 +92,7 @@
             <div>
               <label class="block text-xs font-medium text-gray-500 mb-2">Player level</label>
               <select formControlName="chess_level"
-                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-[right_1rem_center]"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-[right_1rem_center]"
                 style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 24 24%22 stroke=%22%236b7280%22 stroke-width=%222%22><path stroke-linecap=%22round%22 stroke-linejoin=%22round%22 d=%22M19 9l-7 7-7-7%22 /></svg>'); background-size: 1.25rem;">
                 <option value="New to chess">New to chess</option>
                 <option value="Beginner">Beginner</option>
@@ -105,7 +105,7 @@
             <div>
               <label class="block text-xs font-medium text-gray-500 mb-2">Message</label>
               <textarea formControlName="experience" rows="4"
-                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50 resize-none"
+                class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50 resize-none"
                 placeholder="Tell us about your chess goals..."></textarea>
             </div>
             <button type="submit"

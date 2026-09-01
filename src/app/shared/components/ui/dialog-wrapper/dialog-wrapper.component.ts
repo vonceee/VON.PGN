@@ -9,7 +9,7 @@ import { provideIcons } from '@ng-icons/core';
   template: `
     <div class="bg-white rounded-4xl overflow-hidden flex flex-col w-full max-h-[90vh]">
       <!-- Header -->
-      <div class="flex items-center justify-between p-5 border-b border-border-base bg-white">
+      <div class="flex items-center justify-between p-5 border-b border-slate-200 bg-white">
         <h2 class="text-xl font-semibold">{{ title() }}</h2>
       </div>
 
@@ -19,7 +19,7 @@ import { provideIcons } from '@ng-icons/core';
       </div>
 
       <!-- Footer -->
-      <div class="p-6 border-t border-border-base flex items-center justify-center gap-3 shrink-0 bg-surface/30">
+      <div class="p-6 border-t border-slate-200 flex items-center justify-center gap-3 shrink-0 bg-surface/30">
         <ng-content select="[actions]"></ng-content>
       </div>
     </div>

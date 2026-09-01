@@ -17,12 +17,12 @@ import { Router } from '@angular/router';
   template: `
     <div class="lg:hidden fixed inset-0 z-40 bg-black/40" (click)="close.emit()"></div>
     <div
-      class="lg:hidden fixed top-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] h-full bg-white border-l border-border-base flex flex-col overflow-y-auto transition-transform duration-300"
+      class="lg:hidden fixed top-0 right-0 z-50 w-full sm:w-[500px] md:w-[600px] h-full bg-white border-l border-slate-200 flex flex-col overflow-y-auto transition-transform duration-300"
     >
       <!-- Menu Header -->
-      <div class="flex items-center gap-4 shrink-0 h-16 px-4 border-b border-border-base relative">
+      <div class="flex items-center gap-4 shrink-0 h-16 px-4 border-b border-slate-200 relative">
         <!-- Inline Search Bar -->
-        <div class="flex-1 flex items-center bg-surface/50 rounded-full px-4 py-1.5 border border-border-base focus-within:border-blue-600/50 focus-within:bg-white transition-all relative">
+        <div class="flex-1 flex items-center bg-surface/50 rounded-full px-4 py-1.5 border border-slate-200 focus-within:border-blue-600/50 focus-within:bg-white transition-all relative">
           <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 mr-2 shrink-0"></ng-icon>
           <input
             type="text"
@@ -37,7 +37,7 @@ import { Router } from '@angular/router';
 
           <!-- Search Results Dropdown -->
           @if (searchResults().length > 0) {
-            <div class="absolute left-0 right-0 top-full mt-2 py-1 max-h-60 overflow-y-auto bg-white border border-border-base rounded-2xl shadow-md z-50">
+            <div class="absolute left-0 right-0 top-full mt-2 py-1 max-h-60 overflow-y-auto bg-white border border-slate-200 rounded-2xl shadow-md z-50">
               @for (user of searchResults(); track user.uid) {
                 <button
                   (click)="viewUserProfile(user)"
@@ -48,7 +48,7 @@ import { Router } from '@angular/router';
               }
             </div>
           } @else if (searchQuery().length >= 2 && !isSearching()) {
-            <div class="absolute left-0 right-0 top-full mt-2 px-4 py-2 bg-white border border-border-base rounded-2xl shadow-md text-xs italic z-50">
+            <div class="absolute left-0 right-0 top-full mt-2 px-4 py-2 bg-white border border-slate-200 rounded-2xl shadow-md text-xs italic z-50">
               No players found
             </div>
           }
@@ -94,10 +94,10 @@ import { Router } from '@angular/router';
       </div>
 
       <!-- Auth Section -->
-      <div class="border-t border-border-base p-6 bg-surface/30 shrink-0 md:hidden">
+      <div class="border-t border-slate-200 p-6 bg-surface/30 shrink-0 md:hidden">
         @if (authService.isAuthenticated()) {
           <!-- User Profile Card -->
-          <div class="flex items-center gap-3 px-3.5 py-2.5 mb-4 bg-white rounded-xl border border-border-base">
+          <div class="flex items-center gap-3 px-3.5 py-2.5 mb-4 bg-white rounded-xl border border-slate-200">
             <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
               <svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />

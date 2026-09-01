@@ -3,7 +3,7 @@
   <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
       <div
-        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200 border border-border-base text-xs text-gray-500 mb-3 font-medium">
+        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200 border border-slate-200 text-xs text-gray-500 mb-3 font-medium">
         <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
         </svg>
@@ -19,12 +19,12 @@
     </div>
 
     <!-- Quick Stats -->
-    <div class="flex flex-wrap items-center gap-4 bg-white border border-border-base p-4 rounded-2xl shadow-sm">
-      <div class="px-3 border-r border-border-base">
+    <div class="flex flex-wrap items-center gap-4 bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
+      <div class="px-3 border-r border-slate-200">
         <span class="text-xs text-gray-500 block uppercase font-semibold">Total Matches</span>
         <span class="text-2xl font-bold text-slate-900">{{ stats().totalMatches }}</span>
       </div>
-      <div class="px-3 border-r border-border-base">
+      <div class="px-3 border-r border-slate-200">
         <span class="text-xs text-gray-500 block uppercase font-semibold">Reigning Champ</span>
         <span class="text-sm font-semibold text-slate-900 block truncate max-w-[140px]">{{ stats().reigningChampion
           }}</span>
@@ -38,7 +38,7 @@
 
   <!-- Filter & Search Toolbar -->
   <div
-    class="mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-slate-200 p-4 rounded-2xl border border-border-base">
+    class="mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-slate-200 p-4 rounded-2xl border border-slate-200">
     <!-- Search Bar -->
     <div class="relative flex-1">
       <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
@@ -49,7 +49,7 @@
       </div>
       <input type="text" [value]="searchQuery()" (input)="onSearch($event)"
         placeholder="Search champion, challenger, year, venue, or keyword..."
-        class="w-full pl-10 pr-10 py-2.5 bg-white border border-border-base rounded-xl text-slate-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all text-sm" />
+        class="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all text-sm" />
       @if (searchQuery()) {
       <button (click)="searchQuery.set('')"
         class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-slate-900">
@@ -92,11 +92,11 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @for (match of filteredMatches(); track match.id) {
     <div (click)="openDetailsModal(match)"
-      class="group bg-white border border-border-base hover:border-slate-400 rounded-2xl p-6 transition-all duration-200cursor-pointer flex flex-col justify-between relative overflow-hidden">
+      class="group bg-white border border-slate-200 hover:border-slate-400 rounded-2xl p-6 transition-all duration-200cursor-pointer flex flex-col justify-between relative overflow-hidden">
       <!-- Top Badge Bar -->
       <div>
         <div class="flex items-center justify-between gap-2 mb-4">
-          <span class="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-900 font-bold text-sm border border-border-base">
+          <span class="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-900 font-bold text-sm border border-slate-200">
             {{ match.year }}
           </span>
           <span class="text-xs text-gray-500 font-medium truncate max-w-[170px]">
@@ -110,7 +110,7 @@
         </h2>
 
         <!-- Opponents Duel Card -->
-        <div class="bg-slate-200/70 rounded-xl p-3.5 border border-border-base mb-4 space-y-2">
+        <div class="bg-slate-200/70 rounded-xl p-3.5 border border-slate-200 mb-4 space-y-2">
           <div class="flex items-center justify-between text-sm">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full" [class.bg-emerald-500]="match.winner === match.champion"
@@ -123,7 +123,7 @@
             <span class="text-xs text-gray-500 uppercase">Defender</span>
           </div>
 
-          <div class="border-t border-border-base my-1"></div>
+          <div class="border-t border-slate-200 my-1"></div>
 
           <div class="flex items-center justify-between text-sm">
             <div class="flex items-center gap-2">
@@ -161,7 +161,7 @@
       </div>
 
       <!-- Bottom Actions -->
-      <div class="pt-4 border-t border-border-base flex items-center justify-between gap-3">
+      <div class="pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
         <span
           class="text-xs text-slate-500 font-medium group-hover:text-slate-800 transition-colors flex items-center gap-1">
           Details
@@ -173,7 +173,7 @@
 
         <button (click)="openStudy(match, $event)" [class.bg-emerald-50]="match.studyId"
           [class.text-emerald-700]="match.studyId" [class.border-emerald-200]="match.studyId"
-          class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border-base bg-slate-200 text-slate-900 hover:bg-white transition-all flex items-center gap-1.5 shrink-0">
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-200 text-slate-900 hover:bg-white transition-all flex items-center gap-1.5 shrink-0">
           <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
             stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -187,7 +187,7 @@
   </div>
   } @else {
   <!-- Empty State -->
-  <div class="bg-white border border-border-base rounded-2xl p-12 text-center max-w-md mx-auto my-12">
+  <div class="bg-white border border-slate-200 rounded-2xl p-12 text-center max-w-md mx-auto my-12">
     <div class="w-12 h-12 rounded-2xl bg-slate-200 text-gray-500 flex items-center justify-center mx-auto mb-4">
       <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
         <path stroke-linecap="round" stroke-linejoin="round"
@@ -197,7 +197,7 @@
     <h3 class="text-lg font-medium text-slate-900 mb-1">No matchups found</h3>
     <p class="text-sm text-gray-500 mb-6">No World Chess Championship match matches your search criteria.</p>
     <button (click)="clearFilters()"
-      class="px-4 py-2 bg-slate-200 hover:bg-white border border-border-base rounded-xl text-sm font-medium text-slate-900 transition-all">
+      class="px-4 py-2 bg-slate-200 hover:bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-900 transition-all">
       Reset filters
     </button>
   </div>
@@ -209,7 +209,7 @@
 <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40-in"
   (click)="closeDetailsModal()">
   <div
-    class="bg-white border border-border-base rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-xl max-h-[90vh] overflow-y-auto relative text-slate-900"
+    class="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-xl max-h-[90vh] overflow-y-auto relative text-slate-900"
     (click)="$event.stopPropagation()">
     <!-- Close Button -->
     <button (click)="closeDetailsModal()"
@@ -222,7 +222,7 @@
     <!-- Modal Content Header -->
     <div class="mb-6">
       <div class="flex items-center gap-2 mb-2">
-        <span class="px-2.5 py-0.5 rounded-md bg-slate-200 text-slate-900 font-bold text-xs border border-border-base">
+        <span class="px-2.5 py-0.5 rounded-md bg-slate-200 text-slate-900 font-bold text-xs border border-slate-200">
           {{ match.year }}
         </span>
         <span class="text-xs text-gray-500 font-medium">{{ match.era }}</span>
@@ -231,7 +231,7 @@
     </div>
 
     <!-- Duel Overview -->
-    <div class="grid grid-cols-2 gap-4 bg-slate-200 p-4 rounded-xl border border-border-base mb-6">
+    <div class="grid grid-cols-2 gap-4 bg-slate-200 p-4 rounded-xl border border-slate-200 mb-6">
       <div>
         <span class="text-xs text-gray-500 block mb-1">Champion / Defender</span>
         <div class="font-semibold text-slate-900 text-base">{{ match.champion }}</div>
@@ -240,11 +240,11 @@
         <span class="text-xs text-gray-500 block mb-1">Challenger</span>
         <div class="font-semibold text-slate-900 text-base">{{ match.challenger }}</div>
       </div>
-      <div class="pt-2 border-t border-border-base">
+      <div class="pt-2 border-t border-slate-200">
         <span class="text-xs text-gray-500 block mb-1">Match Winner</span>
         <div class="font-bold text-emerald-600 dark:text-emerald-400 text-base">{{ match.winner }}</div>
       </div>
-      <div class="pt-2 border-t border-border-base">
+      <div class="pt-2 border-t border-slate-200">
         <span class="text-xs text-gray-500 block mb-1">Final Score</span>
         <div class="font-bold text-slate-900 text-base">{{ match.score }}</div>
       </div>
@@ -252,11 +252,11 @@
 
     <!-- Match Metadata -->
     <div class="space-y-2 text-sm text-gray-500 mb-6">
-      <div class="flex justify-between border-b border-border-base pb-2">
+      <div class="flex justify-between border-b border-slate-200 pb-2">
         <span class="font-medium text-slate-900">Format:</span>
         <span>{{ match.format }}</span>
       </div>
-      <div class="flex justify-between border-b border-border-base pb-2">
+      <div class="flex justify-between border-b border-slate-200 pb-2">
         <span class="font-medium text-slate-900">Venue / Location:</span>
         <span>{{ match.location }}</span>
       </div>
@@ -289,7 +289,7 @@
     }
 
     <!-- Modal Footer Action -->
-    <div class="flex items-center justify-end gap-3 pt-4 border-t border-border-base">
+    <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
       <button (click)="closeDetailsModal()"
         class="px-4 py-2 rounded-xl text-sm font-medium text-gray-500 hover:text-slate-900 hover:bg-slate-200 transition-all">
         Close

@@ -46,7 +46,7 @@ import { AuthService } from '../../../core/services/auth.service';
             ></video>
             @if (isCameraOff()) {
               <div class="absolute inset-0 bg-slate-200 flex flex-col items-center justify-center">
-                <div class="w-12 h-12 rounded-full bg-surface border border-border-base flex items-center justify-center mb-1.5">
+                <div class="w-12 h-12 rounded-full bg-surface border border-slate-200 flex items-center justify-center mb-1.5">
                   <ng-icon name="heroUser" size="1.5rem" class="text-gray-500"></ng-icon>
                 </div>
                 <span class="text-xstext-gray-500 font-medium">Camera Off</span>
@@ -95,7 +95,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <button 
           (click)="toggleMic()" 
           [class.bg-rose-50]="isMuted()" [class.text-rose-600]="isMuted()" [class.border-rose-100]="isMuted()" [class.hover:bg-rose-100]="isMuted()"
-          [class.bg-slate-200]="!isMuted()" [class.text-slate-900]="!isMuted()" [class.border-border-base]="!isMuted()" [class.hover:bg-border-base/50]="!isMuted()"
+          [class.bg-slate-200]="!isMuted()" [class.text-slate-900]="!isMuted()" [class.border-slate-200]="!isMuted()" [class.hover:bg-border-base/50]="!isMuted()"
           class="w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           title="Toggle Mic"
         >
@@ -111,7 +111,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <button 
           (click)="toggleCam()" 
           [class.bg-rose-50]="isCameraOff()" [class.text-rose-600]="isCameraOff()" [class.border-rose-100]="isCameraOff()" [class.hover:bg-rose-100]="isCameraOff()"
-          [class.bg-slate-200]="!isCameraOff()" [class.text-slate-900]="!isCameraOff()" [class.border-border-base]="!isCameraOff()" [class.hover:bg-border-base/50]="!isCameraOff()"
+          [class.bg-slate-200]="!isCameraOff()" [class.text-slate-900]="!isCameraOff()" [class.border-slate-200]="!isCameraOff()" [class.hover:bg-border-base/50]="!isCameraOff()"
           class="w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           title="Toggle Camera"
         >
@@ -121,7 +121,7 @@ import { AuthService } from '../../../core/services/auth.service';
         <!-- Dock/Undock Toggle -->
         <button 
           (click)="toggleDetached()" 
-          class="w-9 h-9 rounded-full bg-slate-200 hover:bg-border-base/50 border border-border-base flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
+          class="w-9 h-9 rounded-full bg-slate-200 hover:bg-border-base/50 border border-slate-200 flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer"
           [title]="webrtc.isDetached() ? 'Dock to Sidebar' : 'Pop Out Video Call'"
         >
           <ng-icon [name]="webrtc.isDetached() ? 'heroArrowDownLeft' : 'heroArrowUpRight'" size="1rem"></ng-icon>

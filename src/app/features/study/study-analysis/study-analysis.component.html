@@ -40,7 +40,7 @@
 
 <!-- Inline Engine Settings Panel -->
 @if (showEngineSettings() && isEngineActive()) {
-<div class="px-4 py-3 border-b border-border-base bg-surface     flex flex-col gap-3">
+<div class="px-4 py-3 border-b border-slate-200 bg-surface     flex flex-col gap-3">
   <div class="flex justify-between">
     <span class="text-xs font-semibold  text-gray-500">Lines</span>
     <div class="flex gap-1">
@@ -58,10 +58,10 @@
 
 <!-- Multi-PV Lines -->
 @if (isEngineActive() && enginePvLines().length > 0) {
-<div class="border-b border-border-base bg-surface    ">
+<div class="border-b border-slate-200 bg-surface    ">
   @for (line of enginePvLines(); track line.pvIndex) {
   <div class="flex items-start gap-2 px-4 py-1.5" [class.border-t]="line.pvIndex > 0"
-    [class.border-border-base]="line.pvIndex > 0">
+    [class.border-slate-200]="line.pvIndex > 0">
     <span class="text-xs font-semibold min-w-[36px] text-left shrink-0 mt-px">
       {{ line.eval }}
     </span>

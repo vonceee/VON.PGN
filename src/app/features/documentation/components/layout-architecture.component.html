@@ -1,4 +1,4 @@
-<h2 class="text-3xl font-semibold mb-6 border-b border-border-base pb-4">
+<h2 class="text-3xl font-semibold mb-6 border-b border-slate-200 pb-4">
   Layout Architecture
 </h2>
 <div class="prose prose-slate max-w-none text-gray-500">
@@ -23,7 +23,7 @@
         </li>
       </ul>
       <pre
-        class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
+        class="bg-white border border-slate-200 rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
         <code>
 &lt;div class="h-screen w-full flex flex-col"&gt;
   &lt;app-header class="w-full shrink-0 z-50"&gt;&lt;/app-header&gt;
@@ -49,7 +49,7 @@
         distraction-free. This is handled by subscribing to router navigation events:
       </p>
       <pre
-        class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
+        class="bg-white border border-slate-200 rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
         <code>
 // main-layout.ts
 this.router.events.pipe(
@@ -70,7 +70,7 @@ this.router.events.pipe(
         Workspace components toggle the fluid layout programmatically during lifecycle hooks:
       </p>
       <pre
-        class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm">
+        class="bg-white border border-slate-200 rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm">
         <code>
 // layout.service.ts
 @Injectable({{ '{' }} providedIn: 'root' {{ '}' }})
@@ -100,7 +100,7 @@ export class LayoutService {{ '{' }}
         <code>max-w-[1080px] mx-auto</code> to center the workspace horizontally on large screens:
       </p>
       <pre
-        class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
+        class="bg-white border border-slate-200 rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
         <code>
 &lt;!-- tactics.component.html --&gt;
 &lt;div class="h-auto min-h-full lg:h-full w-full p-4 lg:p-8 flex flex-col relative overflow-y-auto lg:overflow-hidden"&gt;
@@ -117,7 +117,7 @@ export class LayoutService {{ '{' }}
         
         &lt;!-- Stats Sidebar Column --&gt;
         &lt;div class="w-full lg:w-[400px] flex flex-col justify-center min-h-0"&gt;
-          &lt;div class="w-full h-auto lg:h-[400px] max-h-[620px] mt-4 lg:mt-0 flex flex-col min-h-0 overflow-hidden border-2 border-border-base rounded-4xl bg-white"&gt;
+          &lt;div class="w-full h-auto lg:h-[400px] max-h-[620px] mt-4 lg:mt-0 flex flex-col min-h-0 overflow-hidden border-2 border-slate-200 rounded-4xl bg-white"&gt;
             &lt;!-- Stats card content --&gt;
           &lt;/div&gt;
         &lt;/div&gt;
@@ -136,7 +136,7 @@ export class LayoutService {{ '{' }}
         the layout hasn't settled:
       </p>
       <pre
-        class="bg-white border border-border-base rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
+        class="bg-white border border-slate-200 rounded-2xl p-6 font-mono text-xs overflow-x-auto leading-relaxed shadow-sm mb-4">
         <code>
 // chess-board.component.ts
 const parent = this.el.nativeElement.parentElement;

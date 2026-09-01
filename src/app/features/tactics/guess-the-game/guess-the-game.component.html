@@ -21,7 +21,7 @@
 
       <!-- Left Column: Sidebar (Only in 3+ column layouts) -->
       @if (isThreeColumn()) {
-      <div class="border-2 border-border-base rounded-xl p-6 xl:self-start flex flex-col gap-6 shrink-0 overflow-hidden"
+      <div class="border-2 border-slate-200 rounded-xl p-6 xl:self-start flex flex-col gap-6 shrink-0 overflow-hidden"
         [style.maxHeight.px]="boardSize()">
 
         <!-- Upper part: Info rows -->
@@ -31,7 +31,7 @@
             <!-- White Player Row -->
             <div class="flex items-center gap-2">
               <div class="flex-1 flex items-center gap-3 min-w-0 p-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-white border border-border-base shrink-0 select-none"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-white border border-slate-200 shrink-0 select-none"></span>
                 <div class="flex flex-col min-w-0">
                   <div class="flex items-center gap-1.5 min-w-0">
                     @if (correctWhite() || isGameOver()) {
@@ -53,7 +53,7 @@
               @if (getPlayerResult(game.result, 'white'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-white border border-border-base text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -86,7 +86,7 @@
               @if (getPlayerResult(game.result, 'black'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-white border border-border-base text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -97,7 +97,7 @@
 
           <!-- Context / Description -->
           @if (isGameOver() && game.description) {
-          <div class="flex-1 min-h-0 overflow-y-auto border-t border-border-base mt-2 pt-2 pr-1 select-text">
+          <div class="flex-1 min-h-0 overflow-y-auto border-t border-slate-200 mt-2 pt-2 pr-1 select-text">
             <p class="text-sm/6 text-gray-500">
               {{ game.description }}
             </p>
@@ -111,8 +111,8 @@
           <div class="flex flex-col">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()"
               placeholder="e.g Magnus vs Hikaru"
-              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue-600/50"
-              [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
+              class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+              [class.border-slate-200]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
             <div class="flex gap-2 pt-2">
@@ -122,7 +122,7 @@
                 Submit
               </button>
               <button
-                class="flex-1 w-full max-w-full justify-center inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all"
+                class="flex-1 w-full max-w-full justify-center inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/80 backdrop-blur-xs border border-slate-200 font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all"
                 (click)="revealFullMatchup()">
                 Reveal
               </button>
@@ -133,13 +133,13 @@
             @if (getAnalysisLinkInfo(game); as linkInfo) {
             @if (linkInfo.url) {
             <a [href]="linkInfo.url" target="_blank"
-              class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+              class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
               title="Study analysis">
               <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
             </a>
             } @else if (linkInfo.route) {
             <a [routerLink]="linkInfo.route" [queryParams]="linkInfo.queryParams" target="_blank"
-              class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+              class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
               title="Study analysis">
               <ng-icon name="heroBookOpen" class="text-lg"></ng-icon>
             </a>
@@ -173,7 +173,7 @@
 
       <!-- Right Column: Notation & Guess panel -->
       <div
-        class="border-2 border-border-base rounded-2xl flex flex-col gap-4 pr-1 xl:self-start shrink-0 sync-board-height overflow-hidden">
+        class="border-2 border-slate-200 rounded-2xl flex flex-col gap-4 pr-1 xl:self-start shrink-0 sync-board-height overflow-hidden">
 
         <!-- Move Notation Card -->
         <div class="flex-1 flex flex-col overflow-hidden bg-white rounded-xl min-h-0">
@@ -192,7 +192,7 @@
             <!-- White Player Card -->
             <div class="flex items-center justify-between text-sm/6 p-2 rounded-xl bg-slate-200 min-w-0">
               <div class="flex-1 flex items-center gap-3 min-w-0">
-                <span class="w-2.5 h-2.5 rounded-full bg-white border border-border-base shrink-0 select-none"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-white border border-slate-200 shrink-0 select-none"></span>
                 <div class="flex flex-col min-w-0">
                   <div class="flex items-center gap-1.5 min-w-0">
                     @if (correctWhite() || isGameOver()) {
@@ -214,7 +214,7 @@
               @if (getPlayerResult(game.result, 'white'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-white border border-border-base text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -247,7 +247,7 @@
               @if (getPlayerResult(game.result, 'black'); as resVal) {
               @if (resVal) {
               <span
-                class="px-1.5 py-0.5 rounded bg-white border border-border-base text-xs shrink-0 select-none font-medium">
+                class="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-xs shrink-0 select-none font-medium">
                 {{ resVal }}
               </span>
               }
@@ -258,7 +258,7 @@
 
           <!-- Context / Description -->
           @if (isGameOver() && game.description) {
-          <div class="overflow-y-auto border-t border-border-base mt-2 pt-2 pr-1 select-text">
+          <div class="overflow-y-auto border-t border-slate-200 mt-2 pt-2 pr-1 select-text">
             <p class="text-sm/6 text-gray-500">
               {{ game.description }}
             </p>
@@ -270,7 +270,7 @@
           <div class="flex flex-col">
             <input type="text" [(ngModel)]="guessQuery" (keydown.enter)="submitGuess()" placeholder="Type answer..."
               class="w-full px-4 py-2 bg-white border rounded-xl outline-none text-sm/6 font-medium transition-all duration-200"
-              [class.border-border-base]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
+              [class.border-slate-200]="!isIncorrect()" [class.border-rose-500]="isIncorrect()"
               [class.focus:border-rose-500]="isIncorrect()" [class.animate-shake]="isIncorrect()" />
 
             <div class="flex gap-2">

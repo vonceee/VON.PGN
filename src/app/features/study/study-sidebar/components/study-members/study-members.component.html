@@ -4,7 +4,7 @@
     <div class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200">
       <div class="flex items-center gap-4 min-w-0">
         <div
-          class="w-8 h-8 rounded-full bg-white border border-border-base flex items-center justify-center text-gray-500 shrink-0">
+          class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-gray-500 shrink-0">
           <ng-icon name="heroUser" class="text-sm/6"></ng-icon>
         </div>
         <div class="flex flex-col min-w-0">
@@ -17,7 +17,7 @@
       </div>
       @if (isOwner()) {
       <button (click)="addMember()"
-        class="w-8 h-8 rounded-full border border-border-base flex items-center justify-center cursor-pointer hover:bg-white hover:text-blue-600 transition-colors"
+        class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center cursor-pointer hover:bg-white hover:text-blue-600 transition-colors"
         title="Add member">
         <ng-icon name="heroPlus" class="text-md"></ng-icon>
       </button>
@@ -27,10 +27,10 @@
     <!-- Collaborators/Members List -->
     @for (collab of study()?.collaborators; track collab.uid) {
     <div
-      class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200 border border-border-base hover:border-border-base transition-all">
+      class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200 border border-slate-200 hover:border-slate-200 transition-all">
       <div class="flex items-center gap-4 min-w-0">
         <div
-          class="w-8 h-8 rounded-full bg-white border border-border-base flex items-center justify-center text-gray-500 shrink-0">
+          class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-gray-500 shrink-0">
           <ng-icon name="heroUser" class="text-sm/6"></ng-icon>
         </div>
         <div class="flex flex-col min-w-0">
@@ -49,7 +49,7 @@
         <div class="relative min-w-[105px]">
           <select [ngModel]="collab.can_edit ? 'collaborator' : 'member'"
             (ngModelChange)="toggleMemberPermission(collab.uid, $event === 'collaborator')"
-            class="w-full px-2.5 py-1 bg-white border border-border-base rounded-full text-xs font-medium outline-none cursor-pointer appearance-none pr-7 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all">
+            class="w-full px-2.5 py-1 bg-white border border-slate-200 rounded-full text-xs font-medium outline-none cursor-pointer appearance-none pr-7 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all">
             <option value="member">Member</option>
             <option value="collaborator">Collaborator</option>
           </select>
@@ -77,17 +77,17 @@
 
 
     <!-- Viewers Section Header -->
-    <div class="mt-4 pt-4 pb-2 border-t border-border-base flex items-center justify-between">
+    <div class="mt-4 pt-4 pb-2 border-t border-slate-200 flex items-center justify-between">
       <h3 class="text-sm/6 font-medium text-gray-500">In lobby ({{ viewers().length }})</h3>
     </div>
 
     <!-- Viewers List -->
     @for (viewer of viewers(); track viewer.userId) {
     <div
-      class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200 border border-border-base hover:border-border-base transition-all">
+      class="flex items-center justify-between p-2.5 px-4 rounded-4xl bg-slate-200 border border-slate-200 hover:border-slate-200 transition-all">
       <div class="flex items-center gap-4 min-w-0">
         <div
-          class="w-8 h-8 rounded-full bg-white border border-border-base flex items-center justify-center text-gray-500 shrink-0 relative">
+          class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-gray-500 shrink-0 relative">
           <ng-icon name="heroUser" class="text-sm/6"></ng-icon>
           <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 border border-main"></span>
         </div>

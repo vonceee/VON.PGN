@@ -23,7 +23,7 @@ import { DialogRef } from '@angular/cdk/dialog';
           <div class="space-y-4">
             <div class="space-y-2">
               @for (item of moveShortcuts; track item.key) {
-                <div class="flex items-center justify-between py-1.5 border-b border-border-base last:border-0 group">
+                <div class="flex items-center justify-between py-1.5 border-b border-slate-200 last:border-0 group">
                   <span class="text-sm/6 opacity-80 group-hover:text-slate-900">
                     {{ item.label }}
                   </span>
@@ -31,7 +31,7 @@ import { DialogRef } from '@angular/cdk/dialog';
                     @if (item.symbol) {
                       <span class="text-xs text-gray-500 bg-slate-200 px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     }
-                    <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold">{{ item.key }}</kbd>
+                    <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-slate-200 rounded text-xs font-semibold">{{ item.key }}</kbd>
                   </div>
                 </div>
               }
@@ -42,16 +42,16 @@ import { DialogRef } from '@angular/cdk/dialog';
           <div class="space-y-4">
             <div class="space-y-2">
               @for (item of posShortcuts; track item.key) {
-                <div class="flex items-center justify-between py-1.5 border-b border-border-base last:border-0 group">
+                <div class="flex items-center justify-between py-1.5 border-b border-slate-200 last:border-0 group">
                   <span class="text-sm/6 opacity-80 group-hover:text-slate-900">
                     {{ item.label }}
                   </span>
                   <div class="flex items-center gap-2">
                     <span class="text-xs text-gray-500 bg-slate-200 px-1.5 py-0.5 rounded">{{ item.symbol }}</span>
                     <div class="flex items-center gap-1">
-                      <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold text-gray-500">Shift</kbd>
+                      <kbd class="h-6 flex items-center justify-center px-1.5 bg-surface border border-slate-200 rounded text-xs font-semibold text-gray-500">Shift</kbd>
                       <span class="text-xs">+</span>
-                      <kbd class="w-6 h-6 flex items-center justify-center bg-surface border border-border-base rounded text-xs font-semibold">{{ item.key }}</kbd>
+                      <kbd class="w-6 h-6 flex items-center justify-center bg-surface border border-slate-200 rounded text-xs font-semibold">{{ item.key }}</kbd>
                     </div>
                   </div>
                 </div>
@@ -60,7 +60,7 @@ import { DialogRef } from '@angular/cdk/dialog';
           </div>
 
           <!-- Navigation & Others -->
-          <div class="space-y-4 md:col-span-2 pt-4 border-t border-border-base">
+          <div class="space-y-4 md:col-span-2 pt-4 border-t border-slate-200">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2">
               @for (item of otherShortcuts; track item.label) {
                 <div class="flex items-center justify-between py-1.5 group">
@@ -69,7 +69,7 @@ import { DialogRef } from '@angular/cdk/dialog';
                   </span>
                   <div class="flex items-center gap-1">
                     @for (key of item.keys; track $index) {
-                       <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-border-base rounded text-xs font-semibold text-gray-500">{{ key }}</kbd>
+                       <kbd class="min-w-[24px] h-6 flex items-center justify-center px-1.5 bg-surface border border-slate-200 rounded text-xs font-semibold text-gray-500">{{ key }}</kbd>
                        @if (!$last) { <span class="text-xs mx-0.5">/</span> }
                     }
                   </div>

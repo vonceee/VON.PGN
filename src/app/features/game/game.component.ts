@@ -63,7 +63,7 @@ import { AudioService } from '../../core/services/audio.service';
             </div>
 
             <!-- Chess board -->
-            <div class="relative rounded-xl overflow-hidden border border-border-base shadow-sm">
+            <div class="relative rounded-xl overflow-hidden border border-slate-200 shadow-sm">
               <app-chess-board
                 [fen]="round.boardFen()"
                 [orientation]="round.myColor() ?? 'white'"
@@ -82,7 +82,7 @@ import { AudioService } from '../../core/services/audio.service';
                     <h2 class="text-2xl font-semibold">{{ endHeadline() }}</h2>
                     <p class="text-gray-500 text-sm">{{ endReasonLabel() }}</p>
                     <div class="flex gap-2 mt-4 justify-center">
-                      <a routerLink="/" class="px-5 py-2.5 rounded-xl border border-border-base text-sm font-medium hover:bg-slate-50">
+                      <a routerLink="/" class="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium hover:bg-slate-50">
                         Home
                       </a>
                     </div>
@@ -120,7 +120,7 @@ import { AudioService } from '../../core/services/audio.service';
                     Accept
                   </button>
                   <button (click)="round.drawOffer.set(null)"
-                    class="flex-1 px-3 py-2 rounded-lg border border-border-base text-xs font-medium hover:bg-slate-50">
+                    class="flex-1 px-3 py-2 rounded-lg border border-slate-200 text-xs font-medium hover:bg-slate-50">
                     Decline
                   </button>
                 </div>
@@ -131,13 +131,13 @@ import { AudioService } from '../../core/services/audio.service';
             @if (round.isActive()) {
               <div class="flex flex-col gap-2">
                 <button (click)="offerDraw()"
-                  class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border-base text-sm font-medium hover:bg-slate-50 transition-colors">
+                  class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium hover:bg-slate-50 transition-colors">
                   <ng-icon name="heroHandRaised" class="text-base text-gray-500"></ng-icon>
                   Offer Draw
                 </button>
                 @if (canAbort()) {
                   <button (click)="abort()"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border-base text-sm font-medium hover:bg-slate-50 transition-colors">
+                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium hover:bg-slate-50 transition-colors">
                     <ng-icon name="heroNoSymbol" class="text-base text-gray-500"></ng-icon>
                     Abort Game
                   </button>
@@ -151,7 +151,7 @@ import { AudioService } from '../../core/services/audio.service';
             }
 
             <!-- Move list -->
-            <div class="bg-white border border-border-base rounded-xl p-4 flex-1 overflow-y-auto max-h-80">
+            <div class="bg-white border border-slate-200 rounded-xl p-4 flex-1 overflow-y-auto max-h-80">
               <h3 class="text-xs font-semibold text-gray-500 uppercase mb-3">Moves</h3>
               <div class="grid grid-cols-[auto_1fr_1fr] gap-x-3 gap-y-1 text-sm font-mono">
                 @for (pair of movePairs(); track $index) {

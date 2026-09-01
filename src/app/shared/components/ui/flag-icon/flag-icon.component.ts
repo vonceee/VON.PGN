@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
         [class.rounded-full]="shape() === 'circle'"
         [class.object-cover]="shape() === 'circle'"
         [class.border]="shape() === 'circle'"
-        [class.border-border-base]="shape() === 'circle'"
+        [class.border-slate-200]="shape() === 'circle'"
         loading="lazy"
       />
     }

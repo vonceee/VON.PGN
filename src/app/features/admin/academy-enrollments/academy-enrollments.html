@@ -3,11 +3,11 @@
     <div class="relative min-w-[240px]">
       <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="loadEnrollments()"
         placeholder="Search name, email..."
-        class="w-full px-4 py-2 bg-white border border-border-base rounded  outline-none" />
+        class="w-full px-4 py-2 bg-white border border-slate-200 rounded  outline-none" />
     </div>
 
     <select [(ngModel)]="statusFilter" (ngModelChange)="loadEnrollments()"
-      class="px-4 py-2 bg-white border border-border-base rounded  outline-none text-sm/6">
+      class="px-4 py-2 bg-white border border-slate-200 rounded  outline-none text-sm/6">
       <option value="">All Status</option>
       <option value="pending">Pending</option>
       <option value="contacted">Contacted</option>
@@ -18,11 +18,11 @@
   </div>
 
   <!-- Table Core -->
-  <div class="bg-white border border-border-base rounded overflow-hidden">
+  <div class="bg-white border border-slate-200 rounded overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="border-b border-border-base">
+          <tr class="border-b border-slate-200">
             <th class="px-6 py-4 text-xs   ">
               Student Info
             </th>

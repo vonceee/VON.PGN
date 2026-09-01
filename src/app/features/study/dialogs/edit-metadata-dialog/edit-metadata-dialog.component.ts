@@ -25,7 +25,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['Event']"
               placeholder="e.g. World Chess Championship"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <!-- Date -->
@@ -35,7 +35,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['Date']"
               placeholder="YYYY.MM.DD"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           
@@ -46,7 +46,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['WhiteTitle']"
               placeholder="GM"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <div class="md:col-span-2 space-y-2">
@@ -55,7 +55,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['White']"
               placeholder="Full Name"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <div class="md:col-span-1 space-y-2">
@@ -64,7 +64,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['WhiteElo']"
               placeholder="Rating"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
 
@@ -75,7 +75,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['BlackTitle']"
               placeholder="GM"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <div class="md:col-span-2 space-y-2">
@@ -84,7 +84,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['Black']"
               placeholder="Full Name"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <div class="md:col-span-1 space-y-2">
@@ -93,7 +93,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['BlackElo']"
               placeholder="Rating"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
 
@@ -104,7 +104,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['Round']"
               placeholder="e.g. 1.1"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <!-- Result -->
@@ -113,7 +113,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
             <div class="relative">
               <select
                 [(ngModel)]="tags['Result']"
-                class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none appearance-none cursor-pointer pr-10"
+                class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none appearance-none cursor-pointer pr-10"
               >
                 <option value="*">* (Ongoing/Unknown)</option>
                 <option value="1-0">1-0 (White Wins)</option>
@@ -134,7 +134,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['ECO']"
               placeholder="e.g. E15"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
           <!-- Site -->
@@ -144,7 +144,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['Site']"
               placeholder="e.g. London, ENG"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
 
@@ -155,7 +155,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
               type="text"
               [(ngModel)]="tags['StudyLink']"
               placeholder="e.g. 12 or https://vonchess.com/study/12"
-              class="w-full px-4 py-2.5 border border-border-base rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
+              class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm/6 outline-none placeholder:text-gray-500"
             />
           </div>
         </div>
@@ -163,7 +163,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
       <!-- Dialog Footer -->
       <div class="p-8 pt-4 flex gap-4 w-full shrink-0">
-        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
          (click)="dialogRef.close()">
           Cancel
         </button>

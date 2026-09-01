@@ -1,4 +1,4 @@
-<h2 class="text-3xl font-semibold mb-6 border-b border-border-base pb-4">
+<h2 class="text-3xl font-semibold mb-6 border-b border-slate-200 pb-4">
   Bughouse Chess
 </h2>
 <div class="prose prose-slate max-w-none text-gray-500">
@@ -18,14 +18,14 @@
         board per player, and the boards are paired:
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div class="p-4 rounded-xl bg-white border border-border-base flex flex-col gap-1">
+        <div class="p-4 rounded-xl bg-white border border-slate-200 flex flex-col gap-1">
           <span class="text-xs font-bold uppercase text-blue-600 mb-1">Team A</span>
           <p class="text-sm text-gray-500 m-0">
             <strong class="text-slate-800">You</strong> — Board A, White<br>
             <strong class="text-slate-800">Your Partner</strong> — Board B, Black
           </p>
         </div>
-        <div class="p-4 rounded-xl bg-white border border-border-base flex flex-col gap-1">
+        <div class="p-4 rounded-xl bg-white border border-slate-200 flex flex-col gap-1">
           <span class="text-xs font-bold uppercase text-purple-600 mb-1">Team B (Opponents)</span>
           <p class="text-sm text-gray-500 m-0">
             <strong class="text-slate-800">Opponent 1</strong> — Board A, Black<br>
@@ -82,30 +82,30 @@
         <table class="w-full text-sm border-collapse">
           <thead>
             <tr class="bg-slate-100 text-slate-900">
-              <th class="text-left px-4 py-2.5 font-semibold rounded-tl-lg border border-border-base">Event</th>
-              <th class="text-left px-4 py-2.5 font-semibold rounded-tr-lg border border-border-base">Outcome</th>
+              <th class="text-left px-4 py-2.5 font-semibold rounded-tl-lg border border-slate-200">Event</th>
+              <th class="text-left px-4 py-2.5 font-semibold rounded-tr-lg border border-slate-200">Outcome</th>
             </tr>
           </thead>
           <tbody class="text-gray-500">
-            <tr class="border-b border-border-base">
-              <td class="px-4 py-2.5 border border-border-base">Receiver accepts</td>
-              <td class="px-4 py-2.5 border border-border-base">Sender's outbox shows <span class="text-green-600 font-semibold">Accepted</span>; partner slot fills instantly</td>
+            <tr class="border-b border-slate-200">
+              <td class="px-4 py-2.5 border border-slate-200">Receiver accepts</td>
+              <td class="px-4 py-2.5 border border-slate-200">Sender's outbox shows <span class="text-green-600 font-semibold">Accepted</span>; partner slot fills instantly</td>
             </tr>
-            <tr class="border-b border-border-base">
-              <td class="px-4 py-2.5 border border-border-base">Receiver rejects</td>
-              <td class="px-4 py-2.5 border border-border-base">Outbox shows <span class="text-rose-500 font-semibold">Rejected</span>; sender can invite someone else</td>
+            <tr class="border-b border-slate-200">
+              <td class="px-4 py-2.5 border border-slate-200">Receiver rejects</td>
+              <td class="px-4 py-2.5 border border-slate-200">Outbox shows <span class="text-rose-500 font-semibold">Rejected</span>; sender can invite someone else</td>
             </tr>
-            <tr class="border-b border-border-base">
-              <td class="px-4 py-2.5 border border-border-base">Sender cancels a pending invite</td>
-              <td class="px-4 py-2.5 border border-border-base">Toast disappears from receiver's screen immediately</td>
+            <tr class="border-b border-slate-200">
+              <td class="px-4 py-2.5 border border-slate-200">Sender cancels a pending invite</td>
+              <td class="px-4 py-2.5 border border-slate-200">Toast disappears from receiver's screen immediately</td>
             </tr>
-            <tr class="border-b border-border-base">
-              <td class="px-4 py-2.5 border border-border-base">Partner slot already filled</td>
-              <td class="px-4 py-2.5 border border-border-base">The <strong>Invite</strong> button is disabled for the current partner; sender must kick them first</td>
+            <tr class="border-b border-slate-200">
+              <td class="px-4 py-2.5 border border-slate-200">Partner slot already filled</td>
+              <td class="px-4 py-2.5 border border-slate-200">The <strong>Invite</strong> button is disabled for the current partner; sender must kick them first</td>
             </tr>
             <tr>
-              <td class="px-4 py-2.5 border border-border-base">Captain kicks partner</td>
-              <td class="px-4 py-2.5 border border-border-base">Slot empties; both sides see the update in real time via WebSocket push</td>
+              <td class="px-4 py-2.5 border border-slate-200">Captain kicks partner</td>
+              <td class="px-4 py-2.5 border border-slate-200">Slot empties; both sides see the update in real time via WebSocket push</td>
             </tr>
           </tbody>
         </table>
@@ -125,9 +125,9 @@
       <ol class="list-decimal pl-5 text-sm space-y-2 text-gray-500 mb-6">
         <li>Click <strong class="text-slate-800">Find Bughouse Match</strong>. The UI transitions to the
           <em>Searching</em> state — a radar pulse animation and a live elapsed-time counter (<code
-            class="bg-white border border-border-base px-1 rounded text-xs">queueTime()</code> in seconds) are shown.
+            class="bg-white border border-slate-200 px-1 rounded text-xs">queueTime()</code> in seconds) are shown.
         </li>
-        <li>A real-time status message (<code class="bg-white border border-border-base px-1 rounded text-xs">queueStatus()</code>)
+        <li>A real-time status message (<code class="bg-white border border-slate-200 px-1 rounded text-xs">queueStatus()</code>)
           is broadcast from the server — it may update to reflect queue depth, estimated wait, or partner sync state.
         </li>
         <li>You can click <strong class="text-slate-800">Cancel Search</strong> at any time to leave the queue. Your
@@ -195,26 +195,26 @@
         <table class="w-full text-sm border-collapse">
           <thead>
             <tr class="bg-slate-100 text-slate-900">
-              <th class="text-left px-4 py-2.5 font-semibold border border-border-base rounded-tl-lg">Type</th>
-              <th class="text-left px-4 py-2.5 font-semibold border border-border-base">Style</th>
-              <th class="text-left px-4 py-2.5 font-semibold border border-border-base rounded-tr-lg">Triggers</th>
+              <th class="text-left px-4 py-2.5 font-semibold border border-slate-200 rounded-tl-lg">Type</th>
+              <th class="text-left px-4 py-2.5 font-semibold border border-slate-200">Style</th>
+              <th class="text-left px-4 py-2.5 font-semibold border border-slate-200 rounded-tr-lg">Triggers</th>
             </tr>
           </thead>
           <tbody class="text-gray-500">
-            <tr class="border-b border-border-base">
-              <td class="px-4 py-2.5 border border-border-base font-semibold text-green-700">Success</td>
-              <td class="px-4 py-2.5 border border-border-base">Green background, check icon</td>
-              <td class="px-4 py-2.5 border border-border-base">Partner accepted invite; invite cancelled</td>
+            <tr class="border-b border-slate-200">
+              <td class="px-4 py-2.5 border border-slate-200 font-semibold text-green-700">Success</td>
+              <td class="px-4 py-2.5 border border-slate-200">Green background, check icon</td>
+              <td class="px-4 py-2.5 border border-slate-200">Partner accepted invite; invite cancelled</td>
             </tr>
-            <tr class="border-b border-border-base">
-              <td class="px-4 py-2.5 border border-border-base font-semibold text-rose-600">Error</td>
-              <td class="px-4 py-2.5 border border-border-base">Rose background, X-circle icon</td>
-              <td class="px-4 py-2.5 border border-border-base">Invite rejected; WebSocket failure</td>
+            <tr class="border-b border-slate-200">
+              <td class="px-4 py-2.5 border border-slate-200 font-semibold text-rose-600">Error</td>
+              <td class="px-4 py-2.5 border border-slate-200">Rose background, X-circle icon</td>
+              <td class="px-4 py-2.5 border border-slate-200">Invite rejected; WebSocket failure</td>
             </tr>
             <tr>
-              <td class="px-4 py-2.5 border border-border-base font-semibold text-blue-500">Info</td>
-              <td class="px-4 py-2.5 border border-border-base">Dark (slate-900) background, info icon</td>
-              <td class="px-4 py-2.5 border border-border-base">Queue status updates; match found; partner kicked</td>
+              <td class="px-4 py-2.5 border border-slate-200 font-semibold text-blue-500">Info</td>
+              <td class="px-4 py-2.5 border border-slate-200">Dark (slate-900) background, info icon</td>
+              <td class="px-4 py-2.5 border border-slate-200">Queue status updates; match found; partner kicked</td>
             </tr>
           </tbody>
         </table>

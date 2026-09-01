@@ -17,12 +17,12 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
   template: `
     @if (mainBoard) {
       <!-- Dedicated Right-Column Editor Tools Stack -->
-      <div class="flex flex-col gap-6 w-full p-6 rounded-xl border-2 border-border-base h-full overflow-y-auto select-none">        
+      <div class="flex flex-col gap-6 w-full p-6 rounded-xl border-2 border-slate-200 h-full overflow-y-auto select-none">        
         <!-- Pieces Palette -->
         <div class="flex flex-col gap-4">
           <!-- Black Pieces -->
           <div class="space-y-1.5">
-            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-slate-200/30 border border-border-base rounded-xl">
+            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-slate-200/30 border border-slate-200 rounded-xl">
               @for (role of pieceRoles; track role) {
                 <button 
                   class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
@@ -40,7 +40,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
           <!-- White Pieces -->
           <div class="space-y-1.5">
-            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-slate-200/30 border border-border-base rounded-xl">
+            <div class="grid grid-cols-6 gap-1.5 p-1.5 bg-slate-200/30 border border-slate-200 rounded-xl">
               @for (role of pieceRoles; track role) {
                 <button 
                   class="piece-slot w-10 h-10 flex items-center justify-center rounded-lg border-2 group cursor-pointer"
@@ -67,7 +67,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
             [class.border-slate-900]="selectedTool() === 'hand'"
             [class.bg-white]="selectedTool() !== 'hand'"
             [class.text-slate-700]="selectedTool() !== 'hand'"
-            [class.border-border-base]="selectedTool() !== 'hand'"
+            [class.border-slate-200]="selectedTool() !== 'hand'"
             [class.hover:bg-slate-100]="selectedTool() !== 'hand'"
             (click)="selectTool('hand')"
           >
@@ -81,7 +81,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
             [class.border-slate-900]="selectedTool() === 'trash'"
             [class.bg-white]="selectedTool() !== 'trash'"
             [class.text-slate-700]="selectedTool() !== 'trash'"
-            [class.border-border-base]="selectedTool() !== 'trash'"
+            [class.border-slate-200]="selectedTool() !== 'trash'"
             [class.hover:bg-slate-100]="selectedTool() !== 'trash'"
             (click)="selectTool('trash')"
           >
@@ -94,14 +94,14 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
           <div class="h-6 w-px bg-slate-300 mx-1"></div>
           <button 
             title="Reset board"
-            class="w-10 h-10 rounded-full border border-border-base bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+            class="w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
             (click)="resetToInitial()"
           >
             <ng-icon name="heroArrowPath" class="text-xl"></ng-icon>
           </button>
           <button 
             title="Clear board"
-            class="w-10 h-10 rounded-full border border-border-base bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+            class="w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
             (click)="clearBoard()"
           >
             <ng-icon name="heroTrash" class="text-xl"></ng-icon>
@@ -118,7 +118,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               [class.border-slate-900]="turn() === 'w'"
               [class.bg-white]="turn() !== 'w'"
               [class.text-slate-700]="turn() !== 'w'"
-              [class.border-border-base]="turn() !== 'w'"
+              [class.border-slate-200]="turn() !== 'w'"
               [class.hover:bg-slate-100]="turn() !== 'w'"
               (click)="setTurn('w')"
             >
@@ -131,7 +131,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               [class.border-slate-900]="turn() === 'b'"
               [class.bg-white]="turn() !== 'b'"
               [class.text-slate-700]="turn() !== 'b'"
-              [class.border-border-base]="turn() !== 'b'"
+              [class.border-slate-200]="turn() !== 'b'"
               [class.hover:bg-slate-100]="turn() !== 'b'"
               (click)="setTurn('b')"
             >
@@ -142,21 +142,21 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
         <!-- Castling rights -->
         <div class="flex flex-col">
-          <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-slate-200/30 border border-border-base rounded-xl">
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2 p-3 bg-slate-200/30 border border-slate-200 rounded-xl">
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" [ngModel]="whiteKingside()" (ngModelChange)="whiteKingside.set($event); emitChange()" class="rounded text-blue-600 border-border-base bg-transparent focus:ring-blue-600" />
+              <input type="checkbox" [ngModel]="whiteKingside()" (ngModelChange)="whiteKingside.set($event); emitChange()" class="rounded text-blue-600 border-slate-200 bg-transparent focus:ring-blue-600" />
               <span>White O-O</span>
             </label>
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" [ngModel]="whiteQueenside()" (ngModelChange)="whiteQueenside.set($event); emitChange()" class="rounded text-blue-600 border-border-base bg-transparent focus:ring-blue-600" />
+              <input type="checkbox" [ngModel]="whiteQueenside()" (ngModelChange)="whiteQueenside.set($event); emitChange()" class="rounded text-blue-600 border-slate-200 bg-transparent focus:ring-blue-600" />
               <span>White O-O-O</span>
             </label>
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" [ngModel]="blackKingside()" (ngModelChange)="blackKingside.set($event); emitChange()" class="rounded text-blue-600 border-border-base bg-transparent focus:ring-blue-600" />
+              <input type="checkbox" [ngModel]="blackKingside()" (ngModelChange)="blackKingside.set($event); emitChange()" class="rounded text-blue-600 border-slate-200 bg-transparent focus:ring-blue-600" />
               <span>Black O-O</span>
             </label>
             <label class="flex items-center gap-2 text-xs font-medium cursor-pointer">
-              <input type="checkbox" [ngModel]="blackQueenside()" (ngModelChange)="blackQueenside.set($event); emitChange()" class="rounded text-blue-600 border-border-base bg-transparent focus:ring-blue-600" />
+              <input type="checkbox" [ngModel]="blackQueenside()" (ngModelChange)="blackQueenside.set($event); emitChange()" class="rounded text-blue-600 border-slate-200 bg-transparent focus:ring-blue-600" />
               <span>Black O-O-O</span>
             </label>
           </div>
@@ -244,7 +244,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               [class.border-slate-900]="selectedTool() === 'hand'"
               [class.bg-white]="selectedTool() !== 'hand'"
               [class.text-slate-700]="selectedTool() !== 'hand'"
-              [class.border-border-base]="selectedTool() !== 'hand'"
+              [class.border-slate-200]="selectedTool() !== 'hand'"
               [class.hover:bg-slate-100]="selectedTool() !== 'hand'"
               (click)="selectTool('hand')"
             >
@@ -258,7 +258,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               [class.border-slate-900]="selectedTool() === 'trash'"
               [class.bg-white]="selectedTool() !== 'trash'"
               [class.text-slate-700]="selectedTool() !== 'trash'"
-              [class.border-border-base]="selectedTool() !== 'trash'"
+              [class.border-slate-200]="selectedTool() !== 'trash'"
               [class.hover:bg-slate-100]="selectedTool() !== 'trash'"
               (click)="selectTool('trash')"
             >
@@ -271,14 +271,14 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
             <div class="h-6 w-px bg-slate-300 mx-1"></div>
             <button 
               title="Reset board"
-              class="w-10 h-10 rounded-full border border-border-base bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+              class="w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
               (click)="resetToInitial()"
             >
               <ng-icon name="heroArrowPath" class="text-xl"></ng-icon>
             </button>
             <button 
               title="Clear board"
-              class="w-10 h-10 rounded-full border border-border-base bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+              class="w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
               (click)="clearBoard()"
             >
               <ng-icon name="heroTrash" class="text-xl"></ng-icon>
@@ -294,7 +294,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               [class.border-slate-900]="turn() === 'w'"
               [class.bg-white]="turn() !== 'w'"
               [class.text-slate-700]="turn() !== 'w'"
-              [class.border-border-base]="turn() !== 'w'"
+              [class.border-slate-200]="turn() !== 'w'"
               [class.hover:bg-slate-100]="turn() !== 'w'"
               (click)="setTurn('w')"
             >White to move</button>
@@ -305,7 +305,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
               [class.border-slate-900]="turn() === 'b'"
               [class.bg-white]="turn() !== 'b'"
               [class.text-slate-700]="turn() !== 'b'"
-              [class.border-border-base]="turn() !== 'b'"
+              [class.border-slate-200]="turn() !== 'b'"
               [class.hover:bg-slate-100]="turn() !== 'b'"
               (click)="setTurn('b')"
             >Black to move</button>

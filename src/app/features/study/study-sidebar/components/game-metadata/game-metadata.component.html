@@ -70,7 +70,7 @@
       @if (metadataItems().length > 0) {
       <div class="flex flex-col gap-2">
         @for (item of metadataItems(); track item.label) {
-        <div class="flex flex-col p-4 border-2 border-border-base rounded-xl select-none">
+        <div class="flex flex-col p-4 border-2 border-slate-200 rounded-xl select-none">
           <span class="text-xs font-medium flex items-center gap-1.5">
             <ng-icon [name]="item.icon" class="text-xs"></ng-icon>
             {{ item.label }}

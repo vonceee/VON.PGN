@@ -8,7 +8,7 @@
   <div class="relative space-y-4">
     <input type="text" [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)"
       placeholder="search..." autofocus
-      class="block w-full pl-3 pr-3 py-2.5 bg-white border border-border-base rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
+      class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600/50" />
 
     @if (isSearching()) {
 
@@ -19,7 +19,7 @@
     <div class="w-full bg-slate-200 rounded-3xl py-2 max-h-48 overflow-y-auto">
       @for (user of results(); track user.uid) {
       <button (click)="selectUser(user)"
-        class="w-full flex items-center gap-3 px-5 py-3 text-left cursor-pointer transition-all border-b border-border-base last:border-0"
+        class="w-full flex items-center gap-3 px-5 py-3 text-left cursor-pointer transition-all border-b border-slate-200 last:border-0"
         [class.bg-blue-600/10]="selectedUser()?.uid === user.uid"
         [class.text-blue-600]="selectedUser()?.uid === user.uid"
         [class.hover:bg-white]="selectedUser()?.uid !== user.uid"
@@ -55,7 +55,7 @@
 
   <!-- Actions -->
   <div class="flex gap-4 pt-4 justify-end">
-    <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all" (click)="dialogRef.close()">
+    <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all" (click)="dialogRef.close()">
       Cancel
     </button>
     <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer" [disabled]="!selectedUser()" (click)="addMember()">

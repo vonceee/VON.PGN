@@ -4,7 +4,7 @@
   <form [formGroup]="tournamentForm" class="grid grid-cols-1 lg:grid-cols-[64px_1fr] gap-8 items-start">
     <!-- Left Sidebar: Section Navigation -->
     <aside
-      class="hidden lg:flex sticky top-6 flex flex-col gap-3 items-center py-4 px-2 border-2 border-border-base rounded-2xl w-16 shrink-0">
+      class="hidden lg:flex sticky top-6 flex flex-col gap-3 items-center py-4 px-2 border-2 border-slate-200 rounded-2xl w-16 shrink-0">
       @for (
       section of [
       { id: 'sec-basic', label: 'Basic Info', icon: 'heroInformationCircle' },
@@ -25,7 +25,7 @@
         " class="p-3 transition-all cursor-pointer border-none flex items-center justify-center relative group">
         <ng-icon [name]="section.icon" class="text-xl"></ng-icon>
         <div
-          class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-white border border-border-base rounded-xl text-sm font-medium text-blue-600 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity shadow-lg">
+          class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-blue-600 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity shadow-lg">
           {{ section.label }}
         </div>
       </button>
@@ -51,7 +51,7 @@
 
             @if (!useCustomPoster) {
             <button type="button" (click)="posterUploadInput.click()"
-              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all cursor-pointer">
+              class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all cursor-pointer">
               Upload Poster
             </button>
             } @else {
@@ -74,13 +74,13 @@
       </div>
 
       <!-- Basic Info -->
-      <section id="sec-basic" class="p-8 scroll-mt-6 border-2 border-border-base">
+      <section id="sec-basic" class="p-8 scroll-mt-6 border-2 border-slate-200">
         <h2 class="text-2xl mb-3">Basic information</h2>
         <app-step-basic-info [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-basic-info>
       </section>
 
       <!-- Dates & Location -->
-      <section id="sec-dates" class="p-8 scroll-mt-6 border-2 border-border-base">
+      <section id="sec-dates" class="p-8 scroll-mt-6 border-2 border-slate-200">
         <h2 class="text-2xl mb-3">Dates & location</h2>
         <app-step-dates-location [form]="tournamentForm" [getError]="getError.bind(this)" [mapsLink]="mapsLink"
           [mapsLinkLoading]="mapsLinkLoading" [mapsLinkError]="mapsLinkError" [verificationStatus]="verificationStatus"
@@ -88,32 +88,32 @@
       </section>
 
       <!-- Format & Rules -->
-      <section id="sec-format" class="p-8 scroll-mt-6 border-2 border-border-base">
+      <section id="sec-format" class="p-8 scroll-mt-6 border-2 border-slate-200">
         <h2 class="text-2xl mb-3">Format & rules</h2>
         <app-step-format-rules [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-format-rules>
       </section>
 
       <!-- Organizer -->
-      <section id="sec-organizer" class="p-8 scroll-mt-6 border-2 border-border-base">
+      <section id="sec-organizer" class="p-8 scroll-mt-6 border-2 border-slate-200">
         <h2 class="text-2xl mb-3">Organizer information</h2>
         <app-step-organizer [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-organizer>
       </section>
 
       <!-- Registration -->
-      <section id="sec-registration" class="p-8 scroll-mt-6 border-2 border-border-base">
+      <section id="sec-registration" class="p-8 scroll-mt-6 border-2 border-slate-200">
         <h2 class="text-2xl mb-3">Registration details</h2>
         <app-step-registration [form]="tournamentForm" [getError]="getError.bind(this)"></app-step-registration>
       </section>
 
       <!-- Eligibility -->
-      <section id="sec-eligibility" class="p-8 scroll-mt-6 border-2 border-border-base">
+      <section id="sec-eligibility" class="p-8 scroll-mt-6 border-2 border-slate-200">
         <h2 class="text-2xl mb-3">Player eligibility</h2>
         <app-step-eligibility [eligibilityArray]="eligibilityArray" (addItem)="addEligibilityItem()"
           (removeItem)="removeEligibilityItem($event)"></app-step-eligibility>
       </section>
 
       <!-- Prizes -->
-      <section id="sec-prizes" class="p-8 scroll-mt-6 border-2 border-border-base">
+      <section id="sec-prizes" class="p-8 scroll-mt-6 border-2 border-slate-200">
         <h2 class="text-2xl mb-3">Prizes & categories</h2>
         <app-step-prizes [categoriesArray]="categoriesArray" (addCategory)="addCategory()"
           (removeCategory)="removeCategory($event)" (addExtraPrize)="addExtraPrize($event)"
@@ -122,7 +122,7 @@
       </section>
 
       <!-- Schedule -->
-      <section id="sec-schedule" class="p-8 scroll-mt-6 border-2 border-border-base">
+      <section id="sec-schedule" class="p-8 scroll-mt-6 border-2 border-slate-200">
         <h2 class="text-2xl mb-3">Event schedule</h2>
         <app-step-schedule [scheduleDaysArray]="scheduleDaysArray" (addScheduleDay)="addScheduleDay()"
           (removeScheduleDay)="removeScheduleDay($event)" (addScheduleEvent)="addScheduleEvent($event)"
@@ -136,7 +136,7 @@
 
   @if (showReviewModal()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" (click)="closeReviewModal()">
-    <div class="w-full max-w-4xl max-h-[90vh] flex flex-col relative bg-white border-2 border-border-base rounded-2xl"
+    <div class="w-full max-w-4xl max-h-[90vh] flex flex-col relative bg-white border-2 border-slate-200 rounded-2xl"
       (click)="$event.stopPropagation()">
       <div class="p-10 overflow-y-auto flex-1">
         <app-review-section [data]="tournamentDataSignal()" [comparePrizeKeys]="comparePrizeKeys"

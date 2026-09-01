@@ -10,17 +10,17 @@
 
   <!-- Post Detail View -->
   @if (!isLoading() && blog(); as post) {
-    <article class="space-y-8 bg-white rounded-xl border border-border-base p-8">
+    <article class="space-y-8 bg-white rounded-xl border border-slate-200 p-8">
 
       <!-- Cover Image Banner -->
       @if (post.cover_image) {
-        <div class="w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden border border-border-base bg-slate-200 relative shadow-sm">
+        <div class="w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden border border-slate-200 bg-slate-200 relative shadow-sm">
           <img [src]="post.cover_image" [alt]="post.title" class="w-full h-full object-cover object-center" />
         </div>
       }
 
       <!-- Standardized Page Header (Inline) -->
-      <header class="mb-8 pb-6 border-b border-border-base">
+      <header class="mb-8 pb-6 border-b border-slate-200">
         <div class="flex items-center gap-2 mb-3">
           @if (post.status === 'draft') {
             <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
@@ -39,7 +39,7 @@
         <div class="flex flex-wrap items-center justify-between gap-4 mt-6">
           <div class="flex items-center gap-3">
             <div
-              class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-semibold border border-border-base">
+              class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-semibold border border-slate-200">
               {{ post.author.name.charAt(0) }}
             </div>
             <div>
@@ -83,11 +83,11 @@
 
       <!-- Remaining/Non-Inline Games Section -->
       @if (remainingGames().length > 0) {
-        <section class="mt-12 pt-8 border-t border-border-base">
+        <section class="mt-12 pt-8 border-t border-slate-200">
           <h2 class="text-2xl mb-6">Interactive games</h2>
 
           <div class="space-y-8">
-            <div *ngFor="let g of remainingGames()" class="bg-white rounded-xl border border-border-base p-4">
+            <div *ngFor="let g of remainingGames()" class="bg-white rounded-xl border border-slate-200 p-4">
               <app-blog-game-viewer [pgn]="g.pgn" [title]="g.title || ''"></app-blog-game-viewer>
             </div>
           </div>
@@ -96,9 +96,9 @@
 
       <!-- Author Bio Footer -->
       @if (post.author.bio) {
-        <footer class="mt-16 p-8 rounded-2xl bg-slate-200/25 border border-border-base flex flex-col md:flex-row gap-6 items-start">
+        <footer class="mt-16 p-8 rounded-2xl bg-slate-200/25 border border-slate-200 flex flex-col md:flex-row gap-6 items-start">
           <div
-            class="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center font-medium text-xl border border-border-base shrink-0">
+            class="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center font-medium text-xl border border-slate-200 shrink-0">
             {{ post.author.name.charAt(0) }}
           </div>
           <div>

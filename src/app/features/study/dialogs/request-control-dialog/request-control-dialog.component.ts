@@ -37,7 +37,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 
       <!-- Footer Actions -->
       <div class="pt-4 flex gap-4 justify-end">
-        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+        <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
          (click)="dialogRef.close(false)">
           Cancel
         </button>

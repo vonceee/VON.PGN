@@ -37,7 +37,7 @@
               <!-- Action Buttons -->
               @if (isAuthenticated() && !isOwnProfile()) {
               <div class="flex items-center gap-2 shrink-0">
-                <button [class]="isFollowing() ? 'inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-border-base font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all' : 
+                <button [class]="isFollowing() ? 'inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all' : 
                 'inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer'"
                  (click)="toggleFollow()">
                   @if (!isFollowLoading()) {
@@ -114,7 +114,7 @@
 @if (user(); as profile) {
 @if (showFollowModal()) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="closeFollowModal()">
-  <div class="bg-white  rounded-2xl w-full max-w-lg mx-4 border border-border-base  max-h-[80vh] flex flex-col"
+  <div class="bg-white  rounded-2xl w-full max-w-lg mx-4 border border-slate-200  max-h-[80vh] flex flex-col"
     (click)="$event.stopPropagation()">
     <!-- Modal Header -->
     <div class="flex items-center justify-between px-5 pt-5 pb-0">
@@ -143,7 +143,7 @@
     <!-- Search -->
     <div class="px-5 pt-4 pb-0">
       <div
-        class="flex items-center bg-slate-200  border border-border-base  rounded-lg px-3 py-2 focus-within:border-blue-600/60 ">
+        class="flex items-center bg-slate-200  border border-slate-200  rounded-lg px-3 py-2 focus-within:border-blue-600/60 ">
         <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 shrink-0"></ng-icon>
         <input type="text" [value]="tabSearchQuery()" (input)="onTabSearch($event)"
           [placeholder]="'Search ' + activeTab() + '...'"
@@ -156,7 +156,7 @@
       @if (tabLoading()) {
 
       } @else if (tabUsers().length === 0) {
-      <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border  border-border-base ">
+      <div class="py-14 flex flex-col items-center justify-center gap-3 rounded-xl border  border-slate-200 ">
         <ng-icon name="heroUsers" class="w-10 h-10 text-gray-500"></ng-icon>
         <p class="text-sm/6">
           @if (tabSearchQuery()) {
@@ -174,7 +174,7 @@
         <div class="flex items-center gap-3 p-3 rounded-xl    group">
           <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
             [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
-            class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-border-base  text-sm/6 font-semibold text-gray-500  shrink-0">
+            class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-slate-200  text-sm/6 font-semibold text-gray-500  shrink-0">
             {{ userItem.username.charAt(0) || 'U' }}
           </a>
           <div class="flex-1 min-w-0">
@@ -192,7 +192,7 @@
             [class./10]="userItem.is_following" [class.text-gray-500]="userItem.is_following"
             [class.]="userItem.is_following" [class.hover:bg-red-50]="userItem.is_following"
             [class.]="userItem.is_following" [class.border]="userItem.is_following"
-            [class.border-border-base]="userItem.is_following" [class.]="userItem.is_following"
+            [class.border-slate-200]="userItem.is_following" [class.]="userItem.is_following"
             [class.hover:text-red-500]="userItem.is_following" [class.hover:border-red-200]="userItem.is_following"
             [class.]="userItem.is_following">
             @if (userItem.is_following) {

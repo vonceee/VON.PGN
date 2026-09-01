@@ -1,7 +1,7 @@
 <div class="overflow-hidden flex flex-col h-full">
   <!-- Navigation Controls -->
   @if (showNavigation()) {
-  <div class="flex-none flex items-center justify-between p-4 border-b border-border-base">
+  <div class="flex-none flex items-center justify-between p-4 border-b border-slate-200">
     <div class="flex items-center gap-4">
       <button (click)="navigate.emit(initialPly())" [disabled]="currentPly() <= initialPly()">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -157,7 +157,7 @@
       }
 
       @if (result() && result() !== '*') {
-      <div class="text-center py-2 border-t border-border-base mt-2">
+      <div class="text-center py-2 border-t border-slate-200 mt-2">
         <span class="text-sm/6 font-medium text-gray-500 select-text">
           {{ result() }}
         </span>
@@ -174,7 +174,7 @@
             "></ng-container>
       </div>
       @if (result() && result() !== '*') {
-      <div class="text-center py-2 border-t border-border-base mt-2">
+      <div class="text-center py-2 border-t border-slate-200 mt-2">
         <span class="text-sm/6 font-medium text-gray-500 select-text">
           {{ result() }}
         </span>
@@ -264,13 +264,13 @@
 
   <!-- Variation Selector -->
   @if (nextOptions().length > 1) {
-  <div class="flex-none p-3 border-t-2 border-border-base">
+  <div class="flex-none p-3 border-t-2 border-slate-200">
     <div class="flex flex-wrap gap-2">
       @for (option of nextOptions(); track option.fen) {
       <button (click)="onMoveClick(option)" [class]="
               selectedVariationIndex() === $index
                 ? 'bg-slate-900 text-white rounded-4xl'
-                : 'border-2 border-border-base rounded-4xl'
+                : 'border-2 border-slate-200 rounded-4xl'
             " class="px-3.5 py-1.5 font-medium text-sm/6  flex items-center gap-1 cursor-pointer">
         <span class="font-medium text-xs">{{
           option.ply % 2 !== 0 ? (option.ply + 1) / 2 + '.' : option.ply / 2 + '...'
@@ -331,7 +331,7 @@
 
   <!-- Premium Context Menu -->
   @if (contextMenuNode(); as node) {
-  <div class="fixed z-50 min-w-[200px] bg-white rounded-xl border border-border-base overflow-hidden"
+  <div class="fixed z-50 min-w-[200px] bg-white rounded-xl border border-slate-200 overflow-hidden"
     [style.left.px]="contextMenuPos().x" [style.top.px]="contextMenuPos().y" (click)="$event.stopPropagation()"
     (contextmenu)="$event.preventDefault()">
     <button (click)="onAnnotate()"
