@@ -132,10 +132,12 @@
     <!-- Desktop Search Bar -->
     <div class="relative hidden lg:block group/search" #searchContainer>
       <div
-        class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-full bg-slate-200 border border-slate-200 focus-within:border-blue-600/40 focus-within:bg-white transition-all">
-        <ng-icon name="heroMagnifyingGlass" class="w-4 h-4 shrink-0 mr-2"></ng-icon>
-        <input #searchInput type="text" placeholder="Search" [value]="searchQuery()" (input)="onSearchInput($event)"
-          (focus)="isSearchOpen.set(true)" class="bg-transparent outline-none text-sm/6 w-full " />
+        class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-3xl border border-slate-200 bg-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+        <input #searchInput type="text" placeholder="search all users..." [value]="searchQuery()" (input)="onSearchInput($event)"
+          (focus)="isSearchOpen.set(true)" class="bg-transparent outline-none text-sm/6 w-full pl-2" />
 
         @if (isSearching()) {
 
@@ -167,8 +169,8 @@
     <div class="relative hidden md:block" #invitesContainer>
       <button (click)="toggleInvites()"
         class="flex items-center gap-2 group cursor-pointer relative" aria-label="Bughouse Invitations">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859m-19.5.338V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H6.911a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661Z" />
         </svg>
         @if (totalBughouseInvites() > 0) {
         <span
@@ -191,7 +193,7 @@
           @if (bughouseInviteService.incomingInvites().length === 0 && bughouseInviteService.sentInvites().length === 0) {
           <div class="py-8 px-4 text-center">
             <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3 text-slate-300 mx-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
               </svg>
             </div>
@@ -246,7 +248,7 @@
                           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                       } @else {
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                         </svg>
                       }
@@ -266,7 +268,7 @@
     <div class="relative hidden md:block">
       <button (click)="toggleNotifications()"
         class="flex items-center gap-2 group cursor-pointer relative" aria-label="Notifications">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
         </svg>
         @if (notificationService.unreadCount() > 0) {
@@ -290,7 +292,7 @@
           @if (notificationService.notifications().length === 0) {
           <div class="py-8 px-4 text-center">
             <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3 text-slate-300 mx-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
               </svg>
             </div>
@@ -316,7 +318,7 @@
       <button (click)="toggleProfileDropdown()"
         class="flex items-center gap-2 group cursor-pointer relative">
         <div class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 group-transition-colors 4xl:hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           </svg>
           <span class="hidden 4xl:inline text-sm/6 font-medium transition-colors">
@@ -361,14 +363,15 @@
       </div>
     </div>
     } @else {
-    <a class="text-md font-medium hover:underline" routerLink="/login">Login</a>
+    <button class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-slate-900 text-white font-medium text-[14px] leading-5 cursor-pointer"
+     routerLink="/login">Login</button>
     }
 
     <!-- Mobile Hamburger Button -->
     <button (click)="toggleMobileMenu()"
       class="lg:hidden p-1.5 cursor-pointer relative group transition-colors flex items-center justify-center rounded-full"
       aria-label="Toggle Menu">
-      <ng-icon name="heroBars3" strokeWidth="2" class="w-6 h-6"></ng-icon>
+      <ng-icon name="heroBars3" strokeWidth="2"></ng-icon>
     </button>
   </div>
 </header>

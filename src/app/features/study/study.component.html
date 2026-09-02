@@ -62,7 +62,7 @@
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             @if (facade.openingName(); as name) {
             <!-- Opening Name Header -->
-            <div class="p-2 border-b border-slate-200 flex items-center justify-between shrink-0 select-text">
+            <div class="p-2 flex items-center justify-between shrink-0 select-text">
               <div class="flex items-center gap-2 overflow-hidden">
                 <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-slate-200 shrink-0">
                   {{ facade.openingEco() || 'ECO' }}
@@ -124,14 +124,10 @@
 
             @if (facade.isEngineVisible()) {
             <app-study-analysis [isEngineActive]="facade.isEngineActive()" [isEngineError]="facade.isEngineError()"
-              [engineEval]="facade.engineEval()" [engineDepth]="facade.engineDepth()"
-              [formattedNps]="facade.formattedNps()" [showEngineSettings]="facade.showEngineSettings()"
-              [multiPvCount]="facade.multiPv()" [searchMode]="facade.searchMode()"
+              [engineEval]="facade.engineEval()"
               [enginePvLines]="facade.formattedPvLines()" [currentPly]="facade.currentPly()"
               (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
-              (retryEngine)="facade.engineService.restart()"
-              (toggleSettings)="facade.showEngineSettings.set(!facade.showEngineSettings())"
-              (multiPvChange)="facade.engineService.setMultiPv($event)"></app-study-analysis>
+              (retryEngine)="facade.engineService.restart()"></app-study-analysis>
             }
           </div>
         </div>

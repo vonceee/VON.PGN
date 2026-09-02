@@ -18,30 +18,35 @@ import { UserService } from '../../core/services/user.service';
 import { Chess, Move } from 'chess.js';
 import { MoveNotationComponent } from '@shared/chess';
 import { TacticsBoardComponent } from '@shared/chess';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import {
+  heroChevronLeft,
+  heroChevronRight,
+  heroChevronDoubleLeft,
+  heroChevronDoubleRight,
+} from '@ng-icons/heroicons/outline';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { getPlyFromFen } from '../../core/utils/chess-tree.utils';
 import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
 import { EngineService } from '../../core/services/engine.service';
-import { ToggleComponent } from '@shared/ui';
 import { StudyAnalysisComponent } from '../study/study-analysis/study-analysis.component';
-
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroEye } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-tactics',
   standalone: true,
   imports: [
     CommonModule,
+    NgIconComponent,
     TacticsBoardComponent,
     MoveNotationComponent,
-    NgIconComponent,
-    ToggleComponent,
     StudyAnalysisComponent,
   ],
   providers: [
     provideIcons({
-      heroEye,
+      heroChevronLeft,
+      heroChevronRight,
+      heroChevronDoubleLeft,
+      heroChevronDoubleRight,
     }),
   ],
   templateUrl: './tactics.component.html',

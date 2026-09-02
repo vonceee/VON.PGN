@@ -17,7 +17,6 @@ export class StudyEngineFacade {
 
   // States
   isEngineActive = signal(false);
-  showEngineSettings = signal(false);
 
   // Delegates
   engineDepth = this.engineService.engineDepth;

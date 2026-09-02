@@ -78,7 +78,6 @@ export class StudyFacade {
 
   // Engine states (delegated from StudyEngineFacade)
   isEngineActive = this.engine.isEngineActive;
-  showEngineSettings = this.engine.showEngineSettings;
   engineDepth = this.engine.engineDepth;
   engineNodes = this.engine.engineNodes;
   engineNps = this.engine.engineNps;

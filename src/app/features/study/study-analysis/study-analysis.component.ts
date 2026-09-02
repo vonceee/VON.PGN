@@ -1,7 +1,6 @@
 import { Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EngineService, type SearchMode } from '../../../core/services/engine.service';
-import { computed } from '@angular/core';
+import { EngineService } from '../../../core/services/engine.service';
 import { ToggleComponent } from '@shared/ui';
 
 @Component({
@@ -14,14 +13,10 @@ export class StudyAnalysisComponent {
   private engineService = inject(EngineService);
 
   // Inputs
+  showToggle = input<boolean>(true);
   isEngineActive = input.required<boolean>();
   isEngineError = input.required<boolean>();
   engineEval = input.required<string | null>();
-  engineDepth = input.required<number>();
-  formattedNps = input.required<string>();
-  showEngineSettings = input.required<boolean>();
-  multiPvCount = input.required<number>();
-  searchMode = input.required<SearchMode>();
   enginePvLines = input.required<{
     eval: string;
     pvIndex: number;
@@ -32,8 +27,6 @@ export class StudyAnalysisComponent {
   // Outputs
   toggleEngine = output<void>();
   retryEngine = output<void>();
-  toggleSettings = output<void>();
-  multiPvChange = output<number>();
 
   onToggleEngine() {
     this.toggleEngine.emit();
@@ -41,13 +34,5 @@ export class StudyAnalysisComponent {
 
   onRetryEngine() {
     this.retryEngine.emit();
-  }
-
-  onToggleSettings() {
-    this.toggleSettings.emit();
-  }
-
-  onMultiPvChange(count: number) {
-    this.multiPvChange.emit(count);
   }
 }

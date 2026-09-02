@@ -63,7 +63,7 @@ export class EngineService {
   private evalCache = new Map<string, { eval: string; bestMove: string; pv: string[]; depth: number }>();
 
   // --- Analysis Settings (exposed as signals for UI binding) ---
-  multiPv = signal(1);           // 1, 2, or 3
+  multiPv = signal(3);           // 1, 2, or 3
   searchMode = signal<SearchMode>('movetime');
   searchValue = signal(8000);    // movetime in ms or depth level
   
