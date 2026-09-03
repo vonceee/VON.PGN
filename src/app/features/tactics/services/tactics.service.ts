@@ -68,9 +68,9 @@ export class TacticsService {
       puzzle_id: puzzleId,
       success: success,
     }).pipe(
-      tap(() => {
-        if (this.userService.currentUser()) {
-          this.userService.loadMyProfile().subscribe();
+      tap((res) => {
+        if (this.userService.currentUser() && res.is_rated !== false) {
+          this.userService.updatePuzzleProgress(res.new_rating, res.new_streak, success);
         }
       })
     );

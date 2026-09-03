@@ -86,6 +86,34 @@ export class UserService {
     localStorage.removeItem(this.profileKey);
   }
 
+  updatePuzzleProgress(rating: number, streak: number, solvedIncrement: boolean = true): void {
+    this.currentUser.update((user) => {
+      if (!user) return null;
+      const progress = user.progress ?? {
+        completedLessonIds: [],
+        lastActiveLessonId: null,
+        currentStreakDays: 0,
+        totalPuzzlesSolved: 0,
+        puzzleRating: 1200,
+        puzzleStreak: 0,
+        earnedBadges: [],
+      };
+      const updated: UserProfile = {
+        ...user,
+        progress: {
+          ...progress,
+          puzzleRating: rating,
+          puzzleStreak: streak,
+          totalPuzzlesSolved: solvedIncrement
+            ? (progress.totalPuzzlesSolved ?? 0) + 1
+            : (progress.totalPuzzlesSolved ?? 0),
+        },
+      };
+      this.cacheProfile(updated);
+      return updated;
+    });
+  }
+
   loadMyProfile() {
     if (!this.isBrowser) return of(null as any);
 

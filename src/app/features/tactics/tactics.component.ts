@@ -344,7 +344,6 @@ export class TacticsComponent implements OnInit {
             this.ratingChange.set(res.rating_change);
             this.newRating.set(res.new_rating);
             this.newStreak.set(res.new_streak);
-            this.userService.loadMyProfile().subscribe();
             this.recordSessionAttempt(pId, res.rating_change, false);
           },
           error: (err) => {
@@ -380,7 +379,6 @@ export class TacticsComponent implements OnInit {
             this.ratingChange.set(res.rating_change);
             this.newRating.set(res.new_rating);
             this.newStreak.set(res.new_streak);
-            this.userService.loadMyProfile().subscribe();
             this.recordSessionAttempt(pId, res.rating_change, false);
             this.resetToInitialPuzzleState();
           },
