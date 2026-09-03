@@ -1,11 +1,14 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ChangeDetectionStrategy, PLATFORM_ID, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ChangeDetectionStrategy, PLATFORM_ID, NgZone, effect } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TacticsService, Puzzle, WoodpeckerSession, WoodpeckerCycle } from '../../../../core/services/tactics.service';
+import { EngineService } from '../../../../core/services/engine.service';
 import { Chess } from 'chess.js';
-import { TacticsBoardComponent } from '@shared/chess';
+import { TacticsBoardComponent, MoveNotationComponent } from '@shared/chess';
 import { DevLogger } from '../../../../core/utils/dev-logger';
+import { getPlyFromFen } from '../../../../core/utils/chess-tree.utils';
 import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpecker-explanation-modal.component';
+import { StudyAnalysisComponent } from '../../../study/study-analysis/study-analysis.component';
 
 @Component({
   selector: 'app-woodpecker-solve',
@@ -14,6 +17,8 @@ import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpe
     CommonModule,
     RouterLink,
     TacticsBoardComponent,
+    MoveNotationComponent,
+    StudyAnalysisComponent,
     WoodpeckerExplanationModalComponent,
   ],
   templateUrl: './woodpecker-solve.component.html',
@@ -24,6 +29,7 @@ import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpe
 })
 export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   private tacticsService = inject(TacticsService);
+  engineService = inject(EngineService);
   private platformId = inject(PLATFORM_ID);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -42,9 +48,79 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   isLoading = signal<boolean>(true);
   hasError = signal<boolean>(false);
   status = signal<'playing' | 'success' | 'failed'>('playing');
-  hasRevealedSolution = signal<boolean>(false);
   userColor = signal<'white' | 'black'>('white');
   currentFen = signal<string>('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+
+  // Move notation signals
+  pgnMoves = signal<string[]>([]);
+  currentPly = signal<number>(0);
+  puzzleStartPly = signal<number>(0);
+
+  // Engine analysis & review properties
+  isEngineActive = signal<boolean>(false);
+  retryMode = signal<boolean>(false);
+  exploreMode = signal<boolean>(false);
+  fenError = signal<string | null>(null);
+
+  isEngineError = this.engineService.isError;
+  pvLines = this.engineService.pvLines;
+
+  formattedPvLines = computed(() => {
+    const lines = this.pvLines();
+    const fen = this.currentFen();
+    if (lines.length === 0 || !fen) return [];
+
+    return lines.map((line) => {
+      const chess = new Chess(fen);
+      const moves: {
+        san: string;
+        uci: string;
+        moveNumber: number;
+        showMoveNumber: boolean;
+        isBlack: boolean;
+      }[] = [];
+
+      for (let i = 0; i < line.pv.length; i++) {
+        const uci = line.pv[i];
+        const currentTurn = chess.turn();
+        const currentMoveNumber = chess.moveNumber();
+        const showMoveNumber = i === 0 || currentTurn === 'w';
+        const isBlack = i === 0 && currentTurn === 'b';
+
+        try {
+          const from = uci.substring(0, 2);
+          const to = uci.substring(2, 4);
+          const promotion = uci.length > 4 ? uci.substring(4, 5) : undefined;
+          const result = chess.move({ from, to, promotion });
+          moves.push({
+            san: result.san,
+            uci,
+            moveNumber: currentMoveNumber,
+            showMoveNumber,
+            isBlack,
+          });
+        } catch (e) {
+          moves.push({
+            san: uci,
+            uci,
+            moveNumber: currentMoveNumber,
+            showMoveNumber,
+            isBlack,
+          });
+        }
+      }
+
+      return {
+        ...line,
+        moves,
+      };
+    });
+  });
+
+  engineEval = computed(() => {
+    const lines = this.pvLines();
+    return lines.length > 0 ? lines[0].eval : null;
+  });
 
   // Timers
   cycleTimeElapsed = signal<number>(0);
@@ -61,6 +137,22 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
     totalPuzzles: number;
   } | null>(null);
   cycleCompletionPending = signal<{session: WoodpeckerSession, currentCycle: WoodpeckerCycle | null, stats: any} | null>(null);
+
+  constructor() {
+    effect(() => {
+      const active = this.isEngineActive();
+      const fen = this.currentFen();
+      const isBrowser = isPlatformBrowser(this.platformId);
+
+      if (isBrowser) {
+        if (active && fen) {
+          this.engineService.startAnalysis(fen);
+        } else {
+          this.engineService.stop();
+        }
+      }
+    });
+  }
 
   showExplanation = signal<boolean>(false);
 
@@ -86,6 +178,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stopTimer();
+    this.engineService.stop();
   }
 
   loadSessionState() {
@@ -129,10 +222,16 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
   }
 
   setupPuzzle(puzzle: Puzzle) {
+    this.isEngineActive.set(false);
+    this.engineService.stop();
+    this.fenError.set(null);
+    this.retryMode.set(false);
+    this.exploreMode.set(false);
+
     this.status.set('playing');
-    this.hasRevealedSolution.set(false);
     this.puzzleTimeElapsed.set(0);
     this.nextPuzzlePending.set(null);
+    this.pgnMoves.set([]);
 
     try {
       this.chess.load(puzzle.fen);
@@ -142,6 +241,8 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
     }
 
     this.currentPuzzle.set(puzzle);
+    this.puzzleStartPly.set(getPlyFromFen(puzzle.fen));
+    this.currentPly.set(this.puzzleStartPly());
     this.isLoading.set(false);
   }
 
@@ -166,37 +267,144 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
 
   onPuzzleSolved() {
     this.status.set('success');
+
+    if (this.retryMode()) {
+      this.retryMode.set(false);
+      this.exploreMode.set(true);
+      return;
+    }
+
+    this.exploreMode.set(true);
     this.submitAttempt(true);
   }
 
   onPuzzleFailed() {
     this.status.set('failed');
+
+    if (this.retryMode()) {
+      this.resetToInitialPuzzleState();
+      return;
+    }
+
+    this.retryMode.set(true);
     this.submitAttempt(false);
+    this.resetToInitialPuzzleState();
   }
 
   onWrongMove() {
     this.status.set('failed');
+
+    if (this.retryMode()) {
+      this.resetToInitialPuzzleState();
+      return;
+    }
+
+    this.retryMode.set(true);
     this.submitAttempt(false);
+    this.resetToInitialPuzzleState();
+  }
+
+  private resetToInitialPuzzleState() {
+    this.retryMode.set(true);
+
+    const puzzle = this.currentPuzzle();
+    if (!puzzle) return;
+
+    try {
+      this.chess.load(puzzle.fen);
+      const solutionMoves = puzzle.moves.split(' ');
+      if (solutionMoves.length > 0) {
+        const moveResult = this.chess.move(this.parseUciMove(solutionMoves[0]));
+        if (moveResult) {
+          this.pgnMoves.set([moveResult.san]);
+          this.currentFen.set(this.chess.fen());
+        }
+      }
+    } catch (e) {
+      DevLogger.warn('[Woodpecker] Failed to reset to initial puzzle state:', e);
+    }
+
+    this.currentPly.set(this.puzzleStartPly() + this.pgnMoves().length);
+  }
+
+  private parseUciMove(uci: string): { from: string; to: string; promotion?: string } {
+    return {
+      from: uci.substring(0, 2),
+      to: uci.substring(2, 4),
+      promotion: uci.length > 4 ? uci.substring(4, 5) : undefined,
+    };
   }
 
   onPuzzleMoveMade(san: string) {
+    this.pgnMoves.update((moves: string[]) => {
+      const activePlyIndex = this.currentPly() - this.puzzleStartPly();
+      const truncatedMoves = moves.slice(0, activePlyIndex);
+      if (truncatedMoves.length > 0 && truncatedMoves[truncatedMoves.length - 1] === san) return truncatedMoves;
+      return [...truncatedMoves, san];
+    });
+
+    if (this.boardComponent) {
+      this.boardComponent.setGameMoves(this.pgnMoves());
+    }
+    this.currentPly.set(this.puzzleStartPly() + this.pgnMoves().length);
+
     try {
-      this.chess.move(san);
-      this.currentFen.set(this.chess.fen());
-    } catch (e) {
+      const puzzle = this.currentPuzzle();
+      if (puzzle) {
+        this.chess.load(puzzle.fen);
+        for (const m of this.pgnMoves()) {
+          this.chess.move(m);
+        }
+        this.currentFen.set(this.chess.fen());
+      }
+    } catch (e: any) {
       DevLogger.warn('[Woodpecker] Could not play move:', san, e);
+      this.fenError.set(e.message || String(e));
+    }
+  }
+
+  goToMove(ply: number) {
+    if (!this.boardComponent) return;
+
+    const startPly = this.puzzleStartPly();
+    const relativePly = ply - startPly;
+
+    if (relativePly < 0 || relativePly > this.pgnMoves().length) return;
+
+    if (relativePly === this.pgnMoves().length && this.status() === 'playing') {
+      this.boardComponent.exitGameMode();
+      this.currentPly.set(ply);
+      return;
+    }
+
+    this.boardComponent.setGameModeAtMove(this.pgnMoves(), relativePly);
+    this.currentPly.set(ply);
+
+    const puzzle = this.currentPuzzle();
+    if (!puzzle) return;
+
+    this.chess.load(puzzle.fen);
+    const moves = this.pgnMoves();
+    try {
+      for (let i = 0; i < relativePly; i++) {
+        this.chess.move(moves[i]);
+      }
+      this.currentFen.set(this.chess.fen());
+
+      const history = this.chess.history({ verbose: true });
+      const last = history[history.length - 1];
+      if (last && this.boardComponent) {
+        this.boardComponent.lastMove = [last.from, last.to];
+      } else if (this.boardComponent) {
+        this.boardComponent.lastMove = undefined;
+      }
+    } catch (e: any) {
+      DevLogger.warn('[Woodpecker] Failed to set chess state for ply:', ply, e);
     }
   }
 
   onUserColorChange(color: 'white' | 'black') {
     this.userColor.set(color);
-  }
-
-  revealSolution() {
-    this.hasRevealedSolution.set(true);
-    if (this.boardComponent) {
-      this.boardComponent.revealSolution();
-    }
   }
 
   submitAttempt(success: boolean) {

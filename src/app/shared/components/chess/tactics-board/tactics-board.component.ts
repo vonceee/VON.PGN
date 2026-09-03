@@ -63,7 +63,15 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
   @Output() moveMade = new EventEmitter<string>();
   @Output() sizeChange = new EventEmitter<number>();
 
-  @Input() exploreMode: boolean = false;
+  private _exploreMode: boolean = false;
+  @Input()
+  set exploreMode(val: boolean) {
+    this._exploreMode = val;
+    if (val) {
+      this.enableFreePlay();
+    }
+  }
+  get exploreMode() { return this._exploreMode; }
 
   private _retryMode: boolean = false;
   @Input()
@@ -237,11 +245,9 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
       
       if (!this._retryMode) {
         this._retryMode = true;
-        this.wrongMove.emit();
-        setTimeout(() => this.retryPuzzle(), 500);
-      } else {
-        this.retryPuzzle();
       }
+      this.wrongMove.emit();
+      setTimeout(() => this.retryPuzzle(), 500);
     }
   }
 
@@ -292,7 +298,7 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
     };
     this.syncLastMoveFromChess();
 
-    if (this.exploreMode && this.status === 'success') {
+    if (this.exploreMode) {
       this.enableFreePlay();
     }
   }

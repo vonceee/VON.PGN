@@ -458,6 +458,11 @@ export class TacticsComponent implements OnInit, OnDestroy {
   onWrongMove() {
     this.status.set('failed');
 
+    if (this.retryMode()) {
+      this.resetToInitialPuzzleState();
+      return;
+    }
+
     if (this.currentUser()) {
       if (this.isReviewMode()) {
         this.ratingChange.set(0);

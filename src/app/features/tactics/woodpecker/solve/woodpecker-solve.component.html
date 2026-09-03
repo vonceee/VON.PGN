@@ -3,7 +3,7 @@
 
     @if (isLoading()) {
     <div class="flex-1 flex items-center justify-center">
-
+      <div class="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
     } @else if (isFinished()) {
     <!-- Session Finished Screen -->
@@ -41,139 +41,206 @@
     </div>
     } @else {
 
-    <!-- Left Column: Interactive Chess Board -->
-    <div class="flex-1 flex items-center justify-center min-h-0 min-w-0">
-      @if (currentPuzzle()) {
+    <div class="flex-1 w-full lg:overflow-hidden flex flex-col min-h-0">
       <div
-        class="board-container-parent w-full aspect-square lg:aspect-auto h-auto lg:h-full max-w-[620px] max-h-[620px] flex items-center justify-center">
-        <app-tactics-board [puzzle]="currentPuzzle()!" [exploreMode]="status() === 'failed'" [retryMode]="false"
-          (puzzleSolved)="onPuzzleSolved()" (puzzleFailed)="onPuzzleFailed()" (wrongMove)="onWrongMove()"
-          (moveMade)="onPuzzleMoveMade($event)" (userColorChange)="onUserColorChange($event)"
-          class="block w-full h-full"></app-tactics-board>
-      </div>
-      }
-    </div>
+        class="grid w-full max-w-[1080px] mx-auto grid-cols-1 lg:grid-cols-[1fr_400px] gap-3 lg:gap-6 xl:gap-8 h-auto lg:h-full lg:overflow-hidden">
 
-    <!-- Right Column: Sidebar controls & diagnostics -->
-    <div class="w-full lg:w-[400px] flex flex-col gap-4 shrink-0 min-h-0 lg:h-full lg:overflow-y-auto mt-4 lg:mt-0">
-
-      <!-- Unified Control & Diagnostics Card -->
-      <div class="bg-white rounded-4xl p-6 flex flex-col gap-6 lg:my-auto h-auto">
-
-        <!-- Header block with Rating -->
-        <div class="border-b border-slate-100 pb-4 flex justify-between items-start">
-          <div>
-            <div class="flex items-center gap-2 mb-1">
-              <span class="text-sm/6 font-medium">
-                Cycle {{ session()?.current_cycle_number }} of 4
-              </span>
-            </div>
-            <h2 class="text-xl font-medium">{{ session()?.name }}</h2>
+        <!-- Board Column -->
+        <div class="flex-1 flex items-center justify-center min-h-0 min-w-0">
+          @if (currentPuzzle()) {
+          <div
+            class="board-container-parent w-full aspect-square lg:aspect-auto h-auto lg:h-full max-w-[620px] max-h-[620px] flex items-center justify-center">
+            <app-tactics-board [puzzle]="currentPuzzle()!" [exploreMode]="exploreMode()" [retryMode]="retryMode()"
+              (puzzleSolved)="onPuzzleSolved()" (puzzleFailed)="onPuzzleFailed()" (wrongMove)="onWrongMove()"
+              (moveMade)="onPuzzleMoveMade($event)" (userColorChange)="onUserColorChange($event)"
+              class="block w-full h-full"></app-tactics-board>
           </div>
-          @if (currentPuzzle()?.rating) {
-          <span class="px-2.5 py-1 text-xs font-medium rounded-full border border-slate-200 bg-white shrink-0">
-            {{ currentPuzzle()?.rating }} Elo
-          </span>
           }
         </div>
 
-        <!-- Digital Readout Timer -->
-        <div class="bg-slate-200 rounded-xl p-4 border border-slate-100 flex items-center justify-between">
-          <div>
-            <span class="text-xs text-gray-500 block mb-0.5">Cycle timer</span>
-            <span class="text-3xl font-medium">{{ formatTime(cycleTimeElapsed()) }}</span>
-          </div>
-          <div class="text-right">
-            <span class="text-xs text-gray-500 block mb-0.5">Puzzle Index</span>
-            <span class="text-2xl font-medium">
-              {{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }} <span class="text-gray-500 text-sm/6">/
-                {{ session()?.total_puzzles }}</span>
-            </span>
-          </div>
-        </div>
+        <!-- Sidebar Column -->
+        <div class="w-full lg:w-[400px] flex flex-col justify-center min-h-0">
+          <!-- Main Card -->
+          <div
+            class="w-full h-auto lg:h-[400px] max-h-[620px] mt-4 lg:mt-0 flex flex-col min-h-0 overflow-hidden border-2 border-slate-200 rounded-4xl bg-white gap-2">
+            <div class="flex flex-col overflow-hidden w-full h-full">
 
-        <!-- Progress slider -->
-        <div>
-          <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-2">
-            <div class="bg-blue-600 h-full rounded-full transition-all duration-300"
-              [style.width.%]="(((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)">
+              <!-- Top Section: Header & Compact Diagnostics -->
+              <div class="p-4 md:p-6 pb-3 flex flex-col gap-3 shrink-0 border-b border-slate-100">
+                <!-- Top Row: Cycle info & Turn / Elo -->
+                <div class="flex items-center justify-between w-full">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-slate-800">
+                      Cycle {{ session()?.current_cycle_number ?? 1 }} of 4
+                    </span>
+                    @if (currentPuzzle()?.rating) {
+                    <span class="px-2 py-0.5 text-xs font-medium rounded-full border border-slate-200 bg-slate-50 text-slate-600">
+                      {{ currentPuzzle()?.rating }} Elo
+                    </span>
+                    }
+                  </div>
+
+                  <!-- Color to Play (Right) -->
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-medium capitalize">{{ userColor() }} to move</span>
+                    <div class="w-3.5 h-3.5 rounded-full shrink-0 border border-slate-300 shadow-xs"
+                      [class.bg-white]="userColor() === 'white'"
+                      [class.bg-slate-950]="userColor() === 'black'"></div>
+                  </div>
+                </div>
+
+                <!-- Sleek Metrics Strip -->
+                <div class="flex items-center justify-between text-xs text-slate-500 pt-1">
+                  <div class="flex items-center gap-1.5 font-medium text-slate-700">
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <span>{{ formatTime(cycleTimeElapsed()) }}</span>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span>Puzzle <strong>{{ (currentCycle()?.current_puzzle_index ?? 0) + 1 }}</strong>/{{ session()?.total_puzzles }}</span>
+                    <span class="text-slate-300">•</span>
+                    <span>
+                      @if (currentCycle(); as cycle) {
+                        {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}% Acc
+                      } @else {
+                        0% Acc
+                      }
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-blue-600 h-full rounded-full transition-all duration-300"
+                    [style.width.%]="(((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Middle Section: Move Notation -->
+              <div class="hidden md:flex flex-1 flex-col min-h-0 overflow-hidden">
+                @if (pgnMoves().length > 0) {
+                <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moves]="pgnMoves()"
+                  [currentFen]="currentFen()" [currentPly]="currentPly()" [initialFen]="currentPuzzle()?.fen || ''"
+                  [initialPly]="puzzleStartPly()" [showNavigation]="false"
+                  (navigate)="goToMove($event)"></app-move-notation>
+                } @else {
+                <div class="flex-1 flex items-center justify-center text-xs text-slate-400 p-4 text-center">
+                  Play the best move for {{ userColor() }}
+                </div>
+                }
+              </div>
+
+              <!-- Result Status Banner (when solved or failed) -->
+              @if (status() !== 'playing') {
+              <div class="shrink-0 px-4 py-2.5 border-t border-slate-100 flex items-center justify-between text-xs font-medium"
+                [class.bg-green-50]="status() === 'success'" [class.text-green-700]="status() === 'success'"
+                [class.bg-red-50]="status() === 'failed'" [class.text-red-700]="status() === 'failed'">
+                <div class="flex items-center gap-2">
+                  @if (status() === 'success') {
+                  <svg class="w-4 h-4 text-green-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                  </svg>
+                  <span>Puzzle solved!</span>
+                  } @else {
+                  <svg class="w-4 h-4 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>{{ retryMode() ? 'Incorrect move. Try again!' : 'Puzzle failed.' }}</span>
+                  }
+                </div>
+                <div>
+                  {{ currentCycle()?.total_correct ?? 0 }} / {{ currentCycle()?.total_solved ?? 0 }} correct
+                </div>
+              </div>
+
+              <!-- Stockfish Local Engine Evaluation Lines -->
+              <div class="shrink-0">
+                @if (fenError()) {
+                <div class="text-xs text-rose-600 font-semibold p-4 bg-rose-50 border-b border-slate-200">
+                  FEN Error: {{ fenError() }}
+                </div>
+                }
+                <app-study-analysis [showToggle]="true" [isEngineActive]="isEngineActive()" [isEngineError]="isEngineError()"
+                  [engineEval]="engineEval()"
+                  [enginePvLines]="formattedPvLines()" [currentPly]="currentPly()"
+                  (toggleEngine)="isEngineActive.set(!isEngineActive())"
+                  (retryEngine)="engineService.restart()"></app-study-analysis>
+              </div>
+              }
+
             </div>
           </div>
-          <div class="flex justify-between text-xs text-gray-500">
-            <span>Progress</span>
-            <span>
-              {{ Math.round((((currentCycle()?.current_puzzle_index ?? 0) / (session()?.total_puzzles ?? 1)) * 100)) }}%
-              completed
-            </span>
-          </div>
-        </div>
 
-        <!-- Accuracy so far in active cycle -->
-        <div class="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4">
-          <div>
-            <span class="text-xs text-gray-500 block">Accuracy</span>
-            <span class="text-base font-semibold">
-              @if (currentCycle(); as cycle) {
-              {{ cycle.total_solved > 0 ? Math.round((cycle.total_correct / cycle.total_solved) * 100) : 0 }}%
-              } @else {
-              0%
-              }
-            </span>
-          </div>
-          <div>
-            <span class="text-xs text-gray-500 block">Correct Puzzles</span>
-            <span class="text-base font-semibold">
-              {{ currentCycle()?.total_correct ?? 0 }} / {{ currentCycle()?.total_solved ?? 0 }}
-            </span>
-          </div>
-        </div>
+          <!-- Bottom Action Bar / Toolbar -->
+          <div
+            class="mt-4 p-2 flex items-center justify-between border-2 border-slate-200 bg-white rounded-4xl select-none w-full shrink-0 px-4 text-slate-900">
 
-        <!-- Dynamic Solve State Alerts and Actions -->
-        <div class="border-t border-slate-100 pt-6 mt-auto">
-          <div class="flex items-center gap-4">
-            <!-- Feedback / Turn Indicator -->
-            <div class="flex items-center justify-center shrink-0">
-              @if (status() === 'playing') {
-              <div class="w-4 h-4 rounded-full" [class.bg-white]="userColor() === 'white'"
-                [class.border]="userColor() === 'white'" [class.border-slate-400]="userColor() === 'white'"
-                [class.bg-slate-950]="userColor() === 'black'"></div>
-              } @else if (status() === 'success') {
-              <svg class="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-              } @else if (status() === 'failed') {
-              <svg class="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              }
-            </div>
-
-            <div class="flex-1"></div>
-
-            <div class="flex items-center gap-3">
-              @if (status() === 'failed' && !hasRevealedSolution()) {
-              <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium
-                text-[16px] leading-5 cursor-pointer (click)="revealSolution()">
-                Reveal
-              </button>
-              }
-              <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium
-                text-[16px] leading-5 cursor-pointer routerLink="/tactics/woodpecker">
-                Pause
-              </button>
-              <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium
-                text-[16px] leading-5 cursor-pointer (click)="nextPuzzle()" [disabled]="status() === 'playing'">
-                {{ cycleCompletionPending() ? 'Finish' : 'Next' }}
+            <!-- Left: Pause Button -->
+            <div class="flex items-center gap-1.5">
+              <button type="button" routerLink="/tactics/woodpecker" title="Pause Training Session"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-slate-500" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M6.75 5.25a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-1.5 0v-12a.75.75 0 0 1 .75-.75Zm10.5 0a.75.75 0 0 1 .75.75v12a.75.75 0 0 1-1.5 0v-12a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                </svg>
+                <span>Pause</span>
               </button>
             </div>
+
+            <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+            <!-- Center: Move Navigation Buttons Group -->
+            <div class="flex items-center gap-1.5">
+              <button type="button" (click)="goToMove(currentPly() - 1)" title="Previous Move"
+                class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+              </button>
+
+              <button type="button" (click)="goToMove(currentPly() + 1)" title="Next Move"
+                class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+            <!-- Right: Action Buttons Group (Next) -->
+            <div class="flex items-center gap-1.5">
+              <!-- Next / Finish Puzzle Button -->
+              <div class="relative group">
+                <button
+                  type="button"
+                  (click)="status() !== 'playing' && !isLoading() && nextPuzzle()"
+                  [title]="cycleCompletionPending() ? 'Finish Cycle' : 'Next Puzzle'"
+                  class="p-2 rounded-full transition-colors flex items-center justify-center"
+                  [class.cursor-not-allowed]="status() === 'playing' || isLoading()"
+                  [class.opacity-30]="status() === 'playing' && !isLoading()"
+                  [class.hover:bg-slate-200]="status() !== 'playing' && !isLoading()"
+                  [class.cursor-pointer]="status() !== 'playing' && !isLoading()"
+                  [disabled]="status() === 'playing' || isLoading()">
+                  @if (isLoading()) {
+                    <div class="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
+                  } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
+                  }
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
+
       </div>
-
-
-
     </div>
     }
 
@@ -188,8 +255,6 @@
           <h3 class="text-2xl font-semibold mb-1">Cycle completed!</h3>
           <p class="text-sm/6 text-gray-500">You finished all puzzles in Cycle {{ stats.cycleNumber }}.</p>
         </div>
-
-
 
         <!-- Diagnostic Metrics -->
         <div class="grid grid-cols-2 gap-4 w-full bg-slate-200 border border-slate-100 rounded-2xl p-4 text-left">
@@ -208,34 +273,36 @@
         </div>
 
         <!-- Woodpecker Spaced Repetition explanation message -->
-        @if (stats.cycleNumber < 4) { <p class="text-md text-gray-500 max-w-sm">
-          Your next goal is <strong>Cycle {{ stats.cycleNumber + 1 }}</strong>. Aim to complete the exact same set in
-          <strong>{{ formatTime(Math.round(stats.totalTime / 2)) }}</strong> (half the time!) with even higher accuracy.
+        @if (stats.cycleNumber < 4) {
+          <p class="text-md text-gray-500 max-w-sm">
+            Your next goal is <strong>Cycle {{ stats.cycleNumber + 1 }}</strong>. Aim to complete the exact same set in
+            <strong>{{ formatTime(Math.round(stats.totalTime / 2)) }}</strong> (half the time!) with even higher accuracy.
           </p>
-          } @else {
+        } @else {
           <p class="text-xs text-gray-500 max-w-sm">
             Incredible effort! You completed the full 4 cycles of Axel Smith's tactical spaced-repetition program. Check
             out your detailed timeline diagnostic results on the dashboard!
           </p>
-          }
+        }
 
-          <!-- Next Button Action -->
-          @if (session()?.status === 'completed') {
-          <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium
-            text-[16px] leading-5 cursor-pointer routerLink="/tactics/woodpecker" class="w-full">
-            Finish & Return to Dashboard
+        <!-- Next Button Action -->
+        @if (session()?.status === 'completed') {
+        <button class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer w-full"
+          routerLink="/tactics/woodpecker">
+          Finish & Return to Dashboard
+        </button>
+        } @else {
+        <div class="flex flex-col gap-3 w-full">
+          <button class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer w-full"
+            (click)="startNextCycle()">
+            Start cycle {{ stats.cycleNumber + 1 }}
           </button>
-          } @else {
-          <div class="flex flex-col gap-3 w-full">
-            <button inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium
-              text-[16px] leading-5 cursor-pointer (click)="startNextCycle()" class="w-full">
-              Start cycle {{ stats.cycleNumber + 1 }}
-            </button>
-            <button routerLink="/tactics/woodpecker" class="w-full">
-              Back to dashboard
-            </button>
-          </div>
-          }
+          <button class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 hover:bg-slate-200 transition-all cursor-pointer w-full"
+            routerLink="/tactics/woodpecker">
+            Back to dashboard
+          </button>
+        </div>
+        }
 
       </div>
     </div>

@@ -69,18 +69,21 @@
                   </div>
 
                   <!-- Color to Play (Right) -->
-                  <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-3 rounded-full shrink-0 border" [class.bg-slate-250]="userColor() === 'white'"
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-medium capitalize">{{ userColor() }} to move</span>
+                    <div class="w-3.5 h-3.5 rounded-full shrink-0 border border-slate-300 shadow-xs"
+                      [class.bg-white]="userColor() === 'white'"
                       [class.bg-slate-950]="userColor() === 'black'"></div>
                   </div>
                 </div>
                 } @else {
-                <div class="flex items-center justify-between w-full">
+                <div class="flex items-center justify-end w-full">
                   <!-- Color to Play (Right) -->
-                  <div class="flex items-center gap-2.5">
-                    <div class="w-3 h-3 rounded-full shrink-0 border border-slate-200"
-                      [class.bg-slate-150]="userColor() === 'white'" [class.bg-slate-950]="userColor() === 'black'">
-                    </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 font-medium capitalize">{{ userColor() }} to move</span>
+                    <div class="w-3.5 h-3.5 rounded-full shrink-0 border border-slate-300 shadow-xs"
+                      [class.bg-white]="userColor() === 'white'"
+                      [class.bg-slate-950]="userColor() === 'black'"></div>
                   </div>
                 </div>
                 }
