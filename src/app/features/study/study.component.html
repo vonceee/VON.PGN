@@ -1,7 +1,7 @@
-<div class="absolute inset-0 flex flex-col">
+<div class="min-h-full md:absolute md:inset-0 flex flex-col">
   @if (facade.study(); as s) {
   <!-- Main Content Grid Wrapper -->
-  <div class="w-full max-w-[1850px] mx-auto pt-6 md:p-6 md:pl-25 2xl:pl-15" [class.pl-24]="isSidebarCollapsed()">
+  <div class="w-full max-w-[1850px] mx-auto px-4 pt-4 md:pt-6 md:p-6 md:pl-25 2xl:pl-15" [class.pl-24]="isSidebarCollapsed()">
     <div class="grid justify-center lg:justify-start gap-4 2xl:gap-8" [class.grid-cols-1]="!isThreeColumn()"
       [class.md:grid-cols-[auto_320px]]="isThreeColumn() && isSidebarCollapsed()"
       [class.lg:grid-cols-[260px_auto_320px]]="isThreeColumn() && !isSidebarCollapsed() && windowWidth() < 1280"
@@ -20,11 +20,24 @@
       }
 
       <!-- Center Column: Board & Player Info -->
-      <div class="flex flex-col items-center justify-start relative">
+      <div class="flex flex-col items-center justify-start relative w-full">
+
+        <!-- Mobile Chapter Selector Dropdown -->
+        @if (isMobileLayout() && chapterOptions().length > 0) {
+        <div class="mb-6 w-full flex items-center justify-center px-1" [style.maxWidth.px]="maxBoardSize()">
+          <app-dropdown
+            [items]="chapterOptions()"
+            [value]="facade.currentChapter()?.id"
+            (itemSelected)="onChapterSelect($event)"
+            buttonClass="h-10 text-sm font-medium"
+            class="w-full block"
+          />
+        </div>
+        }
 
         <!-- Board Wrapper -->
-        <div class="resize-x overflow-hidden aspect-square min-w-[400px] flex items-center justify-center gap-0 mx-auto"
-          [style.width.px]="boardSize()" [style.maxWidth.px]="maxBoardSize()" [style.maxHeight.px]="maxBoardSize()"
+        <div class="resize-x overflow-hidden aspect-square min-w-0 md:min-w-[400px] flex items-center justify-center gap-0 mx-auto"
+          [style.width.px]="effectiveBoardSize()" [style.maxWidth.px]="maxBoardSize()" [style.maxHeight.px]="maxBoardSize()"
           [style.cursor]="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.getBoardCursor() || 'default' : 'default'"
           (mousedown)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseDown($event) : null"
           (mousemove)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseMove($event) : null"
@@ -56,9 +69,9 @@
           (fenChange)="sidebar ? sidebar.setEditorFen($event) : null"
           [orientation]="sidebar.getEditorOrientation()"></app-board-editor>
         } @else {
-        <!-- Notation & Commentary Card -->
+        <!-- Notation & Commentary Card (Hidden on Mobile) -->
         <div
-          class="flex flex-col overflow-hidden border-2 border-slate-200 rounded-xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
+          class="hidden md:flex flex-col overflow-hidden border-2 border-slate-200 rounded-xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             @if (facade.openingName(); as name) {
             <!-- Opening Name Header -->
@@ -133,18 +146,6 @@
         </div>
         }
 
-        <!-- Outside Notation: Chapters & Chat (only when NOT in 3-column layout) -->
-        @if (!isThreeColumn()) {
-        <div class="h-[180px] overflow-hidden shrink-0">
-          <app-study-sidebar displayMode="chapters" [isTabMode]="true" [isLargeScreen]="isLargeScreen()"
-            [isSyncing]="facade.isSyncing()" [canEdit]="facade.canEdit()"></app-study-sidebar>
-        </div>
-        <div class="h-[200px] overflow-hidden shrink-0">
-          <app-study-sidebar displayMode="chat" [isTabMode]="true" [isLargeScreen]="isLargeScreen()"
-            [isSyncing]="facade.isSyncing()" [canEdit]="facade.canEdit()"></app-study-sidebar>
-        </div>
-        }
-
         <!-- Navigation Toolbar -->
         @if (!isMobileLayout()) {
         <ng-container *ngTemplateOutlet="toolbarTemplate"></ng-container>
@@ -193,8 +194,9 @@
 
     <!-- Navigation Buttons Group -->
     <div class="flex items-center gap-1.5">
+      <!-- First Move (Double Back - Desktop Only) -->
       <button (click)="goToFirst()" title="First Move"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
+        class="hidden md:flex p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 items-center justify-center">
         <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
       </button>
       <button (click)="facade.onPrevMove()" title="Previous Move"
@@ -205,33 +207,34 @@
         class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
         <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
       </button>
+      <!-- Last Move (Fast Forward - Desktop Only) -->
       <button (click)="goToLast()" title="Last Move"
-        class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
+        class="hidden md:flex p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 items-center justify-center">
         <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
       </button>
     </div>
 
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-
-    <!-- Viewer Count Indicator -->
+    <!-- Viewer Count Indicator (Desktop Only) -->
     @if (facade.isOwner()) {
+    <div class="hidden md:block h-4 w-px bg-muted/20 shrink-0"></div>
     <button (click)="sidebar?.selectSection('members')" title="Viewers"
-      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center gap-1.5 select-none animate-none">
+      class="hidden md:flex p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 items-center justify-center gap-1.5 select-none animate-none">
       <ng-icon name="heroEye" class="text-lg"></ng-icon>
       <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
     </button>
     } @else {
-    <div title="Viewers" class="p-2 rounded-full flex items-center justify-center gap-1.5 select-none">
+    <div class="hidden md:block h-4 w-px bg-muted/20 shrink-0"></div>
+    <div title="Viewers" class="hidden md:flex p-2 rounded-full items-center justify-center gap-1.5 select-none">
       <ng-icon name="heroEye" class="text-lg"></ng-icon>
       <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
     </div>
     }
 
-    <!-- Edit Metadata Button -->
+    <!-- Edit Metadata Button (Desktop Only) -->
     @if (facade.canEdit()) {
-    <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+    <div class="hidden md:block h-4 w-px bg-muted/20 shrink-0"></div>
     <button (click)="facade.onEditMetadata()" title="Edit Game Metadata"
-      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
+      class="hidden md:flex p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 items-center justify-center">
       <ng-icon name="heroPencil" class="text-lg"></ng-icon>
     </button>
     }

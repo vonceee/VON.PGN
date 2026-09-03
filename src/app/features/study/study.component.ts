@@ -52,6 +52,7 @@ import { StudyShortcutsService } from './services/study-shortcuts.service';
 import { StudyFacade } from './services/study.facade';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { BoardEditorComponent } from '../../shared/components/chess/board-editor/board-editor.component';
+import { DropdownComponent, DropdownItem } from '@shared/ui';
 
 @Component({
   selector: 'app-study',
@@ -70,6 +71,7 @@ import { BoardEditorComponent } from '../../shared/components/chess/board-editor
     JoinClassDialogComponent,
     StudyAnalysisComponent,
     BoardEditorComponent,
+    DropdownComponent,
   ],
   providers: [
     StudyFacade,
@@ -133,7 +135,7 @@ import { BoardEditorComponent } from '../../shared/components/chess/board-editor
       }
     `,
   ],
-  host: { class: 'absolute inset-0 overflow-hidden' },
+  host: { class: 'absolute inset-0 overflow-y-auto md:overflow-hidden' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StudyComponent implements OnInit, OnDestroy {
@@ -151,8 +153,32 @@ export class StudyComponent implements OnInit, OnDestroy {
   id = input.required<string>();
   chapterId = input<string | undefined>(undefined, { alias: 'chapter' });
 
+  chapterOptions = computed<DropdownItem<number>[]>(() => {
+    const chapters = this.facade.study()?.chapters || [];
+    return [...chapters]
+      .sort((a, b) => a.order - b.order)
+      .map((chap, index) => ({
+        label: chap.name || `Chapter ${index + 1}`,
+        value: chap.id,
+      }));
+  });
+
+  onChapterSelect(item: DropdownItem<number>) {
+    if (item.value === undefined) return;
+    const chap = this.facade.study()?.chapters?.find((c) => c.id === item.value);
+    if (chap) {
+      this.facade.selectChapter(chap);
+    }
+  }
+
   // Layout States
   boardSize = signal(600);
+  effectiveBoardSize = computed(() => {
+    if (this.isMobileLayout()) {
+      return this.maxBoardSize();
+    }
+    return this.boardSize();
+  });
   isLargeScreen = signal(false);
   isThreeColumn = signal(false);
   isSidebarCollapsed = computed(() => {
@@ -182,6 +208,9 @@ export class StudyComponent implements OnInit, OnDestroy {
   maxBoardSize = computed(() => {
     const width = this.windowWidth();
     const height = this.windowHeight();
+    if (this.isMobileLayout()) {
+      return Math.max(260, Math.min(width - 32, 600));
+    }
     const maxHeight = height - 120;
     const otherWidth = this.otherColumnsWidth();
     const maxWidth = width - otherWidth;
@@ -192,7 +221,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   constructor() {
     effect(() => {
       if (isPlatformBrowser(this.platformId)) {
-        document.documentElement.style.setProperty('--board-size', `${this.boardSize()}px`);
+        document.documentElement.style.setProperty('--board-size', `${this.effectiveBoardSize()}px`);
       }
     });
 
