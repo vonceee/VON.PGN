@@ -1,0 +1,18 @@
+@if (status() !== 'playing') {
+<div class="shrink-0">
+  @if (fenError()) {
+  <div class="text-xs text-rose-600 font-semibold p-4 bg-rose-50 border-b border-slate-200">
+    FEN Error: {{ fenError() }}
+  </div>
+  }
+  <app-study-analysis
+    [showToggle]="true"
+    [isEngineActive]="isEngineActive()"
+    [isEngineError]="isEngineError()"
+    [engineEval]="engineEval()"
+    [enginePvLines]="formattedPvLines()"
+    [currentPly]="currentPly()"
+    (toggleEngine)="toggleEngine()"
+    (retryEngine)="engineService.restart()"></app-study-analysis>
+</div>
+}

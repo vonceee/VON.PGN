@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ChangeDetectionStrategy, PLATFORM_ID, NgZone, effect } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TacticsService, Puzzle, WoodpeckerSession, WoodpeckerCycle } from '../../../../core/services/tactics.service';
+import { TacticsService, Puzzle, WoodpeckerSession, WoodpeckerCycle } from '../../services/tactics.service';
 import { EngineService } from '../../../../core/services/engine.service';
 import { Chess } from 'chess.js';
 import { TacticsBoardComponent, MoveNotationComponent } from '@shared/chess';

@@ -33,7 +33,7 @@ import { fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { GuessTheGameService, GuessTheGameChallenge } from '../../../core/services/guess-the-game.service';
+import { GuessTheGameService, GuessTheGameChallenge } from '../services/guess-the-game.service';
 import { AudioService } from '../../../core/services/audio.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { LayoutService } from '../../../core/services/layout.service';

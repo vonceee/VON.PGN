@@ -2,7 +2,7 @@ import { Component, OnInit, signal, computed, inject, ChangeDetectionStrategy } 
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { TacticsService } from '../../../core/services/tactics.service';
+import { TacticsService } from '../services/tactics.service';
 import { UserService } from '../../../core/services/user.service';
 import { PUZZLE_THEMES_HIERARCHY, PuzzleThemeCategory, PuzzleThemeDef } from './puzzle-themes.config';
 @Component({

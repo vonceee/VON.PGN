@@ -40,57 +40,17 @@
           <div
             class="w-full h-auto lg:h-[400px] max-h-[620px] mt-4 lg:mt-0 flex flex-col min-h-0 overflow-hidden border-2 border-slate-200 rounded-4xl bg-white gap-2">
             <div class="flex flex-col overflow-hidden w-full h-full">
-              <!-- Top Section: Stats or Guest Prompt -->
-              <div class="p-4 md:p-6 flex flex-col gap-4 shrink-0">
-                @if (currentUser()) {
-                <div class="flex items-center justify-between w-full">
-                  <!-- Rating & Streak (Left Group) -->
-                  <div class="flex items-center gap-4">
-                    <!-- Rating -->
-                    <div class="flex items-center gap-2">
-                      <span class="text-2xl font-medium">{{ userRating() }}</span>
-                      @if (status() !== 'playing' && ratingChange() !== null) {
-                      <span class="text-2xl font-medium" [class.text-green-500]="(ratingChange() || 0) > 0"
-                        [class.text-red-500]="(ratingChange() || 0) < 0">
-                        {{ (ratingChange() || 0) > 0 ? '+' : '' }}{{ ratingChange() }}
-                      </span>
-                      }
-                    </div>
 
-                    <!-- Streak -->
-                    <div class="flex items-center gap-1.5">
-                      <svg class="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                          d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
-                          clip-rule="evenodd" />
-                      </svg>
-                      <span class="text-2xl text-orange-400 font-semibold">{{ userStreak() }}</span>
-                    </div>
-                  </div>
+              <!-- Top Section: Stats & Side to Play -->
+              <app-tactics-stats
+                [isLoggedIn]="!!currentUser()"
+                [userRating]="userRating()"
+                [ratingChange]="ratingChange()"
+                [userStreak]="userStreak()"
+                [userColor]="userColor()"
+                [status]="status()"></app-tactics-stats>
 
-                  <!-- Color to Play (Right) -->
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs text-slate-400 font-medium capitalize">{{ userColor() }} to move</span>
-                    <div class="w-3.5 h-3.5 rounded-full shrink-0 border border-slate-300 shadow-xs"
-                      [class.bg-white]="userColor() === 'white'"
-                      [class.bg-slate-950]="userColor() === 'black'"></div>
-                  </div>
-                </div>
-                } @else {
-                <div class="flex items-center justify-end w-full">
-                  <!-- Color to Play (Right) -->
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs text-slate-400 font-medium capitalize">{{ userColor() }} to move</span>
-                    <div class="w-3.5 h-3.5 rounded-full shrink-0 border border-slate-300 shadow-xs"
-                      [class.bg-white]="userColor() === 'white'"
-                      [class.bg-slate-950]="userColor() === 'black'"></div>
-                  </div>
-                </div>
-                }
-
-              </div>
-
-              <!-- Middle Section: Puzzle moves notation + Engine Toggle (Hidden on mobile) -->
+              <!-- Middle Section: Puzzle Moves Notation (Hidden on mobile) -->
               <div class="hidden md:flex flex-1 flex-col min-h-0 overflow-hidden">
                 @if (pgnMoves().length > 0) {
                 <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moves]="pgnMoves()"
@@ -98,94 +58,32 @@
                   [initialPly]="puzzleStartPly()" [showNavigation]="false"
                   (navigate)="goToMove($event)"></app-move-notation>
                 }
-
               </div>
 
-              <!-- Stockfish Local Engine Evaluation Lines -->
-              @if (status() !== 'playing') {
-              <div class="shrink-0">
-                @if (fenError()) {
-                <div class="text-xs text-rose-600 font-semibold p-4 bg-rose-50 border-b border-slate-200">
-                  FEN Error: {{ fenError() }}
-                </div>
-                }
-                <app-study-analysis [showToggle]="true" [isEngineActive]="isEngineActive()" [isEngineError]="isEngineError()"
-                  [engineEval]="engineEval()"
-                  [enginePvLines]="formattedPvLines()" [currentPly]="currentPly()"
-                  (toggleEngine)="isEngineActive.set(!isEngineActive())"
-                  (retryEngine)="engineService.restart()"></app-study-analysis>
-              </div>
-              }
+              <!-- Bottom Section: Local Stockfish Engine Evaluation -->
+              <app-tactics-analysis
+                [fen]="currentFen()"
+                [currentPly]="currentPly()"
+                [status]="status()"
+                [fenError]="fenError()"></app-tactics-analysis>
 
             </div>
           </div>
 
-          <!-- Toolbar: History (last 3) | Reveal | Next Puzzle -->
-          <div
-            class="mt-4 p-2 flex items-center justify-between border-2 border-slate-200 bg-white rounded-4xl select-none w-full shrink-0 px-4 text-slate-900">
-
-            <!-- Left: Puzzle History (last 3 attempts) -->
-            <div class="flex items-center gap-1.5">
-              @if (currentUser() && recentPuzzleHistory().length > 0) {
-                @for (attempt of recentPuzzleHistory().slice(0, 3); track attempt.id) {
-                <button type="button" (click)="selectHistoryPuzzle(attempt.puzzle_id)"
-                  [class.bg-green-100]="attempt.rating_change >= 0" [class.text-green-700]="attempt.rating_change >= 0"
-                  [class.bg-red-100]="attempt.rating_change < 0" [class.text-red-700]="attempt.rating_change < 0"
-                  [class.ring-2]="currentPuzzle()?.id === attempt.puzzle_id"
-                  [class.ring-blue-600]="currentPuzzle()?.id === attempt.puzzle_id"
-                  class="px-2.5 py-1 cursor-pointer rounded-xl text-xs font-medium shrink-0">
-                  {{ attempt.rating_change >= 0 ? '+' : '' }}{{ attempt.rating_change }}
-                </button>
-                }
-              }
-            </div>
-
-            <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-
-            <!-- Navigation Buttons Group -->
-            <div class="flex items-center gap-1.5">
-              <button type="button" (click)="goToMove(currentPly() - 1)" title="Previous Move"
-                class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="size-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                </svg>
-              </button>
-              <button type="button" (click)="goToMove(currentPly() + 1)" title="Next Move"
-                class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="size-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                </svg>
-              </button>
-            </div>
-
-            <div class="h-4 w-px bg-muted/20 shrink-0"></div>
-
-            <!-- Right: Action Buttons (always visible) -->
-            <div class="flex items-center gap-1">
-              <!-- Next Puzzle -->
-              <div class="relative group">
-                <button
-                  type="button"
-                  (click)="status() !== 'playing' && !isTransitioning() && loadNextPuzzle({puzzleId:undefined, isReview:false, isNew:true})"
-                  class="p-2 rounded-full transition-colors flex items-center justify-center"
-                  [class.cursor-not-allowed]="status() === 'playing' || isTransitioning()"
-                  [class.opacity-30]="status() === 'playing' && !isTransitioning()"
-                  [class.hover:bg-slate-200]="status() !== 'playing' && !isTransitioning()"
-                  [class.cursor-pointer]="status() !== 'playing' && !isTransitioning()"
-                  [disabled]="status() === 'playing' || isTransitioning()">
-                  @if (isTransitioning()) {
-                    <div class="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
-                  } @else {
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                    </svg>
-                  }
-                </button>
-              </div>
-            </div>
-          </div>
+          <!-- Bottom Toolbar: History | Move Navigation | Next Puzzle -->
+          <app-tactics-toolbar
+            [isLoggedIn]="!!currentUser()"
+            [recentAttempts]="recentPuzzleHistory()"
+            [currentPuzzleId]="currentPuzzle()?.id"
+            [currentPly]="currentPly()"
+            [minPly]="puzzleStartPly()"
+            [maxPly]="puzzleStartPly() + pgnMoves().length"
+            [status]="status()"
+            [isTransitioning]="isTransitioning()"
+            (selectAttempt)="selectHistoryPuzzle($event)"
+            (prevMove)="goToMove(currentPly() - 1)"
+            (nextMove)="goToMove(currentPly() + 1)"
+            (nextPuzzle)="loadNextPuzzle({ puzzleId: undefined, isReview: false, isNew: true })"></app-tactics-toolbar>
         </div>
       </div>
     </div>

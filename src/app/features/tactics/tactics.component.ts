@@ -2,32 +2,37 @@ import {
   Component,
   ViewChild,
   OnInit,
-  OnDestroy,
   DestroyRef,
   inject,
   signal,
   computed,
-  effect,
-  ElementRef,
-  PLATFORM_ID,
   HostListener,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TacticsService, Puzzle, SolveResponse, PuzzleAttempt } from '../../core/services/tactics.service';
+import { Chess } from 'chess.js';
+import { MoveNotationComponent, TacticsBoardComponent } from '@shared/chess';
 import { UserService } from '../../core/services/user.service';
-import { Chess, Move } from 'chess.js';
-import { MoveNotationComponent } from '@shared/chess';
-import { TacticsBoardComponent } from '@shared/chess';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { getPlyFromFen } from '../../core/utils/chess-tree.utils';
 import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
-import { EngineService } from '../../core/services/engine.service';
-import { StudyAnalysisComponent } from '../study/study-analysis/study-analysis.component';
+import { TacticsService } from './services/tactics.service';
+import { Puzzle, SolveResponse, PuzzleAttempt } from './models/tactics.model';
+import {
+  TacticsStatsComponent,
+  TacticsToolbarComponent,
+  TacticsAnalysisComponent,
+} from './components';
 
+/**
+ * TacticsComponent
+ *
+ * Orchestrator component managing daily & themed tactics puzzle lifecycle,
+ * move synchronization with chess.js, session puzzle history, and user rating progression.
+ */
 @Component({
   selector: 'app-tactics',
   standalone: true,
@@ -35,26 +40,29 @@ import { StudyAnalysisComponent } from '../study/study-analysis/study-analysis.c
     CommonModule,
     TacticsBoardComponent,
     MoveNotationComponent,
-    StudyAnalysisComponent,
+    TacticsStatsComponent,
+    TacticsToolbarComponent,
+    TacticsAnalysisComponent,
   ],
   templateUrl: './tactics.component.html',
   host: {
     class: 'absolute inset-0 overflow-y-auto lg:overflow-hidden',
   },
 })
-export class TacticsComponent implements OnInit, OnDestroy {
+export class TacticsComponent implements OnInit {
   private tacticsService = inject(TacticsService);
   private userService = inject(UserService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private platformId = inject(PLATFORM_ID);
   private destroyRef = inject(DestroyRef);
   private chess = new Chess();
+
+  @ViewChild(TacticsBoardComponent) boardComponent!: TacticsBoardComponent;
+  @ViewChild(TacticsAnalysisComponent) analysisComponent?: TacticsAnalysisComponent;
 
   private puzzleRequest$ = new Subject<{ theme?: string | null; puzzleId?: number; isNew?: boolean }>();
 
   isRated = signal<boolean>(true);
-
   activeTheme = signal<string | null>(null);
 
   activeThemeName = computed(() => {
@@ -69,101 +77,35 @@ export class TacticsComponent implements OnInit, OnDestroy {
     return key;
   });
 
-  engineService = inject(EngineService);
+  currentUser = this.userService.currentUser;
+  puzzleHistory = signal<PuzzleAttempt[]>([]);
+  recentPuzzleHistory = computed(() => [...this.puzzleHistory()].reverse().slice(0, 5));
 
-  // Engine analysis properties
-  isEngineActive = signal(false);
-  showEngineSettings = signal(false);
-  
-  engineDepth = this.engineService.engineDepth;
-  engineNodes = this.engineService.engineNodes;
-  engineNps = this.engineService.engineNps;
-  isEngineError = this.engineService.isError;
-  pvLines = this.engineService.pvLines;
-  multiPv = this.engineService.multiPv;
-  searchMode = this.engineService.searchMode;
-
-  formattedPvLines = computed(() => {
-    const lines = this.pvLines();
-    const fen = this.currentFen();
-    if (lines.length === 0 || !fen) return [];
-
-    return lines.map((line) => {
-      const chess = new Chess(fen);
-      const moves: {
-        san: string;
-        uci: string;
-        moveNumber: number;
-        showMoveNumber: boolean;
-        isBlack: boolean;
-      }[] = [];
-
-      for (let i = 0; i < line.pv.length; i++) {
-        const uci = line.pv[i];
-        const currentTurn = chess.turn();
-        const currentMoveNumber = chess.moveNumber();
-        const showMoveNumber = i === 0 || currentTurn === 'w';
-        const isBlack = i === 0 && currentTurn === 'b';
-
-        try {
-          const from = uci.substring(0, 2);
-          const to = uci.substring(2, 4);
-          const promotion = uci.length > 4 ? uci.substring(4, 5) : undefined;
-          const result = chess.move({ from, to, promotion });
-          moves.push({
-            san: result.san,
-            uci,
-            moveNumber: currentMoveNumber,
-            showMoveNumber,
-            isBlack,
-          });
-        } catch (e) {
-          moves.push({
-            san: uci,
-            uci,
-            moveNumber: currentMoveNumber,
-            showMoveNumber,
-            isBlack,
-          });
-        }
-      }
-
-      return {
-        ...line,
-        moves,
-      };
-    });
-  });
-
-  formattedNps = computed(() => {
-    const nps = this.engineNps();
-    if (nps >= 1_000_000) return `${(nps / 1_000_000).toFixed(1)}M nps`;
-    if (nps >= 1_000) return `${(nps / 1_000).toFixed(0)}k nps`;
-    return nps > 0 ? `${nps} nps` : '';
-  });
-
-  engineEval = computed(() => {
-    const lines = this.pvLines();
-    return lines.length > 0 ? lines[0].eval : null;
-  });
+  currentPuzzle = signal<Puzzle | null>(null);
+  isLoading = signal<boolean>(true);
+  isTransitioning = signal<boolean>(false);
+  transitionError = signal<string | null>(null);
+  hasError = signal<boolean>(false);
+  hasRevealedSolution = signal<boolean>(false);
+  userColor = signal<'white' | 'black'>('white');
+  status = signal<'playing' | 'success' | 'failed'>('playing');
+  ratingChange = signal<number | null>(null);
+  newRating = signal<number | null>(null);
+  newStreak = signal<number>(0);
+  userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
+  userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
+  retryMode = signal(false);
+  exploreMode = signal(false);
+  isReviewMode = signal(false);
+  pgnMoves = signal<string[]>([]);
+  currentPly = signal(0);
+  currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  fenError = signal<string | null>(null);
+  recentSessionPuzzleIds = signal<number[]>([]);
+  puzzleStartPly = signal(0);
+  isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
   constructor() {
-    effect(() => {
-      const active = this.isEngineActive();
-      const fen = this.currentFen();
-      const isBrowser = isPlatformBrowser(this.platformId);
-
-      console.log('[Tactics Component] Engine Effect triggered:', { active, fen, isBrowser });
-
-      if (isBrowser) {
-        if (active && fen) {
-          this.engineService.startAnalysis(fen);
-        } else {
-          this.engineService.stop();
-        }
-      }
-    });
-
     this.puzzleRequest$
       .pipe(
         switchMap(({ theme, puzzleId, isNew }) => {
@@ -185,7 +127,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
         this.isTransitioning.set(false);
 
         if (res?.error || !res?.data) {
-          // If an explicit ID was requested (e.g. invalid ?id=999999), smoothly recover by clearing the bad param
           const queryId = this.route.snapshot.queryParamMap.get('id');
           if (queryId) {
             this.router.navigate([], {
@@ -215,36 +156,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
       });
   }
 
-  currentUser = this.userService.currentUser;
-  puzzleHistory = signal<PuzzleAttempt[]>([]);
-  recentPuzzleHistory = computed(() => [...this.puzzleHistory()].reverse().slice(0, 5));
-
-  @ViewChild(TacticsBoardComponent) boardComponent!: TacticsBoardComponent;
-
-  currentPuzzle = signal<Puzzle | null>(null);
-  isLoading = signal<boolean>(true);
-  isTransitioning = signal<boolean>(false);
-  transitionError = signal<string | null>(null);
-  hasError = signal<boolean>(false);
-  hasRevealedSolution = signal<boolean>(false);
-  userColor = signal<'white' | 'black'>('white');
-  status = signal<'playing' | 'success' | 'failed'>('playing');
-  ratingChange = signal<number | null>(null);
-  newRating = signal<number | null>(null);
-  newStreak = signal<number>(0);
-  userRating = computed(() => this.userService.currentUser()?.progress?.puzzleRating ?? 1200);
-  userStreak = computed(() => this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
-  retryMode = signal(false);
-  exploreMode = signal(false);
-  isReviewMode = signal(false);
-  pgnMoves = signal<string[]>([]);
-  currentPly = signal(0);
-  currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
-  fenError = signal<string | null>(null);
-  recentSessionPuzzleIds = signal<number[]>([]);
-  puzzleStartPly = signal(0);
-  isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
-
   ngOnInit() {
     this.onResize();
     if (this.currentUser()) {
@@ -259,7 +170,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
       const theme = params.get('theme');
       this.activeTheme.set(theme);
 
-      // On init, check if a specific puzzle ID was provided in query parameters (e.g. page refresh or direct URL)
       const queryId = this.route.snapshot.queryParamMap.get('id');
       const isReview = this.route.snapshot.queryParamMap.get('mode') === 'review';
       if (queryId && !isNaN(Number(queryId))) {
@@ -269,11 +179,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  ngOnDestroy() {
-    this.engineService.terminate();
-  }
-
 
   @HostListener('window:resize')
   onResize() {
@@ -325,9 +230,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
   }
 
   private applyNewPuzzle(puzzle: Puzzle) {
-    // Atomically halt engine and reset move state
-    this.isEngineActive.set(false);
-    this.engineService.stop();
+    this.analysisComponent?.resetEngine();
     this.fenError.set(null);
 
     this.status.set('playing');
@@ -337,7 +240,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.exploreMode.set(false);
     this.pgnMoves.set([]);
 
-    // Synchronize internal chess state and FEN before triggering board init
     try {
       this.chess.load(puzzle.fen);
       this.currentFen.set(puzzle.fen);
@@ -345,14 +247,12 @@ export class TacticsComponent implements OnInit, OnDestroy {
       DevLogger.warn('[Tactics] Failed to load puzzle FEN:', e);
     }
 
-    // Record into session buffer (capped at 50 IDs) to guarantee no immediate repeats
     this.recentSessionPuzzleIds.update(ids => {
       const filtered = ids.filter(id => id !== puzzle.id);
       filtered.push(puzzle.id);
       return filtered.slice(-50);
     });
 
-    // Synchronize current puzzle ID into URL query parameters without creating back-button traps
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
@@ -543,7 +443,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
     }
     this.currentPly.set(this.puzzleStartPly() + this.pgnMoves().length);
 
-    // Update internal chess state and FEN
     try {
       const puzzle = this.currentPuzzle();
       if (puzzle) {
@@ -607,5 +506,3 @@ export class TacticsComponent implements OnInit, OnDestroy {
     }
   }
 }
-
-

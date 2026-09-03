@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, inject, ChangeDetectionStrategy, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { TacticsService, WoodpeckerSession } from '../../../../core/services/tactics.service';
+import { TacticsService, WoodpeckerSession } from '../../services/tactics.service';
 import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpecker-explanation-modal.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroInformationCircle } from '@ng-icons/heroicons/outline';

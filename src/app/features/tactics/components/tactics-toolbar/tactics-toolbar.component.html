@@ -1,0 +1,65 @@
+<div
+  class="mt-4 p-2 flex items-center justify-between border-2 border-slate-200 bg-white rounded-4xl select-none w-full shrink-0 px-4 text-slate-900">
+
+  <!-- Left: Puzzle History (last 3 attempts) -->
+  <div class="flex items-center gap-1.5">
+    @if (isLoggedIn() && recentAttempts().length > 0) {
+      @for (attempt of recentAttempts().slice(0, 3); track attempt.id) {
+      <button type="button" (click)="selectAttempt.emit(attempt.puzzle_id)"
+        [class.bg-green-100]="attempt.rating_change >= 0" [class.text-green-700]="attempt.rating_change >= 0"
+        [class.bg-red-100]="attempt.rating_change < 0" [class.text-red-700]="attempt.rating_change < 0"
+        [class.ring-2]="currentPuzzleId() === attempt.puzzle_id"
+        [class.ring-blue-600]="currentPuzzleId() === attempt.puzzle_id"
+        class="px-2.5 py-1 cursor-pointer rounded-xl text-xs font-medium shrink-0">
+        {{ attempt.rating_change >= 0 ? '+' : '' }}{{ attempt.rating_change }}
+      </button>
+      }
+    }
+  </div>
+
+  <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+  <!-- Navigation Buttons Group -->
+  <div class="flex items-center gap-1.5">
+    <button type="button" (click)="prevMove.emit()" title="Previous Move"
+      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+        stroke="currentColor" class="size-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+    </button>
+    <button type="button" (click)="nextMove.emit()" title="Next Move"
+      class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+        stroke="currentColor" class="size-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="h-4 w-px bg-muted/20 shrink-0"></div>
+
+  <!-- Right: Action Buttons (always visible) -->
+  <div class="flex items-center gap-1">
+    <!-- Next Puzzle -->
+    <div class="relative group">
+      <button
+        type="button"
+        (click)="onNextPuzzleClick()"
+        class="p-2 rounded-full transition-colors flex items-center justify-center"
+        [class.cursor-not-allowed]="isNextDisabled()"
+        [class.opacity-30]="isNextDisabled() && !isTransitioning()"
+        [class.hover:bg-slate-200]="!isNextDisabled()"
+        [class.cursor-pointer]="!isNextDisabled()"
+        [disabled]="isNextDisabled()">
+        @if (isTransitioning()) {
+          <div class="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
+        }
+      </button>
+    </div>
+  </div>
+</div>
