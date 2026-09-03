@@ -165,7 +165,7 @@
               <div class="relative group">
                 <button
                   type="button"
-                  (click)="status() !== 'playing' && !isTransitioning() && loadNextPuzzle()"
+                  (click)="status() !== 'playing' && !isTransitioning() && loadNextPuzzle({puzzleId:undefined, isReview:false, isNew:true})"
                   class="p-2 rounded-full transition-colors flex items-center justify-center"
                   [class.cursor-not-allowed]="status() === 'playing' || isTransitioning()"
                   [class.opacity-30]="status() === 'playing' && !isTransitioning()"

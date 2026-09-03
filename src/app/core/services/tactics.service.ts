@@ -24,6 +24,8 @@ export interface SolveResponse {
   new_rating: number;
   rating_change: number;
   new_streak: number;
+  is_rated?: boolean;
+  already_attempted?: boolean;
 }
 
 export interface LeaderboardEntry {
@@ -89,10 +91,10 @@ export class TacticsService {
     if (params.length > 0) {
       url += `?${params.join('&')}`;
     }
-    return this.http.get<{ data: Puzzle }>(url);
+    return this.http.get<{ data: Puzzle; is_rated?: boolean }>(url);
   }
 
-  getNextPuzzle(theme?: string, excludeIds?: number[]): Observable<{ data: Puzzle }> {
+  getNextPuzzle(theme?: string, excludeIds?: number[], isNew: boolean = false): Observable<{ data: Puzzle; is_rated?: boolean; resumed?: boolean }> {
     let url = `${this.apiUrl}/tactics/next`;
     const params: string[] = [];
     if (theme) {
@@ -101,10 +103,13 @@ export class TacticsService {
     if (excludeIds && excludeIds.length > 0) {
       params.push(`exclude_ids=${excludeIds.slice(-20).join(',')}`);
     }
+    if (isNew) {
+      params.push('new=1');
+    }
     if (params.length > 0) {
       url += `?${params.join('&')}`;
     }
-    return this.http.get<{ data: Puzzle }>(url);
+    return this.http.get<{ data: Puzzle; is_rated?: boolean; resumed?: boolean }>(url);
   }
 
   getPuzzleHistory(): Observable<{ data: PuzzleAttempt[] }> {

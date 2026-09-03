@@ -10,7 +10,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const publicPaths = [
     '/courses',
-    '/tactics/next',
     '/activity-logs',
   ];
 

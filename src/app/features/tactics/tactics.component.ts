@@ -16,7 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TacticsService, Puzzle, SolveResponse, PuzzleAttempt } from '../../core/services/tactics.service';
 import { UserService } from '../../core/services/user.service';
 import { Chess, Move } from 'chess.js';
@@ -46,12 +46,14 @@ export class TacticsComponent implements OnInit, OnDestroy {
   private tacticsService = inject(TacticsService);
   private userService = inject(UserService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private destroyRef = inject(DestroyRef);
   private chess = new Chess();
-  private gameStartFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
-  private puzzleRequest$ = new Subject<{ theme?: string | null; puzzleId?: number }>();
+  private puzzleRequest$ = new Subject<{ theme?: string | null; puzzleId?: number; isNew?: boolean }>();
+
+  isRated = signal<boolean>(true);
 
   activeTheme = signal<string | null>(null);
 
@@ -164,10 +166,10 @@ export class TacticsComponent implements OnInit, OnDestroy {
 
     this.puzzleRequest$
       .pipe(
-        switchMap(({ theme, puzzleId }) => {
+        switchMap(({ theme, puzzleId, isNew }) => {
           const req$ = puzzleId
             ? this.tacticsService.getDailyPuzzle(theme ?? undefined, puzzleId)
-            : this.tacticsService.getNextPuzzle(theme ?? undefined, this.recentSessionPuzzleIds());
+            : this.tacticsService.getNextPuzzle(theme ?? undefined, this.recentSessionPuzzleIds(), isNew);
 
           return req$.pipe(
             catchError((err) => {
@@ -182,7 +184,20 @@ export class TacticsComponent implements OnInit, OnDestroy {
         this.isLoading.set(false);
         this.isTransitioning.set(false);
 
-        if (res?.error) {
+        if (res?.error || !res?.data) {
+          // If an explicit ID was requested (e.g. invalid ?id=999999), smoothly recover by clearing the bad param
+          const queryId = this.route.snapshot.queryParamMap.get('id');
+          if (queryId) {
+            this.router.navigate([], {
+              relativeTo: this.route,
+              queryParams: { id: null, mode: null },
+              queryParamsHandling: 'merge',
+              replaceUrl: true,
+            });
+            this.loadNextPuzzle();
+            return;
+          }
+
           if (!this.currentPuzzle()) {
             this.hasError.set(true);
           } else {
@@ -194,6 +209,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
         if (res?.data) {
           this.transitionError.set(null);
           this.hasError.set(false);
+          this.isRated.set(res.is_rated !== false);
           this.applyNewPuzzle(res.data);
         }
       });
@@ -243,7 +259,15 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe(params => {
       const theme = params.get('theme');
       this.activeTheme.set(theme);
-      this.loadNextPuzzle();
+
+      // On init, check if a specific puzzle ID was provided in query parameters (e.g. page refresh or direct URL)
+      const queryId = this.route.snapshot.queryParamMap.get('id');
+      const isReview = this.route.snapshot.queryParamMap.get('mode') === 'review';
+      if (queryId && !isNaN(Number(queryId))) {
+        this.loadNextPuzzle(Number(queryId), isReview);
+      } else {
+        this.loadNextPuzzle();
+      }
     });
   }
 
@@ -258,11 +282,34 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.isMobile.set(mobile);
   }
 
-  loadNextPuzzle(puzzleId?: number) {
+  /**
+   * Requests the next puzzle. Supports either an options object or positional parameters.
+   *
+   * @param optionsOrPuzzleId Specific puzzle ID or options object ({ puzzleId, isReview, isNew })
+   * @param isReview Whether this puzzle is being viewed in review mode (no rating changes)
+   * @param isNew Whether to force fetching a new puzzle rather than resuming an active one
+   */
+  loadNextPuzzle(
+    optionsOrPuzzleId?: number | { puzzleId?: number; isReview?: boolean; isNew?: boolean },
+    isReview: boolean = false,
+    isNew: boolean = false
+  ) {
     if (this.isTransitioning()) return;
 
+    let puzzleId: number | undefined;
+    let review = isReview;
+    let fresh = isNew;
+
+    if (typeof optionsOrPuzzleId === 'object' && optionsOrPuzzleId !== null) {
+      puzzleId = optionsOrPuzzleId.puzzleId;
+      review = optionsOrPuzzleId.isReview ?? false;
+      fresh = optionsOrPuzzleId.isNew ?? false;
+    } else {
+      puzzleId = optionsOrPuzzleId;
+    }
+
     this.transitionError.set(null);
-    this.isReviewMode.set(!!puzzleId);
+    this.isReviewMode.set(review);
 
     if (!this.currentPuzzle()) {
       this.isLoading.set(true);
@@ -274,6 +321,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.puzzleRequest$.next({
       theme: this.activeTheme(),
       puzzleId,
+      isNew: fresh,
     });
   }
 
@@ -305,6 +353,17 @@ export class TacticsComponent implements OnInit, OnDestroy {
       return filtered.slice(-20);
     });
 
+    // Synchronize current puzzle ID into URL query parameters without creating back-button traps
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        id: puzzle.id,
+        mode: this.isReviewMode() ? 'review' : null,
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+
     this.currentPuzzle.set(puzzle);
     this.puzzleStartPly.set(getPlyFromFen(puzzle.fen));
     this.currentPly.set(this.puzzleStartPly());
@@ -324,7 +383,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
   }
 
   selectHistoryPuzzle(puzzleId: number) {
-    this.loadNextPuzzle(puzzleId);
+    this.loadNextPuzzle(puzzleId, true);
   }
 
   onPuzzleSolved() {
@@ -348,6 +407,9 @@ export class TacticsComponent implements OnInit, OnDestroy {
             this.ratingChange.set(res.rating_change);
             this.newRating.set(res.new_rating);
             this.newStreak.set(res.new_streak);
+            if (res.is_rated === false) {
+              this.isRated.set(false);
+            }
             this.loadHistory();
             this.exploreMode.set(true);
           },
