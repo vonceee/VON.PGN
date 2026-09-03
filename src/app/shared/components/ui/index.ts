@@ -8,4 +8,5 @@ export * from './win-rate-bar.component';
 export * from './flag-icon/flag-icon.component';
 export * from './toggle/toggle.component';
 export * from './floating-cursor/floating-cursor.component';
+export * from './dropdown/dropdown.component';
 

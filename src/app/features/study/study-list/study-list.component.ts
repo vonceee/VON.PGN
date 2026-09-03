@@ -25,7 +25,7 @@ import {
 
 
 import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
-import { FloatingCursorComponent } from '@shared/ui';
+import { FloatingCursorComponent, DropdownComponent, DropdownItem } from '@shared/ui';
 
 @Component({
   selector: 'app-study-list',
@@ -39,7 +39,8 @@ import { FloatingCursorComponent } from '@shared/ui';
     NgIconComponent,
     FloatingCursorContainerDirective,
     FloatingCursorTriggerDirective,
-    FloatingCursorComponent
+    FloatingCursorComponent,
+    DropdownComponent,
   ],
   templateUrl: './study-list.component.html',
   providers: [
@@ -87,6 +88,19 @@ export class StudyListComponent implements OnInit {
   searchQuery = signal('');
   sortBy = signal<'last_updated' | 'alphabetical'>('last_updated');
   categoryFilter = signal<'all' | 'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>('all');
+
+  readonly categoryOptions: DropdownItem<'all' | 'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>[] = [
+    { label: 'All categories', value: 'all' },
+    { label: 'General study', value: 'general' },
+    { label: 'Opening repertoire', value: 'opening_repertoire' },
+    { label: 'Middlegame', value: 'middlegame' },
+    { label: 'Endgame', value: 'endgame' },
+  ];
+
+  readonly sortOptions: DropdownItem<'last_updated' | 'alphabetical'>[] = [
+    { label: 'Last updated', value: 'last_updated' },
+    { label: 'Alphabetical', value: 'alphabetical' },
+  ];
 
   queryParams = computed(() => ({
     isMyStudies: this.activeTab() === 'my',
