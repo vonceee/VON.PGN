@@ -18,13 +18,6 @@ import { UserService } from '../../core/services/user.service';
 import { Chess, Move } from 'chess.js';
 import { MoveNotationComponent } from '@shared/chess';
 import { TacticsBoardComponent } from '@shared/chess';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import {
-  heroChevronLeft,
-  heroChevronRight,
-  heroChevronDoubleLeft,
-  heroChevronDoubleRight,
-} from '@ng-icons/heroicons/outline';
 import { DevLogger } from '../../core/utils/dev-logger';
 import { getPlyFromFen } from '../../core/utils/chess-tree.utils';
 import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
@@ -36,18 +29,9 @@ import { StudyAnalysisComponent } from '../study/study-analysis/study-analysis.c
   standalone: true,
   imports: [
     CommonModule,
-    NgIconComponent,
     TacticsBoardComponent,
     MoveNotationComponent,
     StudyAnalysisComponent,
-  ],
-  providers: [
-    provideIcons({
-      heroChevronLeft,
-      heroChevronRight,
-      heroChevronDoubleLeft,
-      heroChevronDoubleRight,
-    }),
   ],
   templateUrl: './tactics.component.html',
   host: {
