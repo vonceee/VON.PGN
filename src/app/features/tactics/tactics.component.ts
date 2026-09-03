@@ -3,6 +3,7 @@ import {
   ViewChild,
   OnInit,
   OnDestroy,
+  DestroyRef,
   inject,
   signal,
   computed,
@@ -11,6 +12,9 @@ import {
   PLATFORM_ID,
   HostListener,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TacticsService, Puzzle, SolveResponse, PuzzleAttempt } from '../../core/services/tactics.service';
@@ -43,8 +47,11 @@ export class TacticsComponent implements OnInit, OnDestroy {
   private userService = inject(UserService);
   private route = inject(ActivatedRoute);
   private platformId = inject(PLATFORM_ID);
+  private destroyRef = inject(DestroyRef);
   private chess = new Chess();
   private gameStartFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+  private puzzleRequest$ = new Subject<{ theme?: string | null; puzzleId?: number }>();
 
   activeTheme = signal<string | null>(null);
 
@@ -154,6 +161,39 @@ export class TacticsComponent implements OnInit, OnDestroy {
         }
       }
     });
+
+    // Pipeline with switchMap to cancel in-flight requests on rapid clicks or route changes
+    this.puzzleRequest$
+      .pipe(
+        switchMap(({ theme, puzzleId }) =>
+          this.tacticsService.getDailyPuzzle(theme ?? undefined, puzzleId).pipe(
+            catchError((err) => {
+              DevLogger.error('[Tactics] Failed to load puzzle:', err);
+              return of({ error: err });
+            })
+          )
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((res: any) => {
+        this.isLoading.set(false);
+        this.isTransitioning.set(false);
+
+        if (res?.error) {
+          if (!this.currentPuzzle()) {
+            this.hasError.set(true);
+          } else {
+            this.transitionError.set('Unable to load next puzzle. Please check your connection and try again.');
+          }
+          return;
+        }
+
+        if (res?.data) {
+          this.transitionError.set(null);
+          this.hasError.set(false);
+          this.applyNewPuzzle(res.data);
+        }
+      });
   }
 
   currentUser = this.userService.currentUser;
@@ -164,6 +204,8 @@ export class TacticsComponent implements OnInit, OnDestroy {
 
   currentPuzzle = signal<Puzzle | null>(null);
   isLoading = signal<boolean>(true);
+  isTransitioning = signal<boolean>(false);
+  transitionError = signal<string | null>(null);
   hasError = signal<boolean>(false);
   hasRevealedSolution = signal<boolean>(false);
   userColor = signal<'white' | 'black'>('white');
@@ -214,39 +256,48 @@ export class TacticsComponent implements OnInit, OnDestroy {
   }
 
   loadNextPuzzle(puzzleId?: number) {
+    if (this.isTransitioning()) return;
+
+    this.transitionError.set(null);
+    this.isReviewMode.set(!!puzzleId);
+
+    if (!this.currentPuzzle()) {
+      this.isLoading.set(true);
+      this.hasError.set(false);
+    } else {
+      this.isTransitioning.set(true);
+    }
+
+    this.puzzleRequest$.next({
+      theme: this.activeTheme(),
+      puzzleId,
+    });
+  }
+
+  private applyNewPuzzle(puzzle: Puzzle) {
+    // Atomically halt engine and reset move state
+    this.isEngineActive.set(false);
+    this.engineService.stop();
+    this.fenError.set(null);
+
     this.status.set('playing');
     this.ratingChange.set(null);
-    this.isLoading.set(true);
-    this.hasError.set(false);
     this.hasRevealedSolution.set(false);
     this.retryMode.set(false);
     this.exploreMode.set(false);
-    this.isReviewMode.set(!!puzzleId);
     this.pgnMoves.set([]);
-    this.currentPly.set(0);
-    this.isEngineActive.set(false);
-    this.fenError.set(null);
 
-    this.tacticsService.getDailyPuzzle(this.activeTheme() ?? undefined, puzzleId).subscribe({
-      next: (res: { data: Puzzle }) => {
-        // Synchronize internal chess state and FEN before triggering board init
-        try {
-          this.chess.load(res.data.fen);
-          this.currentFen.set(res.data.fen);
-        } catch (e) {
-          DevLogger.warn('[Tactics] Failed to load puzzle FEN:', e);
-        }
+    // Synchronize internal chess state and FEN before triggering board init
+    try {
+      this.chess.load(puzzle.fen);
+      this.currentFen.set(puzzle.fen);
+    } catch (e) {
+      DevLogger.warn('[Tactics] Failed to load puzzle FEN:', e);
+    }
 
-        this.currentPuzzle.set(res.data);
-        this.puzzleStartPly.set(getPlyFromFen(res.data.fen));
-        this.currentPly.set(this.puzzleStartPly());
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.isLoading.set(false);
-        this.hasError.set(true);
-      }
-    });
+    this.currentPuzzle.set(puzzle);
+    this.puzzleStartPly.set(getPlyFromFen(puzzle.fen));
+    this.currentPly.set(this.puzzleStartPly());
   }
 
   loadHistory() {

@@ -498,7 +498,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   private applyConfigOverride(override: Config) {
     if (!this.cgApi) return;
     const currentMovable = this.cgApi.state.movable;
-    const finalConfig = { ...override };
+    const finalConfig: Config = { ...override };
     if (override.movable) {
       finalConfig.movable = {
         ...currentMovable,
@@ -506,6 +506,12 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
       };
       if (!finalConfig.movable.dests && this.interactive) {
         finalConfig.movable.dests = this.getLegalMoves();
+      }
+    }
+    // Remove undefined keys so deepMerge in Chessground does not erase state properties
+    for (const key of Object.keys(finalConfig) as (keyof Config)[]) {
+      if (finalConfig[key] === undefined) {
+        delete finalConfig[key];
       }
     }
     this.cgApi.set(finalConfig);
@@ -527,7 +533,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
 
     this.isProgrammaticSet = true;
     try {
-      this.cgApi.set({
+      const setConfig: Config = {
         fen: fenToUse,
         lastMove: lastMoveToSet as any,
         turnColor: this.chess.turn() === 'w' ? 'white' : 'black',
@@ -553,7 +559,13 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
         drawable: {
           shapes: this.syncedShapes
         }
-      });
+      };
+
+      if (this.configOverride?.animation) {
+        setConfig.animation = this.configOverride.animation;
+      }
+
+      this.cgApi.set(setConfig);
     } finally {
       this.isProgrammaticSet = false;
     }

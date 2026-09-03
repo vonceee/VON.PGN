@@ -4,6 +4,7 @@ import {
   Output,
   EventEmitter,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
   inject,
   ViewChild,
@@ -42,7 +43,7 @@ import { DevLogger } from '../../../../core/utils/dev-logger';
     }
   `],
 })
-export class TacticsBoardComponent implements OnChanges {
+export class TacticsBoardComponent implements OnChanges, OnDestroy {
   @ViewChild('board') boardComponent!: ChessBoardComponent;
 
   private _puzzle: Puzzle | null = null;
@@ -104,8 +105,18 @@ export class TacticsBoardComponent implements OnChanges {
     }
   }
 
+  ngOnDestroy() {
+    if (this.introTimeout) {
+      clearTimeout(this.introTimeout);
+    }
+  }
+
   initPuzzle() {
     if (!this.puzzle) return;
+
+    if (this.introTimeout) {
+      clearTimeout(this.introTimeout);
+    }
 
     this.status = 'playing';
     this._retryMode = false;
@@ -119,28 +130,38 @@ export class TacticsBoardComponent implements OnChanges {
     // Set board to the puzzle's starting FEN
     this.chess.load(this.puzzle.fen);
     this.currentFen = this.puzzle.fen;
+    this.initialFen = this.puzzle.fen;
     
     // The side that is NOT currently to move in puzzle.fen is the user, 
     // because the first move in solutionMoves is the opponent's move.
     this.userColor = this.chess.turn() === 'w' ? 'black' : 'white';
     this.userColorChange.emit(this.userColor);
 
+    // CRITICAL: Explicitly disable animations during base FEN swap so pieces do NOT fly from the previous puzzle
     this.cgConfig = {
+      animation: { enabled: false },
       movable: {
         color: this.userColor,
         free: false
       }
     };
 
-    // Play the first opponent move (intro move) after a delay to allow board load
+    // Play the first opponent move (intro move) after a brief delay so the user clearly sees the setup move
     if (!this.isBrowser) return;
 
-    if (this.introTimeout) clearTimeout(this.introTimeout);
     this.introTimeout = setTimeout(() => {
       if (this.solutionPly === 0 && !this.gameMode) {
+        // Re-enable animation for the opponent's setup move
+        this.cgConfig = {
+          animation: { enabled: true },
+          movable: {
+            color: this.userColor,
+            free: false
+          }
+        };
         this.playOpponentMove();
       }
-    }, 1000);
+    }, 500);
   }
 
   onBoardMove(event: { move: Move; fen: string }) {
@@ -360,6 +381,9 @@ export class TacticsBoardComponent implements OnChanges {
       this.lastMove = [moveResult.from, moveResult.to];
       this.audioService.playChessMove(moveResult);
       this.currentFen = this.chess.fen();
+      if (this.solutionPly === 1) {
+        this.initialFen = this.currentFen;
+      }
 
       // In the rare case that the opponent move was the only/last move of the puzzle
       if (this.solutionPly >= this.solutionMoves.length) {

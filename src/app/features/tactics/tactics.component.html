@@ -1,12 +1,26 @@
 <div class="h-auto min-h-full lg:h-full w-full p-4 lg:p-8 flex flex-col relative overflow-y-auto lg:overflow-hidden">
   <div class="w-full flex-1 flex flex-col lg:flex-row gap-8 items-stretch relative min-h-0">
 
-    @if (isLoading()) {
+    @if (!currentPuzzle() && isLoading()) {
     <div class="flex-1 flex items-center justify-center">
-
+      <div class="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
     } @else {
     <div class="flex-1 w-full lg:overflow-hidden flex flex-col min-h-0">
+      @if (transitionError()) {
+      <div class="w-full max-w-[1080px] mx-auto mb-3 px-4 py-2.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+          </svg>
+          <span>{{ transitionError() }}</span>
+        </div>
+        <button type="button" (click)="transitionError.set(null)" class="text-rose-600 hover:text-rose-800 text-xs font-semibold px-2 py-0.5 rounded cursor-pointer">
+          Dismiss
+        </button>
+      </div>
+      }
+
       <div
         class="grid w-full max-w-[1080px] mx-auto grid-cols-1 lg:grid-cols-[1fr_400px] gap-3 lg:gap-6 xl:gap-8 h-auto lg:h-full lg:overflow-hidden">
 
@@ -111,7 +125,7 @@
             <div class="flex items-center gap-1.5">
               @if (currentUser() && recentPuzzleHistory().length > 0) {
                 @for (attempt of recentPuzzleHistory().slice(0, 3); track attempt.id) {
-                <button (click)="selectHistoryPuzzle(attempt.puzzle_id)"
+                <button type="button" (click)="selectHistoryPuzzle(attempt.puzzle_id)"
                   [class.bg-green-100]="attempt.rating_change >= 0" [class.text-green-700]="attempt.rating_change >= 0"
                   [class.bg-red-100]="attempt.rating_change < 0" [class.text-red-700]="attempt.rating_change < 0"
                   [class.ring-2]="currentPuzzle()?.id === attempt.puzzle_id"
@@ -127,14 +141,14 @@
 
             <!-- Navigation Buttons Group -->
             <div class="flex items-center gap-1.5">
-              <button (click)="goToMove(currentPly() - 1)" title="Previous Move"
+              <button type="button" (click)="goToMove(currentPly() - 1)" title="Previous Move"
                 class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="size-4">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                 </svg>
               </button>
-              <button (click)="goToMove(currentPly() + 1)" title="Next Move"
+              <button type="button" (click)="goToMove(currentPly() + 1)" title="Next Move"
                 class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="size-4">
@@ -150,20 +164,26 @@
               <!-- Next Puzzle -->
               <div class="relative group">
                 <button
-                  (click)="status() !== 'playing' && loadNextPuzzle()"
+                  type="button"
+                  (click)="status() !== 'playing' && !isTransitioning() && loadNextPuzzle()"
                   class="p-2 rounded-full transition-colors flex items-center justify-center"
-                  [class.cursor-not-allowed]="status() === 'playing'"
-                  [class.opacity-30]="status() === 'playing'"
-                  [class.hover:bg-slate-200]="status() !== 'playing'"
-                  [class.cursor-pointer]="status() !== 'playing'">
-                  <!-- Forward / skip icon -->
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                  </svg>
+                  [class.cursor-not-allowed]="status() === 'playing' || isTransitioning()"
+                  [class.opacity-30]="status() === 'playing' && !isTransitioning()"
+                  [class.hover:bg-slate-200]="status() !== 'playing' && !isTransitioning()"
+                  [class.cursor-pointer]="status() !== 'playing' && !isTransitioning()"
+                  [disabled]="status() === 'playing' || isTransitioning()">
+                  @if (isTransitioning()) {
+                    <div class="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
+                  } @else {
+                    <!-- Forward / skip icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
+                  }
                 </button>
                 <!-- Tooltip -->
                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-slate-900 text-white text-xs font-medium rounded-lg border border-white/10 shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-50 transition-all duration-200 transform scale-95 group-hover:scale-100">
-                  Next
+                  {{ isTransitioning() ? 'Loading...' : 'Next' }}
                 </div>
               </div>
 
