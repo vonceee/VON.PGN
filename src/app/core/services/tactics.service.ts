@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { environment } from '../../../environments/environment';
@@ -44,12 +44,12 @@ export interface UserLeaderboardStats {
 
 export interface PuzzleAttempt {
   id: number;
-  user_id: number;
   puzzle_id: number;
-  success: boolean;
   rating_change: number;
-  user_rating_after: number;
-  created_at: string;
+  success: boolean;
+  user_id?: number;
+  user_rating_after?: number;
+  created_at?: string;
   puzzle?: {
     id: number;
     lichess_puzzle_id: string;
@@ -101,7 +101,7 @@ export class TacticsService {
       params.push(`theme=${theme}`);
     }
     if (excludeIds && excludeIds.length > 0) {
-      params.push(`exclude_ids=${excludeIds.slice(-20).join(',')}`);
+      params.push(`exclude_ids=${excludeIds.slice(-50).join(',')}`);
     }
     if (isNew) {
       params.push('new=1');
@@ -113,7 +113,7 @@ export class TacticsService {
   }
 
   getPuzzleHistory(): Observable<{ data: PuzzleAttempt[] }> {
-    return this.http.get<{ data: PuzzleAttempt[] }>(`${this.apiUrl}/tactics/history`);
+    return of({ data: [] });
   }
 
   getThemeCounts(): Observable<Record<string, number>> {

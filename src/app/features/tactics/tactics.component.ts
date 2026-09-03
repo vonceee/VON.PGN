@@ -248,7 +248,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.onResize();
     if (this.currentUser()) {
-      this.loadHistory();
       setTimeout(() => {
         this.userService.loadMyProfile().subscribe(() => {
           this.newStreak.set(this.userService.currentUser()?.progress?.puzzleStreak ?? 0);
@@ -346,11 +345,11 @@ export class TacticsComponent implements OnInit, OnDestroy {
       DevLogger.warn('[Tactics] Failed to load puzzle FEN:', e);
     }
 
-    // Record into session buffer (capped at 20 IDs) to guarantee no immediate repeats
+    // Record into session buffer (capped at 50 IDs) to guarantee no immediate repeats
     this.recentSessionPuzzleIds.update(ids => {
       const filtered = ids.filter(id => id !== puzzle.id);
       filtered.push(puzzle.id);
-      return filtered.slice(-20);
+      return filtered.slice(-50);
     });
 
     // Synchronize current puzzle ID into URL query parameters without creating back-button traps
@@ -369,17 +368,19 @@ export class TacticsComponent implements OnInit, OnDestroy {
     this.currentPly.set(this.puzzleStartPly());
   }
 
-  loadHistory() {
-    if (this.currentUser()) {
-      this.tacticsService.getPuzzleHistory().subscribe({
-        next: (res) => {
-          this.puzzleHistory.set(res.data);
-        },
-        error: (err) => {
-          DevLogger.error('[Tactics] Failed to load puzzle history:', err);
+  recordSessionAttempt(puzzleId: number, ratingChange: number, success: boolean) {
+    this.puzzleHistory.update(history => {
+      const filtered = history.filter(h => h.puzzle_id !== puzzleId);
+      return [
+        ...filtered,
+        {
+          id: puzzleId,
+          puzzle_id: puzzleId,
+          rating_change: ratingChange,
+          success: success,
         }
-      });
-    }
+      ];
+    });
   }
 
   selectHistoryPuzzle(puzzleId: number) {
@@ -410,7 +411,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
             if (res.is_rated === false) {
               this.isRated.set(false);
             }
-            this.loadHistory();
+            this.recordSessionAttempt(pId, res.rating_change, true);
             this.exploreMode.set(true);
           },
           error: (err) => {
@@ -444,7 +445,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
             this.newRating.set(res.new_rating);
             this.newStreak.set(res.new_streak);
             this.userService.loadMyProfile().subscribe();
-            this.loadHistory();
+            this.recordSessionAttempt(pId, res.rating_change, false);
           },
           error: (err) => {
             DevLogger.error('[Tactics] Failed to submit puzzle failure:', err);
@@ -475,7 +476,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
             this.newRating.set(res.new_rating);
             this.newStreak.set(res.new_streak);
             this.userService.loadMyProfile().subscribe();
-            this.loadHistory();
+            this.recordSessionAttempt(pId, res.rating_change, false);
             this.resetToInitialPuzzleState();
           },
           error: (err) => {
