@@ -162,17 +162,20 @@ export class TacticsComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Pipeline with switchMap to cancel in-flight requests on rapid clicks or route changes
     this.puzzleRequest$
       .pipe(
-        switchMap(({ theme, puzzleId }) =>
-          this.tacticsService.getDailyPuzzle(theme ?? undefined, puzzleId).pipe(
+        switchMap(({ theme, puzzleId }) => {
+          const req$ = puzzleId
+            ? this.tacticsService.getDailyPuzzle(theme ?? undefined, puzzleId)
+            : this.tacticsService.getNextPuzzle(theme ?? undefined, this.recentSessionPuzzleIds());
+
+          return req$.pipe(
             catchError((err) => {
               DevLogger.error('[Tactics] Failed to load puzzle:', err);
               return of({ error: err });
             })
-          )
-        ),
+          );
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((res: any) => {
@@ -222,6 +225,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
   currentPly = signal(0);
   currentFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
   fenError = signal<string | null>(null);
+  recentSessionPuzzleIds = signal<number[]>([]);
   puzzleStartPly = signal(0);
   isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
@@ -250,8 +254,7 @@ export class TacticsComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize')
   onResize() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const mobile = window.innerWidth < 768;
+    const mobile = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
     this.isMobile.set(mobile);
   }
 
@@ -294,6 +297,13 @@ export class TacticsComponent implements OnInit, OnDestroy {
     } catch (e) {
       DevLogger.warn('[Tactics] Failed to load puzzle FEN:', e);
     }
+
+    // Record into session buffer (capped at 20 IDs) to guarantee no immediate repeats
+    this.recentSessionPuzzleIds.update(ids => {
+      const filtered = ids.filter(id => id !== puzzle.id);
+      filtered.push(puzzle.id);
+      return filtered.slice(-20);
+    });
 
     this.currentPuzzle.set(puzzle);
     this.puzzleStartPly.set(getPlyFromFen(puzzle.fen));
@@ -338,7 +348,6 @@ export class TacticsComponent implements OnInit, OnDestroy {
             this.ratingChange.set(res.rating_change);
             this.newRating.set(res.new_rating);
             this.newStreak.set(res.new_streak);
-            this.userService.loadMyProfile().subscribe();
             this.loadHistory();
             this.exploreMode.set(true);
           },

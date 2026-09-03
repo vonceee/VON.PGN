@@ -92,6 +92,21 @@ export class TacticsService {
     return this.http.get<{ data: Puzzle }>(url);
   }
 
+  getNextPuzzle(theme?: string, excludeIds?: number[]): Observable<{ data: Puzzle }> {
+    let url = `${this.apiUrl}/tactics/next`;
+    const params: string[] = [];
+    if (theme) {
+      params.push(`theme=${theme}`);
+    }
+    if (excludeIds && excludeIds.length > 0) {
+      params.push(`exclude_ids=${excludeIds.slice(-20).join(',')}`);
+    }
+    if (params.length > 0) {
+      url += `?${params.join('&')}`;
+    }
+    return this.http.get<{ data: Puzzle }>(url);
+  }
+
   getPuzzleHistory(): Observable<{ data: PuzzleAttempt[] }> {
     return this.http.get<{ data: PuzzleAttempt[] }>(`${this.apiUrl}/tactics/history`);
   }
