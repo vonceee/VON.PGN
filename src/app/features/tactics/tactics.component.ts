@@ -25,6 +25,7 @@ import {
   TacticsStatsComponent,
   TacticsToolbarComponent,
   TacticsAnalysisComponent,
+  TacticsSkeletonComponent,
 } from './components';
 
 /**
@@ -43,6 +44,7 @@ import {
     TacticsStatsComponent,
     TacticsToolbarComponent,
     TacticsAnalysisComponent,
+    TacticsSkeletonComponent,
   ],
   templateUrl: './tactics.component.html',
   host: {

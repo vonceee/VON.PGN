@@ -1,0 +1,70 @@
+<div class="w-full h-full flex flex-col min-h-0 animate-pulse select-none">
+  <div
+    class="grid w-full max-w-[1080px] mx-auto grid-cols-1 lg:grid-cols-[1fr_400px] gap-3 lg:gap-6 xl:gap-8 h-auto lg:h-full lg:overflow-hidden">
+
+    <!-- Board Column Skeleton -->
+    <div class="flex-1 flex items-center justify-center min-h-0 min-w-0">
+      <div
+        class="board-container-parent w-full aspect-square lg:aspect-auto h-auto lg:h-full max-w-[620px] max-h-[620px] flex items-center justify-center">
+        <div
+          class="w-full aspect-square max-w-[620px] max-h-[620px] rounded-2xl bg-slate-100 border-2 border-slate-200/80 overflow-hidden shadow-xs flex flex-col">
+          <!-- 8x8 Chessboard Matrix -->
+          <div class="w-full h-full grid grid-cols-8 grid-rows-8">
+            @for (row of rows; track row) {
+              @for (col of cols; track col) {
+                <div [class]="(row + col) % 2 === 0 ? 'bg-slate-100/90' : 'bg-slate-200/60'"></div>
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Sidebar Column Skeleton -->
+    <div class="w-full lg:w-[400px] flex flex-col justify-center min-h-0">
+      <!-- Card Box -->
+      <div
+        class="w-full h-auto lg:h-[400px] max-h-[620px] mt-4 lg:mt-0 flex flex-col min-h-0 overflow-hidden border-2 border-slate-200 rounded-4xl bg-white p-4 md:p-6 justify-between gap-4">
+
+        <!-- Top Section: Rating & Turn Indicator -->
+        <div class="flex items-center justify-between w-full shrink-0">
+          <div class="flex items-center gap-4">
+            <!-- Rating placeholder -->
+            <div class="h-8 w-20 bg-slate-200 rounded-xl"></div>
+            <!-- Streak placeholder -->
+            <div class="h-8 w-14 bg-slate-100 rounded-xl"></div>
+          </div>
+          <!-- Turn indicator placeholder -->
+          <div class="flex items-center gap-2">
+            <div class="h-4 w-20 bg-slate-200/80 rounded-full"></div>
+            <div class="w-4 h-4 rounded-full bg-slate-300"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Toolbar Skeleton -->
+      <div class="mt-4 p-2 h-14 flex items-center justify-between border-2 border-slate-200 bg-white rounded-4xl w-full shrink-0 px-4">
+        <!-- History Badges Placeholder -->
+        <div class="flex items-center gap-1.5">
+          <div class="h-7 w-10 bg-slate-200/80 rounded-xl"></div>
+          <div class="h-7 w-10 bg-slate-100 rounded-xl"></div>
+          <div class="h-7 w-10 bg-slate-100 rounded-xl"></div>
+        </div>
+
+        <div class="h-4 w-px bg-slate-200 shrink-0"></div>
+
+        <!-- Move Navigation Arrows Placeholder -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-slate-100"></div>
+          <div class="w-8 h-8 rounded-full bg-slate-100"></div>
+        </div>
+
+        <div class="h-4 w-px bg-slate-200 shrink-0"></div>
+
+        <!-- Next Action Placeholder -->
+        <div class="w-8 h-8 rounded-full bg-slate-200"></div>
+      </div>
+    </div>
+
+  </div>
+</div>

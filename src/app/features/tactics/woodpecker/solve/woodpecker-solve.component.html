@@ -222,8 +222,6 @@
                   [title]="cycleCompletionPending() ? 'Finish Cycle' : 'Next Puzzle'"
                   class="p-2 rounded-full transition-colors flex items-center justify-center"
                   [class.cursor-not-allowed]="status() === 'playing' || isLoading()"
-                  [class.opacity-30]="status() === 'playing' && !isLoading()"
-                  [class.hover:bg-slate-200]="status() !== 'playing' && !isLoading()"
                   [class.cursor-pointer]="status() !== 'playing' && !isLoading()"
                   [disabled]="status() === 'playing' || isLoading()">
                   @if (isLoading()) {

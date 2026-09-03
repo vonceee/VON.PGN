@@ -48,8 +48,6 @@
         (click)="onNextPuzzleClick()"
         class="p-2 rounded-full transition-colors flex items-center justify-center"
         [class.cursor-not-allowed]="isNextDisabled()"
-        [class.opacity-30]="isNextDisabled() && !isTransitioning()"
-        [class.hover:bg-slate-200]="!isNextDisabled()"
         [class.cursor-pointer]="!isNextDisabled()"
         [disabled]="isNextDisabled()">
         @if (isTransitioning()) {
