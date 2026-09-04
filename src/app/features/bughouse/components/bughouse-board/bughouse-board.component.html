@@ -48,12 +48,16 @@
     <div class="flex items-center justify-start gap-2 py-1 w-full">
       @for (piece of getPocketKeys(); track piece) {
       <div
-        class="relative flex items-center justify-center w-9 h-9 border border-slate-200 bg-white transition-all"
+        class="relative flex items-center justify-center w-9 h-9 border border-slate-200 bg-white transition-all select-none"
         [class.opacity-40]="topPocket()[piece] === 0"
-        [class.cursor-pointer]="topPocket()[piece] > 0 && turn() === topColor() && myBoard() === boardId() && myColor() === topColor()"
+        [class.cursor-pointer]="(topPocket()[piece] > 0 && turn() === topColor() && myBoard() === boardId() && myColor() === topColor()) || (isPromoting() && myBoard() === boardId() && myColor() === topColor() && piece !== 'p' && topPocket()[piece] > 0)"
         [class.border-blue-600]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === topColor()"
         [class.bg-blue-600/10]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === topColor()"
-        (click)="myBoard() === boardId() && myColor() === topColor() && topPocket()[piece] > 0 && startDropMode.emit({ board: boardId(), piece, color: topColor() })">
+        [class.ring-2]="isPromoting() && myBoard() === boardId() && myColor() === topColor() && piece !== 'p' && topPocket()[piece] > 0"
+        [class.ring-emerald-500]="isPromoting() && myBoard() === boardId() && myColor() === topColor() && piece !== 'p' && topPocket()[piece] > 0"
+        [class.animate-pulse]="isPromoting() && myBoard() === boardId() && myColor() === topColor() && piece !== 'p' && topPocket()[piece] > 0"
+        [class.scale-105]="isPromoting() && myBoard() === boardId() && myColor() === topColor() && piece !== 'p' && topPocket()[piece] > 0"
+        (click)="onPocketPieceClick(piece, topColor())">
         <img [src]="getPocketPieceSvg(piece, topColor())"
           [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
         <span
@@ -69,7 +73,48 @@
       <app-chess-board [fen]="fen()" [orientation]="orientation()"
         [interactive]="gameActive() && !winner() && myBoard() === boardId() && turn() === myColor()"
         [hideCoordinates]="true" [resizable]="false" [fluid]="true"
+        [customPromotion]="cannibalVariant()"
+        (promotionRequested)="cannibalPromotionRequested.emit({ board: boardId(), from: $event.from, to: $event.to, color: $event.color })"
         (moveMade)="moveMade.emit($event)"></app-chess-board>
+
+
+      <!-- Plucked Piece Crossed-Out Indicator -->
+      @if (lastPluckedSquare(); as sq) {
+        <div
+          class="absolute z-30 pointer-events-none flex items-center justify-center animate-in fade-in zoom-in-75 duration-200"
+          [ngStyle]="getSquareStyle(sq)"
+        >
+          <svg
+            class="w-[72%] h-[72%] text-rose-600 stroke-rose-600 drop-shadow-md"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </div>
+      }
+
+      <!-- Pluck Overlay Grid for Cannibal Promotion Requisition -->
+      @if (isRequisitionTargetBoard()) {
+        <div class="absolute inset-0 z-40 pointer-events-none">
+          @for (sq of getGridSquares(); track sq) {
+            @if (eligiblePluckSquares()[sq]; as target) {
+              <div
+                class="absolute pluck-dest-square"
+                [ngStyle]="getSquareStyle(sq)"
+                (click)="onPluckSquareClicked(sq)"
+                [title]="'Pluck opponent ' + getPieceLabel(target.piece) + ' on ' + sq"
+              >
+                <div class="pluck-dest-disc"></div>
+              </div>
+            }
+          }
+        </div>
+      }
 
       <!-- Transparent Drop Overlay Grid -->
       @if (activeDropBoard() === boardId()) {
@@ -94,12 +139,16 @@
     <div class="flex items-center justify-start gap-2 py-1 w-full">
       @for (piece of getPocketKeys(); track piece) {
       <div
-        class="relative flex items-center justify-center w-9 h-9 border border-slate-200 bg-white transition-all"
+        class="relative flex items-center justify-center w-9 h-9 border border-slate-200 bg-white transition-all select-none"
         [class.opacity-40]="bottomPocket()[piece] === 0"
-        [class.cursor-pointer]="bottomPocket()[piece] > 0 && turn() === bottomColor() && myBoard() === boardId() && myColor() === bottomColor()"
+        [class.cursor-pointer]="(bottomPocket()[piece] > 0 && turn() === bottomColor() && myBoard() === boardId() && myColor() === bottomColor()) || (isPromoting() && myBoard() === boardId() && myColor() === bottomColor() && piece !== 'p' && bottomPocket()[piece] > 0)"
         [class.border-blue-600]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === bottomColor()"
         [class.bg-blue-600/10]="activeDropBoard() === boardId() && activeDropPiece() === piece && activeDropColor() === bottomColor()"
-        (click)="myBoard() === boardId() && myColor() === bottomColor() && bottomPocket()[piece] > 0 && startDropMode.emit({ board: boardId(), piece, color: bottomColor() })">
+        [class.ring-2]="isPromoting() && myBoard() === boardId() && myColor() === bottomColor() && piece !== 'p' && bottomPocket()[piece] > 0"
+        [class.ring-emerald-500]="isPromoting() && myBoard() === boardId() && myColor() === bottomColor() && piece !== 'p' && bottomPocket()[piece] > 0"
+        [class.animate-pulse]="isPromoting() && myBoard() === boardId() && myColor() === bottomColor() && piece !== 'p' && bottomPocket()[piece] > 0"
+        [class.scale-105]="isPromoting() && myBoard() === boardId() && myColor() === bottomColor() && piece !== 'p' && bottomPocket()[piece] > 0"
+        (click)="onPocketPieceClick(piece, bottomColor())">
         <img [src]="getPocketPieceSvg(piece, bottomColor())"
           [alt]="getPieceLabel(piece)" class="w-6 h-6 object-contain" />
         <span

@@ -17,6 +17,7 @@ import {
   LobbyPlayer,
   BughouseRecordState,
 } from '../../../core/models/bughouse.model';
+import { CannibalAvailabilityMap } from '../components/cannibal-promotion-dialog/cannibal-promotion-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -111,6 +112,21 @@ export class BughouseGameStateService {
   activeDropBoard = signal<'A' | 'B' | null>(null);
   activeDropPiece = signal<PieceType | null>(null);
   activeDropColor = signal<'w' | 'b' | null>(null);
+
+  // ── Cannibal Promotion (Piece Conservation) State ──────────────────
+  variant = signal<'cannibal' | 'standard'>('cannibal');
+  pendingCannibalPromotion = signal<{
+    board: 'A' | 'B';
+    from: string;
+    to: string;
+    color: 'w' | 'b';
+  } | null>(null);
+  lastPluckedPiece = signal<{
+    board: 'A' | 'B';
+    square?: string;
+    piece: string;
+    source: 'pocket' | 'board';
+  } | null>(null);
 
   private timerInterval: any = null;
   private lastTickTime: number = 0;
@@ -463,8 +479,221 @@ export class BughouseGameStateService {
   }
 
   private syncFens() {
-    this.boardAFen.set(this.chessA.fen());
-    this.boardBFen.set(this.chessB.fen());
+    const a = this.chessA.fen();
+    const b = this.chessB.fen();
+    this.boardAFen.set(a + ' ');
+    this.boardBFen.set(b + ' ');
+    requestAnimationFrame(() => {
+      this.boardAFen.set(a);
+      this.boardBFen.set(b);
+    });
+  }
+
+  setVariant(variant: 'cannibal' | 'standard') {
+    this.variant.set(variant);
+    const socket = this.gameService.socket();
+    const myUid = this.authService.currentUser()?.uid;
+    if (socket?.connected && this.isHost()) {
+      socket.emit('bughouse_set_variant', { variant });
+    }
+  }
+
+  computeCannibalAvailability(board: 'A' | 'B', color: 'w' | 'b'): CannibalAvailabilityMap {
+    const otherBoard = board === 'A' ? 'B' : 'A';
+    const ownPocket = board === 'A'
+      ? (color === 'w' ? this.pocketA_W() : this.pocketA_B())
+      : (color === 'w' ? this.pocketB_W() : this.pocketB_B());
+
+    const otherChess = otherBoard === 'A' ? this.chessA : this.chessB;
+    const partnerColor = color === 'w' ? 'b' : 'w';
+    // Pluck targets the opponent's piece on otherBoard (which has the SAME color as promoting pawn)
+    const targetPluckColor = color;
+    const pieces: ('q' | 'r' | 'b' | 'n')[] = ['q', 'r', 'b', 'n'];
+
+    const result: CannibalAvailabilityMap = {
+      q: { inPocket: 0, boardSquares: [], totalAvailable: 0 },
+      r: { inPocket: 0, boardSquares: [], totalAvailable: 0 },
+      b: { inPocket: 0, boardSquares: [], totalAvailable: 0 },
+      n: { inPocket: 0, boardSquares: [], totalAvailable: 0 },
+    };
+
+    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
+    for (const type of pieces) {
+      const inPocket = ownPocket[type] || 0;
+      const boardSquares: string[] = [];
+
+      for (const f of files) {
+        for (const r of ranks) {
+          const sq = f + r;
+          const p = otherChess.get(sq as any);
+          if (p && p.type === type && p.color === targetPluckColor) {
+            // Test if removing sq leaves either King in check
+            const testClone = new Chess(otherChess.fen());
+            testClone.remove(sq as any);
+            const parts = testClone.fen().split(' ');
+            parts[3] = '-';
+            try {
+              parts[1] = targetPluckColor;
+              const checkTestOpponent = new Chess(parts.join(' '));
+              parts[1] = partnerColor;
+              const checkTestPartner = new Chess(parts.join(' '));
+              if (!checkTestOpponent.inCheck() && !checkTestPartner.inCheck()) {
+                boardSquares.push(sq);
+              }
+            } catch {
+              // Ignore invalid FEN
+            }
+          }
+        }
+      }
+
+      result[type] = {
+        inPocket,
+        boardSquares,
+        totalAvailable: inPocket + boardSquares.length,
+      };
+    }
+
+    return result;
+  }
+
+  confirmCannibalPromotion(
+    pieceType: 'q' | 'r' | 'b' | 'n',
+    requisition?: { source: 'pocket' | 'board'; square?: string }
+  ) {
+    const pending = this.pendingCannibalPromotion();
+    if (!pending) return;
+
+    const { board, from, to } = pending;
+    const chess = board === 'A' ? this.chessA : this.chessB;
+
+    try {
+      // Test-validate promotion move without permanently mutating local board yet
+      const testClone = new Chess(chess.fen());
+      const move = testClone.move({ from: from as any, to: to as any, promotion: pieceType as any });
+      if (!move) return;
+
+      const socket = this.gameService.socket();
+      const gId = this.gameId();
+      if (socket?.connected && gId) {
+        socket.emit('bughouse_move', {
+          gameId: gId,
+          board,
+          move: {
+            from,
+            to,
+            san: move.san,
+            flags: move.flags,
+            color: move.color,
+            captured: move.captured ?? null,
+            promotion: pieceType,
+          },
+          fen: testClone.fen(),
+          requisition: {
+            source: requisition?.source,
+            targetBoard: board === 'A' ? 'B' : 'A',
+            square: requisition?.square,
+            expectedPiece: pieceType,
+          },
+        });
+      }
+      // NOTE: We deliberately keep pendingCannibalPromotion active.
+      // If the target moved on the other board, the server sends 'bughouse_requisition_stale'
+      // which seamlessly refreshes the other board while keeping this promotion prompt open!
+      // When the move succeeds, handleMoveBroadcast will clear pendingCannibalPromotion.
+    } catch (e) {
+      console.error('Failed to submit cannibal promotion move:', e);
+      this.cancelCannibalPromotion();
+    }
+  }
+
+  cancelCannibalPromotion() {
+    this.pendingCannibalPromotion.set(null);
+    this.syncFens();
+  }
+
+  /**
+   * Computed map of legal squares on the other board that can be plucked for a pending promotion.
+   * Key: square string (e.g. 'd1'), Value: { piece: 'q'|'r'|'b'|'n', square: string }
+   */
+  eligiblePluckSquares = computed<Record<string, { piece: 'q' | 'r' | 'b' | 'n'; square: string }>>(() => {
+    const pending = this.pendingCannibalPromotion();
+    if (!pending) return {};
+
+    const { board, color } = pending;
+    const otherBoard = board === 'A' ? 'B' : 'A';
+    // Reactive signal dependency: re-evaluates automatically whenever the other board's FEN changes!
+    const otherFen = otherBoard === 'A' ? this.boardAFen() : this.boardBFen();
+    const partnerColor = color === 'w' ? 'b' : 'w';
+    const targetPluckColor = color;
+    const pieceTypes: ('q' | 'r' | 'b' | 'n')[] = ['q', 'r', 'b', 'n'];
+
+    const squaresMap: Record<string, { piece: 'q' | 'r' | 'b' | 'n'; square: string }> = {};
+    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    const ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
+    let otherChess: Chess;
+    try {
+      otherChess = new Chess(otherFen);
+    } catch {
+      otherChess = otherBoard === 'A' ? this.chessA : this.chessB;
+    }
+
+    for (const f of files) {
+      for (const r of ranks) {
+        const sq = f + r;
+        const p = otherChess.get(sq as any);
+        if (p && pieceTypes.includes(p.type as any) && p.color === targetPluckColor) {
+          const testClone = new Chess(otherChess.fen());
+          testClone.remove(sq as any);
+          const parts = testClone.fen().split(' ');
+          parts[3] = '-';
+          try {
+            parts[1] = targetPluckColor;
+            const checkTestOpponent = new Chess(parts.join(' '));
+            parts[1] = partnerColor;
+            const checkTestPartner = new Chess(parts.join(' '));
+            if (!checkTestOpponent.inCheck() && !checkTestPartner.inCheck()) {
+              squaresMap[sq] = { piece: p.type as any, square: sq };
+            }
+          } catch {
+            // Ignore invalid FEN
+          }
+        }
+      }
+    }
+
+    return squaresMap;
+  });
+
+  onPluckSquareClicked(board: 'A' | 'B', square: string) {
+    const pending = this.pendingCannibalPromotion();
+    if (!pending) return;
+
+    const targetBoard = pending.board === 'A' ? 'B' : 'A';
+    if (board !== targetBoard) return;
+
+    const target = this.eligiblePluckSquares()[square];
+    if (target) {
+      this.confirmCannibalPromotion(target.piece, { source: 'board', square });
+    }
+  }
+
+  onPocketPieceSelectedForPromotion(piece: PieceType) {
+    const pending = this.pendingCannibalPromotion();
+    if (!pending) return;
+
+    if (['q', 'r', 'b', 'n'].includes(piece)) {
+      const ownPocket = pending.board === 'A'
+        ? (pending.color === 'w' ? this.pocketA_W() : this.pocketA_B())
+        : (pending.color === 'w' ? this.pocketB_W() : this.pocketB_B());
+
+      if (ownPocket[piece] > 0) {
+        this.confirmCannibalPromotion(piece as any, { source: 'pocket' });
+      }
+    }
   }
 
   startDropMode(board: 'A' | 'B', piece: PieceType, color: 'w' | 'b') {
@@ -765,6 +994,10 @@ export class BughouseGameStateService {
         }
       }
 
+      if (lobby.variant) {
+        this.variant.set(lobby.variant);
+      }
+
       if (lobby.status === 'waiting') {
         if (this.lobbyState() !== 'playing') {
           this.lobbyState.set('lobby');
@@ -833,6 +1066,9 @@ export class BughouseGameStateService {
         }
 
         this.gameId.set(data.gameId);
+        if (data.variant) {
+          this.variant.set(data.variant);
+        }
 
         const colorsMap: Record<string, { board: string; color: string }> = data.colors ?? {};
         let bAW = '';
@@ -904,26 +1140,100 @@ export class BughouseGameStateService {
     });
   };
 
+  private handleRequisitionStale = (data: any) => {
+    this.ngZone.run(() => {
+      if (data.gameId !== this.gameId()) return;
+
+      const targetBoard = data.targetBoard || (data.board === 'A' ? 'B' : 'A');
+      const freshFen = data.freshFen || (targetBoard === 'A' ? data.fenA : data.fenB);
+
+      // 1. Instantly refresh the other board with the authoritative fresh FEN
+      if (targetBoard === 'B') {
+        this.chessB.load(freshFen);
+        this.boardBFen.set(freshFen);
+      } else {
+        this.chessA.load(freshFen);
+        this.boardAFen.set(freshFen);
+      }
+
+      // 2. Refresh pockets if provided
+      if (data.pockets) {
+        this.pocketA_W.set({ ...data.pockets.A_W });
+        this.pocketA_B.set({ ...data.pockets.A_B });
+        this.pocketB_W.set({ ...data.pockets.B_W });
+        this.pocketB_B.set({ ...data.pockets.B_B });
+      }
+
+      // 3. Keep pawn staged on 8th rank! (pendingCannibalPromotion is NOT cleared)
+    });
+  };
+
   private handleMoveBroadcast = (data: any) => {
     this.ngZone.run(() => {
       if (data.gameId === this.gameId()) {
         const myUid = String(this.authService.currentUser()?.uid);
         const isMyMove = data.senderId === myUid;
 
-        if (data.board === 'A') {
-          this.chessA.load(data.fen);
-          this.boardAFen.set(data.fen);
-        } else {
-          this.chessB.load(data.fen);
-          this.boardBFen.set(data.fen);
+        if (data.senderId === 'server_rollback') {
+          this.pendingCannibalPromotion.set(null);
+          this.syncFens();
+          return;
         }
 
-        this.pocketA_W.set({ ...data.pockets.A_W });
-        this.pocketA_B.set({ ...data.pockets.A_B });
-        this.pocketB_W.set({ ...data.pockets.B_W });
-        this.pocketB_B.set({ ...data.pockets.B_B });
+        const pending = this.pendingCannibalPromotion();
+        const isMyPromotionFinished = pending && (data.board === pending.board) && (!!data.plucked || !!data.move?.promotion);
 
-        if (!isMyMove) {
+        if (isMyPromotionFinished) {
+          this.pendingCannibalPromotion.set(null);
+        }
+
+        if (data.fenA && data.fenB) {
+          // If my board has a pending promotion staged and this broadcast was a move on the OTHER board,
+          // only update the other board so we don't snap the staged pawn back
+          if (pending && pending.board === 'A' && data.board === 'B') {
+            this.chessB.load(data.fenB);
+            this.boardBFen.set(data.fenB);
+          } else if (pending && pending.board === 'B' && data.board === 'A') {
+            this.chessA.load(data.fenA);
+            this.boardAFen.set(data.fenA);
+          } else {
+            this.chessA.load(data.fenA);
+            this.chessB.load(data.fenB);
+            this.boardAFen.set(data.fenA);
+            this.boardBFen.set(data.fenB);
+          }
+        } else if (data.board === 'A') {
+          if (!pending || pending.board !== 'A') {
+            this.chessA.load(data.fen);
+            this.boardAFen.set(data.fen);
+          }
+        } else {
+          if (!pending || pending.board !== 'B') {
+            this.chessB.load(data.fen);
+            this.boardBFen.set(data.fen);
+          }
+        }
+
+        if (data.pockets) {
+          this.pocketA_W.set({ ...data.pockets.A_W });
+          this.pocketA_B.set({ ...data.pockets.A_B });
+          this.pocketB_W.set({ ...data.pockets.B_W });
+          this.pocketB_B.set({ ...data.pockets.B_B });
+        }
+
+        if (data.plucked) {
+          this.lastPluckedPiece.set(data.plucked);
+
+          setTimeout(() => {
+            this.ngZone.run(() => {
+              if (this.lastPluckedPiece() === data.plucked) {
+                this.lastPluckedPiece.set(null);
+              }
+            });
+          }, 3500);
+        }
+
+        if ((!isMyMove || isMyPromotionFinished) && data.move) {
           this.audioService.playChessMove({ san: data.move.san, flags: data.move.flags ?? 'n' });
         }
 
@@ -1010,6 +1320,7 @@ export class BughouseGameStateService {
     socket.on('bughouse_matched', this.handleMatched);
     socket.on('bughouse_game_start', this.handleGameStart);
     socket.on('bughouse_move_broadcast', this.handleMoveBroadcast);
+    socket.on('bughouse_requisition_stale', this.handleRequisitionStale);
     socket.on('bughouse_clock_tick', this.handleClockTick);
     socket.on('bughouse_game_over', this.handleGameOver);
     socket.on('bughouse_opponent_disconnected', this.handleOpponentDisconnected);
@@ -1030,6 +1341,7 @@ export class BughouseGameStateService {
     socket.off('bughouse_matched', this.handleMatched);
     socket.off('bughouse_game_start', this.handleGameStart);
     socket.off('bughouse_move_broadcast', this.handleMoveBroadcast);
+    socket.off('bughouse_requisition_stale', this.handleRequisitionStale);
     socket.off('bughouse_clock_tick', this.handleClockTick);
     socket.off('bughouse_game_over', this.handleGameOver);
     socket.off('bughouse_opponent_disconnected', this.handleOpponentDisconnected);

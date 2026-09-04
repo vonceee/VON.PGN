@@ -8,3 +8,19 @@ app-chess-board {
   width: 100%;
   height: 100%;
 }
+
+.pluck-dest-square {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.pluck-dest-disc {
+  width: 88%;
+  height: 88%;
+  border-radius: 9999px;
+  background-color: rgba(20, 85, 30, 0.48);
+  pointer-events: none;
+}

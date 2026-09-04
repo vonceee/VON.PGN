@@ -22,6 +22,14 @@
         [activeDropBoard]="gameStateService.activeDropBoard()"
         [activeDropPiece]="gameStateService.activeDropPiece()"
         [activeDropColor]="gameStateService.activeDropColor()"
+        [cannibalVariant]="gameStateService.variant() === 'cannibal'"
+        [lastPluckedSquare]="gameStateService.lastPluckedPiece()?.board === 'A' ? (gameStateService.lastPluckedPiece()?.square || null) : null"
+        [isPromoting]="gameStateService.pendingCannibalPromotion()?.board === 'A'"
+        [isRequisitionTargetBoard]="gameStateService.pendingCannibalPromotion()?.board === 'B'"
+        [eligiblePluckSquares]="gameStateService.pendingCannibalPromotion()?.board === 'B' ? gameStateService.eligiblePluckSquares() : {}"
+        (cannibalPromotionRequested)="gameStateService.pendingCannibalPromotion.set($event)"
+        (pocketPieceSelectedForPromotion)="gameStateService.onPocketPieceSelectedForPromotion($event)"
+        (pluckSquareClicked)="gameStateService.onPluckSquareClicked($event.board, $event.square)"
         (moveMade)="gameStateService.onBoardMoveMade('A', $event)"
         (startDropMode)="gameStateService.startDropMode($event.board, $event.piece, $event.color)"
         (pieceDropped)="gameStateService.onGridSquareClicked($event.board, $event.square)"
@@ -49,6 +57,14 @@
         [activeDropBoard]="gameStateService.activeDropBoard()"
         [activeDropPiece]="gameStateService.activeDropPiece()"
         [activeDropColor]="gameStateService.activeDropColor()"
+        [cannibalVariant]="gameStateService.variant() === 'cannibal'"
+        [lastPluckedSquare]="gameStateService.lastPluckedPiece()?.board === 'B' ? (gameStateService.lastPluckedPiece()?.square || null) : null"
+        [isPromoting]="gameStateService.pendingCannibalPromotion()?.board === 'B'"
+        [isRequisitionTargetBoard]="gameStateService.pendingCannibalPromotion()?.board === 'A'"
+        [eligiblePluckSquares]="gameStateService.pendingCannibalPromotion()?.board === 'A' ? gameStateService.eligiblePluckSquares() : {}"
+        (cannibalPromotionRequested)="gameStateService.pendingCannibalPromotion.set($event)"
+        (pocketPieceSelectedForPromotion)="gameStateService.onPocketPieceSelectedForPromotion($event)"
+        (pluckSquareClicked)="gameStateService.onPluckSquareClicked($event.board, $event.square)"
         (moveMade)="gameStateService.onBoardMoveMade('B', $event)"
         (startDropMode)="gameStateService.startDropMode($event.board, $event.piece, $event.color)"
         (pieceDropped)="gameStateService.onGridSquareClicked($event.board, $event.square)"
@@ -71,4 +87,6 @@
         (offerDraw)="gameStateService.offerDraw()"
       ></app-bughouse-sidebar>
     </div>
+
 </div>
+

@@ -35,9 +35,19 @@ export class BughouseBoardComponent {
   activeDropPiece = input.required<PieceType | null>();
   activeDropColor = input.required<'w' | 'b' | null>();
 
+  cannibalVariant = input<boolean>(true);
+  lastPluckedSquare = input<string | null>(null);
+
+  isPromoting = input<boolean>(false);
+  isRequisitionTargetBoard = input<boolean>(false);
+  eligiblePluckSquares = input<Record<string, { piece: string; square: string }>>({});
+
   moveMade = output<{ move: Move; fen: string; uci?: string }>();
   startDropMode = output<{ board: 'A' | 'B'; piece: PieceType; color: 'w' | 'b' }>();
   pieceDropped = output<{ board: 'A' | 'B'; square: string; piece: PieceType; color: 'w' | 'b' }>();
+  cannibalPromotionRequested = output<{ board: 'A' | 'B'; from: string; to: string; color: 'w' | 'b' }>();
+  pocketPieceSelectedForPromotion = output<PieceType>();
+  pluckSquareClicked = output<{ board: 'A' | 'B'; square: string }>();
 
   private chess = new Chess();
 
@@ -143,5 +153,47 @@ export class BughouseBoardComponent {
       piece: this.activeDropPiece()!,
       color: this.activeDropColor()!,
     });
+  }
+
+  onPocketPieceClick(piece: PieceType, color: 'w' | 'b') {
+    if (this.myBoard() !== this.boardId() || this.myColor() !== color) return;
+    const pocket = color === this.bottomColor() ? this.bottomPocket() : this.topPocket();
+    if (pocket[piece] <= 0) return;
+
+    if (this.isPromoting() && piece !== 'p') {
+      this.pocketPieceSelectedForPromotion.emit(piece);
+      return;
+    }
+
+    if (this.turn() === color) {
+      this.startDropMode.emit({ board: this.boardId(), piece, color });
+    }
+  }
+
+  onPluckSquareClicked(square: string) {
+    if (!this.isRequisitionTargetBoard()) return;
+    if (this.eligiblePluckSquares()[square]) {
+      this.pluckSquareClicked.emit({ board: this.boardId(), square });
+    }
+  }
+
+  getSquareStyle(square: string) {
+    if (!square || square.length < 2) return {};
+    const file = square.charCodeAt(0) - 97;
+    const rank = parseInt(square[1], 10) - 1;
+    let left, top;
+    if (this.orientation() === 'white') {
+      left = file * 12.5;
+      top = (7 - rank) * 12.5;
+    } else {
+      left = (7 - file) * 12.5;
+      top = rank * 12.5;
+    }
+    return {
+      left: `${left}%`,
+      top: `${top}%`,
+      width: '12.5%',
+      height: '12.5%',
+    };
   }
 }

@@ -214,10 +214,12 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   @Input() fluid: boolean = false;
   @Input() lastMove: Key[] | undefined = undefined;
   @Input() layoutColumnsWidth?: number;
+  @Input() customPromotion: boolean = false;
   glyphs = input<{ square: string; symbol: string; class: string }[]>([]);
 
   @Output() fenChange = new EventEmitter<string>();
   @Output() moveMade = new EventEmitter<{ move: Move; fen: string; uci: string }>();
+  @Output() promotionRequested = new EventEmitter<{ from: Key; to: Key; color: 'w' | 'b' }>();
   @Output() sizeChange = new EventEmitter<number>();
   @Output() shapeDrawn = new EventEmitter<any[]>();
   @Output() preMoveCancelled = new EventEmitter<void>();
@@ -644,6 +646,10 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   private onMove(orig: Key, dest: Key, meta?: MoveMetadata) {
     if (meta?.premove && this.chess.turn() !== this.orientation[0]) return;
     if (this.isPromotionMove(orig, dest)) {
+      if (this.customPromotion) {
+        this.promotionRequested.emit({ from: orig, to: dest, color: this.chess.turn() });
+        return;
+      }
       this.pendingPromotion.set({ from: orig, to: dest, color: this.chess.turn() });
       return;
     }
