@@ -25,6 +25,7 @@ export class BughouseSidebarComponent {
 
   // Outputs
   offerRematch = output<void>();
+  cancelRematchOffer = output<void>();
   declineRematch = output<void>();
   startQueue = output<void>();
   resign = output<void>();

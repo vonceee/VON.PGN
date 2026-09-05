@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed, effect, untracked, NgZone, PLATFORM_ID } from '@angular/core';
+import { Injectable, inject, signal, computed, effect, untracked, NgZone, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Chess, Move } from 'chess.js';
@@ -22,7 +22,7 @@ import { CannibalAvailabilityMap } from '../components/cannibal-promotion-dialog
 @Injectable({
   providedIn: 'root',
 })
-export class BughouseGameStateService {
+export class BughouseGameStateService implements OnDestroy {
   private audioService = inject(AudioService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
@@ -78,6 +78,13 @@ export class BughouseGameStateService {
 
   rematchOffers = signal<string[]>([]);
   rematchDeclined = signal<boolean>(false);
+  rematchCooldown = signal<boolean>(false);
+  cooldownRemainingSecs = signal<number>(0);
+  seriesRound = signal<number>(1);
+  seriesScore = signal<{ [lobbyId: string]: number }>({});
+  nextGameId = signal<string | null>(null);
+  private rematchCooldownTimeout: any = null;
+  private cooldownInterval: any = null;
 
   chessA = new Chess();
   chessB = new Chess();
@@ -131,31 +138,74 @@ export class BughouseGameStateService {
   private timerInterval: any = null;
   private lastTickTime: number = 0;
 
+  // AI-GENERATED WORKAROUND: Robust team lobby ID and rematch offer detection.
+  // WHY: Matchmaker associates rematches by captain lobbyId. Resolving myTeamLobbyId via teamsState
+  // guarantees both captain and partner (on Team A or Team B) accurately detect when their team or
+  // the opposing team offered rematch, even if partner() signal is not populated on game over.
   myTeamLobbyId = computed(() => {
-    const myUid = this.authService.currentUser()?.uid;
+    const user = this.authService.currentUser();
+    const myUid = String(user?.uid || user?.id || '');
     if (!myUid) return null;
-    return this.isHost() ? String(myUid) : (this.partner()?.uid ? String(this.partner()?.uid) : null);
+
+    // A team captain's lobby ID in Lila / matchmaker is their own user ID
+    if (this.isCaptain()) return myUid;
+
+    const teamA = this.teamsState()?.teamA;
+    const teamB = this.teamsState()?.teamB;
+    const isTeamA = String(teamA?.captain?.id) === myUid || String(teamA?.partner?.id) === myUid;
+    const isTeamB = String(teamB?.captain?.id) === myUid || String(teamB?.partner?.id) === myUid;
+
+    if (isTeamA && teamA?.captain?.id) return String(teamA.captain.id);
+    if (isTeamB && teamB?.captain?.id) return String(teamB.captain.id);
+    return this.isHost() ? myUid : (this.partner()?.uid ? String(this.partner()?.uid) : null);
   });
 
   hasMyTeamOfferedRematch = computed(() => {
     const myLobbyId = this.myTeamLobbyId();
-    if (!myLobbyId) return false;
-    return this.rematchOffers().includes(myLobbyId);
+    const user = this.authService.currentUser();
+    const myUid = String(user?.uid || user?.id || '');
+    const offers = this.rematchOffers().map(String);
+    if (offers.length === 0) return false;
+    if (myLobbyId && offers.includes(String(myLobbyId))) return true;
+    if (myUid && offers.includes(String(myUid))) return true;
+    return false;
   });
 
   hasOpponentTeamOfferedRematch = computed(() => {
     const myLobbyId = this.myTeamLobbyId();
-    if (!myLobbyId) return false;
-    return this.rematchOffers().some(id => id !== myLobbyId);
+    const user = this.authService.currentUser();
+    const myUid = String(user?.uid || user?.id || '');
+    const offers = this.rematchOffers().map(String);
+    if (offers.length === 0) return false;
+    return offers.some(id => id !== String(myLobbyId) && id !== String(myUid));
+  });
+
+  isCaptain = computed(() => {
+    const user = this.authService.currentUser();
+    const myUid = String(user?.uid || user?.id || '');
+    if (!myUid) return this.isHost();
+
+    const teamA = this.teamsState()?.teamA;
+    const teamB = this.teamsState()?.teamB;
+
+    if (teamA && String(teamA.captain?.id) === myUid) return true;
+    if (teamB && String(teamB.captain?.id) === myUid) return true;
+
+    return this.isHost();
   });
 
   gameOverState = computed<BughouseGameOverState>(() => ({
     winner: this.winner(),
     gameEndReason: this.gameEndReason(),
     rematchDeclined: this.rematchDeclined(),
+    rematchCooldown: this.rematchCooldown(),
+    cooldownRemainingSecs: this.cooldownRemainingSecs(),
     rematchOffers: this.rematchOffers(),
     hasMyTeamOfferedRematch: this.hasMyTeamOfferedRematch(),
     hasOpponentTeamOfferedRematch: this.hasOpponentTeamOfferedRematch(),
+    seriesRound: this.seriesRound(),
+    nextGameId: this.nextGameId(),
+    isCaptain: this.isCaptain(),
   }));
 
   constructor() {
@@ -278,8 +328,19 @@ export class BughouseGameStateService {
 
     this.cancelDropMode();
     this.syncBoardOrientations();
+    if (this.rematchCooldownTimeout) {
+      clearTimeout(this.rematchCooldownTimeout);
+      this.rematchCooldownTimeout = null;
+    }
+    if (this.cooldownInterval) {
+      clearInterval(this.cooldownInterval);
+      this.cooldownInterval = null;
+    }
     this.rematchOffers.set([]);
     this.rematchDeclined.set(false);
+    this.rematchCooldown.set(false);
+    this.cooldownRemainingSecs.set(0);
+    this.nextGameId.set(null);
     this.activeSidebarTab.set('players');
   }
 
@@ -812,23 +873,81 @@ export class BughouseGameStateService {
     this.cancelDropMode();
   }
 
-  offerRematch() {
+  rematchYes() {
+    if (!this.isCaptain()) {
+      this.showNotification('Only team captains can offer or accept a rematch.', 'info');
+      return;
+    }
+    if (this.rematchCooldown()) return;
+
+    // Start 60s cooldown immediately to disable the rematch button and prevent repeated clicks
+    this.startCooldownCountdown(Date.now() + 60000);
+
+    // Optimistically update local offer state for instant 0ms UI feedback
+    const myLobbyId = this.myTeamLobbyId() || String(this.authService.currentUser()?.uid || '');
+    if (myLobbyId) {
+      this.rematchOffers.update((offers) => {
+        const list = offers.map(String);
+        if (!list.includes(String(myLobbyId))) {
+          return [...list, String(myLobbyId)];
+        }
+        return list;
+      });
+    }
+
     const socket = this.gameService.socket();
     const gId = this.gameId();
     if (socket?.connected && gId) {
-      socket.emit('bughouse_offer_rematch', { gameId: gId });
+      socket.emit('bughouse_rematch_yes', { gameId: gId });
     }
+  }
+
+  rematchNo() {
+    if (!this.isCaptain()) {
+      this.showNotification('Only team captains can decline or cancel a rematch.', 'info');
+      return;
+    }
+
+    // Stop active cooldown interval if offer is cancelled
+    if (this.cooldownInterval) {
+      clearInterval(this.cooldownInterval);
+      this.cooldownInterval = null;
+    }
+    if (this.rematchCooldownTimeout) {
+      clearTimeout(this.rematchCooldownTimeout);
+      this.rematchCooldownTimeout = null;
+    }
+    this.rematchCooldown.set(false);
+    this.cooldownRemainingSecs.set(0);
+
+    // Optimistically remove local offer state
+    const myLobbyId = this.myTeamLobbyId() || String(this.authService.currentUser()?.uid || '');
+    if (myLobbyId) {
+      this.rematchOffers.update((offers) => offers.filter((id) => String(id) !== String(myLobbyId)));
+    }
+
+    const socket = this.gameService.socket();
+    const gId = this.gameId();
+    if (socket?.connected && gId) {
+      socket.emit('bughouse_rematch_no', { gameId: gId });
+    }
+  }
+
+  // Backward-compatible aliases
+  offerRematch() {
+    this.rematchYes();
+  }
+
+  cancelRematchOffer() {
+    this.rematchNo();
   }
 
   declineRematch() {
-    const socket = this.gameService.socket();
-    const gId = this.gameId();
-    if (socket?.connected && gId) {
-      socket.emit('bughouse_decline_rematch', { gameId: gId });
-    }
+    this.rematchNo();
   }
 
   resign() {
+    if (!this.isHost()) return;
     const socket = this.gameService.socket();
     const gId = this.gameId();
     if (socket?.connected && gId) {
@@ -837,10 +956,12 @@ export class BughouseGameStateService {
   }
 
   offerDraw() {
+    if (!this.isHost()) return;
     const socket = this.gameService.socket();
     const gId = this.gameId();
     if (socket?.connected && gId) {
       socket.emit('bughouse_offer_draw', { gameId: gId });
+      this.showNotification('Draw offer sent to opponent captain.', 'info');
     }
   }
 
@@ -1134,6 +1255,22 @@ export class BughouseGameStateService {
           this.movesLog.set([]);
         }
 
+        if (data.seriesRound) {
+          this.seriesRound.set(data.seriesRound);
+        }
+        if (data.seriesScore) {
+          this.seriesScore.set(data.seriesScore);
+        }
+        this.nextGameId.set(null);
+        this.rematchOffers.set([]);
+        this.rematchDeclined.set(false);
+        this.rematchCooldown.set(false);
+        this.cooldownRemainingSecs.set(0);
+        if (this.cooldownInterval) {
+          clearInterval(this.cooldownInterval);
+          this.cooldownInterval = null;
+        }
+
         this.gameActive.set(true);
         this.startClocks();
       }
@@ -1271,9 +1408,49 @@ export class BughouseGameStateService {
     });
   };
 
+  private startCooldownCountdown(cooldownUntilMs: number) {
+    if (this.rematchCooldownTimeout) {
+      clearTimeout(this.rematchCooldownTimeout);
+      this.rematchCooldownTimeout = null;
+    }
+    if (this.cooldownInterval) {
+      clearInterval(this.cooldownInterval);
+      this.cooldownInterval = null;
+    }
+
+    const updateSecs = () => {
+      const remaining = Math.max(0, Math.ceil((cooldownUntilMs - Date.now()) / 1000));
+      this.cooldownRemainingSecs.set(remaining);
+      if (remaining <= 0) {
+        if (this.cooldownInterval) {
+          clearInterval(this.cooldownInterval);
+          this.cooldownInterval = null;
+        }
+        this.rematchCooldown.set(false);
+        this.rematchDeclined.set(false);
+        const myLobbyId = this.myTeamLobbyId() || String(this.authService.currentUser()?.uid || '');
+        if (myLobbyId) {
+          this.rematchOffers.update((offers) => offers.filter((id) => String(id) !== String(myLobbyId)));
+        }
+      }
+    };
+
+    this.rematchCooldown.set(true);
+    updateSecs();
+
+    this.cooldownInterval = setInterval(() => {
+      this.ngZone.run(updateSecs);
+    }, 1000);
+  }
+
   private handleGameOver = (data: any) => {
     this.ngZone.run(() => {
       if (!data.gameId || data.gameId === this.gameId()) {
+        if (data.seriesRound) this.seriesRound.set(data.seriesRound);
+        if (data.seriesScore) this.seriesScore.set(data.seriesScore);
+        if (data.cooldownUntil && data.cooldownUntil > Date.now()) {
+          this.startCooldownCountdown(data.cooldownUntil);
+        }
         this.endGame(data.winner, data.reason);
       }
     });
@@ -1288,22 +1465,105 @@ export class BughouseGameStateService {
   private handleBughouseError = (errorMsg: string) => {
     this.ngZone.run(() => {
       this.showNotification(errorMsg, 'error');
+      // Rollback optimistic offer if rejected by server
+      if (errorMsg.includes('wait') || errorMsg.includes('rate-limited') || errorMsg.includes('offline') || errorMsg.includes('expired')) {
+        const myLobbyId = this.myTeamLobbyId() || String(this.authService.currentUser()?.uid || '');
+        if (myLobbyId) {
+          this.rematchOffers.update((offers) => offers.filter((id) => String(id) !== String(myLobbyId)));
+        }
+        if (errorMsg.includes('offline') || errorMsg.includes('expired')) {
+          if (this.cooldownInterval) {
+            clearInterval(this.cooldownInterval);
+            this.cooldownInterval = null;
+          }
+          this.rematchCooldown.set(false);
+          this.cooldownRemainingSecs.set(0);
+        }
+      }
     });
   };
 
   private handleRematchStatus = (data: any) => {
     this.ngZone.run(() => {
-      if (data.gameId === this.gameId()) {
-        this.rematchOffers.set(data.offers);
+      console.log('[Bughouse] Received bughouse_rematch_status:', data, 'Current gameId:', this.gameId());
+      if (!data) return;
+      if (!this.gameId() || data.gameId === this.gameId() || this.winner()) {
+        if (data.gameId && (!this.gameId() || this.winner())) this.gameId.set(data.gameId);
+        this.rematchOffers.set((data.offers || []).map(String));
+        if (data.seriesRound) this.seriesRound.set(data.seriesRound);
+        const myLobbyId = this.myTeamLobbyId() || String(this.authService.currentUser()?.uid || '');
+        const isMyTeamInOffers = myLobbyId && (data.offers || []).map(String).includes(String(myLobbyId));
+        if (isMyTeamInOffers && !this.rematchCooldown()) {
+          this.startCooldownCountdown(Date.now() + 60000);
+        }
       }
     });
   };
 
   private handleRematchCancelled = (data: any) => {
     this.ngZone.run(() => {
-      if (data.gameId === this.gameId()) {
-        this.rematchDeclined.set(true);
+      console.log('[Bughouse] Received bughouse_rematch_cancelled:', data);
+      if (!this.gameId() || data?.gameId === this.gameId() || this.winner()) {
         this.rematchOffers.set([]);
+        if (data?.reason === 'lobby_left') {
+          this.showNotification('Opponent lobby left the match.', 'info');
+        } else if (data?.reason === 'declined') {
+          this.rematchDeclined.set(true);
+        } else if (data?.reason === 'cancelled_by_team') {
+          if (this.cooldownInterval) {
+            clearInterval(this.cooldownInterval);
+            this.cooldownInterval = null;
+          }
+          this.rematchCooldown.set(false);
+          this.cooldownRemainingSecs.set(0);
+        }
+      }
+    });
+  };
+
+  private handleRematchDeclined = (data: any) => {
+    this.ngZone.run(() => {
+      console.log('[Bughouse] Received bughouse_rematch_declined:', data);
+      if (!this.gameId() || data?.gameId === this.gameId() || this.winner()) {
+        this.rematchOffers.set([]);
+        this.rematchDeclined.set(true);
+        const cooldownUntil = data?.cooldownUntil || (Date.now() + (data?.cooldownMs || 60000));
+        this.startCooldownCountdown(cooldownUntil);
+      }
+    });
+  };
+
+  private handleRematchOfferExpired = (data: any) => {
+    this.ngZone.run(() => {
+      console.log('[Bughouse] Received bughouse_rematch_offer_expired:', data);
+      if (!this.gameId() || data?.gameId === this.gameId() || this.winner()) {
+        this.rematchOffers.set([]);
+        this.rematchDeclined.set(false);
+        this.rematchCooldown.set(false);
+        this.cooldownRemainingSecs.set(0);
+        if (this.cooldownInterval) {
+          clearInterval(this.cooldownInterval);
+          this.cooldownInterval = null;
+        }
+      }
+    });
+  };
+
+  private handleRematchTaken = (data: any) => {
+    this.ngZone.run(() => {
+      console.log('[Bughouse] Received bughouse_rematch_taken:', data);
+      if (!this.gameId() || data?.prevGameId === this.gameId() || this.winner()) {
+        this.nextGameId.set(data?.nextGameId);
+        if (data?.seriesRound) this.seriesRound.set(data.seriesRound);
+        if (data?.seriesScore) this.seriesScore.set(data.seriesScore);
+      }
+    });
+  };
+
+  private handleDrawOffered = (data: any) => {
+    this.ngZone.run(() => {
+      if (data.gameId === this.gameId() && this.isHost()) {
+        this.showNotification(`${data.offeredBy || 'Opponent captain'} offered a draw.`, 'info');
       }
     });
   };
@@ -1325,8 +1585,12 @@ export class BughouseGameStateService {
     socket.on('bughouse_game_over', this.handleGameOver);
     socket.on('bughouse_opponent_disconnected', this.handleOpponentDisconnected);
     socket.on('bughouse_error', this.handleBughouseError);
+    socket.on('bughouse_draw_offered', this.handleDrawOffered);
     socket.on('bughouse_rematch_status', this.handleRematchStatus);
     socket.on('bughouse_rematch_cancelled', this.handleRematchCancelled);
+    socket.on('bughouse_rematch_declined', this.handleRematchDeclined);
+    socket.on('bughouse_rematch_offer_expired', this.handleRematchOfferExpired);
+    socket.on('bughouse_rematch_taken', this.handleRematchTaken);
 
     socket.emit('bughouse_join');
   }
@@ -1346,7 +1610,24 @@ export class BughouseGameStateService {
     socket.off('bughouse_game_over', this.handleGameOver);
     socket.off('bughouse_opponent_disconnected', this.handleOpponentDisconnected);
     socket.off('bughouse_error', this.handleBughouseError);
+    socket.off('bughouse_draw_offered', this.handleDrawOffered);
     socket.off('bughouse_rematch_status', this.handleRematchStatus);
     socket.off('bughouse_rematch_cancelled', this.handleRematchCancelled);
+    socket.off('bughouse_rematch_declined', this.handleRematchDeclined);
+    socket.off('bughouse_rematch_offer_expired', this.handleRematchOfferExpired);
+    socket.off('bughouse_rematch_taken', this.handleRematchTaken);
+  }
+
+  ngOnDestroy() {
+    this.removeSocketListeners();
+    if (this.rematchCooldownTimeout) {
+      clearTimeout(this.rematchCooldownTimeout);
+      this.rematchCooldownTimeout = null;
+    }
+    if (this.cooldownInterval) {
+      clearInterval(this.cooldownInterval);
+      this.cooldownInterval = null;
+    }
+    this.stopClocks();
   }
 }

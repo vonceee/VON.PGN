@@ -1,7 +1,7 @@
 <!-- Match Control / Status Column -->
 <div class="flex flex-col h-full justify-center items-center">
-    <!-- In-Game Actions -->
-    @if (!gameOverState().winner) {
+    <!-- In-Game Actions: Only hosts (captains) can resign or offer draw -->
+    @if (!gameOverState().winner && isHost()) {
       <div class="flex flex-row justify-center gap-3">
         <!-- Resign Button -->
         <button
@@ -29,10 +29,6 @@
           <span class="text-xs font-bold text-slate-700 select-all leading-relaxed">
             @if (gameOverState().rematchDeclined) {
               <span class="text-rose-600 font-extrabold uppercase">Rematch declined</span>
-            } @else if (gameOverState().hasOpponentTeamOfferedRematch) {
-              <span class="text-green-600 font-extrabold uppercase animate-pulse">Rematch offered!</span><br/>Opponent captain wants to play again
-            } @else if (gameOverState().hasMyTeamOfferedRematch) {
-              <span class="text-blue-600 font-extrabold uppercase">Waiting for opponent</span><br/>Offer sent to opposing captain
             } @else {
               <span class="text-xl block leading-tight mb-2">
                 {{ getWinnerText() }}
@@ -44,67 +40,89 @@
           </span>
         </div>
 
-        <!-- Action Buttons -->
+        @if (gameOverState().seriesRound && (gameOverState().seriesRound ?? 1) > 1) {
+          <div class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full px-3 py-0.5 inline-block mx-auto mb-2">
+            Game {{ gameOverState().seriesRound }} of Rematch Series
+          </div>
+        }
+
+        <!-- Action Buttons (Lila-Inspired Reactive States: Captain-Only Interactive Controls) -->
         <div class="flex items-center justify-center gap-2">
           @if (isHost()) {
+            <!-- CAPTAIN CONTROLS -->
             @if (gameOverState().hasOpponentTeamOfferedRematch) {
-              <!-- Accept Rematch -->
+              <!-- Opponent Offered: Glowing Accept + Discrete Decline (Lila pattern) -->
               <button
-                class="px-4 py-1.5 rounded-full bg-green-600 hover:bg-green-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+                type="button"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-md shadow-emerald-600/20 transition-all cursor-pointer animate-pulse"
+                title="Opponent team wants to play a rematch"
                 (click)="offerRematch.emit()"
               >
-                Accept
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+                Accept Rematch
               </button>
-              <!-- Decline Rematch -->
               <button
-                class="px-4 py-1.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+                type="button"
+                class="p-2.5 rounded-full bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-500 border border-slate-200 transition-colors cursor-pointer"
+                title="Decline rematch offer"
                 (click)="declineRematch.emit()"
               >
-                Decline
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
-            } @else if (gameOverState().hasMyTeamOfferedRematch) {
-              <!-- Cancel Rematch Offer -->
+            } @else if (gameOverState().hasMyTeamOfferedRematch || gameOverState().rematchCooldown || gameOverState().rematchDeclined) {
+              <!-- Offer Sent / Cooldown active: Disabled with countdown timer (no cancel, no 'cooldown' text) -->
               <button
-                class="px-4 py-1.5 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold border border-slate-300 shadow-sm transition-colors cursor-pointer"
-                (click)="declineRematch.emit()"
+                disabled
+                type="button"
+                class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-100 text-slate-400 border border-slate-200 font-medium text-[16px] leading-5 cursor-not-allowed select-none min-w-[100px]"
               >
-                Cancel Offer
+                {{ (gameOverState().cooldownRemainingSecs ?? 0) > 0 ? (gameOverState().cooldownRemainingSecs + 's') : '60s' }}
               </button>
-            } @else if (gameOverState().rematchDeclined) {
-              <!-- New Game -->
               <button
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+                type="button"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-sm cursor-pointer hover:bg-slate-800 transition-colors"
                 (click)="startQueue.emit()"
               >
                 New Game
               </button>
             } @else {
-              <!-- Offer Rematch -->
+              <!-- Idle: Ready to offer rematch -->
               <button
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-100 transition-all"
+                type="button"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
                 (click)="offerRematch.emit()"
               >
                 Rematch
               </button>
-              <!-- New Game -->
               <button
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+                type="button"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-sm cursor-pointer hover:bg-slate-800 transition-colors"
                 (click)="startQueue.emit()"
               >
                 New Game
               </button>
             }
           } @else {
-            <!-- Partner perspective -->
-            <div class="text-[10px] text-slate-400 font-semibold italic text-center leading-none py-1">
-              @if (gameOverState().rematchDeclined) {
-                Rematch declined
-              } @else if (gameOverState().hasMyTeamOfferedRematch) {
-                Captain offered rematch...
-              } @else if (gameOverState().hasOpponentTeamOfferedRematch) {
-                Opponent offered rematch
-              }
-            </div>
+            @if (gameOverState().hasOpponentTeamOfferedRematch) {
+              <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium animate-pulse select-none">
+                <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+                Opponent offered rematch (Waiting for captain...)
+              </div>
+            } @else if (gameOverState().hasMyTeamOfferedRematch || gameOverState().rematchCooldown || gameOverState().rematchDeclined) {
+              <button
+                disabled
+                type="button"
+                class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-slate-100 text-slate-400 border border-slate-200 font-medium text-[16px] leading-5 cursor-not-allowed select-none min-w-[100px]"
+              >
+                {{ (gameOverState().cooldownRemainingSecs ?? 0) > 0 ? (gameOverState().cooldownRemainingSecs + 's') : '60s' }}
+              </button>
+            }
           }
         </div>
       </div>

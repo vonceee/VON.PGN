@@ -58,9 +58,14 @@ export interface BughouseGameOverState {
   winner: string | null;
   gameEndReason: string | null;
   rematchDeclined: boolean;
+  rematchCooldown?: boolean;
+  cooldownRemainingSecs?: number;
   rematchOffers: string[];
   hasMyTeamOfferedRematch: boolean;
   hasOpponentTeamOfferedRematch: boolean;
+  seriesRound?: number;
+  nextGameId?: string | null;
+  isCaptain?: boolean;
 }
 
 export interface LobbyPlayer {
