@@ -984,7 +984,7 @@ export class BughouseGameStateService implements OnDestroy {
     const inviteId = player.uid || Math.random().toString();
     const newInvite: SentInvite = { id: inviteId, receiver: player.name, status: 'pending' };
     this.bughouseInviteService.sentInvites.update((list) => [...list, newInvite]);
-    this.bughouseInviteService.isInvitesOpen.set(true);
+    this.showNotification(`Invite sent to ${player.name}!`, 'success');
 
     const socket = this.gameService.socket();
     if (socket && socket.connected) {

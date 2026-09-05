@@ -8,7 +8,6 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { GameService } from '../../../../core/services/game.service';
 
 import { NotificationService } from '../../../../core/services/notification.service';
-import { BughouseInviteService } from '../../../../core/services/bughouse-invite.service';
 import { environment } from 'environments/environment';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { MobileMenuComponent } from './mobile-menu.component';
@@ -95,14 +94,12 @@ export class Header implements OnInit, OnDestroy {
   gameService = inject(GameService);
 
   notificationService = inject(NotificationService);
-  bughouseInviteService = inject(BughouseInviteService);
   private router = inject(Router);
 
 
   @ViewChild('profileContainer') profileContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('searchContainer') searchContainer!: ElementRef<HTMLDivElement>;
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('invitesContainer') invitesContainer!: ElementRef<HTMLDivElement>;
 
   isProfileDropdownOpen = signal(false);
   isMobileMenuOpen = signal(false);
@@ -111,20 +108,12 @@ export class Header implements OnInit, OnDestroy {
   isSearchOpen = signal(false);
   isSearching = signal(false);
   isNotificationsOpen = signal(false);
-  isInvitesOpen = this.bughouseInviteService.isInvitesOpen;
-  totalBughouseInvites = computed(() => this.bughouseInviteService.incomingInvites().length);
 
   toggleNotifications() {
-    this.isInvitesOpen.set(false);
     this.isNotificationsOpen.update(v => !v);
     if (this.isNotificationsOpen()) {
       this.notificationService.getNotifications().subscribe();
     }
-  }
-
-  toggleInvites() {
-    this.isNotificationsOpen.set(false);
-    this.isInvitesOpen.update(v => !v);
   }
   pingSignal = signal(0);
   pingStrength = signal<'strong' | 'medium' | 'weak'>('strong');
@@ -258,13 +247,6 @@ export class Header implements OnInit, OnDestroy {
       !this.searchContainer.nativeElement.contains(event.target as Node)
     ) {
       this.isSearchOpen.set(false);
-    }
-    if (
-      this.isInvitesOpen() &&
-      this.invitesContainer &&
-      !this.invitesContainer.nativeElement.contains(event.target as Node)
-    ) {
-      this.isInvitesOpen.set(false);
     }
   }
 

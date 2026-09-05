@@ -28,7 +28,6 @@ export class BughouseInviteService {
   incomingInvites = signal<IncomingBughouseInvite[]>([]);
   sentInvites = signal<SentInvite[]>([]);
   cancellingInvites = signal<Record<string, boolean>>({});
-  isInvitesOpen = signal<boolean>(false);
 
   constructor() {
     effect((onCleanup) => {
@@ -130,6 +129,10 @@ export class BughouseInviteService {
       socket.emit('bughouse_reject_invite', { lobbyId });
     }
     this.incomingInvites.update(list => list.filter(i => i.id !== lobbyId));
+  }
+
+  dismissInvite(lobbyId: string) {
+    this.rejectInvite(lobbyId);
   }
 
   cancelSentInvite(inviteId: string) {

@@ -137,6 +137,18 @@
                 <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{
                   p.name
                 }}</span>
+                <button
+                  type="button"
+                  (click)="kickPartner.emit()"
+                  [disabled]="isQueuing()"
+                  class="p-1 rounded-full text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+                  title="Kick partner"
+                  aria-label="Kick partner"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
               @if (p.stats; as partnerStats) {
                 <span class="text-xs font-bold text-slate-500 shrink-0 select-none">
@@ -213,12 +225,30 @@
           }
         } @else {
           <div
-            class="bg-white flex items-center justify-between gap-3 p-3 rounded-2xl border-2 border-slate-200  group relative hover:border-slate-300 transition-colors min-h-[58px]"
+            class="mb-4 flex items-center justify-between gap-3 group relative min-h-[58px]"
           >
             <div class="flex-1 min-w-0 flex items-center gap-2">
               <span class="font-semibold block truncate text-sm leading-tight text-slate-900">{{
                 currentUserProfile().name
               }}</span>
+              <button
+                type="button"
+                (click)="leaveLobby.emit()"
+                class="p-1 rounded-full text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
+                title="Leave lobby"
+                aria-label="Leave lobby"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="w-3.5 h-3.5"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
             <span class="text-xs font-bold text-slate-500 select-none shrink-0">
               <span class="text-green-600">{{ record().wins }}W</span>/<span>{{ record().draws }}D</span>/<span class="text-rose-600">{{ record().losses }}L</span>
@@ -228,48 +258,30 @@
 
         <!-- Matchmaking Action Buttons -->
         @if (isQueuing()) {
-          <div class="flex items-center justify-between w-full">
+          <div class="w-full">
             <button
               (click)="cancelQueue.emit()"
-              class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
+              class="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
             >
               Cancel Search
             </button>
-            @if (!isHost()) {
-              <button
-                (click)="leaveLobby.emit()"
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
-              >
-                Leave Lobby
-              </button>
-            }
           </div>
         } @else if (isHost()) {
-          <div class="flex items-center justify-between w-full">
+          <div class="w-full">
             <button
               (click)="startQueue.emit()"
               [disabled]="!partner()"
-              class="w-fit inline-flex items-center px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-800 transition-colors"
+              class="w-full inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-800 transition-colors"
             >
               Find Match
             </button>
-            @if (partner()) {
-              <button
-                (click)="kickPartner.emit()"
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
-              >
-                Kick Partner
-              </button>
-            }
           </div>
         } @else {
-          <div class="flex items-center justify-between w-full mt-2">
-            <button
-              (click)="leaveLobby.emit()"
-              class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
-            >
-              Leave Lobby
-            </button>
+          <div class="flex items-center justify-center gap-2 text-sm font-medium text-slate-500 italic py-2.5 w-full">
+            <div
+              class="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin shrink-0"
+            ></div>
+            <span>waiting for host to find match...</span>
           </div>
         }
       </div>

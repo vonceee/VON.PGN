@@ -1,6 +1,6 @@
 import { Component, signal, inject, effect } from '@angular/core';
 import { RouterOutlet, Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
-import { ToastComponent, NetworkStatusComponent, DatabaseOfflineOverlayComponent } from '@shared/feedback';
+import { ToastComponent, NetworkStatusComponent, DatabaseOfflineOverlayComponent, BughouseInviteToastComponent } from '@shared/feedback';
 import { AuthService } from './core/services/auth.service';
 import { GameService } from './core/services/game.service';
 import { LoadingService } from './core/services/loading.service';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToastComponent, NetworkStatusComponent, DatabaseOfflineOverlayComponent, CommonModule],
+  imports: [RouterOutlet, ToastComponent, BughouseInviteToastComponent, NetworkStatusComponent, DatabaseOfflineOverlayComponent, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.css',
 })
