@@ -226,34 +226,42 @@
           </div>
         }
 
-        <!-- Find Match Action Button -->
-        @if (isHost()) {
-          @if (isQueuing()) {
+        <!-- Matchmaking Action Buttons -->
+        @if (isQueuing()) {
+          <div class="flex items-center justify-between w-full">
             <button
               (click)="cancelQueue.emit()"
               class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
             >
               Cancel Search
             </button>
-          } @else {
-            <div class="flex items-center justify-between w-full">
+            @if (!isHost()) {
               <button
-                (click)="startQueue.emit()"
-                [disabled]="!partner()"
-                class="w-fit inline-flex items-center px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-800 transition-colors"
+                (click)="leaveLobby.emit()"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-transparent border border-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
               >
-                Find Match
+                Leave Lobby
               </button>
-              @if (partner()) {
-                <button
-                  (click)="kickPartner.emit()"
-                  class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
-                >
-                  Kick Partner
-                </button>
-              }
-            </div>
-          }
+            }
+          </div>
+        } @else if (isHost()) {
+          <div class="flex items-center justify-between w-full">
+            <button
+              (click)="startQueue.emit()"
+              [disabled]="!partner()"
+              class="w-fit inline-flex items-center px-6 py-2.5 rounded-full bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-800 transition-colors"
+            >
+              Find Match
+            </button>
+            @if (partner()) {
+              <button
+                (click)="kickPartner.emit()"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
+              >
+                Kick Partner
+              </button>
+            }
+          </div>
         } @else {
           <div class="flex items-center justify-between w-full mt-2">
             <button

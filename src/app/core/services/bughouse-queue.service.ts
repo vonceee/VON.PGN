@@ -37,12 +37,14 @@ export class BughouseQueueService {
       untracked(() => {
         if (socket) {
           socket.on('bughouse_lobby_sync', this.handleLobbySync);
+          socket.on('bughouse_queue_cancelled', this.handleQueueCancelled);
           socket.on('bughouse_matched', this.handleMatched);
           socket.on('bughouse_game_start', this.handleGameStart);
           socket.on('bughouse_kicked', this.handleKicked);
 
           onCleanup(() => {
             socket.off('bughouse_lobby_sync', this.handleLobbySync);
+            socket.off('bughouse_queue_cancelled', this.handleQueueCancelled);
             socket.off('bughouse_matched', this.handleMatched);
             socket.off('bughouse_game_start', this.handleGameStart);
             socket.off('bughouse_kicked', this.handleKicked);
@@ -115,6 +117,13 @@ export class BughouseQueueService {
       this.isQueuing.set(false);
       this.stopQueueTimer();
       this.partner.set(null);
+    });
+  };
+
+  private handleQueueCancelled = () => {
+    this.ngZone.run(() => {
+      this.isQueuing.set(false);
+      this.stopQueueTimer();
     });
   };
 

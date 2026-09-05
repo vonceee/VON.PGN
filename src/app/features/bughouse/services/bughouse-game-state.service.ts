@@ -1153,6 +1153,25 @@ export class BughouseGameStateService implements OnDestroy {
     });
   };
 
+  /**
+   * Handles matchmaking queue cancellation emitted by either player.
+   * 
+   * WHY: Alerts the teammate when the search is cancelled and resets lobbyState.
+   */
+  private handleQueueCancelled = (data?: { cancelledByUserId?: string; cancelledByName?: string }) => {
+    this.ngZone.run(() => {
+      const myUid = String(this.authService.currentUser()?.uid);
+      if (data && data.cancelledByUserId && String(data.cancelledByUserId) !== myUid) {
+        const name = data.cancelledByName || 'Teammate';
+        this.showNotification(`Matchmaking cancelled by ${name}.`, 'info');
+        this.audioService.playNotification();
+      }
+      if (this.lobbyState() !== 'playing') {
+        this.lobbyState.set('lobby');
+      }
+    });
+  };
+
   private handleMatched = (data: any) => {
     this.ngZone.run(() => {
       this.opponent1.set({ name: data.opponent1.name, isOnline: true });
@@ -1575,6 +1594,7 @@ export class BughouseGameStateService implements OnDestroy {
     this.removeSocketListeners();
 
     socket.on('bughouse_lobby_sync', this.handleLobbySync);
+    socket.on('bughouse_queue_cancelled', this.handleQueueCancelled);
     socket.on('bughouse_invite_rejected', this.handleInviteRejected);
     socket.on('bughouse_kicked', this.handleKicked);
     socket.on('bughouse_matched', this.handleMatched);
@@ -1600,6 +1620,7 @@ export class BughouseGameStateService implements OnDestroy {
     if (!socket) return;
 
     socket.off('bughouse_lobby_sync', this.handleLobbySync);
+    socket.off('bughouse_queue_cancelled', this.handleQueueCancelled);
     socket.off('bughouse_invite_rejected', this.handleInviteRejected);
     socket.off('bughouse_kicked', this.handleKicked);
     socket.off('bughouse_matched', this.handleMatched);
