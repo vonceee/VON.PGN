@@ -7,6 +7,15 @@
   <div class="flex flex-col items-center justify-between shrink-0 py-2 select-none w-28">
     <!-- Top Player Section -->
     <div class="flex flex-col items-center gap-1 w-full text-center">
+      @if (topResult(); as res) {
+        <span
+          class="inline-flex items-center justify-center font-black text-sm px-2.5 py-0.5 rounded-full select-none shadow-xs border transition-transform animate-in fade-in zoom-in-75 duration-200"
+          [class.text-emerald-700]="res === 'W'"
+          [class.text-rose-700]="res === 'L'"
+        >
+          {{ res }}
+        </span>
+      }
       <span class="text-base font-extrabold text-slate-800 truncate max-w-full px-1 block" [title]="topName()">
         {{ topName() || (topColor() === 'w' ? 'White' : 'Black') }}
       </span>
@@ -39,6 +48,15 @@
       <span class="text-base font-extrabold text-slate-800 truncate max-w-full px-1 block" [title]="bottomName()">
         {{ bottomName() || (bottomColor() === 'w' ? 'White' : 'Black') }}
       </span>
+      @if (bottomResult(); as res) {
+        <span
+          class="inline-flex items-center justify-center font-black text-sm px-2.5 py-0.5 rounded-full select-none shadow-xs border transition-transform animate-in fade-in zoom-in-75 duration-200"
+          [class.text-emerald-700]="res === 'W'"
+          [class.text-rose-700]="res === 'L'"
+        >
+          {{ res }}
+        </span>
+      }
     </div>
   </div>
 

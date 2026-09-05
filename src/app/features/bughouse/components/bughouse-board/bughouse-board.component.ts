@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, input, output, computed, effect } f
 import { CommonModule } from '@angular/common';
 import { Chess, Move } from 'chess.js';
 import { ChessBoardComponent } from '../../../../shared/components/chess/chess-board/chess-board.component';
+import { BughouseTeamsState } from '../../../../core/models/bughouse.model';
 
 type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
 
@@ -14,7 +15,7 @@ type PieceType = 'p' | 'n' | 'b' | 'r' | 'q';
   styleUrl: './bughouse-board.component.css',
 })
 export class BughouseBoardComponent {
-   boardId = input.required<'A' | 'B'>();
+  boardId = input.required<'A' | 'B'>();
   fen = input.required<string>();
   orientation = input.required<'white' | 'black'>();
   pocketW = input.required<Record<PieceType, number>>();
@@ -30,6 +31,7 @@ export class BughouseBoardComponent {
 
   whiteName = input<string>('');
   blackName = input<string>('');
+  teamsState = input<BughouseTeamsState | null>(null);
 
   activeDropBoard = input.required<'A' | 'B' | null>();
   activeDropPiece = input.required<PieceType | null>();
@@ -71,6 +73,74 @@ export class BughouseBoardComponent {
   bottomTime = computed(() => this.orientation() === 'white' ? this.timeW() : this.timeB());
   bottomColor = computed(() => this.orientation() === 'white' ? 'w' : 'b');
   bottomName = computed(() => this.orientation() === 'white' ? this.whiteName() : this.blackName());
+
+  // Outcome resolution for players (W / L indicators)
+  private getPlayerTeam(board: 'A' | 'B', color: 'w' | 'b', name: string): 'Team A' | 'Team B' | null {
+    const teams = this.teamsState();
+    if (teams) {
+      const teamA = teams.teamA;
+      const teamB = teams.teamB;
+
+      // Match by board and color
+      if (
+        (teamA?.captain?.board === board && teamA?.captain?.color === color) ||
+        (teamA?.partner?.board === board && teamA?.partner?.color === color)
+      ) {
+        return 'Team A';
+      }
+      if (
+        (teamB?.captain?.board === board && teamB?.captain?.color === color) ||
+        (teamB?.partner?.board === board && teamB?.partner?.color === color)
+      ) {
+        return 'Team B';
+      }
+
+      // Name fallback
+      if (name) {
+        if (teamA?.captain?.name === name || teamA?.partner?.name === name) {
+          return 'Team A';
+        }
+        if (teamB?.captain?.name === name || teamB?.partner?.name === name) {
+          return 'Team B';
+        }
+      }
+    }
+
+    // Default Bughouse configuration fallback:
+    // Board A: White is Team A, Black is Team B
+    // Board B: White is Team B, Black is Team A
+    if (board === 'A') {
+      return color === 'w' ? 'Team A' : 'Team B';
+    } else {
+      return color === 'w' ? 'Team B' : 'Team A';
+    }
+  }
+
+  private getPlayerResult(board: 'A' | 'B', color: 'w' | 'b', name: string): 'W' | 'L' | null {
+    const winner = this.winner();
+    if (!winner || winner === 'Draw') return null;
+
+    const playerTeam = this.getPlayerTeam(board, color, name);
+    if (!playerTeam) return null;
+
+    if (winner === 'Team A') {
+      return playerTeam === 'Team A' ? 'W' : 'L';
+    } else if (winner === 'Team B') {
+      return playerTeam === 'Team B' ? 'W' : 'L';
+    } else if (winner === name) {
+      return 'W';
+    }
+
+    return null;
+  }
+
+  topResult = computed<'W' | 'L' | null>(() => {
+    return this.getPlayerResult(this.boardId(), this.topColor(), this.topName());
+  });
+
+  bottomResult = computed<'W' | 'L' | null>(() => {
+    return this.getPlayerResult(this.boardId(), this.bottomColor(), this.bottomName());
+  });
 
   // Helpers
   getPocketKeys(): PieceType[] {

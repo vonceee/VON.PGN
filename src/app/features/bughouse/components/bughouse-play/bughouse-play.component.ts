@@ -2,10 +2,7 @@ import {
   Component,
   ChangeDetectionStrategy,
   inject,
-  signal,
-  computed,
   effect,
-  OnInit,
   OnDestroy,
   AfterViewInit,
   PLATFORM_ID,
@@ -38,7 +35,7 @@ import { BughouseSidebarComponent } from '../bughouse-sidebar/bughouse-sidebar.c
   templateUrl: './bughouse-play.component.html',
   styleUrls: ['./bughouse-play.component.css'],
 })
-export class BughousePlayComponent implements OnInit, AfterViewInit, OnDestroy {
+export class BughousePlayComponent implements AfterViewInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   gameStateService = inject(BughouseGameStateService);
@@ -58,8 +55,6 @@ export class BughousePlayComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
   }
-
-  ngOnInit() {}
 
   ngAfterViewInit() {
     this.setupBoardResizeObserver();

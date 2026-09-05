@@ -30,12 +30,14 @@
             @if (gameOverState().rematchDeclined) {
               <span class="text-rose-600 font-extrabold uppercase">Rematch declined</span>
             } @else {
-              <span class="text-xl block leading-tight mb-2">
-                {{ getWinnerText() }}
-              </span>
-              <span class="text-lg italic block leading-tight">
-                {{ gameOverState().gameEndReason }}
-              </span>
+              @if (gameOverState().winner === 'Draw') {
+                <span class="text-xl block leading-tight mb-2">Draw match</span>
+              }
+              @if (gameOverState().gameEndReason) {
+                <span class="text-lg italic block leading-tight">
+                  {{ gameOverState().gameEndReason }}
+                </span>
+              }
             }
           </span>
         </div>
