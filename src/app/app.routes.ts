@@ -232,8 +232,35 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'world-championships/editor',
+        redirectTo: 'admin/world-championships-editor',
+        pathMatch: 'full',
+      },
+      {
+        path: 'world-championships/editor/:id',
+        redirectTo: 'admin/world-championships-editor/:id',
+      },
+      {
+        path: 'world-championships/:id',
+        loadComponent: () =>
+          import('./features/world-championships/matchup-detail/matchup-detail.component').then(
+            (m) => m.MatchupDetailComponent,
+          ),
+        title: 'Vonchess.net • World Chess Championship Matchup',
+        data: {
+          description:
+            'Interactive analysis and editorial story of the historic World Chess Championship matchup.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'wcc',
         redirectTo: 'world-championships',
+        pathMatch: 'full',
+      },
+      {
+        path: 'wcc/:id',
+        redirectTo: 'world-championships/:id',
         pathMatch: 'full',
       },
       {

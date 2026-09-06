@@ -1,0 +1,340 @@
+<div class="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
+  <!-- Top Navigation & Action Bar -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div class="flex items-center gap-3">
+      <a
+        routerLink="/admin"
+        class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-slate-900 transition-colors px-3 py-1.5 rounded-xl border border-slate-200 bg-white shadow-xs"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+        Admin Dashboard
+      </a>
+
+      <!-- Notification Toast -->
+      @if (saveStatusMessage()) {
+        <div class="bg-emerald-50 text-emerald-800 text-xs px-3 py-1.5 rounded-xl border border-emerald-200 font-medium">
+          {{ saveStatusMessage() }}
+        </div>
+      }
+    </div>
+
+    <!-- Top Action Buttons -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- New Story Button -->
+      <button
+        type="button"
+        (click)="startNewStory()"
+        class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-100 text-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+        title="Start a fresh blank story"
+      >
+        <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        New Story
+      </button>
+
+      <!-- Preset Templates Menu -->
+      <div class="relative group">
+        <button
+          type="button"
+          class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-100 text-slate-800 transition-colors flex items-center gap-1 cursor-pointer"
+        >
+          Load Template ▾
+        </button>
+        <div class="absolute right-0 top-full mt-1 w-52 bg-white border border-slate-200 rounded-xl shadow-lg p-1.5 hidden group-hover:block z-50 text-xs">
+          <button (click)="startNewStory()" class="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 rounded-lg font-medium text-emerald-700 cursor-pointer flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Blank / New Story
+          </button>
+          <hr class="my-1 border-slate-100" />
+          <button (click)="loadTemplate('wcc2024')" class="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 rounded-lg font-medium cursor-pointer">
+            2024 Gukesh vs Ding (G14)
+          </button>
+          <button (click)="loadTemplate('wcc2023')" class="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 rounded-lg font-medium cursor-pointer">
+            2023 Ding vs Nepo (TB4)
+          </button>
+          <button (click)="loadTemplate('wcc1972')" class="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 rounded-lg font-medium cursor-pointer">
+            1972 Fischer vs Spassky (G6)
+          </button>
+          <hr class="my-1 border-slate-100" />
+          <button (click)="loadTemplate('opera')" class="w-full text-left px-2.5 py-1.5 hover:bg-slate-100 rounded-lg text-gray-500 cursor-pointer">
+            The Opera Game Demo (1858)
+          </button>
+        </div>
+      </div>
+
+      <button
+        (click)="copyJson()"
+        class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-100 text-slate-800 transition-colors flex items-center gap-1 cursor-pointer"
+        title="Copy raw JSON payload"
+      >
+        Export JSON
+      </button>
+
+      <button
+        (click)="saveDraft()"
+        class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-100 text-slate-800 transition-colors flex items-center gap-1 cursor-pointer"
+      >
+        Save Draft
+      </button>
+
+      <button
+        (click)="publishStory()"
+        class="px-4 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition-colors flex items-center gap-1 shadow-sm cursor-pointer"
+      >
+        Publish &amp; View
+      </button>
+    </div>
+  </div>
+
+  <!-- Standardized Header -->
+  <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div class="flex-1">
+      <h1 class="text-3xl sm:text-4xl font-normal text-slate-900 mb-1">
+        World Championship Story Editor
+      </h1>
+    </div>
+
+    <!-- View Mode Switcher -->
+    <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-medium self-start">
+      <button
+        (click)="activeTab.set('edit')"
+        [class.bg-white]="activeTab() === 'edit'"
+        [class.shadow-xs]="activeTab() === 'edit'"
+        [class.text-slate-900]="activeTab() === 'edit'"
+        class="px-3 py-1.5 rounded-lg text-gray-600 hover:text-slate-900 transition-all cursor-pointer"
+      >
+        Form Only
+      </button>
+      <button
+        (click)="activeTab.set('preview')"
+        [class.bg-white]="activeTab() === 'preview'"
+        [class.shadow-xs]="activeTab() === 'preview'"
+        [class.text-slate-900]="activeTab() === 'preview'"
+        class="px-3 py-1.5 rounded-lg text-gray-600 hover:text-slate-900 transition-all cursor-pointer"
+      >
+        Live Preview
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  @if (activeTab() === 'edit') {
+    <div class="space-y-6">
+        <!-- Card 1: Match & Duel Setup -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h2 class="font-bold text-slate-900">
+              1. Championship &amp; Game Setup
+            </h2>
+            <button
+              type="button"
+              (click)="startNewStory()"
+              class="text-xs text-gray-500 hover:text-slate-900 underline cursor-pointer"
+            >
+              Start Blank Story
+            </button>
+          </div>
+
+          <!-- Existing Match & Round Selector -->
+          <div class="grid grid-cols-1 gap-4" [class.sm:grid-cols-2]="gameNumberOptions().length > 0">
+            <app-select
+              label="Select Championship Match"
+              [items]="matchOptions()"
+              [value]="selectedMatchId()"
+              (itemSelected)="onSelectExistingMatch($event.value!)"
+              class="w-full"
+            />
+
+            @if (gameNumberOptions().length > 0) {
+              <app-select
+                label="Select Round / Game to Write"
+                placeholder="Choose game to cover..."
+                [items]="gameNumberOptions()"
+                [value]="selectedGameNumber()"
+                (itemSelected)="onSelectGameNumber($event.value!)"
+                class="w-full"
+              />
+            }
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <app-text-input
+              id="match_title"
+              label="Story / Game Title"
+              [(ngModel)]="matchTitle"
+              placeholder="e.g. 2024 Championship Game 14"
+              class="w-full"
+            />
+
+            <app-text-input
+              id="match_subtitle"
+              label="Subtitle / Context"
+              [(ngModel)]="matchSubtitle"
+              placeholder="e.g. Ding vs. Gukesh – Singapore, 2024"
+              class="w-full"
+            />
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <app-text-input
+              id="match_year"
+              label="Year"
+              type="number"
+              [(ngModel)]="year"
+              class="w-full"
+            />
+            <app-select
+              label="Era"
+              [items]="eraOptions"
+              [(value)]="era"
+              class="w-full"
+            />
+            <app-text-input
+              id="match_score"
+              label="Final Score"
+              [(ngModel)]="score"
+              placeholder="e.g. 7.5 - 6.5"
+              class="w-full"
+            />
+            <app-text-input
+              id="match_winner"
+              label="Winner"
+              [(ngModel)]="winner"
+              placeholder="Winner name"
+              class="w-full"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <app-text-input
+              id="match_champion"
+              label="Defender / Champion"
+              [(ngModel)]="champion"
+              placeholder="Defender / Champion"
+              class="w-full"
+            />
+            <app-text-input
+              id="match_challenger"
+              label="Challenger"
+              [(ngModel)]="challenger"
+              placeholder="Challenger"
+              class="w-full"
+            />
+          </div>
+        </div>
+
+        <!-- Card 2: PGN & Moves Validator -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h2 class="font-bold text-slate-900">
+              2. PGN Notation &amp; Game Stats
+            </h2>
+            <div class="text-xs font-mono">
+              @if (pgnError()) {
+                <span class="text-rose-600 font-semibold">{{ pgnError() }}</span>
+              } @else {
+                <span class="text-emerald-700 font-semibold">✓ Parsed: {{ maxPly() }} plies</span>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <app-text-input
+              id="game_white"
+              label="White"
+              [(ngModel)]="whitePlayer"
+              placeholder="White Player"
+              class="w-full"
+            />
+            <app-text-input
+              id="game_black"
+              label="Black"
+              [(ngModel)]="blackPlayer"
+              placeholder="Black Player"
+              class="w-full"
+            />
+            <app-text-input
+              id="game_result"
+              label="Result"
+              [(ngModel)]="result"
+              placeholder="1-0 / 0-1 / 1/2-1/2"
+              class="w-full"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+              Standard PGN Input
+            </label>
+            <textarea
+              [(ngModel)]="pgn"
+              rows="5"
+              placeholder="Paste PGN here (e.g. 1. e4 e5 2. Nf3 d6 ...)"
+              class="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:bg-white focus:border-slate-400 resize-y"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Card 3: Modular Story Narrative & Sections Editor -->
+        <app-wcc-section-editor
+          [(overview)]="narrativeOverview"
+          [(sections)]="sections"
+          [maxPly]="maxPly()"
+          [currentMoveLabel]="currentMoveLabel()"
+        ></app-wcc-section-editor>
+      </div>
+    } @else if (activeTab() === 'preview') {
+      <div class="space-y-4">
+        <!-- Editorial Preview Box mirroring reference layout -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm overflow-hidden">
+          <!-- Header -->
+          <header class="mb-6">
+            <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h1 class="text-2xl font-bold text-slate-900 tracking-tight">
+                {{ matchTitle() }}
+              </h1>
+              <span class="font-mono text-xs text-gray-500">
+                {{ matchSubtitle() }}
+              </span>
+            </div>
+            <div class="h-px bg-slate-200 mt-3 mb-6"></div>
+          </header>
+
+          <!-- Two-Column Preview Content composed of Modular Subcomponents -->
+          <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+            <!-- Left: Modular Editorial Story Preview -->
+            <div class="xl:col-span-7">
+              <app-wcc-story-viewer
+                [overview]="narrativeOverview()"
+                [sections]="sections()"
+                [moveHistory]="moveHistory()"
+                [currentPly]="currentPly()"
+                (plySelected)="goToPly($event)"
+              ></app-wcc-story-viewer>
+            </div>
+
+            <!-- Right: Modular Board Viewer Preview -->
+            <div class="xl:col-span-5 sticky top-6">
+              <app-wcc-board-viewer
+                [fen]="currentFen()"
+                [orientation]="boardOrientation()"
+                [currentPly]="currentPly()"
+                [maxPly]="maxPly()"
+                [moveLabel]="currentMoveLabel()"
+                (goToFirst)="goToFirst()"
+                (prev)="prevMove()"
+                (next)="nextMove()"
+                (goToLast)="goToLast()"
+                (flip)="flipBoard()"
+              ></app-wcc-board-viewer>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+</div>

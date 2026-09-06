@@ -49,8 +49,12 @@ import { filter, map, startWith } from 'rxjs';
           <ul class="space-y-1 px-2">
             <li>
               <a routerLink="/admin/courses" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
-                
                 <span>Courses</span>
+              </a>
+            </li>
+            <li>
+              <a routerLink="/admin/world-championships-editor" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-200 hover:text-blue-600 mx-2">
+                <span>WCC Story Editor</span>
               </a>
             </li>
           </ul>
@@ -136,6 +140,7 @@ export class AdminLayoutComponent {
     else if (url.includes('/admin/coaches')) this.pageTitle.set('Coach Management');
     else if (url.includes('/admin/coach/')) this.pageTitle.set('Coach Editor');
     else if (url.includes('/admin/academy-enrollments')) this.pageTitle.set('Academy Enrollments');
+    else if (url.includes('/admin/world-championships-editor')) this.pageTitle.set('WCC Story Editor');
     else this.pageTitle.set('Dashboard Overview');
   }
 

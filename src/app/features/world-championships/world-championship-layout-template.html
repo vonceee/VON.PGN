@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Opera Game — Annotated Layout Reference</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+    .board-square-light { background-color: #f0d9b5; }
+    .board-square-dark { background-color: #b58863; }
+    /* Alternative Green Theme matching standard reference */
+    .board-green-light { background-color: #ffffdd; }
+    .board-green-dark { background-color: #86a666; }
+  </style>
+</head>
+<body class="p-6 md:p-12 max-w-6xl mx-auto">
+
+  <!-- ========================================== -->
+  <!-- 1. HEADER SECTION                          -->
+  <!-- ========================================== -->
+  <header class="mb-6">
+    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">The Opera Game</h1>
+      <span class="font-mono text-xs md:text-sm text-gray-500">Morphy vs. Duke of Brunswick &amp; Count Isouard – Paris, 1858</span>
+    </div>
+    <!-- Horizontal Divider Line -->
+    <hr class="mt-4 border-t border-gray-200" />
+  </header>
+
+  <!-- ========================================== -->
+  <!-- 2. TWO-COLUMN CONTENT LAYOUT               -->
+  <!-- ========================================== -->
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+    
+    <!-- LEFT COLUMN: Editorial Story & Move Commentary -->
+    <div class="md:col-span-7 space-y-6 text-gray-800 leading-relaxed text-base md:text-lg">
+      <p>
+        Paris, 1858. Paul Morphy is at the opera, seated in a private box, playing chess without looking away from the stage for long. His opponents, the Duke of Brunswick and Count Isouard, are consulting together on the other side of the board. Neither the setting nor the opposition matters much in hindsight — what survives is seventeen moves that read like a short lesson in why development wins games.
+      </p>
+
+      <!-- Section 1 -->
+      <div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Grabbing the center</h2>
+        <p class="mb-4">
+          The game opens plainly: <strong class="font-bold">1. e4 e5 2. Nf3 d6 3. d4 Bg4?!</strong>. Black's pin on the knight looks natural, but it costs a tempo Morphy is happy to exploit.
+        </p>
+        <p>
+          <strong class="font-bold">4. dxe5</strong> strikes the center pawn, and after <strong class="font-bold">Bxf3</strong> White recaptures with <strong class="font-bold">5. Qxf3</strong>, arriving on f3 with the bishop pair, an open center, and a lead in development that never really goes away.
+        </p>
+      </div>
+
+      <!-- Section 2 -->
+      <div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">Development over material</h2>
+        <p>
+          <strong class="font-bold">dxe5 6. Bc4 Nf6 7. Qb3</strong> — Morphy keeps bringing pieces out while his opponents shuffle their queen. By move nine both sides look reasonable, but only one side is actually finishing development.
+        </p>
+      </div>
+
+      <!-- Section 3 -->
+      <div>
+        <h2 class="text-xl font-bold text-gray-900 mb-2">The sacrifice &amp; finish</h2>
+        <p>
+          <strong class="font-bold">7... Qe7 8. Nc3 c6 9. Bg5 b5 10. Nxb5! cxb5 11. Bxb5+ Nbd7 12. O-O-O Rd8 13. Rxd7! Rxd7 14. Rd1 Qe6 15. Bxd7+ Nxd7 16. Qb8+! Nxb8 17. Rd8#</strong> — A brilliant queen sacrifice finishes the game in mate with only rook and bishop remaining active.
+        </p>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Chessboard & Navigation Controls -->
+    <div class="md:col-span-5 sticky top-8">
+      <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+        
+        <!-- Board Visual Placeholder (8x8) -->
+        <div class="w-full aspect-square border border-gray-300 rounded-lg overflow-hidden grid grid-cols-8 grid-rows-8 text-center select-none text-2xl font-serif">
+          <!-- Row 8 (Black Pieces) -->
+          <div class="board-green-light flex items-center justify-center">♜</div>
+          <div class="board-green-dark flex items-center justify-center">♞</div>
+          <div class="board-green-light flex items-center justify-center">♝</div>
+          <div class="board-green-dark flex items-center justify-center">♛</div>
+          <div class="board-green-light flex items-center justify-center">♚</div>
+          <div class="board-green-dark flex items-center justify-center">♝</div>
+          <div class="board-green-light flex items-center justify-center">♞</div>
+          <div class="board-green-dark flex items-center justify-center">♜</div>
+
+          <!-- Row 7 (Black Pawns) -->
+          <div class="board-green-dark flex items-center justify-center">♟</div>
+          <div class="board-green-light flex items-center justify-center">♟</div>
+          <div class="board-green-dark flex items-center justify-center">♟</div>
+          <div class="board-green-light flex items-center justify-center">♟</div>
+          <div class="board-green-dark flex items-center justify-center">♟</div>
+          <div class="board-green-light flex items-center justify-center">♟</div>
+          <div class="board-green-dark flex items-center justify-center">♟</div>
+          <div class="board-green-light flex items-center justify-center">♟</div>
+
+          <!-- Rows 6 - 3 (Empty squares) -->
+          <div class="board-green-light"></div><div class="board-green-dark"></div><div class="board-green-light"></div><div class="board-green-dark"></div>
+          <div class="board-green-light"></div><div class="board-green-dark"></div><div class="board-green-light"></div><div class="board-green-dark"></div>
+
+          <div class="board-green-dark"></div><div class="board-green-light"></div><div class="board-green-dark"></div><div class="board-green-light"></div>
+          <div class="board-green-dark"></div><div class="board-green-light"></div><div class="board-green-dark"></div><div class="board-green-light"></div>
+
+          <div class="board-green-light"></div><div class="board-green-dark"></div><div class="board-green-light"></div><div class="board-green-dark"></div>
+          <div class="board-green-light"></div><div class="board-green-dark"></div><div class="board-green-light"></div><div class="board-green-dark"></div>
+
+          <div class="board-green-dark"></div><div class="board-green-light"></div><div class="board-green-dark"></div><div class="board-green-light"></div>
+          <div class="board-green-dark"></div><div class="board-green-light"></div><div class="board-green-dark"></div><div class="board-green-light"></div>
+
+          <!-- Row 2 (White Pawns) -->
+          <div class="board-green-light flex items-center justify-center">♙</div>
+          <div class="board-green-dark flex items-center justify-center">♙</div>
+          <div class="board-green-light flex items-center justify-center">♙</div>
+          <div class="board-green-dark flex items-center justify-center">♙</div>
+          <div class="board-green-light flex items-center justify-center">♙</div>
+          <div class="board-green-dark flex items-center justify-center">♙</div>
+          <div class="board-green-light flex items-center justify-center">♙</div>
+          <div class="board-green-dark flex items-center justify-center">♙</div>
+
+          <!-- Row 1 (White Pieces) -->
+          <div class="board-green-dark flex items-center justify-center">♖</div>
+          <div class="board-green-light flex items-center justify-center">♘</div>
+          <div class="board-green-dark flex items-center justify-center">♗</div>
+          <div class="board-green-light flex items-center justify-center">♕</div>
+          <div class="board-green-dark flex items-center justify-center">♔</div>
+          <div class="board-green-light flex items-center justify-center">♗</div>
+          <div class="board-green-dark flex items-center justify-center">♘</div>
+          <div class="board-green-light flex items-center justify-center">♖</div>
+        </div>
+
+        <!-- Board Coordinates Labels below -->
+        <div class="flex justify-between text-xs text-gray-500 font-mono px-3 py-1">
+          <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+        </div>
+
+        <!-- Navigation Bar: |<  <  Start  >  >| -->
+        <div class="mt-3 flex items-center justify-between border border-gray-200 rounded-lg px-3 py-2 bg-gray-50">
+          <button class="p-1 text-gray-600 hover:text-black font-bold">|&lt;</button>
+          <button class="p-1 text-gray-600 hover:text-black font-bold">&lt;</button>
+          <span class="text-sm font-medium text-gray-900 px-3">Start</span>
+          <button class="p-1 text-gray-600 hover:text-black font-bold">&gt;</button>
+          <button class="p-1 text-gray-600 hover:text-black font-bold">&gt;|</button>
+        </div>
+
+        <!-- Ply Counter -->
+        <div class="mt-2 text-center text-xs font-mono text-gray-500">
+          0 / 33
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

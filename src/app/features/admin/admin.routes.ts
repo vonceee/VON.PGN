@@ -85,6 +85,22 @@ export const ADMIN_ROUTES: Routes = [
           import('./academy-enrollments/academy-enrollments.component').then((m) => m.AcademyEnrollmentsComponent),
         title: 'Academy Enrollments - CHESS.PGN',
       },
+      {
+        path: 'world-championships-editor',
+        loadComponent: () =>
+          import('../world-championships/matchup-editor/matchup-editor.component').then(
+            (m) => m.MatchupEditorComponent
+          ),
+        title: 'World Championship Story Editor - Admin',
+      },
+      {
+        path: 'world-championships-editor/:id',
+        loadComponent: () =>
+          import('../world-championships/matchup-editor/matchup-editor.component').then(
+            (m) => m.MatchupEditorComponent
+          ),
+        title: 'Edit World Championship Story - Admin',
+      },
     ],
   },
 ];

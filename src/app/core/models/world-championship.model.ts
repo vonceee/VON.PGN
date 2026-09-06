@@ -4,6 +4,48 @@ export type WorldChampionshipEra =
   | 'Split Era (1993-2005)'
   | 'Modern Era (2006-Present)';
 
+export interface GameNarrativeSection {
+  id?: string;
+  title: string;
+  order: number;
+  content: string;
+  startPly?: number;
+  endPly?: number;
+  keyMoveSan?: string;
+}
+
+export interface WorldChampionshipGame {
+  id: string;
+  matchId: string;
+  gameNumber: number;
+  title: string;
+  subtitle?: string;
+  white: string;
+  black: string;
+  result: string;
+  date?: string;
+  eco?: string;
+  opening?: string;
+  pgn: string;
+  initialFen?: string;
+  totalPlies?: number;
+  narrativeOverview?: string;
+  sections?: GameNarrativeSection[];
+}
+
+export interface MatchGameSummary {
+  gameNumber: number;
+  white: string;
+  black: string;
+  result: '1-0' | '0-1' | '1/2-1/2' | string;
+  eco?: string;
+  opening?: string;
+  date?: string;
+  hasStory?: boolean;
+  gameId?: string; // ID linking to WorldChampionshipGame if full story exists
+  title?: string;
+}
+
 export interface WorldChampionshipMatch {
   id: string;
   year: number;
@@ -21,4 +63,8 @@ export interface WorldChampionshipMatch {
   gamesCount?: number;
   studyId?: number | string;
   studyTitle?: string;
+  games?: WorldChampionshipGame[];
+  gamesSummary?: MatchGameSummary[];
+  coveredGamesCount?: number;
 }
+
