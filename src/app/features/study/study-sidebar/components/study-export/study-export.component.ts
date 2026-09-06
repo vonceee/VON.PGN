@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -14,86 +14,76 @@ import { Study, StudyChapter } from '../../../../../core/models/study.model';
       heroDocumentArrowDown
     })
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex-1 flex flex-col min-h-0 overflow-hidden bg-white p-4 select-none rounded-lg">
-      <div class="flex-1 flex flex-col min-h-0 overflow-y-auto pr-1">
-        <!-- Radio Options -->
-        <div class="flex flex-col mb-4">
-          <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-slate-200 hover:bg-slate-200 cursor-pointer transition-colors"
-            [class.bg-slate-200]="exportOption() === 'current'" [class.border-blue-600]="exportOption() === 'current'">
-            <input type="radio" name="exportOption" value="current" [ngModel]="exportOption()"
-              (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-blue-600 border-slate-200 focus:ring-blue-600 bg-transparent">
-            <div class="flex flex-col">
-              <span class="text-sm/6 font-medium">Current chapter</span>
-              <span class="text-xs text-gray-500 mt-0.5">Export only current chapter</span>
-            </div>
-          </label>
+    <div class="flex-1 flex flex-col min-h-0 overflow-y-auto bg-white p-4 select-none">
+      <!-- Radio Options -->
+      <div class="flex flex-col">
+        <label
+          class="flex items-center gap-3.5 py-3 px-2 border-b border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
+          <input type="radio" name="exportOption" value="current" [ngModel]="exportOption()"
+            (ngModelChange)="exportOption.set($event)"
+            class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-600 bg-transparent cursor-pointer">
+          <span class="text-sm font-medium text-slate-800">Current chapter</span>
+        </label>
 
-          <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-slate-200 hover:bg-slate-200 cursor-pointer transition-colors"
-            [class.bg-slate-200]="exportOption() === 'all'" [class.border-blue-600]="exportOption() === 'all'">
-            <input type="radio" name="exportOption" value="all" [ngModel]="exportOption()"
-              (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-blue-600 border-slate-200 focus:ring-blue-600 bg-transparent">
-            <div class="flex flex-col">
-              <span class="text-sm/6 font-medium">All chapters</span>
-              <span class="text-xs text-gray-500 mt-0.5">Export all {{ study()?.chapters?.length }} chapters</span>
-            </div>
-          </label>
+        <label
+          class="flex items-center gap-3.5 py-3 px-2 border-b border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
+          <input type="radio" name="exportOption" value="all" [ngModel]="exportOption()"
+            (ngModelChange)="exportOption.set($event)"
+            class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-600 bg-transparent cursor-pointer">
+          <span class="text-sm font-medium text-slate-800">All chapters</span>
+        </label>
 
-          <label
-            class="flex items-center gap-4 p-4 rounded-4xl border border-slate-200 hover:bg-slate-200 cursor-pointer transition-colors"
-            [class.bg-slate-200]="exportOption() === 'selected'" [class.border-blue-600]="exportOption() === 'selected'">
-            <input type="radio" name="exportOption" value="selected" [ngModel]="exportOption()"
-              (ngModelChange)="exportOption.set($event)"
-              class="w-4 h-4 text-blue-600 border-slate-200 focus:ring-blue-600 bg-transparent">
-            <div class="flex flex-col">
-              <span class="text-sm/6 font-medium">Selected chapters</span>
-              <span class="text-xs text-gray-500 mt-0.5">Select custom chapters to export</span>
-            </div>
-          </label>
-        </div>
-
-        <!-- Chapter Checklist (only shown when exportOption === 'selected') -->
-        @if (exportOption() === 'selected') {
-        <div class="flex-1 flex flex-col rounded-xl p-4 mb-4">
-          <div
-            class="flex items-center justify-between border-b border-slate-200 pb-2 mb-2 text-sm/6 font-medium text-gray-500 select-none">
-            <span>Select chapters</span>
-            <div class="flex gap-2">
-              <button (click)="selectAllChapters(true)"
-                class="hover:text-blue-600 transition-colors cursor-pointer font-semibold">All</button>
-              <span>|</span>
-              <button (click)="selectAllChapters(false)"
-                class="hover:text-blue-600 transition-colors cursor-pointer font-semibold">None</button>
-            </div>
-          </div>
-          <div class="flex-1 overflow-y-auto space-y-1 pr-1">
-            @for (chap of study()?.chapters; track chap.id; let idx = $index) {
-            <label
-              class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-slate-200 cursor-pointer select-none transition-colors"
-              [class.bg-surface]="selectedChapterIds().has(chap.id)">
-              <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
-                (change)="toggleChapterSelection(chap.id)"
-                class="w-4 h-4 rounded text-blue-600 border-slate-200 focus:ring-blue-600 bg-transparent">
-              <span class="text-sm/6 font-medium text-gray-500">{{ idx + 1 }}.</span>
-              <span class="text-sm/6 font-medium truncate flex-1">{{ chap.name }}</span>
-            </label>
-            }
-          </div>
-        </div>
-        }
+        <label
+          class="flex items-center gap-3.5 py-3 px-2 border-b border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors">
+          <input type="radio" name="exportOption" value="selected" [ngModel]="exportOption()"
+            (ngModelChange)="exportOption.set($event)"
+            class="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-600 bg-transparent cursor-pointer">
+          <span class="text-sm font-medium text-slate-800">Selected chapters</span>
+        </label>
       </div>
 
+      <!-- Chapter Checklist (only shown when exportOption === 'selected') -->
+      @if (exportOption() === 'selected') {
+      <div class="flex flex-col mt-4">
+        <div
+          class="flex items-center justify-between border-b border-slate-200 pb-2 mb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider select-none">
+          <span>Select chapters</span>
+          <div class="flex items-center gap-2 normal-case font-medium">
+            <button type="button" (click)="selectAllChapters(true)"
+              class="hover:text-blue-600 transition-colors cursor-pointer text-xs font-semibold text-slate-600">All</button>
+            <span class="text-slate-300">|</span>
+            <button type="button" (click)="selectAllChapters(false)"
+              class="hover:text-blue-600 transition-colors cursor-pointer text-xs font-semibold text-slate-600">None</button>
+          </div>
+        </div>
+        <div class="max-h-60 overflow-y-auto space-y-0.5 pr-1">
+          @for (chap of study()?.chapters; track chap.id; let idx = $index) {
+          <label
+            class="flex items-center gap-2.5 py-1.5 px-2 rounded-lg hover:bg-slate-100 cursor-pointer select-none transition-colors"
+            [class.bg-slate-50]="selectedChapterIds().has(chap.id)">
+            <input type="checkbox" [checked]="selectedChapterIds().has(chap.id)"
+              (change)="toggleChapterSelection(chap.id)"
+              class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-600 bg-transparent cursor-pointer">
+            <span class="text-xs font-medium text-slate-400 w-5 text-right">{{ idx + 1 }}.</span>
+            <span class="text-sm font-medium text-slate-700 truncate flex-1">{{ chap.name }}</span>
+          </label>
+          }
+        </div>
+      </div>
+      }
+
       <!-- Action Button -->
-      <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
-       (click)="performExport()"
-        [disabled]="exportOption() === 'selected' && selectedChapterIds().size === 0">
-        <ng-icon name="heroDocumentArrowDown" class="text-md"></ng-icon>
-        <span>Export PGN</span>
-      </button>
+      <div class="flex justify-end pt-5">
+        <button type="button"
+          class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-medium text-[16px] leading-5 cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
+          (click)="performExport()"
+          [disabled]="exportOption() === 'selected' && selectedChapterIds().size === 0">
+          <ng-icon name="heroDocumentArrowDown" class="text-base"></ng-icon>
+          <span>Export PGN</span>
+        </button>
+      </div>
     </div>
   `
 })

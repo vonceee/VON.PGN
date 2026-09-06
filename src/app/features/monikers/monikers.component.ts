@@ -1,19 +1,40 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MonikerService } from '../../core/services/moniker.service';
 import { PlayerMoniker } from '../../core/models/moniker.model';
 import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
-import { FloatingCursorComponent } from '@shared/ui';
+import {
+  FloatingCursorComponent,
+  TextInputComponent,
+  SelectComponent,
+  SelectItem,
+} from '@shared/ui';
 
+/**
+ * MonikersComponent displays historical and modern chess player monikers in an asymmetrical bento grid.
+ *
+ * ARCHITECTURAL CHOICE:
+ * Standardized search and filter controls to use reusable `TextInputComponent` and `SelectComponent`
+ * with modern Angular Signals and two-way binding. This aligns with the unified design system and
+ * avoids fragmented raw HTML inputs.
+ *
+ * ASSUMPTIONS & EDGE CASES:
+ * - Category filter defaults to 'All', matching all players regardless of assigned category.
+ * - Search query matches player names, monikers, short descriptions, and tags case-insensitively.
+ */
 @Component({
   selector: 'app-monikers',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     FloatingCursorContainerDirective,
     FloatingCursorTriggerDirective,
-    FloatingCursorComponent
+    FloatingCursorComponent,
+    TextInputComponent,
+    SelectComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './monikers.component.html',
@@ -49,6 +70,15 @@ export class MonikersComponent {
     'Historical Icons',
   ];
 
+  readonly categoryOptions: SelectItem<string>[] = [
+    { label: 'All categories', value: 'All' },
+    { label: 'World Champions', value: 'World Champions' },
+    { label: 'Tactical Masters', value: 'Tactical Masters' },
+    { label: 'Positional Legends', value: 'Positional Legends' },
+    { label: 'Modern Super GMs', value: 'Modern Super GMs' },
+    { label: 'Historical Icons', value: 'Historical Icons' },
+  ];
+
   monikers = computed(() => this.monikerService.allMonikers());
 
   filteredMonikers = computed(() => {
@@ -56,7 +86,7 @@ export class MonikersComponent {
     const category = this.selectedCategory();
 
     return this.monikers().filter((item) => {
-      const matchesCategory = category === 'All' || item.category === category;
+      const matchesCategory = !category || category === 'All' || item.category === category;
 
       const matchesQuery =
         !query ||
@@ -68,16 +98,6 @@ export class MonikersComponent {
       return matchesCategory && matchesQuery;
     });
   });
-
-  onSearch(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.searchQuery.set(value);
-  }
-
-  onCategoryChange(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
-    this.selectedCategory.set(value);
-  }
 
   clearSearch() {
     this.searchQuery.set('');

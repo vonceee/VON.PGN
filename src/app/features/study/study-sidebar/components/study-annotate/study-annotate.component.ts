@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MoveNode, GLYPH_MAPPING, GlyphId } from '../../../../../core/models/study.model';
 import { StudyFacade } from '../../../services/study.facade';
+import { TextAreaComponent } from '../../../../../shared/components/ui';
 
 @Component({
   selector: 'app-study-annotate',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TextAreaComponent],
   templateUrl: './study-annotate.component.html',
   host: {
     'class': 'flex flex-col min-h-0 overflow-hidden'

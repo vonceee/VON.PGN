@@ -9,5 +9,6 @@ export * from './flag-icon/flag-icon.component';
 export * from './toggle/toggle.component';
 export * from './floating-cursor/floating-cursor.component';
 export * from './text-input/text-input.component';
+export * from './text-area/text-area.component';
 export * from './select/select.component';
 

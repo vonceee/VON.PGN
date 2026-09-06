@@ -1,13 +1,15 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { WorldChampionshipService } from '../../core/services/world-championship.service';
 import { WorldChampionshipMatch, WorldChampionshipEra } from '../../core/models/world-championship.model';
+import { TextInputComponent, SelectComponent, SelectItem } from '@shared/ui';
 
 @Component({
   selector: 'app-world-championships',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, TextInputComponent, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './world-championships.component.html',
 })
@@ -27,6 +29,14 @@ export class WorldChampionshipsComponent {
     'Early Classical (1886-1946)',
   ];
 
+  readonly eraOptions: SelectItem<string>[] = [
+    { label: 'All eras', value: 'All' },
+    { label: 'Modern Era (2006-Present)', value: 'Modern Era (2006-Present)' },
+    { label: 'Split Era (1993-2005)', value: 'Split Era (1993-2005)' },
+    { label: 'FIDE Soviet Era (1948-1990)', value: 'FIDE Soviet Era (1948-1990)' },
+    { label: 'Early Classical (1886-1946)', value: 'Early Classical (1886-1946)' },
+  ];
+
   matches = computed(() => this.wccService.allMatches());
   isFetchingStudies = computed(() => this.wccService.isFetchingStudies());
 
@@ -35,7 +45,7 @@ export class WorldChampionshipsComponent {
     const era = this.selectedEra();
 
     return this.matches().filter((match) => {
-      const matchesEra = era === 'All' || match.era === era;
+      const matchesEra = !era || era === 'All' || match.era === era;
 
       const matchesQuery =
         !query ||
@@ -62,13 +72,8 @@ export class WorldChampionshipsComponent {
     };
   });
 
-  onSearch(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.searchQuery.set(value);
-  }
-
-  onEraChange(era: string) {
-    this.selectedEra.set(era);
+  clearSearch() {
+    this.searchQuery.set('');
   }
 
   clearFilters() {

@@ -98,10 +98,6 @@ export class StudyListComponent implements OnInit {
     { label: 'Endgame', value: 'endgame' },
   ];
 
-  readonly sortOptions: SelectItem<'last_updated' | 'alphabetical'>[] = [
-    { label: 'Last updated', value: 'last_updated' },
-    { label: 'Alphabetical', value: 'alphabetical' },
-  ];
 
   queryParams = computed(() => ({
     isMyStudies: this.activeTab() === 'my',
@@ -167,10 +163,6 @@ export class StudyListComponent implements OnInit {
     this.searchQuery.set(value);
   }
 
-  onSortChange(event: Event) {
-    const value = (event.target as HTMLSelectElement).value as 'last_updated' | 'alphabetical';
-    this.sortBy.set(value);
-  }
 
   onCategoryFilterChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value as 'all' | 'general' | 'opening_repertoire' | 'middlegame' | 'endgame';

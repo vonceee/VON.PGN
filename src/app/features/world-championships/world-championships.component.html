@@ -2,20 +2,9 @@
   <!-- Page Header -->
   <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="flex-1">
-      <div
-        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-200 border border-slate-200 text-xs text-gray-500 mb-3 font-medium">
-        <svg class="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-        </svg>
-        Historical Chess Archives
-      </div>
       <h1 class="text-4xl md:text-5xl mb-2 text-slate-900 font-normal tracking-tight">
         World Chess Championships
       </h1>
-      <p class="text-gray-500 text-base md:text-lg max-w-3xl">
-        Explore every official World Chess Championship match from 1886 to present. Study iconic duels, match
-        statistics, and interactive analysis created by <span class="text-slate-900 font-medium">vonchess</span>.
-      </p>
     </div>
 
     <!-- Quick Stats -->
@@ -36,41 +25,36 @@
     </div>
   </header>
 
-  <!-- Filter & Search Toolbar -->
-  <div
-    class="mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-slate-200 p-4 rounded-2xl border border-slate-200">
-    <!-- Search Bar -->
-    <div class="relative flex-1">
-      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-        </svg>
-      </div>
-      <input type="text" [value]="searchQuery()" (input)="onSearch($event)"
-        placeholder="Search champion, challenger, year, venue, or keyword..."
-        class="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-slate-400 transition-all text-sm" />
+  <!-- Search & Filter Bar -->
+  <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-6">
+    <app-text-input
+      label="Search"
+      placeholder="Search champion, challenger, year, venue..."
+      [(ngModel)]="searchQuery"
+      [hasPrefix]="true"
+      [hasSuffix]="searchQuery().length > 0"
+      class="flex-1 min-w-0">
+      <svg prefix xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 text-gray-500">
+        <path fill-rule="evenodd"
+          d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+          clip-rule="evenodd" />
+      </svg>
       @if (searchQuery()) {
-      <button (click)="searchQuery.set('')"
-        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-slate-900">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-        </svg>
-      </button>
+        <button suffix type="button" (click)="clearSearch()" class="text-gray-500 hover:text-slate-900 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+            <path
+              d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+          </svg>
+        </button>
       }
-    </div>
+    </app-text-input>
 
-    <!-- Era Filter Buttons -->
-    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-      @for (era of eras; track era) {
-      <button (click)="onEraChange(era)" [class.bg-white]="selectedEra() === era"
-        [class.shadow-sm]="selectedEra() === era" [class.text-slate-900]="selectedEra() === era"
-        [class.font-semibold]="selectedEra() === era" [class.text-gray-500]="selectedEra() !== era"
-        class="px-3.5 py-2 rounded-xl text-xs whitespace-nowrap transition-all border border-transparent hover:bg-white/60 hover:text-slate-900">
-        {{ era }}
-      </button>
-      }
-    </div>
+    <app-select
+      label="Era"
+      [items]="eraOptions"
+      [(value)]="selectedEra"
+      class="w-full sm:w-64 shrink-0"
+    />
   </div>
 
   <!-- Results Count -->
