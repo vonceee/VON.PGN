@@ -1,68 +1,27 @@
-import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ChessBoardComponent } from '../../../../shared/components/chess/chess-board/chess-board.component';
-import { BughouseBoardComponent } from '../bughouse-board/bughouse-board.component';
-import { BughouseRecordState } from '../../../../core/models/bughouse.model';
+import { BughouseBroadcastComponent } from '../bughouse-broadcast/bughouse-broadcast.component';
+import { BughouseLobbyCardComponent } from '../bughouse-lobby-card/bughouse-lobby-card.component';
 
-export interface BughouseTvState {
-  gameId: string | null;
-  isActive: boolean;
-  winner?: string | null;
-  boardA: {
-    fen: string;
-    pocketW: Record<string, number>;
-    pocketB: Record<string, number>;
-    timeW: number;
-    timeB: number;
-    turn: 'w' | 'b';
-    whiteName: string;
-    blackName: string;
-  };
-  boardB: {
-    fen: string;
-    pocketW: Record<string, number>;
-    pocketB: Record<string, number>;
-    timeW: number;
-    timeB: number;
-    turn: 'w' | 'b';
-    whiteName: string;
-    blackName: string;
-  };
-}
-
+/**
+ * Bughouse Lobby View Orchestrator.
+ *
+ * WHY: Modular layout manager switching between the live TV broadcast dual-board view
+ *      and the matchmaking lobby card using modern pill tabs.
+ */
 @Component({
   selector: 'app-bughouse-lobby',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChessBoardComponent, BughouseBoardComponent],
+  imports: [CommonModule, BughouseBroadcastComponent, BughouseLobbyCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bughouse-lobby.component.html',
 })
 export class BughouseLobbyComponent {
-  currentUserProfile = input.required<{ name: string }>();
-  partner = input<any | null>(null);
-  isHost = input<boolean>(true);
-  searchResults = input<any[]>([]);
-  searchQuery = input<string>('');
-  isSearchingPlayers = input<boolean>(false);
-  ongoingMatches = input<any[]>([]);
-  isQueuing = input<boolean>(false);
-  tvState = input<BughouseTvState | null>(null);
-  record = input.required<BughouseRecordState>();
-
-  kickPartner = output<void>();
-  leaveLobby = output<void>();
-  invitePlayer = output<any>();
-  searchInput = output<Event>();
-  startQueue = output<void>();
-  cancelQueue = output<void>();
-  clearSearch = output<void>();
-  spectateGame = output<string>();
-  resetRecord = output<void>();
-
-  onInvitePlayer(player: any, event: Event) {
-    event.stopPropagation();
-    this.invitePlayer.emit(player);
-    this.clearSearch.emit();
-  }
+  /**
+   * Active view tab in the bughouse lobby interface ('broadcast' | 'lobby').
+   *
+   * WHY: Decouples the live TV/spectator broadcast boards from the matchmaking
+   *      squad setup card into distinct pill-tab views to provide a clean, focused UI.
+   */
+  activeTab = signal<'broadcast' | 'lobby'>('broadcast');
 }

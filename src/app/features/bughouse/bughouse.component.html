@@ -1,28 +1,7 @@
 <div appFloatingCursorContainer>
   <!-- ==================== LOBBY & QUEUING STATE ==================== -->
   @if (gameStateService.lobbyState() === 'lobby' || gameStateService.lobbyState() === 'queuing') {
-    <app-bughouse-lobby
-      [currentUserProfile]="currentUserProfile()"
-      [partner]="gameStateService.partner()"
-      [isHost]="gameStateService.isHost()"
-      [searchResults]="searchResults()"
-      [searchQuery]="searchQuery()"
-      [isSearchingPlayers]="isSearchingPlayers()"
-      [ongoingMatches]="tvService.ongoingMatches()"
-      [isQueuing]="bughouseQueueService.isQueuing()"
-      [tvState]="tvService.tvState()"
-      [record]="gameStateService.bughouseRecord()"
-      (kickPartner)="gameStateService.kickPartner()"
-      (leaveLobby)="gameStateService.exitToLobby()"
-      (invitePlayer)="invitePlayer($event)"
-      (searchInput)="onSearchInput($event)"
-      (startQueue)="gameStateService.startQueue()"
-      (cancelQueue)="bughouseQueueService.cancelQueue()"
-      (clearSearch)="clearSearch()"
-      (spectateGame)="gameStateService.spectateGame($event)"
-      (resetRecord)="gameStateService.resetRecord()"
-    >
-    </app-bughouse-lobby>
+    <app-bughouse-lobby></app-bughouse-lobby>
   }
 
   <!-- ==================== PLAYING STATE ==================== -->
@@ -30,32 +9,11 @@
     <app-bughouse-play></app-bughouse-play>
   }
 
-  <!-- Temporary Banner Toast Notifications (Success / Warning / Info) -->
-  @if (gameStateService.inviteNotification(); as notif) {
-    <div class="fixed bottom-6 right-6 z-[110] pointer-events-none">
-      <div
-        class="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-semibold"
-        [class.bg-green-50]="notif.type === 'success'"
-        [class.text-green-800]="notif.type === 'success'"
-        [class.border-green-200]="notif.type === 'success'"
-        [class.bg-rose-50]="notif.type === 'error'"
-        [class.text-rose-800]="notif.type === 'error'"
-        [class.border-rose-200]="notif.type === 'error'"
-        [class.bg-slate-900]="notif.type === 'info'"
-        [class.text-white]="notif.type === 'info'"
-        [class.border-slate-800]="notif.type === 'info'"
-      >
-        @if (notif.type === 'success') {
-          <ng-icon name="heroCheckCircle" class="text-green-600 text-lg shrink-0"></ng-icon>
-        } @else if (notif.type === 'error') {
-          <ng-icon name="heroXCircle" class="text-rose-600 text-lg shrink-0"></ng-icon>
-        } @else {
-          <ng-icon name="heroInformationCircle" class="text-blue-400 text-lg shrink-0"></ng-icon>
-        }
-        <span>{{ notif.message }}</span>
-      </div>
-    </div>
-  }
+  <!-- Floating Queue Widget (visible while searching for match) -->
+  <app-bughouse-queue></app-bughouse-queue>
+
+  <!-- Toast Notification Alerts -->
+  <app-bughouse-notification></app-bughouse-notification>
 
   <!-- Custom Floating Cursor -->
   <app-floating-cursor></app-floating-cursor>

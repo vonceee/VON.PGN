@@ -1,0 +1,110 @@
+@if (state(); as tv) {
+  <div class="flex flex-col gap-4">
+    @if (tv.winner) {
+      <div class="flex justify-end pb-1">
+        <span class="text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+          {{ tv.winner }} Wins!
+        </span>
+      </div>
+    }
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- ==================== BOARD A (Live) ==================== -->
+      <app-bughouse-board
+        boardId="A"
+        [fen]="tv.boardA.fen"
+        [orientation]="'white'"
+        [pocketW]="tv.boardA.pocketW"
+        [pocketB]="tv.boardA.pocketB"
+        [timeW]="tv.boardA.timeW"
+        [timeB]="tv.boardA.timeB"
+        [turn]="tv.boardA.turn"
+        [interactive]="false"
+        [myBoard]="null"
+        [myColor]="null"
+        [gameActive]="tv.isActive"
+        [winner]="tv.winner || null"
+        [whiteName]="tv.boardA.whiteName"
+        [blackName]="tv.boardA.blackName"
+        [activeDropBoard]="null"
+        [activeDropPiece]="null"
+        [activeDropColor]="null"
+      >
+      </app-bughouse-board>
+
+      <!-- ==================== BOARD B (Live) ==================== -->
+      <app-bughouse-board
+        boardId="B"
+        [fen]="tv.boardB.fen"
+        [orientation]="'black'"
+        [pocketW]="tv.boardB.pocketW"
+        [pocketB]="tv.boardB.pocketB"
+        [timeW]="tv.boardB.timeW"
+        [timeB]="tv.boardB.timeB"
+        [turn]="tv.boardB.turn"
+        [interactive]="false"
+        [myBoard]="null"
+        [myColor]="null"
+        [gameActive]="tv.isActive"
+        [winner]="tv.winner || null"
+        [whiteName]="tv.boardB.whiteName"
+        [blackName]="tv.boardB.blackName"
+        [activeDropBoard]="null"
+        [activeDropPiece]="null"
+        [activeDropColor]="null"
+      >
+      </app-bughouse-board>
+    </div>
+  </div>
+} @else {
+  <!-- Empty State (Matches live layout with idle Bughouse dual boards) -->
+  <div class="flex flex-col gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- ==================== BOARD A (Idle) ==================== -->
+      <app-bughouse-board
+        boardId="A"
+        [fen]="initialFen"
+        [orientation]="'white'"
+        [pocketW]="emptyPocket"
+        [pocketB]="emptyPocket"
+        [timeW]="180"
+        [timeB]="180"
+        [turn]="'w'"
+        [interactive]="false"
+        [myBoard]="null"
+        [myColor]="null"
+        [gameActive]="false"
+        [winner]="null"
+        [whiteName]="'White'"
+        [blackName]="'Black'"
+        [activeDropBoard]="null"
+        [activeDropPiece]="null"
+        [activeDropColor]="null"
+      >
+      </app-bughouse-board>
+
+      <!-- ==================== BOARD B (Idle) ==================== -->
+      <app-bughouse-board
+        boardId="B"
+        [fen]="initialFen"
+        [orientation]="'black'"
+        [pocketW]="emptyPocket"
+        [pocketB]="emptyPocket"
+        [timeW]="180"
+        [timeB]="180"
+        [turn]="'w'"
+        [interactive]="false"
+        [myBoard]="null"
+        [myColor]="null"
+        [gameActive]="false"
+        [winner]="null"
+        [whiteName]="'White'"
+        [blackName]="'Black'"
+        [activeDropBoard]="null"
+        [activeDropPiece]="null"
+        [activeDropColor]="null"
+      >
+      </app-bughouse-board>
+    </div>
+  </div>
+}
