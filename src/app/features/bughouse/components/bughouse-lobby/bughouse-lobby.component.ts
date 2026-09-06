@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BughouseBroadcastComponent } from '../bughouse-broadcast/bughouse-broadcast.component';
 import { BughouseLobbyCardComponent } from '../bughouse-lobby-card/bughouse-lobby-card.component';
+import { BughouseGameStateService } from '../../services/bughouse-game-state.service';
 
 /**
  * Bughouse Lobby View Orchestrator.
@@ -17,11 +18,13 @@ import { BughouseLobbyCardComponent } from '../bughouse-lobby-card/bughouse-lobb
   templateUrl: './bughouse-lobby.component.html',
 })
 export class BughouseLobbyComponent {
+  gameStateService = inject(BughouseGameStateService);
+
   /**
    * Active view tab in the bughouse lobby interface ('broadcast' | 'lobby').
    *
-   * WHY: Decouples the live TV/spectator broadcast boards from the matchmaking
-   *      squad setup card into distinct pill-tab views to provide a clean, focused UI.
+   * WHY: Bound to gameStateService.activeLobbyTab so that returning to lobby from a match
+   *      automatically opens the matchmaking lobby squad card view.
    */
-  activeTab = signal<'broadcast' | 'lobby'>('broadcast');
+  activeTab = this.gameStateService.activeLobbyTab;
 }

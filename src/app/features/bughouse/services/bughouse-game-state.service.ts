@@ -1,6 +1,7 @@
 import { Injectable, inject, signal, computed, effect, untracked, NgZone, PLATFORM_ID, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Chess, Move } from 'chess.js';
 import { environment } from '../../../../environments/environment';
 import { AudioService } from '../../../core/services/audio.service';
@@ -30,12 +31,14 @@ export class BughouseGameStateService implements OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private http = inject(HttpClient);
+  private router = inject(Router);
   private gameService = inject(GameService);
   private bughouseInviteService = inject(BughouseInviteService);
   private tvService = inject(BughouseTvService);
 
   // ── Lobby & Pairing State ──────────────────────────────────────────
   lobbyState = signal<'lobby' | 'queuing' | 'matched' | 'playing'>('lobby');
+  activeLobbyTab = signal<'broadcast' | 'lobby'>('broadcast');
   activeSidebarTab = signal<'players' | 'moves'>('players');
 
   // ── Bughouse Record & Persist State ───────────────────────────────
@@ -389,12 +392,14 @@ export class BughouseGameStateService implements OnDestroy {
     this.myColor.set(null);
     this.isSpectating.set(false);
     this.isHost.set(true);
+    this.activeLobbyTab.set('lobby');
     this.lobbyState.set('lobby');
 
     const active = this.tvService.ongoingMatches();
     if (active.length > 0) {
       this.tvService.tvGameId.set(active[0].gameId);
     }
+    this.router.navigate(['/bughouse']);
   }
 
   syncBoardOrientations() {

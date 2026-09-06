@@ -20,4 +20,5 @@ export class BughouseSidebarComponent {
   startQueue = output<void>();
   resign = output<void>();
   offerDraw = output<void>();
+  backToLobby = output<void>();
 }

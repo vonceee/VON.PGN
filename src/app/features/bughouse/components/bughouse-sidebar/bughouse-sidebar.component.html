@@ -127,6 +127,24 @@
             }
           }
         </div>
+
+        <!-- Back to Lobby Button -->
+        <button
+          type="button"
+          class="group inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-sm transition-all cursor-pointer"
+          (click)="backToLobby.emit()"
+        >
+          <svg
+            class="w-4 h-4 transition-transform group-hover:-translate-x-0.5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          Back to Lobby
+        </button>
       </div>
     }
 </div>
