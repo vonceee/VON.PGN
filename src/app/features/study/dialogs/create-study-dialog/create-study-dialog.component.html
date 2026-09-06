@@ -1,73 +1,42 @@
-<div class="bg-white rounded-4xl max-w-xl max-h-[90vh] flex flex-col gap-1.5 relative overflow-hidden">
-  <!-- Header -->
+<div class="bg-white rounded-4xl max-w-xl flex flex-col gap-1.5 relative">
   <div class="p-6 pb-0 flex items-center justify-between shrink-0">
     <h2 class="text-2xl">Create new study</h2>
   </div>
 
-  <!-- Dialog Body (scrollable) -->
-  <div class="flex-1 overflow-y-auto p-8 space-y-6">
+  <div class="flex-1 p-8 pt-6 flex flex-col gap-6">
+
     <!-- Study Name -->
-    <div class="flex flex-col gap-1.5">
-      <label for="study_name" class="font-medium text-sm/6 uppercase">Study name</label>
-      <input type="text" id="study_name" [(ngModel)]="name" maxlength="100" placeholder="e.g. My Openings Analysis"
-        class="block w-full pl-3 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-sm/6 placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-blue-600/50"
-        autofocus />
-    </div>
+    <app-text-input
+      id="study_name"
+      label="Study name"
+      [(ngModel)]="name"
+      [maxlength]="100"
+      placeholder="e.g. My Openings Analysis"
+      [autofocus]="true"
+      (enter)="onSubmit()"
+      class="w-full" />
 
     <!-- Visibility -->
-    <div class="flex flex-col gap-1.5">
-      <label for="visibility" class="font-medium text-sm/6 uppercase">Visibility</label>
-      <div class="relative w-full">
-        <select id="visibility" [value]="visibility()" (change)="visibility.set($any($event.target).value)"
-          class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-right pr-8 bg-white cursor-pointer"
-          style="
-            background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
-            background-position: right 0.5rem center;
-            background-size: 1.25rem;
-          ">
-          <option value="public">Public (Everyone can see)</option>
-          <option value="unlisted">Unlisted (Hidden from search)</option>
-          <option value="private">Private (Only me)</option>
-        </select>
-      </div>
-    </div>
+    <app-select
+      label="Visibility"
+      [items]="visibilityOptions"
+      [(value)]="visibility"
+      class="w-full" />
 
     <!-- Category Selection -->
-    <div class="flex flex-col gap-1.5">
-      <label for="category" class="font-medium text-sm/6 uppercase">Category</label>
-      <div class="relative w-full">
-        <select id="category" [value]="category()" (change)="category.set($any($event.target).value)"
-          class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-right pr-8 bg-white"
-          style="
-            background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
-            background-position: right 0.5rem center;
-            background-size: 1.25rem;
-          ">
-          <option value="general">General Study</option>
-          <option value="opening_repertoire">Opening Repertoire</option>
-          <option value="middlegame">Middlegame</option>
-          <option value="endgame">Endgame</option>
-        </select>
-      </div>
-    </div>
+    <app-select
+      label="Category"
+      [items]="categoryOptions"
+      [(value)]="category"
+      class="w-full" />
 
     <!-- Repertoire Orientation Selector (Only visible for Opening Repertoires) -->
     @if (category() === 'opening_repertoire') {
-    <div class="flex flex-col gap-1.5">
-      <label for="orientation" class="font-medium text-sm/6 uppercase">Repertoire For?</label>
-      <div class="relative w-full">
-        <select id="orientation" [value]="orientation()" (change)="orientation.set($any($event.target).value)"
-          class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-right pr-8 bg-white"
-          style="
-            background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
-            background-position: right 0.5rem center;
-            background-size: 1.25rem;
-          ">
-          <option value="white">White Repertoire</option>
-          <option value="black">Black Repertoire</option>
-        </select>
-      </div>
-    </div>
+      <app-select
+        label="Repertoire For?"
+        [items]="orientationOptions"
+        [(value)]="orientation"
+        class="w-full" />
     }
   </div>
 

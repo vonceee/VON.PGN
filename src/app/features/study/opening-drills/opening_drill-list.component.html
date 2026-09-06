@@ -7,39 +7,36 @@
     </header>
 
     <!-- Search & Filter Bar -->
-    <div class="flex gap-3 flex-wrap md:flex-nowrap items-center mb-6">
-      <div class="relative flex-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none">
+    <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center mb-6">
+      <app-text-input
+        label="Search"
+        placeholder="Search repertoires..."
+        [(ngModel)]="searchQuery"
+        [hasPrefix]="true"
+        [hasSuffix]="searchQuery().length > 0"
+        class="flex-1 min-w-0">
+        <svg prefix xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 text-gray-500">
           <path fill-rule="evenodd"
             d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
             clip-rule="evenodd" />
         </svg>
-        <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search repertoires..."
-          class="block w-full pl-9 pr-9 py-2.5 bg-white border border-slate-200 bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none" />
         @if (searchQuery()) {
-        <button (click)="clearSearch()"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-slate-900">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-            <path
-              d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-          </svg>
-        </button>
+          <button suffix type="button" (click)="clearSearch()" class="text-gray-500 hover:text-slate-900 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+              <path
+                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+            </svg>
+          </button>
         }
-      </div>
+      </app-text-input>
 
-      <div class="relative w-44 shrink-0">
-        <select [value]="activeTab()" (change)="setTab($any($event.target).value)"
-          class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm/6 focus:outline-none focus:ring-2 focus:ring-blue-600/50 appearance-none bg-no-repeat bg-right pr-8 bg-white"
-          style="
-            background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 20 20%22 fill=%22%2394a3b8%22><path fill-rule=%22evenodd%22 d=%22M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z%22 clip-rule=%22evenodd%22 /></svg>');
-            background-position: right 0.5rem center;
-            background-size: 1.25rem;
-          ">
-          <option value="my">My repertoires</option>
-          <option value="public">Public repertoires</option>
-        </select>
-      </div>
+      <app-select
+        label="Repertoires"
+        [items]="tabOptions"
+        [value]="activeTab()"
+        (valueChange)="onTabChange($event)"
+        class="w-full sm:w-52 shrink-0"
+      />
     </div>
 
     @if (isLoading()) {

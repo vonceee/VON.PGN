@@ -2,13 +2,14 @@ import { Component, input, output, signal, effect, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Study } from '../../../../../core/models/study.model';
+import { SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
 
 export type ChapterTab = 'empty' | 'editor' | 'fen' | 'pgn';
 
 @Component({
   selector: 'app-study-add-chapter',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SelectComponent, TextInputComponent],
   templateUrl: './add-chapter.component.html'
 })
 export class AddChapterComponent {
@@ -25,6 +26,18 @@ export class AddChapterComponent {
   newChapterPgn = signal('');
   isReadingFiles = signal(false);
   fileSummary = signal('');
+
+  readonly orientationOptions: SelectItem<'white' | 'black'>[] = [
+    { label: 'White', value: 'white' },
+    { label: 'Black', value: 'black' },
+  ];
+
+  readonly chapterTabOptions: SelectItem<ChapterTab>[] = [
+    { label: 'Empty board (Standard game)', value: 'empty' },
+    { label: 'Board editor (Set pieces manually)', value: 'editor' },
+    { label: 'FEN input (Load custom position)', value: 'fen' },
+    { label: 'PGN file/text (Import games)', value: 'pgn' },
+  ];
 
   addChapterTabs: { id: ChapterTab; label: string }[] = [
     { id: 'empty', label: 'Empty board (Standard game)' },

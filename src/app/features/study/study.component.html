@@ -25,7 +25,7 @@
         <!-- Mobile Chapter Selector Dropdown -->
         @if (isMobileLayout() && chapterOptions().length > 0) {
         <div class="mb-6 w-full flex items-center justify-center px-1" [style.maxWidth.px]="maxBoardSize()">
-          <app-dropdown
+          <app-select
             [items]="chapterOptions()"
             [value]="facade.currentChapter()?.id"
             (itemSelected)="onChapterSelect($event)"
@@ -194,11 +194,6 @@
 
     <!-- Navigation Buttons Group -->
     <div class="flex items-center gap-1.5">
-      <!-- First Move (Double Back - Desktop Only) -->
-      <button (click)="goToFirst()" title="First Move"
-        class="hidden md:flex p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 items-center justify-center">
-        <ng-icon name="heroChevronDoubleLeft" class="text-lg"></ng-icon>
-      </button>
       <button (click)="facade.onPrevMove()" title="Previous Move"
         class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
         <ng-icon name="heroChevronLeft" class="text-lg"></ng-icon>
@@ -206,11 +201,6 @@
       <button (click)="facade.onNextMove()" title="Next Move"
         class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
         <ng-icon name="heroChevronRight" class="text-lg"></ng-icon>
-      </button>
-      <!-- Last Move (Fast Forward - Desktop Only) -->
-      <button (click)="goToLast()" title="Last Move"
-        class="hidden md:flex p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 items-center justify-center">
-        <ng-icon name="heroChevronDoubleRight" class="text-lg"></ng-icon>
       </button>
     </div>
 
@@ -228,15 +218,6 @@
       <ng-icon name="heroEye" class="text-lg"></ng-icon>
       <span class="text-xs font-medium">{{ facade.viewerCount() }}</span>
     </div>
-    }
-
-    <!-- Edit Metadata Button (Desktop Only) -->
-    @if (facade.canEdit()) {
-    <div class="hidden md:block h-4 w-px bg-muted/20 shrink-0"></div>
-    <button (click)="facade.onEditMetadata()" title="Edit Game Metadata"
-      class="hidden md:flex p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 items-center justify-center">
-      <ng-icon name="heroPencil" class="text-lg"></ng-icon>
-    </button>
     }
 
     <!-- Classroom Actions & Status -->

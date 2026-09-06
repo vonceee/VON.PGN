@@ -3,21 +3,48 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Study } from '../../../../../core/models/study.model';
 import { StudyNavigationFacade } from '../../../services/study-navigation.facade';
+import { SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-study-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SelectComponent, TextInputComponent],
   templateUrl: './study-settings.component.html'
 })
 export class StudySettingsComponent {
   study = input.required<Study | null>();
   isOwner = input.required<boolean>();
 
+  readonly visibilityOptions: SelectItem<'public' | 'unlisted' | 'private'>[] = [
+    { label: 'Public (Everyone can see)', value: 'public' },
+    { label: 'Unlisted (Hidden from search)', value: 'unlisted' },
+    { label: 'Private (Only me)', value: 'private' },
+  ];
+
+  readonly engineVisibilityOptions: SelectItem<'everyone' | 'owner'>[] = [
+    { label: 'Everyone', value: 'everyone' },
+    { label: 'Only me', value: 'owner' },
+  ];
+
+  readonly exportVisibilityOptions: SelectItem<'everyone' | 'owner'>[] = [
+    { label: 'Everyone', value: 'everyone' },
+    { label: 'Only me', value: 'owner' },
+  ];
+
+  readonly categoryOptions: SelectItem<'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>[] = [
+    { label: 'General Study', value: 'general' },
+    { label: 'Opening Repertoire', value: 'opening_repertoire' },
+    { label: 'Middlegame', value: 'middlegame' },
+    { label: 'Endgame', value: 'endgame' },
+  ];
+
+  readonly repertoireOrientationOptions: SelectItem<'white' | 'black'>[] = [
+    { label: 'White Repertoire', value: 'white' },
+    { label: 'Black Repertoire', value: 'black' },
+  ];
+
   private navFacade = inject(StudyNavigationFacade);
 
-  // Two-way bindings with sidebar signals
-  settingsPreviewFen = model<string>('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
   settingsPreviewLastMove = model<string | null>(null);
   settingsOrientation = model<'white' | 'black'>('white');
   isEditingPreview = model<boolean>(false);
@@ -61,15 +88,7 @@ export class StudySettingsComponent {
     });
   }
 
-  useCurrentBoardPosition() {
-    const fen = this.navFacade.currentFen();
-    const uci = this.navFacade.currentNode()?.uci || null;
-    this.settingsPreviewFen.set(fen);
-    this.settingsPreviewLastMove.set(uci);
-  }
-
   openPreviewBoardEditor() {
-    this.fenBackup = this.settingsPreviewFen();
     this.isEditingPreview.set(true);
   }
 
@@ -78,7 +97,6 @@ export class StudySettingsComponent {
   }
 
   cancelPreviewBoardEditor() {
-    this.settingsPreviewFen.set(this.fenBackup);
     this.isEditingPreview.set(false);
   }
 
@@ -104,7 +122,6 @@ export class StudySettingsComponent {
       export_visibility: this.settingsExportVisibility(),
       category: this.settingsCategory(),
       orientation: this.settingsCategory() === 'opening_repertoire' ? this.settingsOrientation() : 'white',
-      preview_fen: this.settingsPreviewFen(),
       preview_last_move: this.settingsPreviewLastMove() || undefined
     });
   }

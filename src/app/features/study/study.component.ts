@@ -30,7 +30,6 @@ import {
   heroChevronDoubleRight,
   heroEye,
   heroUserPlus,
-  heroPencil,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -52,7 +51,7 @@ import { StudyShortcutsService } from './services/study-shortcuts.service';
 import { StudyFacade } from './services/study.facade';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { BoardEditorComponent } from '../../shared/components/chess/board-editor/board-editor.component';
-import { DropdownComponent, DropdownItem } from '@shared/ui';
+import { SelectComponent, SelectItem } from '@shared/ui';
 
 @Component({
   selector: 'app-study',
@@ -71,7 +70,7 @@ import { DropdownComponent, DropdownItem } from '@shared/ui';
     JoinClassDialogComponent,
     StudyAnalysisComponent,
     BoardEditorComponent,
-    DropdownComponent,
+    SelectComponent,
   ],
   providers: [
     StudyFacade,
@@ -92,7 +91,6 @@ import { DropdownComponent, DropdownItem } from '@shared/ui';
       heroChevronDoubleRight,
       heroEye,
       heroUserPlus,
-      heroPencil,
     }),
   ],
   templateUrl: './study.component.html',
@@ -153,7 +151,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   id = input.required<string>();
   chapterId = input<string | undefined>(undefined, { alias: 'chapter' });
 
-  chapterOptions = computed<DropdownItem<number>[]>(() => {
+  chapterOptions = computed<SelectItem<number>[]>(() => {
     const chapters = this.facade.study()?.chapters || [];
     return [...chapters]
       .sort((a, b) => a.order - b.order)
@@ -163,7 +161,7 @@ export class StudyComponent implements OnInit, OnDestroy {
       }));
   });
 
-  onChapterSelect(item: DropdownItem<number>) {
+  onChapterSelect(item: SelectItem<number>) {
     if (item.value === undefined) return;
     const chap = this.facade.study()?.chapters?.find((c) => c.id === item.value);
     if (chap) {

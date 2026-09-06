@@ -29,43 +29,45 @@
 
       <!-- Sort Filter Dropdown (when My studies is active, desktop only) -->
       @if (activeTab() === 'my') {
-        <app-dropdown
+        <app-select
+          label="Sort by"
           [items]="sortOptions"
           [(value)]="sortBy"
-          buttonClass="h-11"
           class="hidden md:block w-44 shrink-0"
         />
       }
     </div>
 
     <!-- Search Input, Categories Dropdown & Create Button -->
-    <div class="flex items-center gap-3 flex-1">
-      <div class="relative flex-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none">
+    <div class="flex items-center gap-3 flex-1 min-w-0">
+      <app-text-input
+        label="Search"
+        placeholder="Search studies..."
+        [(ngModel)]="searchQuery"
+        [hasPrefix]="true"
+        [hasSuffix]="searchQuery().length > 0"
+        class="flex-1 min-w-0">
+        <svg prefix xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 text-gray-500">
           <path fill-rule="evenodd"
             d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
             clip-rule="evenodd" />
         </svg>
-        <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)" placeholder="Search studies..."
-          class="block w-full h-11 pl-9 pr-9 py-2.5 bg-white border border-slate-200 bg-surface rounded-xl text-sm/6 placeholder:text-gray-500 focus:outline-none" />
         @if (searchQuery()) {
-        <button (click)="clearSearch()"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-slate-900">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-            <path
-              d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-          </svg>
-        </button>
+          <button suffix type="button" (click)="clearSearch()" class="text-gray-500 hover:text-slate-900 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+              <path
+                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+            </svg>
+          </button>
         }
-      </div>
+      </app-text-input>
 
       <!-- Categories Filter Dropdown (Hidden on Mobile Viewport) -->
-      <app-dropdown
+      <app-select
+        label="Category"
         [items]="categoryOptions"
         [(value)]="categoryFilter"
-        buttonClass="h-11"
-        class="hidden md:block w-48 shrink-0"
+        class="hidden md:block w-52 shrink-0"
       />
 
       <!-- Create Study Button (Inline with Search) -->

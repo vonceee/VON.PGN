@@ -8,7 +8,6 @@
     <button (click)="selectSection('chapters')" [attr.aria-label]="'Chapters'"
       [class.text-blue-600]="activeSection() === 'chapters' && !splitSection()"
       [class.bg-slate-200]="activeSection() === 'chapters' && !splitSection()"
-      [class.rounded-full]="activeSection() === 'chapters' && !splitSection()"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroBookOpen" class="text-xl"></ng-icon>
       <div
@@ -21,7 +20,6 @@
     <!-- Add Chapter Button -->
     <button (click)="selectSection('add-chapter')" [attr.aria-label]="'Add chapter'"
       [class.text-blue-600]="activeSection() === 'add-chapter'" [class.bg-slate-200]="activeSection() === 'add-chapter'"
-      [class.rounded-full]="activeSection() === 'add-chapter'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroPlus" class="text-xl"></ng-icon>
       <div
@@ -35,7 +33,6 @@
     <!-- Study Settings Button -->
     <button (click)="selectSection('settings')" [attr.aria-label]="'Study settings'"
       [class.text-blue-600]="activeSection() === 'settings'" [class.bg-slate-200]="activeSection() === 'settings'"
-      [class.rounded-full]="activeSection() === 'settings'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroCog6Tooth" class="text-xl"></ng-icon>
       <div
@@ -51,7 +48,6 @@
     <!-- Members Toggle -->
     <button (click)="selectSection('members')" [attr.aria-label]="'Members'"
       [class.text-blue-600]="activeSection() === 'members'" [class.bg-slate-200]="activeSection() === 'members'"
-      [class.rounded-full]="activeSection() === 'members'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroUsers" class="text-xl"></ng-icon>
       <div
@@ -61,23 +57,9 @@
     </button>
     }
 
-    <!-- Metadata Toggle -->
-    <button (click)="selectSection('metadata')" [attr.aria-label]="'Game metadata'"
-      [class.text-blue-600]="splitSection() === 'metadata'" [class.bg-slate-200]="splitSection() === 'metadata'"
-      [class.rounded-full]="splitSection() === 'metadata'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-      <ng-icon name="heroTag" class="text-xl"></ng-icon>
-      <div
-        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-        Metadata
-      </div>
-    </button>
-
-    <!-- Annotate Toggle -->
     @if (canEdit()) {
     <button (click)="selectSection('annotate')" [attr.aria-label]="'Annotate move'"
       [class.text-blue-600]="activeSection() === 'annotate'" [class.bg-slate-200]="activeSection() === 'annotate'"
-      [class.rounded-full]="activeSection() === 'annotate'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroPencilSquare" class="text-xl"></ng-icon>
       <div
@@ -89,7 +71,7 @@
 
     <!-- Chat Toggle -->
     <button (click)="selectSection('chat')" [attr.aria-label]="'Chat'" [class.text-blue-600]="splitSection() === 'chat'"
-      [class.bg-slate-200]="splitSection() === 'chat'" [class.rounded-full]="splitSection() === 'chat'"
+      [class.bg-slate-200]="splitSection() === 'chat'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroChatBubbleLeftRight" class="text-xl"></ng-icon>
       <div
@@ -102,7 +84,6 @@
     @if (isExportAllowed()) {
     <button (click)="selectSection('export')" [attr.aria-label]="'Export PGN'"
       [class.text-blue-600]="activeSection() === 'export'" [class.bg-slate-200]="activeSection() === 'export'"
-      [class.rounded-full]="activeSection() === 'export'"
       class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
       <ng-icon name="heroShare" class="text-xl"></ng-icon>
       <div
@@ -117,7 +98,7 @@
   @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
   <button (click)="toggleVideoCall()" [attr.aria-label]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
     [class.text-rose-500]="webrtc.isCallActive()" [class.bg-slate-200]="webrtc.isCallActive()"
-    [class.rounded-full]="webrtc.isCallActive()" [class.text-gray-500]="!webrtc.isCallActive()"
+    [class.text-gray-500]="!webrtc.isCallActive()"
     class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
     <ng-icon [name]="webrtc.isCallActive() ? 'heroPhoneXMark' : 'heroPhone'" class="text-xl"></ng-icon>
     <div
@@ -151,26 +132,24 @@
     @switch (activeSection()) {
     @case ('chapters') {
     <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl p-2 overflow-hidden relative">
-      <app-study-chapters-list class="flex-1 flex flex-col min-h-[220px] min-w-0" [study]="s"
+      <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s"
         [currentChapter]="currentChapter()" [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
         (chapterEditClicked)="onEditChapter($event.event, $event.chapter)" (orderChanged)="onDrop($event)">
       </app-study-chapters-list>
     </div>
 
-    <!-- Bottom Split Panel -->
-    @if (splitSection(); as split) {
-    <div class="flex-1 flex flex-col border-2 border-slate-200 rounded-xl overflow-hidden relative min-h-[220px]">
+    <!-- Bottom Panel: Chat if open, otherwise Game Metadata -->
+    <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl overflow-hidden relative">
       <div class="flex-1 flex flex-col min-h-0 relative">
-        @if (split === 'chat') {
+        @if (splitSection() === 'chat') {
         <app-study-chat class="flex-1 overflow-hidden min-h-0 rounded-lg"></app-study-chat>
-        } @else if (split === 'metadata') {
+        } @else {
         <app-study-metadata class="flex-1 flex flex-col min-h-0 min-w-0" [canEdit]="canEdit()"
           (editMetadataClicked)="editMetadata()">
         </app-study-metadata>
         }
       </div>
     </div>
-    }
     }
     @case ('add-chapter') {
     <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl overflow-hidden relative">
@@ -183,7 +162,6 @@
     @case ('settings') {
     <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl overflow-hidden relative">
       <app-study-settings class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
-        [(settingsPreviewFen)]="settingsPreviewFen"
         [(settingsPreviewLastMove)]="settingsPreviewLastMove"
         [(settingsOrientation)]="settingsOrientation"
         [(isEditingPreview)]="isSettingsEditorActive"
@@ -202,13 +180,7 @@
       </app-study-members>
     </div>
     }
-    @case ('metadata') {
-    <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <app-study-metadata class="flex-1 flex flex-col min-h-0 min-w-0" [canEdit]="canEdit()"
-        (editMetadataClicked)="editMetadata()">
-      </app-study-metadata>
-    </div>
-    }
+
     @case ('chat') {
     <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl overflow-hidden relative">
       <app-study-chat class="flex-1 overflow-hidden min-h-0 rounded-lg"></app-study-chat>
@@ -239,6 +211,9 @@
     [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
     (chapterEditClicked)="onEditChapter($event.event, $event.chapter)" (orderChanged)="onDrop($event)">
   </app-study-chapters-list>
+  <app-study-metadata class="flex-1 flex flex-col min-h-0 min-w-0" [canEdit]="canEdit()"
+    (editMetadataClicked)="editMetadata()">
+  </app-study-metadata>
   }
 </aside>
 }

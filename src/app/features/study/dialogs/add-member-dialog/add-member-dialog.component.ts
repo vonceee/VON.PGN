@@ -6,6 +6,8 @@ import { UserService, UserSearchResult } from '../../../../core/services/user.se
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TextInputComponent } from '@shared/ui';
+
 export interface AddMemberResult {
   user: UserSearchResult;
   role: 'member' | 'collaborator';
@@ -14,7 +16,7 @@ export interface AddMemberResult {
 @Component({
   selector: 'app-add-member-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TextInputComponent],
   templateUrl: './add-member-dialog.component.html',
   styles: [`
     :host {

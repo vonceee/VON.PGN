@@ -14,7 +14,6 @@ import {
   heroCog6Tooth,
   heroPlus,
   heroShare,
-  heroTag,
   heroPencilSquare
 } from '@ng-icons/heroicons/outline';
 
@@ -38,7 +37,7 @@ import { StudyExportComponent } from './components/study-export/study-export.com
 import { StudyChatComponent } from '../study-chat/study-chat.component';
 import { StudyAnnotateComponent } from './components/study-annotate/study-annotate.component';
 
-export type SidebarSection = 'chapters' | 'add-chapter' | 'settings' | 'members' | 'metadata' | 'chat' | 'export' | 'annotate';
+export type SidebarSection = 'chapters' | 'add-chapter' | 'settings' | 'members' | 'chat' | 'export' | 'annotate';
 
 @Component({
   selector: 'app-study-sidebar',
@@ -66,7 +65,6 @@ export type SidebarSection = 'chapters' | 'add-chapter' | 'settings' | 'members'
       heroCog6Tooth,
       heroPlus,
       heroShare,
-      heroTag,
       heroPencilSquare
     })
   ],
@@ -170,7 +168,7 @@ export class StudySidebarComponent {
     this.facade.onEditMetadata();
   }
 
-  toggleSplit(section: 'chat' | 'metadata') {
+  toggleSplit(section: 'chat') {
     if (this.splitSection() === section) {
       this.splitSection.set(null);
     } else {
@@ -178,7 +176,11 @@ export class StudySidebarComponent {
     }
   }
 
-  selectSection(section: SidebarSection) {
+  selectSection(section: SidebarSection | 'metadata') {
+    if (section === 'metadata') {
+      section = 'chapters';
+    }
+
     if (this.displayMode() !== 'all') {
       this.activeSection.set(section);
       return;
@@ -186,12 +188,12 @@ export class StudySidebarComponent {
 
     const isCollapsed = this.isCollapsed();
 
-    if (section === 'chat' || section === 'metadata') {
-      if (this.splitSection() === section) {
+    if (section === 'chat') {
+      if (this.splitSection() === 'chat') {
         this.splitSection.set(null);
         if (isCollapsed) this.isExpanded.set(false);
       } else {
-        this.splitSection.set(section);
+        this.splitSection.set('chat');
         this.activeSection.set('chapters');
         if (isCollapsed) this.isExpanded.set(true);
       }

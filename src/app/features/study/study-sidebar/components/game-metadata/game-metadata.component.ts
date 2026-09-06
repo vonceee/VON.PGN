@@ -1,7 +1,7 @@
 import { Component, input, output, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroTrophy, heroGlobeAlt, heroCalendar, heroHashtag, heroBookOpen } from '@ng-icons/heroicons/outline';
+import { heroTrophy, heroGlobeAlt, heroCalendar, heroHashtag, heroBookOpen, heroPencil } from '@ng-icons/heroicons/outline';
 import { StudyFacade } from '../../../services/study.facade';
 
 @Component({
@@ -15,7 +15,8 @@ import { StudyFacade } from '../../../services/study.facade';
       heroGlobeAlt,
       heroCalendar,
       heroHashtag,
-      heroBookOpen
+      heroBookOpen,
+      heroPencil
     })
   ],
   templateUrl: './game-metadata.component.html'

@@ -13,7 +13,7 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroBookOpen, heroPlay } from '@ng-icons/heroicons/outline';
 
 import { FloatingCursorContainerDirective, FloatingCursorTriggerDirective } from '@shared/directives';
-import { FloatingCursorComponent } from '@shared/ui';
+import { FloatingCursorComponent, SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-opening-drill-list',
@@ -26,7 +26,9 @@ import { FloatingCursorComponent } from '@shared/ui';
     NgIconComponent,
     FloatingCursorContainerDirective,
     FloatingCursorTriggerDirective,
-    FloatingCursorComponent
+    FloatingCursorComponent,
+    SelectComponent,
+    TextInputComponent,
   ],
   templateUrl: './opening_drill-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,10 +50,19 @@ export class OpeningDrillListComponent implements OnInit {
   isBrowser = isPlatformBrowser(this.platformId);
   private targetY = 0;
 
-
-
   isLoading = signal(false);
   activeTab = signal<'my' | 'public'>('my');
+
+  readonly tabOptions: SelectItem<'my' | 'public'>[] = [
+    { label: 'My repertoires', value: 'my' },
+    { label: 'Public repertoires', value: 'public' },
+  ];
+
+  onTabChange(tab?: 'my' | 'public') {
+    if (tab) {
+      this.setTab(tab);
+    }
+  }
 
   // Selection list
   openingRepertoires = signal<Study[]>([]);
