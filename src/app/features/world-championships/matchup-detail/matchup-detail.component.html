@@ -1,189 +1,86 @@
-<div class="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
-  <!-- Back navigation & Actions bar -->
-  <div class="flex items-center justify-between gap-4 mb-4">
-    <a
-      routerLink="/world-championships"
-      class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-slate-900 transition-colors"
-    >
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-      </svg>
-      All Championships
-    </a>
+<div class="px-4 sm:px-6 lg:px-8 py-6 mx-auto">
 
-    <div class="flex items-center gap-2">
-      <!-- Toggle Scorecard -->
-      <button
-        (click)="toggleScorecard()"
-        class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-100 text-slate-900 transition-colors flex items-center gap-1.5 cursor-pointer"
-      >
-        <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+  @if (isLoading()) {
+    <div class="min-h-96 flex flex-col items-center justify-center gap-3">
+      <div class="w-8 h-8 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-sm text-gray-500">Loading matchup...</p>
+    </div>
+  } @else if (notFound() || !match()) {
+    <!-- Not Found State -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-8 sm:p-12 text-center max-w-md mx-auto my-16 shadow-sm">
+      <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto mb-4">
+        <svg class="w-7 h-7 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
         </svg>
-        {{ showScorecard() ? 'Hide Scorecard' : 'Scorecard' }}
-      </button>
-
-      <!-- Toggle Match Overview Drawer -->
-      <button
-        (click)="toggleMatchDetails()"
-        class="px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-100 text-slate-900 transition-colors flex items-center gap-1.5 cursor-pointer"
-      >
-        <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+      </div>
+      <h2 class="text-xl font-bold text-slate-900 mb-2">Matchup Not Found</h2>
+      <p class="text-sm text-gray-500 mb-6">
+        The requested World Championship matchup could not be found or has not been created yet.
+      </p>
+      <a routerLink="/world-championships"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-sm font-medium transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
         </svg>
-        {{ showMatchDetailsDrawer() ? 'Hide Match Summary' : 'Match Summary' }}
-      </button>
-
-      <!-- Open Interactive Study Button -->
-      @if (match(); as m) {
-        <button
-          (click)="openStudy()"
-          class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer"
-        >
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25" />
-          </svg>
-          Interactive Study
-        </button>
-      }
+        Back to Championships
+      </a>
     </div>
-  </div>
+  } @else {
+    <!-- Main Split Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-y-8 lg:gap-y-0">
 
-  <!-- Top Header matching reference layout: Title on left, subtitle/metadata, horizontal divider -->
-  <header class="pt-2">
-    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
-        {{ selectedGame()?.title || match()?.title }}
-      </h1>
-      <span class="font-mono text-xs sm:text-sm text-gray-500">
-        {{ selectedGame()?.subtitle || (match()?.champion + ' vs. ' + match()?.challenger + ' – ' + match()?.location + ', ' + match()?.year) }}
-      </span>
-    </div>
-
-    <div class="h-px bg-slate-200 mt-4 mb-6"></div>
-  </header>
-
-  <!-- Modular Collapsible Match Overview Drawer -->
-  @if (showMatchDetailsDrawer() && match(); as m) {
-    <app-wcc-summary-drawer [match]="m"></app-wcc-summary-drawer>
-  }
-
-  <!-- Modular Scorecard Cross-Table -->
-  @if (showScorecard() && match(); as m) {
-    <div class="mb-6">
-      <app-wcc-scorecard
-        [match]="m"
-        [gamesSummary]="m.gamesSummary || []"
-        [selectedGameNumber]="currentGameNumber()"
-        (gameSelected)="selectGameByNumber($event)"
-      ></app-wcc-scorecard>
-    </div>
-  }
-
-  <!-- Game Selector & Pagination Control Bar -->
-  <div class="bg-white border border-slate-200 rounded-2xl p-3 sm:p-4 mb-6 flex flex-wrap items-center justify-between gap-4 shadow-xs">
-    <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-      <div class="w-full sm:w-80">
-        <app-select
-          label="Game Selection"
-          placeholder="Select game from match..."
-          [items]="gameOptions()"
-          [value]="selectedGame()?.id"
-          (itemSelected)="selectGameById($event.value!)"
-        ></app-select>
-      </div>
-
-      <!-- Quick Prev / Next Game navigation -->
-      <div class="flex items-center gap-1.5">
-        <button
-          type="button"
-          (click)="prevGame()"
-          [disabled]="!hasPrevGame()"
-          class="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none transition-colors text-slate-700 cursor-pointer"
-          title="Previous Game"
-        >
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
-        </button>
-        <span class="text-xs font-semibold text-slate-600 px-2.5 py-1 bg-slate-100 rounded-lg">
-          Game {{ currentGameNumber() || 1 }} of {{ games().length }}
-        </span>
-        <button
-          type="button"
-          (click)="nextGame()"
-          [disabled]="!hasNextGame()"
-          class="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 disabled:opacity-30 disabled:pointer-events-none transition-colors text-slate-700 cursor-pointer"
-          title="Next Game"
-        >
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Right Side Status / Shortcut -->
-    <div class="flex items-center gap-2">
-      @if ((selectedGame()?.sections?.length || 0) > 1) {
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          Annotated Story
-        </span>
-      } @else {
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
-          <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-          Game PGN Score
-        </span>
-      }
-    </div>
-  </div>
-
-  <!-- Main Two-Column Editorial Layout (Refer to Reference Image) -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-    <!-- Left Column: Modular Editorial Story Viewer -->
-    <div class="lg:col-span-7 xl:col-span-8 space-y-6">
-      <app-wcc-story-viewer
-        [overview]="selectedGame()?.narrativeOverview"
-        [sections]="selectedGame()?.sections || []"
-        [fallbackDescription]="match()?.description"
-        [moveHistory]="moveHistory()"
-        [currentPly]="currentPly()"
-        (plySelected)="goToPly($event)"
-      ></app-wcc-story-viewer>
-
-      <!-- Quick Switch to Opera Game (if not currently on it) -->
-      @if (match()?.id !== 'opera-game') {
-        <div class="pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-          <div>
-            <span class="text-xs font-bold uppercase text-gray-500">Historical Demonstration</span>
-            <div class="text-sm font-semibold text-slate-900">View The Opera Game (1858) Masterpiece</div>
-            <p class="text-xs text-gray-500">Explore Paul Morphy's 17-move instructional lesson shown in the reference layout.</p>
+      <!-- Left Column -->
+      <div class="bg-white lg:col-span-7 xl:col-span-8 p-6 sm:p-8 lg:p-10 space-y-6">
+        <header class="space-y-4">
+          <div class="flex items-center justify-between gap-3">
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
+              {{ match()?.title || selectedGame()?.title }}
+            </h1>
           </div>
-          <a
-            routerLink="/world-championships/opera-game"
-            class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
-          >
-            Open Opera Game
-          </a>
-        </div>
-      }
-    </div>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="text-lg sm:text-xl font-medium mb-4">
+                {{ match()?.champion }} vs. {{ match()?.challenger }}
+              </h2>
+              <p class="text-sm text-gray-500 mt-0.5">
+                {{ match()?.location }}
+              </p>
+            </div>
 
-    <!-- Right Column: Modular Interactive Board Viewer -->
-    <div class="lg:col-span-5 xl:col-span-4 sticky top-20">
-      <app-wcc-board-viewer
-        [fen]="currentFen()"
-        [orientation]="boardOrientation()"
-        [currentPly]="currentPly()"
-        [maxPly]="maxPly()"
-        [moveLabel]="currentMoveLabel()"
-        (goToFirst)="goToFirst()"
-        (prev)="prevMove()"
-        (next)="nextMove()"
-        (goToLast)="goToLast()"
-        (flip)="flipBoard()"
-      ></app-wcc-board-viewer>
+            <!-- Game Selector Dropdown & Prev/Next navigation -->
+            <div class="flex items-center gap-2 w-auto">
+              <div class="w-52">
+                <app-select label="" placeholder="Select Game..." [items]="gameOptions()" [value]="selectedGame()?.id"
+                  (itemSelected)="selectGameById($event.value!)"></app-select>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Scorecard Cross-Table -->
+        @if (match(); as m) {
+        <div class="space-y-2">
+          <app-wcc-scorecard [match]="m" [gamesSummary]="m.gamesSummary || []" [selectedGameNumber]="currentGameNumber()"
+            (gameSelected)="selectGameByNumber($event)"></app-wcc-scorecard>
+        </div>
+        }
+
+        <!-- Modular Editorial Story Viewer (The Blog Article) -->
+        <app-wcc-story-viewer [overview]="selectedGame()?.narrativeOverview" [sections]="selectedGame()?.sections || []"
+          [fallbackDescription]="match()?.description" [moveHistory]="moveHistory()" [currentPly]="currentPly()"
+          (plySelected)="goToPly($event)"></app-wcc-story-viewer>
+      </div>
+
+      <!-- Right Column -->
+      <div
+        class="lg:col-span-5 xl:col-span-4 border-t-2 lg:border-t-0 lg:border-l-2 border-slate-200 pt-6 lg:pt-0 lg:pl-10">
+        <div class="sticky top-6">
+          <app-wcc-board-viewer [fen]="currentFen()" [orientation]="boardOrientation()" [currentPly]="currentPly()"
+            [maxPly]="maxPly()" [moveLabel]="currentMoveLabel()" (goToFirst)="goToFirst()" (prev)="prevMove()"
+            (next)="nextMove()" (goToLast)="goToLast()" (flip)="flipBoard()"></app-wcc-board-viewer>
+        </div>
+      </div>
     </div>
-  </div>
+  }
 </div>

@@ -81,7 +81,7 @@ import { MatchGameSummary, WorldChampionshipMatch } from '../../../../core/model
             [class.text-white]="!game.hasStory && isBlackWin(game.result)"
             [class.bg-slate-100]="!game.hasStory && isDraw(game.result)"
             [class.text-slate-700]="!game.hasStory && isDraw(game.result)"
-            class="min-w-[34px] px-1.5 py-1 text-xs font-semibold rounded-lg border border-slate-200 hover:border-slate-400 hover:shadow-xs transition-all flex flex-col items-center justify-center shrink-0 cursor-pointer text-center relative"
+            class="min-w-[34px] px-1.5 py-1 text-xs font-semibold rounded-lg border border-slate-200 hover:border-slate-400 hover:transition-all flex flex-col items-center justify-center shrink-0 cursor-pointer text-center relative"
           >
             <span class="text-[10px] leading-none opacity-70">G{{ game.gameNumber }}</span>
             <span class="text-[11px] font-bold leading-tight">
@@ -111,7 +111,7 @@ import { MatchGameSummary, WorldChampionshipMatch } from '../../../../core/model
                     Game {{ game.gameNumber }}: {{ game.white }} (W) vs {{ game.black }} (B)
                   </div>
                   <div class="text-[11px] text-gray-500 truncate">
-                    {{ game.opening || 'Classical Opening' }} {{ game.eco ? '• ' + game.eco : '' }}
+                    {{ game.opening || 'Classical Opening' }}
                   </div>
                 </div>
 

@@ -39,22 +39,22 @@
   <!-- 2. Stats Grid -->
   <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     <div
-      class="p-8 rounded-2xl bg-surface border border-slate-200 text-center space-y-2 hover:-translate-y-1 hover:shadow-xs transition-all duration-300">
+      class="p-8 rounded-2xl bg-surface border border-slate-200 text-center space-y-2 hover:-translate-y-1 hover:transition-all duration-300">
       <div class="text-4xl font-light text-blue-600">10+</div>
       <div class="text-sm leading-relaxed tracking-widest text-gray-500">Students enrolled</div>
     </div>
     <div
-      class="p-8 rounded-2xl bg-surface border border-slate-200 text-center space-y-2 hover:-translate-y-1 hover:shadow-xs transition-all duration-300">
+      class="p-8 rounded-2xl bg-surface border border-slate-200 text-center space-y-2 hover:-translate-y-1 hover:transition-all duration-300">
       <div class="text-4xl font-light text-blue-600">3</div>
       <div class="text-sm leading-relaxed tracking-widest text-gray-500">Dedicated coaches</div>
     </div>
     <div
-      class="p-8 rounded-2xl bg-surface border border-slate-200 text-center space-y-2 hover:-translate-y-1 hover:shadow-xs transition-all duration-300">
+      class="p-8 rounded-2xl bg-surface border border-slate-200 text-center space-y-2 hover:-translate-y-1 hover:transition-all duration-300">
       <div class="text-4xl font-light text-blue-600">1-on-1</div>
       <div class="text-sm leading-relaxed tracking-widest text-gray-500">Personalized sessions</div>
     </div>
     <div
-      class="p-8 rounded-2xl bg-surface border border-slate-200 text-center space-y-2 hover:-translate-y-1 hover:shadow-xs transition-all duration-300">
+      class="p-8 rounded-2xl bg-surface border border-slate-200 text-center space-y-2 hover:-translate-y-1 hover:transition-all duration-300">
       <div class="text-4xl font-light text-blue-600">10+ yrs</div>
       <div class="text-sm leading-relaxed tracking-widest text-gray-500">Combined coach experience</div>
     </div>
@@ -136,7 +136,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       @for (coach of academyInstructors(); track coach.id) {
       <div
-        class="p-6 rounded-2xl bg-white border border-slate-200 flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-4 hover:-translate-y-0.5 hover:shadow-xs hover:border-slate-200 transition-all duration-300">
+        class="p-6 rounded-2xl bg-white border border-slate-200 flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-4 hover:-translate-y-0.5 hover:hover:border-slate-200 transition-all duration-300">
         <div
           class="w-14 h-14 rounded-full overflow-hidden bg-surface border border-slate-200 flex items-center justify-center shrink-0">
           @if (coach.profilePicture) {
@@ -162,7 +162,7 @@
   <!-- 5. Callout Banner -->
   <section class="py-6">
     <div
-      class="p-8 md:p-12 rounded-2xl bg-gradient-to-br from-blue-50/40 via-surface to-indigo-50/20 border border-slate-200 flex flex-col md:flex-row items-center md:items-center justify-between text-center md:text-left gap-6 hover:shadow-xs transition-all duration-300">
+      class="p-8 md:p-12 rounded-2xl bg-gradient-to-br from-blue-50/40 via-surface to-indigo-50/20 border border-slate-200 flex flex-col md:flex-row items-center md:items-center justify-between text-center md:text-left gap-6 hover:transition-all duration-300">
       <div class="space-y-1">
         <h2 class="text-2xl font-medium">Ready to start?</h2>
         <p class="text-gray-500 text-sm leading-relaxed tracking-widest">First trial class is free, no commitment.</p>

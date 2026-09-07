@@ -1,150 +1,156 @@
-import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterOutlet, Router, NavigationEnd } from '@angular/router';
-
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  PLATFORM_ID,
+  HostListener,
+  ViewEncapsulation,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+  Router,
+  NavigationEnd,
+} from '@angular/router';
+import { filter, startWith } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { filter, map, startWith } from 'rxjs';
 
+/**
+ * AdminLayoutComponent provides the primary shell for administrative dashboards and tools.
+ * 
+ * WHY: Adopts a clean, modern collapsible sidebar layout for VON.CHESS administration,
+ *      providing access to core administrative routes (Dashboard, Users, Courses,
+ *      World Championships, Coach Profiles, and Academy Enrollments).
+ */
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
   encapsulation: ViewEncapsulation.None,
-  providers: [],
-  template: `
-    <div class="flex min-h-screen bg-slate-200">
-      <!-- Sidebar -->
-      <aside class="w-80 bg-white fixed top-0 left-0 h-screen overflow-y-auto z-50 border-r border-slate-200">
-        <div class="p-8 border-b border-slate-200">
-          <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-slate-900 rounded flex items-center justify-center text-white font-semibold">
-              V
-            </div>
-            <h1 class="text-xl font-semibold ">Admin</h1>
-          </div>
-        </div>
-
-        <nav class="mt-4">
-          <div class="px-4 mb-2">
-            <p class="text-xs font-semibold   px-2">Main</p>
-          </div>
-          <ul class="space-y-1 px-2">
-            <li>
-              <a routerLink="/admin" routerLinkActive="bg-blue-50 text-blue-600" [routerLinkActiveOptions]="{exact: true}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
-                
-                <span>Dashboard</span>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/admin/users" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
-                
-                <span>Users</span>
-              </a>
-            </li>
-          </ul>
-
-          <div class="px-4 mt-8 mb-2">
-            <p class="text-xs font-semibold   px-2">Content</p>
-          </div>
-          <ul class="space-y-1 px-2">
-            <li>
-              <a routerLink="/admin/courses" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
-                <span>Courses</span>
-              </a>
-            </li>
-            <li>
-              <a routerLink="/admin/world-championships-editor" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-200 hover:text-blue-600 mx-2">
-                <span>WCC Story Editor</span>
-              </a>
-            </li>
-          </ul>
-
-          <div class="px-4 mt-8 mb-2">
-            <p class="text-xs font-semibold   px-2">Applications</p>
-          </div>
-          <ul class="space-y-1 px-2">
-            <li>
-              <a routerLink="/admin/coaches" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
-                
-                <span>Coach Profiles</span>
-              </a>
-            </li>
-
-            <li>
-              <a routerLink="/admin/academy-enrollments" routerLinkActive="bg-blue-50 text-blue-600" class="flex items-center gap-3 px-4 py-2.5 rounded-lg  hover:bg-slate-200 hover:text-blue-600 mx-2  ">
-                
-                <span>Enrollments</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
-      <!-- Main Content -->
-      <div class="ml-[280px] flex-1 flex flex-col min-h-screen">
-        <!-- Header -->
-        <header class="sticky top-0 right-0 w-full z-40 bg-white border-b border-slate-200 px-8 h-20 flex items-center justify-between">
-          <div class="flex items-center gap-8">
-            <h2 class="text-lg font-semibold ">{{ pageTitle() }}</h2>
-          </div>
-
-          <div class="flex items-center gap-4">
-            <div class="h-8 w-px bg-slate-200 mx-2"></div>
-
-            <div class="flex items-center gap-3 pl-2 group cursor-pointer">
-              <div class="w-10 h-10 rounded bg-slate-200 flex items-center justify-center text-gray-500 font-semibold overflow-hidden">
-                @if (user()?.avatar) {
-                  <img [src]="user()?.avatar" class="w-full h-full object-cover">
-                } @else {
-                  <span>{{ user()?.name?.charAt(0) }}</span>
-                }
-              </div>
-              <div class="hidden sm:block text-left">
-                <div class="text-sm/6 font-semibold mb-1">{{ user()?.name }}</div>
-                <div class="text-xs font-semibold text-gray-500 ">Super Admin</div>
-              </div>
-              
-            </div>
-          </div>
-        </header>
-
-        <main class="flex-1 p-8 lg:p-12 bg-slate-200">
-          <div class="mx-auto w-full h-full">
-            <router-outlet></router-outlet>
-          </div>
-        </main>
-      </div>
-    </div>
-  `
+  templateUrl: './admin-layout.component.html',
+  styleUrl: './admin-layout.component.css',
 })
-export class AdminLayoutComponent {
+export class AdminLayoutComponent implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
+  private platformId = inject(PLATFORM_ID);
 
-  user = this.authService.currentUser;
-  pageTitle = signal('Dashboard');
+  public user = this.authService.currentUser;
+  public pageTitle = signal<string>('Dashboard Overview');
+  public isCollapsed = signal<boolean>(false);
+  public isMobileOpen = signal<boolean>(false);
+  public userMenuOpen = signal<boolean>(false);
+
+  /**
+   * Computes the single letter initial for user avatars when no photo image is provided.
+   */
+  public userAvatarInitial = computed<string>(() => {
+    const name = this.user()?.name?.trim();
+    return name ? name.charAt(0).toUpperCase() : 'A';
+  });
 
   constructor() {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      startWith(null)
-    ).subscribe(() => {
-      this.updatePageTitle();
-    });
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        startWith(null)
+      )
+      .subscribe(() => {
+        this.updatePageTitle();
+        this.closeMobileSidebar();
+      });
   }
 
-  private updatePageTitle() {
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // Restore sidebar state from LocalStorage
+      const savedCollapsed = localStorage.getItem('gemini_admin_sidebar_collapsed');
+      if (savedCollapsed !== null) {
+        this.isCollapsed.set(savedCollapsed === 'true');
+      }
+    }
+  }
+
+  /**
+   * Toggles the collapsed state of the desktop sidebar and persists the user preference.
+   */
+  public toggleSidebar(): void {
+    const nextState = !this.isCollapsed();
+    this.isCollapsed.set(nextState);
+
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('gemini_admin_sidebar_collapsed', String(nextState));
+    }
+  }
+
+  /**
+   * Toggles the responsive mobile slide-over drawer.
+   */
+  public toggleSidebarMobile(): void {
+    this.isMobileOpen.update((v) => !v);
+  }
+
+  /**
+   * Closes the mobile slide-over drawer.
+   */
+  public closeMobileSidebar(): void {
+    this.isMobileOpen.set(false);
+  }
+
+  /**
+   * Toggles the user profile & settings dropdown popover.
+   */
+  public toggleUserMenu(): void {
+    this.userMenuOpen.update((v) => !v);
+  }
+
+  /**
+   * Closes the user profile menu when clicking outside.
+   */
+  @HostListener('document:click', ['$event'])
+  public onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.relative') && this.userMenuOpen()) {
+      this.userMenuOpen.set(false);
+    }
+  }
+
+  /**
+   * Synchronizes the top header display title with the active route.
+   */
+  private updatePageTitle(): void {
     const url = this.router.url;
-    if (url.includes('/admin/users')) this.pageTitle.set('User Management');
-    else if (url.includes('/admin/courses')) this.pageTitle.set('Course Management');
-    else if (url.includes('/admin/coaches')) this.pageTitle.set('Coach Management');
-    else if (url.includes('/admin/coach/')) this.pageTitle.set('Coach Editor');
-    else if (url.includes('/admin/academy-enrollments')) this.pageTitle.set('Academy Enrollments');
-    else if (url.includes('/admin/world-championships-editor')) this.pageTitle.set('WCC Story Editor');
-    else this.pageTitle.set('Dashboard Overview');
+    if (url.includes('/admin/users')) {
+      this.pageTitle.set('User Management');
+    } else if (url.includes('/admin/courses')) {
+      this.pageTitle.set('Course Management');
+    } else if (url.includes('/admin/course/new')) {
+      this.pageTitle.set('New Course Editor');
+    } else if (url.includes('/admin/coaches')) {
+      this.pageTitle.set('Coach Management');
+    } else if (url.includes('/admin/coach/')) {
+      this.pageTitle.set('Coach Editor');
+    } else if (url.includes('/admin/academy-enrollments')) {
+      this.pageTitle.set('Academy Enrollments');
+    } else if (url.includes('/admin/world-championships-editor/new')) {
+      this.pageTitle.set('New Championship Matchup');
+    } else if (url.includes('/admin/world-championships-editor/')) {
+      this.pageTitle.set('Edit Championship Matchup');
+    } else if (url.includes('/admin/world-championships-editor')) {
+      this.pageTitle.set('World Championships');
+    } else {
+      this.pageTitle.set('Dashboard Overview');
+    }
   }
 
-  logout() {
+  /**
+   * Signs the current administrative user out of the platform.
+   */
+  public logout(): void {
     this.authService.logout();
   }
 }

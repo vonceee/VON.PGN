@@ -54,7 +54,7 @@ export type DropdownItem<T = any> = SelectItem<T>;
         (click)="toggle()"
         [attr.aria-expanded]="isOpen()"
         aria-haspopup="menu"
-        class="inline-flex w-full items-center justify-between gap-x-2 rounded-xl bg-white px-3.5 py-2.5 text-sm/6 font-medium text-gray-900 border border-slate-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600/30 cursor-pointer shadow-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        class="inline-flex w-full items-center justify-between gap-x-2 rounded-xl bg-white px-3.5 py-2.5 text-sm/6 font-medium text-gray-900 border border-slate-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600/30 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         [class.border-blue-600]="isOpen() && !error()"
         [class.ring-2]="isOpen() && !error()"
         [class.ring-blue-600/30]="isOpen() && !error()"

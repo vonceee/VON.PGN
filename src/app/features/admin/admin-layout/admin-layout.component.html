@@ -1,0 +1,253 @@
+<!-- Mobile Backdrop Overlay -->
+@if (isMobileOpen()) {
+<div (click)="closeMobileSidebar()"
+  class="fixed inset-0 bg-slate-900/40 z-40 md:hidden backdrop-blur-xs transition-opacity duration-200"></div>
+}
+
+<div class="flex min-h-screen bg-slate-100/80 font-sans text-slate-900">
+  <!-- Collapsible Sidebar for VON.CHESS Admin -->
+  <aside
+    class="fixed top-0 left-0 h-screen z-50 bg-white border-r border-slate-200 flex flex-col transition-all duration-300 ease-in-out md:translate-x-0 select-none"
+    [ngClass]="{
+      'w-[68px]': isCollapsed(),
+      'w-[270px]': !isCollapsed(),
+      'translate-x-0': isMobileOpen(),
+      '-translate-x-full': !isMobileOpen()
+    }">
+    <!-- Collapse / Expand Toggle Button -->
+    <div class="flex items-center pt-3.5 pb-2 px-3" [ngClass]="isCollapsed() ? 'justify-center' : 'justify-end'">
+      <button (click)="toggleSidebar()" type="button"
+        class="p-2 rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer"
+        [title]="isCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="4" />
+          <path d="M9 3v18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scrollable Navigation Area -->
+    <div class="flex-1 overflow-y-auto gemini-sidebar-scroll px-1.5 py-1 space-y-1">
+      <!-- Navigation Items -->
+      <nav class="space-y-0.5">
+        <!-- 1. Dashboard Overview -->
+        <a routerLink="/admin" [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="bg-[#e8f0fe] text-[#0b57d0] font-medium" (click)="closeMobileSidebar()"
+          [class.justify-center]="isCollapsed()"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-full text-sm text-slate-700 hover:bg-[#f0f4f9] transition-colors group cursor-pointer"
+          [title]="'Dashboard Overview'">
+          <!-- 4-Grid Dashboard Icon -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+          @if (!isCollapsed()) {
+          <span class="truncate">Dashboard</span>
+          }
+        </a>
+
+        <!-- 2. Users -->
+        <a routerLink="/admin/users" routerLinkActive="bg-[#e8f0fe] text-[#0b57d0] font-medium"
+          (click)="closeMobileSidebar()" [class.justify-center]="isCollapsed()"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-full text-sm text-slate-700 hover:bg-[#f0f4f9] transition-colors group cursor-pointer"
+          [title]="'User Management'">
+          <!-- Users / Students Icon -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          @if (!isCollapsed()) {
+          <span class="truncate">Users</span>
+          }
+        </a>
+
+        <!-- 3. Courses -->
+        <a routerLink="/admin/courses" routerLinkActive="bg-[#e8f0fe] text-[#0b57d0] font-medium"
+          (click)="closeMobileSidebar()" [class.justify-center]="isCollapsed()"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-full text-sm text-slate-700 hover:bg-[#f0f4f9] transition-colors group cursor-pointer"
+          [title]="'Course Management'">
+          <!-- Course / Video Icon -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7" />
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+          </svg>
+          @if (!isCollapsed()) {
+          <span class="truncate">Courses</span>
+          }
+        </a>
+
+        <!-- 4. World Championships -->
+        <a routerLink="/admin/world-championships-editor" routerLinkActive="bg-[#e8f0fe] text-[#0b57d0] font-medium"
+          (click)="closeMobileSidebar()" [class.justify-center]="isCollapsed()"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-full text-sm text-slate-700 hover:bg-[#f0f4f9] transition-colors group cursor-pointer"
+          [title]="'World Championships'">
+          <!-- Story / Trophy Book Icon -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
+          @if (!isCollapsed()) {
+          <span class="truncate">World Championships</span>
+          }
+        </a>
+
+        <!-- 5. Coach Profiles -->
+        <a routerLink="/admin/coaches" routerLinkActive="bg-[#e8f0fe] text-[#0b57d0] font-medium"
+          (click)="closeMobileSidebar()" [class.justify-center]="isCollapsed()"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-full text-sm text-slate-700 hover:bg-[#f0f4f9] transition-colors group cursor-pointer"
+          [title]="'Coach Management'">
+          <!-- Coach Badge Icon -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M6 20v-2a6 6 0 0 1 12 0v2" />
+          </svg>
+          @if (!isCollapsed()) {
+          <span class="truncate">Coach Profiles</span>
+          }
+        </a>
+
+        <!-- 6. Academy Enrollments -->
+        <a routerLink="/admin/academy-enrollments" routerLinkActive="bg-[#e8f0fe] text-[#0b57d0] font-medium"
+          (click)="closeMobileSidebar()" [class.justify-center]="isCollapsed()"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-full text-sm text-slate-700 hover:bg-[#f0f4f9] transition-colors group cursor-pointer"
+          [title]="'Academy Enrollments'">
+          <!-- Enrollments Clipboard Icon -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+            <path d="M9 14l2 2 4-4" />
+          </svg>
+          @if (!isCollapsed()) {
+          <span class="truncate">Enrollments</span>
+          }
+        </a>
+      </nav>
+    </div>
+
+    <!-- Fixed User Profile & Settings Footer -->
+    <div class="mt-auto border-t border-slate-200/90 bg-white p-3 relative">
+      @if (!isCollapsed()) {
+      <div class="flex items-center justify-between gap-2">
+        <div (click)="toggleUserMenu()"
+          class="flex items-center gap-3 min-w-0 flex-1 p-1 rounded-lg hover:bg-[#f0f4f9] transition-colors cursor-pointer">
+          <!-- User Avatar Circle -->
+          <div
+            class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-medium text-sm shrink-0 shadow-xs">
+            @if (user()?.avatar) {
+            <img [src]="user()?.avatar" class="w-full h-full rounded-full object-cover" alt="User avatar" />
+            } @else {
+            <span>{{ userAvatarInitial() }}</span>
+            }
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm font-medium text-slate-900 truncate leading-tight">{{ user()?.name || 'Administrator' }}
+            </div>
+            <div class="text-xs text-slate-500 truncate leading-tight">Super Admin</div>
+          </div>
+        </div>
+
+        <!-- Settings Gear Button -->
+        <button (click)="toggleUserMenu()" type="button"
+          class="p-2 rounded-full text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer shrink-0"
+          title="Admin Settings">
+          <svg class="w-5 h-5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+      </div>
+      } @else {
+      <!-- Collapsed User Avatar -->
+      <div class="flex justify-center">
+        <button (click)="toggleUserMenu()" type="button"
+          class="w-9 h-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-medium text-sm cursor-pointer hover:ring-2 hover:ring-slate-300 transition-all"
+          [title]="(user()?.name || 'Administrator') + ' (Super Admin)'">
+          @if (user()?.avatar) {
+          <img [src]="user()?.avatar" class="w-full h-full rounded-full object-cover" alt="User avatar" />
+          } @else {
+          <span>{{ userAvatarInitial() }}</span>
+          }
+        </button>
+      </div>
+      }
+
+      <!-- Settings & Profile Popover Menu -->
+      @if (userMenuOpen()) {
+      <div
+        class="absolute bottom-16 left-3 w-60 bg-white rounded-xl shadow-xl border border-slate-200 py-1 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+        <div class="px-4 py-2.5 border-b border-slate-100">
+          <p class="text-sm font-semibold text-slate-900 truncate">{{ user()?.name || 'Administrator' }}</p>
+          <p class="text-xs text-slate-500 truncate">{{ user()?.email || 'admin@vonchess.com' }}</p>
+          <span
+            class="inline-block mt-1 text-[10px] font-semibold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Super
+            Admin</span>
+        </div>
+
+        <a routerLink="/admin" (click)="userMenuOpen.set(false)"
+          class="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+          <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          </svg>
+          Dashboard Overview
+        </a>
+
+        <a routerLink="/admin/course/new" (click)="userMenuOpen.set(false)"
+          class="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+          <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          New Course Editor
+        </a>
+
+        <a routerLink="/" (click)="userMenuOpen.set(false)"
+          class="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
+          <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
+          Return to VON.CHESS
+        </a>
+
+        <div class="border-t border-slate-100 my-1"></div>
+
+        <button (click)="logout(); userMenuOpen.set(false)" type="button"
+          class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors cursor-pointer">
+          <svg class="w-4 h-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Sign Out
+        </button>
+      </div>
+      }
+    </div>
+  </aside>
+
+  <!-- Main Content Layout Wrapper -->
+  <div class="ml-0 flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out"
+    [ngClass]="isCollapsed() ? 'md:ml-[68px]' : 'md:ml-[270px]'">
+
+    <!-- Main Workspace Content Area -->
+    <main class="flex-1">
+      <div class="mx-auto w-full h-full">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

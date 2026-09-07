@@ -17,56 +17,20 @@ interface ScorecardPlayerRow {
   totalPoints: number;
 }
 
-/**
- * World Championship Match Scorecard & Cross-Table Component.
- * 
- * WHY:
- * A championship match is decided across multiple games. This component renders an interactive
- * cross-table displaying both contenders, round-by-round points (1, ½, 0), color alternation,
- * and running scores, highlighting the currently selected game and providing 1-click navigation.
- * 
- * ARCHITECTURAL CHOICE:
- * - Standalone Angular component with Signals (`computed()`, `input()`, `output()`).
- * - Horizontally scrollable cross-table with sticky player column for mobile viewports.
- * - Emits `gameSelected` with `gameNumber` on click.
- */
 @Component({
   selector: 'app-wcc-scorecard',
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 mb-6 shadow-xs">
-      <!-- Header Strip -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200">
-        <div class="flex items-center gap-2">
-          <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-          <span class="text-xs font-bold uppercase text-gray-500 tracking-wider">
-            Match Scorecard
-          </span>
-          <span class="text-xs text-gray-400">•</span>
-          <span class="text-xs font-medium text-slate-700">
-            {{ match().format }}
-          </span>
-        </div>
-
-        <div class="flex items-center gap-2 text-xs font-semibold">
-          <span class="text-gray-500">Official Result:</span>
-          <span class="px-2.5 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
-            {{ match().winner }} won ({{ match().score }})
-          </span>
-        </div>
-      </div>
-
+    <div class="bg-white mb-6">
       <!-- Cross-Table Container -->
-      <div class="overflow-x-auto scrollbar-thin pb-2">
+      <div class="overflow-x-auto">
         <table class="w-full text-center border-collapse select-none min-w-[580px]">
           <thead>
             <tr class="text-xs text-gray-500 font-semibold border-b border-slate-200">
-              <th class="text-left py-2 px-3 font-semibold text-slate-700 bg-white sticky left-0 z-10 min-w-[170px] shadow-xs">
-                Contenders
+              <th class="text-left py-2 px-3 font-semibold text-slate-700 bg-white sticky left-0 z-10 min-w-[170px]">
+                _
               </th>
               @for (game of gamesSummary(); track game.gameNumber) {
                 <th
@@ -78,15 +42,21 @@ interface ScorecardPlayerRow {
                   [title]="'Select Game ' + game.gameNumber"
                 >
                   <div class="flex flex-col items-center">
-                    <span class="text-[11px]">G{{ game.gameNumber }}</span>
-                    @if (game.hasStory) {
-                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-0.5" title="Story Available"></span>
-                    }
+                    <span class="text-[11px]">{{ game.gameNumber }}</span>
                   </div>
                 </th>
               }
+              @if (isEditable()) {
+                <th
+                  (click)="addGame.emit()"
+                  class="py-2 px-2 min-w-[34px] cursor-pointer hover:bg-emerald-50 text-emerald-600 hover:text-emerald-700 transition-colors font-bold text-center border-l border-dashed border-slate-200"
+                  title="Add New Game / Round"
+                >
+                  <span class="text-xs">+</span>
+                </th>
+              }
               <th class="py-2 px-3 font-bold text-slate-900 min-w-[50px] bg-slate-50 border-l border-slate-200">
-                Total
+                T
               </th>
             </tr>
           </thead>
@@ -94,19 +64,29 @@ interface ScorecardPlayerRow {
             @for (player of tableRows(); track player.name) {
               <tr class="hover:bg-slate-50/50 transition-colors">
                 <!-- Player Name (Sticky Left) -->
-                <td class="text-left py-2.5 px-3 bg-white sticky left-0 z-10 shadow-xs">
+                <td class="text-left py-2.5 px-3 bg-white sticky left-0 z-10">
                   <div class="flex items-center gap-1.5">
-                    <span
-                      class="w-2 h-2 rounded-full shrink-0"
-                      [class.bg-emerald-500]="player.isWinner"
-                      [class.bg-slate-300]="!player.isWinner"
-                    ></span>
-                    <span class="font-medium truncate max-w-[130px]" [class.font-bold]="player.isWinner">
-                      {{ player.name }}
-                    </span>
-                    <span class="text-[10px] uppercase text-gray-400 shrink-0">
-                      ({{ player.role === 'champion' ? 'Def' : 'Chall' }})
-                    </span>
+                    @if (player.role === 'champion') {
+                      <!-- Crown Icon for Defending Champion -->
+                      <svg class="w-4 h-4 text-amber-500 fill-amber-400 shrink-0" viewBox="0 0 24 24" title="Defending Champion">
+                        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                      </svg>
+                    }
+                    @if (isEditable()) {
+                      <input
+                        type="text"
+                        [value]="player.name"
+                        (input)="onNameChange(player.role, $event)"
+                        [placeholder]="player.role === 'champion' ? 'Defender / Champion' : 'Challenger'"
+                        class="font-medium text-xs text-slate-800 hover:bg-slate-50 focus:bg-white px-1.5 py-0.5 rounded border border-transparent hover:border-slate-200 focus:border-slate-300 transition-colors w-32 sm:w-40"
+                        [class.font-bold]="player.isWinner"
+                        [title]="player.role === 'champion' ? 'Edit Defending Champion' : 'Edit Challenger'"
+                      />
+                    } @else {
+                      <span class="font-medium truncate max-w-[130px]" [class.font-bold]="player.isWinner">
+                        {{ player.name }}
+                      </span>
+                    }
                   </div>
                 </td>
 
@@ -115,58 +95,30 @@ interface ScorecardPlayerRow {
                   <td
                     (click)="gameSelected.emit(score.gameNumber)"
                     [class.bg-slate-100]="selectedGameNumber() === score.gameNumber"
-                    [class.ring-1]="selectedGameNumber() === score.gameNumber"
-                    [class.ring-slate-400]="selectedGameNumber() === score.gameNumber"
-                    class="py-2.5 px-1.5 cursor-pointer hover:bg-slate-100/70 transition-colors font-mono"
-                    [title]="player.name + ' scored ' + score.displayPoints + ' in Game ' + score.gameNumber + (score.isWhite ? ' (White)' : ' (Black)')"
+                    class="py-2.5 px-1.5 cursor-pointer hover:bg-slate-100/70 transition-colors"
                   >
                     <div class="flex flex-col items-center justify-center leading-tight">
-                      <span
-                        class="text-xs font-bold"
-                        [class.text-emerald-700]="score.points === 1"
-                        [class.text-slate-800]="score.points === 0.5"
-                        [class.text-gray-400]="score.points === 0"
-                      >
+                      <span class="font-semibold">
                         {{ score.displayPoints }}
-                      </span>
-                      <span class="text-[9px] text-gray-400 font-sans leading-none mt-0.5">
-                        {{ score.isWhite ? 'W' : 'B' }}
                       </span>
                     </div>
                   </td>
                 }
 
+                @if (isEditable()) {
+                  <td class="py-2.5 px-2 bg-slate-50/40 border-l border-dashed border-slate-200 text-slate-300 text-center">
+                    -
+                  </td>
+                }
+
                 <!-- Total Score -->
-                <td class="py-2.5 px-3 font-mono font-bold text-sm bg-slate-50 border-l border-slate-200" [class.text-emerald-700]="player.isWinner">
+                <td class="py-2.5 px-3 font-bold text-sm bg-slate-50 border-l border-slate-200" [class.text-emerald-700]="player.isWinner">
                   {{ player.totalPoints }}
                 </td>
               </tr>
             }
           </tbody>
         </table>
-      </div>
-
-      <!-- Legend Footer -->
-      <div class="flex flex-wrap items-center justify-between gap-3 mt-3 pt-2.5 border-t border-slate-100 text-[11px] text-gray-500">
-        <div class="flex items-center gap-3">
-          <span class="flex items-center gap-1">
-            <span class="font-bold text-emerald-700">1</span> Win
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="font-bold text-slate-800">½</span> Draw
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="font-bold text-gray-400">0</span> Loss
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="text-gray-400">W / B</span> White / Black pieces
-          </span>
-        </div>
-
-        <div class="flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>Click any column to jump to that game</span>
-        </div>
       </div>
     </div>
   `,
@@ -175,8 +127,21 @@ export class WccScorecardComponent {
   match = input.required<WorldChampionshipMatch>();
   gamesSummary = input.required<MatchGameSummary[]>();
   selectedGameNumber = input<number | undefined>(undefined);
+  isEditable = input<boolean>(false);
 
   gameSelected = output<number>();
+  championChange = output<string>();
+  challengerChange = output<string>();
+  addGame = output<void>();
+
+  onNameChange(role: 'champion' | 'challenger', event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    if (role === 'champion') {
+      this.championChange.emit(value);
+    } else {
+      this.challengerChange.emit(value);
+    }
+  }
 
   tableRows = computed<ScorecardPlayerRow[]>(() => {
     const m = this.match();

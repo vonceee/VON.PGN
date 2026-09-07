@@ -7,7 +7,7 @@ import {
   computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { WorldChampionshipService } from '../../../core/services/world-championship.service';
 import {
   WorldChampionshipMatch,
@@ -16,7 +16,6 @@ import {
 import {
   WccBoardViewerComponent,
   WccStoryViewerComponent,
-  WccSummaryDrawerComponent,
   WccScorecardComponent,
 } from '../components';
 import { SelectComponent, SelectItem } from '@shared/ui';
@@ -27,22 +26,14 @@ import {
   formatMoveLabel,
 } from '../utils/wcc-timeline.utils';
 
-/**
- * Dedicated Matchup Detail Component.
- * 
- * WHY: Displays complete championship duels and annotated games in an editorial two-column layout.
- *      Modularized using focused subcomponents for the story, board controls, summary drawer,
- *      game selector, and interactive scorecard cross-table.
- */
 @Component({
   selector: 'app-matchup-detail',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
+    RouterModule,
     WccBoardViewerComponent,
     WccStoryViewerComponent,
-    WccSummaryDrawerComponent,
     WccScorecardComponent,
     SelectComponent,
   ],
@@ -51,10 +42,11 @@ import {
 })
 export class MatchupDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
   private wccService = inject(WorldChampionshipService);
 
   // State signals
+  isLoading = signal<boolean>(true);
+  notFound = signal<boolean>(false);
   match = signal<WorldChampionshipMatch | null>(null);
   games = signal<WorldChampionshipGame[]>([]);
   selectedGame = signal<WorldChampionshipGame | null>(null);
@@ -63,10 +55,7 @@ export class MatchupDetailComponent implements OnInit {
   moveHistory = signal<ParsedMove[]>([]);
   currentPly = signal<number>(0);
   boardOrientation = signal<'white' | 'black'>('white');
-  showMatchDetailsDrawer = signal<boolean>(false);
-  showScorecard = signal<boolean>(true);
 
-  // Derived state
   currentFen = computed(() => {
     const list = this.timeline();
     const ply = this.currentPly();
@@ -81,9 +70,8 @@ export class MatchupDetailComponent implements OnInit {
 
   readonly gameOptions = computed<SelectItem<string>[]>(() => {
     return this.games().map((g) => {
-      const hasDetailedStory = g.sections && g.sections.length > 1;
       return {
-        label: `Game ${g.gameNumber}: ${g.white} vs. ${g.black} (${g.result})${hasDetailedStory ? ' • Story 📖' : ''}`,
+        label: `Game ${g.gameNumber}`,
         value: g.id,
       };
     });
@@ -105,7 +93,12 @@ export class MatchupDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      const matchId = params.get('id') || 'wcc-2024';
+      const matchId = params.get('id');
+      if (!matchId) {
+        this.notFound.set(true);
+        this.isLoading.set(false);
+        return;
+      }
       const targetGameId = this.route.snapshot.queryParamMap.get('game');
       this.loadMatch(matchId, targetGameId);
     });
@@ -122,72 +115,41 @@ export class MatchupDetailComponent implements OnInit {
   }
 
   loadMatch(matchId: string, targetGameId?: string | null): void {
-    if (matchId === 'opera-game') {
-      const demoMatch: WorldChampionshipMatch = {
-        id: 'opera-game',
-        year: 1858,
-        title: 'The Opera Game',
-        champion: 'Paul Morphy',
-        challenger: 'Duke of Brunswick & Count Isouard',
-        winner: 'Paul Morphy',
-        score: '1 - 0',
-        format: 'Casual Consultation Game',
-        location: 'Salle Le Peletier, Paris, France',
-        era: 'Early Classical (1886-1946)',
-        description:
-          'Played during an intermission of Bellini’s Norma at the Paris Opera, Morphy produced the quintessential instructional masterpiece demonstrating the supremacy of rapid piece development over material greed.',
-        keyHighlights: [
-          'Seventeen moves of pure harmonious piece development.',
-          'Double piece sacrifice terminating in an iconic queen sacrifice checkmate.',
-          'Immortal standard for attacking against an uncastled king.',
-        ],
-        gamesSummary: [
-          {
-            gameNumber: 1,
-            white: 'Paul Morphy',
-            black: 'Duke of Brunswick & Count Isouard',
-            result: '1-0',
-            opening: "Philidor's Defense",
-            eco: 'C41',
-            hasStory: true,
-            gameId: 'opera-game',
-            title: 'The Opera Game',
-          },
-        ],
-      };
-      this.match.set(demoMatch);
-      const games = this.wccService.getAllGamesForMatch('opera-game');
-      this.games.set(games);
-      if (games.length > 0) {
-        this.selectGame(games[0]);
-      }
-      return;
-    }
+    this.isLoading.set(true);
+    this.notFound.set(false);
 
     const foundMatch = this.wccService.getMatchById(matchId);
     if (foundMatch) {
-      this.match.set(foundMatch);
-      const matchGames = this.wccService.getAllGamesForMatch(foundMatch.id);
-      this.games.set(matchGames);
-      if (matchGames.length > 0) {
-        const matched = targetGameId
-          ? matchGames.find((g) => g.id === targetGameId)
-          : null;
-        this.selectGame(matched || matchGames[0]);
-      }
+      this.setupMatch(foundMatch, targetGameId);
+      this.isLoading.set(false);
     } else {
-      const fallback = this.wccService.getMatchById('wcc-2024');
-      if (fallback) {
-        this.match.set(fallback);
-        const matchGames = this.wccService.getAllGamesForMatch(fallback.id);
-        this.games.set(matchGames);
-        if (matchGames.length > 0) {
-          const matched = targetGameId
-            ? matchGames.find((g) => g.id === targetGameId)
-            : null;
-          this.selectGame(matched || matchGames[0]);
-        }
-      }
+      this.wccService.fetchMatchById(matchId).subscribe({
+        next: (loaded) => {
+          this.setupMatch(loaded, targetGameId);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.match.set(null);
+          this.games.set([]);
+          this.selectedGame.set(null);
+          this.notFound.set(true);
+          this.isLoading.set(false);
+        },
+      });
+    }
+  }
+
+  private setupMatch(match: WorldChampionshipMatch, targetGameId?: string | null): void {
+    this.match.set(match);
+    const matchGames = this.wccService.getAllGamesForMatch(match.id);
+    this.games.set(matchGames);
+    if (matchGames.length > 0) {
+      const matched = targetGameId
+        ? matchGames.find((g) => g.id === targetGameId)
+        : null;
+      this.selectGame(matched || matchGames[0]);
+    } else {
+      this.selectedGame.set(null);
     }
   }
 
@@ -227,10 +189,6 @@ export class MatchupDetailComponent implements OnInit {
     }
   }
 
-  toggleScorecard(): void {
-    this.showScorecard.update((v) => !v);
-  }
-
   goToPly(ply: number): void {
     if (ply >= 0 && ply <= this.maxPly()) {
       this.currentPly.set(ply);
@@ -259,21 +217,5 @@ export class MatchupDetailComponent implements OnInit {
 
   flipBoard(): void {
     this.boardOrientation.update((o) => (o === 'white' ? 'black' : 'white'));
-  }
-
-  toggleMatchDetails(): void {
-    this.showMatchDetailsDrawer.update((v) => !v);
-  }
-
-  openStudy(): void {
-    const m = this.match();
-    if (!m) return;
-    if (m.studyId) {
-      this.router.navigate(['/study', m.studyId]);
-    } else {
-      this.router.navigate(['/study'], {
-        queryParams: { search: `${m.year} World Chess Championship` },
-      });
-    }
   }
 }

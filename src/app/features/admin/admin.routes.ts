@@ -88,10 +88,18 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'world-championships-editor',
         loadComponent: () =>
+          import('./world-championships-list/world-championships-list.component').then(
+            (m) => m.WorldChampionshipsListComponent
+          ),
+        title: 'World Championships Management - Admin',
+      },
+      {
+        path: 'world-championships-editor/new',
+        loadComponent: () =>
           import('../world-championships/matchup-editor/matchup-editor.component').then(
             (m) => m.MatchupEditorComponent
           ),
-        title: 'World Championship Story Editor - Admin',
+        title: 'New World Championship Story - Admin',
       },
       {
         path: 'world-championships-editor/:id',

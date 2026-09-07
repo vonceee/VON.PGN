@@ -9,7 +9,7 @@
     <div class="flex flex-col items-center gap-1 w-full text-center">
       @if (topResult(); as res) {
         <span
-          class="inline-flex items-center justify-center font-black text-sm px-2.5 py-0.5 rounded-full select-none shadow-xs border transition-transform animate-in fade-in zoom-in-75 duration-200"
+          class="inline-flex items-center justify-center font-black text-sm px-2.5 py-0.5 rounded-full select-none border transition-transform animate-in fade-in zoom-in-75 duration-200"
           [class.text-emerald-700]="res === 'W'"
           [class.text-rose-700]="res === 'L'"
         >
@@ -50,7 +50,7 @@
       </span>
       @if (bottomResult(); as res) {
         <span
-          class="inline-flex items-center justify-center font-black text-sm px-2.5 py-0.5 rounded-full select-none shadow-xs border transition-transform animate-in fade-in zoom-in-75 duration-200"
+          class="inline-flex items-center justify-center font-black text-sm px-2.5 py-0.5 rounded-full select-none border transition-transform animate-in fade-in zoom-in-75 duration-200"
           [class.text-emerald-700]="res === 'W'"
           [class.text-rose-700]="res === 'L'"
         >

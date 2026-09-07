@@ -16,10 +16,7 @@ import { WorldChampionshipMatch } from '../../../../core/models/world-championsh
     <section class="mb-8 p-6 rounded-2xl bg-white border border-slate-200 shadow-sm animate-fade-in">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
         <div>
-          <span class="text-xs font-semibold uppercase text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100">
-            {{ match().era }}
-          </span>
-          <h2 class="text-xl font-semibold text-slate-900 mt-2">{{ match().title }}</h2>
+          <h2 class="text-xl font-semibold text-slate-900">{{ match().title }}</h2>
           <p class="text-xs text-gray-500 mt-0.5">{{ match().location }} • Format: {{ match().format }}</p>
         </div>
 
