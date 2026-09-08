@@ -74,8 +74,8 @@ export class MatchupEditorComponent implements OnInit {
     }));
   });
 
-  championshipTitle = signal<string>('2026 World Chess Championship');
-  matchTitle = signal<string>('Game 1: The Opening Duel');
+  championshipTitle = signal<string>('');
+  matchTitle = signal<string>('');
   matchSubtitle = signal<string>('');
   champion = signal<string>('');
   challenger = signal<string>('');
@@ -86,24 +86,14 @@ export class MatchupEditorComponent implements OnInit {
   whitePlayer = signal<string>('');
   blackPlayer = signal<string>('');
   result = signal<string>('*');
-  eco = signal<string>('C00');
+  eco = signal<string>('');
   openingName = signal<string>('');
   gameDate = signal<string>(new Date().toISOString().split('T')[0]);
-  pgn = signal<string>(
-    `[Event "World Chess Championship"]\n[Site ""]\n[Date "${new Date().toISOString().split('T')[0].replace(/-/g, '.')}"]\n[Round "1"]\n[White ""]\n[Black ""]\n[Result "*"]\n\n1. e4 e5 *`
-  );
+  pgn = signal<string>('');
 
   narrativeOverview = signal<string>('');
 
-  sections = signal<GameNarrativeSection[]>([
-    {
-      title: 'Opening Phase',
-      order: 1,
-      startPly: 1,
-      endPly: 2,
-      content: '',
-    },
-  ]);
+  sections = signal<GameNarrativeSection[]>([]);
 
   // Chessboard and Timeline
   timeline = signal<string[]>([DEFAULT_START_FEN]);
@@ -234,41 +224,25 @@ export class MatchupEditorComponent implements OnInit {
     this.selectedMatchId.set('new');
     this.selectedGameNumber.set(1);
     this.isEditMode.set(false);
-    this.championshipTitle.set('2026 World Chess Championship');
-    this.matchTitle.set('Game 1: The Opening Duel');
-    this.matchSubtitle.set('Defender vs. Challenger');
-    this.champion.set('Defender');
-    this.challenger.set('Challenger');
+    this.championshipTitle.set('');
+    this.matchTitle.set('');
+    this.matchSubtitle.set('');
+    this.champion.set('');
+    this.challenger.set('');
     this.location.set('');
     this.matchDescription.set('');
-    this.whitePlayer.set('Defender');
-    this.blackPlayer.set('Challenger');
+    this.whitePlayer.set('');
+    this.blackPlayer.set('');
     this.result.set('*');
-    this.eco.set('C00');
-    this.openingName.set('Classical Match Game');
+    this.eco.set('');
+    this.openingName.set('');
     this.gameDate.set(new Date().toISOString().split('T')[0]);
-    this.pgn.set(
-      `[Event "2026 World Chess Championship"]\n[Site ""]\n[Date "${new Date().toISOString().split('T')[0].replace(/-/g, '.')}"]\n[Round "1"]\n[White "Defender"]\n[Black "Challenger"]\n[Result "*"]\n\n1. e4 e5 *`
-    );
+    this.pgn.set('');
     this.narrativeOverview.set('');
-    this.sections.set([
-      {
-        title: 'Opening Phase',
-        order: 1,
-        startPly: 1,
-        endPly: 2,
-        content: '',
-      },
-    ]);
-    this.gamesSummary.set([
-      {
-        gameNumber: 1,
-        white: 'Defender',
-        black: 'Challenger',
-        result: '*',
-        hasStory: true,
-      },
-    ]);
+    this.sections.set([]);
+    this.gamesSummary.set([]);
+    this.timeline.set([DEFAULT_START_FEN]);
+    this.moveHistory.set([]);
     this.currentPly.set(0);
     this.saveStatusMessage.set('Started new blank story');
     setTimeout(() => this.saveStatusMessage.set(null), 2500);
@@ -350,8 +324,8 @@ export class MatchupEditorComponent implements OnInit {
         this.eco.set(eco);
         this.openingName.set(opening);
 
-        // Auto-scaffold PGN with standard headers and starting moves
-        const pgnScaffold = `[Event "${match.title}"]\n[Site "${match.location}"]\n[Date "${match.year}.01.01"]\n[Round "${activeGameNum}"]\n[White "${white}"]\n[Black "${black}"]\n[Result "${result}"]\n[Opening "${opening}"]\n\n1. e4 e5 2. Nf3 Nc6 *`;
+        // Auto-scaffold PGN with standard headers
+        const pgnScaffold = `[Event "${match.title}"]\n[Site "${match.location}"]\n[Date "${match.year}.01.01"]\n[Round "${activeGameNum}"]\n[White "${white}"]\n[Black "${black}"]\n[Result "${result}"]\n[Opening "${opening}"]\n\n*`;
 
         this.pgn.set(pgnScaffold);
         this.narrativeOverview.set(
@@ -398,8 +372,8 @@ export class MatchupEditorComponent implements OnInit {
     const nextGameNumber =
       current.length > 0 ? Math.max(...current.map((g) => g.gameNumber)) + 1 : 1;
     const isOdd = nextGameNumber % 2 === 1;
-    const champ = this.champion() || 'Defender';
-    const chall = this.challenger() || 'Challenger';
+    const champ = this.champion();
+    const chall = this.challenger();
     const white = isOdd ? champ : chall;
     const black = isOdd ? chall : champ;
 
@@ -409,18 +383,20 @@ export class MatchupEditorComponent implements OnInit {
       black,
       result: '*',
       hasStory: true,
-      title: `Game ${nextGameNumber}: ${white} vs. ${black}`,
+      title: white && black ? `Game ${nextGameNumber}: ${white} vs. ${black}` : `Game ${nextGameNumber}`,
     };
 
     this.gamesSummary.set([...current, newGameSummary]);
     this.selectedGameNumber.set(nextGameNumber);
-    this.matchTitle.set(`Game ${nextGameNumber}: ${white} vs. ${black}`);
+    this.matchTitle.set(newGameSummary.title || `Game ${nextGameNumber}`);
     this.whitePlayer.set(white);
     this.blackPlayer.set(black);
     this.result.set('*');
-    this.pgn.set(
-      `[Event "${this.championshipTitle()}"]\n[Site "${this.location()}"]\n[Date "${new Date().toISOString().split('T')[0].replace(/-/g, '.')}"]\n[Round "${nextGameNumber}"]\n[White "${white}"]\n[Black "${black}"]\n[Result "*"]\n\n1. e4 e5 *`
-    );
+    this.pgn.set('');
+    this.timeline.set([DEFAULT_START_FEN]);
+    this.moveHistory.set([]);
+    this.currentPly.set(0);
+    this.sections.set([]);
   }
 
   onChampionChange(newChamp: string): void {
@@ -464,6 +440,9 @@ export class MatchupEditorComponent implements OnInit {
     this.moveHistory.set(result.moves);
     this.currentPly.set(0);
     this.pgnError.set(result.error);
+    if (result.startComment !== undefined) {
+      this.narrativeOverview.set(result.startComment);
+    }
 
     // Automatically extract White, Black, and Result from PGN headers
     if (pgnString) {
@@ -549,10 +528,19 @@ export class MatchupEditorComponent implements OnInit {
     }
   }
 
-  onAnnotationChanged(event: { ply: number; comment: string; glyphId?: any }): void {
-    const updated = updatePgnComment(this.pgn(), event.ply, event.comment, event.glyphId);
+  onAnnotationChanged(event: { ply: number; comment: string; glyphId?: any; hasBreak?: boolean }): void {
+    const updated = updatePgnComment(
+      this.pgn(),
+      event.ply,
+      event.comment,
+      event.glyphId,
+      event.hasBreak
+    );
     if (updated !== this.pgn()) {
       this.pgn.set(updated);
+    }
+    if (event.ply === 0) {
+      this.narrativeOverview.set(event.comment);
     }
   }
 
@@ -742,7 +730,7 @@ export class MatchupEditorComponent implements OnInit {
           this.result.set(data.result || '*');
           this.eco.set(data.eco || 'C00');
           this.openingName.set(data.openingName || 'Classical Match Game');
-          this.pgn.set(data.pgn || '1. e4 e5 *');
+          this.pgn.set(data.pgn || '');
           this.narrativeOverview.set(data.narrativeOverview || '');
           if (data.sections && data.sections.length > 0) {
             this.sections.set(data.sections);

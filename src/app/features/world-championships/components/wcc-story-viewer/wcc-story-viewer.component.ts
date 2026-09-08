@@ -17,6 +17,19 @@ import { ParsedMove } from '../../utils/wcc-timeline.utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-6">
+      <!-- Pre-Game Story / Pre-Comment Intro -->
+      @if (overview(); as intro) {
+        <div class="p-4 sm:p-5 bg-slate-50 border-l-4 border-slate-900 rounded-r-2xl space-y-1.5">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            Match Introduction
+          </span>
+          <div
+            class="text-base sm:text-lg text-slate-800 leading-relaxed font-sans"
+            [innerHTML]="formatContent(intro)"
+          ></div>
+        </div>
+      }
+
       @if (moveHistory().length > 0) {
         <!-- Continuous Inline Chess Blog Notation & Commentary -->
         <article class="space-y-5">
@@ -87,6 +100,11 @@ import { ParsedMove } from '../../utils/wcc-timeline.utils';
                     [innerHTML]="formatContent(move.comment)"
                   ></div>
                 </div>
+              }
+
+              <!-- Paragraph / Line Break -->
+              @if (move.hasBreak) {
+                <div class="w-full my-3"></div>
               }
             }
           </div>

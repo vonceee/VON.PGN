@@ -11,6 +11,7 @@ export interface ParsedMove {
   fen: string;
   comment?: string;
   glyph?: { id: GlyphId; symbol: string; name: string };
+  hasBreak?: boolean;
 }
 
 export interface PgnTimelineResult {
@@ -18,6 +19,65 @@ export interface PgnTimelineResult {
   moves: ParsedMove[];
   maxPly: number;
   error: string | null;
+  startComment?: string;
+}
+
+/**
+ * Extracts raw comments associated with FENs from a PGN string,
+ * completely preserving newlines, carriage returns, and indentation.
+ */
+function extractFenCommentsWithNewlines(pgnString: string): {
+  commentsMap: Map<string, string>;
+  initialFen: string;
+} {
+  const commentsMap = new Map<string, string>();
+  let initialFen = DEFAULT_START_FEN;
+
+  try {
+    const chess = new Chess();
+    if (pgnString && pgnString.trim()) {
+      chess.loadPgn(pgnString);
+    }
+    const headers = chess.header();
+    if (headers['FEN']) {
+      initialFen = headers['FEN'];
+    }
+
+    const replay = new Chess();
+    replay.load(initialFen);
+
+    // Skip PGN header section
+    const headerEnd = pgnString.lastIndexOf(']\n');
+    const body = headerEnd !== -1 ? pgnString.substring(headerEnd + 2) : pgnString;
+
+    // Match comments {...}, variations (...), or non-space tokens
+    const tokenRegex = /\{([\s\S]*?)\}|(\([^\)]*\))|([^\s{}()]+)/g;
+    let match: RegExpExecArray | null;
+    let currentFen = replay.fen();
+
+    while ((match = tokenRegex.exec(body)) !== null) {
+      if (match[1] !== undefined) {
+        // Comment block found
+        const commentContent = match[1].replace(/\r\n/g, '\n').trim();
+        commentsMap.set(currentFen.trim(), commentContent);
+      } else if (match[3] !== undefined) {
+        const token = match[3];
+        if (/^[0-9]+\.*$/.test(token) || /^(1-0|0-1|1\/2-1\/2|\*)$/.test(token)) {
+          continue;
+        }
+        try {
+          const played = replay.move(token);
+          if (played) {
+            currentFen = replay.fen();
+          }
+        } catch {}
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to extract raw comments with newlines', err);
+  }
+
+  return { commentsMap, initialFen };
 }
 
 /**
@@ -37,26 +97,10 @@ export function parsePgnTimeline(pgnString: string): PgnTimelineResult {
     const chess = new Chess();
     chess.loadPgn(pgnString);
 
-    let initialFen = DEFAULT_START_FEN;
-    const headers = chess.header();
-    if (headers['FEN']) {
-      initialFen = headers['FEN'];
-    }
+    const { commentsMap, initialFen } = extractFenCommentsWithNewlines(pgnString);
 
-    // Extract comments mapped by FEN
-    const commentsMap = new Map<string, string>();
-    try {
-      const rawComments = chess.getComments();
-      if (rawComments && rawComments.length > 0) {
-        for (const item of rawComments) {
-          if (item && item.fen && item.comment) {
-            commentsMap.set(item.fen.trim(), item.comment.trim());
-          }
-        }
-      }
-    } catch (e) {
-      console.warn('Failed to parse PGN comments', e);
-    }
+    // Start comment (pre-comment before move 1 at initial position)
+    const startComment = commentsMap.get(initialFen.trim());
 
     const history = chess.history({ verbose: true });
     const reconstructor = new Chess(initialFen);
@@ -73,10 +117,15 @@ export function parsePgnTimeline(pgnString: string): PgnTimelineResult {
       const color = i % 2 === 0 ? 'w' : 'b';
       let comment = commentsMap.get(moveFen.trim());
 
+      let hasBreak = false;
+      if (comment && comment.includes('[%break]')) {
+        hasBreak = true;
+        comment = comment.replace(/\[%break\]/g, '').trim();
+      }
+
       // Parse any embedded glyph symbol from the start of comment or move
       let glyph: { id: GlyphId; symbol: string; name: string } | undefined = undefined;
       if (comment) {
-        // Check for glyph bracket/symbol e.g. "[$1]" or "(!)" or prefix
         for (const [idStr, data] of Object.entries(GLYPH_MAPPING)) {
           const id = Number(idStr) as GlyphId;
           const prefix = `[${data.symbol}]`;
@@ -96,6 +145,7 @@ export function parsePgnTimeline(pgnString: string): PgnTimelineResult {
         fen: moveFen,
         comment: comment || undefined,
         glyph,
+        hasBreak,
       });
     }
 
@@ -104,6 +154,7 @@ export function parsePgnTimeline(pgnString: string): PgnTimelineResult {
       moves,
       maxPly: timeline.length - 1,
       error: null,
+      startComment: startComment || undefined,
     };
   } catch (err: any) {
     return {
@@ -116,13 +167,15 @@ export function parsePgnTimeline(pgnString: string): PgnTimelineResult {
 }
 
 /**
- * Updates or removes the annotation (comment & glyph) of a move in the PGN at the given ply.
+ * Updates or removes the annotation (comment, glyph, breakline) of a move in the PGN at the given ply.
+ * When targetPly === 0, updates the pre-game comment (startComment).
  */
 export function updatePgnComment(
   pgnString: string,
   targetPly: number,
   newComment: string,
-  glyphId?: GlyphId | null
+  glyphId?: GlyphId | null,
+  hasBreak?: boolean
 ): string {
   try {
     const chess = new Chess();
@@ -132,35 +185,44 @@ export function updatePgnComment(
       return pgnString;
     }
 
+    const { commentsMap, initialFen } = extractFenCommentsWithNewlines(pgnString);
     const history = chess.history({ verbose: true });
-    if (targetPly <= 0 || targetPly > history.length) {
+
+    if (targetPly < 0 || targetPly > history.length) {
       return pgnString;
     }
 
-    // Capture existing comments
-    const commentsMap = new Map<string, string>();
-    try {
-      const rawComments = chess.getComments();
-      if (rawComments) {
-        for (const item of rawComments) {
-          if (item?.fen && item.comment) {
-            commentsMap.set(item.fen.trim(), item.comment.trim());
-          }
-        }
-      }
-    } catch {}
-
-    const headers = chess.header();
     const replay = new Chess();
+    const headers = chess.header();
     for (const [k, v] of Object.entries(headers)) {
       if (v) replay.header(k, v);
     }
+    replay.load(initialFen);
 
-    // Build the updated comment with optional glyph prefix
-    let finalComment = newComment.trim();
-    if (glyphId && GLYPH_MAPPING[glyphId]) {
-      const symbol = GLYPH_MAPPING[glyphId].symbol;
-      finalComment = `[${symbol}] ${finalComment}`.trim();
+    // Format comment payload helper
+    const buildCommentString = (
+      text: string,
+      gId?: GlyphId | null,
+      brk?: boolean
+    ): string => {
+      const parts: string[] = [];
+      if (brk) parts.push('[%break]');
+      if (gId && GLYPH_MAPPING[gId]) {
+        parts.push(`[${GLYPH_MAPPING[gId].symbol}]`);
+      }
+      if (text && text.trim()) {
+        parts.push(text.trim());
+      }
+      return parts.join(' ').trim();
+    };
+
+    // Handle targetPly === 0 (Pre-Game / Start Comment)
+    let startComment = commentsMap.get(initialFen.trim()) || '';
+    if (targetPly === 0) {
+      startComment = newComment.trim();
+    }
+    if (startComment) {
+      replay.setComment(startComment);
     }
 
     for (let i = 0; i < history.length; i++) {
@@ -169,8 +231,9 @@ export function updatePgnComment(
       const ply = i + 1;
 
       if (ply === targetPly) {
-        if (finalComment) {
-          replay.setComment(finalComment);
+        const commentToSet = buildCommentString(newComment, glyphId, hasBreak);
+        if (commentToSet) {
+          replay.setComment(commentToSet);
         }
       } else {
         const existing = commentsMap.get(move.after.trim());

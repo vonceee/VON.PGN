@@ -35,19 +35,21 @@
       <header class="space-y-4">
         <!-- Line 1: Championship Title (e.g. "2024 World Chess Championship") -->
         <div class="flex items-center justify-between gap-3">
-          <input type="text" [(ngModel)]="championshipTitle" placeholder="e.g. 2026 World Chess Championship"
+          <input type="text" [(ngModel)]="championshipTitle" placeholder="Event"
             class="text-2xl sm:text-3xl font-bold text-slate-900 hover:bg-slate-50 focus:bg-white px-2 py-1 -ml-2 rounded-lg border border-transparent hover:border-slate-200 focus:border-slate-300 transition-colors flex-1"
-            title="Championship Match Title" />
+            title="Event" />
         </div>
 
         <!-- Line 2: Contenders / Subtitle & Venue / Host alongside Game Selector Dropdown -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
           <div class="flex-1">
-            <div class="mb-2">
-              <input type="text" [(ngModel)]="matchSubtitle" placeholder="e.g. Ding Liren vs. Gukesh Dommaraju"
-                class="text-lg sm:text-xl font-medium text-slate-700 hover:bg-slate-50 focus:bg-white px-2 py-1 -ml-2 rounded-lg border border-transparent hover:border-slate-200 focus:border-slate-300 transition-colors w-full"
-                title="Match Subtitle / Contenders" />
-            </div>
+            <h2 class="text-lg sm:text-xl font-medium text-slate-700 mb-2 select-none" title="Contenders">
+              @if (champion() || challenger()) {
+                {{ champion() || 'Defender' }} vs. {{ challenger() || 'Challenger' }}
+              } @else {
+                <span class="text-slate-400">Defender vs. Challenger</span>
+              }
+            </h2>
             <input type="text" [(ngModel)]="location" placeholder="Venue / Host City"
               class="text-sm text-gray-500 hover:bg-slate-50 focus:bg-white px-2 py-1 -ml-2 rounded-lg border border-transparent hover:border-slate-200 focus:border-slate-300 transition-colors w-full"
               title="Venue / Host City" />
@@ -55,21 +57,11 @@
 
           <div class="flex items-center gap-2 w-auto">
             @if (gameNumberOptions().length > 0) {
-            <div class="w-44 sm:w-52">
+            <div class="w-52">
               <app-select label="" placeholder="Select Game..." [items]="gameNumberOptions()"
                 [value]="selectedGameNumber()" (itemSelected)="onSelectGameNumber($event.value!)" />
             </div>
             }
-            <button type="button" (click)="addNewGame()"
-              class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 shadow-xs flex items-center gap-1 transition-colors cursor-pointer shrink-0"
-              title="Add New Game / Round">
-              <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              <span>Game</span>
-            </button>
           </div>
         </div>
       </header>

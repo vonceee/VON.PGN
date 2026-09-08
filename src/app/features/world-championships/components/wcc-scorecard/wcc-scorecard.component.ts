@@ -66,12 +66,6 @@ interface ScorecardPlayerRow {
                 <!-- Player Name (Sticky Left) -->
                 <td class="text-left py-2.5 px-3 bg-white sticky left-0 z-10">
                   <div class="flex items-center gap-1.5">
-                    @if (player.role === 'champion') {
-                      <!-- Crown Icon for Defending Champion -->
-                      <svg class="w-4 h-4 text-amber-500 fill-amber-400 shrink-0" viewBox="0 0 24 24" title="Defending Champion">
-                        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
-                      </svg>
-                    }
                     @if (isEditable()) {
                       <input
                         type="text"
@@ -86,6 +80,12 @@ interface ScorecardPlayerRow {
                       <span class="font-medium truncate max-w-[130px]" [class.font-bold]="player.isWinner">
                         {{ player.name }}
                       </span>
+                    }
+                    @if (player.role === 'champion') {
+                      <!-- Crown Icon for Defending Champion -->
+                      <svg class="w-4 h-4 text-amber-500 fill-amber-400 shrink-0" viewBox="0 0 24 24" title="Defending Champion">
+                        <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/>
+                      </svg>
                     }
                   </div>
                 </td>
@@ -158,22 +158,32 @@ export class WccScorecardComponent {
     const champScores = games.map((g) => {
       const isChampWhite = g.white === champ;
       const res = this.normalizeResult(g.result);
-      let points = 0.5;
+      let points: number | string = '-';
+      let displayPoints = '-';
 
-      if (res === '1-0' || res === '1-0 (F)') {
-        points = isChampWhite ? 1 : 0;
-      } else if (res === '0-1' || res === '0-1 (F)') {
-        points = isChampWhite ? 0 : 1;
-      } else {
+      if (res === '1-0') {
+        const p = isChampWhite ? 1 : 0;
+        points = p;
+        displayPoints = p.toString();
+        champTotal += p;
+      } else if (res === '0-1') {
+        const p = isChampWhite ? 0 : 1;
+        points = p;
+        displayPoints = p.toString();
+        champTotal += p;
+      } else if (res === '1/2-1/2') {
         points = 0.5;
+        displayPoints = '½';
+        champTotal += 0.5;
+      } else {
+        points = '-';
+        displayPoints = '-';
       }
-
-      champTotal += points;
 
       return {
         gameNumber: g.gameNumber,
         points,
-        displayPoints: points === 1 ? '1' : points === 0 ? '0' : '½',
+        displayPoints,
         isWhite: isChampWhite,
         hasStory: !!g.hasStory,
         result: res,
@@ -183,22 +193,32 @@ export class WccScorecardComponent {
     const challScores = games.map((g) => {
       const isChallWhite = g.white === chall;
       const res = this.normalizeResult(g.result);
-      let points = 0.5;
+      let points: number | string = '-';
+      let displayPoints = '-';
 
-      if (res === '1-0' || res === '1-0 (F)') {
-        points = isChallWhite ? 1 : 0;
-      } else if (res === '0-1' || res === '0-1 (F)') {
-        points = isChallWhite ? 0 : 1;
-      } else {
+      if (res === '1-0') {
+        const p = isChallWhite ? 1 : 0;
+        points = p;
+        displayPoints = p.toString();
+        challTotal += p;
+      } else if (res === '0-1') {
+        const p = isChallWhite ? 0 : 1;
+        points = p;
+        displayPoints = p.toString();
+        challTotal += p;
+      } else if (res === '1/2-1/2') {
         points = 0.5;
+        displayPoints = '½';
+        challTotal += 0.5;
+      } else {
+        points = '-';
+        displayPoints = '-';
       }
-
-      challTotal += points;
 
       return {
         gameNumber: g.gameNumber,
         points,
-        displayPoints: points === 1 ? '1' : points === 0 ? '0' : '½',
+        displayPoints,
         isWhite: isChallWhite,
         hasStory: !!g.hasStory,
         result: res,
@@ -224,10 +244,11 @@ export class WccScorecardComponent {
   });
 
   private normalizeResult(raw?: string): string {
-    if (!raw) return '1/2-1/2';
+    if (!raw) return '*';
     const t = raw.trim();
     if (t === '1-0' || t === '1 - 0' || t === '1-0 (F)') return '1-0';
     if (t === '0-1' || t === '0 - 1' || t === '0-1 (F)') return '0-1';
-    return '1/2-1/2';
+    if (t === '1/2-1/2' || t === '1/2 - 1/2' || t === '½-½' || t === '0.5-0.5') return '1/2-1/2';
+    return '*';
   }
 }
