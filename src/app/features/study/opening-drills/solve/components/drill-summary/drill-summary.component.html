@@ -1,0 +1,66 @@
+<div class="border-2 border-slate-200 rounded-4xl p-4 flex flex-col gap-3 relative">
+  <!-- Header: Repertoire Name and Status -->
+  <div class="p-2">
+    <div class="flex items-center justify-between gap-2">
+      @if (studyId(); as id) {
+      <a [routerLink]="['/study', id]" class="hover:underline min-w-0 flex-1">
+        <h2 class="text-2xl font-medium truncate">{{ studyName() }}</h2>
+      </a>
+      } @else {
+      <h2 class="text-2xl font-medium truncate">{{ studyName() }}</h2>
+      }
+      <span class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+        Completed
+      </span>
+    </div>
+    <span class="text-sm font-medium text-gray-500 block mt-1">Drill summary</span>
+  </div>
+
+  <!-- Key Metrics: Accuracy & Mistakes -->
+  <div class="bg-slate-200 rounded-xl p-4 flex items-center justify-between relative">
+    <div>
+      <span class="text-xs text-gray-500 block">Accuracy</span>
+      <span class="text-2xl font-medium">{{ accuracy() }}%</span>
+    </div>
+    <div class="text-right">
+      <span class="text-xs text-gray-500 block">Mistakes</span>
+      <span class="text-2xl font-medium" [class.text-emerald-700]="mistakes().length === 0" [class.text-rose-600]="mistakes().length > 0">
+        {{ mistakes().length }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Weak Spots / Mistakes Section (Only necessary info, compact list) -->
+  @if (mistakes().length === 0) {
+    <div class="rounded-xl p-3 text-center bg-emerald-50/70 border border-emerald-200/60 text-emerald-800 text-xs font-medium">
+      Flawless run! No mistakes to review.
+    </div>
+  } @else {
+    <div class="flex flex-col gap-2">
+      <span class="text-xs font-medium text-gray-500 px-1">Weak spots ({{ mistakes().length }})</span>
+      <div class="space-y-1.5 max-h-[220px] overflow-y-auto pr-1">
+        @for (mistake of mistakes(); track mistake.id) {
+          <div class="bg-slate-100/80 rounded-xl px-3 py-2 border border-slate-200/70 flex items-center justify-between">
+            <span class="text-xs font-medium text-gray-700 truncate">{{ mistake.chapterName }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Action Buttons -->
+  <div class="flex flex-col gap-2 pt-1">
+    <button
+      type="button"
+      class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-[16px] leading-5 font-medium cursor-pointer transition-colors"
+      (click)="restart.emit()">
+      Practice again
+    </button>
+    <button
+      type="button"
+      class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-slate-300 hover:bg-slate-100 text-slate-800 text-[16px] leading-5 font-medium cursor-pointer transition-colors"
+      (click)="backToSelection.emit()">
+      Back to selection
+    </button>
+  </div>
+</div>

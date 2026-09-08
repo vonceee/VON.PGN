@@ -10,36 +10,26 @@ import { environment } from '../../../../../environments/environment';
 import { Study, StudyChapter, MoveNode } from '../../../../core/models/study.model';
 import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
 import { ChessBoardComponent } from '@shared/chess';
-export interface MovePath {
-  id: string;
-  moves: MoveNode[];
-}
+import { MovePath, PracticeMistake, MistakeAlert } from './models/opening-drill.model';
+import { DrillSidebarComponent, DrillSummaryComponent } from './components';
 
-export interface PracticeMistake {
-  id: string;
-  chapterIndex: number;
-  chapterName: string;
-  pathIndex: number;
-  moveIndex: number;
-  playedMove: string;
-  correctMove: string;
-  preMistakeFen: string;
-  movesBefore: string[];
-}
+export type { MovePath, PracticeMistake, MistakeAlert } from './models/opening-drill.model';
 
 @Component({
   selector: 'app-opening-drill',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ChessBoardComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ChessBoardComponent,
+    DrillSidebarComponent,
+    DrillSummaryComponent,
+  ],
   templateUrl: './opening-drill.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[class.absolute]': "viewState() === 'active'",
-    '[class.inset-0]': "viewState() === 'active'",
-    '[class.overflow-hidden]': "viewState() === 'active'",
-    '[class.w-full]': 'true',
-    '[class.min-h-full]': 'true',
-    '[class.block]': 'true',
+    class: 'w-full h-full absolute inset-0 overflow-hidden block',
   },
 })
 export class OpeningDrillComponent implements OnInit, OnDestroy {
@@ -93,7 +83,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
   movesDrilled = signal<{ san: string; playedBy: 'student' | 'opponent'; correct: boolean }[]>([]);
 
   // Mistake tracker
-  lastMistake = signal<{ played: string; correct: string; studyId: number | string; chapterId: number; chapterName: string } | null>(null);
+  lastMistake = signal<MistakeAlert | null>(null);
   drillMistakes = signal<PracticeMistake[]>([]);
 
   // Statistics
@@ -247,6 +237,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
       setTimeout(() => this.startChapterDrill(), 0);
     } else {
       // Repertoire finished!
+      this.boardInteractive.set(false);
       this.viewState.set('success');
     }
   }
@@ -487,6 +478,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
   advanceDrill() {
     if (this.isRetryMode()) {
       this.isRetryMode.set(false);
+      this.boardInteractive.set(false);
       this.viewState.set('success');
       return;
     }
@@ -508,6 +500,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
         this.startChapterDrill();
       } else {
         // Repertoire finished!
+        this.boardInteractive.set(false);
         this.viewState.set('success');
       }
     }
@@ -524,6 +517,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
     this.correctCount.set(0);
     this.currentChapterIndex.set(0);
     this.drillMistakes.set([]);
+    this.boardInteractive.set(true);
     this.startChapterDrill();
     this.viewState.set('active');
   }
@@ -600,6 +594,7 @@ export class OpeningDrillComponent implements OnInit, OnDestroy {
 
   cancelRetry() {
     this.isRetryMode.set(false);
+    this.boardInteractive.set(false);
     this.viewState.set('success');
   }
 }

@@ -1,0 +1,85 @@
+<div class="bg-white border-2 border-slate-200 rounded-4xl p-4 flex flex-col gap-3 lg:my-auto relative">
+  <!-- Header block with Repertoire Name and Status -->
+  <div class="transition-all duration-300 rounded-xl border border-transparent p-2 relative">
+    <div>
+      @if (selectedStudy(); as study) {
+      <a [routerLink]="['/study', study.id]" class="hover:underline inline-block">
+        <h2 class="text-2xl font-medium">{{ study.name }}</h2>
+      </a>
+      } @else {
+      <h2 class="text-2xl font-medium">{{ selectedStudy()?.name }}</h2>
+      }
+      <div class="flex items-center gap-2 mt-1">
+        <span class="text-sm/6 font-medium text-gray-500">{{ currentChapter()?.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Digital Readout Timer / Metrics -->
+  <div class="bg-slate-200 rounded-xl p-4 flex items-center justify-between relative">
+    <div>
+      <span class="text-xs text-gray-500 block">Accuracy</span>
+      <span class="text-2xl font-medium">
+        {{ accuracy() }}%
+      </span>
+    </div>
+    <div class="text-right">
+      <span class="text-xs text-gray-500 block">Variations</span>
+      <span class="text-2xl font-medium">
+        {{ currentPathIndex() + 1 }} <span class="text-gray-500 text-sm/6">/ {{ totalPaths() }}</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Chapter Progression bar -->
+  <div class="transition-all duration-300 p-2 rounded-xl border border-transparent relative">
+    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-2">
+      <div class="bg-blue-600 h-full rounded-full transition-all duration-500"
+        [style.width.%]="chapterProgressPercent()"></div>
+    </div>
+    <div class="flex justify-between text-xs text-gray-500">
+      <span>{{ currentChapterIndex() + 1 }} of {{ totalChapters() }}</span>
+    </div>
+  </div>
+
+  <!-- Mistake Warning and Chapter Review Link -->
+  @if (lastMistake(); as mistake) {
+  <div class="rounded-xl p-5 flex flex-col gap-3 bg-red-500/10 border-2 border-slate-200">
+    <div class="flex gap-2.5 items-start">
+      <div class="flex-1">
+        <p class="text-sm/6">
+          Oops! You played the wrong continuation.
+        </p>
+      </div>
+    </div>
+    <div class="pt-2.5 flex items-center justify-between">
+      <span class="text-sm">Review opening line here!</span>
+      <a [routerLink]="['/study', mistake.studyId]" [queryParams]="{ chapter: mistake.chapterId }" target="_blank"
+        class="text-xs hover:underline flex items-center gap-1">
+        {{ mistake.chapterName }}
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </a>
+    </div>
+  </div>
+  }
+
+  <!-- Action Buttons -->
+  <div class="flex flex-col transition-all duration-300 p-2 rounded-xl border border-transparent relative">
+    @if (isRetryMode()) {
+    <button
+      class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-slate-300 hover:bg-slate-100 text-slate-800 text-[16px] leading-5 font-medium cursor-pointer transition-colors"
+      (click)="cancelRetry.emit()">
+      Back to Summary
+    </button>
+    } @else {
+    <button
+      class="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-slate-900 text-white text-[16px] leading-5 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      (click)="pause.emit()">
+      Pause drill
+    </button>
+    }
+  </div>
+</div>
