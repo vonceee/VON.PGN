@@ -13,7 +13,7 @@ import {
   ChangeDetectionStrategy,
   ViewChild,
 } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser, Location } from '@angular/common';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
   heroQueueList,
@@ -143,6 +143,7 @@ export class StudyComponent implements OnInit, OnDestroy {
   public facade = inject(StudyFacade);
   private platformId = inject(PLATFORM_ID);
   private router = inject(Router);
+  private location = inject(Location);
   private dialog = inject(Dialog);
   private layoutService = inject(LayoutService);
   private shortcutsService = inject(StudyShortcutsService);
@@ -234,6 +235,17 @@ export class StudyComponent implements OnInit, OnDestroy {
           this.facade.cleanup();
           this.facade.loadStudy(studyId, chapId ? Number(chapId) : undefined);
         });
+      }
+    });
+
+    effect(() => {
+      const study = this.facade.study();
+      if (study && isPlatformBrowser(this.platformId)) {
+        const currentUrlId = this.id();
+        if (currentUrlId && String(study.id) !== currentUrlId) {
+          const chapParam = this.chapterId() ? `?chapter=${this.chapterId()}` : '';
+          this.location.replaceState(`/study/${study.id}${chapParam}`);
+        }
       }
     });
 

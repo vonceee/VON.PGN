@@ -9,7 +9,7 @@ export interface AppNotification {
   notifiable_type: string;
   notifiable_id: number;
   data: {
-    study_id?: number;
+    study_id?: number | string;
     study_name?: string;
     owner_name?: string;
     message: string;
