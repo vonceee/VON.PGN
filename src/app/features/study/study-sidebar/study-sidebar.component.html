@@ -116,11 +116,11 @@
 
 <!-- Right side: Section view area -->
 <div [class.hidden]="isCollapsed() && !isExpanded()"
-  [class]="isCollapsed() ? 'flex flex-col min-h-0 fixed left-[88px] top-20 bottom-6 w-80 z-30 gap-4' : 'w-full h-full flex flex-col min-h-0 gap-4'">
+  [class]="isCollapsed() ? 'bg-white rounded-2xl p-1 flex flex-col min-h-0 fixed left-[88px] top-20 bottom-6 w-80 z-30 gap-4' : 'w-full h-full flex flex-col min-h-0 gap-4'">
   <!-- View content pane -->
   <div class="flex-1 min-h-0 flex flex-col relative gap-4">
     @if (isExpanded() && isCollapsed()) {
-    <div class="flex items-center justify-end p-2 bg-white rounded-xl border border-slate-200 shrink-0">
+    <div class="flex items-center justify-end p-2 bg-white shrink-0">
       <button (click)="isExpanded.set(false)" class="p-1 hover:bg-slate-200 rounded-lg cursor-pointer text-gray-500">
         <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -131,7 +131,8 @@
 
     @switch (activeSection()) {
     @case ('chapters') {
-    <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl p-2 overflow-hidden relative">
+    <div
+      class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl p-2 overflow-hidden relative">
       <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s"
         [currentChapter]="currentChapter()" [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
         (chapterEditClicked)="onEditChapter($event.event, $event.chapter)" (orderChanged)="onDrop($event)">
@@ -162,11 +163,10 @@
     @case ('settings') {
     <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl overflow-hidden relative">
       <app-study-settings class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
-        [(settingsPreviewLastMove)]="settingsPreviewLastMove"
-        [(settingsOrientation)]="settingsOrientation"
-        [(isEditingPreview)]="isSettingsEditorActive"
-        (settingsSaved)="handleSettingsSaved($event)" (chatCleared)="handleChatCleared()"
-        (studyDeleted)="handleStudyDeleted()" (cancelled)="selectSection('chapters')">
+        [(settingsPreviewLastMove)]="settingsPreviewLastMove" [(settingsOrientation)]="settingsOrientation"
+        [(isEditingPreview)]="isSettingsEditorActive" (settingsSaved)="handleSettingsSaved($event)"
+        (chatCleared)="handleChatCleared()" (studyDeleted)="handleStudyDeleted()"
+        (cancelled)="selectSection('chapters')">
       </app-study-settings>
     </div>
     }
@@ -194,7 +194,8 @@
     </div>
     }
     @case ('annotate') {
-    <div class="flex-1 flex flex-col min-h-0 border-2 border-slate-200 rounded-xl p-2 overflow-hidden relative">
+    <div
+      class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl p-2 overflow-hidden relative">
       <app-study-annotate class="flex-1 flex flex-col min-h-0 min-w-0"></app-study-annotate>
     </div>
     }

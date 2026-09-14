@@ -10,7 +10,6 @@ import {
   heroKey,
   heroUser
 } from '@ng-icons/heroicons/outline';
-import { UserHovercardDirective } from '@shared/directives';
 import { Study } from '../../../models/study.model';
 import { StudyViewer } from '../../../services/study-socket.service';
 
@@ -31,7 +30,7 @@ import { StudyViewer } from '../../../services/study-socket.service';
 @Component({
   selector: 'app-study-members',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgIconComponent, UserHovercardDirective],
+  imports: [CommonModule, FormsModule, NgIconComponent],
   providers: [
     provideIcons({
       heroUserPlus,

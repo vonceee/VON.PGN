@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../../../core/services/user.service';
 import { FollowUser } from '../../../../core/models/user.model';
-import { UserHovercardDirective } from '@shared/directives';
 
 @Component({
   selector: 'app-follow-modal',
   standalone: true,
-  imports: [CommonModule, RouterLink, UserHovercardDirective],
+  imports: [CommonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './follow-modal.component.html',
 })

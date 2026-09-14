@@ -172,14 +172,12 @@
       <div class="flex flex-col gap-1">
         @for (userItem of tabUsers(); track userItem.uid) {
         <div class="flex items-center gap-3 p-3 rounded-xl    group">
-          <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
-            [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
+          <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]" target="_blank" rel="noopener noreferrer"
             class="w-10 h-10 rounded-full bg-slate-200  flex items-center justify-center border border-slate-200  text-sm/6 font-semibold text-gray-500  shrink-0">
             {{ userItem.username.charAt(0) || 'U' }}
           </a>
           <div class="flex-1 min-w-0">
-            <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]"
-              [appUserHovercard]="userItem.username" target="_blank" rel="noopener noreferrer"
+            <a (click)="closeFollowModal()" [routerLink]="['/user', userItem.username]" target="_blank" rel="noopener noreferrer"
               class="text-sm/6 font-semibold   truncate block hover:text-blue-600 ">
               {{ userItem.username }}
             </a>

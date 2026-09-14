@@ -6,7 +6,6 @@ import { TournamentService } from '../../../core/services/tournament.service';
 import { SeoService } from '../../../core/services/seo.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Tournament } from '../../../core/models/tournament.model';
-import { UserHovercardDirective } from '@shared/directives';
 
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {
@@ -34,7 +33,6 @@ import {
   imports: [
     CommonModule,
     RouterModule,
-    UserHovercardDirective,
     NgIconComponent,
   ],
   providers: [

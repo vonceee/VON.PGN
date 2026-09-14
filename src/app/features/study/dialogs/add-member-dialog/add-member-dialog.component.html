@@ -6,16 +6,11 @@
 
   <!-- Search & Results Section -->
   <div class="relative space-y-4">
-    <app-text-input
-      id="member_search"
-      label="Search user"
-      [(ngModel)]="searchQuery"
-      (ngModelChange)="onSearchChange($event)"
-      placeholder="Search username..."
-      [autofocus]="true"
-      [hasPrefix]="true"
+    <app-text-input id="member_search" label="Search user" [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange($event)" placeholder="Search username..." [autofocus]="true" [hasPrefix]="true"
       class="w-full">
-      <svg prefix xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4 text-gray-500">
+      <svg prefix xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+        class="size-4 text-gray-500">
         <path fill-rule="evenodd"
           d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
           clip-rule="evenodd" />
@@ -24,16 +19,15 @@
 
     @if (isSearching()) {
 
-      }
+    }
 
     <!-- Search Results Dropdown List -->
     @if (results().length > 0) {
-    <div class="w-full bg-slate-200 rounded-3xl py-2 max-h-48 overflow-y-auto">
+    <div class="w-full py-2 max-h-48 overflow-y-auto">
       @for (user of results(); track user.uid) {
       <button (click)="selectUser(user)"
         class="w-full flex items-center gap-3 px-5 py-3 text-left cursor-pointer transition-all border-b border-slate-200 last:border-0"
-        [class.bg-blue-600/10]="selectedUser()?.uid === user.uid"
-        [class.text-blue-600]="selectedUser()?.uid === user.uid"
+        [class.bg-blue-600]="selectedUser()?.uid === user.uid" [class.text-blue-600]="selectedUser()?.uid === user.uid"
         [class.hover:bg-white]="selectedUser()?.uid !== user.uid"
         [class.hover:text-blue-600]="selectedUser()?.uid !== user.uid">
         <div class="flex flex-col min-w-0">
@@ -67,10 +61,14 @@
 
   <!-- Actions -->
   <div class="flex gap-4 pt-4 justify-end">
-    <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all" (click)="dialogRef.close()">
+    <button
+      class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+      (click)="dialogRef.close()">
       Cancel
     </button>
-    <button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer" [disabled]="!selectedUser()" (click)="addMember()">
+    <button
+      class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer"
+      [disabled]="!selectedUser()" (click)="addMember()">
       Confirm
     </button>
   </div>
