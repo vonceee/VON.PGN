@@ -9,8 +9,10 @@ import {
   input,
   model,
   output,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { OverlayModule, ConnectedPosition, Overlay } from '@angular/cdk/overlay';
 
 export interface SelectItem<T = any> {
   label: string;
@@ -24,14 +26,20 @@ export type DropdownItem<T = any> = SelectItem<T>;
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, OverlayModule],
   host: {
     class: 'block relative',
     '[class.z-50]': 'isOpen()',
     '[class.z-0]': '!isOpen()',
   },
   template: `
-    <div class="relative w-full text-left" [class.z-50]="isOpen()" [class]="containerClass()" #containerRef>
+    <div
+      class="relative w-full text-left"
+      [class.z-50]="isOpen()"
+      [class]="containerClass()"
+      #containerRef
+      cdkOverlayOrigin
+      #trigger="cdkOverlayOrigin">
       <!-- Overlapping Label -->
       @if (label()) {
         <label
@@ -74,19 +82,20 @@ export type DropdownItem<T = any> = SelectItem<T>;
         </svg>
       </button>
 
-      @if (isOpen()) {
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="trigger"
+        [cdkConnectedOverlayOpen]="isOpen()"
+        [cdkConnectedOverlayWidth]="triggerWidth()"
+        [cdkConnectedOverlayPositions]="overlayPositions()"
+        [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+        [cdkConnectedOverlayPush]="true"
+        (overlayOutsideClick)="onOutsideClick($event)"
+        (detach)="close()">
         <div
           role="menu"
           tabindex="-1"
-          class="absolute z-50 min-w-full w-full max-w-sm rounded-xl bg-white shadow-xl ring-1 ring-black/5 focus:outline-none py-1 border border-slate-100 max-h-60 overflow-y-auto"
-          [class.mt-1.5]="!openUpwards()"
-          [class.top-full]="!openUpwards()"
-          [class.origin-top-left]="!openUpwards()"
-          [class.mb-1.5]="openUpwards()"
-          [class.bottom-full]="openUpwards()"
-          [class.origin-bottom-left]="openUpwards()"
-          [class.left-0]="align() === 'left'"
-          [class.right-0]="align() === 'right'"
+          class="z-50 min-w-full w-full max-w-sm rounded-xl bg-white shadow-xl ring-1 ring-black/5 focus:outline-none py-1 border border-slate-100 max-h-60 overflow-y-auto"
           [class]="menuClass()">
           @for (item of items(); track item.label) {
             <button
@@ -98,7 +107,7 @@ export type DropdownItem<T = any> = SelectItem<T>;
               [class.text-blue-600]="isSelected(item)"
               [class.font-medium]="isSelected(item)"
               class="flex items-center justify-between w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-slate-50 hover:text-gray-900 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              <span class="truncate">{{ item.label }}</span>
+              <span class="truncate" [title]="item.label">{{ item.label }}</span>
               @if (isSelected(item)) {
                 <svg class="size-4 text-blue-600 ml-3 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path
@@ -110,7 +119,7 @@ export type DropdownItem<T = any> = SelectItem<T>;
             </button>
           }
         </div>
-      }
+      </ng-template>
 
       <!-- Helper / Error Message -->
       @if (error()) {
@@ -131,6 +140,8 @@ export type DropdownItem<T = any> = SelectItem<T>;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent<T = any> {
+  private overlay = inject(Overlay);
+
   @ViewChild('containerRef') containerRef?: ElementRef<HTMLElement>;
 
   items = input.required<SelectItem<T>[]>();
@@ -151,7 +162,29 @@ export class SelectComponent<T = any> {
   itemSelected = output<SelectItem<T>>();
 
   readonly isOpen = signal(false);
-  readonly openUpwards = signal(false);
+  readonly triggerWidth = signal<number | string>('auto');
+  readonly scrollStrategy = this.overlay.scrollStrategies.reposition();
+
+  readonly overlayPositions = computed<ConnectedPosition[]>(() => {
+    const isRight = this.align() === 'right';
+    const startX: 'start' | 'end' = isRight ? 'end' : 'start';
+    return [
+      {
+        originX: startX,
+        originY: 'bottom',
+        overlayX: startX,
+        overlayY: 'top',
+        offsetY: 6,
+      },
+      {
+        originX: startX,
+        originY: 'top',
+        overlayX: startX,
+        overlayY: 'bottom',
+        offsetY: -6,
+      },
+    ];
+  });
 
   readonly displayLabel = computed(() => {
     const fixedLabel = this.staticLabel();
@@ -162,22 +195,25 @@ export class SelectComponent<T = any> {
     return found ? found.label : this.placeholder();
   });
 
-  toggle(): void {
-    if (this.disabled()) return;
-
-    if (!this.isOpen() && this.containerRef?.nativeElement) {
-      const rect = this.containerRef.nativeElement.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-      // Auto-flip upwards if space below is less than 240px and there's more space above
-      this.openUpwards.set(spaceBelow < 240 && spaceAbove > spaceBelow);
+  open(): void {
+    if (this.disabled() || this.isOpen()) return;
+    if (this.containerRef?.nativeElement) {
+      this.triggerWidth.set(this.containerRef.nativeElement.getBoundingClientRect().width);
     }
-
-    this.isOpen.update((v) => !v);
+    this.isOpen.set(true);
   }
 
   close(): void {
     this.isOpen.set(false);
+  }
+
+  toggle(): void {
+    if (this.disabled()) return;
+    if (!this.isOpen()) {
+      this.open();
+    } else {
+      this.close();
+    }
   }
 
   isSelected(item: SelectItem<T>): boolean {
@@ -198,13 +234,17 @@ export class SelectComponent<T = any> {
     this.close();
   }
 
-  @HostListener('document:pointerdown', ['$event'])
-  onDocumentPointerDown(event: PointerEvent): void {
-    if (
-      this.isOpen() &&
-      !this.containerRef?.nativeElement.contains(event.target as Node)
-    ) {
-      this.close();
+  onOutsideClick(event: MouseEvent): void {
+    if (this.containerRef?.nativeElement.contains(event.target as Node)) {
+      return;
+    }
+    this.close();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    if (this.isOpen() && this.containerRef?.nativeElement) {
+      this.triggerWidth.set(this.containerRef.nativeElement.getBoundingClientRect().width);
     }
   }
 
