@@ -25,7 +25,12 @@
   transform-origin: bottom center;
 }
 
-
+/* Hardware-accelerated skew for Lenis scroll velocity distortion */
+.skew-on-scroll {
+  will-change: transform;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
@@ -36,4 +41,3 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
-
