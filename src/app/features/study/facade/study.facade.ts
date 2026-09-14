@@ -1,11 +1,11 @@
 import { Injectable, inject, DestroyRef } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 
-import { StudyService } from '../../../core/services/study.service';
+import { StudyService } from '../services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { EngineService } from '../../../core/services/engine.service';
-import { MoveNode, StudyChapter } from '../../../core/models/study.model';
+import { MoveNode, StudyChapter } from '../models/study.model';
 
 import { StudyNavigationFacade } from './study-navigation.facade';
 import { StudyEngineFacade } from './study-engine.facade';
@@ -37,6 +37,7 @@ export class StudyFacade {
   viewerCount = this.studyService.viewerCount;
   viewerNames = this.studyService.viewerNames;
   classStartedAt = this.studyService.classStartedAt;
+  saveStatus = this.studyService.saveStatus;
 
   // Navigation & Move tree states (delegated from StudyNavigationFacade)
   currentFen = this.nav.currentFen;
@@ -274,7 +275,12 @@ export class StudyFacade {
     this.collab.onDeleteConfirmed(onSuccess);
   }
 
+  flushPendingSaves() {
+    this.studyService.flushPendingSaves();
+  }
+
   cleanup() {
+    this.studyService.flushPendingSaves();
     this.studyService.disconnect();
     this.collab.cleanup();
     this.engine.cleanup();

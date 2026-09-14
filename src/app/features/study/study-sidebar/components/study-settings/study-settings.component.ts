@@ -1,8 +1,8 @@
 import { Component, input, output, signal, effect, inject, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Study } from '../../../../../core/models/study.model';
-import { StudyNavigationFacade } from '../../../services/study-navigation.facade';
+import { Study } from '../../../models/study.model';
+import { StudyNavigationFacade } from '../../../facade/study-navigation.facade';
 import { SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
 
 @Component({

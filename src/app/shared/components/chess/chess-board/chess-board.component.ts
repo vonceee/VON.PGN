@@ -215,6 +215,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   @Input() lastMove: Key[] | undefined = undefined;
   @Input() layoutColumnsWidth?: number;
   @Input() customPromotion: boolean = false;
+  @Input() eraseOnClick: boolean = false;
   glyphs = input<{ square: string; symbol: string; class: string }[]>([]);
 
   @Output() fenChange = new EventEmitter<string>();
@@ -419,14 +420,16 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
         this.syncBoard();
       }
       if (changes['syncedShapes'] && !changes['syncedShapes'].isFirstChange()) {
-        this.isProgrammaticSet = true;
-        try {
-          this.cgApi.set({ drawable: { shapes: this.syncedShapes } });
-          if (this.cgApi.redrawAll) {
-            this.cgApi.redrawAll();
+        if (!this.shapesAreEqual(this.cgApi?.state?.drawable?.shapes, this.syncedShapes)) {
+          this.isProgrammaticSet = true;
+          try {
+            this.cgApi.setShapes(this.syncedShapes || []);
+            if (this.cgApi.redrawAll) {
+              this.cgApi.redrawAll();
+            }
+          } finally {
+            this.isProgrammaticSet = false;
           }
-        } finally {
-          this.isProgrammaticSet = false;
         }
       }
     if (changes['interactive'] || changes['possibleMoves']) {
@@ -477,7 +480,8 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
         selectable: { enabled: this.interactive },
         drawable: {
           enabled: true,
-          shapes: this.syncedShapes,
+          eraseOnClick: this.eraseOnClick,
+          shapes: this.syncedShapes || [],
           onChange: () => this.onShapesChanged()
         },
         events: {
@@ -488,6 +492,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
       this.initialized = true;
 
       this.syncBoard();
+      if (this.syncedShapes && this.syncedShapes.length > 0) {
+        this.cgApi.setShapes(this.syncedShapes);
+      }
       this.updateBoardSize();
 
       // Secondary sync to ensure pieces are rendered
@@ -559,7 +566,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
           deleteOnDropOff: this.isEditor
         },
         drawable: {
-          shapes: this.syncedShapes
+          shapes: this.syncedShapes || []
         }
       };
 
@@ -568,6 +575,9 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
       }
 
       this.cgApi.set(setConfig);
+      if (!this.shapesAreEqual(this.cgApi.state.drawable.shapes, this.syncedShapes)) {
+        this.cgApi.setShapes(this.syncedShapes || []);
+      }
     } finally {
       this.isProgrammaticSet = false;
     }

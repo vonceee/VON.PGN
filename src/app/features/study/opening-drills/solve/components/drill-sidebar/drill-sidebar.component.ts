@@ -1,7 +1,7 @@
 import { Component, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Study, StudyChapter } from '../../../../../../core/models/study.model';
+import { Study, StudyChapter } from '../../../../models/study.model';
 import { MistakeAlert } from '../../models/opening-drill.model';
 
 /**

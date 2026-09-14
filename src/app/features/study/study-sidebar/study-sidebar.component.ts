@@ -17,11 +17,11 @@ import {
   heroPencilSquare
 } from '@ng-icons/heroicons/outline';
 
-import { StudyService } from '../../../core/services/study.service';
+import { StudyService } from '../services/study.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { WebrtcService } from '../../../core/services/webrtc.service';
-import { StudyFacade } from '../services/study.facade';
-import { StudyChapter } from '../../../core/models/study.model';
+import { WebrtcService } from '../services/webrtc.service';
+import { StudyFacade } from '../facade/study.facade';
+import { StudyChapter } from '../models/study.model';
 
 import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
 import { ConfirmDeleteDialogComponent } from '../dialogs/confirm-delete-dialog/confirm-delete-dialog.component';
@@ -478,12 +478,12 @@ export class StudySidebarComponent {
     this.selectSection('chapters');
   }
 
-  toggleVideoCall() {
+  toggleVoiceCall() {
     if (this.webrtc.isCallActive()) {
       this.webrtc.leaveCall();
     } else {
       this.webrtc.joinCall().catch(err => {
-        console.error('[StudySidebarComponent] Error joining video call:', err);
+        console.error('[StudySidebarComponent] Error joining voice call:', err);
       });
     }
   }

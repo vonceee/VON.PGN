@@ -2,7 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { StudyApiService } from './study-api.service';
+import { StudyApiService } from '../../features/study';
 import {
   WorldChampionshipMatch,
   WorldChampionshipGame,

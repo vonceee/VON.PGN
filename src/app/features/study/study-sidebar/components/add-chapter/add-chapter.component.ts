@@ -1,7 +1,7 @@
 import { Component, input, output, signal, effect, model } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Study } from '../../../../../core/models/study.model';
+import { Study } from '../../../models/study.model';
 import { SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
 
 export type ChapterTab = 'empty' | 'editor' | 'fen' | 'pgn';

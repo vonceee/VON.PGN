@@ -11,7 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { StudyService } from '../../../core/services/study.service';
+import { StudyService } from '../services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
 
 export interface ChatMessage {

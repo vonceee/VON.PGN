@@ -1,6 +1,6 @@
 import { Component, input, output, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StudyFacade } from '../../../services/study.facade';
+import { StudyFacade } from '../../../facade/study.facade';
 
 @Component({
   selector: 'app-study-metadata',

@@ -2,10 +2,10 @@ import { Injectable, inject, signal, computed, DestroyRef } from '@angular/core'
 import { Observable, Subject, EMPTY, throwError, tap, of, concat } from 'rxjs';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime, switchMap, catchError } from 'rxjs/operators';
-import { ToastService } from './toast.service';
-import { AuthService } from './auth.service';
-import { DevLogger } from '../utils/dev-logger';
+import { debounceTime, concatMap, catchError } from 'rxjs/operators';
+import { ToastService } from '../../../core/services/toast.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { DevLogger } from '../../../core/utils/dev-logger';
 import { StudyApiService } from './study-api.service';
 import { StudySocketService, StudyViewer } from './study-socket.service';
 export type { StudyViewer } from './study-socket.service';
@@ -58,6 +58,9 @@ export class StudyService {
     return !!(myUid && this.lockHolderId() && String(myUid) === String(this.lockHolderId()));
   });
 
+  saveStatus = signal<'saved' | 'saving' | 'error'>('saved');
+  private isSavingHttp = false;
+
   private emittedMoveIds = new Set<string>();
 
   // Expose Real-time event streams from Socket service
@@ -101,14 +104,29 @@ export class StudyService {
   constructor() {
     this.initDbSavePipeline();
     this.listenToSocketEvents();
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', () => {
+        this.flushPendingSaves();
+      });
+    }
   }
 
   private initDbSavePipeline(): void {
     this.dbSaveSubject.pipe(
-      debounceTime(5000),
-      switchMap((payload) => {
-        if (!this.pendingSavePayload) return EMPTY;
+      debounceTime(800),
+      concatMap(() => {
+        if (!this.pendingSavePayload) {
+          if (!this.isSavingHttp) {
+            this.saveStatus.set('saved');
+          }
+          return EMPTY;
+        }
+
+        const payload = this.pendingSavePayload;
         this.pendingSavePayload = null;
+        this.isSavingHttp = true;
+        this.saveStatus.set('saving');
 
         return this.api.updateChapter(payload.studyId, payload.chapterId, {
           current_fen: payload.fen,
@@ -116,6 +134,7 @@ export class StudyService {
         }).pipe(
           tap({
             next: (res) => {
+              this.isSavingHttp = false;
               const updated = (res as any).data || res;
               this.currentChapter.set(updated);
               this.currentStudy.update(s => {
@@ -125,18 +144,19 @@ export class StudyService {
                 );
                 return { ...s, chapters };
               });
-              if (payload.broadcast) {
-                this.socketService.emitChangeChapter({
-                  studyId: payload.studyId,
-                  chapterId: updated.id,
-                  fen: updated.current_fen,
-                  moves: updated.moves,
-                  orientation: updated.orientation,
-                  clientGeneratedId: payload.clientGeneratedId
-                });
+              if (typeof window !== 'undefined' && window.localStorage) {
+                try {
+                  const draftKey = `study_chapter_draft_${payload.studyId}_${updated.id}`;
+                  window.localStorage.removeItem(draftKey);
+                } catch {}
+              }
+              if (!this.pendingSavePayload) {
+                this.saveStatus.set('saved');
               }
             },
             error: (err) => {
+              this.isSavingHttp = false;
+              this.saveStatus.set('error');
               DevLogger.error('[StudyService] Failed to save move to DB:', err);
               this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
             }
@@ -151,12 +171,15 @@ export class StudyService {
     if (this.pendingSavePayload) {
       const payload = this.pendingSavePayload;
       this.pendingSavePayload = null;
+      this.isSavingHttp = true;
+      this.saveStatus.set('saving');
 
       this.api.updateChapter(payload.studyId, payload.chapterId, {
         current_fen: payload.fen,
         moves: payload.moves,
       }).subscribe({
         next: (res) => {
+          this.isSavingHttp = false;
           const updated = (res as any).data || res;
           this.currentChapter.set(updated);
           this.currentStudy.update(s => {
@@ -166,18 +189,19 @@ export class StudyService {
             );
             return { ...s, chapters };
           });
-          if (payload.broadcast) {
-            this.socketService.emitChangeChapter({
-              studyId: payload.studyId,
-              chapterId: updated.id,
-              fen: updated.current_fen,
-              moves: updated.moves,
-              orientation: updated.orientation,
-              clientGeneratedId: payload.clientGeneratedId
-            });
+          if (typeof window !== 'undefined' && window.localStorage) {
+            try {
+              const draftKey = `study_chapter_draft_${payload.studyId}_${updated.id}`;
+              window.localStorage.removeItem(draftKey);
+            } catch {}
+          }
+          if (!this.pendingSavePayload) {
+            this.saveStatus.set('saved');
           }
         },
         error: (err) => {
+          this.isSavingHttp = false;
+          this.saveStatus.set('error');
           DevLogger.error('[StudyService] Failed to flush pending saves to DB:', err);
         }
       });
@@ -358,6 +382,26 @@ export class StudyService {
             chapterToSet = unwrap(chapters[0]);
           }
 
+          if (chapterToSet && typeof window !== 'undefined' && window.localStorage) {
+            try {
+              const draftKey = `study_chapter_draft_${res.data.id}_${chapterToSet.id}`;
+              const draftRaw = window.localStorage.getItem(draftKey);
+              if (draftRaw) {
+                const draft = JSON.parse(draftRaw);
+                const chapterUpdatedAt = new Date(chapterToSet.updated_at || 0).getTime();
+                if (draft.updatedAt && (draft.updatedAt >= chapterUpdatedAt || (!chapterToSet.moves || chapterToSet.moves.length === 0))) {
+                  chapterToSet = {
+                    ...chapterToSet,
+                    moves: draft.moves || chapterToSet.moves,
+                    current_fen: draft.fen || chapterToSet.current_fen,
+                  };
+                }
+              }
+            } catch (e) {
+              console.warn('[StudyService] Error reading draft from localStorage:', e);
+            }
+          }
+
           this.currentChapter.set(chapterToSet);
         }
 
@@ -508,6 +552,8 @@ export class StudyService {
 
     if (immediate) {
       this.pendingSavePayload = null;
+      this.isSavingHttp = true;
+      this.saveStatus.set('saving');
 
       return this.api.updateChapter(study.id, chapterId, {
         current_fen: fen,
@@ -515,6 +561,7 @@ export class StudyService {
       }).pipe(
         tap({
           next: (res) => {
+            this.isSavingHttp = false;
             const updated = (res as any).data || res;
             this.currentChapter.set(updated);
             this.currentStudy.update(s => {
@@ -524,18 +571,19 @@ export class StudyService {
               );
               return { ...s, chapters };
             });
-            if (broadcast) {
-              this.socketService.emitChangeChapter({
-                studyId: study.id,
-                chapterId: updated.id,
-                fen: updated.current_fen,
-                moves: updated.moves,
-                orientation: updated.orientation,
-                clientGeneratedId
-              });
+            if (typeof window !== 'undefined' && window.localStorage) {
+              try {
+                const draftKey = `study_chapter_draft_${study.id}_${updated.id}`;
+                window.localStorage.removeItem(draftKey);
+              } catch {}
+            }
+            if (!this.pendingSavePayload) {
+              this.saveStatus.set('saved');
             }
           },
           error: (err) => {
+            this.isSavingHttp = false;
+            this.saveStatus.set('error');
             DevLogger.error('[StudyService] Failed to save move to DB:', err);
             this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
           }
@@ -543,6 +591,7 @@ export class StudyService {
       );
     } else {
       this.pendingSavePayload = payload;
+      this.saveStatus.set('saving');
       this.dbSaveSubject.next(payload);
       return of(null);
     }

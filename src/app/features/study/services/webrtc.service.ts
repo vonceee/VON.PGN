@@ -3,9 +3,9 @@ import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { StudyService } from './study.service';
 import { StudySocketService } from './study-socket.service';
-import { AuthService } from './auth.service';
-import { ToastService } from './toast.service';
-import { DevLogger } from '../utils/dev-logger';
+import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { DevLogger } from '../../../core/utils/dev-logger';
 
 export interface RemoteStreamInfo {
   userName: string;
@@ -30,7 +30,6 @@ export class WebrtcService {
   remoteStreams = signal<Map<string, RemoteStreamInfo>>(new Map());
   isCallActive = signal(false);
   isMuted = signal(false);
-  isCameraOff = signal(false);
   isDetached = signal(false);
   activeSubTab = signal<'chat' | 'call'>('chat');
 
@@ -129,9 +128,8 @@ export class WebrtcService {
     if (this.isCallActive()) return;
 
     try {
-      DevLogger.log('[WebRTC] Requesting local camera/microphone stream...');
+      DevLogger.log('[WebRTC] Requesting local microphone stream...');
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: false,
         audio: true
       });
       this.localStream.set(stream);
@@ -157,7 +155,7 @@ export class WebrtcService {
       }
     } catch (err) {
       DevLogger.error('[WebRTC] Failed to join call:', err);
-      this.toastService.show('Failed to access camera or microphone.', 'error');
+      this.toastService.show('Failed to access microphone.', 'error');
       throw err;
     }
   }
@@ -194,7 +192,6 @@ export class WebrtcService {
 
     this.isCallActive.set(false);
     this.isMuted.set(false);
-    this.isCameraOff.set(false);
     this.isDetached.set(false);
     DevLogger.log('[WebRTC] Disconnected from call.');
   }
@@ -336,17 +333,6 @@ export class WebrtcService {
       if (audioTrack) {
         audioTrack.enabled = !audioTrack.enabled;
         this.isMuted.set(!audioTrack.enabled);
-      }
-    }
-  }
-
-  toggleCamera(): void {
-    const stream = this.localStream();
-    if (stream) {
-      const videoTrack = stream.getVideoTracks()[0];
-      if (videoTrack) {
-        videoTrack.enabled = !videoTrack.enabled;
-        this.isCameraOff.set(!videoTrack.enabled);
       }
     }
   }

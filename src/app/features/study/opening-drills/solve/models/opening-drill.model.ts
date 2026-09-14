@@ -1,4 +1,4 @@
-import { MoveNode } from '../../../../../core/models/study.model';
+import { MoveNode } from '../../../models/study.model';
 
 /**
  * Represents a single compiled move variation sequence in a repertoire chapter.

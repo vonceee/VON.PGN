@@ -2,9 +2,9 @@ import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { io, Socket } from 'socket.io-client';
 import { Subject, Observable } from 'rxjs';
-import { AuthService } from './auth.service';
-import { environment } from '../../../environments/environment';
-import { DevLogger } from '../utils/dev-logger';
+import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
+import { DevLogger } from '../../../core/utils/dev-logger';
 import {
   Study,
   StudyChapter,

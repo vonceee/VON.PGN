@@ -11,10 +11,10 @@ import { isPlatformBrowser } from '@angular/common';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { StudyService } from '../../../core/services/study.service';
+import { StudyService } from '../services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { WebrtcService } from '../../../core/services/webrtc.service';
+import { WebrtcService } from '../services/webrtc.service';
 import { StudyNavigationFacade } from './study-navigation.facade';
 
 import { ReceiveRequestDialogComponent } from '../dialogs/receive-request-dialog/receive-request-dialog.component';

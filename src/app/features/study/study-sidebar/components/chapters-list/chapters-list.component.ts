@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Study, StudyChapter } from '../../../../../core/models/study.model';
+import { Study, StudyChapter } from '../../../models/study.model';
 
 @Component({
   selector: 'app-study-chapters-list',

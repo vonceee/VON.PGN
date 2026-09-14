@@ -10,12 +10,12 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { StudyService } from '../../../core/services/study.service';
+import { StudyService } from '../services/study.service';
 import { AudioService } from '../../../core/services/audio.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { OpeningService } from '../../../core/services/opening.service';
-import { MoveNode, StudyChapter, StudySyncedPayload } from '../../../core/models/study.model';
+import { MoveNode, StudyChapter, StudySyncedPayload } from '../models/study.model';
 import {
   buildTreeFromMoves,
   updateNodeInTree,
@@ -191,7 +191,26 @@ export class StudyNavigationFacade {
     const remote = this.remoteShapes();
     if (remote && remote.length > 0) return remote;
     const node = this.currentNode();
-    return node?.shapes || [];
+    if (node) {
+      return node.shapes || [];
+    }
+    // At root position (currentNode is null):
+    const tree = this.moveTree();
+    if (tree.length > 0 && tree[0].preShapes && tree[0].preShapes.length > 0) {
+      return tree[0].preShapes;
+    }
+    const chap = this.currentChapter();
+    if (chap?.shapes && chap.shapes.length > 0) {
+      return chap.shapes;
+    }
+    const tags = this.tags();
+    if (tags && tags['_shapes']) {
+      try {
+        const parsed = JSON.parse(tags['_shapes']);
+        if (Array.isArray(parsed)) return parsed;
+      } catch {}
+    }
+    return [];
   });
 
   initialPly = computed(() => {
@@ -265,6 +284,7 @@ export class StudyNavigationFacade {
 
       if (this.lastChapterId !== chapter.id) {
         this.lastChapterId = chapter.id;
+        this.remoteShapes.set([]);
         this.moveTree.set(buildTreeFromMoves(chapter.moves || [], chapter.initial_fen));
         this.updateCurrentPosition(null);
       }
@@ -311,7 +331,33 @@ export class StudyNavigationFacade {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
         this.ngZone.run(() => {
-          this.remoteShapes.set(payload.shapes || []);
+          const shapes = payload.shapes || [];
+          this.remoteShapes.set(shapes);
+
+          // Update corresponding node in moveTree if chapter matches
+          const currentChap = this.currentChapter();
+          if (!payload.chapterId || String(payload.chapterId) === String(currentChap?.id)) {
+            const targetFen = payload.fen || this.currentFen();
+            const node = findNodeRecursive(this.moveTree(), targetFen);
+            if (node) {
+              this.moveTree.update((tree) =>
+                updateNodeInTree(tree, node.fen, node.ply, { shapes })
+              );
+              if (this.currentNode()?.fen === node.fen) {
+                this.currentNode.set({ ...node, shapes });
+              }
+            } else if (cleanFen(targetFen) === cleanFen(currentChap?.initial_fen || '')) {
+              const tree = this.moveTree();
+              if (tree.length > 0) {
+                this.moveTree.update((t) => {
+                  if (t.length > 0) {
+                    t[0] = { ...t[0], preShapes: shapes };
+                  }
+                  return [...t];
+                });
+              }
+            }
+          }
         });
       });
 
@@ -716,8 +762,7 @@ export class StudyNavigationFacade {
       this.studyService.emitShapes(shapes, this.currentChapter()?.id, this.currentFen());
     }
 
-    // Only save shapes to the database moves tree if studying alone (not syncing in a class)
-    if (!this.isSyncing()) {
+    if (this.canEdit()) {
       const node = this.currentNode();
       if (node) {
         this.moveTree.update((tree) =>
@@ -730,18 +775,68 @@ export class StudyNavigationFacade {
           ...node,
           shapes: shapes,
         });
+      } else {
+        // Root position (ply 0 / initial FEN before move 1)
+        const tree = this.moveTree();
+        if (tree.length > 0) {
+          this.moveTree.update((t) => {
+            if (t.length > 0) {
+              t[0] = {
+                ...t[0],
+                preShapes: shapes,
+              };
+            }
+            return [...t];
+          });
+        }
 
-        this.studyService
-          .emitMove(
-            '',
-            this.currentFen(),
-            this.moveTree(),
-            this.boardOrientation(),
-            false,
-            false
-          )
-          .subscribe();
+        // Also update chapter-level tags fallback for root annotations
+        const s = this.study();
+        const c = this.currentChapter();
+        if (s && c) {
+          const currentTags = { ...(c.pgn_tags || {}) };
+          currentTags['_shapes'] = JSON.stringify(shapes);
+          this.studyService
+            .updateChapter(s.id, c.id, {
+              pgn_tags: currentTags,
+            })
+            .subscribe();
+        }
       }
+
+      // Clear remote shapes since user's local drawing is now authoritative
+      this.remoteShapes.set([]);
+
+      // Save draft to localStorage for instant reload resilience
+      const s = this.study();
+      const c = this.currentChapter();
+      if (s && c && typeof window !== 'undefined' && window.localStorage) {
+        try {
+          const draftKey = `study_chapter_draft_${s.id}_${c.id}`;
+          window.localStorage.setItem(
+            draftKey,
+            JSON.stringify({
+              moves: this.moveTree(),
+              fen: this.currentFen(),
+              updatedAt: Date.now(),
+            })
+          );
+        } catch (e) {
+          console.warn('[StudyNavigationFacade] Could not cache draft to localStorage:', e);
+        }
+      }
+
+      // Emit move to save moves tree to database and socket
+      this.studyService
+        .emitMove(
+          '',
+          this.currentFen(),
+          this.moveTree(),
+          this.boardOrientation(),
+          this.isSyncing(),
+          false
+        )
+        .subscribe();
     }
   }
 
@@ -785,8 +880,10 @@ export class StudyNavigationFacade {
   }
 
   selectChapter(chap: StudyChapter) {
-    if (this.currentChapter()?.id === chap.id) return;
+    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
 
+    this.studyService.flushPendingSaves();
+    this.remoteShapes.set([]);
     this.studyService.currentChapter.set(chap);
     if (this.canEdit()) {
       this.studyService.emitChapterChange(

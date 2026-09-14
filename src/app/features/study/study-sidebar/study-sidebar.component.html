@@ -96,7 +96,7 @@
 
   <!-- Voice Call Toggle (Bottom of Menu Dock) -->
   @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
-  <button (click)="toggleVideoCall()" [attr.aria-label]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
+  <button (click)="toggleVoiceCall()" [attr.aria-label]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
     [class.text-rose-500]="webrtc.isCallActive()" [class.bg-slate-200]="webrtc.isCallActive()"
     [class.text-gray-500]="!webrtc.isCallActive()"
     class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">

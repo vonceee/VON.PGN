@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed, PLATFORM_ID } from '@angul
 import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { StudyService } from '../../../core/services/study.service';
+import { StudyService } from '../services/study.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { CreateStudyDialogComponent } from '../dialogs/create-study-dialog/create-study-dialog.component';
@@ -11,7 +11,7 @@ import { effect } from '@angular/core';
 import { debounceTime, switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ChessBoardComponent } from '@shared/chess';
-import { Study } from '../../../core/models/study.model';
+import { Study } from '../models/study.model';
 import type { Key } from 'chessground/types';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import {

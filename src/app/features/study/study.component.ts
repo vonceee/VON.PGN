@@ -2,6 +2,7 @@ import {
   Component,
   OnInit,
   OnDestroy,
+  HostListener,
   inject,
   signal,
   computed,
@@ -30,6 +31,9 @@ import {
   heroChevronDoubleRight,
   heroEye,
   heroUserPlus,
+  heroCheckCircle,
+  heroArrowPath,
+  heroExclamationCircle,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -48,7 +52,7 @@ import { EndClassDialogComponent } from './dialogs/end-class-dialog/end-class-di
 
 import { LayoutService } from '../../core/services/layout.service';
 import { StudyShortcutsService } from './services/study-shortcuts.service';
-import { StudyFacade } from './services/study.facade';
+import { StudyFacade } from './facade/study.facade';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { BoardEditorComponent } from '../../shared/components/chess/board-editor/board-editor.component';
 import { SelectComponent, SelectItem } from '@shared/ui';
@@ -91,6 +95,9 @@ import { SelectComponent, SelectItem } from '@shared/ui';
       heroChevronDoubleRight,
       heroEye,
       heroUserPlus,
+      heroCheckCircle,
+      heroArrowPath,
+      heroExclamationCircle,
     }),
   ],
   templateUrl: './study.component.html',
@@ -310,6 +317,11 @@ export class StudyComponent implements OnInit, OnDestroy {
 
 
 
+
+  @HostListener('window:beforeunload')
+  onBeforeUnload() {
+    this.facade.flushPendingSaves();
+  }
 
   ngOnInit() {
     this.layoutService.setFluid(true);

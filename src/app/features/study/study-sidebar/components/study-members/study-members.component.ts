@@ -11,8 +11,8 @@ import {
   heroUser
 } from '@ng-icons/heroicons/outline';
 import { UserHovercardDirective } from '@shared/directives';
-import { Study } from '../../../../../core/models/study.model';
-import { StudyViewer } from '../../../../../core/services/study-socket.service';
+import { Study } from '../../../models/study.model';
+import { StudyViewer } from '../../../services/study-socket.service';
 
 /**
  * Study Members Sidebar Component.

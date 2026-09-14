@@ -4,9 +4,8 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { ToastService } from '../../core/services/toast.service';
 import { FlagIconComponent } from '@shared/ui';
-import { StudyService } from '../../core/services/study.service';
+import { StudyService, Study } from '../study';
 import { TournamentService } from '../../core/services/tournament.service';
-import { Study } from '../../core/models/study.model';
 import { Tournament } from '../../core/models/tournament.model';
 import { FollowModalComponent } from './components/follow-modal/follow-modal.component';
 

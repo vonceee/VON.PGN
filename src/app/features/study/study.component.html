@@ -73,19 +73,43 @@
         <div
           class="hidden md:flex flex-col overflow-hidden border-2 border-slate-200 rounded-xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
-            @if (facade.openingName(); as name) {
-            <!-- Opening Name Header -->
-            <div class="p-2 flex items-center justify-between shrink-0 select-text">
-              <div class="flex items-center gap-2 overflow-hidden">
-                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-slate-200 shrink-0">
-                  {{ facade.openingEco() || 'ECO' }}
-                </span>
-                <span class="text-sm/6 font-medium truncate" [title]="name">
-                  {{ name }}
-                </span>
+            <!-- Notation Header Bar with Save Status -->
+            <div class="p-2 px-3 flex items-center justify-between shrink-0 select-text border-b border-slate-100 min-h-[38px]">
+              <div class="flex items-center gap-2 overflow-hidden min-w-0">
+                @if (facade.openingName(); as name) {
+                  <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-slate-200 shrink-0">
+                    {{ facade.openingEco() || 'ECO' }}
+                  </span>
+                  <span class="text-sm font-medium truncate" [title]="name">
+                    {{ name }}
+                  </span>
+                } @else {
+                  <span class="text-xs font-medium text-slate-400">
+                    Notation
+                  </span>
+                }
+              </div>
+
+              <!-- Save Status Indicator -->
+              <div class="flex items-center gap-1.5 shrink-0 select-none pl-2 text-xs transition-opacity duration-300">
+                @if (facade.saveStatus() === 'saving') {
+                  <span class="inline-flex items-center gap-1 text-slate-400 font-medium">
+                    <ng-icon name="heroArrowPath" class="animate-spin text-sm text-slate-400"></ng-icon>
+                    Saving...
+                  </span>
+                } @else if (facade.saveStatus() === 'saved') {
+                  <span class="inline-flex items-center gap-1 text-slate-400 font-medium">
+                    <ng-icon name="heroCheckCircle" class="text-emerald-500 text-sm"></ng-icon>
+                    Saved
+                  </span>
+                } @else if (facade.saveStatus() === 'error') {
+                  <span class="inline-flex items-center gap-1 text-rose-500 font-medium" title="Failed to save changes to database">
+                    <ng-icon name="heroExclamationCircle" class="text-rose-500 text-sm"></ng-icon>
+                    Sync error
+                  </span>
+                }
               </div>
             </div>
-            }
             <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moveTree]="facade.moveTree()"
               [currentFen]="facade.currentFen()" [currentPly]="facade.currentPly()" [initialPly]="facade.initialPly()"
               [showNavigation]="false" [result]="facade.currentChapter()?.pgn_tags?.['Result']"

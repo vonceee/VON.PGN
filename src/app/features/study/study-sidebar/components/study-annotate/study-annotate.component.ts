@@ -1,9 +1,9 @@
 import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MoveNode, GLYPH_MAPPING, GlyphId } from '../../../../../core/models/study.model';
-import { StudyFacade } from '../../../services/study.facade';
-import { TextAreaComponent } from '../../../../../shared/components/ui';
+import { MoveNode, GLYPH_MAPPING, GlyphId } from '../../../models/study.model';
+import { StudyFacade } from '../../../facade/study.facade';
+import { TextAreaComponent } from '@shared/ui';
 
 @Component({
   selector: 'app-study-annotate',

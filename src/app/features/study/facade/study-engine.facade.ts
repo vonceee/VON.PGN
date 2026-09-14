@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Chess } from 'chess.js';
 
 import { EngineService } from '../../../core/services/engine.service';
-import { StudyService } from '../../../core/services/study.service';
+import { StudyService } from '../services/study.service';
 import { StudyNavigationFacade } from './study-navigation.facade';
 
 @Injectable({

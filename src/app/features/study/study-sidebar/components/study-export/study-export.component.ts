@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroDocumentArrowDown } from '@ng-icons/heroicons/outline';
-import { Study, StudyChapter } from '../../../../../core/models/study.model';
+import { Study, StudyChapter } from '../../../models/study.model';
 
 @Component({
   selector: 'app-study-export',

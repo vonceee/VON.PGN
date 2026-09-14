@@ -62,6 +62,7 @@ function normalizeMoveNode(node: any): MoveNode {
     variations,
     comments: Array.isArray(node.comments) ? node.comments.map(String) : [],
     preComments: Array.isArray(node.preComments) ? node.preComments.map(String) : [],
+    preShapes: Array.isArray(node.preShapes) ? node.preShapes : undefined,
     glyphs: Array.isArray(node.glyphs) ? (node.glyphs.map(Number) as GlyphId[]) : [],
     shapes: Array.isArray(node.shapes) ? node.shapes : undefined,
     eval: node.eval,
@@ -364,7 +365,7 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
             preClk = null;
           }
           if (preShapes.length > 0) {
-            node.shapes = preShapes;
+            node.preShapes = preShapes;
             preShapes = [];
           }
 
@@ -528,6 +529,41 @@ function getBrushColor(code: string): string {
     case 'Y': return 'yellow';
     case 'B': return 'blue';
     default: return 'green';
+  }
+}
+
+/**
+ * Serializes an array of Chessground shapes into standard PGN [%csl] and [%cal] comment annotations.
+ * Example: [{ orig: 'e4', brush: 'green' }, { orig: 'e2', dest: 'e4', brush: 'yellow' }] -> "[%csl Ge4] [%cal Ye2e4]"
+ */
+export function serializeShapesToComment(shapes: any[]): string {
+  if (!shapes || !Array.isArray(shapes) || shapes.length === 0) return '';
+  const csl: string[] = [];
+  const cal: string[] = [];
+
+  for (const s of shapes) {
+    if (!s || !s.orig) continue;
+    const colorChar = getBrushCode(s.brush);
+    if (s.dest && s.dest !== s.orig) {
+      cal.push(`${colorChar}${s.orig}${s.dest}`);
+    } else {
+      csl.push(`${colorChar}${s.orig}`);
+    }
+  }
+
+  const parts: string[] = [];
+  if (csl.length > 0) parts.push(`[%csl ${csl.join(',')}]`);
+  if (cal.length > 0) parts.push(`[%cal ${cal.join(',')}]`);
+  return parts.join(' ');
+}
+
+function getBrushCode(brush: string): string {
+  switch (brush?.toLowerCase()) {
+    case 'green': return 'G';
+    case 'red': return 'R';
+    case 'yellow': return 'Y';
+    case 'blue': return 'B';
+    default: return 'G';
   }
 }
 
