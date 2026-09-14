@@ -215,7 +215,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   @Input() lastMove: Key[] | undefined = undefined;
   @Input() layoutColumnsWidth?: number;
   @Input() customPromotion: boolean = false;
-  @Input() eraseOnClick: boolean = false;
+  @Input() eraseOnClick: boolean = true;
   glyphs = input<{ square: string; symbol: string; class: string }[]>([]);
 
   @Output() fenChange = new EventEmitter<string>();
@@ -706,12 +706,17 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
   }
 
   private shapesAreEqual(a: any[] | undefined, b: any[] | undefined): boolean {
-    if (!a || !b) return a === b;
+    if (!a && !b) return true;
+    if (!a || !b) return false;
     if (a.length !== b.length) return false;
     for (let i = 0; i < a.length; i++) {
       const s1 = a[i];
       const s2 = b[i];
-      if (s1.orig !== s2.orig || s1.dest !== s2.dest || s1.brush !== s2.brush) {
+      if (
+        s1.orig !== s2.orig ||
+        (s1.dest || undefined) !== (s2.dest || undefined) ||
+        s1.brush !== s2.brush
+      ) {
         return false;
       }
     }

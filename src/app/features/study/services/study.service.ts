@@ -430,7 +430,26 @@ export class StudyService {
   }
 
   updateChapter(studyId: number | string, chapterId: number, data: any): Observable<any> {
-    return this.api.updateChapter(studyId, chapterId, data);
+    return this.api.updateChapter(studyId, chapterId, data).pipe(
+      tap({
+        next: (res) => {
+          const updated = (res as any).data || res;
+          this.currentChapter.update((current) => {
+            if (current && String(current.id) === String(chapterId)) {
+              return { ...current, ...updated };
+            }
+            return current;
+          });
+          this.currentStudy.update((s) => {
+            if (!s || !s.chapters) return s;
+            const chapters = s.chapters.map((c) =>
+              String(c.id) === String(chapterId) ? { ...c, ...updated } : c
+            );
+            return { ...s, chapters };
+          });
+        },
+      })
+    );
   }
 
   deleteChapter(studyId: number | string, chapterId: number): Observable<any> {

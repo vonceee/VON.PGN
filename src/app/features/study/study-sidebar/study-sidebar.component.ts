@@ -14,7 +14,8 @@ import {
   heroCog6Tooth,
   heroPlus,
   heroShare,
-  heroPencilSquare
+  heroPencilSquare,
+  heroMicrophone,
 } from '@ng-icons/heroicons/outline';
 
 import { StudyService } from '../services/study.service';

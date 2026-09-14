@@ -31,6 +31,7 @@ import {
   heroChevronDoubleRight,
   heroEye,
   heroUserPlus,
+  heroUserMinus,
   heroExclamationCircle,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
@@ -45,6 +46,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDeleteModalComponent } from '@shared/feedback';
 import { StudySidebarComponent } from './study-sidebar/study-sidebar.component';
 import { JoinClassDialogComponent } from './dialogs/join-class-dialog/join-class-dialog.component';
+import { LeaveClassDialogComponent } from './dialogs/leave-class-dialog/leave-class-dialog.component';
 import { StartClassDialogComponent } from './dialogs/start-class-dialog/start-class-dialog.component';
 import { EndClassDialogComponent } from './dialogs/end-class-dialog/end-class-dialog.component';
 
@@ -70,6 +72,7 @@ import { SelectComponent, SelectItem } from '@shared/ui';
     StartClassDialogComponent,
     EndClassDialogComponent,
     JoinClassDialogComponent,
+    LeaveClassDialogComponent,
     StudyAnalysisComponent,
     BoardEditorComponent,
     SelectComponent,
@@ -93,6 +96,7 @@ import { SelectComponent, SelectItem } from '@shared/ui';
       heroChevronDoubleRight,
       heroEye,
       heroUserPlus,
+      heroUserMinus,
       heroExclamationCircle,
     }),
   ],

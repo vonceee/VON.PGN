@@ -196,12 +196,8 @@ export class StudyNavigationFacade {
     }
     // At root position (currentNode is null):
     const tree = this.moveTree();
-    if (tree.length > 0 && tree[0].preShapes && tree[0].preShapes.length > 0) {
+    if (tree.length > 0 && tree[0].preShapes !== undefined && tree[0].preShapes !== null) {
       return tree[0].preShapes;
-    }
-    const chap = this.currentChapter();
-    if (chap?.shapes && chap.shapes.length > 0) {
-      return chap.shapes;
     }
     const tags = this.tags();
     if (tags && tags['_shapes']) {
@@ -209,6 +205,10 @@ export class StudyNavigationFacade {
         const parsed = JSON.parse(tags['_shapes']);
         if (Array.isArray(parsed)) return parsed;
       } catch {}
+    }
+    const chap = this.currentChapter();
+    if (chap?.shapes && Array.isArray(chap.shapes)) {
+      return chap.shapes;
     }
     return [];
   });
@@ -242,7 +242,10 @@ export class StudyNavigationFacade {
 
   canEdit = computed(() => {
     if (this.studyService.isClassActive()) {
-      return this.studyService.hasBoardControl();
+      if (this.studyService.hasJoinedClass()) {
+        return this.studyService.hasBoardControl();
+      }
+      return false;
     }
 
     if (this.isOwner()) return true;
@@ -277,13 +280,14 @@ export class StudyNavigationFacade {
 
       const targetOrientation = chapter.orientation || 'white';
 
-      if (this.lastChapterId !== chapter.id || this.lastChapterOrientation !== targetOrientation) {
+      const chapterIdChanged = this.lastChapterId === null || String(this.lastChapterId) !== String(chapter.id);
+      if (chapterIdChanged || this.lastChapterOrientation !== targetOrientation) {
         this.boardOrientation.set(targetOrientation);
         this.lastChapterOrientation = targetOrientation;
       }
 
-      if (this.lastChapterId !== chapter.id) {
-        this.lastChapterId = chapter.id;
+      if (chapterIdChanged) {
+        this.lastChapterId = Number(chapter.id);
         this.remoteShapes.set([]);
         this.moveTree.set(buildTreeFromMoves(chapter.moves || [], chapter.initial_fen));
         this.updateCurrentPosition(null);
@@ -331,6 +335,14 @@ export class StudyNavigationFacade {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
         this.ngZone.run(() => {
+          if (
+            this.studyService.isClassActive() &&
+            !this.isOwner() &&
+            !this.studyService.hasJoinedClass()
+          ) {
+            return;
+          }
+
           const shapes = payload.shapes || [];
           this.remoteShapes.set(shapes);
 
@@ -365,8 +377,18 @@ export class StudyNavigationFacade {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((state: StudySyncedPayload) => {
         this.ngZone.run(() => {
+          if (
+            this.studyService.isClassActive() &&
+            !this.isOwner() &&
+            !this.studyService.hasJoinedClass()
+          ) {
+            return;
+          }
+
           if (state.shapes && state.shapes.length > 0) {
             this.remoteShapes.set(state.shapes);
+          } else {
+            this.remoteShapes.set([]);
           }
         });
       });
@@ -539,7 +561,7 @@ export class StudyNavigationFacade {
   }
 
   onNodeClicked(node: MoveNode) {
-    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
+    if (this.studyService.isClassActive() && this.studyService.hasJoinedClass() && !this.studyService.hasBoardControl()) return;
     this.updateCurrentPosition(node);
     this.remoteShapes.set([]);
     this.audioService.playMoveSound(node.san);
@@ -630,7 +652,7 @@ export class StudyNavigationFacade {
   }
 
   onNavigateToPly(ply: number) {
-    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
+    if (this.studyService.isClassActive() && this.studyService.hasJoinedClass() && !this.studyService.hasBoardControl()) return;
     if (ply <= this.initialPly()) {
       this.updateCurrentPosition(null);
       if (this.canEdit()) {
@@ -661,7 +683,7 @@ export class StudyNavigationFacade {
   }
 
   onPrevMove() {
-    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
+    if (this.studyService.isClassActive() && this.studyService.hasJoinedClass() && !this.studyService.hasBoardControl()) return;
 
     const context = findNodeContext(this.moveTree(), this.currentFen());
     if (context.parent) {
@@ -683,7 +705,7 @@ export class StudyNavigationFacade {
   }
 
   onNextMove() {
-    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
+    if (this.studyService.isClassActive() && this.studyService.hasJoinedClass() && !this.studyService.hasBoardControl()) return;
 
     const tree = this.moveTree();
     if (tree.length === 0) return;
@@ -795,7 +817,17 @@ export class StudyNavigationFacade {
         const c = this.currentChapter();
         if (s && c) {
           const currentTags = { ...(c.pgn_tags || {}) };
-          currentTags['_shapes'] = JSON.stringify(shapes);
+          if (shapes && shapes.length > 0) {
+            currentTags['_shapes'] = JSON.stringify(shapes);
+          } else {
+            delete currentTags['_shapes'];
+          }
+
+          // Immediately update currentChapter in memory so tags() and mergedShapes() reflect the change
+          this.currentChapter.update((prev) =>
+            prev ? { ...prev, pgn_tags: currentTags, shapes: shapes } : null
+          );
+
           this.studyService
             .updateChapter(s.id, c.id, {
               pgn_tags: currentTags,
@@ -826,7 +858,7 @@ export class StudyNavigationFacade {
         }
       }
 
-      // Emit move to save moves tree to database and socket
+      // Emit move to save moves tree to database and socket immediately
       this.studyService
         .emitMove(
           '',
@@ -834,10 +866,14 @@ export class StudyNavigationFacade {
           this.moveTree(),
           this.boardOrientation(),
           this.isSyncing(),
-          false
+          true
         )
         .subscribe();
     }
+  }
+
+  clearMarkings() {
+    this.onShapeDrawn([]);
   }
 
   onSaveMetadata(tags: Record<string, string>) {
@@ -880,7 +916,7 @@ export class StudyNavigationFacade {
   }
 
   selectChapter(chap: StudyChapter) {
-    if (this.studyService.isClassActive() && !this.studyService.hasBoardControl()) return;
+    if (this.studyService.isClassActive() && this.studyService.hasJoinedClass() && !this.studyService.hasBoardControl()) return;
 
     this.studyService.flushPendingSaves();
     this.remoteShapes.set([]);

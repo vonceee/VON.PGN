@@ -95,5 +95,45 @@ describe('ChessTreeUtils - Shapes & Annotations', () => {
       expect(updated[0].shapes).toEqual([{ orig: 'e4', brush: 'green' }]);
       expect(updated[1].shapes).toBeUndefined();
     });
+
+    it('allows clearing shapes to an empty array', () => {
+      const tree: MoveNode[] = [
+        {
+          san: 'e4',
+          uci: 'e2e4',
+          fen: 'fen_e4',
+          ply: 1,
+          variations: [],
+          shapes: [{ orig: 'e4', brush: 'green' }],
+        },
+      ];
+
+      const cleared = updateNodeInTree(tree, 'fen_e4', 1, {
+        shapes: [],
+      });
+
+      expect(cleared[0].shapes).toEqual([]);
+    });
+  });
+
+  describe('buildTreeFromMoves with empty / cleared markings', () => {
+    it('preserves empty preShapes and shapes array on normalized MoveNodes', () => {
+      const rawNodes = [
+        {
+          san: 'e4',
+          uci: 'e2e4',
+          fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+          ply: 1,
+          variations: [],
+          preShapes: [],
+          shapes: [],
+        },
+      ];
+
+      const tree = buildTreeFromMoves(rawNodes);
+      expect(tree.length).toBe(1);
+      expect(tree[0].preShapes).toEqual([]);
+      expect(tree[0].shapes).toEqual([]);
+    });
   });
 });

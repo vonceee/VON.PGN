@@ -97,6 +97,7 @@ export class StudyFacade {
   showStartClassDialog = this.collab.showStartClassDialog;
   showEndClassDialog = this.collab.showEndClassDialog;
   showJoinClassDialog = this.collab.showJoinClassDialog;
+  showLeaveClassDialog = this.collab.showLeaveClassDialog;
   isDeleting = this.collab.isDeleting;
   isClassActive = this.collab.isClassActive;
   lockHolderId = this.collab.lockHolderId;
@@ -191,6 +192,10 @@ export class StudyFacade {
     this.nav.onShapeDrawn(shapes);
   }
 
+  clearMarkings() {
+    this.nav.clearMarkings();
+  }
+
   onSaveMetadata(tags: Record<string, string>) {
     this.nav.onSaveMetadata(tags);
   }
@@ -265,6 +270,22 @@ export class StudyFacade {
 
   onJoinClassCancelled() {
     this.collab.onJoinClassCancelled();
+  }
+
+  promptLeaveClass() {
+    this.collab.promptLeaveClass();
+  }
+
+  leaveClassSession() {
+    this.collab.leaveClassSession();
+  }
+
+  onLeaveClassConfirmed() {
+    this.collab.onLeaveClassConfirmed();
+  }
+
+  onLeaveClassCancelled() {
+    this.collab.onLeaveClassCancelled();
   }
 
   toggleSync() {

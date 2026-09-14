@@ -1,0 +1,21 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" (click)="cancel.emit()">
+  <div class="bg-white rounded-4xl w-full max-w-md mx-4" (click)="$event.stopPropagation()">
+    <div class="p-6">
+      <h2 class="text-2xl">Leave class session?</h2>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-3 px-6 pb-6">
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all"
+        (click)="cancel.emit()">
+        Cancel
+      </button>
+      <button
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
+        (click)="confirm.emit()">
+        Leave class
+      </button>
+    </div>
+  </div>
+</div>

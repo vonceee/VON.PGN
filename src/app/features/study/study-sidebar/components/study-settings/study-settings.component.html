@@ -2,149 +2,122 @@
   <!-- Scrollable Form Content -->
   <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
     @if (isEditingPreview()) {
-      <!-- Editor helper overlay -->
-        <div class="flex gap-2.5 mt-2">
-          <button type="button" (click)="cancelPreviewBoardEditor()"
-            class="flex-1 px-4 py-2 text-xs font-semibold bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors cursor-pointer text-center text-slate-700">
-            Cancel
-          </button>
-          <button type="button" (click)="savePreviewBoardPosition()"
-            class="flex-1 px-4 py-2 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white border-transparent rounded-xl transition-colors cursor-pointer text-center">
-            Apply Position
-          </button>
-        </div>
+    <!-- Editor helper overlay -->
+    <div class="flex gap-2.5 mt-2">
+      <button type="button" (click)="cancelPreviewBoardEditor()"
+        class="flex-1 px-4 py-2 text-xs font-semibold bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors cursor-pointer text-center text-slate-700">
+        Cancel
+      </button>
+      <button type="button" (click)="savePreviewBoardPosition()"
+        class="flex-1 px-4 py-2 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white border-transparent rounded-xl transition-colors cursor-pointer text-center">
+        Apply Position
+      </button>
+    </div>
     } @else {
-      <!-- Study Name -->
-      <app-text-input
-        id="study_name"
-        label="Study name"
-        [(ngModel)]="settingsName"
-        [maxlength]="100"
-        placeholder="e.g. My Openings Analysis"
-        class="w-full" />
+    <!-- Study Name -->
+    <app-text-input id="study_name" label="Study name" [(ngModel)]="settingsName" [maxlength]="100"
+      placeholder="e.g. My Openings Analysis" class="w-full" />
 
-      <!-- Visibility -->
-      <app-select
-        label="Visibility"
-        [items]="visibilityOptions"
-        [(value)]="settingsVisibility"
-        class="w-full" />
+    <!-- Visibility -->
+    <app-select label="Visibility" [items]="visibilityOptions" [(value)]="settingsVisibility" class="w-full" />
 
-      <!-- Engine Analysis Visibility -->
-      <app-select
-        label="Engine analysis"
-        [items]="engineVisibilityOptions"
-        [(value)]="settingsEngineVisibility"
-        class="w-full" />
+    <!-- Engine Analysis Visibility -->
+    <app-select label="Engine analysis" [items]="engineVisibilityOptions" [(value)]="settingsEngineVisibility"
+      class="w-full" />
 
-      <!-- Export PGN Visibility -->
-      <app-select
-        label="Export PGN"
-        [items]="exportVisibilityOptions"
-        [(value)]="settingsExportVisibility"
-        class="w-full" />
+    <!-- Export PGN Visibility -->
+    <app-select label="Export PGN" [items]="exportVisibilityOptions" [(value)]="settingsExportVisibility"
+      class="w-full" />
 
-      <!-- Category Selection -->
-      <app-select
-        label="Category"
-        [items]="categoryOptions"
-        [(value)]="settingsCategory"
-        class="w-full" />
+    <!-- Category Selection -->
+    <app-select label="Category" [items]="categoryOptions" [(value)]="settingsCategory" class="w-full" />
 
-      <!-- Repertoire Side Selection -->
-      @if (settingsCategory() === 'opening_repertoire') {
-        <app-select
-          label="Repertoire side"
-          [items]="repertoireOrientationOptions"
-          [(value)]="settingsOrientation"
-          class="w-full" />
-      }
+    <!-- Repertoire Side Selection -->
+    @if (settingsCategory() === 'opening_repertoire') {
+    <app-select label="Repertoire side" [items]="repertoireOrientationOptions" [(value)]="settingsOrientation"
+      class="w-full" />
+    }
 
-      <!-- Study Preview Board -->
-      <div class="flex flex-col gap-2 pt-4 mt-2">
-        <p class="text-sm/6 text-gray-500 border-t border-slate-200 mt-2 pt-2">
-          Configure the board position shown on the study list page preview.
-        </p>
-
-        <div class="flex flex-col gap-2 mt-1">            
-          <button type="button" (click)="openPreviewBoardEditor()"
-            class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer">
-            Set Preview Position
-          </button>
-        </div>
-      </div>
-
-      <!-- Destructive actions -->
-      @if (isOwner()) {
+    <!-- Study Preview Board -->
+    <div class="flex flex-col gap-2 pt-4 mt-2">
       <p class="text-sm/6 text-gray-500 border-t border-slate-200 mt-2 pt-2">
-        Permanently delete this study, including all chapters, commentary, and member access. This action cannot be
-        undone.
+        Configure the board position shown on the study list page preview.
       </p>
-      @if (!isConfirmingDeleteStudy()) {
+
+      <div class="flex flex-col gap-2 mt-1">
+        <button type="button" (click)="openPreviewBoardEditor()"
+          class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer">
+          Set Preview Position
+        </button>
+      </div>
+    </div>
+
+    <!-- Destructive actions -->
+    @if (isOwner()) {
+    <p class="text-sm/6 text-gray-500 border-t border-slate-200 mt-2 pt-2">
+      Permanently delete this study, including all chapters, commentary, and member access. This action cannot be
+      undone.
+    </p>
+    @if (!isConfirmingDeleteStudy()) {
+    <button
+      class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
+      (click)="isConfirmingDeleteStudy.set(true)">
+      <span>Delete study</span>
+    </button>
+    } @else {
+    <div class="flex flex-col gap-3">
+      <label for="study_delete_confirm_input" class="text-sm/6 text-gray-500">
+        Type <strong class="select-all">{{ study()?.name }}</strong> to confirm deletion:
+      </label>
+      <app-text-input id="study_delete_confirm_input" label="Confirm study name" [(ngModel)]="deleteStudyConfirmText"
+        placeholder="Enter study name" [autofocus]="true"
+        (enter)="deleteStudyConfirmText() === study()?.name ? onDeleteStudy() : null" class="w-full" />
+      <div class="flex gap-2">
+        <button
+          class="flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+          [disabled]="deleteStudyConfirmText() !== study()?.name" (click)="onDeleteStudy()">
+          Confirm delete
+        </button>
+        <button
+          class="flex-1 whitespace-nowrap group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-surface rounded-full hover:bg-slate-200"
+          (click)="isConfirmingDeleteStudy.set(false)">
+          Cancel
+        </button>
+      </div>
+    </div>
+    }
+    <p class="text-sm/6 text-gray-500 border-t border-slate-200 mt-2 pt-2">
+      Delete all live chat messages for all members.
+    </p>
+    <div class="flex items-center gap-4">
+      @if (!isChatCleared()) {
       <button
-        class="w-fit inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-red-50 border border-transparent text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors font-medium text-[16px] leading-5 cursor-pointer"
-        (click)="isConfirmingDeleteStudy.set(true)">
-        <span>Delete study</span>
+        class="whitespace-nowrap flex justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+        (click)="clearChat()">
+        <span>Clear chat history</span>
       </button>
       } @else {
-      <div class="flex flex-col gap-3">
-        <label for="study_delete_confirm_input" class="text-sm/6 text-gray-500">
-          Type <strong class="select-all">{{ study()?.name }}</strong> to confirm deletion:
-        </label>
-        <app-text-input
-          id="study_delete_confirm_input"
-          label="Confirm study name"
-          [(ngModel)]="deleteStudyConfirmText"
-          placeholder="Enter study name"
-          [autofocus]="true"
-          (enter)="deleteStudyConfirmText() === study()?.name ? onDeleteStudy() : null"
-          class="w-full" />
-        <div class="flex gap-2">
-          <button
-            class="flex-1 whitespace-nowrap flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
-            [disabled]="deleteStudyConfirmText() !== study()?.name" (click)="onDeleteStudy()">
-            Confirm delete
-          </button>
-          <button
-            class="flex-1 whitespace-nowrap group flex items-center justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-surface rounded-full hover:bg-slate-200"
-            (click)="isConfirmingDeleteStudy.set(false)">
-            Cancel
-          </button>
-        </div>
+      <div
+        class="whitespace-nowrap flex justify-center gap-2 px-5 py-2.5 text-md font-medium border border-dashed rounded-full">
+        <span>Chat history cleared</span>
       </div>
       }
-      <p class="text-sm/6 text-gray-500 border-t border-slate-200 mt-2 pt-2">
-        Delete all live chat messages for all members.
-      </p>
-      <div class="flex items-center gap-4">
-        @if (!isChatCleared()) {
-        <button
-          class="whitespace-nowrap flex justify-center gap-2 px-5 py-2.5 text-md font-medium cursor-pointer bg-red-50 border-transparent rounded-full text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
-          (click)="clearChat()">
-          <span>Clear chat history</span>
-        </button>
-        } @else {
-        <div
-          class="whitespace-nowrap flex justify-center gap-2 px-5 py-2.5 text-md font-medium border border-dashed rounded-full">
-          <span>Chat history cleared</span>
-        </div>
-        }
-      </div>
-      }
+    </div>
+    }
     }
   </div>
 
   @if (!isEditingPreview()) {
-    <!-- Save / Cancel Sticky Footer -->
-    <div class="p-6 shrink-0 flex justify-end gap-3 border-t-2 border-slate-200">
-      <button (click)="onCancel()"
-        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all text-slate-700">
-        <span>Cancel</span>
-      </button>
-      <button (click)="onSubmit()" [disabled]="!settingsName().trim()"
-        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer">
-        <span>Save</span>
-      </button>
-    </div>
+  <!-- Save / Cancel Sticky Footer -->
+  <div class="p-6 shrink-0 flex justify-end gap-3">
+    <button (click)="onCancel()"
+      class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white border border-slate-200 font-medium text-[16px] leading-5 cursor-pointer hover:bg-slate-200 transition-all text-slate-700">
+      <span>Cancel</span>
+    </button>
+    <button (click)="onSubmit()" [disabled]="!settingsName().trim()"
+      class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[16px] leading-5 cursor-pointer">
+      <span>Save</span>
+    </button>
+  </div>
   }
 </div>

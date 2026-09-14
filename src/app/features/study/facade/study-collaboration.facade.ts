@@ -42,6 +42,7 @@ export class StudyCollaborationFacade {
   showStartClassDialog = signal(false);
   showEndClassDialog = signal(false);
   showJoinClassDialog = signal(false);
+  showLeaveClassDialog = signal(false);
   isDeleting = signal(false);
 
   // Delegates
@@ -108,6 +109,9 @@ export class StudyCollaborationFacade {
         this.ngZone.run(() => {
           this.showJoinClassDialog.set(true);
         });
+      } else {
+        this.showJoinClassDialog.set(false);
+        this.showLeaveClassDialog.set(false);
       }
     });
   }
@@ -185,6 +189,27 @@ export class StudyCollaborationFacade {
     this.studyService.hasJoinedClass.set(true);
   }
 
+  promptLeaveClass() {
+    this.showLeaveClassDialog.set(true);
+  }
+
+  onLeaveClassConfirmed() {
+    this.showLeaveClassDialog.set(false);
+    this.leaveClassSession();
+  }
+
+  onLeaveClassCancelled() {
+    this.showLeaveClassDialog.set(false);
+  }
+
+  leaveClassSession() {
+    this.studyService.hasJoinedClass.set(false);
+    this.nav.remoteShapes.set([]);
+    if (this.webrtc.isCallActive()) {
+      this.webrtc.leaveCall();
+    }
+  }
+
   onJoinClassConfirmed() {
     this.showJoinClassDialog.set(false);
     this.joinClassSession();
@@ -192,7 +217,6 @@ export class StudyCollaborationFacade {
 
   onJoinClassCancelled() {
     this.showJoinClassDialog.set(false);
-    this.toastService.show('Exploring freely. You can join the class anytime using the banner.');
   }
 
   toggleSync() {
