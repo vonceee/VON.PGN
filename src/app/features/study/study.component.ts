@@ -31,8 +31,6 @@ import {
   heroChevronDoubleRight,
   heroEye,
   heroUserPlus,
-  heroCheckCircle,
-  heroArrowPath,
   heroExclamationCircle,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
@@ -95,8 +93,6 @@ import { SelectComponent, SelectItem } from '@shared/ui';
       heroChevronDoubleRight,
       heroEye,
       heroUserPlus,
-      heroCheckCircle,
-      heroArrowPath,
       heroExclamationCircle,
     }),
   ],

@@ -114,7 +114,7 @@ export class StudyService {
 
   private initDbSavePipeline(): void {
     this.dbSaveSubject.pipe(
-      debounceTime(800),
+      debounceTime(3000),
       concatMap(() => {
         if (!this.pendingSavePayload) {
           if (!this.isSavingHttp) {

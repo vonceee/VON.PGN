@@ -10,8 +10,17 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
+  if (req.headers.has('X-Silent') || req.headers.has('x-silent')) {
+    const cleanReq = req.clone({
+      headers: req.headers.delete('X-Silent').delete('x-silent'),
+    });
+    return next(cleanReq);
+  }
+
   const bypassUrls = ['/tv', '/game/active', '/ping'];
-  const shouldBypass = bypassUrls.some(url => req.url.endsWith(url));
+  const shouldBypass =
+    bypassUrls.some(url => req.url.endsWith(url)) ||
+    (req.method === 'PUT' && req.url.includes('/chapters/'));
   if (shouldBypass) {
     return next(req);
   }

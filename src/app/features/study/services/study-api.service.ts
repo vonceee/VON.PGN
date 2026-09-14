@@ -90,8 +90,9 @@ export class StudyApiService {
     });
   }
 
-  updateChapter(studyId: number | string, chapterId: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`, data);
+  updateChapter(studyId: number | string, chapterId: number, data: any, silent: boolean = true): Observable<any> {
+    const headers = silent ? { 'X-Silent': 'true' } : undefined;
+    return this.http.put(`${this.apiUrl}/studies/${studyId}/chapters/${chapterId}`, data, { headers });
   }
 
   deleteChapter(studyId: number | string, chapterId: number): Observable<any> {

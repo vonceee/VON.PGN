@@ -1,7 +1,8 @@
 <div class="min-h-full md:absolute md:inset-0 flex flex-col">
   @if (facade.study(); as s) {
   <!-- Main Content Grid Wrapper -->
-  <div class="w-full max-w-[1850px] mx-auto px-4 pt-4 md:pt-6 md:p-6 md:pl-25 2xl:pl-15" [class.pl-24]="isSidebarCollapsed()">
+  <div class="w-full max-w-[1850px] mx-auto px-4 pt-4 md:pt-6 md:p-6 md:pl-25 2xl:pl-15"
+    [class.pl-24]="isSidebarCollapsed()">
     <div class="grid justify-center lg:justify-start gap-4 2xl:gap-8" [class.grid-cols-1]="!isThreeColumn()"
       [class.md:grid-cols-[auto_320px]]="isThreeColumn() && isSidebarCollapsed()"
       [class.lg:grid-cols-[260px_auto_320px]]="isThreeColumn() && !isSidebarCollapsed() && windowWidth() < 1280"
@@ -25,19 +26,16 @@
         <!-- Mobile Chapter Selector Dropdown -->
         @if (isMobileLayout() && chapterOptions().length > 0) {
         <div class="mb-6 w-full flex items-center justify-center px-1" [style.maxWidth.px]="maxBoardSize()">
-          <app-select
-            [items]="chapterOptions()"
-            [value]="facade.currentChapter()?.id"
-            (itemSelected)="onChapterSelect($event)"
-            buttonClass="h-10 text-sm font-medium"
-            class="w-full block"
-          />
+          <app-select [items]="chapterOptions()" [value]="facade.currentChapter()?.id"
+            (itemSelected)="onChapterSelect($event)" buttonClass="h-10 text-sm font-medium" class="w-full block" />
         </div>
         }
 
         <!-- Board Wrapper -->
-        <div class="resize-x overflow-hidden aspect-square min-w-0 md:min-w-[400px] flex items-center justify-center gap-0 mx-auto"
-          [style.width.px]="effectiveBoardSize()" [style.maxWidth.px]="maxBoardSize()" [style.maxHeight.px]="maxBoardSize()"
+        <div
+          class="resize-x overflow-hidden aspect-square min-w-0 md:min-w-[400px] flex items-center justify-center gap-0 mx-auto"
+          [style.width.px]="effectiveBoardSize()" [style.maxWidth.px]="maxBoardSize()"
+          [style.maxHeight.px]="maxBoardSize()"
           [style.cursor]="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.getBoardCursor() || 'default' : 'default'"
           (mousedown)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseDown($event) : null"
           (mousemove)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseMove($event) : null"
@@ -71,44 +69,32 @@
         } @else {
         <!-- Notation & Commentary Card (Hidden on Mobile) -->
         <div
-          class="hidden md:flex flex-col overflow-hidden border-2 border-slate-200 rounded-xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
+          class="hidden md:flex flex-col overflow-hidden bg-white border-2 border-slate-200 rounded-xl shrink-0 md:h-0 md:flex-1 md:min-h-0">
           <div class="flex-1 flex flex-col overflow-hidden relative min-h-0">
             <!-- Notation Header Bar with Save Status -->
-            <div class="p-2 px-3 flex items-center justify-between shrink-0 select-text border-b border-slate-100 min-h-[38px]">
+            <div
+              class="p-2 px-3 flex items-center justify-between shrink-0 select-text border-b border-slate-100 min-h-[38px]">
               <div class="flex items-center gap-2 overflow-hidden min-w-0">
                 @if (facade.openingName(); as name) {
-                  <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-slate-200 shrink-0">
-                    {{ facade.openingEco() || 'ECO' }}
-                  </span>
-                  <span class="text-sm font-medium truncate" [title]="name">
-                    {{ name }}
-                  </span>
-                } @else {
-                  <span class="text-xs font-medium text-slate-400">
-                    Notation
-                  </span>
+                <span class="text-xs font-medium px-2 py-0.5 rounded-xl bg-slate-200 shrink-0">
+                  {{ facade.openingEco() || 'ECO' }}
+                </span>
+                <span class="text-sm font-medium truncate" [title]="name">
+                  {{ name }}
+                </span>
                 }
               </div>
 
-              <!-- Save Status Indicator -->
-              <div class="flex items-center gap-1.5 shrink-0 select-none pl-2 text-xs transition-opacity duration-300">
-                @if (facade.saveStatus() === 'saving') {
-                  <span class="inline-flex items-center gap-1 text-slate-400 font-medium">
-                    <ng-icon name="heroArrowPath" class="animate-spin text-sm text-slate-400"></ng-icon>
-                    Saving...
-                  </span>
-                } @else if (facade.saveStatus() === 'saved') {
-                  <span class="inline-flex items-center gap-1 text-slate-400 font-medium">
-                    <ng-icon name="heroCheckCircle" class="text-emerald-500 text-sm"></ng-icon>
-                    Saved
-                  </span>
-                } @else if (facade.saveStatus() === 'error') {
-                  <span class="inline-flex items-center gap-1 text-rose-500 font-medium" title="Failed to save changes to database">
-                    <ng-icon name="heroExclamationCircle" class="text-rose-500 text-sm"></ng-icon>
-                    Sync error
-                  </span>
-                }
+              <!-- Sync Error Alert (Only displayed if DB save fails) -->
+              @if (facade.saveStatus() === 'error') {
+              <div class="flex items-center gap-1.5 shrink-0 select-none pl-2 text-xs">
+                <span class="inline-flex items-center gap-1 text-rose-500 font-medium"
+                  title="Failed to save changes to database">
+                  <ng-icon name="heroExclamationCircle" class="text-rose-500 text-sm"></ng-icon>
+                  Sync error
+                </span>
               </div>
+              }
             </div>
             <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moveTree]="facade.moveTree()"
               [currentFen]="facade.currentFen()" [currentPly]="facade.currentPly()" [initialPly]="facade.initialPly()"
@@ -160,9 +146,8 @@
 
             @if (facade.isEngineVisible()) {
             <app-study-analysis [isEngineActive]="facade.isEngineActive()" [isEngineError]="facade.isEngineError()"
-              [engineEval]="facade.engineEval()"
-              [enginePvLines]="facade.formattedPvLines()" [currentPly]="facade.currentPly()"
-              (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
+              [engineEval]="facade.engineEval()" [enginePvLines]="facade.formattedPvLines()"
+              [currentPly]="facade.currentPly()" (toggleEngine)="facade.isEngineActive.set(!facade.isEngineActive())"
               (retryEngine)="facade.engineService.restart()"></app-study-analysis>
             }
           </div>
@@ -205,7 +190,7 @@
 
 <ng-template #toolbarTemplate>
   <div
-    class="p-2 flex items-center justify-between border-2 border-slate-200 rounded-4xl select-none w-full shrink-0 px-4 text-slate-900">
+    class="p-2 flex items-center justify-between bg-white border-2 border-slate-200 rounded-4xl select-none w-full shrink-0 px-4 text-slate-900">
     <!-- Flip Board Button -->
     <button (click)="flipBoard()" title="Flip Board"
       class="p-2 rounded-full transition-colors cursor-pointer hover:bg-slate-200 flex items-center justify-center">
