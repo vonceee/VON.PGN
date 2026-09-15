@@ -2,7 +2,6 @@ import { Component, inject, signal, computed, HostListener, ViewChild, ElementRe
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ThemeService } from '../../../../core/services/theme.service';
 import { UserService, UserSearchResult } from '../../../../core/services/user.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { GameService } from '../../../../core/services/game.service';
@@ -88,7 +87,6 @@ import {
   },
 })
 export class Header implements OnInit, OnDestroy {
-  themeService = inject(ThemeService);
   userService = inject(UserService);
   authService = inject(AuthService);
   gameService = inject(GameService);

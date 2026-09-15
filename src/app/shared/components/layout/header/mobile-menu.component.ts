@@ -3,7 +3,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
-import { ThemeService } from '../../../../core/services/theme.service';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -124,7 +123,6 @@ import { Router } from '@angular/router';
 export class MobileMenuComponent {
   authService = inject(AuthService);
   userService = inject(UserService);
-  themeService = inject(ThemeService);
   private router = inject(Router);
 
   close = output();

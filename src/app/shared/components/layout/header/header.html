@@ -131,13 +131,15 @@
   <div class="flex items-center gap-4 lg:gap-5 ml-auto lg:ml-0">
     <!-- Desktop Search Bar -->
     <div class="relative hidden lg:block group/search" #searchContainer>
-      <div
-        class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-3xl border border-slate-200 bg-white">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+      <div class="flex items-center h-9 w-44 lg:w-64 px-4 rounded-3xl border border-slate-200 bg-white">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-4">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>
-        <input #searchInput type="text" placeholder="search all users..." [value]="searchQuery()" (input)="onSearchInput($event)"
-          (focus)="isSearchOpen.set(true)" class="bg-transparent outline-none text-sm/6 w-full pl-2" />
+        <input #searchInput type="text" placeholder="search all users..." [value]="searchQuery()"
+          (input)="onSearchInput($event)" (focus)="isSearchOpen.set(true)"
+          class="bg-transparent outline-none text-sm/6 w-full pl-2" />
 
         @if (isSearching()) {
 
@@ -168,10 +170,12 @@
 
     <!-- Notifications Dropdown -->
     <div class="relative hidden md:block">
-      <button (click)="toggleNotifications()"
-        class="flex items-center gap-2 group cursor-pointer relative" aria-label="Notifications">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+      <button (click)="toggleNotifications()" class="flex items-center gap-2 group cursor-pointer relative"
+        aria-label="Notifications">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
         </svg>
         @if (notificationService.unreadCount() > 0) {
         <span
@@ -193,23 +197,18 @@
         <div class="max-h-96 overflow-y-auto">
           @if (notificationService.notifications().length === 0) {
           <div class="py-8 px-4 text-center">
-            <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3 text-slate-300 mx-auto">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-              </svg>
-            </div>
-            <h4 class="text-sm font-semibold mb-1 text-slate-200">No notifications yet</h4>
+            <h4 class="text-sm font-semibold mb-1 text-slate-200">No notifications</h4>
           </div>
           } @else {
-            @for (n of notificationService.notifications(); track n.id) {
-            <div class="px-4 py-3 hover:bg-white/10 cursor-pointer border-b border-white/10 last:border-0"
-              [class.bg-white/5]="!n.read_at" (click)="navigateToNotification(n)">
-              <div class="flex flex-col gap-1">
-                <p class="text-sm/6 font-medium ">{{ n.data.message }}</p>
-                <span class="text-xs text-white/50">{{ n.created_at | date:'short' }}</span>
-              </div>
+          @for (n of notificationService.notifications(); track n.id) {
+          <div class="px-4 py-3 hover:bg-white/10 cursor-pointer border-b border-white/10 last:border-0"
+            [class.bg-white/5]="!n.read_at" (click)="navigateToNotification(n)">
+            <div class="flex flex-col gap-1">
+              <p class="text-sm/6 font-medium ">{{ n.data.message }}</p>
+              <span class="text-xs text-white/50">{{ n.created_at | date:'short' }}</span>
             </div>
-            }
+          </div>
+          }
           }
         </div>
       </div>
@@ -217,11 +216,12 @@
     </div>
 
     <div class="relative hidden md:block" #profileContainer>
-      <button (click)="toggleProfileDropdown()"
-        class="flex items-center gap-2 group cursor-pointer relative">
+      <button (click)="toggleProfileDropdown()" class="flex items-center gap-2 group cursor-pointer relative">
         <div class="flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
           </svg>
           <span class="hidden 4xl:inline text-sm/6 font-medium transition-colors">
             {{ userService.currentUser()?.username || 'Profile' }}
@@ -265,15 +265,16 @@
       </div>
     </div>
     } @else {
-    <button class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-slate-900 text-white font-medium text-[14px] leading-5 cursor-pointer"
-     routerLink="/login">Login</button>
+    <button
+      class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-slate-900 text-white font-medium text-[14px] leading-5 cursor-pointer"
+      routerLink="/login">Login</button>
     }
 
     <!-- Mobile Hamburger Button -->
     <button (click)="toggleMobileMenu()"
-      class="lg:hidden cursor-pointer relative group flex items-center justify-center"
-      aria-label="Toggle Menu">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+      class="lg:hidden cursor-pointer relative group flex items-center justify-center" aria-label="Toggle Menu">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="size-5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
       </svg>
     </button>
