@@ -16,7 +16,7 @@ import { AudioService } from '../../../../core/services/audio.service';
 import { MoveNotationComponent  } from '@shared/chess';
 import { ChessBoardComponent  } from '@shared/chess';
 
-import { Chess, Move } from 'chess.js';
+import { Chess, Move } from '@von/chess';
 import { Config } from 'chessground/config';
 import { Key } from 'chessground/types';
 

@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Puzzle } from '../../../../features/tactics/models/tactics.model';
-import { Chess, Move } from 'chess.js';
+import { Chess, Move } from '@von/chess';
 import { Config } from 'chessground/config';
 import { AudioService } from '../../../../core/services/audio.service';
 import { ChessBoardComponent } from '@shared/chess';

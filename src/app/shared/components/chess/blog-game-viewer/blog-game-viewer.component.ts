@@ -16,7 +16,7 @@ import {
   heroChevronDoubleRight,
   heroArrowsRightLeft,
 } from '@ng-icons/heroicons/outline';
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 import { buildTreeFromMoves } from '../../../../core/utils/chess-tree.utils';
 import { MoveNode } from '../../../../core/models/study.model';
 

@@ -38,12 +38,9 @@ export const GLYPH_MAPPING: Record<number, { symbol: string; name: string; class
   4: { symbol: '??', name: 'Blunder', class: 'blunder' },
   5: { symbol: '!?', name: 'Interesting', class: 'interesting' },
   6: { symbol: '?!', name: 'Dubious move', class: 'dubious' },
-  7: { symbol: '□', name: 'Only move', class: 'only-move' },
-  22: { symbol: '⊙', name: 'Zugzwang', class: 'zugzwang' },
 
   // Positional Evaluations
   10: { symbol: '=', name: 'Equal', class: 'equal' },
-  13: { symbol: '∞', name: 'Unclear', class: 'unclear' },
   14: { symbol: '⩲', name: 'White is slightly better', class: 'white-slightly-better' },
   15: { symbol: '⩱', name: 'Black is slightly better', class: 'black-slightly-better' },
   16: { symbol: '±', name: 'White is better', class: 'white-better' },
@@ -53,13 +50,6 @@ export const GLYPH_MAPPING: Record<number, { symbol: string; name: string; class
 
   // Technical Markers
   146: { symbol: 'N', name: 'Novelty', class: 'novelty' },
-  32: { symbol: '↑↑', name: 'Development', class: 'development' },
-  36: { symbol: '↑', name: 'Initiative', class: 'initiative' },
-  40: { symbol: '→', name: 'Attack', class: 'attack' },
-  132: { symbol: '⇆', name: 'Counterplay', class: 'counterplay' },
-  138: { symbol: '⊕', name: 'Time trouble', class: 'time-trouble' },
-  44: { symbol: '=∞', name: 'Compensation', class: 'compensation' },
-  140: { symbol: 'Δ', name: 'With the idea', class: 'idea' },
 };
 
 export interface MoveEval {

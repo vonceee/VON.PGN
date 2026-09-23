@@ -2,7 +2,7 @@ import { Injectable, inject, signal, computed, effect, untracked, NgZone, PLATFO
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Chess, Move } from 'chess.js';
+import { Chess, Move } from '@von/chess';
 import { environment } from '../../../../environments/environment';
 import { AudioService } from '../../../core/services/audio.service';
 import { AuthService } from '../../../core/services/auth.service';

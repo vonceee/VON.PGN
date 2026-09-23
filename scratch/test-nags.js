@@ -1,4 +1,4 @@
-const { Chess } = require('chess.js');
+const { Chess } = require('@von/chess');
 
 const pgn = `[FEN "4k1n1/8/8/pPpPpPpP/PpPpPpPp/8/8/4K1N1 w - - 0 1"]
 [SetUp "1"]

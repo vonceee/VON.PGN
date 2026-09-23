@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, input, output, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Chess, Move } from 'chess.js';
+import { Chess, Move } from '@von/chess';
 import { ChessBoardComponent } from '../../../../shared/components/chess/chess-board/chess-board.component';
 import { BughouseTeamsState } from '../../../../core/models/bughouse.model';
 

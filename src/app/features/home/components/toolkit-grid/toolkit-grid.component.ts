@@ -49,7 +49,10 @@ export type ToolkitCategory = 'all' | 'openings' | 'tactics' | 'analysis' | 'tou
       <!-- Section Header & Category Filter Tabs -->
       <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 class="text-3xl md:text-4xl font-light text-slate-900 leading-tight">_</h2>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-mono mb-3">
+            <span>01 // TOOLS</span>
+          </div>
+          <h2 class="text-3xl md:text-4xl font-light text-slate-900 leading-tight">Comprehensive chess toolkit</h2>
         </div>
 
         <!-- Category Tabs -->

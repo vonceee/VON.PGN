@@ -25,19 +25,99 @@
   transform-origin: bottom center;
 }
 
-/* Hardware-accelerated skew for Lenis scroll velocity distortion */
 .skew-on-scroll {
   will-change: transform;
   transform-style: preserve-3d;
   backface-visibility: hidden;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-/* Hide scrollbar for IE, Edge and Firefox */
+
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  
+  scrollbar-width: none;  
 }
+
+.tailwind-vertical-rail-left {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1rem;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(203, 213, 225, 0.9) 80px, rgba(203, 213, 225, 0.9) calc(100% - 80px), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .tailwind-vertical-rail-left {
+    left: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tailwind-vertical-rail-left {
+    left: 7rem;
+  }
+}
+
+.tailwind-vertical-rail-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 1rem;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(203, 213, 225, 0.9) 80px, rgba(203, 213, 225, 0.9) calc(100% - 80px), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .tailwind-vertical-rail-right {
+    right: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tailwind-vertical-rail-right {
+    right: 7rem;
+  }
+}
+
+.tailwind-column-guides {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1rem;
+  right: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .tailwind-column-guides {
+    left: 5rem;
+    right: 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tailwind-column-guides {
+    left: 7rem;
+    right: 7rem;
+  }
+}
+
+.tailwind-column-guides > div {
+  border-right: 1px dashed rgba(226, 232, 240, 0.55);
+  height: 100%;
+}
+
+.tailwind-column-guides > div:last-child {
+  border-right: none;
+}
+

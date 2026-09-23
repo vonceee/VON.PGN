@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed, effect, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 
 import { EngineService } from '../../../core/services/engine.service';
 import { StudyService } from '../services/study.service';

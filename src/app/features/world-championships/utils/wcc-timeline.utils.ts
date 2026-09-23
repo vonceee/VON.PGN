@@ -1,4 +1,4 @@
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 import { GLYPH_MAPPING, GlyphId } from '../../../core/models/study.model';
 
 export const DEFAULT_START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';

@@ -1,4 +1,4 @@
-const { Chess } = require('chess.js');
+const { Chess } = require('@von/chess');
 
 // Mock/Copy of getPlyFromFen from chess-tree.utils.ts
 function getPlyFromFen(fen) {

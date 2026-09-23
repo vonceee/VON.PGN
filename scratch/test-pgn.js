@@ -1,4 +1,4 @@
-const { Chess } = require('chess.js');
+const { Chess } = require('@von/chess');
 
 const pgn = `[Event "vontheworst's Study: Chapter 13"]
 [Date "2026.04.26"]

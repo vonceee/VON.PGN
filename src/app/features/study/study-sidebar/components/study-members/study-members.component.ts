@@ -61,6 +61,7 @@ export class StudyMembersComponent {
   revokeControlClicked = output<void>();
 
   searchQuery = signal('');
+  selectedUserId = signal<string | null>(null);
 
   private normalizedQuery = computed(() => this.searchQuery().trim().toLowerCase());
 
@@ -87,11 +88,12 @@ export class StudyMembersComponent {
   });
 
   totalCount = computed(() => {
-    const ownerCount = this.study()?.owner ? 1 : 0;
-    const collabCount = this.study()?.collaborators?.length || 0;
-    const viewerCount = this.viewers().length;
-    return ownerCount + collabCount + viewerCount;
+    return this.filteredViewers().length;
   });
+
+  selectMember(userId: string): void {
+    this.selectedUserId.update(current => (current === userId ? null : userId));
+  }
 
   clearSearch(): void {
     this.searchQuery.set('');

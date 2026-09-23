@@ -17,7 +17,7 @@ import {
   GameNarrativeSection,
   MatchGameSummary,
 } from '../../../core/models/world-championship.model';
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 import {
   WccBoardViewerComponent,
   WccSectionEditorComponent,

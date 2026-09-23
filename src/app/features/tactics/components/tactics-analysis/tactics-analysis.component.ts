@@ -10,7 +10,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 import { EngineService } from '../../../../core/services/engine.service';
 import { StudyAnalysisComponent } from '../../../study/study-analysis/study-analysis.component';
 

@@ -1,5 +1,5 @@
 // Mocking the environment to test buildTreeFromMoves
-const { Chess } = require('chess.js');
+const { Chess } = require('@von/chess');
 
 // Copy of getPlyFromFen from chess-tree.utils.ts
 function getPlyFromFen(fen) {

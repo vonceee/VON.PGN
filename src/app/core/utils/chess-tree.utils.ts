@@ -1,4 +1,4 @@
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 import { MoveNode, GlyphId } from '../models/study.model';
 
 /**

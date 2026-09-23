@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChessBoardComponent } from '@shared/chess';
 import { TypewriterTextComponent } from '@shared/ui';
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 import type { Key } from 'chessground/types';
 
 // The "Game of the Century" (Byrne vs Fischer 1956)

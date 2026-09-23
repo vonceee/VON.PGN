@@ -1,4 +1,4 @@
-const { Chess } = require('chess.js');
+const { Chess } = require('@von/chess');
 
 const pgn = `{ c1 } { c2 } 1. e4 { c3 } { c4 }`;
 const chess = new Chess();

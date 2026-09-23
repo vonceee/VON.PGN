@@ -1,34 +1,268 @@
 <div #pageContainer appFloatingCursorContainer
   class="w-full min-h-screen relative py-8 px-4 md:px-0 md:pl-20 lg:pl-28 mx-auto selection:bg-blue-600 selection:text-white">
 
+  <!-- =======================================================================
+       Tailwind-Style Architectural Grid Lines System
+       Inspired by tailwindcss.com blueprint layout & CAD developer aesthetic
+       ======================================================================= -->
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <!-- Blueprint Orthogonal Background Matrix (48px square cells) -->
+    <div class="tailwind-grid-bg"></div>
+    <div class="tailwind-micro-grid"></div>
+
+    <!-- Ambient Hero Lighting Halo -->
+    <div class="tailwind-hero-glow"></div>
+    <div class="tailwind-section-glow top-[1800px]"></div>
+    <div class="tailwind-section-glow top-[3800px]"></div>
+
+    <!-- Structural Vertical Guide Rails Framing Content -->
+    <div class="tailwind-vertical-rail-left"></div>
+    <div class="tailwind-vertical-rail-right"></div>
+
+    <!-- Interior 4-Column Blueprint Guidelines (Dashed Guide Rails) -->
+    <div class="tailwind-column-guides">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+
   <app-scroll-scrubber [scrollPercent]="scrollPercent()" (scrollToTop)="scrollToSection('#heroSection')" />
 
   <div class="relative z-10">
 
+    <!-- TOP SYSTEM COORDINATES BOUNDARY -->
+    <div class="w-full md:pr-20 lg:pr-28 relative mb-6 md:mb-8 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/80 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/60 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/60">
+        <!-- Left Intersection Crosshair (+) -->
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-400 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>COORDINATES // A1 — H8</span>
+        </div>
+        <!-- Right Intersection Crosshair (+) -->
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- HERO SECTION -->
     <div id="heroSection">
       <app-hero-section #heroSection (exploreTools)="scrollToSection('#toolsSection')"
         (exploreGallery)="scrollToSection('#gallerySection')" />
     </div>
 
+    <!-- TAILWIND GRID DIVIDER 01: HERO -> TOOLKIT -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <!-- Left Intersection Crosshair (+) -->
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <!-- Center Tech Badge -->
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+          <span>01 // TOOLKIT</span>
+        </div>
+        <!-- Right Intersection Crosshair (+) -->
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- TOOLKIT GRID -->
     <app-toolkit-grid (categoryChanged)="onCategoryChanged()" />
 
+    <!-- TAILWIND GRID DIVIDER 02: TOOLKIT -> SPLIT TEXT -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+          <span>02 // PHILOSOPHY</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- SPLIT TEXT BANNER -->
     <app-split-text-banner />
 
+    <!-- TAILWIND GRID DIVIDER 03: SPLIT TEXT -> TIMELINE -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+          <span>03 // IMMORTAL CLASH</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- INTERACTIVE TIMELINE -->
     <app-interactive-timeline #interactiveTimeline />
 
+    <!-- TAILWIND GRID DIVIDER 04: TIMELINE -> ENGINE SPARRING -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+          <span>04 // AI SPARRING</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ENGINE SPARRING SHOWCASE -->
     <app-engine-sparring-showcase />
 
+    <!-- TAILWIND GRID DIVIDER 05: ENGINE SPARRING -> ROADMAP -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>05 // ROADMAP</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- MASTERY ROADMAP -->
     <app-mastery-roadmap />
 
+    <!-- TAILWIND GRID DIVIDER 06: ROADMAP -> BROADCAST -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+          <span>06 // LIVE BROADCAST</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- BROADCAST SHOWCASE -->
     <app-broadcast-showcase />
 
+    <!-- TAILWIND GRID DIVIDER 07: BROADCAST -> GALLERY -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
+          <span>07 // VISUAL GALLERY</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- ASYMMETRIC GALLERY -->
     <app-asymmetric-gallery />
 
+    <!-- TAILWIND GRID DIVIDER 08: GALLERY -> PILLARS -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+          <span>08 // ARCHITECTURE</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- STORYTELLING PILLARS -->
     <app-storytelling-pillars />
 
+    <!-- TAILWIND GRID DIVIDER 09: PILLARS -> COMMUNITY PULSE -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>09 // COMMUNITY PULSE</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- COMMUNITY PULSE -->
     <app-community-pulse />
 
+    <!-- TAILWIND GRID DIVIDER 10: PULSE -> CTA -->
+    <div class="w-full md:pr-20 lg:pr-28 relative my-8 md:my-14 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/90 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/70 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/70">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-500 uppercase flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+          <span>10 // GET STARTED</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- COMMUNITY CTA -->
     <app-community-cta />
+
+    <!-- BOTTOM SYSTEM TERMINATION BOUNDARY -->
+    <div class="w-full md:pr-20 lg:pr-28 relative mt-10 md:mt-16 mb-4 select-none pointer-events-none" aria-hidden="true">
+      <div class="relative w-full border-t border-slate-200/80 before:absolute before:right-full before:top-0 before:w-6 md:before:w-16 before:border-t before:border-slate-200/60 after:absolute after:left-full after:top-0 after:w-6 md:after:w-16 after:border-t after:border-slate-200/60">
+        <svg class="absolute -top-[7px] -left-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-white/95 border border-slate-200/90 shadow-2xs text-[10px] font-mono text-slate-400 uppercase flex items-center gap-1.5">
+          <span>VON.CHESS // DELIBERATE PRACTICE ENGINE</span>
+        </div>
+        <svg class="absolute -top-[7px] -right-[7px] w-3.5 h-3.5 text-slate-400 select-none pointer-events-none" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M7 0v14M0 7h14" />
+        </svg>
+      </div>
+    </div>
 
   </div>
 

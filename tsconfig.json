@@ -3,12 +3,27 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "environments/*": ["src/environments/*"],
-      "@shared/ui": ["src/app/shared/components/ui/index"],
-      "@shared/chess": ["src/app/shared/components/chess/index"],
-      "@shared/layout": ["src/app/shared/components/layout/index"],
-      "@shared/feedback": ["src/app/shared/components/feedback/index"],
-      "@shared/directives": ["src/app/shared/directives/index"]
+      "environments/*": [
+        "src/environments/*"
+      ],
+      "@shared/ui": [
+        "src/app/shared/components/ui/index"
+      ],
+      "@shared/chess": [
+        "src/app/shared/components/chess/index"
+      ],
+      "@shared/layout": [
+        "src/app/shared/components/layout/index"
+      ],
+      "@shared/feedback": [
+        "src/app/shared/components/feedback/index"
+      ],
+      "@shared/directives": [
+        "src/app/shared/directives/index"
+      ],
+      "@von/chess": [
+        "../packages/von-chess/src/index.ts"
+      ]
     },
     "strict": true,
     "noImplicitOverride": true,

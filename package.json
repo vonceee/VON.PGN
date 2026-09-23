@@ -34,7 +34,6 @@
     "@ng-icons/core": "^33.2.1",
     "@ng-icons/heroicons": "^33.2.1",
     "@types/three": "^0.185.4",
-    "chess.js": "^1.4.0",
     "chessground": "^9.2.1",
     "express": "^5.1.0",
     "gsap": "^3.15.0",
@@ -44,7 +43,8 @@
     "socket.io-client": "^4.8.3",
     "stockfish.js": "^10.0.2",
     "three": "^0.185.1",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "@von/chess": "file:../packages/von-chess"
   },
   "devDependencies": {
     "@angular-eslint/eslint-plugin": "^21.3.1",

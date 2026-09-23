@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TacticsService, Puzzle, WoodpeckerSession, WoodpeckerCycle } from '../../services/tactics.service';
 import { EngineService } from '../../../../core/services/engine.service';
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 import { TacticsBoardComponent, MoveNotationComponent } from '@shared/chess';
 import { DevLogger } from '../../../../core/utils/dev-logger';
 import { getPlyFromFen } from '../../../../core/utils/chess-tree.utils';

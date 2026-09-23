@@ -13,7 +13,7 @@ import { Subject, of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Chess } from 'chess.js';
+import { Chess } from '@von/chess';
 import { MoveNotationComponent, TacticsBoardComponent } from '@shared/chess';
 import { UserService } from '../../core/services/user.service';
 import { DevLogger } from '../../core/utils/dev-logger';

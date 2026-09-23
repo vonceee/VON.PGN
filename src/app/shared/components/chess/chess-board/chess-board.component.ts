@@ -21,7 +21,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { isPlatformBrowser } from '@angular/common';
-import { Chess, Move } from 'chess.js';
+import { Chess, Move } from '@von/chess';
 import { Chessground } from 'chessground';
 import { Api } from 'chessground/api';
 import { Config } from 'chessground/config';
