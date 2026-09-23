@@ -4,7 +4,6 @@ import { io, Socket } from 'socket.io-client';
 import { Subject, Observable } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { environment } from '../../../../environments/environment';
-import { DevLogger } from '../../../core/utils/dev-logger';
 import {
   Study,
   StudyChapter,

@@ -5,7 +5,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, concatMap, catchError } from 'rxjs/operators';
 import { ToastService } from '../../../core/services/toast.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { DevLogger } from '../../../core/utils/dev-logger';
 import { StudyApiService } from './study-api.service';
 import { StudySocketService, StudyViewer } from './study-socket.service';
 export type { StudyViewer } from './study-socket.service';
@@ -157,7 +156,7 @@ export class StudyService {
             error: (err) => {
               this.isSavingHttp = false;
               this.saveStatus.set('error');
-              DevLogger.error('[StudyService] Failed to save move to DB:', err);
+              console.error('[StudyService] Failed to save move to DB:', err);
               this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
             }
           }),
@@ -202,7 +201,7 @@ export class StudyService {
         error: (err) => {
           this.isSavingHttp = false;
           this.saveStatus.set('error');
-          DevLogger.error('[StudyService] Failed to flush pending saves to DB:', err);
+          console.error('[StudyService] Failed to flush pending saves to DB:', err);
         }
       });
     }
@@ -212,7 +211,7 @@ export class StudyService {
     this.socketService.onSynced$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((state) => {
-        DevLogger.log(`[Study] Synced state received for study ${state.chapterId || 'unknown'}`);
+        console.log(`[Study] Synced state received for study ${state.chapterId || 'unknown'}`);
         this.isClassActive.set(state.isClassActive || false);
         this.lockHolderId.set(state.lockHolderId || null);
         this.classStartedAt.set(state.classStartedAt || null);
@@ -231,11 +230,11 @@ export class StudyService {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
         if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
-          DevLogger.log('[Study] Ignoring own move broadcast:', payload.clientGeneratedId);
+          console.log('[Study] Ignoring own move broadcast:', payload.clientGeneratedId);
           return;
         }
 
-        DevLogger.log(`[Study] Move received for chapter ${payload.chapterId}, FEN: ${payload.fen}`);
+        console.log(`[Study] Move received for chapter ${payload.chapterId}, FEN: ${payload.fen}`);
         this.lastRemoteState.update(s => ({
           ...s,
           chapterId: payload.chapterId,
@@ -249,11 +248,11 @@ export class StudyService {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
         if (payload.clientGeneratedId && this.emittedMoveIds.has(payload.clientGeneratedId)) {
-          DevLogger.log('[Study] Ignoring own chapter change broadcast:', payload.clientGeneratedId);
+          console.log('[Study] Ignoring own chapter change broadcast:', payload.clientGeneratedId);
           return;
         }
 
-        DevLogger.log(`[Study] Chapter changed to ${payload.chapterId}`);
+        console.log(`[Study] Chapter changed to ${payload.chapterId}`);
         this.lastRemoteState.set({
           chapterId: payload.chapterId,
           fen: payload.fen,
@@ -272,7 +271,7 @@ export class StudyService {
     this.socketService.onClassSessionStarted$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
-        DevLogger.log(`[Study] Class started. Lock holder: ${payload.lockHolderId}`);
+        console.log(`[Study] Class started. Lock holder: ${payload.lockHolderId}`);
         this.isClassActive.set(payload.isClassActive);
         this.lockHolderId.set(payload.lockHolderId);
         this.classStartedAt.set(payload.classStartedAt || null);
@@ -293,7 +292,7 @@ export class StudyService {
     this.socketService.onClassSessionEnded$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
-        DevLogger.log('[Study] Class ended.');
+        console.log('[Study] Class ended.');
         this.isClassActive.set(payload.isClassActive);
         this.lockHolderId.set(payload.lockHolderId);
         this.classStartedAt.set(null);
@@ -303,7 +302,7 @@ export class StudyService {
     this.socketService.onBoardControlUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
-        DevLogger.log(`[Study] Board control updated. Lock holder: ${payload.lockHolderId}`);
+        console.log(`[Study] Board control updated. Lock holder: ${payload.lockHolderId}`);
         this.lockHolderId.set(payload.lockHolderId);
 
         const user = this.authService.currentUser();
@@ -318,7 +317,7 @@ export class StudyService {
     this.socketService.onMembersUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((payload) => {
-        DevLogger.log('[Study] Members/Collaborators list updated in real-time');
+        console.log('[Study] Members/Collaborators list updated in real-time');
         this.currentStudy.update(curr => curr ? { ...curr, collaborators: payload.collaborators } : null);
       });
   }
@@ -349,7 +348,7 @@ export class StudyService {
     this.isLoading.set(true);
     this.api.getStudyRaw(id).subscribe({
       next: (res) => {
-        DevLogger.log('[StudyService] Raw API Response:', res.data);
+        console.log('[StudyService] Raw API Response:', res.data);
         this.currentStudy.set(res.data);
 
         const user = this.authService.currentUser();
@@ -410,7 +409,7 @@ export class StudyService {
       },
       error: (err) => {
         this.isLoading.set(false);
-        DevLogger.error('[StudyService] Failed to fetch study:', err);
+        console.error('[StudyService] Failed to fetch study:', err);
 
         if (err.status === 403) {
           this.toastService.show('This study is private.', 'error');
@@ -526,13 +525,13 @@ export class StudyService {
     const chapter = this.currentChapter();
 
     if (!study || !chapter) {
-      DevLogger.warn('[StudyService] Missing study or chapter to save move.');
+      console.warn('[StudyService] Missing study or chapter to save move.');
       return EMPTY;
     }
 
     const chapterId = chapter.id;
     if (!chapterId) {
-      DevLogger.error('[StudyService] Chapter object exists but ID is missing:', chapter);
+      console.error('[StudyService] Chapter object exists but ID is missing:', chapter);
       return throwError(() => new Error('Chapter ID missing'));
     }
 
@@ -603,7 +602,7 @@ export class StudyService {
           error: (err) => {
             this.isSavingHttp = false;
             this.saveStatus.set('error');
-            DevLogger.error('[StudyService] Failed to save move to DB:', err);
+            console.error('[StudyService] Failed to save move to DB:', err);
             this.toastService.show('Failed to sync changes with server. Please refresh.', 'error');
           }
         })

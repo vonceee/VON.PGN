@@ -5,7 +5,6 @@ import { TacticsService, Puzzle, WoodpeckerSession, WoodpeckerCycle } from '../.
 import { EngineService } from '../../../../core/services/engine.service';
 import { Chess } from '@von/chess';
 import { TacticsBoardComponent, MoveNotationComponent } from '@shared/chess';
-import { DevLogger } from '../../../../core/utils/dev-logger';
 import { getPlyFromFen } from '../../../../core/utils/chess-tree.utils';
 import { WoodpeckerExplanationModalComponent } from '../explanation-modal/woodpecker-explanation-modal.component';
 import { StudyAnalysisComponent } from '../../../study/study-analysis/study-analysis.component';
@@ -214,7 +213,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-        DevLogger.error('[Woodpecker] Failed to load session', err);
+        console.error('[Woodpecker] Failed to load session', err);
         this.isLoading.set(false);
         this.hasError.set(true);
       }
@@ -237,7 +236,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
       this.chess.load(puzzle.fen);
       this.currentFen.set(puzzle.fen);
     } catch (e) {
-      DevLogger.warn('[Woodpecker] Failed to load puzzle FEN:', e);
+      console.warn('[Woodpecker] Failed to load puzzle FEN:', e);
     }
 
     this.currentPuzzle.set(puzzle);
@@ -321,7 +320,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
         }
       }
     } catch (e) {
-      DevLogger.warn('[Woodpecker] Failed to reset to initial puzzle state:', e);
+      console.warn('[Woodpecker] Failed to reset to initial puzzle state:', e);
     }
 
     this.currentPly.set(this.puzzleStartPly() + this.pgnMoves().length);
@@ -358,7 +357,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
         this.currentFen.set(this.chess.fen());
       }
     } catch (e: any) {
-      DevLogger.warn('[Woodpecker] Could not play move:', san, e);
+      console.warn('[Woodpecker] Could not play move:', san, e);
       this.fenError.set(e.message || String(e));
     }
   }
@@ -399,7 +398,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
         this.boardComponent.lastMove = undefined;
       }
     } catch (e: any) {
-      DevLogger.warn('[Woodpecker] Failed to set chess state for ply:', ply, e);
+      console.warn('[Woodpecker] Failed to set chess state for ply:', ply, e);
     }
   }
 
@@ -455,7 +454,7 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-        DevLogger.error('[Woodpecker] Failed to submit solve', err);
+        console.error('[Woodpecker] Failed to submit solve', err);
         this.startTimer(); // Restart on error
       }
     });

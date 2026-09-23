@@ -9,7 +9,6 @@ import {
   MatchGameSummary,
 } from '../models/world-championship.model';
 import { environment } from '../../../environments/environment';
-import { DevLogger } from '../utils/dev-logger';
 
 @Injectable({
   providedIn: 'root',
@@ -184,7 +183,7 @@ export class WorldChampionshipService {
       },
       error: (err) => {
         this.isLoading.set(false);
-        DevLogger.error(
+        console.error(
           '[WorldChampionshipService] Could not reach WCC database API:',
           err
         );
@@ -223,7 +222,7 @@ export class WorldChampionshipService {
             }
           });
 
-          DevLogger.log(
+          console.log(
             '[WorldChampionshipService] Resolved study links count:',
             yearMap.size
           );
@@ -231,7 +230,7 @@ export class WorldChampionshipService {
         },
         error: (err) => {
           this.isFetchingStudies.set(false);
-          DevLogger.error(
+          console.error(
             '[WorldChampionshipService] Error loading public studies:',
             err
           );
@@ -255,7 +254,7 @@ export class WorldChampionshipService {
         return mapped;
       }),
       catchError((err) => {
-        DevLogger.error(`[WorldChampionshipService] Error fetching match ${slugOrId}:`, err);
+        console.error(`[WorldChampionshipService] Error fetching match ${slugOrId}:`, err);
         throw err;
       })
     );
@@ -441,9 +440,9 @@ export class WorldChampionshipService {
 
     this.http.post(`${this.apiUrl}/world-championships`, payload).subscribe({
       next: (res) =>
-        DevLogger.log('[WorldChampionshipService] Match persisted to database:', res),
+        console.log('[WorldChampionshipService] Match persisted to database:', res),
       error: (err) =>
-        DevLogger.warn('[WorldChampionshipService] Could not persist to database:', err),
+        console.warn('[WorldChampionshipService] Could not persist to database:', err),
     });
   }
 
@@ -453,9 +452,9 @@ export class WorldChampionshipService {
     );
     this.http.delete(`${this.apiUrl}/world-championships/${matchId}`).subscribe({
       next: () =>
-        DevLogger.log('[WorldChampionshipService] Match deleted from database:', matchId),
+        console.log('[WorldChampionshipService] Match deleted from database:', matchId),
       error: (err) =>
-        DevLogger.warn('[WorldChampionshipService] Could not delete from database:', err),
+        console.warn('[WorldChampionshipService] Could not delete from database:', err),
     });
   }
 }

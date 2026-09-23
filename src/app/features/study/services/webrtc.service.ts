@@ -5,7 +5,6 @@ import { StudyService } from './study.service';
 import { StudySocketService } from './study-socket.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { DevLogger } from '../../../core/utils/dev-logger';
 
 export interface RemoteStreamInfo {
   userName: string;
@@ -59,7 +58,7 @@ export class WebrtcService {
 
         if (targetUserId === currentUserId) return;
 
-        DevLogger.log(`[WebRTC] User joined call: ${user.userName} (${targetUserId})`);
+        console.log(`[WebRTC] User joined call: ${user.userName} (${targetUserId})`);
 
         // Hub-and-Spoke rule:
         // If current user is Tutor, we expect a Student to offer, or we initiate if needed.
@@ -77,7 +76,7 @@ export class WebrtcService {
     this.socketService.onUserLeftCall$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((user) => {
-        DevLogger.log(`[WebRTC] User left call: ${user.userId}`);
+        console.log(`[WebRTC] User left call: ${user.userId}`);
         this.closePeerConnection(String(user.userId));
       });
 
@@ -97,28 +96,28 @@ export class WebrtcService {
         const tutorId = String(studyOwner?.user_id || (studyOwner as any)?.userId || studyOwner?.owner?.id || '');
 
         if (!isTutor && senderId !== tutorId) {
-          DevLogger.warn(`[WebRTC] Student rejected signaling from other Student ${senderId}`);
+          console.warn(`[WebRTC] Student rejected signaling from other Student ${senderId}`);
           return;
         }
 
         try {
           if (sdp) {
             if (sdp.type === 'offer') {
-              DevLogger.log(`[WebRTC] Received Offer from ${senderId}`);
+              console.log(`[WebRTC] Received Offer from ${senderId}`);
               await this.handleOffer(senderId, sdp);
             } else if (sdp.type === 'answer') {
-              DevLogger.log(`[WebRTC] Received Answer from ${senderId}`);
+              console.log(`[WebRTC] Received Answer from ${senderId}`);
               await this.handleAnswer(senderId, sdp);
             }
           } else if (candidate) {
-            DevLogger.log(`[WebRTC] Received ICE Candidate from ${senderId}`);
+            console.log(`[WebRTC] Received ICE Candidate from ${senderId}`);
             const pc = this.peerConnections.get(senderId);
             if (pc) {
               await pc.addIceCandidate(new RTCIceCandidate(candidate));
             }
           }
         } catch (err) {
-          DevLogger.error(`[WebRTC] Signal error from peer ${senderId}:`, err);
+          console.error(`[WebRTC] Signal error from peer ${senderId}:`, err);
         }
       });
   }
@@ -128,7 +127,7 @@ export class WebrtcService {
     if (this.isCallActive()) return;
 
     try {
-      DevLogger.log('[WebRTC] Requesting local microphone stream...');
+      console.log('[WebRTC] Requesting local microphone stream...');
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true
       });
@@ -148,13 +147,13 @@ export class WebrtcService {
         const tutorOnline = this.studyService.viewerNames().some(v => String(v.userId) === tutorId);
         
         if (tutorOnline) {
-          DevLogger.log('[WebRTC] Tutor is online, initiating WebRTC connection...');
+          console.log('[WebRTC] Tutor is online, initiating WebRTC connection...');
           const tutorViewer = this.studyService.viewerNames().find(v => String(v.userId) === tutorId);
           this.initiateConnection(tutorId, tutorViewer?.userName || 'Tutor');
         }
       }
     } catch (err) {
-      DevLogger.error('[WebRTC] Failed to join call:', err);
+      console.error('[WebRTC] Failed to join call:', err);
       this.toastService.show('Failed to access microphone.', 'error');
       throw err;
     }
@@ -193,7 +192,7 @@ export class WebrtcService {
     this.isCallActive.set(false);
     this.isMuted.set(false);
     this.isDetached.set(false);
-    DevLogger.log('[WebRTC] Disconnected from call.');
+    console.log('[WebRTC] Disconnected from call.');
   }
 
   private createPeerConnection(targetUserId: string, userName: string): RTCPeerConnection {
@@ -211,7 +210,7 @@ export class WebrtcService {
     };
 
     pc.ontrack = (event) => {
-      DevLogger.log(`[WebRTC] Received remote stream track from ${userName} (${targetUserId})`);
+      console.log(`[WebRTC] Received remote stream track from ${userName} (${targetUserId})`);
       const remoteStream = event.streams[0];
 
       if (isPlatformBrowser(this.platformId)) {
@@ -227,7 +226,7 @@ export class WebrtcService {
         const audio = new Audio();
         audio.srcObject = remoteStream;
         audio.autoplay = true;
-        audio.play().catch(err => DevLogger.error(`[WebRTC] Failed to play remote audio for ${userName}:`, err));
+        audio.play().catch(err => console.error(`[WebRTC] Failed to play remote audio for ${userName}:`, err));
         this.remoteAudios.set(targetUserId, audio);
       }
 
@@ -239,7 +238,7 @@ export class WebrtcService {
     };
 
     pc.onconnectionstatechange = () => {
-      DevLogger.log(`[WebRTC] Connection state with ${userName}: ${pc.connectionState}`);
+      console.log(`[WebRTC] Connection state with ${userName}: ${pc.connectionState}`);
       if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed' || pc.connectionState === 'closed') {
         this.closePeerConnection(targetUserId);
       }
@@ -263,13 +262,13 @@ export class WebrtcService {
 
       const study = this.studyService.currentStudy();
       if (study) {
-        DevLogger.log(`[WebRTC] Sending Offer to ${userName}`);
+        console.log(`[WebRTC] Sending Offer to ${userName}`);
         this.socketService.emitWebrtcSignal(study.id, targetUserId, {
           sdp: offer
         });
       }
     } catch (err) {
-      DevLogger.error(`[WebRTC] Error initiating offer to ${userName}:`, err);
+      console.error(`[WebRTC] Error initiating offer to ${userName}:`, err);
     }
   }
 
@@ -286,7 +285,7 @@ export class WebrtcService {
 
     const study = this.studyService.currentStudy();
     if (study) {
-      DevLogger.log(`[WebRTC] Sending Answer to ${userName}`);
+      console.log(`[WebRTC] Sending Answer to ${userName}`);
       this.socketService.emitWebrtcSignal(study.id, senderId, {
         sdp: answer
       });
@@ -323,7 +322,7 @@ export class WebrtcService {
       return next;
     });
 
-    DevLogger.log(`[WebRTC] Closed peer connection for ${userId}`);
+    console.log(`[WebRTC] Closed peer connection for ${userId}`);
   }
 
   toggleMicrophone(): void {

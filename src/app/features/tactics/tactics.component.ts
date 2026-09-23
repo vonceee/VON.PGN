@@ -16,7 +16,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Chess } from '@von/chess';
 import { MoveNotationComponent, TacticsBoardComponent } from '@shared/chess';
 import { UserService } from '../../core/services/user.service';
-import { DevLogger } from '../../core/utils/dev-logger';
 import { getPlyFromFen } from '../../core/utils/chess-tree.utils';
 import { PUZZLE_THEMES_HIERARCHY } from './themes/puzzle-themes.config';
 import { TacticsService } from './services/tactics.service';
@@ -117,7 +116,7 @@ export class TacticsComponent implements OnInit {
 
           return req$.pipe(
             catchError((err) => {
-              DevLogger.error('[Tactics] Failed to load puzzle:', err);
+              console.error('[Tactics] Failed to load puzzle:', err);
               return of({ error: err });
             })
           );
@@ -246,7 +245,7 @@ export class TacticsComponent implements OnInit {
       this.chess.load(puzzle.fen);
       this.currentFen.set(puzzle.fen);
     } catch (e) {
-      DevLogger.warn('[Tactics] Failed to load puzzle FEN:', e);
+      console.warn('[Tactics] Failed to load puzzle FEN:', e);
     }
 
     this.recentSessionPuzzleIds.update(ids => {
@@ -317,7 +316,7 @@ export class TacticsComponent implements OnInit {
             this.exploreMode.set(true);
           },
           error: (err) => {
-            DevLogger.error('[Tactics] Failed to submit puzzle solve:', err);
+            console.error('[Tactics] Failed to submit puzzle solve:', err);
             this.exploreMode.set(true);
           }
         });
@@ -349,7 +348,7 @@ export class TacticsComponent implements OnInit {
             this.recordSessionAttempt(pId, res.rating_change, false);
           },
           error: (err) => {
-            DevLogger.error('[Tactics] Failed to submit puzzle failure:', err);
+            console.error('[Tactics] Failed to submit puzzle failure:', err);
           }
         });
       }
@@ -385,7 +384,7 @@ export class TacticsComponent implements OnInit {
             this.resetToInitialPuzzleState();
           },
           error: (err) => {
-            DevLogger.error('[Tactics] Failed to submit wrong move:', err);
+            console.error('[Tactics] Failed to submit wrong move:', err);
             this.resetToInitialPuzzleState();
           }
         });
@@ -412,7 +411,7 @@ export class TacticsComponent implements OnInit {
         }
       }
     } catch (e) {
-      DevLogger.warn('[Tactics] Failed to reset to initial puzzle state:', e);
+      console.warn('[Tactics] Failed to reset to initial puzzle state:', e);
     }
 
     this.currentPly.set(this.puzzleStartPly() + this.pgnMoves().length);
@@ -453,7 +452,7 @@ export class TacticsComponent implements OnInit {
         this.currentFen.set(this.chess.fen());
       }
     } catch (e: any) {
-      DevLogger.warn('[Tactics] Could not update FEN for move:', san, e);
+      console.warn('[Tactics] Could not update FEN for move:', san, e);
       this.fenError.set(e.message || String(e));
     }
   }
@@ -501,7 +500,7 @@ export class TacticsComponent implements OnInit {
         this.boardComponent.lastMove = undefined;
       }
     } catch (e: any) {
-      DevLogger.warn('[Tactics] Failed to set chess state for ply:', ply, e);
+      console.warn('[Tactics] Failed to set chess state for ply:', ply, e);
       this.fenError.set(e.message || String(e));
     }
   }

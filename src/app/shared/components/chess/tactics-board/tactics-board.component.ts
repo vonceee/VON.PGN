@@ -16,7 +16,6 @@ import { Chess, Move } from '@von/chess';
 import { Config } from 'chessground/config';
 import { AudioService } from '../../../../core/services/audio.service';
 import { ChessBoardComponent } from '@shared/chess';
-import { DevLogger } from '../../../../core/utils/dev-logger';
 
 @Component({
   selector: 'app-tactics-board',
@@ -415,7 +414,7 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
       try {
         moveResult = this.chess.move(this.parseUciMove(moveUci));
       } catch (err) {
-        DevLogger.error('[Tactics] Reveal failed: Illegal move', moveUci, 'at ply', this.solutionPly, err);
+        console.error('[Tactics] Reveal failed: Illegal move', moveUci, 'at ply', this.solutionPly, err);
       }
       
       this.solutionPly++;
@@ -426,7 +425,7 @@ export class TacticsBoardComponent implements OnChanges, OnDestroy {
         this.currentFen = this.chess.fen();
         setTimeout(playNextMove, 750);
       } else {
-        DevLogger.warn('[Tactics] Reveal halted: Could not execute move', moveUci);
+        console.warn('[Tactics] Reveal halted: Could not execute move', moveUci);
         this.isRevealing = false;
       }
     };
