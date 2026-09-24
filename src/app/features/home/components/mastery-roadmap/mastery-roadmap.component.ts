@@ -42,29 +42,26 @@ interface RoadmapStep {
     }),
   ],
   template: `
-    <section class="mastery-roadmap-section py-16 md:py-24 mb-20 md:mb-32 md:pr-20 lg:pr-28">
+    <section class="mastery-roadmap-section py-10 md:py-16">
 
       <!-- Section Header -->
-      <div class="mb-14 max-w-3xl">
-        <div
-          class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-medium mb-4">
-          <ng-icon name="heroAcademicCap" size="0.95rem"></ng-icon>
-          <span>Curated Learning Curriculum</span>
-        </div>
-        <h2 class="text-3xl md:text-5xl font-light text-slate-900 leading-tight mb-4">
+      <div class="mb-10 text-left max-w-3xl pb-6 border-b border-slate-200/80">
+        <p class="font-mono text-[11px] sm:text-xs text-slate-400 select-none mb-1.5">text-5xl text-slate-950 tracking-tight font-semibold</p>
+        <h2 class="text-3xl md:text-5xl font-semibold tracking-tight text-slate-950 leading-tight mb-4">
           The Deliberate Practice <br />
-          <span class="font-normal text-blue-600">Roadmap to Mastery</span>
+          <span class="font-semibold text-blue-600">Roadmap to Mastery</span>
         </h2>
         <p class="text-slate-600 text-base leading-relaxed">
           Chess improvement is not random games—it is structured mastery. Progress through our battle-tested curriculum designed to take you from pattern recognition to tournament title contention.
         </p>
       </div>
 
-      <!-- Roadmap Steps Grid (Stepped Progression) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Roadmap Steps Grid (Connected Structural Progression Frame) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-slate-200/90 rounded-3xl bg-white/70 backdrop-blur-md overflow-hidden divide-y lg:divide-y-0 lg:divide-x divide-slate-200/90 shadow-xs relative">
+
         @for (step of steps; track step.level) {
           <div
-            class="skew-on-scroll group bg-white/90 backdrop-blur-md border border-slate-200/90 rounded-3xl p-6 sm:p-7 flex flex-col justify-between shadow-xs hover:shadow-xl hover:border-blue-400/50 transition-all duration-300">
+            class="skew-on-scroll group p-6 sm:p-7 flex flex-col justify-between hover:bg-slate-50/60 transition-colors">
             
             <div>
               <!-- Piece Graphic & Level Indicator -->

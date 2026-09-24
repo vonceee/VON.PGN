@@ -32,21 +32,17 @@ import {
     }),
   ],
   template: `
-    <section class="broadcast-showcase-section py-16 md:py-24 mb-20 md:mb-32 md:pr-20 lg:pr-28">
+    <section class="broadcast-showcase-section py-10 md:py-16">
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
 
         <!-- Left Column: Copy & Value Propositions -->
         <div class="lg:col-span-6">
-          <div
-            class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-medium mb-4">
-            <ng-icon name="heroVideoCamera" size="0.95rem"></ng-icon>
-            <span>Live Broadcast Experience</span>
-          </div>
+          <p class="font-mono text-[11px] sm:text-xs text-slate-400 select-none mb-1.5">text-5xl text-slate-950 tracking-tight font-semibold</p>
 
-          <h2 class="text-3xl sm:text-4xl md:text-5xl font-light text-slate-900 leading-tight mb-4">
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-slate-950 leading-tight mb-4">
             Follow the Best in <br class="hidden sm:inline" />
-            <span class="font-normal text-blue-600">World Chess Live</span>
+            <span class="font-semibold text-blue-600">World Chess Live</span>
           </h2>
 
           <p class="text-slate-600 text-base leading-relaxed mb-8">

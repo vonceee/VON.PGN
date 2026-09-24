@@ -78,11 +78,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   private readonly elementRef = inject(ElementRef);
 
   // Modular Component Child References
-  public readonly heroSection = viewChild(HeroSectionComponent);
   public readonly interactiveTimeline = viewChild(InteractiveTimelineComponent);
 
   /** Real-time scroll percentage (0 to 100) for progress indicators */
   public readonly scrollPercent = signal<number>(0);
+
 
   // Animation instances
   private lenis?: Lenis;
@@ -204,9 +204,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       const progress = e.progress !== undefined ? e.progress : 0;
       this.scrollPercent.set(Math.round(progress * 100));
-
-      // Drive 3D Chessboard tilt/rotation in hero section
-      this.heroSection()?.setScrollProgress(progress);
     });
 
     // 3. RAF Ticker

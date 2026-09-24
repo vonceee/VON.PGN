@@ -1,7 +1,7 @@
-<nav class="flex flex-col flex-1 overflow-y-auto min-h-[160px] p-1">
+<nav #scrollContainer class="flex flex-col flex-1 overflow-y-auto min-h-[160px] p-1">
   <div class="flex-1 flex flex-col gap-0.5" cdkDropList (cdkDropListDropped)="onDrop($event)"
     [cdkDropListDisabled]="!canEdit()">
-    @for (chap of study()?.chapters; track chap.id; let idx = $index) {
+    @for (chap of paginatedChapters(); track chap.id; let idx = $index) {
     <button (click)="selectChapter(chap)" cdkDrag [cdkDragDisabled]="!canEdit()" class="relative flex items-center justify-between p-2 cursor-pointer group text-left
             {{
               currentChapter()?.id === chap.id
@@ -17,7 +17,7 @@
       }
       <div class="flex items-center gap-2 min-w-0">
         <span class="text-xs font-medium text-gray-500 shrink-0 group-active:cursor-grabbing cursor-grab">
-          {{ idx + 1 }}.
+          {{ pageOffset() + idx + 1 }}.
         </span>
         <span [class]="'text-sm/6 truncate ' + (currentChapter()?.id === chap.id ? 'text-blue-600' : 'text-slate-900')">
           {{ chap.name }}
@@ -38,3 +38,53 @@
     }
   </div>
 </nav>
+
+@if (totalPages() > 1) {
+<footer class="border-t border-slate-200 bg-slate-50/90 px-2 py-1.5 flex items-center justify-between gap-1 text-xs shrink-0 select-none">
+  <!-- Left Side: Range or Jump to Active -->
+  <div class="flex items-center min-w-0">
+    @if (!isCurrentChapterOnActivePage() && activeChapterPage() !== null) {
+    <button (click)="jumpToActiveChapter()"
+      class="flex items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer transition-colors"
+      title="Jump to current active chapter (Page {{ activeChapterPage() }})">
+      <svg class="size-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m15 15-6-6m0 0 6-6m-6 6h12" />
+      </svg>
+      <span class="truncate">Active (p.{{ activeChapterPage() }})</span>
+    </button>
+    } @else {
+    <span class="text-[11px] text-gray-500 font-medium truncate">
+      {{ pageOffset() + 1 }}–{{ Math.min(pageOffset() + PAGE_SIZE, totalChapters()) }} of {{ totalChapters() }}
+    </span>
+    }
+  </div>
+
+  <!-- Right Side: Pagination Navigation Controls -->
+  <div class="flex items-center gap-1 shrink-0">
+    <button (click)="prevPage()" [disabled]="currentPage() === 1"
+      class="p-1 rounded text-slate-600 hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+      title="Previous page" aria-label="Previous page">
+      <svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+      </svg>
+    </button>
+
+    <div class="relative inline-flex items-center">
+      <select [value]="currentPage()" (change)="onPageSelect($event)"
+        class="text-xs bg-white border border-slate-200 rounded px-1.5 py-0.5 text-slate-700 cursor-pointer focus:outline-none focus:border-blue-600 font-medium">
+        @for (p of pageOptions(); track p) {
+        <option [value]="p">Page {{ p }}/{{ totalPages() }}</option>
+        }
+      </select>
+    </div>
+
+    <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+      class="p-1 rounded text-slate-600 hover:bg-slate-200 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
+      title="Next page" aria-label="Next page">
+      <svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+    </button>
+  </div>
+</footer>
+}

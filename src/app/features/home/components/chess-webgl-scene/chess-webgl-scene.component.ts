@@ -12,23 +12,6 @@ import {
 import { isPlatformBrowser } from '@angular/common';
 import type * as THREE from 'three';
 
-/**
- * Hero Section 3D WebGL Background Canvas featuring a procedural 3D Chessboard.
- *
- * Visual Features:
- * - Precision-milled 8x8 chessboard with pearl-alabaster and obsidian-slate tiles.
- * - Solid chamfered base chassis with metallic perimeter trim.
- * - Isometric perspective with responsive mouse parallax tilt and scroll-driven rotation.
- *
- * RESOURCE EFFICIENCY & THERMAL OPTIMIZATIONS:
- * 1. IntersectionObserver Pausing: When the hero section scrolls out of view, the RAF loop
- *    pauses completely, dropping GPU/CPU utilization to 0%.
- * 2. Tab Visibility Pausing: Pauses rendering when the browser tab is hidden or minimized.
- * 3. Capped Pixel Ratio (DPR 1.25): Prevents 4K/retina laptops from rendering at 4x-9x resolution,
- *    slashing GPU thermal output by ~65% while keeping visuals crisp.
- * 4. Refresh Rate Clamping (max ~60fps): Throttles rendering on 120Hz-240Hz ProMotion/gaming panels
- *    to prevent laptop thermal throttling and fan noise.
- */
 @Component({
   selector: 'app-chess-webgl-scene',
   standalone: true,
@@ -77,23 +60,12 @@ export class ChessWebGLSceneComponent implements OnInit, OnDestroy {
   private boardGroup?: THREE.Group;
   private orbitRing?: THREE.Mesh;
 
-  // Interactive Parallax Coordinates
-  private mouseTargetX = 0;
-  private mouseTargetY = 0;
-  private currentMouseX = 0;
-  private currentMouseY = 0;
-
-  // Responsive target X coordinate
-  private baseX = 0.95;
-
-  // Scroll Progress (0 to 1)
-  private scrollProgress = 0;
-  private targetScrollProgress = 0;
+  // Responsive target X coordinate (centered in dedicated container)
+  private baseX = 0;
 
   // Resource Disposal Tracking
   private materials: THREE.Material[] = [];
   private geometries: THREE.BufferGeometry[] = [];
-  private pointerMoveHandler?: (event: MouseEvent) => void;
   private visibilityHandler?: () => void;
 
   ngOnInit(): void {
@@ -107,7 +79,6 @@ export class ChessWebGLSceneComponent implements OnInit, OnDestroy {
       this.boardGroup = new threeModule.Group();
 
       this.initThreeScene();
-      this.initEventListeners();
       this.initVisibilityAndIntersectionObservers();
     });
   }
@@ -127,10 +98,6 @@ export class ChessWebGLSceneComponent implements OnInit, OnDestroy {
       this.intersectionObserver.disconnect();
     }
 
-    if (this.pointerMoveHandler) {
-      window.removeEventListener('pointermove', this.pointerMoveHandler);
-    }
-
     if (this.visibilityHandler) {
       document.removeEventListener('visibilitychange', this.visibilityHandler);
     }
@@ -138,9 +105,6 @@ export class ChessWebGLSceneComponent implements OnInit, OnDestroy {
     this.disposeResources();
   }
 
-  public setScrollProgress(progress: number): void {
-    this.targetScrollProgress = Math.max(0, Math.min(1, progress));
-  }
 
   private initThreeScene(): void {
     if (!this.three || !this.boardGroup) return;
@@ -289,30 +253,16 @@ export class ChessWebGLSceneComponent implements OnInit, OnDestroy {
 
   /**
    * Responsive layout sizing:
-   * Desktop: scale 0.58, shifted right
-   * Tablet: scale 0.48, centered-right
-   * Mobile: scale 0.40, centered
+   * Centers the board within its dedicated flex container.
    */
   private updateResponsivePosition(width: number): void {
     if (!this.boardGroup) return;
-    if (width < 768) {
-      this.baseX = 0;
-      this.boardGroup.scale.set(0.40, 0.40, 0.40);
-    } else if (width < 1024) {
-      this.baseX = 0.50;
-      this.boardGroup.scale.set(0.48, 0.48, 0.48);
+    this.baseX = 0;
+    if (width < 1024) {
+      this.boardGroup.scale.set(0.50, 0.50, 0.50);
     } else {
-      this.baseX = 1.10;
       this.boardGroup.scale.set(0.58, 0.58, 0.58);
     }
-  }
-
-  private initEventListeners(): void {
-    this.pointerMoveHandler = (event: MouseEvent) => {
-      this.mouseTargetX = (event.clientX / window.innerWidth) * 2 - 1;
-      this.mouseTargetY = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('pointermove', this.pointerMoveHandler, { passive: true });
   }
 
   /**
@@ -382,24 +332,16 @@ export class ChessWebGLSceneComponent implements OnInit, OnDestroy {
 
     if (!this.boardGroup) return;
 
-    // Parallax Interpolation
-    this.currentMouseX += (this.mouseTargetX - this.currentMouseX) * 0.04;
-    this.currentMouseY += (this.mouseTargetY - this.currentMouseY) * 0.04;
-
-    // Scroll Progress Interpolation
-    this.scrollProgress += (this.targetScrollProgress - this.scrollProgress) * 0.08;
-    const p = this.scrollProgress;
-
     const time = now * 0.0006;
 
-    // Dramatic side-profile orientation + mouse parallax + smooth scroll drift
-    this.boardGroup.rotation.x = 0.32 + this.currentMouseY * 0.12 + Math.cos(time * 0.5) * 0.02;
-    this.boardGroup.rotation.y = -0.78 + time * 0.08 + this.currentMouseX * 0.16 + p * Math.PI * 0.6;
-    this.boardGroup.rotation.z = 0.08 - this.currentMouseX * 0.05;
+    // Dramatic side-profile orientation with subtle ambient idle drift
+    this.boardGroup.rotation.x = 0.32 + Math.cos(time * 0.5) * 0.02;
+    this.boardGroup.rotation.y = -0.78 + time * 0.08;
+    this.boardGroup.rotation.z = 0.08;
 
     // Gentle breathing float
-    this.boardGroup.position.y = -0.22 + Math.sin(time * 1.1) * 0.035 - p * 0.4;
-    this.boardGroup.position.x = this.baseX + this.currentMouseX * 0.12;
+    this.boardGroup.position.y = -0.22 + Math.sin(time * 1.1) * 0.035;
+    this.boardGroup.position.x = this.baseX;
 
     if (this.orbitRing) {
       this.orbitRing.rotation.z = time * 0.3;

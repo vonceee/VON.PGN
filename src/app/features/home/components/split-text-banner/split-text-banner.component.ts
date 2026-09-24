@@ -11,9 +11,11 @@ import {
   selector: 'app-split-text-banner',
   standalone: true,
   template: `
-    <section class="split-text-section py-16 md:py-24 mb-16 md:mb-24 md:pr-20 lg:pr-28">
-      <div class="split-text-container max-w-4xl">
-        <p class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-slate-900 leading-tight">
+    <section class="split-text-section py-10 md:py-16">
+      <div class="split-text-container max-w-4xl relative">
+        <p class="font-mono text-[11px] sm:text-xs text-slate-400 select-none mb-3">text-4xl text-slate-950 tracking-tight font-medium text-balance</p>
+
+        <p class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight text-slate-950 leading-snug">
           <span class="split-word inline-block mr-2.5">Engineered</span>
           <span class="split-word inline-block mr-2.5">for</span>
           <span class="split-word inline-block mr-2.5 text-blue-600 font-normal">deliberate</span>

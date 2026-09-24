@@ -47,18 +47,14 @@ interface BotPersona {
     }),
   ],
   template: `
-    <section class="engine-sparring-section py-16 md:py-24 mb-20 md:mb-32 md:pr-20 lg:pr-28">
+    <section class="engine-sparring-section py-10 md:py-16">
 
       <!-- Section Header -->
-      <div class="mb-12 max-w-3xl">
-        <div
-          class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-medium mb-4">
-          <ng-icon name="heroCpuChip" size="0.95rem"></ng-icon>
-          <span>Sparring Engine Ecosystem</span>
-        </div>
-        <h2 class="text-3xl md:text-5xl font-light text-slate-900 leading-tight mb-3">
+      <div class="mb-10 max-w-3xl pb-6 border-b border-slate-200/80">
+        <p class="font-mono text-[11px] sm:text-xs text-slate-400 select-none mb-1.5">text-5xl text-slate-950 tracking-tight font-semibold</p>
+        <h2 class="text-3xl md:text-5xl font-semibold tracking-tight text-slate-950 leading-tight mb-3">
           Spar Against Tailored <br class="hidden sm:inline" />
-          <span class="font-normal text-blue-600">Chess Personas</span>
+          <span class="font-semibold text-blue-600">Chess Personas</span>
         </h2>
         <p class="text-slate-500 text-sm sm:text-base leading-relaxed">
           Calibrate your calculation against neural sparring bots trained on specific historical playstyles—from romantic sacrifices to unyielding positional technique.

@@ -26,7 +26,7 @@ import {
     }),
   ],
   template: `
-    <section class="community-cta-section py-16 md:py-24 mb-16 md:mb-24 md:pr-20 lg:pr-28">
+    <section class="community-cta-section py-10 md:py-16">
       <div
         class="bg-gradient-to-br from-slate-900 via-slate-850 to-blue-950 text-white rounded-4xl p-8 sm:p-12 md:p-16 border border-white/10 shadow-2xl relative overflow-hidden text-center max-w-5xl mx-auto">
 
@@ -37,14 +37,11 @@ import {
           class="absolute -bottom-24 -right-16 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="relative z-10 max-w-2xl mx-auto">
-          <div
-            class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-blue-300 text-xs font-medium mb-6">
-            <span>Free & Open Source Forever</span>
-          </div>
+          <p class="font-mono text-[11px] sm:text-xs text-blue-300/70 select-none mb-2">text-5xl text-white tracking-tight font-semibold</p>
 
-          <h2 class="text-3xl sm:text-4xl md:text-5xl font-light text-white leading-tight mb-4">
+          <h2 class="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-white leading-tight mb-4">
             Master the Game. <br />
-            <span class="font-normal text-blue-400">Play, Study & Compete.</span>
+            <span class="font-semibold text-blue-400">Play, Study & Compete.</span>
           </h2>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-8">

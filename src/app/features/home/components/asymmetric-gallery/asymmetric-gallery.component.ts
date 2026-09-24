@@ -11,14 +11,12 @@ import {
   selector: 'app-asymmetric-gallery',
   standalone: true,
   template: `
-    <section id="gallerySection" class="asymmetric-gallery-section py-12 md:py-20 mb-20 md:mb-32 md:pr-20 lg:pr-28 overflow-hidden">
+    <section id="gallerySection" class="asymmetric-gallery-section py-10 md:py-16 overflow-hidden">
 
-      <div class="mb-14 max-w-2xl">
-        <div
-          class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-medium mb-3">
-          Asymmetric visual gallery
-        </div>
-        <h2 class="text-3xl md:text-4xl font-light text-slate-900 leading-tight">Platform in motion</h2>
+      <!-- Section Header -->
+      <div class="mb-10 max-w-2xl pb-6 border-b border-slate-200/80">
+        <p class="font-mono text-[11px] sm:text-xs text-slate-400 select-none mb-1.5">text-4xl text-slate-950 tracking-tight font-semibold</p>
+        <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950 leading-tight">Platform in motion</h2>
         <p class="text-slate-500 text-sm mt-1">Dual-directional scroll inertia revealing core study workflows</p>
       </div>
 

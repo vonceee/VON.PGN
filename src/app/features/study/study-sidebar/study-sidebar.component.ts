@@ -238,7 +238,7 @@ export class StudySidebarComponent {
     }
   }
 
-  onDrop(event: any) {
+  onDrop(event: { previousIndex: number; currentIndex: number }) {
     if (!this.canEdit()) return;
     const s = this.study();
     if (!s || !s.chapters) return;

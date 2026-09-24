@@ -20,9 +20,6 @@ import { FloatingCursorTriggerDirective } from '@shared/directives';
 
 export type ToolkitCategory = 'all' | 'openings' | 'tactics' | 'analysis' | 'tournaments';
 
-/**
- * 3-Column Training Toolkit Grid with category filtering and Lenis velocity skew inertia.
- */
 @Component({
   selector: 'app-toolkit-grid',
   standalone: true,
@@ -44,33 +41,37 @@ export type ToolkitCategory = 'all' | 'openings' | 'tactics' | 'analysis' | 'tou
     }),
   ],
   template: `
-    <section id="toolsSection" class="pt-8 mb-24 md:mb-32 md:pr-20 lg:pr-28">
+    <section id="toolsSection" class="py-10 md:py-16">
 
-      <!-- Section Header & Category Filter Tabs -->
-      <header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-mono mb-3">
-            <span>01 // TOOLS</span>
+      <!-- Section Header & Category Filter Tabs with Architectural Gridlines -->
+      <header
+        class="relative py-4 sm:py-5 mb-10 md:mb-12 before:absolute before:top-0 before:h-px before:w-[200vw] before:bg-slate-200/90 before:left-[-100vw] before:pointer-events-none after:absolute after:bottom-0 after:h-px after:w-[200vw] after:bg-slate-200/90 after:left-[-100vw] after:pointer-events-none">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+          <h2 class="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950 leading-tight shrink-0">
+            Chess Toolkit
+          </h2>
+
+          <!-- Category Tabs -->
+          <div
+            class="w-full md:w-auto overflow-x-auto no-scrollbar flex flex-nowrap md:flex-wrap items-center gap-2 shrink-0 pb-1 md:pb-0">
+            @for (cat of categories; track cat.id) {
+              <button type="button" (click)="setCategory(cat.id)"
+                [class]="activeCategory() === cat.id 
+                  ? 'inline-flex items-center justify-center px-4 py-2 rounded-full bg-slate-950 text-white font-medium text-[13px] cursor-pointer shrink-0 shadow-xs transition-all' 
+                  : 'inline-flex items-center justify-center px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 font-normal text-[13px] hover:bg-slate-100 hover:border-slate-300 transition-all cursor-pointer shrink-0'">
+                {{ cat.label }}
+              </button>
+            }
           </div>
-          <h2 class="text-3xl md:text-4xl font-light text-slate-900 leading-tight">Comprehensive chess toolkit</h2>
-        </div>
-
-        <!-- Category Tabs -->
-        <div
-          class="w-full md:w-auto overflow-x-auto no-scrollbar flex flex-nowrap md:flex-wrap items-center gap-2.5 shrink-0 pb-2 -mb-2">
-          @for (cat of categories; track cat.id) {
-            <button type="button" (click)="setCategory(cat.id)"
-              [class]="activeCategory() === cat.id 
-                ? 'inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-slate-900 text-white font-medium text-[14px] cursor-pointer shrink-0 shadow-xs transition-all' 
-                : 'inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-white/80 backdrop-blur-md border border-slate-200 text-slate-800 font-medium text-[14px] hover:bg-slate-100 hover:border-slate-300 transition-all cursor-pointer shrink-0'">
-              {{ cat.label }}
-            </button>
-          }
         </div>
       </header>
 
-      <!-- 3-Column Responsive Grid with Lenis Velocity Skew Inertia (.skew-on-scroll) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 3-Column Responsive Grid Container with Rounded Border and Dotted Background -->
+      <div
+        class="relative rounded-3xl md:rounded-[2rem] border border-slate-200/90 bg-slate-50/80 bg-[radial-gradient(#cbd5e1_1.25px,transparent_1.25px)] [background-size:20px_20px] p-4 sm:p-6 lg:p-8 shadow-2xs overflow-hidden">
+
+        <!-- 3-Column Responsive Grid with Lenis Velocity Skew Inertia (.skew-on-scroll) -->
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Card 1: Opening Studies -->
         @if (activeCategory() === 'all' || activeCategory() === 'openings') {
@@ -249,6 +250,7 @@ export type ToolkitCategory = 'all' | 'openings' | 'tactics' | 'analysis' | 'tou
         </div>
         }
 
+        </div>
       </div>
     </section>
   `,
