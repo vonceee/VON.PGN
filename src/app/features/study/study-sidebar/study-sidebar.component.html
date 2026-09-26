@@ -1,242 +1,166 @@
 @if (study(); as s) {
 @if (displayMode() === 'all') {
-<!-- Left side: Vertical Menu Dock -->
-<aside
-  class="bg-white fixed left-0 top-0 bottom-0 w-20 flex flex-col items-center pt-15 pb-6 gap-4 shrink-0 justify-between select-none z-20">
-  <div class="flex flex-col items-center gap-2 p-2">
-    <!-- Chapters Section Button -->
-    <button (click)="selectSection('chapters')" [attr.aria-label]="'Chapters'"
-      [class.text-blue-600]="activeSection() === 'chapters' && !splitSection()"
-      [class.bg-slate-200]="activeSection() === 'chapters' && !splitSection()"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-      </svg>
-      <div
-        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-        Chapters
-      </div>
-    </button>
+<div class="w-full h-full flex flex-col min-h-0 bg-white relative">
+  <!-- Left and Right Vertical Bleeding Gridlines -->
+  <div class="absolute -top-[100vh] -bottom-[100vh] left-0 w-px bg-slate-200/90 pointer-events-none z-10"
+    aria-hidden="true"></div>
+  <div class="absolute -top-[100vh] -bottom-[100vh] right-0 w-px bg-slate-200/90 pointer-events-none z-10"
+    aria-hidden="true"></div>
 
-    @if (canEdit()) {
-    <!-- Add Chapter Button -->
-    <button (click)="selectSection('add-chapter')" [attr.aria-label]="'Add chapter'"
-      [class.text-blue-600]="activeSection() === 'add-chapter'" [class.bg-slate-200]="activeSection() === 'add-chapter'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-      </svg>
-      <div
-        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-        Add Chapter
-      </div>
-    </button>
-    }
-
-    @if (isOwner()) {
-    <!-- Study Settings Button -->
-    <button (click)="selectSection('settings')" [attr.aria-label]="'Study settings'"
-      [class.text-blue-600]="activeSection() === 'settings'" [class.bg-slate-200]="activeSection() === 'settings'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-      </svg>
-      <div
-        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-        Settings
-      </div>
-    </button>
-    }
-
-    @if (isOwner()) {
-
-    <!-- Members Toggle -->
-    <button (click)="selectSection('members')" [attr.aria-label]="'Members'"
-      [class.text-blue-600]="activeSection() === 'members'" [class.bg-slate-200]="activeSection() === 'members'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-      </svg>
-      <div
-        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-        Members
-      </div>
-    </button>
-    }
-
-    @if (canEdit()) {
-    <button (click)="selectSection('annotate')" [attr.aria-label]="'Annotate move'"
-      [class.text-blue-600]="activeSection() === 'annotate'" [class.bg-slate-200]="activeSection() === 'annotate'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-      </svg>
-      <div
-        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-        Annotate Move
-      </div>
-    </button>
-    }
-
-    <!-- Chat Toggle -->
-    <button (click)="selectSection('chat')" [attr.aria-label]="'Chat'" [class.text-blue-600]="splitSection() === 'chat'"
-      [class.bg-slate-200]="splitSection() === 'chat'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
-      </svg>
-      <div
-        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-        Chat
-      </div>
-    </button>
-
-    <!-- Share/Export PGN Toggle -->
-    @if (isExportAllowed()) {
-    <button (click)="selectSection('export')" [attr.aria-label]="'Export PGN'"
-      [class.text-blue-600]="activeSection() === 'export'" [class.bg-slate-200]="activeSection() === 'export'"
-      class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor"
-        class="size-6">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-      </svg>
-      <div
-        class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-        Export PGN
-      </div>
-    </button>
-    }
+  @switch (activeSection()) {
+  @case ('chapters') {
+  <!-- Top Panel: Chapters List -->
+  <div class="flex-1 flex flex-col min-h-0 relative">
+    <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s"
+      [currentChapter]="currentChapter()" [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
+      (chapterEditClicked)="onEditChapter($event.event, $event.chapter)"
+      (addChapterClicked)="selectSection('add-chapter')"
+      (settingsClicked)="openSettingsDialog('general')">
+    </app-study-chapters-list>
   </div>
 
-  <!-- Voice Call Toggle (Bottom of Menu Dock) -->
-  @if (isClassActive() && (!isOwner() ? hasJoinedClass() : true)) {
-  <button (click)="toggleVoiceCall()" [attr.aria-label]="webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call'"
-    [class.text-rose-500]="webrtc.isCallActive()" [class.bg-slate-200]="webrtc.isCallActive()"
-    [class.text-gray-500]="!webrtc.isCallActive()"
-    class="p-2.5 rounded-full transition-all cursor-pointer hover:bg-slate-200 flex items-center justify-center relative group">
-    <ng-icon [name]="webrtc.isCallActive() ? 'heroMicrophone' : 'heroPhone'" class="text-xl"></ng-icon>
-    <div
-      class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-slate-900 border border-slate-200 rounded-full text-md text-white whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-30 transition-opacity">
-      {{ webrtc.isCallActive() ? 'Leave Voice Call' : 'Join Voice Call' }}
-    </div>
-  </button>
-  }
-</aside>
+  <!-- Bleeding Divider Line & Bottom Section Header -->
+  <div
+    class="relative flex items-center justify-between px-3 shrink-0 select-none before:absolute before:top-0 before:h-px before:left-[-100vw] before:right-0 before:bg-slate-200/90 before:pointer-events-none after:absolute after:bottom-0 after:h-px after:left-[-100vw] after:right-0 after:bg-slate-200/90 after:pointer-events-none">
 
-<!-- Tablet landscape backdrop -->
-@if (isExpanded() && isCollapsed()) {
-<div class="fixed inset-0 bg-black/10 z-20" (click)="isExpanded.set(false)"></div>
-}
+    <div class="flex items-center gap-2">
+      <!-- Info Tab -->
+      <button type="button" (click)="splitSection.set(null)"
+        class="relative px-3 py-2 font-mono text-xs font-medium tracking-widest uppercase transition-colors cursor-pointer"
+        [class.text-slate-900]="splitSection() !== 'chat'" [class.text-slate-400]="splitSection() === 'chat'"
+        [class.hover:text-slate-700]="splitSection() === 'chat'">
+        Info
+        @if (splitSection() !== 'chat') {
+        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-full z-10"></span>
+        }
+      </button>
 
-<!-- Right side: Section view area -->
-<div [class.hidden]="isCollapsed() && !isExpanded()"
-  [class]="isCollapsed() ? 'bg-white rounded-2xl p-1 flex flex-col min-h-0 fixed left-[88px] top-20 bottom-6 w-80 z-30 gap-4' : 'w-full h-full flex flex-col min-h-0 gap-4'">
-  <!-- View content pane -->
-  <div class="flex-1 min-h-0 flex flex-col relative gap-4">
-    @if (isExpanded() && isCollapsed()) {
-    <div class="flex items-center justify-end p-2 bg-white shrink-0">
-      <button (click)="isExpanded.set(false)" class="p-1 hover:bg-slate-200 rounded-lg cursor-pointer text-gray-500">
-        <svg class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.3">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+      <!-- Chat Tab -->
+      <button type="button" (click)="splitSection.set('chat')"
+        class="relative px-3 py-2 font-mono text-xs font-medium tracking-widest uppercase transition-colors cursor-pointer"
+        [class.text-slate-900]="splitSection() === 'chat'" [class.text-slate-400]="splitSection() !== 'chat'"
+        [class.hover:text-slate-700]="splitSection() !== 'chat'">
+        Chat
+        @if (splitSection() === 'chat') {
+        <span class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-full z-10"></span>
+        }
       </button>
     </div>
-    }
-
-    @switch (activeSection()) {
-    @case ('chapters') {
-    <div class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s"
-        [currentChapter]="currentChapter()" [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
-        (chapterEditClicked)="onEditChapter($event.event, $event.chapter)" (orderChanged)="onDrop($event)">
-      </app-study-chapters-list>
-    </div>
-
-    <!-- Bottom Panel: Chat if open, otherwise Game Metadata -->
-    <div class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <div class="flex-1 flex flex-col min-h-0 relative">
-        @if (splitSection() === 'chat') {
-        <app-study-chat class="flex-1 overflow-hidden min-h-0 rounded-lg"></app-study-chat>
-        } @else {
-        <app-study-metadata class="flex-1 flex flex-col min-h-0 min-w-0" [canEdit]="canEdit()"
-          (editMetadataClicked)="editMetadata()">
-        </app-study-metadata>
-        }
-      </div>
-    </div>
-    }
-    @case ('add-chapter') {
-    <div class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <app-study-add-chapter class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [canEdit]="canEdit()"
-        [(newChapterActiveTab)]="newChapterActiveTab" [(newChapterOrientation)]="newChapterOrientation"
-        [(newChapterFen)]="newChapterFen" (chapterCreated)="handleChapterCreated($event)">
-      </app-study-add-chapter>
-    </div>
-    }
-    @case ('settings') {
-    <div class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <app-study-settings class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
-        [(settingsPreviewLastMove)]="settingsPreviewLastMove" [(settingsOrientation)]="settingsOrientation"
-        [(isEditingPreview)]="isSettingsEditorActive" (settingsSaved)="handleSettingsSaved($event)"
-        (chatCleared)="handleChatCleared()" (studyDeleted)="handleStudyDeleted()"
-        (cancelled)="selectSection('chapters')">
-      </app-study-settings>
-    </div>
-    }
-    @case ('members') {
-    <div class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <app-study-members class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
-        [viewers]="viewerNames()" [isClassActive]="isClassActive()" [lockHolderId]="facade.lockHolderId()"
-        (addMemberClicked)="addMember()" (removeMemberClicked)="removeMember($event)"
-        (permissionChanged)="toggleMemberPermission($event.userId, $event.canEdit)"
-        (grantControlClicked)="grantBoardControl($event)" (revokeControlClicked)="revokeBoardControl()">
-      </app-study-members>
-    </div>
-    }
-
-    @case ('chat') {
-    <div class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <app-study-chat class="flex-1 overflow-hidden min-h-0 rounded-lg"></app-study-chat>
-    </div>
-    }
-    @case ('export') {
-    <div class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <app-study-export class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
-        [currentChapter]="currentChapter()" (exportPerformed)="handleExport($event)">
-      </app-study-export>
-    </div>
-    }
-    @case ('annotate') {
-    <div class="flex-1 flex flex-col min-h-0 bg-white border-2 border-slate-200 rounded-xl overflow-hidden relative">
-      <app-study-annotate class="flex-1 flex flex-col min-h-0 min-w-0"></app-study-annotate>
-    </div>
-    }
+    @if (splitSection() !== 'chat') {
+      @if (canEdit()) {
+      <button type="button" (click)="editMetadata()" title="Edit Game Info"
+        class="text-xs hover:underline cursor-pointer">
+        Edit
+      </button>
+      }
+    } @else {
+      <button type="button"
+        (click)="isOwner() ? openSettingsDialog('members') : null"
+        [title]="isOwner() ? 'Viewers: ' + facade.viewerCount() + ' (Click to manage)' : 'Viewers: ' + facade.viewerCount()"
+        [class.cursor-pointer]="isOwner()"
+        [class.hover:text-slate-700]="isOwner()"
+        [class.cursor-default]="!isOwner()"
+        class="font-mono text-xs text-slate-400 select-none transition-colors">
+        {{ facade.viewerCount() }} in lobby
+      </button>
     }
   </div>
+
+  <!-- Bottom Panel: Content -->
+  <div class="flex-1 flex flex-col min-h-0 relative">
+    @if (splitSection() === 'chat') {
+    <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
+    } @else {
+    <app-study-metadata class="flex-1 flex flex-col min-h-0 min-w-0" [canEdit]="canEdit()"
+      (editMetadataClicked)="editMetadata()">
+    </app-study-metadata>
+    }
+    <!-- Bleeding bottom line for sidebar -->
+    <div class="absolute left-[-100vw] right-0 bottom-0 h-px bg-slate-200/90 pointer-events-none z-10"
+      aria-hidden="true"></div>
+  </div>
+  }
+
+  @case ('add-chapter') {
+  <div class="flex items-center justify-between px-3.5 py-2 border-b border-slate-200/90 shrink-0 bg-slate-50/60">
+    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-700">New Chapter</h3>
+    <button type="button" (click)="selectSection('chapters')"
+      class="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+      title="Back to chapters">
+      <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  <app-study-add-chapter class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [canEdit]="canEdit()"
+    [(newChapterActiveTab)]="newChapterActiveTab" [(newChapterOrientation)]="newChapterOrientation"
+    [(newChapterFen)]="newChapterFen" (chapterCreated)="handleChapterCreated($event)">
+  </app-study-add-chapter>
+  }
+
+  @case ('chat') {
+  <div class="flex items-center justify-between px-3.5 py-2 border-b border-slate-200/90 shrink-0 bg-slate-50/60">
+    <div class="flex items-center gap-2">
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-700">Study Chat</h3>
+      <span class="font-mono text-xs text-slate-400 select-none">
+        · {{ facade.viewerCount() }} in lobby
+      </span>
+    </div>
+    <button type="button" (click)="selectSection('chapters')"
+      class="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+      title="Back to chapters">
+      <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
+  }
+
+  @case ('export') {
+  <div class="flex items-center justify-between px-3.5 py-2 border-b border-slate-200/90 shrink-0 bg-slate-50/60">
+    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-700">Study Export</h3>
+    <button type="button" (click)="selectSection('chapters')"
+      class="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+      title="Back to chapters">
+      <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  <app-study-export class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [isOwner]="isOwner()"
+    [currentChapter]="currentChapter()" (exportPerformed)="handleExport($event)">
+  </app-study-export>
+  }
+
+  @case ('annotate') {
+  <div class="flex items-center justify-between px-3.5 py-2 border-b border-slate-200/90 shrink-0 bg-slate-50/60">
+    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-700">Annotate</h3>
+    <button type="button" (click)="selectSection('chapters')"
+      class="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+      title="Back to chapters">
+      <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  <app-study-annotate class="flex-1 flex flex-col min-h-0 min-w-0"></app-study-annotate>
+  }
+  }
 </div>
 } @else {
 <!-- Mobile/Tabbed Layout: keep backwards compatible mode -->
-<aside class="flex-1 flex flex-col min-h-0 overflow-hidden gap-4">
+<aside class="flex-1 flex flex-col min-h-0 overflow-hidden bg-white border border-slate-200/90">
   @if (displayMode() === 'chat') {
-  <app-study-chat class="flex-1 overflow-hidden min-h-0 rounded-lg"></app-study-chat>
+  <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
   } @else if (displayMode() === 'chapters') {
   <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [currentChapter]="currentChapter()"
     [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
-    (chapterEditClicked)="onEditChapter($event.event, $event.chapter)" (orderChanged)="onDrop($event)">
+    (chapterEditClicked)="onEditChapter($event.event, $event.chapter)"
+    (addChapterClicked)="selectSection('add-chapter')"
+    (settingsClicked)="openSettingsDialog('general')">
   </app-study-chapters-list>
+  <div class="border-t border-slate-200/90"></div>
   <app-study-metadata class="flex-1 flex flex-col min-h-0 min-w-0" [canEdit]="canEdit()"
     (editMetadataClicked)="editMetadata()">
   </app-study-metadata>

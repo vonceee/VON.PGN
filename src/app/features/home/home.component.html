@@ -1,6 +1,6 @@
 <div #pageContainer appFloatingCursorContainer
   class="w-full 2xl:max-w-7xl flex justify-center items-center min-h-screen relative selection:bg-blue-600 selection:text-white overflow-x-hidden">
-  <!-- Ambient Hero Lighting Halo -->
+
   <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
     <div class="tailwind-hero-glow"></div>
     <div class="tailwind-section-glow top-[1800px]"></div>
@@ -9,13 +9,9 @@
 
   <app-scroll-scrubber [scrollPercent]="scrollPercent()" (scrollToTop)="scrollToSection('#heroSection')" />
 
-  <!-- =======================================================================
-       3-COLUMN STRUCTURAL LAYOUT (GUTTER RAIL - CENTRAL CONTENT - GUTTER RAIL)
-       ======================================================================= -->
   <div
     class="w-full grid grid-cols-1 md:grid-cols-[2rem_minmax(0,1fr)_2rem] lg:grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] xl:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] relative">
 
-    <!-- COLUMN 1: LEFT STRUCTURAL GUTTER RAIL (Architectural Diagonal Lines) -->
     <aside
       class="hidden md:block md:col-start-1 md:col-end-2 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
       aria-hidden="true">
@@ -30,110 +26,79 @@
       </svg>
     </aside>
 
-    <!-- =======================================================================
-         COLUMN 2: CENTRAL CONTENT TRACK (Symmetrical, Border-Bound)
-         ======================================================================= -->
     <main class="relative z-10 w-full min-w-0 col-start-1 md:col-start-2 md:col-end-3 px-4 sm:px-6 md:px-8 lg:px-12">
 
-      <!-- TOP SYSTEM BOUNDARY (Slices across both gutters) -->
-      <div class="structural-divider" aria-hidden="true">
-        <div class="structural-divider-line"></div>
-      </div>
-
-      <!-- HERO SECTION (Framed with Structural Alignment) -->
       <div id="heroSection" class="relative">
         <app-hero-section (exploreTools)="scrollToSection('#toolsSection')"
           (exploreGallery)="scrollToSection('#gallerySection')" />
       </div>
 
-      <!-- TAILWIND GRID DIVIDER 01: HERO -> TOOLKIT -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- TOOLKIT GRID -->
       <app-toolkit-grid (categoryChanged)="onCategoryChanged()" />
 
-      <!-- TAILWIND GRID DIVIDER 02: TOOLKIT -> SPLIT TEXT -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- SPLIT TEXT BANNER -->
       <app-split-text-banner />
 
-      <!-- TAILWIND GRID DIVIDER 03: SPLIT TEXT -> TIMELINE -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- INTERACTIVE TIMELINE -->
       <app-interactive-timeline #interactiveTimeline />
 
-      <!-- TAILWIND GRID DIVIDER 04: TIMELINE -> ENGINE SPARRING -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- ENGINE SPARRING SHOWCASE -->
       <app-engine-sparring-showcase />
 
-      <!-- TAILWIND GRID DIVIDER 05: ENGINE SPARRING -> ROADMAP -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- MASTERY ROADMAP -->
       <app-mastery-roadmap />
 
-      <!-- TAILWIND GRID DIVIDER 06: ROADMAP -> BROADCAST -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- BROADCAST SHOWCASE -->
       <app-broadcast-showcase />
 
-      <!-- TAILWIND GRID DIVIDER 07: BROADCAST -> GALLERY -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- ASYMMETRIC GALLERY -->
       <app-asymmetric-gallery />
 
-      <!-- TAILWIND GRID DIVIDER 08: GALLERY -> PILLARS -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- STORYTELLING PILLARS -->
       <app-storytelling-pillars />
 
-      <!-- TAILWIND GRID DIVIDER 09: PILLARS -> COMMUNITY PULSE -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- COMMUNITY PULSE -->
       <app-community-pulse />
 
-      <!-- TAILWIND GRID DIVIDER 10: PULSE -> CTA -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
-      <!-- COMMUNITY CTA -->
       <app-community-cta />
 
-      <!-- BOTTOM SYSTEM TERMINATION BOUNDARY (Slices across both gutters) -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
     </main>
 
-    <!-- COLUMN 3: RIGHT STRUCTURAL GUTTER RAIL (Architectural Diagonal Lines) -->
     <aside
       class="hidden md:block md:col-start-3 md:col-end-4 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
       aria-hidden="true">
@@ -148,7 +113,8 @@
       </svg>
     </aside>
 
-  </div><!-- END 3-COLUMN STRUCTURAL LAYOUT -->
+  </div>
 
   <app-floating-cursor></app-floating-cursor>
+
 </div>

@@ -7,13 +7,15 @@ import {
   computed,
   effect
 } from '@angular/core';
-import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroCog6ToothSolid } from '@ng-icons/heroicons/solid';
 import { Study, StudyChapter } from '../../../models/study.model';
 
 @Component({
   selector: 'app-study-chapters-list',
   standalone: true,
-  imports: [DragDropModule],
+  imports: [NgIconComponent],
+  providers: [provideIcons({ heroCog6ToothSolid })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chapters-list.component.html'
 })
@@ -27,7 +29,8 @@ export class ChaptersListComponent {
   // Outputs
   chapterSelected = output<StudyChapter>();
   chapterEditClicked = output<{ event: MouseEvent; chapter: StudyChapter }>();
-  orderChanged = output<{ previousIndex: number; currentIndex: number }>();
+  addChapterClicked = output<void>();
+  settingsClicked = output<void>();
 
   // Pagination Constants & State
   readonly PAGE_SIZE = 64;
@@ -96,15 +99,6 @@ export class ChaptersListComponent {
 
   onEditChapter(event: MouseEvent, chap: StudyChapter) {
     this.chapterEditClicked.emit({ event, chapter: chap });
-  }
-
-  onDrop(event: CdkDragDrop<StudyChapter[]>) {
-    if (event.previousIndex === event.currentIndex) return;
-    const offset = this.pageOffset();
-    this.orderChanged.emit({
-      previousIndex: offset + event.previousIndex,
-      currentIndex: offset + event.currentIndex
-    });
   }
 
   prevPage() {

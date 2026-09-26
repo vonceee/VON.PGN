@@ -100,6 +100,62 @@
     pointer-events: none;
     z-index: 0;
   }
+
+  /* 
+    Continuous Structural Horizontal Dividers
+    Break out of <main> padding and extend continuously across the left & right striped gutters
+  */
+  .structural-divider {
+    position: relative;
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-right: -1rem;
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+    user-select: none;
+    z-index: 20;
+  }
+
+  @media (min-width: 640px) {
+    .structural-divider {
+      width: calc(100% + 3rem);
+      margin-left: -1.5rem;
+      margin-right: -1.5rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .structural-divider {
+      /* 2rem main padding + 2rem left gutter width */
+      margin-left: -4rem;
+      margin-right: -4rem;
+      width: calc(100% + 8rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .structural-divider {
+      /* 3rem main padding + 2.75rem left gutter width */
+      margin-left: -5.75rem;
+      margin-right: -5.75rem;
+      width: calc(100% + 11.5rem);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .structural-divider {
+      /* 3rem main padding + 3.5rem left gutter width */
+      margin-left: -6.5rem;
+      margin-right: -6.5rem;
+      width: calc(100% + 13rem);
+    }
+  }
+
+  .structural-divider-line {
+    width: 100%;
+    border-top: 1px solid rgba(226, 232, 240, 0.9);
+  }
 }
 
 @keyframes loading-bar-progress {

@@ -33,6 +33,9 @@ import {
   heroUserPlus,
   heroUserMinus,
   heroExclamationCircle,
+  heroMicrophone,
+  heroPhone,
+  heroCog6Tooth,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -53,6 +56,7 @@ import { EndClassDialogComponent } from './dialogs/end-class-dialog/end-class-di
 import { LayoutService } from '../../core/services/layout.service';
 import { StudyShortcutsService } from './services/study-shortcuts.service';
 import { StudyFacade } from './facade/study.facade';
+import { WebrtcService } from './services/webrtc.service';
 import { StudyAnalysisComponent } from './study-analysis/study-analysis.component';
 import { BoardEditorComponent } from '../../shared/components/chess/board-editor/board-editor.component';
 import { SelectComponent, SelectItem } from '@shared/ui';
@@ -98,6 +102,9 @@ import { SelectComponent, SelectItem } from '@shared/ui';
       heroUserPlus,
       heroUserMinus,
       heroExclamationCircle,
+      heroMicrophone,
+      heroPhone,
+      heroCog6Tooth,
     }),
   ],
   templateUrl: './study.component.html',
@@ -145,6 +152,7 @@ import { SelectComponent, SelectItem } from '@shared/ui';
 })
 export class StudyComponent implements OnInit, OnDestroy {
   public facade = inject(StudyFacade);
+  public webrtc = inject(WebrtcService);
   private platformId = inject(PLATFORM_ID);
   private router = inject(Router);
   private location = inject(Location);
@@ -155,6 +163,16 @@ export class StudyComponent implements OnInit, OnDestroy {
   @ViewChild('board') board!: ChessBoardComponent;
   @ViewChild(StudySidebarComponent) sidebar?: StudySidebarComponent;
   @ViewChild('rightEditor') rightEditor?: BoardEditorComponent;
+
+  toggleVoiceCall() {
+    if (this.webrtc.isCallActive()) {
+      this.webrtc.leaveCall();
+    } else {
+      this.webrtc.joinCall().catch(err => {
+        console.error('[StudyComponent] Error joining voice call:', err);
+      });
+    }
+  }
 
   id = input.required<string>();
   chapterId = input<string | undefined>(undefined, { alias: 'chapter' });
@@ -195,13 +213,14 @@ export class StudyComponent implements OnInit, OnDestroy {
   otherColumnsWidth = computed(() => {
     if (this.isThreeColumn()) {
       const width = this.windowWidth();
+      const gutterAndBreathingSpace = width >= 1280 ? 120 : 96;
       if (this.isSidebarCollapsed()) {
-        return 80 + 320 + 60; // Left menu dock (80px) + Right notation (320px) + Gaps/Paddings (60px)
+        return 320 + gutterAndBreathingSpace;
       }
       if (width < 1280) {
-        return 260 + 320 + 60; // Narrow inline Left sidebar (260px) + Right notation (320px) + Gaps/Paddings (60px)
+        return 280 + 320 + gutterAndBreathingSpace;
       }
-      return 330 + 400 + 80; // Left sidebar (330px) + Right notation (400px) + Gaps/Paddings (80px)
+      return 340 + 380 + gutterAndBreathingSpace;
     } else {
       return 32; // Mobile padding
     }

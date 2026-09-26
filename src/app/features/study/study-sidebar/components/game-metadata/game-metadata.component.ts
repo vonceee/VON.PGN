@@ -1,6 +1,12 @@
 import { Component, input, output, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StudyFacade } from '../../../facade/study.facade';
+import {
+  comparePgnTags,
+  cleanTagValue,
+  EXCLUDED_SIDEBAR_TAGS,
+  formatTagLabel,
+} from '../../../../../core/constants/pgn-tags.constants';
 
 @Component({
   selector: 'app-study-metadata',
@@ -39,26 +45,21 @@ export class GameMetadataComponent {
 
   metadataItems = computed(() => {
     const t = this.facade.tags() || {};
-    const items: { label: string; value: string; isPlaceholder: boolean }[] = [];
+    const items: { key: string; label: string; value: string }[] = [];
 
-    const mapping = [
-      { label: 'Tournament', key: 'Event' },
-      { label: 'Site', key: 'Site' },
-      { label: 'Date', key: 'Date' },
-      { label: 'Round', key: 'Round' },
-      { label: 'ECO Code', key: 'ECO' },
-    ];
+    for (const [rawKey, rawVal] of Object.entries(t)) {
+      if (EXCLUDED_SIDEBAR_TAGS.has(rawKey)) continue;
+      const cleanVal = cleanTagValue(rawVal);
+      if (cleanVal !== null) {
+        items.push({
+          key: rawKey,
+          label: formatTagLabel(rawKey),
+          value: cleanVal
+        });
+      }
+    }
 
-    mapping.forEach(m => {
-      const value = t[m.key];
-      const hasVal = value && value !== '?';
-      items.push({
-        label: m.label,
-        value: hasVal ? value : '_',
-        isPlaceholder: !hasVal
-      });
-    });
-
+    items.sort((a, b) => comparePgnTags(a.key, b.key));
     return items;
   });
 

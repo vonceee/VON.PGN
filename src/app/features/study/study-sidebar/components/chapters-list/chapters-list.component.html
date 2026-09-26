@@ -1,37 +1,48 @@
-<nav #scrollContainer class="flex flex-col flex-1 overflow-y-auto min-h-[160px] p-1">
-  <div class="flex-1 flex flex-col gap-0.5" cdkDropList (cdkDropListDropped)="onDrop($event)"
-    [cdkDropListDisabled]="!canEdit()">
+<div
+  class="relative w-full px-3 py-2 flex items-center justify-between shrink-0 before:absolute before:top-0 before:h-px before:left-[-100vw] before:right-0 before:bg-slate-200/90 before:pointer-events-none after:absolute after:bottom-0 after:h-px after:left-[-100vw] after:right-0 after:bg-slate-200/90 after:pointer-events-none">
+
+  <span class="mx-2 font-mono text-sm/7 font-medium tracking-widest text-gray-500 uppercase">Chapters</span>
+  <div class="flex items-center gap-1">
+    @if (canEdit()) {
+    <button type="button" (click)="addChapterClicked.emit()" title="Add chapter"
+      class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium hover:bg-slate-100 hover:text-slate-900 rounded cursor-pointer transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+        class="size-3.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+    </button>
+    }
+    <button type="button" (click)="settingsClicked.emit()" title="Study Settings"
+      class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
+      <ng-icon name="heroCog6ToothSolid" class="size-4"></ng-icon>
+    </button>
+  </div>
+</div>
+
+<nav #scrollContainer class="flex flex-col flex-1 overflow-y-auto min-h-[160px]">
+  <div class="flex-1 flex flex-col divide-y divide-slate-200/90">
     @for (chap of paginatedChapters(); track chap.id; let idx = $index) {
-    <button (click)="selectChapter(chap)" cdkDrag [cdkDragDisabled]="!canEdit()" class="relative flex items-center justify-between p-2 cursor-pointer group text-left
+    <button (click)="selectChapter(chap)" class="px-3 py-2 relative flex items-center justify-between cursor-pointer group text-left transition-colors
             {{
               currentChapter()?.id === chap.id
-                ? 'bg-slate-200 rounded-lg border-2 border-slate-900'
-                : 'hover:bg-slate-200 rounded-lg border-2 border-transparent'
+                ? 'bg-blue-50/50 text-slate-900 font-medium'
+                : 'text-slate-700 hover:bg-slate-50'
             }}">
-      <!-- Drag Placeholder -->
-      <div *cdkDragPlaceholder class="h-10 bg-slate-200 border border-border-blue-600 rounded-lg mx-2 my-0.5">
-      </div>
-
       @if (currentChapter()?.id === chap.id) {
-      <div class="absolute left-0 top-1 bottom-1 w-0.5 bg-border-blue-600"></div>
+      <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-600"></div>
       }
       <div class="flex items-center gap-2 min-w-0">
-        <span class="text-xs font-medium text-gray-500 shrink-0 group-active:cursor-grabbing cursor-grab">
+        <span class="text-xs font-medium text-slate-400 shrink-0 select-none w-5 text-right">
           {{ pageOffset() + idx + 1 }}.
         </span>
-        <span [class]="'text-sm/6 truncate ' + (currentChapter()?.id === chap.id ? 'text-blue-600' : 'text-slate-900')">
+        <span class="text-sm truncate">
           {{ chap.name }}
         </span>
       </div>
 
       <div class="flex items-center gap-4 shrink-0 ml-2">
-        @if (chap.pgn_tags?.['Result'] && chap.pgn_tags?.['Result'] !== '*') {
-        <span class="text-gray-500 text-xs font-medium select-none">
-          {{ chap.pgn_tags?.['Result'] }}
-        </span>
-        }
         @if (canEdit()) {
-        <button (click)="onEditChapter($event, chap)" class="text-xs cursor-pointer hover:underline">Edit</button>
+        <button (click)="onEditChapter($event, chap)" class="text-xs hover:underline cursor-pointer">Edit</button>
         }
       </div>
     </button>
@@ -40,7 +51,8 @@
 </nav>
 
 @if (totalPages() > 1) {
-<footer class="border-t border-slate-200 bg-slate-50/90 px-2 py-1.5 flex items-center justify-between gap-1 text-xs shrink-0 select-none">
+<footer
+  class="border-t border-slate-200/90 bg-slate-50/60 px-2.5 py-1.5 flex items-center justify-between gap-1 text-xs shrink-0 select-none">
   <!-- Left Side: Range or Jump to Active -->
   <div class="flex items-center min-w-0">
     @if (!isCurrentChapterOnActivePage() && activeChapterPage() !== null) {

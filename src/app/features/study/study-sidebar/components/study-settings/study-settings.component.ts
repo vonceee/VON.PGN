@@ -1,9 +1,9 @@
-import { Component, input, output, signal, effect, inject, model } from '@angular/core';
+import { Component, input, output, signal, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Study } from '../../../models/study.model';
-import { StudyNavigationFacade } from '../../../facade/study-navigation.facade';
 import { SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-study-settings',
@@ -14,6 +14,7 @@ import { SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
 export class StudySettingsComponent {
   study = input.required<Study | null>();
   isOwner = input.required<boolean>();
+  currentFen = input<string>('');
 
   readonly visibilityOptions: SelectItem<'public' | 'unlisted' | 'private'>[] = [
     { label: 'Public (Everyone can see)', value: 'public' },
@@ -43,11 +44,11 @@ export class StudySettingsComponent {
     { label: 'Black Repertoire', value: 'black' },
   ];
 
-  private navFacade = inject(StudyNavigationFacade);
+  private toastService = inject(ToastService);
 
-  settingsPreviewLastMove = model<string | null>(null);
-  settingsOrientation = model<'white' | 'black'>('white');
-  isEditingPreview = model<boolean>(false);
+  settingsPreviewFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  settingsPreviewLastMove = signal<string | null>(null);
+  settingsOrientation = signal<'white' | 'black'>('white');
 
   settingsSaved = output<{ 
     name: string; 
@@ -73,8 +74,6 @@ export class StudySettingsComponent {
   deleteStudyConfirmText = signal('');
   isChatCleared = signal(false);
 
-  private fenBackup = '';
-
   constructor() {
     effect(() => {
       const s = this.study();
@@ -84,20 +83,19 @@ export class StudySettingsComponent {
         this.settingsEngineVisibility.set(s.engine_visibility || 'everyone');
         this.settingsExportVisibility.set(s.export_visibility || 'owner');
         this.settingsCategory.set(s.category || 'general');
+        this.settingsOrientation.set(s.orientation || 'white');
+        this.settingsPreviewFen.set(s.preview_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+        this.settingsPreviewLastMove.set(s.preview_last_move || null);
       }
     });
   }
 
-  openPreviewBoardEditor() {
-    this.isEditingPreview.set(true);
-  }
-
-  savePreviewBoardPosition() {
-    this.isEditingPreview.set(false);
-  }
-
-  cancelPreviewBoardEditor() {
-    this.isEditingPreview.set(false);
+  useCurrentPosition() {
+    const fen = this.currentFen();
+    if (fen) {
+      this.settingsPreviewFen.set(fen);
+      this.toastService.show('Current board position captured for preview', 'success');
+    }
   }
 
   onCancel() {
@@ -122,6 +120,7 @@ export class StudySettingsComponent {
       export_visibility: this.settingsExportVisibility(),
       category: this.settingsCategory(),
       orientation: this.settingsCategory() === 'opening_repertoire' ? this.settingsOrientation() : 'white',
+      preview_fen: this.settingsPreviewFen(),
       preview_last_move: this.settingsPreviewLastMove() || undefined
     });
   }
