@@ -1,177 +1,273 @@
-<div class="px-4 md:px-16 py-8 relative max-w-7xl mx-auto">
-  <!-- Cards Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mt-4 mb-12">
+<div #pageContainer appFloatingCursorContainer
+  class="w-full 2xl:max-w-7xl mx-auto flex justify-center min-h-screen relative selection:bg-blue-600 selection:text-white overflow-x-hidden">
 
-    <!-- Card 1: Casual Puzzles -->
-    <div class="border-2 border-slate-200 rounded-4xl p-8 flex flex-col h-full">
-      <!-- Card Title & Subtitle -->
-      <h2 class="text-2xl lg:text-3xl mb-1">Casual puzzles</h2>
-      <span class="text-sm/6 text-gray-500">
-        Rating: {{ currentUser() ? userRating() + ' Elo' : 'Unrated' }}
-      </span>
+  <!-- Ambient Hero Lighting Halo -->
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div class="tailwind-hero-glow"></div>
+  </div>
 
-      <!-- Description -->
-      <p class="text-gray-500 text-md mt-4 mb-8 flex-grow">
-        Solve unlimited puzzles matched to your puzzle rating.
-      </p>
+  <div
+    class="w-full grid grid-cols-1 md:grid-cols-[2rem_minmax(0,1fr)_2rem] lg:grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] xl:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] relative">
 
-      <!-- CTA Button -->
-      <a routerLink="/tactics/play"
-        class="w-full py-3 bg-slate-950 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0">
-        Play now
-      </a>
+    <!-- COLUMN 1: LEFT STRUCTURAL GUTTER RAIL (Architectural Diagonal Lines) -->
+    <aside
+      class="hidden md:block md:col-start-1 md:col-end-2 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
+      aria-hidden="true">
+      <svg class="w-full h-full stroke-slate-300/80" fill="none">
+        <defs>
+          <pattern id="diagonal-rail-tactics-left" width="14" height="14" patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke-width="1.15" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#diagonal-rail-tactics-left)" />
+      </svg>
+    </aside>
 
-      <!-- Divider -->
-      <div class="border-t border-slate-200 my-8 shrink-0"></div>
+    <!-- COLUMN 2: CENTRAL CONTENT TRACK (Symmetrical, Border-Bound) -->
+    <main
+      class="relative z-10 w-full min-w-0 col-start-1 md:col-start-2 md:col-end-3 px-4 sm:px-6 md:px-8 lg:px-12 flex flex-col py-8">
 
-      <!-- Plan includes -->
-      <div class="flex flex-col">
-        <ul class="flex flex-col gap-3.5 text-sm/6 text-gray-500">
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Unlimited puzzle training</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Live Elo rating adjustments</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Detailed solved history tracking</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Interactive moves review board</span>
-          </li>
-        </ul>
+      <!-- TOP SYSTEM BOUNDARY (Slices across both gutters) -->
+      <div class="structural-divider mb-8" aria-hidden="true">
+        <div class="structural-divider-line"></div>
       </div>
-    </div>
 
-    <!-- Card 2: Puzzle Themes -->
-    <div class="border-2 border-slate-200 rounded-4xl p-8 flex flex-col h-full">
-      <!-- Card Title & Subtitle -->
-      <h2 class="text-2xl lg:text-3xl mb-1">Puzzle themes</h2>
-      <span class="text-sm/6 text-gray-500">
-        Over 40+ motifs available
-      </span>
+      <!-- PAGE HEADER (Editorial Scale & Subheader Architecture) -->
+      <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 relative">
+        <div>
+          <span
+            class="font-mono text-sm font-semibold tracking-widest uppercase max-2xl:mb-4 max-2xl:px-2 max-sm:px-4 sm:text-xs 2xl:absolute 2xl:-translate-full 2xl:-rotate-90 2xl:text-right text-blue-600 block">
+            Training
+          </span>
+          <h1
+            class="max-w-xl px-2 text-[2.5rem]/10 font-medium tracking-tighter text-balance max-sm:px-4 2xl:mt-0 text-slate-900">
+            Tactics Training
+          </h1>
+          <p class="text-gray-500 text-sm md:text-base mt-2 px-2 max-sm:px-4 max-w-xl">
+            Sharpen your calculation and tactical vision through casual puzzles, motif themes, and spaced repetition.
+          </p>
+        </div>
 
-      <!-- Description -->
-      <p class="text-gray-500 text-md mt-4 mb-8 flex-grow">
-        Target specific areas of your play by selecting a specific puzzle theme.
-      </p>
+        @if (currentUser()) {
+        <div class="flex items-center gap-3 px-2 sm:px-0 self-start md:self-end">
+          <div
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-sm font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Rating: <strong class="font-bold text-slate-900">{{ userRating() }} Elo</strong></span>
+          </div>
+        </div>
+        }
+      </header>
 
-      <!-- CTA Button -->
-      <a routerLink="/tactics/themes"
-        class="w-full py-3 bg-slate-950 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0">
-        Browse themes
-      </a>
-
-      <!-- Divider -->
-      <div class="border-t border-slate-200 my-8 shrink-0"></div>
-
-      <!-- Plan includes -->
-      <div class="flex flex-col">
-        <ul class="flex flex-col gap-3.5 text-sm/6 text-gray-500">
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Motif specific tactical training</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Mate in 1, 2, 3 and complex checkmates</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Instant theme counters & puzzle volume</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Customized difficulty filtering</span>
-          </li>
-        </ul>
+      <!-- MID SYSTEM DIVIDER (Slices across both gutters between Header & Cards) -->
+      <div class="structural-divider my-8" aria-hidden="true">
+        <div class="structural-divider-line"></div>
       </div>
-    </div>
 
-    <!-- Card 3: Woodpecker Method -->
-    <div class="border-2 border-slate-200 rounded-4xl p-8 flex flex-col h-full">
-      <!-- Card Title & Subtitle -->
-      <h2 class="text-2xl lg:text-3xl mb-1">Woodpecker method</h2>
-      <span class="text-sm/6 text-gray-500">
-        Subconscious pattern training
-      </span>
+      <!-- CARDS GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mt-4 mb-12">
 
-      <!-- Description -->
-      <p class="text-gray-500 text-md mt-4 mb-8 flex-grow">
-        Train with a puzzle set and solve it repeatedly.
-      </p>
+        <!-- Card 1: Casual Puzzles -->
+        <div
+          class="bg-white border-2 border-slate-200 rounded-4xl p-8 flex flex-col h-full hover:border-slate-300 hover:shadow-lg transition-all duration-300">
+          <!-- Card Title & Subtitle -->
+          <h2 class="text-2xl lg:text-3xl mb-1 text-slate-900 font-medium tracking-tight">Casual puzzles</h2>
+          <span class="text-sm/6 text-gray-500">
+            Rating: {{ currentUser() ? userRating() + ' Elo' : 'Unrated' }}
+          </span>
 
-      <!-- CTA Button -->
-      <a routerLink="/tactics/woodpecker"
-        class="w-full py-3 bg-slate-950 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0">
-        Start training
-      </a>
+          <!-- Description -->
+          <p class="text-gray-500 text-md mt-4 mb-8 flex-grow">
+            Solve unlimited puzzles matched to your puzzle rating.
+          </p>
 
-      <!-- Divider -->
-      <div class="border-t border-slate-200 my-8 shrink-0"></div>
+          <!-- CTA Button -->
+          <a routerLink="/tactics/play"
+            class="w-full py-3 bg-slate-950 hover:bg-slate-800 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0 cursor-pointer shadow-sm hover:shadow">
+            Play now
+          </a>
 
-      <!-- Plan includes -->
-      <div class="flex flex-col">
-        <ul class="flex flex-col gap-3.5 text-sm/6 text-gray-500">
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Spaced repetition puzzle sets</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>4-cycle training repetition progress</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Time-target halving goals solver</span>
-          </li>
-          <li class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Improved pattern recognition</span>
-          </li>
-        </ul>
+          <!-- Divider -->
+          <div class="border-t border-slate-200 my-8 shrink-0"></div>
+
+          <!-- Plan includes -->
+          <div class="flex flex-col">
+            <ul class="flex flex-col gap-3.5 text-sm/6 text-gray-500">
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Unlimited puzzle training</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Live Elo rating adjustments</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Detailed solved history tracking</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Interactive moves review board</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 2: Puzzle Themes -->
+        <div
+          class="bg-white border-2 border-slate-200 rounded-4xl p-8 flex flex-col h-full hover:border-slate-300 hover:shadow-lg transition-all duration-300">
+          <!-- Card Title & Subtitle -->
+          <h2 class="text-2xl lg:text-3xl mb-1 text-slate-900 font-medium tracking-tight">Puzzle themes</h2>
+          <span class="text-sm/6 text-gray-500">
+            Over 40+ motifs available
+          </span>
+
+          <!-- Description -->
+          <p class="text-gray-500 text-md mt-4 mb-8 flex-grow">
+            Target specific areas of your play by selecting a specific puzzle theme.
+          </p>
+
+          <!-- CTA Button -->
+          <a routerLink="/tactics/themes"
+            class="w-full py-3 bg-slate-950 hover:bg-slate-800 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0 cursor-pointer shadow-sm hover:shadow">
+            Browse themes
+          </a>
+
+          <!-- Divider -->
+          <div class="border-t border-slate-200 my-8 shrink-0"></div>
+
+          <!-- Plan includes -->
+          <div class="flex flex-col">
+            <ul class="flex flex-col gap-3.5 text-sm/6 text-gray-500">
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Motif specific tactical training</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Mate in 1, 2, 3 and complex checkmates</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Instant theme counters & puzzle volume</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Customized difficulty filtering</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 3: Woodpecker Method -->
+        <div
+          class="bg-white border-2 border-slate-200 rounded-4xl p-8 flex flex-col h-full hover:border-slate-300 hover:shadow-lg transition-all duration-300">
+          <!-- Card Title & Subtitle -->
+          <h2 class="text-2xl lg:text-3xl mb-1 text-slate-900 font-medium tracking-tight">Woodpecker method</h2>
+          <span class="text-sm/6 text-gray-500">
+            Subconscious pattern training
+          </span>
+
+          <!-- Description -->
+          <p class="text-gray-500 text-md mt-4 mb-8 flex-grow">
+            Train with a puzzle set and solve it repeatedly.
+          </p>
+
+          <!-- CTA Button -->
+          <a routerLink="/tactics/woodpecker"
+            class="w-full py-3 bg-slate-950 hover:bg-slate-800 text-white rounded-full text-lg font-medium transition-all text-center flex items-center justify-center shrink-0 cursor-pointer shadow-sm hover:shadow">
+            Start training
+          </a>
+
+          <!-- Divider -->
+          <div class="border-t border-slate-200 my-8 shrink-0"></div>
+
+          <!-- Plan includes -->
+          <div class="flex flex-col">
+            <ul class="flex flex-col gap-3.5 text-sm/6 text-gray-500">
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Spaced repetition puzzle sets</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>4-cycle training repetition progress</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Time-target halving goals solver</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Improved pattern recognition</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
       </div>
-    </div>
+
+      <!-- BOTTOM SYSTEM BOUNDARY (Slices across both gutters) -->
+      <div class="structural-divider mt-12" aria-hidden="true">
+        <div class="structural-divider-line"></div>
+      </div>
+
+    </main>
+
+    <!-- COLUMN 3: RIGHT STRUCTURAL GUTTER RAIL (Architectural Diagonal Lines) -->
+    <aside
+      class="hidden md:block md:col-start-3 md:col-end-4 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
+      aria-hidden="true">
+      <svg class="w-full h-full stroke-slate-300/80" fill="none">
+        <defs>
+          <pattern id="diagonal-rail-tactics-right" width="14" height="14" patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke-width="1.15" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#diagonal-rail-tactics-right)" />
+      </svg>
+    </aside>
 
   </div>
+
+  <!-- Custom Floating Cursor -->
+  <app-floating-cursor></app-floating-cursor>
 </div>

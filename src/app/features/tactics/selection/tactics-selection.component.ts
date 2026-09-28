@@ -1,12 +1,27 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
 import { UserService } from '../../../core/services/user.service';
+import { FloatingCursorContainerDirective } from '@shared/directives';
+import { FloatingCursorComponent } from '@shared/ui';
 
+/**
+ * Tactics selection page component.
+ * 
+ * WHY: Serves as the landing hub for all tactics training modes (Casual, Themes, Woodpecker).
+ * Adopts the architectural 3-column bleeding grid layout with diagonal rails matching the homepage standard.
+ */
 @Component({
   selector: 'app-tactics-selection',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterModule,
+    FloatingCursorContainerDirective,
+    FloatingCursorComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './tactics-selection.component.html',
   host: {
     class: 'block w-full',

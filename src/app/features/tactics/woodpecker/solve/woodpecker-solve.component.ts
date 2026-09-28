@@ -245,7 +245,6 @@ export class WoodpeckerSolveComponent implements OnInit, OnDestroy {
     this.isLoading.set(false);
   }
 
-  // Timer utilities
   startTimer() {
     if (!isPlatformBrowser(this.platformId)) return;
     this.stopTimer();

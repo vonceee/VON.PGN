@@ -48,7 +48,7 @@ export class TypewriteDirective implements OnDestroy {
     const cursor = document.createElement('span');
     cursor.className = 'tw-cursor';
     cursor.style.cssText =
-      'display:inline-block;width:3px;height:1.1em;background-color:#22d3ee;vertical-align:text-bottom;margin-left:2px';
+      'display:inline-block;width:3px;height:1.1em;background-color:#1E88E5;vertical-align:text-bottom;margin-left:2px';
 
     host.appendChild(out);
     host.appendChild(cursor);
