@@ -268,44 +268,63 @@ export class PcapManagementComponent {
       name: team.name,
       conference: team.conference
     };
+  }
 
-    // Prepopulate board players from roster based on category eligibility
-    // B1-B2: 'O', B3: 'L', B4: 'S', B5-B7: 'HG'
-    const openPlayers = team.roster.filter(p => p.category === 'O');
-    const ladyPlayers = team.roster.filter(p => p.category === 'L' || p.category === 'HG/L');
-    const seniorPlayers = team.roster.filter(p => p.category === 'S' || p.category === 'HG/S');
-    const hgPlayers = team.roster.filter(p => p.category === 'HG' || p.category === 'HG/S' || p.category === 'HG/L');
+  populateBoardsFromRosters(): void {
+    const match = { ...this.editingMatch() };
+    const teamA = this.pcapService.getTeamById(match.teamA.id);
+    const teamB = this.pcapService.getTeamById(match.teamB.id);
+
+    if (!teamA && !teamB) {
+      this.toast.show('Please select valid teams first.', 'error');
+      return;
+    }
+
+    const openPlayersA = teamA?.roster.filter(p => p.category === 'O') || [];
+    const ladyPlayersA = teamA?.roster.filter(p => p.category === 'L' || p.category === 'HG/L') || [];
+    const seniorPlayersA = teamA?.roster.filter(p => p.category === 'S' || p.category === 'HG/S') || [];
+    const hgPlayersA = teamA?.roster.filter(p => p.category === 'HG' || p.category === 'HG/S' || p.category === 'HG/L') || [];
+
+    const openPlayersB = teamB?.roster.filter(p => p.category === 'O') || [];
+    const ladyPlayersB = teamB?.roster.filter(p => p.category === 'L' || p.category === 'HG/L') || [];
+    const seniorPlayersB = teamB?.roster.filter(p => p.category === 'S' || p.category === 'HG/S') || [];
+    const hgPlayersB = teamB?.roster.filter(p => p.category === 'HG' || p.category === 'HG/S' || p.category === 'HG/L') || [];
 
     match.boards = match.boards.map((b) => {
-      let rosterPlayer: PcapRosterPlayer | undefined;
-      if (b.boardNumber === 1) rosterPlayer = openPlayers[0];
-      else if (b.boardNumber === 2) rosterPlayer = openPlayers[1] || openPlayers[0];
-      else if (b.boardNumber === 3) rosterPlayer = ladyPlayers[0];
-      else if (b.boardNumber === 4) rosterPlayer = seniorPlayers[0];
-      else if (b.boardNumber === 5) rosterPlayer = hgPlayers[0];
-      else if (b.boardNumber === 6) rosterPlayer = hgPlayers[1];
-      else if (b.boardNumber === 7) rosterPlayer = hgPlayers[2];
+      let rA: PcapRosterPlayer | undefined;
+      let rB: PcapRosterPlayer | undefined;
 
-      if (!rosterPlayer) {
-        rosterPlayer = team.roster[b.boardNumber - 1];
+      if (teamA) {
+        if (b.boardNumber === 1) rA = openPlayersA[0];
+        else if (b.boardNumber === 2) rA = openPlayersA[1] || openPlayersA[0];
+        else if (b.boardNumber === 3) rA = ladyPlayersA[0];
+        else if (b.boardNumber === 4) rA = seniorPlayersA[0];
+        else if (b.boardNumber === 5) rA = hgPlayersA[0];
+        else if (b.boardNumber === 6) rA = hgPlayersA[1];
+        else if (b.boardNumber === 7) rA = hgPlayersA[2];
+        if (!rA) rA = teamA.roster[b.boardNumber - 1];
       }
 
-      if (side === 'teamA') {
-        return {
-          ...b,
-          playerA: rosterPlayer
-            ? { name: rosterPlayer.name, title: rosterPlayer.title, rating: rosterPlayer.rating || 2000 }
-            : b.playerA
-        };
-      } else {
-        return {
-          ...b,
-          playerB: rosterPlayer
-            ? { name: rosterPlayer.name, title: rosterPlayer.title, rating: rosterPlayer.rating || 2000 }
-            : b.playerB
-        };
+      if (teamB) {
+        if (b.boardNumber === 1) rB = openPlayersB[0];
+        else if (b.boardNumber === 2) rB = openPlayersB[1] || openPlayersB[0];
+        else if (b.boardNumber === 3) rB = ladyPlayersB[0];
+        else if (b.boardNumber === 4) rB = seniorPlayersB[0];
+        else if (b.boardNumber === 5) rB = hgPlayersB[0];
+        else if (b.boardNumber === 6) rB = hgPlayersB[1];
+        else if (b.boardNumber === 7) rB = hgPlayersB[2];
+        if (!rB) rB = teamB.roster[b.boardNumber - 1];
       }
+
+      return {
+        ...b,
+        playerA: rA ? { name: rA.name, title: rA.title, rating: rA.rating || 2000 } : b.playerA,
+        playerB: rB ? { name: rB.name, title: rB.title, rating: rB.rating || 2000 } : b.playerB,
+      };
     });
+
+    this.editingMatch.set(match);
+    this.toast.show('Board lineups populated from registered team rosters!', 'success');
   }
 
   recalculateMatchTotals(): void {
@@ -330,11 +349,18 @@ export class PcapManagementComponent {
     m.scoreB = Number((m.blitzScoreB + m.rapidScoreB).toFixed(1));
 
     this.editingMatch.set({ ...m });
+    this.toast.show(`Auto-summed score from boards: ${m.scoreA} - ${m.scoreB}`, 'success');
   }
 
   saveMatch(): void {
     const match = this.editingMatch();
-    this.recalculateMatchTotals();
+    // Preserve manual scores directly entered by admin
+    match.scoreA = Number(match.scoreA ?? 0);
+    match.scoreB = Number(match.scoreB ?? 0);
+    match.blitzScoreA = Number(match.blitzScoreA ?? 0);
+    match.blitzScoreB = Number(match.blitzScoreB ?? 0);
+    match.rapidScoreA = Number(match.rapidScoreA ?? 0);
+    match.rapidScoreB = Number(match.rapidScoreB ?? 0);
 
     if (!match.id) {
       match.id = `match-${Date.now().toString(36)}`;
@@ -542,8 +568,8 @@ export class PcapManagementComponent {
       boardNumber: i + 1,
       role: r.role,
       roleLabel: r.label,
-      playerA: { name: `Board ${i + 1} Player A`, title: undefined, rating: 2200 },
-      playerB: { name: `Board ${i + 1} Player B`, title: undefined, rating: 2200 },
+      playerA: { name: '', title: undefined, rating: 2000 },
+      playerB: { name: '', title: undefined, rating: 2000 },
       blitzScoreA: 0,
       blitzScoreB: 0,
       rapidScoreA: 0,

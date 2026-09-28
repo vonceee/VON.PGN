@@ -8,7 +8,10 @@ import { PcapService } from '../../../../core/services/pcap.service';
 import { PcapConference, PcapMatchStatus } from '../../../../core/models/pcap.model';
 import { SelectComponent, SelectItem } from '../../../../shared/components/ui/select/select.component';
 import {
-  getPcapTitleBadgeClass
+  getPcapTitleBadgeClass,
+  getPcapTeamLogo,
+  getPcapTeamMonogram,
+  getPcapTeamBackdropClass
 } from '../../utils/pcap.utils';
 
 @Component({
@@ -51,6 +54,9 @@ export class PcapMatchesComponent {
 
   // Utility references for template
   getTitleBadgeClass = getPcapTitleBadgeClass;
+  getPcapTeamLogo = getPcapTeamLogo;
+  getPcapTeamMonogram = getPcapTeamMonogram;
+  getPcapTeamBackdropClass = getPcapTeamBackdropClass;
 
   setStatus(status: PcapMatchStatus | 'all') {
     this.pcapService.statusFilter.set(status);
@@ -66,5 +72,23 @@ export class PcapMatchesComponent {
     } else {
       this.expandedMatchId.set(matchId);
     }
+  }
+
+  hasBoardLineups(match: any): boolean {
+    if (!match?.boards || match.boards.length === 0) return false;
+    return match.boards.some(
+      (b: any) =>
+        (b.playerA?.name && b.playerA.name.trim() !== '') ||
+        (b.playerB?.name && b.playerB.name.trim() !== '') ||
+        !!b.blitzPgn ||
+        !!b.rapidPgn
+    );
+  }
+
+  hasSegmentBreakdown(match: any): boolean {
+    return (
+      (match.blitzScoreA > 0 || match.blitzScoreB > 0) ||
+      (match.rapidScoreA > 0 || match.rapidScoreB > 0)
+    );
   }
 }

@@ -108,9 +108,15 @@ export const PCAP_TEAM_LOGOS: Record<string, string> = {
   'isabela-knights': 'assets/pcap/team_logo/isabela_knights-of-alexander.webp',
   'laguna-7lakes': 'assets/pcap/team_logo/laguna_7lakes.webp',
   'manila-aq-prime': 'assets/pcap/team_logo/manila_aq-prime.webp',
+  'sudeco-manila-indios-bravos': 'assets/pcap/team_logo/manila_load-manna-knights.webp',
+  'manila-load-manna-knights': 'assets/pcap/team_logo/manila_load-manna-knights.webp',
   'mindoro-tamaraws': 'assets/pcap/team_logo/mindoro_tamaraws.webp',
   'pasig-king-pirates': 'assets/pcap/team_logo/pasig_king-pirates.webp',
-  'rizal-batch-towers': 'assets/pcap/team_logo/rizal_batch-towers.webp'
+  'quezon-city-simba': 'assets/pcap/team_logo/qc_simba-tribe.webp',
+  'rizal-batch-towers': 'assets/pcap/team_logo/rizal_batch-towers.webp',
+  'san-juan-predators': 'assets/pcap/team_logo/sanjuan_predators.webp',
+  'toledo-xignex-trojans': 'assets/pcap/team_logo/toledo_xignex-trojans.webp',
+  'zamboanga-sultans': 'assets/pcap/team_logo/zamboanga_sultans.webp'
 };
 
 /**
@@ -124,6 +130,7 @@ export const PCAP_TEAM_BACKDROPS: Record<string, string> = {
   'isabela-knights': 'from-amber-600/[0.09] via-red-600/[0.05] to-blue-600/[0.03]',
   'laguna-7lakes': 'from-cyan-600/[0.08] via-teal-600/[0.05] to-amber-500/[0.03]',
   'manila-aq-prime': 'from-red-600/[0.09] via-rose-500/[0.05] to-transparent',
+  'sudeco-manila-indios-bravos': 'from-sky-600/[0.08] via-blue-600/[0.04] to-amber-500/[0.03]',
   'mindoro-tamaraws': 'from-emerald-600/[0.09] via-teal-600/[0.05] to-amber-600/[0.03]',
   'pasig-king-pirates': 'from-blue-600/[0.09] via-sky-500/[0.06] to-slate-800/[0.03]',
   'rizal-batch-towers': 'from-blue-600/[0.07] via-rose-500/[0.05] to-amber-500/[0.04]',
@@ -153,6 +160,7 @@ export const PCAP_TEAM_MONOGRAMS: Record<string, string> = {
   'quezon-city-simba': 'QC',
   'ocm-cebu-ninos': 'OCM',
   'toledo-xignex-trojans': 'TXT',
+  'sudeco-manila-indios-bravos': 'MIB',
   'manila-load-manna-knights': 'MLM',
   'arriba-iriga-oragons': 'AIO',
   'zamboanga-sultans': 'ZS',

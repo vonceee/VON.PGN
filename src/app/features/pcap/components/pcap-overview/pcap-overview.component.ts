@@ -1,7 +1,11 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PcapService } from '../../../../core/services/pcap.service';
-import { getPcapTeamLogo, getPcapTeamBackdropClass } from '../../utils/pcap.utils';
+import {
+  getPcapTeamLogo,
+  getPcapTeamBackdropClass,
+  getPcapTeamMonogram
+} from '../../utils/pcap.utils';
 
 @Component({
   selector: 'app-pcap-overview',
@@ -21,5 +25,6 @@ export class PcapOverviewComponent {
   // Logo & theme utilities
   readonly getTeamLogo = getPcapTeamLogo;
   readonly getTeamBackdropClass = getPcapTeamBackdropClass;
+  readonly getTeamMonogram = getPcapTeamMonogram;
 }
 

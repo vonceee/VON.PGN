@@ -20,7 +20,6 @@ const routes = [
   { path: 'arena', priority: 0.8, changefreq: 'daily' },
   { path: 'tv', priority: 0.7, changefreq: 'daily' },
   { path: 'academy', priority: 0.8, changefreq: 'weekly' },
-  { path: 'mandalart', priority: 0.8, changefreq: 'weekly' },
   { path: 'roadmap', priority: 0.7, changefreq: 'weekly' },
   { path: 'documentation', priority: 0.6, changefreq: 'weekly' },
   { path: 'whats-new', priority: 0.6, changefreq: 'weekly' },

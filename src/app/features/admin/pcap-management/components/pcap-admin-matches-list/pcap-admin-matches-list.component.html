@@ -29,15 +29,17 @@
         <!-- Team A -->
         <div class="flex items-center gap-3 flex-1 min-w-0">
           <div
-            class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0 shadow-2xs">
-            <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="M9 12l2 2 4-4" />
-            </svg>
+            class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden p-1">
+            @if (getPcapTeamLogo(match.teamA.id); as logoA) {
+            <img [src]="logoA" [alt]="match.teamA.name" class="w-full h-full object-contain" />
+            } @else {
+            <span class="text-xs font-bold text-slate-500">
+              {{ getPcapTeamMonogram(match.teamA.id, match.teamA.name) }}
+            </span>
+            }
           </div>
           <div class="min-w-0">
-            <div class="font-bold text-slate-900 truncate text-sm">{{ match.teamA.name }}</div>
+            <div class="font-bold text-slate-900 truncate text-sm" [title]="match.teamA.name">{{ match.teamA.name }}</div>
           </div>
         </div>
 
@@ -47,22 +49,28 @@
             {{ match.scoreA }} <span class="text-slate-400 font-light mx-0.5">-</span> {{ match.scoreB }}
           </div>
           <div class="text-[10px] text-slate-400 font-mono">
+            @if ((match.blitzScoreA > 0 || match.blitzScoreB > 0) || (match.rapidScoreA > 0 || match.rapidScoreB > 0)) {
             Blitz {{ match.blitzScoreA }}-{{ match.blitzScoreB }} • Rapid {{ match.rapidScoreA }}-{{ match.rapidScoreB }}
+            } @else {
+            Total Score Recorded
+            }
           </div>
         </div>
 
         <!-- Team B -->
         <div class="flex items-center justify-end gap-3 flex-1 min-w-0 text-right">
           <div class="min-w-0">
-            <div class="font-bold text-slate-900 truncate text-sm">{{ match.teamB.name }}</div>
+            <div class="font-bold text-slate-900 truncate text-sm" [title]="match.teamB.name">{{ match.teamB.name }}</div>
           </div>
           <div
-            class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0 shadow-2xs">
-            <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="M9 12l2 2 4-4" />
-            </svg>
+            class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden p-1">
+            @if (getPcapTeamLogo(match.teamB.id); as logoB) {
+            <img [src]="logoB" [alt]="match.teamB.name" class="w-full h-full object-contain" />
+            } @else {
+            <span class="text-xs font-bold text-slate-500">
+              {{ getPcapTeamMonogram(match.teamB.id, match.teamB.name) }}
+            </span>
+            }
           </div>
         </div>
       </div>

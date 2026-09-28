@@ -27,6 +27,7 @@ export class PcapAdminMatchEditorComponent {
   readonly openPgn = output<PcapBoardMatchup>();
   readonly teamChange = output<{ side: 'teamA' | 'teamB'; teamId: string }>();
   readonly recalculate = output<void>();
+  readonly fillRosters = output<void>();
 
   readonly blitzOptions: ScoreOption[] = [
     { label: '0 - 0', value: '0-0', scoreA: 0, scoreB: 0 },
@@ -46,8 +47,12 @@ export class PcapAdminMatchEditorComponent {
     this.teamChange.emit({ side, teamId });
   }
 
-  onScoreInput(): void {
+  onAutoSum(): void {
     this.recalculate.emit();
+  }
+
+  onFillRosters(): void {
+    this.fillRosters.emit();
   }
 
   getBlitzValue(board: PcapBoardMatchup): string {
@@ -64,7 +69,6 @@ export class PcapAdminMatchEditorComponent {
       board.blitzScoreA = parts[0] || 0;
       board.blitzScoreB = parts[1] || 0;
     }
-    this.recalculate.emit();
   }
 
   getRapidValue(board: PcapBoardMatchup): string {
@@ -81,6 +85,5 @@ export class PcapAdminMatchEditorComponent {
       board.rapidScoreA = parts[0] || 0;
       board.rapidScoreB = parts[1] || 0;
     }
-    this.recalculate.emit();
   }
 }

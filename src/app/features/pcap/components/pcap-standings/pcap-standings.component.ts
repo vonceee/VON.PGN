@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { PcapService } from '../../../../core/services/pcap.service';
 import { PcapConference } from '../../../../core/models/pcap.model';
 
+import { getPcapTeamLogo, getPcapTeamMonogram } from '../../utils/pcap.utils';
+
 @Component({
   selector: 'app-pcap-standings',
   standalone: true,
@@ -20,4 +22,7 @@ export class PcapStandingsComponent {
   omegaStandings = this.pcapService.omegaStandings;
   northStandings = this.pcapService.northStandings;
   southStandings = this.pcapService.southStandings;
+
+  getPcapTeamLogo = getPcapTeamLogo;
+  getPcapTeamMonogram = getPcapTeamMonogram;
 }

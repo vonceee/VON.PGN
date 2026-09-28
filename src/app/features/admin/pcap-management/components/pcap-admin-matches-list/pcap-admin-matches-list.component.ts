@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PcapMatch, PcapMatchStatus } from '../../../../../core/models/pcap.model';
+import { getPcapTeamLogo, getPcapTeamMonogram } from '../../../../pcap/utils/pcap.utils';
 
 @Component({
   selector: 'app-pcap-admin-matches-list',
@@ -15,4 +16,8 @@ export class PcapAdminMatchesListComponent {
   readonly editMatch = output<PcapMatch>();
   readonly deleteMatch = output<PcapMatch>();
   readonly statusChange = output<{ match: PcapMatch; status: PcapMatchStatus }>();
+
+  readonly getPcapTeamLogo = getPcapTeamLogo;
+  readonly getPcapTeamMonogram = getPcapTeamMonogram;
 }
+

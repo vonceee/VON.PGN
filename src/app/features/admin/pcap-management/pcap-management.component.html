@@ -242,7 +242,8 @@
   @else if (currentView() === 'match-editor') {
   <app-pcap-admin-match-editor [(match)]="editingMatch" [isEditing]="isEditingMatch()" [allTeams]="allTeams()"
     (save)="saveMatch()" (cancel)="closeMatchModal()" (openPgn)="openPgnDrawer($event)"
-    (teamChange)="onMatchTeamChange($event.side, $event.teamId)" (recalculate)="recalculateMatchTotals()">
+    (teamChange)="onMatchTeamChange($event.side, $event.teamId)" (recalculate)="recalculateMatchTotals()"
+    (fillRosters)="populateBoardsFromRosters()">
   </app-pcap-admin-match-editor>
   }
 
