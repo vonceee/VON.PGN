@@ -1,0 +1,81 @@
+/**
+ * @file mandalart.component.css
+ * @description Styles and print optimizations for the 9x9 Mandalart Goal Matrix.
+ */
+
+:host {
+  display: block;
+}
+
+/* Smooth transitions for interactive tiles */
+.mandalart-cell {
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Custom scrollbars for compact cells if needed */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.5);
+  border-radius: 9999px;
+}
+
+/* =========================================================================
+   PRINT / PDF EXPORT STYLES
+   ========================================================================= */
+@media print {
+  /* Hide standard web chrome */
+  header,
+  footer,
+  aside,
+  .no-print,
+  .tailwind-hero-glow,
+  app-floating-cursor {
+    display: none !important;
+  }
+
+  /* Reset layout constraints for full-page landscape print */
+  @page {
+    size: landscape;
+    margin: 10mm;
+  }
+
+  body,
+  main,
+  #pageContainer {
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .mandalart-grid-container {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    gap: 4px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .mandalart-block {
+    box-shadow: none !important;
+    border: 1.5px solid #0f172a !important;
+    page-break-inside: avoid;
+  }
+
+  .mandalart-cell {
+    border: 1px solid #cbd5e1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

@@ -1,0 +1,757 @@
+<div #pageContainer appFloatingCursorContainer
+  class="w-full 2xl:max-w-7xl mx-auto flex justify-center min-h-screen relative selection:bg-blue-600 selection:text-white overflow-x-hidden">
+
+  <!-- Ambient Hero Lighting Halo -->
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div class="tailwind-hero-glow"></div>
+  </div>
+
+  <div
+    class="w-full grid grid-cols-1 md:grid-cols-[2rem_minmax(0,1fr)_2rem] lg:grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] xl:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] relative">
+
+    <!-- Column 1: Left Gutter Rail -->
+    <aside
+      class="hidden md:block md:col-start-1 md:col-end-2 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
+      aria-hidden="true">
+      <svg class="w-full h-full stroke-slate-300/80" fill="none">
+        <defs>
+          <pattern id="diagonal-rail-left" width="14" height="14" patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke-width="1.15" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#diagonal-rail-left)" />
+      </svg>
+    </aside>
+
+    <!-- Column 2: Central Content Track -->
+    <main
+      class="relative z-10 w-full min-w-0 col-start-1 md:col-start-2 md:col-end-3 px-3 sm:px-6 md:px-8 lg:px-12 flex flex-col py-8">
+
+      <!-- Top System Boundary -->
+      <div class="structural-divider mb-8" aria-hidden="true">
+        <div class="structural-divider-line"></div>
+      </div>
+
+      <!-- Feature Header & Controls -->
+      <header class="mb-6 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="font-mono text-xs font-semibold tracking-widest uppercase text-blue-600 bg-blue-50 border border-blue-200/60 px-2.5 py-1 rounded-full">
+              Goal Achievement Framework
+            </span>
+            <span class="text-xs text-slate-400 font-mono">• 81 SQUARES</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+            9x9 Mandalart Matrix
+          </h1>
+          <p class="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
+            Break down your ultimate chess ambition into <span class="font-semibold text-slate-900">8 foundational pillars</span> and
+            <span class="font-semibold text-slate-900">64 actionable habits</span>. The interconnected framework famously utilized by sports icon Shohei Ohtani.
+          </p>
+        </div>
+
+        <!-- Global Progress & Action Controls -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 no-print">
+          <!-- Overall Progress Card -->
+          <div class="bg-white border border-slate-200 rounded-2xl px-4 py-3 shadow-xs flex items-center gap-3.5">
+            <div class="relative w-12 h-12 flex items-center justify-center shrink-0">
+              <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                <path class="text-slate-100" stroke-width="3.5" stroke="currentColor" fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="text-blue-600 transition-all duration-500 ease-out" stroke-dasharray="100, 100"
+                  [attr.stroke-dashoffset]="100 - overallPercentage()" stroke-linecap="round" stroke-width="3.5"
+                  stroke="currentColor" fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+              </svg>
+              <span class="absolute text-xs font-bold text-slate-900">{{ overallPercentage() }}%</span>
+            </div>
+            <div>
+              <div class="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">Total Progress</div>
+              <div class="text-sm font-bold text-slate-900">
+                {{ completedCount() }} <span class="text-slate-400 font-normal">/ {{ totalCount() }} actions</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Template Switcher Dropdown -->
+          <div class="relative">
+            <label for="templateSelect" class="sr-only">Choose Template</label>
+            <select
+              id="templateSelect"
+              [value]="activeTemplateId()"
+              (change)="onTemplateChange($event)"
+              class="w-full sm:w-auto bg-white border border-slate-200 text-slate-800 text-sm font-medium rounded-xl px-3.5 py-3 pr-8 shadow-xs hover:border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 cursor-pointer appearance-none">
+              @for (tpl of templates; track tpl.id) {
+                <option [value]="tpl.id">
+                  {{ tpl.name }} {{ tpl.badge ? '• [' + tpl.badge + ']' : '' }}
+                </option>
+              }
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Action Toolbar -->
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-3 bg-slate-50/80 border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 no-print">
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- View Switcher -->
+          @if (focusedBlockIndex() === null) {
+            <button
+              type="button"
+              (click)="setFocusBlock(4)"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-slate-900 shadow-2xs transition-colors">
+              <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+              </svg>
+              Focus Mode
+            </button>
+          } @else {
+            <button
+              type="button"
+              (click)="setFocusBlock(null)"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-2xs transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+              Show Full 9x9 Matrix
+            </button>
+          }
+
+          <!-- Guide / How It Works -->
+          <button
+            type="button"
+            (click)="openGuide()"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-slate-900 shadow-2xs transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            How it Works
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Print / PDF -->
+          <button
+            type="button"
+            (click)="printMatrix()"
+            title="Print or save as PDF"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-slate-900 shadow-2xs transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            Print / PDF
+          </button>
+
+          <!-- Export JSON -->
+          <button
+            type="button"
+            (click)="exportJson()"
+            title="Download JSON backup"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-slate-900 shadow-2xs transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export JSON
+          </button>
+
+          <!-- Import JSON -->
+          <button
+            type="button"
+            (click)="openImportModal()"
+            title="Import custom JSON"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-slate-900 shadow-2xs transition-colors">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            Import
+          </button>
+
+          <!-- Reset -->
+          <button
+            type="button"
+            (click)="resetCurrentTemplate()"
+            title="Reset matrix to default"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 shadow-2xs transition-colors">
+            <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Section Divider -->
+      <div class="structural-divider mb-8" aria-hidden="true">
+        <div class="structural-divider-line"></div>
+      </div>
+
+      <!-- =========================================================================
+           VIEW 1: THE FULL 9x9 MATRIX OVERVIEW (81 SQUARES)
+           ========================================================================= -->
+      @if (focusedBlockIndex() === null) {
+        <div class="mandalart-grid-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 p-2 sm:p-4 bg-slate-100/70 rounded-3xl border border-slate-200/90 shadow-inner">
+          @for (block of blocks(); track block.blockIndex) {
+            <section
+              class="mandalart-block bg-white rounded-2xl border flex flex-col justify-between p-3 transition-all duration-200"
+              [class.border-amber-400]="block.isCenterBlock"
+              [class.ring-4]="block.isCenterBlock"
+              [class.ring-amber-400/20]="block.isCenterBlock"
+              [class.shadow-md]="block.isCenterBlock"
+              [class.border-slate-200]="!block.isCenterBlock"
+              [class.shadow-xs]="!block.isCenterBlock">
+
+              <!-- Block Header -->
+              <div class="flex items-center justify-between gap-2 mb-2.5 px-1">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  @if (block.isCenterBlock) {
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                      <svg class="w-3 h-3 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      CORE BLOCK
+                    </span>
+                  } @else {
+                    <span class="text-xs font-extrabold text-slate-800 truncate" [title]="block.title">
+                      Pillar {{ block.pillarIndex! + 1 }}: {{ block.title }}
+                    </span>
+                  }
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                  @if (!block.isCenterBlock && block.progress) {
+                    <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md"
+                      [class.bg-emerald-50]="block.progress.percentage === 100"
+                      [class.text-emerald-700]="block.progress.percentage === 100"
+                      [class.border-emerald-200]="block.progress.percentage === 100"
+                      [class.bg-slate-100]="block.progress.percentage < 100"
+                      [class.text-slate-600]="block.progress.percentage < 100">
+                      {{ block.progress.completed }}/8 ({{ block.progress.percentage }}%)
+                    </span>
+                  }
+
+                  <!-- Block Focus Zoom Button -->
+                  <button
+                    type="button"
+                    (click)="setFocusBlock(block.blockIndex)"
+                    title="Focus on this 3x3 block"
+                    class="p-1 rounded-md text-slate-400 hover:text-blue-600 hover:bg-slate-100 transition-colors no-print">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3x3 Local Grid Inside This Block -->
+              <div class="grid grid-cols-3 gap-1.5 sm:gap-2 grow">
+                @for (cell of block.cells; track cell.cellIndex) {
+                  <!-- Cell Type: CORE GOAL (Center of Block 4) -->
+                  @if (cell.type === 'core') {
+                    <div
+                      (click)="handleCellClick(cell)"
+                      class="mandalart-cell col-span-1 min-h-[5.5rem] sm:min-h-[6.5rem] bg-gradient-to-br from-amber-50 via-amber-100 to-amber-200 border-2 border-amber-400 rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-xs cursor-pointer hover:ring-2 hover:ring-amber-500/60 hover:scale-[1.02] relative group">
+                      <div class="text-[9px] font-mono uppercase tracking-widest font-black text-amber-900 mb-1 flex items-center gap-1">
+                        <span>★ GOAL</span>
+                      </div>
+                      <div class="text-xs sm:text-sm font-extrabold text-amber-950 leading-tight line-clamp-3">
+                        {{ cell.title }}
+                      </div>
+                      <div class="text-[9px] text-amber-700/80 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Click to edit
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Cell Type: PILLAR HEADER (Center of Outer Block OR Surrounding 8 in Core Block) -->
+                  @else if (cell.type === 'pillar') {
+                    <div
+                      (click)="handleCellClick(cell)"
+                      class="mandalart-cell col-span-1 min-h-[5.5rem] sm:min-h-[6.5rem] bg-slate-100 hover:bg-slate-200/90 border border-slate-300 rounded-xl p-2 flex flex-col items-center justify-center text-center cursor-pointer shadow-2xs hover:scale-[1.02] relative group"
+                      [class.bg-blue-50]="block.isCenterBlock"
+                      [class.border-blue-200]="block.isCenterBlock"
+                      [class.text-blue-950]="block.isCenterBlock">
+
+                      <!-- Directional Arrow (for Center Block pillars pointing to outer blocks) -->
+                      @if (cell.directionIcon) {
+                        <span class="absolute top-1 right-1.5 text-xs font-mono font-bold text-slate-400 group-hover:text-blue-600">
+                          {{ cell.directionIcon }}
+                        </span>
+                      }
+
+                      <div class="text-[9px] font-mono uppercase tracking-wider font-bold text-slate-500 mb-0.5">
+                        Pillar {{ cell.pillarIndex! + 1 }}
+                      </div>
+                      <div class="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug line-clamp-3">
+                        {{ cell.title }}
+                      </div>
+                      <div class="text-[9px] text-slate-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Edit
+                      </div>
+                    </div>
+                  }
+
+                  <!-- Cell Type: ACTION TASK (Surrounding 8 in Outer Blocks) -->
+                  @else {
+                    <div
+                      (click)="handleCellClick(cell)"
+                      class="mandalart-cell col-span-1 min-h-[5.5rem] sm:min-h-[6.5rem] bg-white hover:bg-slate-50 border rounded-xl p-2 flex flex-col justify-between text-left cursor-pointer transition-all hover:scale-[1.02] shadow-2xs group relative"
+                      [class.border-emerald-300]="cell.completed"
+                      [class.bg-emerald-50/30]="cell.completed"
+                      [class.border-slate-200]="!cell.completed">
+
+                      <!-- Action Title Text -->
+                      <p
+                        class="text-[11px] sm:text-xs leading-snug font-medium line-clamp-3"
+                        [class.line-through]="cell.completed"
+                        [class.text-slate-400]="cell.completed"
+                        [class.text-slate-800]="!cell.completed">
+                        {{ cell.title }}
+                      </p>
+
+                      <!-- Bottom Bar: Checkbox Toggle & Edit hint -->
+                      <div class="mt-1 flex items-center justify-between gap-1 pt-1 border-t border-slate-100">
+                        <button
+                          type="button"
+                          (click)="toggleAction(cell.pillarIndex!, cell.actionIndex!, $event)"
+                          [title]="cell.completed ? 'Mark incomplete' : 'Mark complete'"
+                          class="w-4 h-4 rounded-md border flex items-center justify-center transition-colors shrink-0"
+                          [class.bg-emerald-500]="cell.completed"
+                          [class.border-emerald-500]="cell.completed"
+                          [class.text-white]="cell.completed"
+                          [class.border-slate-300]="!cell.completed"
+                          [class.hover:border-blue-400]="!cell.completed">
+                          @if (cell.completed) {
+                            <svg class="w-3 h-3 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          }
+                        </button>
+
+                        <span class="text-[9px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                          edit
+                        </span>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            </section>
+          }
+        </div>
+      }
+
+      <!-- =========================================================================
+           VIEW 2: DEDICATED 3x3 BLOCK FOCUS MODE
+           ========================================================================= -->
+      @if (focusedBlockIndex() !== null && focusedBlockData(); as focus) {
+        <div class="bg-white border border-slate-200 rounded-3xl p-4 sm:p-6 lg:p-8 shadow-sm flex flex-col gap-6">
+          <!-- Focus Mode Navigation Bar -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+            <div class="flex items-center gap-3">
+              <button
+                type="button"
+                (click)="setFocusBlock(null)"
+                class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Full 9x9 Grid
+              </button>
+
+              <div>
+                <div class="text-[11px] font-mono uppercase tracking-widest text-blue-600 font-semibold">
+                  FOCUS MODE • BLOCK {{ focus.blockIndex + 1 }} OF 9
+                </div>
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900">
+                  {{ focus.title }}
+                </h2>
+              </div>
+            </div>
+
+            <!-- Block Switcher Pills -->
+            <div class="flex items-center gap-1.5 self-center sm:self-auto">
+              <button
+                type="button"
+                (click)="prevFocusBlock()"
+                title="Previous block"
+                class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <div class="flex items-center gap-1">
+                @for (b of blocks(); track b.blockIndex) {
+                  <button
+                    type="button"
+                    (click)="setFocusBlock(b.blockIndex)"
+                    class="w-7 h-7 text-xs font-bold rounded-md transition-colors"
+                    [class.bg-blue-600]="b.blockIndex === focusedBlockIndex()"
+                    [class.text-white]="b.blockIndex === focusedBlockIndex()"
+                    [class.bg-amber-100]="b.blockIndex === 4 && b.blockIndex !== focusedBlockIndex()"
+                    [class.text-amber-900]="b.blockIndex === 4 && b.blockIndex !== focusedBlockIndex()"
+                    [class.bg-slate-100]="b.blockIndex !== focusedBlockIndex() && b.blockIndex !== 4"
+                    [class.text-slate-700]="b.blockIndex !== focusedBlockIndex() && b.blockIndex !== 4"
+                    [class.hover:bg-slate-200]="b.blockIndex !== focusedBlockIndex()">
+                    {{ b.blockIndex === 4 ? '★' : b.blockIndex + 1 }}
+                  </button>
+                }
+              </div>
+
+              <button
+                type="button"
+                (click)="nextFocusBlock()"
+                title="Next block"
+                class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Pillar Progress in Focus Mode -->
+          @if (!focus.isCenterBlock && focus.progress) {
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
+              <div class="flex items-center gap-4">
+                <div>
+                  <div class="text-xs font-bold text-slate-900">
+                    {{ focus.progress.completed }} of 8 Tasks Completed ({{ focus.progress.percentage }}%)
+                  </div>
+                  <div class="w-48 sm:w-64 bg-slate-200 h-2 rounded-full mt-1.5 overflow-hidden">
+                    <div
+                      class="bg-blue-600 h-full rounded-full transition-all duration-300"
+                      [style.width.%]="focus.progress.percentage"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  (click)="markAllInPillar(focus.pillarIndex!, true)"
+                  class="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors">
+                  Mark All Complete
+                </button>
+                <button
+                  type="button"
+                  (click)="markAllInPillar(focus.pillarIndex!, false)"
+                  class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+                  Clear All
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- Enlarged 3x3 Grid in Focus Mode -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto w-full">
+            @for (cell of focus.cells; track cell.cellIndex) {
+              <!-- Center of Block 4: Core Goal -->
+              @if (cell.type === 'core') {
+                <div
+                  (click)="handleCellClick(cell)"
+                  class="min-h-[9rem] bg-gradient-to-br from-amber-100 via-amber-200 to-amber-300 border-2 border-amber-400 rounded-2xl p-4 flex flex-col items-center justify-center text-center shadow-md cursor-pointer hover:ring-4 hover:ring-amber-500/30 transition-all">
+                  <span class="text-xs font-mono uppercase tracking-widest font-black text-amber-900 mb-1">
+                    ★ ULTIMATE CORE GOAL
+                  </span>
+                  <div class="text-base sm:text-lg font-black text-amber-950 leading-snug">
+                    {{ cell.title }}
+                  </div>
+                  <div class="text-xs text-amber-800/80 mt-2 font-medium">Click to edit goal</div>
+                </div>
+              }
+
+              <!-- Pillar Header (Center cell of outer block, or 8 outer cells of core block) -->
+              @else if (cell.type === 'pillar') {
+                <div
+                  (click)="handleCellClick(cell)"
+                  class="min-h-[9rem] bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer shadow-xs transition-all relative">
+                  @if (cell.directionIcon) {
+                    <span class="absolute top-2 right-2 text-sm font-mono font-bold text-slate-400">
+                      {{ cell.directionIcon }}
+                    </span>
+                  }
+                  <span class="text-xs font-mono uppercase tracking-wider font-bold text-slate-500 mb-1">
+                    PILLAR {{ cell.pillarIndex! + 1 }}
+                  </span>
+                  <div class="text-base font-extrabold text-slate-900 leading-snug">
+                    {{ cell.title }}
+                  </div>
+                  <div class="text-xs text-slate-400 mt-2">Click to edit title</div>
+                </div>
+              }
+
+              <!-- Action Card in Focus Mode -->
+              @else {
+                <div
+                  (click)="handleCellClick(cell)"
+                  class="min-h-[9rem] bg-white hover:bg-slate-50 border rounded-2xl p-4 flex flex-col justify-between cursor-pointer transition-all shadow-xs group"
+                  [class.border-emerald-300]="cell.completed"
+                  [class.bg-emerald-50/20]="cell.completed"
+                  [class.border-slate-200]="!cell.completed">
+                  <div>
+                    <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">
+                      Action {{(cell.actionIndex ?? 0) + 1}}
+                    </div>
+                    <div
+                      class="text-sm font-medium leading-relaxed"
+                      [class.line-through]="cell.completed"
+                      [class.text-slate-400]="cell.completed"
+                      [class.text-slate-900]="!cell.completed">
+                      {{ cell.title }}
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                    <button
+                      type="button"
+                      (click)="toggleAction(cell.pillarIndex!, cell.actionIndex!, $event)"
+                      class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors"
+                      [class.bg-emerald-500]="cell.completed"
+                      [class.text-white]="cell.completed"
+                      [class.bg-slate-100]="!cell.completed"
+                      [class.text-slate-700]="!cell.completed"
+                      [class.hover:bg-slate-200]="!cell.completed">
+                      <span
+                        class="w-3.5 h-3.5 rounded-full border flex items-center justify-center"
+                        [class.border-white]="cell.completed"
+                        [class.border-slate-400]="!cell.completed">
+                        @if (cell.completed) {
+                          <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                          </svg>
+                        }
+                      </span>
+                      {{ cell.completed ? 'Completed' : 'Mark Done' }}
+                    </button>
+
+                    <span class="text-xs text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Edit text →
+                    </span>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Bottom System Boundary -->
+      <div class="structural-divider mt-12 mb-8" aria-hidden="true">
+        <div class="structural-divider-line"></div>
+      </div>
+
+      <!-- Footer Info Strip: The Mandalart Philosophy -->
+      <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6 no-print">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">
+            About the 9x9 Mandalart Technique
+          </h3>
+          <p class="mt-1 text-sm text-slate-600 max-w-2xl leading-relaxed">
+            Originally created in Japan by management consultant Matsumura Yasuo, the Mandalart matrix (Lotus Blossom Technique) turns broad, intimidating goals into structured, daily behavioral habits. By surrounding 1 core goal with 8 pillars and 64 specific actions, progress transforms into an actionable daily game plan.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          (click)="openGuide()"
+          class="shrink-0 px-4 py-2 text-sm font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-xl hover:bg-blue-100 transition-colors">
+          View Guide & Diagram
+        </button>
+      </div>
+
+    </main>
+
+    <!-- Column 3: Right Gutter Rail -->
+    <aside
+      class="hidden md:block md:col-start-3 md:col-end-4 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
+      aria-hidden="true">
+      <svg class="w-full h-full stroke-slate-300/80" fill="none">
+        <defs>
+          <pattern id="diagonal-rail-right" width="14" height="14" patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke-width="1.15" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#diagonal-rail-right)" />
+      </svg>
+    </aside>
+
+  </div>
+
+  <app-floating-cursor></app-floating-cursor>
+</div>
+
+<!-- =========================================================================
+     MODAL 1: INLINE EDIT TILE
+     ========================================================================= -->
+@if (isEditing()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs no-print">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 sm:p-7 flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-150">
+      <div>
+        <h3 class="text-lg font-bold text-slate-900">
+          {{ editModalTitle() }}
+        </h3>
+        <p class="text-xs text-slate-500 mt-1">
+          {{ editModalSubtitle() }}
+        </p>
+      </div>
+
+      <div>
+        <label for="tileInput" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+          Title / Description
+        </label>
+        <textarea
+          id="tileInput"
+          rows="3"
+          [(ngModel)]="editValue"
+          (keydown.enter)="$event.preventDefault(); saveEdit()"
+          class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white resize-none"></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+        <button
+          type="button"
+          (click)="cancelEdit()"
+          class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="saveEdit()"
+          class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =========================================================================
+     MODAL 2: JSON IMPORT
+     ========================================================================= -->
+@if (showImportModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs no-print">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 sm:p-7 flex flex-col gap-4">
+      <div>
+        <h3 class="text-lg font-bold text-slate-900">
+          Import Mandalart Matrix
+        </h3>
+        <p class="text-xs text-slate-500 mt-1">
+          Paste a previously exported JSON backup to restore your custom grid and progress.
+        </p>
+      </div>
+
+      <div>
+        <textarea
+          rows="6"
+          [(ngModel)]="importText"
+          placeholder='{"coreGoal": "Reach 2400 Rating", "pillars": [...]}'
+          class="w-full bg-slate-50 font-mono border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:bg-white resize-none"></textarea>
+      </div>
+
+      @if (importFeedback(); as fb) {
+        <div
+          class="p-3 rounded-xl text-xs font-medium"
+          [class.bg-emerald-50]="fb.success"
+          [class.text-emerald-800]="fb.success"
+          [class.border]="true"
+          [class.border-emerald-200]="fb.success"
+          [class.bg-red-50]="!fb.success"
+          [class.text-red-800]="!fb.success"
+          [class.border-red-200]="!fb.success">
+          {{ fb.message }}
+        </div>
+      }
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+        <button
+          type="button"
+          (click)="closeImportModal()"
+          class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="executeImport()"
+          class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors">
+          Import Matrix
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- =========================================================================
+     MODAL 3: GUIDE & EXPLANATION
+     ========================================================================= -->
+@if (showGuideModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs no-print">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 sm:p-8 flex flex-col gap-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+            Mandalart Architecture
+          </span>
+          <h3 class="text-xl font-bold text-slate-900 mt-1">
+            How the 9x9 Mandalart Matrix Works
+          </h3>
+        </div>
+        <button
+          type="button"
+          (click)="closeGuide()"
+          class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="text-sm text-slate-600 space-y-4 leading-relaxed">
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <h4 class="font-bold text-slate-900 mb-1">1. The Center Block (The Core)</h4>
+          <p class="text-xs sm:text-sm">
+            At <strong>Row 5, Col 5</strong> sits your <strong>Ultimate Goal</strong> (e.g., <em>Break 2000 Elo</em>). Surrounding it are the <strong>8 Foundational Pillars</strong> needed to make that goal inevitable.
+          </p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <h4 class="font-bold text-slate-900 mb-1">2. The 8 Outer Blocks (The Actions)</h4>
+          <p class="text-xs sm:text-sm">
+            Each outer 3x3 block corresponds to one pillar. The <strong>center of each outer block mirrors that pillar title</strong>. Surrounding each pillar are <strong>8 specific, measurable actions</strong> (64 total across the whole board).
+          </p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <h4 class="font-bold text-slate-900 mb-1">3. Live Bidirectional Sync</h4>
+          <p class="text-xs sm:text-sm">
+            Editing a pillar title in the center block automatically synchronizes with the outer block, and vice-versa. Checking off tasks updates your completion percentage in real time.
+          </p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <h4 class="font-bold text-slate-900 mb-1">4. The Shohei Ohtani Connection</h4>
+          <p class="text-xs sm:text-sm">
+            In Hanamaki Higashi High School, Shohei Ohtani famously used this exact 81-square framework with the core target: <em>"Drafted 1st overall by 8 teams"</em>. He mapped out technical mastery (Speed 100mph, Sharpness, Control) alongside character and discipline (Karma, Politeness, Picking up trash, Respecting umpires). You can load his original 2010 chart from the template switcher!
+          </p>
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-slate-100 flex justify-end">
+        <button
+          type="button"
+          (click)="closeGuide()"
+          class="px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors">
+          Got it
+        </button>
+      </div>
+    </div>
+  </div>
+}

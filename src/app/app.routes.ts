@@ -526,6 +526,17 @@ export const routes: Routes = [
         resolve: { seo: seoResolver },
       },
       {
+        path: 'mandalart',
+        loadComponent: () =>
+          import('./features/mandalart/mandalart.component').then((m) => m.MandalartComponent),
+        title: 'Vonchess.net • Mandalart 9x9 Goal Matrix',
+        data: {
+          description:
+            'Structure your chess improvement with the 9x9 Mandalart Goal Matrix — break down your ultimate rating goal into 8 foundational pillars and 64 actionable training habits.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'explorer',
         redirectTo: 'study',
         pathMatch: 'full',

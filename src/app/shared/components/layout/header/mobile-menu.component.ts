@@ -189,6 +189,7 @@ export class MobileMenuComponent {
         { path: '/tactics', label: 'Tactics' },
         { path: '/study/drills', label: 'Opening drills' },
         { path: '/bughouse', label: 'Bughouse' },
+        { path: '/mandalart', label: 'Mandalart 9x9' },
       ],
     },
     {
