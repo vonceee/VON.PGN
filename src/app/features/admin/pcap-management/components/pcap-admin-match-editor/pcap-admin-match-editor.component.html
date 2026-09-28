@@ -1,0 +1,217 @@
+<div class="space-y-6 animate-in fade-in duration-150">
+  <!-- Header with Back navigation & Save button -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+    <div class="flex items-center gap-3">
+      <button type="button" (click)="cancel.emit()"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer shadow-xs transition-colors">
+        <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        </svg>
+        Back to PCAP Management
+      </button>
+      <div class="h-4 w-px bg-slate-200"></div>
+      <div>
+        <h2 class="text-xl font-bold text-slate-900">
+          {{ isEditing() ? 'Edit Match Scoresheet (Round ' + match().round + ')' : 'Schedule New Match Fixture' }}
+        </h2>
+        <p class="text-xs text-slate-500">
+          Record board points (Blitz: 1/0.5/0, Rapid: 2/1/0) out of 21 total league points.
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button type="button" (click)="cancel.emit()"
+        class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 hover:bg-slate-50 text-slate-700 cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" (click)="save.emit()"
+        class="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-xs cursor-pointer">
+        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+        </svg>
+        Save Match Fixture
+      </button>
+    </div>
+  </div>
+
+  <!-- Fixture Details Card -->
+  <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+    <div class="border-b border-slate-100 pb-3">
+      <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Fixture Details</h3>
+      <p class="text-xs text-slate-500">Round, conference, scheduling date and time.</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700">Round #</label>
+        <input type="number" [(ngModel)]="match().round"
+          class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700">Division</label>
+        <select [(ngModel)]="match().conference"
+          class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white">
+          <option value="alpha">Division Alpha</option>
+          <option value="omega">Division Omega</option>
+          <option value="interconference">Inter-Division</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700">Status</label>
+        <select [(ngModel)]="match().status"
+          class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white font-semibold">
+          <option value="upcoming">Upcoming</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700">Date</label>
+        <input type="text" [(ngModel)]="match().date" placeholder="YYYY-MM-DD"
+          class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700">Time</label>
+        <input type="text" [(ngModel)]="match().time" placeholder="7:00 PM PHT"
+          class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Matchup Duel & Score Banner Card -->
+  <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs">
+    <div
+      class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+      <!-- Team A Selection -->
+      <div class="flex-1 w-full space-y-1">
+        <label class="text-xs font-bold text-slate-800">Team A (White on Odd Boards)</label>
+        <select [ngModel]="match().teamA.id" (ngModelChange)="onTeamSelect('teamA', $event)"
+          class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white">
+          @for (team of allTeams(); track team.id) {
+          <option [value]="team.id">{{ team.name }} ({{ team.conference }})</option>
+          }
+        </select>
+      </div>
+
+      <!-- Total Score Summary Badge -->
+      <div class="text-center px-6 py-2 rounded-xl bg-white border border-slate-200 shadow-2xs shrink-0">
+        <div class="text-xs text-slate-400 font-mono">TOTAL SCORE</div>
+        <div class="text-2xl font-bold font-mono text-slate-900">
+          {{ match().scoreA }} : {{ match().scoreB }}
+        </div>
+        <div class="text-[11px] text-slate-500 font-mono">
+          Blitz: {{ match().blitzScoreA }}-{{ match().blitzScoreB }} | Rapid: {{
+          match().rapidScoreA }}-{{ match().rapidScoreB }}
+        </div>
+      </div>
+
+      <!-- Team B Selection -->
+      <div class="flex-1 w-full space-y-1">
+        <label class="text-xs font-bold text-slate-800">Team B</label>
+        <select [ngModel]="match().teamB.id" (ngModelChange)="onTeamSelect('teamB', $event)"
+          class="w-full px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 bg-white">
+          @for (team of allTeams(); track team.id) {
+          <option [value]="team.id">{{ team.name }} ({{ team.conference }})</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7-Board Match Scoresheet Card -->
+  <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">7-Board Match Scoresheet</h3>
+      </div>
+      <button type="button" (click)="onScoreInput()"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold cursor-pointer border border-blue-200 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+        </svg>
+        <span>Auto-Sum Points</span>
+      </button>
+    </div>
+
+    <div class="border border-slate-200 rounded-xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-[11px] font-semibold">
+            <tr>
+              <th class="px-3 py-2 text-center w-10">B#</th>
+              <th class="px-3 py-2">Player A ({{ match().teamA.name }})</th>
+              <th class="px-2 py-2 text-center w-36">Blitz Result (1 pt)</th>
+              <th class="px-2 py-2 text-center w-36">Rapid Result (2 pts)</th>
+              <th class="px-3 py-2 text-right">Player B ({{ match().teamB.name }})</th>
+              <th class="px-2 py-2 text-center w-16">PGN</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (board of match().boards; track board.boardNumber) {
+            <tr class="hover:bg-slate-50/50">
+              <td class="px-3 py-2 text-center font-bold text-slate-700">
+                {{ board.boardNumber }}
+              </td>
+              <td class="px-3 py-2">
+                <input type="text" [(ngModel)]="board.playerA.name" placeholder="Player A"
+                  class="w-full px-2 py-1 text-xs rounded border border-slate-200" />
+              </td>
+              <td class="px-2 py-2">
+                <select [ngModel]="getBlitzValue(board)" (ngModelChange)="onBlitzChange(board, $event)"
+                  class="w-full px-2 py-1 text-xs font-semibold bg-white cursor-pointer">
+                  @for (opt of blitzOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                  }
+                </select>
+              </td>
+              <td class="px-2 py-2">
+                <select [ngModel]="getRapidValue(board)" (ngModelChange)="onRapidChange(board, $event)"
+                  class="w-full px-2 py-1 text-xs font-semibold bg-white cursor-pointer">
+                  @for (opt of rapidOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                  }
+                </select>
+              </td>
+              <td class="px-3 py-2">
+                <input type="text" [(ngModel)]="board.playerB.name" placeholder="Player B"
+                  class="w-full px-2 py-1 text-xs rounded border border-slate-200" />
+              </td>
+              <td class="px-2 py-2 text-center">
+                <button type="button" (click)="openPgn.emit(board)"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-bold transition-colors cursor-pointer"
+                  [ngClass]="(board.blitzPgn || board.rapidPgn) ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'"
+                  title="Manage Board PGNs">
+                  <span>PGN</span>
+                  @if (board.blitzPgn || board.rapidPgn) {
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  }
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Actions -->
+  <div class="flex items-center justify-between border-t border-slate-200 pt-4">
+    <div class="text-xs text-slate-500">
+      Total match points: <strong class="text-slate-900 font-mono">{{ match().scoreA + match().scoreB }}
+        / 21.0</strong>
+    </div>
+    <div class="flex items-center gap-2">
+      <button type="button" (click)="cancel.emit()"
+        class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 hover:bg-slate-50 text-slate-700 cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" (click)="save.emit()"
+        class="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-xs cursor-pointer">
+        Save Match Fixture
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,269 @@
+<div class="px-4 md:px-10 py-8 relative max-w-7xl mx-auto space-y-6">
+
+  @if (currentView() === 'list') {
+  <!-- Header Section with League Info & Quick Action Link -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+    <div>
+      <div class="flex items-center gap-2.5">
+        <span
+          class="px-2.5 py-0.5 rounded text-[11px] font-bold tracking-wider uppercase bg-blue-50 text-blue-700 border border-blue-200">
+          PRO LEAGUE
+        </span>
+        <span class="text-xs text-slate-500 font-mono">PHILIPPINE CHESS LEAGUE ADMIN</span>
+      </div>
+      <h1 class="text-2xl md:text-3xl font-bold text-slate-900 mt-1">PCAP League Management</h1>
+    </div>
+
+    <div class="flex items-center gap-3 shrink-0">
+      <button type="button" (click)="clearAllData()"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-rose-200 bg-white hover:bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer shadow-xs transition-colors"
+        title="Clear all data and start with clean slate">
+        <svg class="w-3.5 h-3.5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+        Clear All Data
+      </button>
+
+      <button type="button" (click)="loadSampleData()"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer shadow-xs transition-colors"
+        title="Load demo sample franchises & matches">
+        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Load Demo Data
+      </button>
+
+      <a routerLink="/pcap" target="_blank"
+        class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold cursor-pointer shadow-xs transition-colors">
+        <span>View Public /pcap</span>
+        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- League Summary Stats Row -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+      <div class="text-xs font-medium text-slate-500">Active Teams</div>
+      <div class="text-2xl font-bold text-slate-900 mt-1">{{ pcapService.allTeams().length }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">12 North • 12 South</div>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+      <div class="text-xs font-medium text-slate-500">Scheduled Matches</div>
+      <div class="text-2xl font-bold text-slate-900 mt-1">{{ pcapService.allMatches().length }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">{{ pcapService.upcomingMatches().length }} upcoming fixtures</div>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+      <div class="text-xs font-medium text-slate-500">Completed Fixtures</div>
+      <div class="text-2xl font-bold text-slate-900 mt-1">{{ pcapService.completedMatches().length }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Scores tabulated</div>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+      <div class="text-xs font-medium text-slate-500">Grandmasters (GM)</div>
+      <div class="text-2xl font-bold text-slate-900 mt-1">{{ pcapService.leagueStats().totalGMs }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">{{ pcapService.leagueStats().totalIMs }} International Masters
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs & Action Bar -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-4 space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200">
+      <!-- Navigation Tabs -->
+      <nav class="-mb-px flex items-center gap-6 overflow-x-auto">
+        <button type="button" (click)="activeTab.set('teams')" [class.border-blue-600]="activeTab() === 'teams'"
+          [class.text-blue-600]="activeTab() === 'teams'" [class.border-transparent]="activeTab() !== 'teams'"
+          [class.text-slate-500]="activeTab() !== 'teams'"
+          class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+          <span>Teams & Rosters</span>
+          <span class="px-2 py-0.5 text-xs rounded-full font-bold font-mono transition-colors"
+            [class.bg-blue-50]="activeTab() === 'teams'" [class.text-blue-700]="activeTab() === 'teams'"
+            [class.bg-slate-100]="activeTab() !== 'teams'" [class.text-slate-600]="activeTab() !== 'teams'">
+            {{ teamsList().length }}
+          </span>
+        </button>
+        <button type="button" (click)="activeTab.set('matches')" [class.border-blue-600]="activeTab() === 'matches'"
+          [class.text-blue-600]="activeTab() === 'matches'" [class.border-transparent]="activeTab() !== 'matches'"
+          [class.text-slate-500]="activeTab() !== 'matches'"
+          class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+          <span>Matches & Scoresheets</span>
+          <span class="px-2 py-0.5 text-xs rounded-full font-bold font-mono transition-colors"
+            [class.bg-blue-50]="activeTab() === 'matches'" [class.text-blue-700]="activeTab() === 'matches'"
+            [class.bg-slate-100]="activeTab() !== 'matches'" [class.text-slate-600]="activeTab() !== 'matches'">
+            {{ matchesList().length }}
+          </span>
+        </button>
+        <button type="button" (click)="activeTab.set('standings')" [class.border-blue-600]="activeTab() === 'standings'"
+          [class.text-blue-600]="activeTab() === 'standings'" [class.border-transparent]="activeTab() !== 'standings'"
+          [class.text-slate-500]="activeTab() !== 'standings'"
+          class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+          <span>Standings & Tables</span>
+        </button>
+      </nav>
+
+      <!-- Primary Action Button by Tab -->
+      <div class="mb-2">
+        @if (activeTab() === 'teams') {
+        <button type="button" (click)="openNewTeamModal()"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs cursor-pointer transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          <span>Add New Team</span>
+        </button>
+        } @else if (activeTab() === 'matches') {
+        <button type="button" (click)="openNewMatchModal()"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs cursor-pointer transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          <span>Schedule Fixture</span>
+        </button>
+        } @else if (activeTab() === 'standings') {
+        <button type="button" (click)="recalculateStandings()"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs cursor-pointer transition-colors"
+          title="Recalculate W/D/L and board points from completed match fixtures">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Recalculate from Matches</span>
+        </button>
+        }
+      </div>
+    </div>
+
+    <!-- Search & Filters Row (for Teams and Matches tabs) -->
+    @if (activeTab() !== 'standings') {
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+      <!-- Search Input with Floating Label -->
+      <div class="flex-1">
+        <app-text-input label="Search"
+          [placeholder]="activeTab() === 'teams' ? 'search team' : 'Search match teams, round, season...'"
+          [value]="searchQuery()" (valueChange)="searchQuery.set($event)" [hasPrefix]="true"
+          [hasSuffix]="searchQuery().length > 0">
+          <svg prefix class="w-4 h-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+              clip-rule="evenodd" />
+          </svg>
+          @if (searchQuery()) {
+          <button suffix type="button" (click)="searchQuery.set('')"
+            class="text-slate-400 hover:text-slate-600 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          }
+        </app-text-input>
+      </div>
+
+      <!-- Division Filter Toggle -->
+      <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+        <button type="button" (click)="conferenceFilter.set('all')"
+          [ngClass]="conferenceFilter() === 'all' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-600 hover:text-slate-900 font-medium'"
+          class="px-3 py-1.5 rounded-lg text-xs cursor-pointer transition-all">
+          All Div
+        </button>
+        <button type="button" (click)="conferenceFilter.set('alpha')"
+          [ngClass]="conferenceFilter() === 'alpha' ? 'bg-white text-blue-700 shadow-2xs font-semibold' : 'text-slate-600 hover:text-slate-900 font-medium'"
+          class="px-3 py-1.5 rounded-lg text-xs cursor-pointer transition-all">
+          Alpha
+        </button>
+        <button type="button" (click)="conferenceFilter.set('omega')"
+          [ngClass]="conferenceFilter() === 'omega' ? 'bg-white text-purple-700 shadow-2xs font-semibold' : 'text-slate-600 hover:text-slate-900 font-medium'"
+          class="px-3 py-1.5 rounded-lg text-xs cursor-pointer transition-all">
+          Omega
+        </button>
+      </div>
+
+      <!-- Match Status Filter (Only when on Matches tab) -->
+      @if (activeTab() === 'matches') {
+      <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+        <button type="button" (click)="statusFilter.set('all')"
+          [ngClass]="statusFilter() === 'all' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-600 hover:text-slate-900 font-medium'"
+          class="px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-all">
+          All Status
+        </button>
+        <button type="button" (click)="statusFilter.set('upcoming')"
+          [ngClass]="statusFilter() === 'upcoming' ? 'bg-white text-blue-700 shadow-2xs font-semibold' : 'text-slate-600 hover:text-slate-900 font-medium'"
+          class="px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-all">
+          Upcoming
+        </button>
+        <button type="button" (click)="statusFilter.set('completed')"
+          [ngClass]="statusFilter() === 'completed' ? 'bg-white text-slate-900 shadow-2xs font-semibold' : 'text-slate-600 hover:text-slate-900 font-medium'"
+          class="px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-all">
+          Done
+        </button>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- TAB 1: TEAMS MANAGEMENT TABLE -->
+  @if (activeTab() === 'teams') {
+  <app-pcap-admin-teams-table [teams]="teamsList()" (editTeam)="openEditTeamModal($event)"
+    (deleteTeam)="requestDeleteTeam($event)">
+  </app-pcap-admin-teams-table>
+  }
+
+  <!-- TAB 2: MATCHES & SCORESHEETS MANAGEMENT -->
+  @if (activeTab() === 'matches') {
+  <app-pcap-admin-matches-list [matches]="matchesList()" (editMatch)="openEditMatchModal($event)"
+    (deleteMatch)="requestDeleteMatch($event)" (statusChange)="quickSetStatus($event.match, $event.status)">
+  </app-pcap-admin-matches-list>
+  }
+
+  <!-- TAB 3: STANDINGS MANAGEMENT TABLES -->
+  @if (activeTab() === 'standings') {
+  <app-pcap-admin-standings-tables [alphaStandings]="alphaStandings()" [omegaStandings]="omegaStandings()"
+    (editStanding)="openEditStanding($event)">
+  </app-pcap-admin-standings-tables>
+  }
+  }
+
+  <!-- ============================================================== -->
+  <!-- IN-PAGE VIEW: TEAM & ROSTER EDITOR                             -->
+  <!-- ============================================================== -->
+  @else if (currentView() === 'team-editor') {
+  <app-pcap-admin-team-editor [(team)]="editingTeam" [isEditing]="isEditingTeam()" (save)="saveTeam()"
+    (cancel)="closeTeamModal()">
+  </app-pcap-admin-team-editor>
+  }
+
+  <!-- ============================================================== -->
+  <!-- IN-PAGE VIEW: MATCH & 7-BOARD SCORESHEET EDITOR                -->
+  <!-- ============================================================== -->
+  @else if (currentView() === 'match-editor') {
+  <app-pcap-admin-match-editor [(match)]="editingMatch" [isEditing]="isEditingMatch()" [allTeams]="allTeams()"
+    (save)="saveMatch()" (cancel)="closeMatchModal()" (openPgn)="openPgnDrawer($event)"
+    (teamChange)="onMatchTeamChange($event.side, $event.teamId)" (recalculate)="recalculateMatchTotals()">
+  </app-pcap-admin-match-editor>
+  }
+
+  <!-- ============================================================== -->
+  <!-- MODAL: STANDINGS ROW EDITOR                                    -->
+  <!-- ============================================================== -->
+  <app-pcap-admin-standing-modal [isOpen]="standingModalOpen()" [(standing)]="editingStanding" (save)="saveStanding()"
+    (close)="closeStandingModal()">
+  </app-pcap-admin-standing-modal>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: DELETE CONFIRMATION DIALOG                              -->
+  <!-- ============================================================== -->
+  <app-pcap-admin-delete-modal [item]="deleteConfirmation()" (confirm)="confirmDelete()" (cancel)="cancelDelete()">
+  </app-pcap-admin-delete-modal>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: BOARD PGN STORAGE DRAWER                                -->
+  <!-- ============================================================== -->
+  <app-pcap-admin-pgn-modal [isOpen]="pgnDrawerOpen()" [(boardData)]="pgnEditingBoard" (save)="saveBoardPgns()"
+    (close)="closePgnDrawer()" (fileSelected)="onPgnFileSelected($event)">
+  </app-pcap-admin-pgn-modal>
+
+</div>

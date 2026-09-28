@@ -1,0 +1,328 @@
+<div class="space-y-16 md:space-y-20">
+
+  <!-- League Header Banner (Overview Tab Only) -->
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative">
+    <div class="flex-1 max-w-2xl">
+      <div class="flex items-center gap-2 mb-2">
+        <span
+          class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-200">
+          Professional League
+        </span>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-2">
+        PCAP League
+      </h1>
+      <p class="text-gray-600 text-base md:text-lg leading-relaxed">
+        Professional Chess Association of the Philippines — southeast asia's premier chess league featuring elite
+        Grandmasters, international masters, and local champions.
+      </p>
+    </div>
+
+    <!-- PCAP League Logo (Colors stronger on right, gradually subtle to left) -->
+    <div class="shrink-0 flex items-center justify-end self-center md:self-auto relative">
+      <div class="relative group p-1 sm:p-2">
+        <!-- Ambient radial glow behind logo -->
+        <div
+          class="absolute -inset-4 bg-gradient-to-l from-blue-600/15 via-amber-500/10 to-transparent rounded-full blur-2xl pointer-events-none"
+          aria-hidden="true"></div>
+        <img src="assets/pcap/pcap-logo.webp" alt="PCAP League Emblem"
+          class="h-28 sm:h-36 md:h-44 lg:h-48 w-auto object-contain select-none transition-all duration-300 pointer-events-none drop-shadow-sm"
+          style="-webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.75) 35%, rgba(0, 0, 0, 0.3) 75%, rgba(0, 0, 0, 0.05) 100%); mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.75) 35%, rgba(0, 0, 0, 0.3) 75%, rgba(0, 0, 0, 0.05) 100%);"
+          loading="eager" />
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       SECTION 1: FORMAT & RULES (THE PCAP ENGINE)
+       Spacious Architectural Frame
+       ========================================== -->
+  <section class="relative">
+    <!-- Header with Architectural Kicker -->
+    <div class="relative max-w-3xl mb-8 md:mb-10">
+      <span class="font-mono text-xs md:text-sm font-bold tracking-widest uppercase text-blue-600 block mb-2">
+        7 Boards • 2 Rounds • 21 Points
+      </span>
+      <h2 class="text-3xl md:text-5xl font-black tracking-tight text-slate-900 mb-3">
+        Format & Rules
+      </h2>
+      <p class="text-slate-600 text-base md:text-lg leading-relaxed max-w-2xl">
+        Official team match structure and time-control.
+      </p>
+    </div>
+
+    <!-- 7 Boards Continuous Grid Matrix (Generous padding & larger typography) -->
+    <div
+      class="border border-slate-200 divide-y md:divide-y-0 md:divide-x divide-slate-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 bg-white shadow-2xs">
+
+      <!-- Board 1 & 2 -->
+      <div class="p-8 md:p-9 flex flex-col justify-between hover:bg-slate-50/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono text-xs font-bold text-amber-700 tracking-wider uppercase">Boards 1 & 2</span>
+            <span
+              class="px-2.5 py-1 rounded text-xs font-mono font-bold uppercase tracking-wider bg-amber-100 text-amber-800">
+              Top Gun
+            </span>
+          </div>
+          <h3 class="font-black text-slate-900 text-xl md:text-2xl mb-3 tracking-tight">Open / Elite</h3>
+        </div>
+        <div
+          class="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+          <span>Boards 1 & 2</span>
+          <span class="font-bold text-slate-800">Open Roster</span>
+        </div>
+      </div>
+
+      <!-- Board 3 -->
+      <div class="p-8 md:p-9 flex flex-col justify-between hover:bg-slate-50/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono text-xs font-bold text-rose-700 tracking-wider uppercase">Board 3</span>
+            <span
+              class="px-2.5 py-1 rounded text-xs font-mono font-bold uppercase tracking-wider bg-rose-100 text-rose-800">
+              Lady Board
+            </span>
+          </div>
+          <h3 class="font-black text-slate-900 text-xl md:text-2xl mb-3 tracking-tight">Female Champion</h3>
+        </div>
+        <div
+          class="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+          <span>Board 3</span>
+          <span class="font-bold text-slate-800">Female Only</span>
+        </div>
+      </div>
+
+      <!-- Board 4 -->
+      <div class="p-8 md:p-9 flex flex-col justify-between hover:bg-slate-50/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono text-xs font-bold text-purple-700 tracking-wider uppercase">Board 4</span>
+            <span
+              class="px-2.5 py-1 rounded text-xs font-mono font-bold uppercase tracking-wider bg-purple-100 text-purple-800">
+              Senior Board
+            </span>
+          </div>
+          <h3 class="font-black text-slate-900 text-xl md:text-2xl mb-3 tracking-tight">Senior Master</h3>
+        </div>
+        <div
+          class="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+          <span>Board 4</span>
+          <span class="font-bold text-slate-800">Veterans</span>
+        </div>
+      </div>
+
+      <!-- Boards 5, 6 & 7 -->
+      <div class="p-8 md:p-9 flex flex-col justify-between hover:bg-slate-50/50 transition-colors">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="font-mono text-xs font-bold text-emerald-700 tracking-wider uppercase">Boards 5, 6 & 7</span>
+            <span
+              class="px-2.5 py-1 rounded text-xs font-mono font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800">
+              Homegrown
+            </span>
+          </div>
+          <h3 class="font-black text-slate-900 text-xl md:text-2xl mb-3 tracking-tight">Local Masters</h3>
+        </div>
+        <div
+          class="mt-8 pt-5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-mono">
+          <span>Boards 5-7</span>
+          <span class="font-bold text-slate-800">LGU Grassroots</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Two-Phase Scoring Linear Ledger Strip (Spacious) -->
+    <div
+      class="border-x border-b border-slate-200 grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-200 bg-slate-50/40 shadow-2xs">
+
+      <!-- Scoring Intro -->
+      <div class="lg:col-span-4 p-8 md:p-10 flex flex-col justify-center bg-white">
+        <span class="font-mono text-xs font-bold uppercase text-blue-600 tracking-wider mb-2">Scoring System</span>
+        <h4 class="font-black text-slate-900 text-xl md:text-2xl mb-2 tracking-tight">Two-Phase Match</h4>
+        <p class="text-sm md:text-base text-slate-600 leading-relaxed">
+          1-Blitz, 1-Rapid
+        </p>
+      </div>
+
+      <!-- Round 1: Blitz -->
+      <div
+        class="lg:col-span-3 p-8 md:p-10 text-center flex flex-col justify-center bg-white/70 hover:bg-white transition-colors">
+        <span class="text-xs text-slate-400 font-mono uppercase tracking-wider font-bold block mb-1">Round 1</span>
+        <span class="text-xl md:text-2xl font-black text-slate-900">Blitz (7 Boards)</span>
+        <span class="text-sm text-blue-600 font-semibold mt-2">1 pt per win • 7 pts max</span>
+      </div>
+
+      <!-- Round 2: Rapid -->
+      <div
+        class="lg:col-span-3 p-8 md:p-10 text-center flex flex-col justify-center bg-white/70 hover:bg-white transition-colors">
+        <span class="text-xs text-slate-400 font-mono uppercase tracking-wider font-bold block mb-1">Round 2</span>
+        <span class="text-xl md:text-2xl font-black text-slate-900">Rapid (7 Boards)</span>
+        <span class="text-sm text-blue-600 font-semibold mt-2">2 pts per win • 14 pts max</span>
+      </div>
+
+      <!-- Fixture Total -->
+      <div class="lg:col-span-2 p-8 md:p-10 bg-slate-950 text-white text-center flex flex-col justify-center">
+        <span class="text-xs text-slate-400 font-mono uppercase tracking-wider font-semibold block mb-1">Total
+          Target</span>
+        <span class="text-3xl md:text-4xl font-black text-white">21 Pts</span>
+        <span class="text-xs text-amber-400 font-bold mt-2">11 to Clinch</span>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="relative">
+    <div class="relative max-w-3xl mb-8 md:mb-10">
+      <span class="font-mono text-xs md:text-sm font-bold tracking-widest uppercase text-blue-600 block mb-2">
+        Nationwide Footprint
+      </span>
+      <h2 class="text-3xl md:text-5xl font-black tracking-tight text-slate-900 mb-3">
+        League Divisions
+      </h2>
+    </div>
+
+    <!-- DIVISION ALPHA (Bluish Theme) -->
+    <div class="border border-blue-200/90 bg-white shadow-2xs mb-10 md:mb-14">
+      <!-- Division Header Bar -->
+      <div
+        class="p-6 md:p-8 border-b border-blue-200/90 bg-blue-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-blue-600 shadow-xs inline-block shrink-0"></span>
+            <h3 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Division Alpha</h3>
+          </div>
+        </div>
+        <span
+          class="px-3.5 py-1.5 rounded-full border border-blue-200 bg-white font-mono text-xs font-bold text-blue-700 shrink-0 self-start sm:self-auto shadow-2xs">
+          {{ alphaTeams().length }} Teams
+        </span>
+      </div>
+
+      <!-- Dynamic Grid -->
+      @if (alphaTeams().length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y md:divide-y-0 border-b border-blue-200/80">
+        @for (team of alphaTeams(); track team.id) {
+        <div
+          class="group relative p-6 md:p-7 border-r border-b border-blue-200/80 hover:bg-blue-50/20 transition-all overflow-hidden flex items-center justify-between gap-4 bg-white">
+
+          <!-- Themed Ambient Color Backdrop -->
+          <div
+            class="absolute inset-0 bg-gradient-to-br {{ getTeamBackdropClass(team.id) }} pointer-events-none transition-opacity"
+            aria-hidden="true"></div>
+
+          <!-- Left: Team Details -->
+          <div class="min-w-0 flex-1 relative z-10">
+            <h4 class="text-base sm:text-lg md:text-xl font-black text-slate-900 tracking-tight mb-1 leading-snug">
+              {{ team.name }}
+            </h4>
+            @if (team.roster.length > 0) {
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 font-mono">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              {{ team.roster.length }} Players Confirmed
+            </span>
+            } @else {
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 font-mono">
+              Roster TBA
+            </span>
+            }
+          </div>
+
+          @if (getTeamLogo(team.id); as logoUrl) {
+          <!-- Right: Team Logo (Solid Badge on top of Subtle Watermark) -->
+          <div class="shrink-0 relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 select-none">
+            <!-- Subtle Watermark in background -->
+            <img [src]="logoUrl" alt="" aria-hidden="true"
+              class="absolute -right-2 -top-2 w-24 h-24 sm:w-28 sm:h-28 max-w-none object-contain opacity-20 scale-100 group-hover:scale-115 group-hover:opacity-35 transition-all duration-300 pointer-events-none"
+              loading="lazy" />
+
+            <!-- Solid Logo Badge -->
+            <div
+              class="relative z-10 w-11 h-11 sm:w-13 sm:h-13 rounded-xl overflow-hidden flex items-center justify-center p-1 bg-white/95 shadow-xs border border-blue-200/80 group-hover:shadow-md group-hover:border-blue-300 transition-all duration-300">
+              <img [src]="logoUrl" [alt]="team.name + ' logo'" class="w-full h-full object-contain" loading="lazy" />
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="p-12 text-center text-blue-700/60 bg-blue-50/20 text-sm font-medium">
+        No Division Alpha franchises registered yet. Configure teams in PCAP League Management.
+      </div>
+      }
+    </div>
+
+    <!-- DIVISION OMEGA (Reddish Theme) -->
+    <div class="border border-rose-200/90 bg-white shadow-2xs">
+      <!-- Division Header Bar -->
+      <div
+        class="p-6 md:p-8 border-b border-rose-200/90 bg-rose-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-rose-600 shadow-xs inline-block shrink-0"></span>
+            <h3 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Division Omega</h3>
+          </div>
+        </div>
+        <span
+          class="px-3.5 py-1.5 rounded-full border border-rose-200 bg-white font-mono text-xs font-bold text-rose-700 shrink-0 self-start sm:self-auto shadow-2xs">
+          {{ omegaTeams().length }} Teams
+        </span>
+      </div>
+
+      <!-- Dynamic Grid -->
+      @if (omegaTeams().length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y md:divide-y-0 border-b border-rose-200/80">
+        @for (team of omegaTeams(); track team.id) {
+        <div
+          class="group relative p-6 md:p-7 border-r border-b border-rose-200/80 hover:bg-rose-50/20 transition-all overflow-hidden flex items-center justify-between gap-4 bg-white">
+
+          <!-- Themed Ambient Color Backdrop -->
+          <div
+            class="absolute inset-0 bg-gradient-to-br {{ getTeamBackdropClass(team.id) }} pointer-events-none transition-opacity"
+            aria-hidden="true"></div>
+
+          <!-- Left: Team Details -->
+          <div class="min-w-0 flex-1 relative z-10">
+            <h4 class="text-base sm:text-lg md:text-xl font-black text-slate-900 tracking-tight mb-1 leading-snug">
+              {{ team.name }}
+            </h4>
+            @if (team.roster.length > 0) {
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 font-mono">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              {{ team.roster.length }} Players Confirmed
+            </span>
+            } @else {
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 font-mono">
+              Roster TBA
+            </span>
+            }
+          </div>
+
+          @if (getTeamLogo(team.id); as logoUrl) {
+          <!-- Right: Team Logo (Solid Badge on top of Subtle Watermark) -->
+          <div class="shrink-0 relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 select-none">
+            <!-- Subtle Watermark in background -->
+            <img [src]="logoUrl" alt="" aria-hidden="true"
+              class="absolute -right-2 -top-2 w-24 h-24 sm:w-28 sm:h-28 max-w-none object-contain opacity-20 scale-100 group-hover:scale-115 group-hover:opacity-35 transition-all duration-300 pointer-events-none"
+              loading="lazy" />
+
+            <!-- Solid Logo Badge -->
+            <div
+              class="relative z-10 w-11 h-11 sm:w-13 sm:h-13 rounded-xl overflow-hidden flex items-center justify-center p-1 bg-white/95 shadow-xs border border-rose-200/80 group-hover:shadow-md group-hover:border-rose-300 transition-all duration-300">
+              <img [src]="logoUrl" [alt]="team.name + ' logo'" class="w-full h-full object-contain" loading="lazy" />
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="p-12 text-center text-rose-700/60 bg-rose-50/20 text-sm font-medium">
+        No Division Omega franchises registered yet. Configure teams in PCAP League Management.
+      </div>
+      }
+    </div>
+  </section>
+</div>

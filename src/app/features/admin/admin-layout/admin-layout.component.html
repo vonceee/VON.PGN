@@ -132,6 +132,23 @@
           <span class="truncate">Enrollments</span>
           }
         </a>
+
+        <!-- 7. PCAP League -->
+        <a routerLink="/admin/pcap" routerLinkActive="bg-[#e8f0fe] text-[#0b57d0] font-medium"
+          (click)="closeMobileSidebar()" [class.justify-center]="isCollapsed()"
+          class="flex items-center gap-3 px-3.5 py-2 rounded-full text-sm text-slate-700 hover:bg-[#f0f4f9] transition-colors group cursor-pointer"
+          [title]="'PCAP League Management'">
+          <!-- Shield Pro Icon -->
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l7 4v6c0 5.25-3.5 10-7 11-3.5-1-7-5.75-7-11V6l7-4z" />
+            <path d="M12 8v8" />
+            <path d="M8 12h8" />
+          </svg>
+          @if (!isCollapsed()) {
+          <span class="truncate">PCAP League</span>
+          }
+        </a>
       </nav>
     </div>
 

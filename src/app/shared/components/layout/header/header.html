@@ -95,6 +95,14 @@
       </div>
     </div>
 
+    <!-- PCAP League Direct Link -->
+    <a routerLink="/pcap" routerLinkActive #pcapActive="routerLinkActive" [routerLinkActiveOptions]="{ exact: false }"
+      [class.bg-slate-200]="pcapActive.isActive"
+      class="relative flex items-center gap-1.5 cursor-pointer text-sm/6 lg:text-base font-medium px-3 py-1.5 rounded-full hover:bg-slate-200 transition-colors">
+      <span>PCAP League</span>
+      <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-blue-600 text-white font-bold uppercase leading-none">Pro</span>
+    </a>
+
     <!-- More Dropdown -->
     <div class="group relative" routerLinkActive #moreActive="routerLinkActive"
       [routerLinkActiveOptions]="{ exact: true }">

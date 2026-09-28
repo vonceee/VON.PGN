@@ -207,6 +207,7 @@ export class MobileMenuComponent {
       title: 'Events',
       links: [
         { path: '/events', label: 'Tournaments' },
+        { path: '/pcap', label: 'PCAP League' },
       ],
     },
     {

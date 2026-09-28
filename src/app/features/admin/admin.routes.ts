@@ -109,6 +109,14 @@ export const ADMIN_ROUTES: Routes = [
           ),
         title: 'Edit World Championship Story - Admin',
       },
+      {
+        path: 'pcap',
+        loadComponent: () =>
+          import('./pcap-management/pcap-management.component').then(
+            (m) => m.PcapManagementComponent
+          ),
+        title: 'PCAP League Management - Admin',
+      },
     ],
   },
 ];

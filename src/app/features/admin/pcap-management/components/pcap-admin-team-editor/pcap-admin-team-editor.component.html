@@ -1,0 +1,163 @@
+<div class="space-y-6 animate-in fade-in duration-150">
+  <!-- Header with Back navigation & Save button -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+    <div class="flex items-center gap-3">
+      <button type="button" (click)="cancel.emit()"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold cursor-pointer shadow-xs transition-colors">
+        <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        </svg>
+        Back to PCAP Management
+      </button>
+      <div class="h-4 w-px bg-slate-200"></div>
+      <div>
+        <h2 class="text-xl font-bold text-slate-900">
+          {{ isEditing() ? 'Edit Team & Roster' : 'Add New Team' }}
+        </h2>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button type="button" (click)="cancel.emit()"
+        class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 hover:bg-slate-50 text-slate-700 cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" (click)="save.emit()"
+        class="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-xs cursor-pointer">
+        Save Team
+      </button>
+    </div>
+  </div>
+
+  <!-- Information Card -->
+  <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="md:col-span-2 space-y-1">
+        <label class="text-xs font-semibold text-slate-700">Team Name</label>
+        <input type="text" [(ngModel)]="team().name" placeholder="e.g. Pasig City King Pirates"
+          class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white" />
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-700">Conference</label>
+        <select [(ngModel)]="team().conference"
+          class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-600 bg-white">
+          <option value="alpha">Division Alpha</option>
+          <option value="omega">Division Omega</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Roster & Reserves Card -->
+  <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <div>
+        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wider">
+          Team Roster
+        </h3>
+      </div>
+      <button type="button" (click)="addPlayer()"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold cursor-pointer border border-blue-200 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        <span>Add Player</span>
+      </button>
+    </div>
+
+    <div class="border border-slate-200 rounded-xl overflow-hidden">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-[11px] font-semibold">
+          <tr>
+            <th class="px-3 py-2 w-10 text-center">#</th>
+            <th class="px-3 py-2">Player Name</th>
+            <th class="px-2 py-2 w-32">Title</th>
+            <th class="px-2 py-2 w-44">Category / Eligibility</th>
+            <th class="px-2 py-2 w-28">FIDE Rating</th>
+            <th class="px-3 py-2 w-48">Federation</th>
+            <th class="px-2 py-2 w-10 text-center"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (player of team().roster; track $index; let i = $index) {
+          <tr class="hover:bg-slate-50/50">
+            <td class="px-3 py-1.5 text-center font-mono font-bold text-slate-400 text-xs">
+              {{ i + 1 }}
+            </td>
+            <td class="px-3 py-1.5">
+              <input type="text" [(ngModel)]="player.name" placeholder="Player full name"
+                class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white" />
+            </td>
+            <td class="px-2 py-1.5">
+              <select [(ngModel)]="player.title"
+                class="w-full px-2 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white cursor-pointer">
+                <option value="">None (No Title)</option>
+                @for (group of chessMasterTitleGroups; track group.group) {
+                <optgroup [label]="group.group">
+                  @for (item of group.titles; track item.value) {
+                  <option [value]="item.value">{{ item.label }}</option>
+                  }
+                </optgroup>
+                }
+              </select>
+            </td>
+            <td class="px-2 py-1.5">
+              <select [(ngModel)]="player.category"
+                class="w-full px-2 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white cursor-pointer">
+                @for (cat of pcapCategories; track cat.code) {
+                <option [value]="cat.code">{{ cat.code }} - {{ cat.label }} ({{ cat.boards }})</option>
+                }
+              </select>
+            </td>
+            <td class="px-2 py-1.5">
+              <input type="number" [(ngModel)]="player.rating" placeholder="Unrated"
+                class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 font-mono text-center focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white" />
+            </td>
+            <td class="px-3 py-1.5">
+              <select [(ngModel)]="player.federation"
+                class="w-full px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-600 bg-white cursor-pointer">
+                @for (fed of chessFederations; track fed.code) {
+                <option [value]="fed.code">{{ fed.flag }} {{ fed.code }} - {{ fed.name }}</option>
+                }
+              </select>
+            </td>
+            <td class="px-2 py-1.5 text-center">
+              <button type="button" (click)="removePlayer(i)"
+                class="p-1 rounded text-slate-400 hover:text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
+                title="Remove Player">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="7" class="px-6 py-8 text-center text-slate-400">
+              <div class="flex flex-col items-center justify-center gap-1.5 text-xs">
+                <span class="font-bold text-slate-700">Roster: To Be Announced</span>
+                <span class="text-slate-400 font-sans text-xs">No players listed yet. Click "+ Add Player" above to
+                  register members for this franchise.</span>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bottom Actions -->
+  <div class="flex items-center justify-end gap-2 border-t border-slate-200 pt-4">
+    <button type="button" (click)="cancel.emit()"
+      class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 hover:bg-slate-50 text-slate-700 cursor-pointer">
+      Cancel
+    </button>
+    <button type="button" (click)="save.emit()"
+      class="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-xs cursor-pointer">
+      Save Team
+    </button>
+  </div>
+</div>

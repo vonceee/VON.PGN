@@ -10,6 +10,7 @@ export const SITEMAP_ROUTES: SitemapRoute[] = [
   { path: 'coaches', priority: 0.8, changefreq: 'weekly' },
   { path: 'coaches/apply', priority: 0.5, changefreq: 'monthly' },
   { path: 'events', priority: 0.9, changefreq: 'daily' },
+  { path: 'pcap', priority: 0.9, changefreq: 'daily' },
   { path: 'academy', priority: 0.8, changefreq: 'weekly' },
   { path: 'roadmap', priority: 0.7, changefreq: 'weekly' },
   { path: 'documentation', priority: 0.6, changefreq: 'weekly' },

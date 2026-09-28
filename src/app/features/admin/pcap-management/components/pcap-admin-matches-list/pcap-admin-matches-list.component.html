@@ -1,0 +1,112 @@
+<div class="space-y-3">
+  @for (match of matches(); track match.id) {
+  <div
+    class="bg-white rounded-2xl border border-slate-200 shadow-xs p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-slate-300 transition-all">
+    <!-- Fixture Header & Match Details -->
+    <div class="flex-1 space-y-3">
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <span
+          class="px-2.5 py-0.5 rounded-md font-bold uppercase tracking-wider font-mono text-[10px] bg-slate-100 text-slate-700">
+          Round {{ match.round }}
+        </span>
+        <span class="text-slate-400">•</span>
+        <span class="text-slate-600 font-medium">{{ match.season }}</span>
+        <span class="text-slate-400">•</span>
+        <span class="text-slate-500">{{ match.date }} {{ match.time }}</span>
+
+        <!-- Status Badge -->
+        <span class="ml-auto md:ml-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+          [ngClass]="{
+            'bg-blue-50 text-blue-700': match.status === 'upcoming',
+            'bg-slate-100 text-slate-700': match.status === 'completed'
+          }">
+          {{ match.status }}
+        </span>
+      </div>
+
+      <!-- Teams & Live Scores Grid -->
+      <div class="flex items-center justify-between gap-4 max-w-xl">
+        <!-- Team A -->
+        <div class="flex items-center gap-3 flex-1 min-w-0">
+          <div
+            class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0 shadow-2xs">
+            <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="M9 12l2 2 4-4" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <div class="font-bold text-slate-900 truncate text-sm">{{ match.teamA.name }}</div>
+          </div>
+        </div>
+
+        <!-- Score Indicator -->
+        <div class="text-center px-4 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 shrink-0">
+          <div class="text-lg md:text-xl font-bold font-mono text-slate-900 tracking-tight">
+            {{ match.scoreA }} <span class="text-slate-400 font-light mx-0.5">-</span> {{ match.scoreB }}
+          </div>
+          <div class="text-[10px] text-slate-400 font-mono">
+            Blitz {{ match.blitzScoreA }}-{{ match.blitzScoreB }} • Rapid {{ match.rapidScoreA }}-{{ match.rapidScoreB }}
+          </div>
+        </div>
+
+        <!-- Team B -->
+        <div class="flex items-center justify-end gap-3 flex-1 min-w-0 text-right">
+          <div class="min-w-0">
+            <div class="font-bold text-slate-900 truncate text-sm">{{ match.teamB.name }}</div>
+          </div>
+          <div
+            class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0 shadow-2xs">
+            <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="M9 12l2 2 4-4" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div
+      class="flex items-center justify-end gap-2 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-3 md:pt-0 md:pl-5">
+      <!-- Quick Status Toggles -->
+      <div class="flex items-center gap-1">
+        @if (match.status !== 'completed') {
+        <button type="button" (click)="statusChange.emit({ match, status: 'completed' })"
+          class="px-2 py-1 rounded-lg text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
+          title="Mark as Completed">
+          Set Completed
+        </button>
+        } @else {
+        <button type="button" (click)="statusChange.emit({ match, status: 'upcoming' })"
+          class="px-2 py-1 rounded-lg text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer"
+          title="Mark as Upcoming">
+          Set Upcoming
+        </button>
+        }
+      </div>
+
+      <!-- Edit Scoresheet Button -->
+      <button type="button" (click)="editMatch.emit(match)"
+        class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer">
+        Edit Scoresheet
+      </button>
+
+      <!-- Delete Button -->
+      <button type="button" (click)="deleteMatch.emit(match)"
+        class="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer" title="Delete Match">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  } @empty {
+  <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500">
+    No matches found matching your filters. Click "+ Schedule Fixture" to add one.
+  </div>
+  }
+</div>

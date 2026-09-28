@@ -219,6 +219,30 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'pcap',
+        loadComponent: () =>
+          import('./features/pcap/pcap.component').then((m) => m.PcapComponent),
+        title: 'Vonchess.net • PCAP League',
+        data: {
+          description:
+            'Follow the Professional Chess Association of the Philippines (PCAP) teams, live matches, rosters, and conference standings.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
+        path: 'pcap/game/:matchId/:boardNumber/:type',
+        loadComponent: () =>
+          import('./features/pcap/pcap-game-viewer/pcap-game-viewer.component').then(
+            (m) => m.PcapGameViewerComponent
+          ),
+        title: 'Vonchess.net • PCAP Game Viewer',
+        data: {
+          description:
+            'Interactive PGN viewer for PCAP League Blitz and Rapid games.',
+        },
+        resolve: { seo: seoResolver },
+      },
+      {
         path: 'world-championships',
         loadComponent: () =>
           import('./features/world-championships/world-championships.component').then(

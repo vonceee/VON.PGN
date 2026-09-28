@@ -1,0 +1,132 @@
+<div #pageContainer appFloatingCursorContainer
+  class="w-full 2xl:max-w-7xl mx-auto flex justify-center min-h-screen relative selection:bg-blue-600 selection:text-white overflow-x-hidden">
+
+  <!-- Ambient Hero Lighting Halo -->
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div class="tailwind-hero-glow"></div>
+  </div>
+
+  <div
+    class="w-full grid grid-cols-1 md:grid-cols-[2rem_minmax(0,1fr)_2rem] lg:grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] xl:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] relative">
+
+    <!-- COLUMN 1: LEFT STRUCTURAL GUTTER RAIL (Architectural Diagonal Lines) -->
+    <aside
+      class="hidden md:block md:col-start-1 md:col-end-2 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
+      aria-hidden="true">
+      <svg class="w-full h-full stroke-slate-300/80" fill="none">
+        <defs>
+          <pattern id="diagonal-rail-pcap-left" width="14" height="14" patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke-width="1.15" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#diagonal-rail-pcap-left)" />
+      </svg>
+    </aside>
+
+    <!-- COLUMN 2: CENTRAL CONTENT TRACK (Symmetrical, Border-Bound) -->
+    <main
+      class="relative z-10 w-full min-w-0 col-start-1 md:col-start-2 md:col-end-3 px-4 sm:px-6 md:px-8 lg:px-12 flex flex-col py-8">
+
+      <!-- TOP SYSTEM BOUNDARY (Slices across both gutters) -->
+      <div class="structural-divider mb-8" aria-hidden="true">
+        <div class="structural-divider-line"></div>
+      </div>
+
+      <!-- Navigation Tabs (Underlined Style) -->
+      <div class="border-b border-slate-200 mb-8">
+        <nav class="-mb-px flex gap-6 sm:gap-8 overflow-x-auto" aria-label="PCAP Sections">
+          <button (click)="setTab('overview')" [class.border-blue-600]="activeTab() === 'overview'"
+            [class.text-blue-600]="activeTab() === 'overview'" [class.border-transparent]="activeTab() !== 'overview'"
+            [class.text-slate-500]="activeTab() !== 'overview'"
+            class="px-3 pb-3.5 text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-1.5 hover:text-slate-900 hover:border-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+              <path fill-rule="evenodd"
+                d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                clip-rule="evenodd" />
+            </svg>
+            Overview
+          </button>
+
+          <button (click)="setTab('teams')" [class.border-blue-600]="activeTab() === 'teams'"
+            [class.text-blue-600]="activeTab() === 'teams'" [class.border-transparent]="activeTab() !== 'teams'"
+            [class.text-slate-500]="activeTab() !== 'teams'"
+            class="px-3 pb-3.5 text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-1.5 hover:text-slate-900 hover:border-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+              <path fill-rule="evenodd"
+                d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
+                clip-rule="evenodd" />
+              <path
+                d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
+            </svg>
+            Teams
+            <span class="px-2 py-0.5 text-xs rounded-full font-bold ml-1 transition-colors"
+              [class.bg-blue-50]="activeTab() === 'teams'" [class.text-blue-700]="activeTab() === 'teams'"
+              [class.border]="activeTab() === 'teams'" [class.border-blue-200]="activeTab() === 'teams'"
+              [class.bg-slate-100]="activeTab() !== 'teams'" [class.text-slate-600]="activeTab() !== 'teams'">
+              {{ leagueStats().totalTeams }}
+            </span>
+          </button>
+
+          <button (click)="setTab('matches')" [class.border-blue-600]="activeTab() === 'matches'"
+            [class.text-blue-600]="activeTab() === 'matches'" [class.border-transparent]="activeTab() !== 'matches'"
+            [class.text-slate-500]="activeTab() !== 'matches'"
+            class="px-3 pb-3.5 text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-1.5 hover:text-slate-900 hover:border-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+              <path fill-rule="evenodd"
+                d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z"
+                clip-rule="evenodd" />
+            </svg>
+            Matches
+          </button>
+
+          <button (click)="setTab('standings')" [class.border-blue-600]="activeTab() === 'standings'"
+            [class.text-blue-600]="activeTab() === 'standings'" [class.border-transparent]="activeTab() !== 'standings'"
+            [class.text-slate-500]="activeTab() !== 'standings'"
+            class="px-3 pb-3.5 text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-1.5 hover:text-slate-900 hover:border-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+              <path fill-rule="evenodd"
+                d="M5.166 2.621v.858c-1.035.148-2.059.33-3.071.543a.75.75 0 0 0-.584.859 6.753 6.753 0 0 0 6.138 5.6 6.73 6.73 0 0 0 2.743 1.346A6.707 6.707 0 0 1 9.279 15H8.54c-1.036 0-1.875.84-1.875 1.875V19.5h-.75a2.25 2.25 0 0 0-2.25 2.25c0 .414.336.75.75.75h15a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-2.25-2.25h-.75v-2.625c0-1.036-.84-1.875-1.875-1.875h-.739a6.706 6.706 0 0 1-1.112-3.173 6.73 6.73 0 0 0 2.743-1.347 6.753 6.753 0 0 0 6.139-5.6.75.75 0 0 0-.585-.858 47.077 47.077 0 0 0-3.07-.543V2.62a.75.75 0 0 0-.658-.744 49.22 49.22 0 0 0-6.093-.377c-2.063 0-4.096.128-6.093.377a.75.75 0 0 0-.657.744Zm0 2.629c0 1.196.312 2.32.857 3.294A5.266 5.266 0 0 1 3.16 5.337a45.6 45.6 0 0 1 2.006-.343v.256Zm13.5 0v-.256c.674.1 1.343.214 2.006.343a5.265 5.265 0 0 1-2.863 3.207 6.72 6.72 0 0 0 .857-3.294Z"
+                clip-rule="evenodd" />
+            </svg>
+            Standings
+          </button>
+        </nav>
+      </div>
+
+      <!-- Tab Content Sections (Modularized) -->
+      @switch (activeTab()) {
+      @case ('overview') {
+      <app-pcap-overview />
+      }
+      @case ('teams') {
+      <app-pcap-teams [(expandedTeamId)]="expandedTeamId" />
+      }
+      @case ('matches') {
+      <app-pcap-matches />
+      }
+      @case ('standings') {
+      <app-pcap-standings />
+      }
+      }
+    </main>
+
+    <!-- COLUMN 3: RIGHT STRUCTURAL GUTTER RAIL (Architectural Diagonal Lines) -->
+    <aside
+      class="hidden md:block md:col-start-3 md:col-end-4 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
+      aria-hidden="true">
+      <svg class="w-full h-full stroke-slate-300/80" fill="none">
+        <defs>
+          <pattern id="diagonal-rail-pcap-right" width="14" height="14" patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke-width="1.15" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#diagonal-rail-pcap-right)" />
+      </svg>
+    </aside>
+
+  </div>
+
+  <app-floating-cursor></app-floating-cursor>
+</div>

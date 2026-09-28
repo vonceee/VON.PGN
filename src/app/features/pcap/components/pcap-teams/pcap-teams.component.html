@@ -1,0 +1,274 @@
+<div class="space-y-6">
+
+  <!-- Section Header with Aligned Search Input -->
+  <div class="relative mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <span
+        class="font-mono text-sm font-semibold tracking-widest uppercase max-2xl:mb-4 max-2xl:px-2 max-sm:px-4 sm:text-xs 2xl:absolute 2xl:-translate-full 2xl:-rotate-90 2xl:text-right text-blue-600 block">
+        Franchises
+      </span>
+      <h2
+        class="max-w-lg px-2 text-[2.5rem]/10 font-medium tracking-tighter text-balance max-sm:px-4 2xl:mt-0 text-slate-900">
+        Teams & Rosters
+      </h2>
+    </div>
+
+    <!-- Search Box with Floating Label (Aligned to Header) -->
+    <div class="w-full sm:w-72 md:w-80 px-2 sm:px-0">
+      <app-text-input label="Search Teams" placeholder="search team" [value]="searchQueryInput()"
+        (valueChange)="onSearchChange($event)" [hasPrefix]="true" [hasSuffix]="searchQueryInput().length > 0">
+        <ng-icon prefix name="heroMagnifyingGlass" class="w-4 h-4 text-slate-400"></ng-icon>
+        @if (searchQueryInput()) {
+        <button suffix type="button" (click)="clearSearch()" class="text-slate-400 hover:text-slate-900 cursor-pointer">
+          <ng-icon name="heroXMark" class="w-4 h-4"></ng-icon>
+        </button>
+        }
+      </app-text-input>
+    </div>
+  </div>
+
+  <!-- Architectural Bleeding Filter Toolbar (Underline Tabs) -->
+  <div class="border-b border-slate-200">
+    <!-- Conference Underline Tabs -->
+    <nav class="-mb-px flex items-center gap-6 overflow-x-auto" aria-label="Conference filter">
+      <button (click)="setConference('all')" [class.border-blue-600]="currentConference() === 'all'"
+        [class.text-blue-600]="currentConference() === 'all'" [class.border-transparent]="currentConference() !== 'all'"
+        [class.text-slate-500]="currentConference() !== 'all'"
+        class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+        <span>All</span>
+        <span class="px-2 py-0.5 text-xs rounded-full font-bold font-mono transition-colors"
+          [class.bg-blue-50]="currentConference() === 'all'" [class.text-blue-700]="currentConference() === 'all'"
+          [class.bg-slate-100]="currentConference() !== 'all'" [class.text-slate-600]="currentConference() !== 'all'">
+          {{ leagueStats().totalTeams }}
+        </span>
+      </button>
+      <button (click)="setConference('alpha')" [class.border-blue-600]="currentConference() === 'alpha'"
+        [class.text-blue-600]="currentConference() === 'alpha'"
+        [class.border-transparent]="currentConference() !== 'alpha'"
+        [class.text-slate-500]="currentConference() !== 'alpha'"
+        class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+        <span>Division Alpha</span>
+        <span class="px-2 py-0.5 text-xs rounded-full font-bold font-mono transition-colors"
+          [class.bg-blue-50]="currentConference() === 'alpha'" [class.text-blue-700]="currentConference() === 'alpha'"
+          [class.bg-slate-100]="currentConference() !== 'alpha'"
+          [class.text-slate-600]="currentConference() !== 'alpha'">
+          {{ leagueStats().alphaCount }}
+        </span>
+      </button>
+      <button (click)="setConference('omega')" [class.border-blue-600]="currentConference() === 'omega'"
+        [class.text-blue-600]="currentConference() === 'omega'"
+        [class.border-transparent]="currentConference() !== 'omega'"
+        [class.text-slate-500]="currentConference() !== 'omega'"
+        class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+        <span>Division Omega</span>
+        <span class="px-2 py-0.5 text-xs rounded-full font-bold font-mono transition-colors"
+          [class.bg-blue-50]="currentConference() === 'omega'" [class.text-blue-700]="currentConference() === 'omega'"
+          [class.bg-slate-100]="currentConference() !== 'omega'"
+          [class.text-slate-600]="currentConference() !== 'omega'">
+          {{ leagueStats().omegaCount }}
+        </span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Dedicated Board Category Legend Sub-Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-50/80 rounded-xl border border-slate-200/80 text-xs shadow-2xs">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="font-bold text-slate-400 uppercase tracking-wider text-[10px] flex items-center gap-1.5 mr-1">
+        <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Board Legend:
+      </span>
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-amber-50 text-amber-800 border-amber-200/70 font-mono text-[11px]" title="Open Board (B1-B2)">
+        <b class="font-black">O</b> Open B1/B2
+      </span>
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-rose-50 text-rose-800 border-rose-200/70 font-mono text-[11px]" title="Lady Board (B3)">
+        <b class="font-black">L</b> Lady B3
+      </span>
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-purple-50 text-purple-800 border-purple-200/70 font-mono text-[11px]" title="Senior Board (B4)">
+        <b class="font-black">S</b> Senior B4
+      </span>
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-emerald-50 text-emerald-800 border-emerald-200/70 font-mono text-[11px]" title="Homegrown Board (B5-B7)">
+        <b class="font-black">HG</b> Homegrown B5-B7
+      </span>
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-teal-50 text-teal-800 border-teal-200/70 font-mono text-[11px]" title="Homegrown / Senior Eligibility (B4-B7)">
+        <b class="font-black">HG/S</b> Homegrown / Senior
+      </span>
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-pink-50 text-pink-800 border-pink-200/70 font-mono text-[11px]" title="Homegrown / Lady Eligibility (B3, B5-B7)">
+        <b class="font-black">HG/L</b> Homegrown / Lady
+      </span>
+    </div>
+    <span class="text-[11px] text-slate-400 font-mono hidden md:inline select-none">
+      Select team to inspect official roster
+    </span>
+  </div>
+
+  @if (pcapService.isLoading() && teams().length === 0) {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border border-slate-200 bg-white shadow-2xs">
+    @for (s of [1, 2, 3, 4, 5, 6]; track s) {
+    <div class="p-8 border-r border-b border-slate-200 animate-pulse space-y-5">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-xl bg-slate-100 shrink-0"></div>
+        <div class="space-y-2 flex-1">
+          <div class="h-4 bg-slate-100 rounded w-3/4"></div>
+          <div class="h-3 bg-slate-50 rounded w-1/2"></div>
+        </div>
+      </div>
+      <div class="h-12 bg-slate-50 rounded-lg"></div>
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-slate-200">
+    @for (team of teams(); track team.id) {
+    <div
+      class="group relative border-r border-b border-slate-200 flex flex-col justify-between hover:bg-slate-50/40 transition-colors overflow-hidden bg-white h-full">
+      
+      <!-- Whole Card Themed Ambient Backdrop Matching Logo Colors -->
+      <div
+        class="absolute inset-0 bg-gradient-to-br {{ getTeamBackdropClass(team.id) }} pointer-events-none transition-opacity duration-300"
+        aria-hidden="true"></div>
+
+      <div class="relative z-10 flex-1 flex flex-col">
+        <!-- Cell Header Banner with Solid Logo on Top of Subtle Watermark -->
+        <div class="p-6 sm:p-7 md:p-8 relative min-h-[8rem] flex items-center justify-between gap-4 overflow-hidden">
+          <div class="min-w-0 flex-1">
+            <h3 class="font-black text-slate-900 text-lg md:text-xl leading-snug tracking-tight">{{ team.name }}</h3>
+          </div>
+
+          @if (getTeamLogo(team.id); as logoUrl) {
+          <!-- Logo Cluster: Solid Logo Layered On Top of Subtle Watermark -->
+          <div class="shrink-0 relative flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 select-none">
+            <!-- Subtle Watermark Logo (Expanded in the background) -->
+            <img
+              [src]="logoUrl"
+              alt=""
+              aria-hidden="true"
+              class="absolute -right-3 -top-3 w-28 h-28 sm:w-32 sm:h-32 max-w-none object-contain opacity-20 scale-100 group-hover:scale-115 group-hover:opacity-35 transition-all duration-500 pointer-events-none"
+              loading="lazy"
+            />
+
+            <!-- Solid Logo Badge (Sharp on top) -->
+            <div
+              class="relative z-10 w-13 h-13 sm:w-15 sm:h-15 rounded-xl overflow-hidden flex items-center justify-center p-1 bg-white/90 backdrop-blur-xs shadow-xs border border-slate-200/80 group-hover:shadow-md group-hover:border-slate-300 transition-all duration-300">
+              <img
+                [src]="logoUrl"
+                [alt]="team.name + ' logo'"
+                class="w-full h-full object-contain"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          } @else {
+          <!-- Monogram Crest Fallback: Solid Badge Layered On Top of Subtle Watermark Initials -->
+          <div class="shrink-0 relative flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 select-none">
+            <!-- Subtle Watermark Monogram (Expanded in background) -->
+            <span
+              aria-hidden="true"
+              class="absolute -right-2 -top-4 font-black text-6xl sm:text-7xl text-slate-900/[0.05] group-hover:text-slate-900/[0.1] group-hover:scale-110 transition-all duration-500 pointer-events-none select-none font-mono">
+              {{ getTeamMonogram(team.id, team.name) }}
+            </span>
+
+            <!-- Solid Crest Badge (Matching logo badge dimensions exactly) -->
+            <div
+              class="relative z-10 w-13 h-13 sm:w-15 sm:h-15 rounded-xl overflow-hidden flex flex-col items-center justify-center p-1 bg-white/90 backdrop-blur-xs shadow-xs border border-slate-200/80 group-hover:shadow-md group-hover:border-slate-300 transition-all duration-300">
+              <span class="text-xs sm:text-sm font-black tracking-wider text-slate-800 font-mono">
+                {{ getTeamMonogram(team.id, team.name) }}
+              </span>
+              <span class="text-[8px] sm:text-[9px] uppercase font-bold text-slate-400 tracking-widest -mt-0.5">PCAP</span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="relative z-10 mt-auto">
+        <!-- Internal Hairline Stats Strip (Spacious) -->
+        <div
+          class="grid grid-cols-3 divide-x divide-slate-100 border-t border-slate-100 text-center py-3.5 bg-slate-50/40 backdrop-blur-xs">
+          <div class="px-2">
+            <span class="text-xs uppercase font-mono font-bold text-slate-400 block mb-0.5">Record</span>
+            <span class="text-sm md:text-base font-black text-slate-900">{{ team.wins }}W - {{ team.losses }}L</span>
+          </div>
+          <div class="px-2">
+            <span class="text-xs uppercase font-mono font-bold text-slate-400 block mb-0.5">Match Pts</span>
+            <span class="text-sm md:text-base font-black text-blue-600">{{ team.matchPoints }}</span>
+          </div>
+          <div class="px-2">
+            <span class="text-xs uppercase font-mono font-bold text-slate-400 block mb-0.5">Board Pts</span>
+            <span class="text-sm md:text-base font-black text-emerald-600">{{ team.boardPointsFor }}</span>
+          </div>
+        </div>
+
+        <!-- Cell Footer: Toggle Lineup -->
+        <div class="border-t border-slate-200 p-4 bg-white/70 backdrop-blur-xs">
+          @if (team.roster.length > 0) {
+          <button (click)="toggleTeamRoster(team.id)"
+            class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 text-xs font-bold uppercase tracking-wider text-slate-700 transition-colors cursor-pointer"
+            [class.border-blue-400]="isTeamExpanded(team.id)"
+            [class.bg-blue-50/60]="isTeamExpanded(team.id)"
+            [class.text-blue-700]="isTeamExpanded(team.id)">
+            <span>{{ isTeamExpanded(team.id) ? 'Hide Team Roster' : 'View Team Roster (' + team.roster.length + ')' }}</span>
+            <ng-icon [name]="isTeamExpanded(team.id) ? 'heroChevronUp' : 'heroChevronDown'"
+              class="w-3.5 h-3.5"></ng-icon>
+          </button>
+          } @else {
+          <div
+            class="py-2.5 px-4 rounded-lg border border-dashed border-slate-200 bg-slate-50/60 flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
+            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="font-semibold">Roster: To Be Announced</span>
+          </div>
+          }
+
+          <!-- Expanded Lineup Ledger -->
+          @if (isTeamExpanded(team.id)) {
+          <div class="mt-4 pt-3 border-t border-slate-200 divide-y divide-slate-100 animate-in fade-in duration-200 max-h-80 overflow-y-auto pr-1">
+            @for (player of team.roster; track player.id) {
+            <div class="flex items-center justify-between py-2.5 px-1 text-sm hover:bg-slate-50/80 transition-colors">
+              <div class="flex items-center gap-2 min-w-0">
+                @if (player.category) {
+                <span
+                  class="px-1.5 py-0.5 rounded text-[10px] font-bold font-mono border cursor-help shrink-0 {{ getCategoryBadgeClass(player.category) }}"
+                  [title]="getCategoryTooltip(player.category)">
+                  {{ player.category }}
+                </span>
+                } @else {
+                <span class="w-6 text-center font-bold text-slate-400 text-xs font-mono">#{{ $index + 1 }}</span>
+                }
+                @if (player.federation) {
+                <span class="text-sm select-none" [title]="player.federation">{{ getFederationFlag(player.federation) }}</span>
+                }
+                @if (player.title) {
+                <span class="px-1.5 py-0.5 rounded text-[10px] {{ getTitleBadgeClass(player.title) }}">
+                  {{ player.title }}
+                </span>
+                }
+                <span class="font-bold text-slate-800 truncate">{{ player.name }}</span>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                @if (player.rating) {
+                <span class="text-xs text-slate-600 font-semibold font-mono">{{ player.rating }}</span>
+                } @else {
+                <span class="text-xs font-semibold font-mono text-slate-400 bg-slate-50 border border-slate-200/80 px-1.5 py-0.5 rounded" title="Rating to be announced">(?)</span>
+                }
+              </div>
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    } @empty {
+    <div class="col-span-full p-16 text-center text-slate-500">
+      <p class="font-bold text-slate-700 text-base mb-1">No Teams Found</p>
+      <p class="text-xs text-slate-400">No franchises matched your filter or search criteria.</p>
+    </div>
+    }
+  </div>
+  }
+</div>
