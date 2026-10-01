@@ -10,7 +10,9 @@ import { StudyFacade } from '../facade/study.facade';
 import { StudyChapter } from '../models/study.model';
 
 import { EditChapterDialogComponent, EditChapterDialogResult } from '../dialogs/edit-chapter-dialog/edit-chapter-dialog.component';
-import { StudySettingsDialogComponent, StudySettingsTab } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
+import { StudySettingsDialogComponent } from '../dialogs/study-settings-dialog/study-settings-dialog.component';
+import { StudyMembersDialogComponent } from '../dialogs/study-members-dialog/study-members-dialog.component';
+import { ExportStudyDialogComponent } from '../dialogs/export-study-dialog/export-study-dialog.component';
 
 // Import sub-components
 import { ChaptersListComponent } from './components/chapters-list/chapters-list.component';
@@ -80,22 +82,36 @@ export class StudySidebarComponent {
     this.newChapterFen.set(fen);
   }
 
-  openSettingsDialog(initialTab: StudySettingsTab = 'general') {
+  openSettingsDialog() {
     this.dialog.open(StudySettingsDialogComponent, {
-      data: { initialTab },
+      width: '450px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/60']
     });
   }
 
-  isExportAllowed = computed(() => {
-    const s = this.study();
-    if (!s) return false;
-    if (s.export_visibility === 'owner') {
-      return this.isOwner();
-    }
-    return true;
-  });
+  openMembersDialog() {
+    this.dialog.open(StudyMembersDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/60']
+    });
+  }
+
+  /**
+   * Opens the standalone Study Export modal.
+   *
+   * WHY: Provides a dedicated, streamlined export flow with styling consistent with CreateStudyDialog.
+   */
+  openExportDialog() {
+    this.dialog.open(ExportStudyDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/60']
+    });
+  }
+
+  isExportAllowed = this.studyService.isExportAllowed;
 
   // Inputs
   isLargeScreen = input.required<boolean>();

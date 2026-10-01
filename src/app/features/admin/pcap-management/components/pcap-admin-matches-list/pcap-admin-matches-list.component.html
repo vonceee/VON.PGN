@@ -1,116 +1,140 @@
-<div class="space-y-3">
-  @for (match of matches(); track match.id) {
-  <div
-    class="bg-white rounded-2xl border border-slate-200 shadow-xs p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-slate-300 transition-all">
-    <!-- Fixture Header & Match Details -->
-    <div class="flex-1 space-y-3">
-      <div class="flex flex-wrap items-center gap-2 text-xs">
-        <span
-          class="px-2.5 py-0.5 rounded-md font-bold uppercase tracking-wider font-mono text-[10px] bg-slate-100 text-slate-700">
-          Round {{ match.round }}
-        </span>
-        <span class="text-slate-400">•</span>
-        <span class="text-slate-600 font-medium">{{ match.season }}</span>
-        <span class="text-slate-400">•</span>
-        <span class="text-slate-500">{{ match.date }} {{ match.time }}</span>
-
-        <!-- Status Badge -->
-        <span class="ml-auto md:ml-2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
-          [ngClass]="{
-            'bg-blue-50 text-blue-700': match.status === 'upcoming',
-            'bg-slate-100 text-slate-700': match.status === 'completed'
-          }">
-          {{ match.status }}
-        </span>
-      </div>
-
-      <!-- Teams & Live Scores Grid -->
-      <div class="flex items-center justify-between gap-4 max-w-xl">
-        <!-- Team A -->
-        <div class="flex items-center gap-3 flex-1 min-w-0">
-          <div
-            class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden p-1">
-            @if (getPcapTeamLogo(match.teamA.id); as logoA) {
-            <img [src]="logoA" [alt]="match.teamA.name" class="w-full h-full object-contain" />
-            } @else {
-            <span class="text-xs font-bold text-slate-500">
-              {{ getPcapTeamMonogram(match.teamA.id, match.teamA.name) }}
-            </span>
-            }
-          </div>
-          <div class="min-w-0">
-            <div class="font-bold text-slate-900 truncate text-sm" [title]="match.teamA.name">{{ match.teamA.name }}</div>
-          </div>
-        </div>
-
-        <!-- Score Indicator -->
-        <div class="text-center px-4 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 shrink-0">
-          <div class="text-lg md:text-xl font-bold font-mono text-slate-900 tracking-tight">
-            {{ match.scoreA }} <span class="text-slate-400 font-light mx-0.5">-</span> {{ match.scoreB }}
-          </div>
-          <div class="text-[10px] text-slate-400 font-mono">
-            @if ((match.blitzScoreA > 0 || match.blitzScoreB > 0) || (match.rapidScoreA > 0 || match.rapidScoreB > 0)) {
-            Blitz {{ match.blitzScoreA }}-{{ match.blitzScoreB }} • Rapid {{ match.rapidScoreA }}-{{ match.rapidScoreB }}
-            } @else {
-            Total Score Recorded
-            }
-          </div>
-        </div>
-
-        <!-- Team B -->
-        <div class="flex items-center justify-end gap-3 flex-1 min-w-0 text-right">
-          <div class="min-w-0">
-            <div class="font-bold text-slate-900 truncate text-sm" [title]="match.teamB.name">{{ match.teamB.name }}</div>
-          </div>
-          <div
-            class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden p-1">
-            @if (getPcapTeamLogo(match.teamB.id); as logoB) {
-            <img [src]="logoB" [alt]="match.teamB.name" class="w-full h-full object-contain" />
-            } @else {
-            <span class="text-xs font-bold text-slate-500">
-              {{ getPcapTeamMonogram(match.teamB.id, match.teamB.name) }}
-            </span>
-            }
-          </div>
-        </div>
-      </div>
+<div class="space-y-4">
+  <!-- Controls Bar: Matches Count & Expand/Collapse All -->
+  @if (roundGroups().length > 0) {
+  <div class="flex items-center justify-between text-xs px-1 text-slate-500">
+    <div>
+      Showing <strong class="text-slate-800">{{ matches().length }}</strong> matches across
+      <strong class="text-slate-800">{{ roundGroups().length }}</strong> {{ roundGroups().length === 1 ? 'round' :
+      'rounds' }}
     </div>
+    <button type="button" (click)="toggleExpandAll()"
+      class="text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer inline-flex items-center gap-1">
+      <span>{{ areAllExpanded() ? 'Collapse All' : 'Expand All' }}</span>
+      <svg class="w-3.5 h-3.5 transition-transform duration-200" [class.rotate-180]="areAllExpanded()" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+      </svg>
+    </button>
+  </div>
+  }
 
-    <!-- Actions -->
-    <div
-      class="flex items-center justify-end gap-2 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-3 md:pt-0 md:pl-5">
-      <!-- Quick Status Toggles -->
-      <div class="flex items-center gap-1">
-        @if (match.status !== 'completed') {
-        <button type="button" (click)="statusChange.emit({ match, status: 'completed' })"
-          class="px-2 py-1 rounded-lg text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
-          title="Mark as Completed">
-          Set Completed
-        </button>
-        } @else {
-        <button type="button" (click)="statusChange.emit({ match, status: 'upcoming' })"
-          class="px-2 py-1 rounded-lg text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer"
-          title="Mark as Upcoming">
-          Set Upcoming
-        </button>
-        }
-      </div>
-
-      <!-- Edit Scoresheet Button -->
-      <button type="button" (click)="editMatch.emit(match)"
-        class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer">
-        Edit Scoresheet
-      </button>
-
-      <!-- Delete Button -->
-      <button type="button" (click)="deleteMatch.emit(match)"
-        class="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors cursor-pointer" title="Delete Match">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+  <!-- Collapsible Round Groups -->
+  @for (group of roundGroups(); track group.round) {
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden transition-all">
+    <!-- Clickable Collapsible Header -->
+    <button type="button" (click)="toggleRound(group.round)"
+      class="w-full px-5 py-3.5 bg-slate-50/80 hover:bg-slate-100/70 border-b border-slate-200 flex items-center justify-between text-left cursor-pointer transition-colors select-none">
+      <div class="flex items-center gap-3">
+        <!-- Chevron -->
+        <svg class="w-4 h-4 text-slate-500 transition-transform duration-200 shrink-0"
+          [class.rotate-90]="isRoundExpanded(group.round)" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
         </svg>
-      </button>
+
+        <div class="flex flex-wrap items-baseline gap-2">
+          <span class="text-sm font-bold text-slate-900 font-mono">
+            Round {{ group.round }}
+          </span>
+          <span class="text-slate-300">•</span>
+          <span class="text-xs text-slate-600 font-medium">
+            {{ group.season || '2026 Season • Wesley So Cup' }}
+          </span>
+          @if (group.date || group.time) {
+          <span class="text-slate-300">•</span>
+          <span class="text-xs text-slate-500">
+            {{ group.date }}{{ group.date && group.time ? ' - ' : '' }}{{ group.time }}
+          </span>
+          }
+        </div>
+      </div>
+
+      <!-- Match count badge -->
+      <span
+        class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-white text-slate-600 border border-slate-200 shadow-2xs">
+        {{ group.matches.length }} {{ group.matches.length === 1 ? 'match' : 'matches' }}
+      </span>
+    </button>
+
+    <!-- Collapsible Match Items -->
+    @if (isRoundExpanded(group.round)) {
+    <div class="divide-y divide-slate-200">
+      @for (match of group.matches; track match.id) {
+      <div
+        class="p-4 md:px-5 md:py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/60 transition-colors">
+
+        <!-- Left: Stacked Matchup with Gridlines (Team A | 18, Team B | 3) -->
+        <div class="flex items-center gap-6 flex-1 min-w-0">
+          <div
+            class="w-full max-w-sm border border-slate-200 rounded-lg overflow-hidden divide-y divide-slate-200 bg-white">
+            <!-- Team A Row -->
+            <div class="flex items-center justify-between text-xs sm:text-sm">
+              <div class="px-3 py-1.5 truncate flex-1 min-w-0" [ngClass]="getTeamNameClass(match, 'teamA')"
+                [title]="match.teamA.name">
+                {{ match.teamA.name }}
+              </div>
+              <div class="w-14 sm:w-16 px-2 py-1.5 text-center border-l border-slate-200 shrink-0"
+                [ngClass]="getScoreClass(match, 'teamA')">
+                {{ match.scoreA }}
+              </div>
+            </div>
+
+            <!-- Team B Row -->
+            <div class="flex items-center justify-between text-xs sm:text-sm">
+              <div class="px-3 py-1.5 truncate flex-1 min-w-0" [ngClass]="getTeamNameClass(match, 'teamB')"
+                [title]="match.teamB.name">
+                {{ match.teamB.name }}
+              </div>
+              <div class="w-14 sm:w-16 px-2 py-1.5 text-center border-l border-slate-200 shrink-0"
+                [ngClass]="getScoreClass(match, 'teamB')">
+                {{ match.scoreB }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Blitz / Rapid Segment Breakdown -->
+          @if ((match.blitzScoreA > 0 || match.blitzScoreB > 0) || (match.rapidScoreA > 0 || match.rapidScoreB > 0)) {
+          <div
+            class="hidden lg:flex flex-col justify-center text-[11px] text-slate-500 border-l border-slate-200 pl-4 space-y-1 shrink-0">
+            <div><span class="text-slate-400">Blitz:</span> <span class="font-medium text-slate-700 ml-1">{{
+                match.blitzScoreA }}-{{ match.blitzScoreB }}</span></div>
+            <div><span class="text-slate-400">Rapid:</span> <span class="font-medium text-slate-700 ml-1">{{
+                match.rapidScoreA }}-{{ match.rapidScoreB }}</span></div>
+          </div>
+          }
+        </div>
+
+        <!-- Right: Actions -->
+        <div
+          class="flex items-center justify-end gap-2 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-3 md:pt-0 md:pl-5 text-xs">
+          <!-- Quick Status Toggles -->
+          @if (match.status !== 'completed') {
+          <button type="button" (click)="statusChange.emit({ match, status: 'completed' })"
+            class="px-2 py-1 underline cursor-pointer" title="Mark as Completed">
+            Set Completed
+          </button>
+          } @else {
+          <button type="button" (click)="statusChange.emit({ match, status: 'upcoming' })"
+            class="px-2 py-1 text-blue-600 underline cursor-pointer" title="Mark as Upcoming">
+            Set Upcoming
+          </button>
+          }
+
+          <!-- Edit Scoresheet Button -->
+          <button type="button" (click)="editMatch.emit(match)" class="px-2 py-1 underline cursor-pointer">
+            Edit Scoresheet
+          </button>
+
+          <!-- Delete Button -->
+          <button type="button" (click)="deleteMatch.emit(match)"
+            class="px-2 py-1 text-red-600 underline cursor-pointer">
+            Delete
+          </button>
+        </div>
+      </div>
+      }
     </div>
+    }
   </div>
   } @empty {
   <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500">

@@ -18,6 +18,7 @@ export interface SelectItem<T = any> {
   label: string;
   value?: T;
   disabled?: boolean;
+  isHeader?: boolean;
   action?: () => void;
 }
 
@@ -97,26 +98,33 @@ export type DropdownItem<T = any> = SelectItem<T>;
           tabindex="-1"
           class="z-50 min-w-full w-full max-w-sm rounded-xl bg-white shadow-xl ring-1 ring-black/5 focus:outline-none py-1 border border-slate-100 max-h-60 overflow-y-auto"
           [class]="menuClass()">
-          @for (item of items(); track item.label) {
-            <button
-              type="button"
-              role="menuitem"
-              [disabled]="item.disabled"
-              (click)="onItemClick(item)"
-              [class.bg-blue-50]="isSelected(item)"
-              [class.text-blue-600]="isSelected(item)"
-              [class.font-medium]="isSelected(item)"
-              class="flex items-center justify-between w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-slate-50 hover:text-gray-900 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              <span class="truncate" [title]="item.label">{{ item.label }}</span>
-              @if (isSelected(item)) {
-                <svg class="size-4 text-blue-600 ml-3 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                  <path
-                    fill-rule="evenodd"
-                    d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
-                    clip-rule="evenodd" />
-                </svg>
-              }
-            </button>
+          @for (item of items(); track (item.isHeader ? 'hdr-' + item.label : (item.value ?? item.label))) {
+            @if (item.isHeader) {
+              <div
+                class="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 sticky top-0 border-y border-slate-100 first:border-t-0 select-none">
+                {{ item.label }}
+              </div>
+            } @else {
+              <button
+                type="button"
+                role="menuitem"
+                [disabled]="item.disabled"
+                (click)="onItemClick(item)"
+                [class.bg-blue-50]="isSelected(item)"
+                [class.text-blue-600]="isSelected(item)"
+                [class.font-medium]="isSelected(item)"
+                class="flex items-center justify-between w-full px-4 py-2.5 text-left text-sm text-gray-700 hover:bg-slate-50 hover:text-gray-900 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="truncate" [title]="item.label">{{ item.label }}</span>
+                @if (isSelected(item)) {
+                  <svg class="size-4 text-blue-600 ml-3 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                      clip-rule="evenodd" />
+                  </svg>
+                }
+              </button>
+            }
           }
         </div>
       </ng-template>
@@ -191,7 +199,7 @@ export class SelectComponent<T = any> {
     if (fixedLabel) return fixedLabel;
 
     const currentVal = this.value();
-    const found = this.items().find((item) => item.value === currentVal);
+    const found = this.items().find((item) => !item.isHeader && item.value === currentVal);
     return found ? found.label : this.placeholder();
   });
 
@@ -217,12 +225,13 @@ export class SelectComponent<T = any> {
   }
 
   isSelected(item: SelectItem<T>): boolean {
+    if (item.isHeader) return false;
     const currentVal = this.value();
     return currentVal !== undefined && currentVal === item.value;
   }
 
   onItemClick(item: SelectItem<T>): void {
-    if (item.disabled) return;
+    if (item.disabled || item.isHeader) return;
 
     if (item.value !== undefined) {
       this.value.set(item.value);

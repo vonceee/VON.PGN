@@ -1,40 +1,116 @@
 import {
   Component,
   OnInit,
+  AfterViewInit,
   OnDestroy,
   HostListener,
   inject,
   signal,
   computed,
+  effect,
+  viewChild,
+  ElementRef,
+  PLATFORM_ID,
   ChangeDetectionStrategy
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChessBoardComponent, MoveNotationComponent } from '@shared/chess';
 import { Chess } from '@von/chess';
-import { buildTreeFromMoves } from '../../../core/utils/chess-tree.utils';
+import { buildTreeFromMoves, findPathToFen } from '../../../core/utils/chess-tree.utils';
 import { MoveNode } from '../../../core/models/study.model';
 import { PcapService } from '../../../core/services/pcap.service';
 import { ToastService } from '../../../core/services/toast.service';
-import { PcapMatch, PcapBoardMatchup } from '../../../core/models/pcap.model';
+import { EngineService } from '../../../core/services/engine.service';
+import { StudyAnalysisComponent } from '../../study/study-analysis/study-analysis.component';
+import { PcapMatch, PcapBoardMatchup, getFederationFlag } from '../../../core/models/pcap.model';
 
 @Component({
   selector: 'app-pcap-game-viewer',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ChessBoardComponent,
-    MoveNotationComponent
+    MoveNotationComponent,
+    StudyAnalysisComponent
   ],
   templateUrl: './pcap-game-viewer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PcapGameViewerComponent implements OnInit, OnDestroy {
+export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly pcapService = inject(PcapService);
   private readonly toast = inject(ToastService);
+  private readonly platformId = inject(PLATFORM_ID);
+  readonly engineService = inject(EngineService);
+
+  // Responsive Board Sizing
+  readonly centerColumnRef = viewChild<ElementRef<HTMLElement>>('centerColumn');
+  readonly boardSize = signal<number>(460);
+  private resizeObserver: ResizeObserver | null = null;
+
+  // Local Engine Analysis States
+  readonly isEngineActive = signal<boolean>(false);
+  readonly isEngineError = this.engineService.isError;
+  readonly pvLines = this.engineService.pvLines;
+
+  readonly formattedPvLines = computed(() => {
+    const lines = this.pvLines();
+    const fen = this.currentFen();
+    if (lines.length === 0 || !fen) return [];
+
+    return lines.map((line) => {
+      const chess = new Chess(fen);
+      const moves: {
+        san: string;
+        uci: string;
+        moveNumber: number;
+        showMoveNumber: boolean;
+        isBlack: boolean;
+      }[] = [];
+
+      for (let i = 0; i < line.pv.length; i++) {
+        const uci = line.pv[i];
+        const currentTurn = chess.turn();
+        const currentMoveNumber = chess.moveNumber();
+        const showMoveNumber = i === 0 || currentTurn === 'w';
+        const isBlack = i === 0 && currentTurn === 'b';
+
+        try {
+          const from = uci.substring(0, 2);
+          const to = uci.substring(2, 4);
+          const promotion = uci.length > 4 ? uci.substring(4, 5) : undefined;
+          const result = chess.move({ from, to, promotion });
+          moves.push({
+            san: result.san,
+            uci,
+            moveNumber: currentMoveNumber,
+            showMoveNumber,
+            isBlack,
+          });
+        } catch {
+          moves.push({
+            san: uci,
+            uci,
+            moveNumber: currentMoveNumber,
+            showMoveNumber,
+            isBlack,
+          });
+        }
+      }
+
+      return {
+        ...line,
+        moves,
+      };
+    });
+  });
+
+  readonly engineEval = computed(() => {
+    const lines = this.pvLines();
+    return lines.length > 0 ? lines[0].eval : null;
+  });
 
   // Active Route Params
   readonly matchId = signal<string>('');
@@ -121,6 +197,115 @@ export class PcapGameViewerComponent implements OnInit, OnDestroy {
     return h['Result'] && h['Result'] !== '*' ? h['Result'] : 'In Progress';
   });
 
+  // Active Path in MoveTree for clock and node tracking
+  readonly activePath = computed<MoveNode[]>(() => {
+    const tree = this.moveTree();
+    const fen = this.currentFen();
+    if (!tree || !tree.length || !fen) return [];
+    const path = findPathToFen(tree, fen);
+    if (path && path.length > 0) return path;
+
+    // Fallback if FEN comparison had slight halfmove/en-passant differences
+    const ply = this.currentPly();
+    if (ply > 0) {
+      return tree.slice(0, ply);
+    }
+    return [];
+  });
+
+  // Initial Time Control parsed from PGN Header (e.g. "300+0" -> "5:00", "900" -> "15:00")
+  readonly initialClock = computed<string | undefined>(() => {
+    const tc = this.headers()['TimeControl'];
+    if (!tc) return undefined;
+    const parts = tc.split('+');
+    const seconds = parseInt(parts[0], 10);
+    if (isNaN(seconds) || seconds <= 0) return undefined;
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    const hours = Math.floor(mins / 60);
+    const remMins = mins % 60;
+    if (hours > 0) {
+      return `${hours}:${String(remMins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    return `${remMins}:${String(secs).padStart(2, '0')}`;
+  });
+
+  // White and Black Clocks at the Current Ply / Position
+  readonly whiteClock = computed<string | undefined>(() => {
+    const path = this.activePath();
+    for (let i = path.length - 1; i >= 0; i--) {
+      const node = path[i];
+      if (node.ply % 2 !== 0 && node.clk) {
+        return node.clk;
+      }
+    }
+    const firstWhite = this.moveTree().find(n => n.ply % 2 !== 0 && (n.clk || n.preClk));
+    if (firstWhite) {
+      return firstWhite.preClk || this.initialClock() || firstWhite.clk;
+    }
+    return this.initialClock();
+  });
+
+  readonly blackClock = computed<string | undefined>(() => {
+    const path = this.activePath();
+    for (let i = path.length - 1; i >= 0; i--) {
+      const node = path[i];
+      if (node.ply % 2 === 0 && node.clk) {
+        return node.clk;
+      }
+    }
+    const firstBlack = this.moveTree().find(n => n.ply % 2 === 0 && n.clk);
+    if (firstBlack?.clk) {
+      return this.initialClock() || firstBlack.clk;
+    }
+    return this.initialClock();
+  });
+
+  // Active Turn & Color
+  readonly activeColor = computed<'w' | 'b'>(() => {
+    const fen = this.currentFen();
+    if (!fen) return 'w';
+    const parts = fen.split(' ');
+    return (parts[1] as 'w' | 'b') || 'w';
+  });
+
+  readonly topPlayerColor = computed<'white' | 'black'>(() => (this.boardOrientation() === 'white' ? 'black' : 'white'));
+  readonly bottomPlayerColor = computed<'white' | 'black'>(() => (this.boardOrientation() === 'white' ? 'white' : 'black'));
+
+  readonly topPlayer = computed(() => (this.topPlayerColor() === 'white' ? this.whitePlayer() : this.blackPlayer()));
+  readonly bottomPlayer = computed(() => (this.bottomPlayerColor() === 'white' ? this.whitePlayer() : this.blackPlayer()));
+
+  readonly topClock = computed(() => (this.topPlayerColor() === 'white' ? this.whiteClock() : this.blackClock()));
+  readonly bottomClock = computed(() => (this.bottomPlayerColor() === 'white' ? this.whiteClock() : this.blackClock()));
+
+  readonly isTopPlayerTurn = computed(() => {
+    const active = this.activeColor();
+    const color = this.topPlayerColor();
+    return (active === 'w' && color === 'white') || (active === 'b' && color === 'black');
+  });
+
+  readonly isBottomPlayerTurn = computed(() => {
+    const active = this.activeColor();
+    const color = this.bottomPlayerColor();
+    return (active === 'w' && color === 'white') || (active === 'b' && color === 'black');
+  });
+
+  constructor() {
+    effect(() => {
+      const active = this.isEngineActive();
+      const fen = this.currentFen();
+      const isBrowser = isPlatformBrowser(this.platformId);
+
+      if (isBrowser) {
+        if (active && fen) {
+          this.engineService.startAnalysis(fen);
+        } else {
+          this.engineService.stop();
+        }
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const mId = params.get('matchId') || '';
@@ -135,8 +320,54 @@ export class PcapGameViewerComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.setupResizeObserver();
+  }
+
   ngOnDestroy(): void {
     this.stopAutoplay();
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+      this.resizeObserver = null;
+    }
+    if (isPlatformBrowser(this.platformId)) {
+      this.engineService.stop();
+    }
+  }
+
+  toggleEngine(): void {
+    this.isEngineActive.update(v => !v);
+  }
+
+  retryEngine(): void {
+    this.engineService.restart();
+  }
+
+  private setupResizeObserver(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const el = this.centerColumnRef()?.nativeElement;
+    if (!el) return;
+
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        this.updateBoardDimensions(width, height);
+      }
+    });
+
+    this.resizeObserver.observe(el);
+  }
+
+  private updateBoardDimensions(containerWidth: number, containerHeight: number): void {
+    if (containerWidth <= 0 || containerHeight <= 0) return;
+    // Vertical overhead: top player banner (~36px) + bottom player banner (~36px) + 2 gaps (12px) + breathing buffer (12px) = 96px
+    const verticalOverhead = 96;
+    const availableWidth = Math.max(180, containerWidth - 16);
+    const availableHeight = Math.max(180, containerHeight - verticalOverhead);
+
+    // Chessboard is 1:1 square. Clamp between 180px and 560px
+    const calculatedSize = Math.floor(Math.min(availableWidth, availableHeight, 560));
+    this.boardSize.set(calculatedSize);
   }
 
   private loadGame(): void {
@@ -267,6 +498,68 @@ export class PcapGameViewerComponent implements OnInit, OnDestroy {
     const match = this.currentMatch();
     if (!match) return;
     this.router.navigate(['/pcap/game', match.id, boardNum, type]);
+  }
+
+  setFormat(type: 'blitz' | 'rapid'): void {
+    if (this.activeGameType() === type) return;
+    const match = this.currentMatch();
+    if (!match) return;
+    this.router.navigate(['/pcap/game', match.id, this.activeBoardNumber(), type]);
+  }
+
+  getPlayerFederation(name?: string): string {
+    const match = this.currentMatch();
+    if (!match || !name) return '🇵🇭';
+    const teamA = this.pcapService.getTeamById(match.teamA.id);
+    const pA = teamA?.roster?.find(r => r.name?.trim().toLowerCase() === name.trim().toLowerCase());
+    if (pA?.federation) return getFederationFlag(pA.federation);
+
+    const teamB = this.pcapService.getTeamById(match.teamB.id);
+    const pB = teamB?.roster?.find(r => r.name?.trim().toLowerCase() === name.trim().toLowerCase());
+    if (pB?.federation) return getFederationFlag(pB.federation);
+
+    return '🇵🇭';
+  }
+
+  formatScore(myScore: number, oppScore: number, hasPgn: boolean): { text: string; colorClass: string } {
+    if (myScore > oppScore) {
+      return { text: '1', colorClass: 'text-emerald-700 font-bold' };
+    }
+    if (myScore < oppScore) {
+      return { text: '0', colorClass: 'text-rose-700 font-bold' };
+    }
+    if (myScore > 0 && myScore === oppScore) {
+      return { text: '½', colorClass: 'text-slate-600 font-semibold' };
+    }
+    return { text: '—', colorClass: 'text-slate-300 font-normal' };
+  }
+
+  getBoardRowData(board: PcapBoardMatchup) {
+    const isOdd = board.boardNumber % 2 !== 0;
+    const playerA = board.playerA || { name: 'Player A', title: undefined, rating: 0 };
+    const playerB = board.playerB || { name: 'Player B', title: undefined, rating: 0 };
+    const white = isOdd ? playerA : playerB;
+    const black = isOdd ? playerB : playerA;
+    const type = this.activeGameType();
+
+    const scoreWhiteRaw = isOdd
+      ? (type === 'blitz' ? (board.blitzScoreA ?? 0) : (board.rapidScoreA ?? 0))
+      : (type === 'blitz' ? (board.blitzScoreB ?? 0) : (board.rapidScoreB ?? 0));
+    const scoreBlackRaw = isOdd
+      ? (type === 'blitz' ? (board.blitzScoreB ?? 0) : (board.rapidScoreB ?? 0))
+      : (type === 'blitz' ? (board.blitzScoreA ?? 0) : (board.rapidScoreA ?? 0));
+
+    const hasPgn = type === 'blitz' ? !!board.blitzPgn : !!board.rapidPgn;
+
+    return {
+      white,
+      black,
+      whiteFlag: this.getPlayerFederation(white.name),
+      blackFlag: this.getPlayerFederation(black.name),
+      whiteScore: this.formatScore(scoreWhiteRaw, scoreBlackRaw, hasPgn),
+      blackScore: this.formatScore(scoreBlackRaw, scoreWhiteRaw, hasPgn),
+      hasPgn
+    };
   }
 
   // --- Keyboard Shortcuts ---

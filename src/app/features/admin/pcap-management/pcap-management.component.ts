@@ -1,7 +1,6 @@
 import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { PcapService } from '../../../core/services/pcap.service';
 import { ToastService } from '../../../core/services/toast.service';
 import {
@@ -20,6 +19,7 @@ import {
 } from '../../../core/models/pcap.model';
 
 import { TextInputComponent } from '../../../shared/components/ui/text-input/text-input.component';
+import { SelectComponent, SelectItem } from '../../../shared/components/ui/select/select.component';
 import {
   PcapAdminTeamsTableComponent,
   PcapAdminMatchesListComponent,
@@ -38,8 +38,8 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink,
     TextInputComponent,
+    SelectComponent,
     PcapAdminTeamsTableComponent,
     PcapAdminMatchesListComponent,
     PcapAdminStandingsTablesComponent,
@@ -68,6 +68,18 @@ export class PcapManagementComponent {
   readonly searchQuery = signal<string>('');
   readonly conferenceFilter = signal<PcapConference | 'all'>('all');
   readonly statusFilter = signal<PcapMatchStatus | 'all'>('all');
+
+  readonly conferenceFilterOptions: SelectItem<PcapConference | 'all'>[] = [
+    { label: 'All Divisions', value: 'all' },
+    { label: 'Division Alpha', value: 'alpha' },
+    { label: 'Division Omega', value: 'omega' },
+  ];
+
+  readonly statusFilterOptions: SelectItem<PcapMatchStatus | 'all'>[] = [
+    { label: 'All Status', value: 'all' },
+    { label: 'Upcoming', value: 'upcoming' },
+    { label: 'Completed', value: 'completed' },
+  ];
 
   // Delete Target state for confirmation modal
   readonly deleteConfirmation = signal<{
@@ -240,6 +252,7 @@ export class PcapManagementComponent {
     }
     this.editingMatch.set(freshMatch);
     this.isEditingMatch.set(false);
+    this.populateBoardsFromRosters(false);
     this.currentView.set('match-editor');
   }
 
@@ -270,13 +283,15 @@ export class PcapManagementComponent {
     };
   }
 
-  populateBoardsFromRosters(): void {
+  populateBoardsFromRosters(showToast = true): void {
     const match = { ...this.editingMatch() };
     const teamA = this.pcapService.getTeamById(match.teamA.id);
     const teamB = this.pcapService.getTeamById(match.teamB.id);
 
     if (!teamA && !teamB) {
-      this.toast.show('Please select valid teams first.', 'error');
+      if (showToast) {
+        this.toast.show('Please select valid teams first.', 'error');
+      }
       return;
     }
 
@@ -324,7 +339,9 @@ export class PcapManagementComponent {
     });
 
     this.editingMatch.set(match);
-    this.toast.show('Board lineups populated from registered team rosters!', 'success');
+    if (showToast) {
+      this.toast.show('Board lineups populated from registered team rosters!', 'success');
+    }
   }
 
   recalculateMatchTotals(): void {
@@ -349,7 +366,6 @@ export class PcapManagementComponent {
     m.scoreB = Number((m.blitzScoreB + m.rapidScoreB).toFixed(1));
 
     this.editingMatch.set({ ...m });
-    this.toast.show(`Auto-summed score from boards: ${m.scoreA} - ${m.scoreB}`, 'success');
   }
 
   saveMatch(): void {
@@ -426,7 +442,6 @@ export class PcapManagementComponent {
     });
 
     this.editingMatch.set(current);
-    this.toast.show(`PGN saved for Board ${data.boardNumber}`, 'success');
     this.closePgnDrawer();
   }
 
@@ -488,13 +503,6 @@ export class PcapManagementComponent {
     if (confirm('Are you sure you want to clear all PCAP teams, matches, and standings to start with a completely clean slate?')) {
       this.pcapService.clearAllData();
       this.toast.show('All PCAP data cleared. You can now enter legitimate data.', 'success');
-    }
-  }
-
-  loadSampleData(): void {
-    if (confirm('Populate demo PCAP franchises, matches, and standings?')) {
-      this.pcapService.loadSampleData();
-      this.toast.show('Demo sample data loaded.', 'success');
     }
   }
 

@@ -129,6 +129,22 @@ export class StudyNavigationFacade {
     return findPathToFen(tree, fen) || [];
   });
 
+  initialClock = computed<string | undefined>(() => {
+    const tc = this.tags()['TimeControl'];
+    if (!tc) return undefined;
+    const parts = tc.split('+');
+    const seconds = parseInt(parts[0], 10);
+    if (isNaN(seconds) || seconds <= 0) return undefined;
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    const hours = Math.floor(mins / 60);
+    const remMins = mins % 60;
+    if (hours > 0) {
+      return `${hours}:${String(remMins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    return `${remMins}:${String(secs).padStart(2, '0')}`;
+  });
+
   whiteClock = computed(() => {
     const path = this.activePath();
     for (let i = path.length - 1; i >= 0; i--) {
@@ -137,7 +153,11 @@ export class StudyNavigationFacade {
         return node.clk;
       }
     }
-    return undefined;
+    const firstWhite = this.moveTree().find(n => n.ply % 2 !== 0 && (n.clk || n.preClk));
+    if (firstWhite) {
+      return firstWhite.preClk || this.initialClock() || firstWhite.clk;
+    }
+    return this.initialClock();
   });
 
   blackClock = computed(() => {
@@ -148,7 +168,11 @@ export class StudyNavigationFacade {
         return node.clk;
       }
     }
-    return undefined;
+    const firstBlack = this.moveTree().find(n => n.ply % 2 === 0 && n.clk);
+    if (firstBlack?.clk) {
+      return this.initialClock() || firstBlack.clk;
+    }
+    return this.initialClock();
   });
 
   activeColor = computed(() => {

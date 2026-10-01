@@ -68,6 +68,7 @@ function normalizeMoveNode(node: any): MoveNode {
     eval: node.eval,
     forceVariation: node.forceVariation,
     clk: node.clk ? String(node.clk) : undefined,
+    preClk: node.preClk ? String(node.preClk) : undefined,
   };
 }
 
@@ -264,13 +265,13 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
     if (token.startsWith('{')) {
       const rawComment = token.slice(1, -1).trim();
       let clk: string | undefined;
-      const clkMatch = rawComment.match(/\[%clk\s+([^\]]+)\]/i);
+      const clkMatch = rawComment.match(/\[?%clk\s+([^\]\}]+)\]?/i);
       if (clkMatch) {
         clk = clkMatch[1].trim();
       }
 
       const comment = rawComment
-        .replace(/\[%[^\]]*\]/gi, '')
+        .replace(/\[?%[^\]\}]*\]?/gi, '')
         .replace(/\s+/g, ' ')
         .trim();
 
@@ -361,6 +362,7 @@ function parsePgnToNodes(tokens: string[], initialFen: string): MoveNode[] {
             glyphs: []
           };
           if (preClk) {
+            node.preClk = preClk;
             node.clk = preClk;
             preClk = null;
           }

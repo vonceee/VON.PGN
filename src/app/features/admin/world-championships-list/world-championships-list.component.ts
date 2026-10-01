@@ -203,7 +203,7 @@ import { heroTrophy, heroPlus } from '@ng-icons/heroicons/outline';
               <button
                 type="button"
                 (click)="cancelDelete()"
-                class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 hover:bg-slate-50 text-slate-700 cursor-pointer"
+                class="px-4 py-2 rounded-full text-xs font-semibold border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer"
               >
                 Cancel
               </button>

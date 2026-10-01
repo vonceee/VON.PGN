@@ -35,7 +35,6 @@ import {
   heroExclamationCircle,
   heroMicrophone,
   heroPhone,
-  heroCog6Tooth,
 } from '@ng-icons/heroicons/outline';
 import { Router } from '@angular/router';
 import { Dialog, DialogModule } from '@angular/cdk/dialog';
@@ -52,6 +51,11 @@ import { JoinClassDialogComponent } from './dialogs/join-class-dialog/join-class
 import { LeaveClassDialogComponent } from './dialogs/leave-class-dialog/leave-class-dialog.component';
 import { StartClassDialogComponent } from './dialogs/start-class-dialog/start-class-dialog.component';
 import { EndClassDialogComponent } from './dialogs/end-class-dialog/end-class-dialog.component';
+import {
+  StudySettingsDialogComponent,
+} from './dialogs/study-settings-dialog/study-settings-dialog.component';
+import { StudyMembersDialogComponent } from './dialogs/study-members-dialog/study-members-dialog.component';
+import { ExportStudyDialogComponent } from './dialogs/export-study-dialog/export-study-dialog.component';
 
 import { LayoutService } from '../../core/services/layout.service';
 import { StudyShortcutsService } from './services/study-shortcuts.service';
@@ -104,7 +108,6 @@ import { SelectComponent, SelectItem } from '@shared/ui';
       heroExclamationCircle,
       heroMicrophone,
       heroPhone,
-      heroCog6Tooth,
     }),
   ],
   templateUrl: './study.component.html',
@@ -172,6 +175,35 @@ export class StudyComponent implements OnInit, OnDestroy {
         console.error('[StudyComponent] Error joining voice call:', err);
       });
     }
+  }
+
+  openSettingsDialog() {
+    this.dialog.open(StudySettingsDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/60']
+    });
+  }
+
+  openMembersDialog() {
+    this.dialog.open(StudyMembersDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/60']
+    });
+  }
+
+  /**
+   * Opens the standalone Study Export modal.
+   *
+   * WHY: Provides direct access to PGN export in a dedicated modal matching CreateStudyDialog styling.
+   */
+  openExportDialog() {
+    this.dialog.open(ExportStudyDialogComponent, {
+      width: '450px',
+      maxWidth: '95vw',
+      backdropClass: ['bg-black/60']
+    });
   }
 
   id = input.required<string>();

@@ -1,114 +1,119 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DialogRef, Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
+import { FormsModule } from '@angular/forms';
+import { DialogRef } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 
 import { StudyService } from '../../services/study.service';
-import { StudyFacade } from '../../facade/study.facade';
 import { ToastService } from '../../../../core/services/toast.service';
+import { TextInputComponent, SelectComponent, SelectItem } from '@shared/ui';
 
-import { AddMemberDialogComponent, AddMemberResult } from '../add-member-dialog/add-member-dialog.component';
-import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
-
-import { StudySettingsComponent } from '../../study-sidebar/components/study-settings/study-settings.component';
-import { StudyMembersComponent } from '../../study-sidebar/components/study-members/study-members.component';
-import { StudyExportComponent } from '../../study-sidebar/components/study-export/study-export.component';
-
-export type StudySettingsTab = 'general' | 'members' | 'export';
-
-export interface StudySettingsDialogData {
-  initialTab?: StudySettingsTab;
-}
+export type StudySettingsTab = 'general' | 'members';
 
 /**
- * Unified Study Settings Dialog Component.
+ * Dedicated Study Settings Dialog Component.
  *
  * ARCHITECTURAL CHOICE (WHY):
- * Consolidates General settings, Member management, and Study PGN Export into a unified
- * modal dialog. This cleans up the persistent study sidebar dock and gives the study room
- * a focused, distraction-free analysis workspace.
+ * Separates general study settings from member management into a clean modal
+ * directly tailored to match `CreateStudyDialogComponent` layout.
  *
  * ASSUMPTIONS & EDGE CASES:
- * - Only study owners have access to this dialog.
- * - Sub-dialogs (AddMember, ConfirmDelete) are opened modally over this dialog with proper z-indexing.
- * - Tabs maintain consistent layout without disrupting background chessboard or chapters navigation.
+ * - Only study owners have access to destructive actions (Clear Chat, Delete Study).
+ * - Live board FEN snapshot is fetched via `StudyFacade.currentFen()`.
  */
 @Component({
   selector: 'app-study-settings-dialog',
   standalone: true,
   imports: [
     CommonModule,
-    StudySettingsComponent,
-    StudyMembersComponent,
-    StudyExportComponent
+    FormsModule,
+    TextInputComponent,
+    SelectComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './study-settings-dialog.component.html',
-  styles: [`
-    :host {
-      display: block;
-    }
-  `]
 })
 export class StudySettingsDialogComponent {
   dialogRef = inject(DialogRef<void>);
-  data = inject<StudySettingsDialogData | null>(DIALOG_DATA, { optional: true });
   private studyService = inject(StudyService);
-  public facade = inject(StudyFacade);
   private toastService = inject(ToastService);
-  private dialog = inject(Dialog);
   private router = inject(Router);
 
   study = this.studyService.currentStudy;
   isOwner = this.studyService.isOwner;
-  isClassActive = this.studyService.isClassActive;
-  currentChapter = this.studyService.currentChapter;
-  viewerNames = this.studyService.viewerNames;
 
-  activeTab = signal<StudySettingsTab>(this.data?.initialTab || 'general');
+  readonly visibilityOptions: SelectItem<'public' | 'unlisted' | 'private'>[] = [
+    { label: 'Public (Everyone can see)', value: 'public' },
+    { label: 'Unlisted (Hidden from search)', value: 'unlisted' },
+    { label: 'Private (Only me)', value: 'private' },
+  ];
 
-  memberCount = computed(() => {
-    const s = this.study();
-    if (!s) return 0;
-    const collabs = s.collaborators?.length || 0;
-    return 1 + collabs; // Owner + collaborators
-  });
+  readonly engineVisibilityOptions: SelectItem<'everyone' | 'owner'>[] = [
+    { label: 'Everyone', value: 'everyone' },
+    { label: 'Only me', value: 'owner' },
+  ];
 
-  handleSettingsSaved(payload: {
-    name: string;
-    visibility: string;
-    engine_visibility: string;
-    export_visibility: string;
-    category: string;
-    orientation: string;
-    preview_fen?: string;
-    preview_last_move?: string;
-  }) {
-    const s = this.study();
-    if (!s) return;
+  readonly exportVisibilityOptions: SelectItem<'everyone' | 'owner'>[] = [
+    { label: 'Everyone', value: 'everyone' },
+    { label: 'Only me', value: 'owner' },
+  ];
 
-    this.studyService.updateStudy(s.id, payload).subscribe({
-      next: () => {
-        this.toastService.show('Study settings updated', 'success');
-        this.studyService.getStudy(s.id);
-        this.dialogRef.close();
-      },
-      error: () => this.toastService.show('Failed to update settings', 'error')
+  readonly categoryOptions: SelectItem<'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>[] = [
+    { label: 'General Study', value: 'general' },
+    { label: 'Opening Repertoire', value: 'opening_repertoire' },
+    { label: 'Middlegame', value: 'middlegame' },
+    { label: 'Endgame', value: 'endgame' },
+  ];
+
+  readonly repertoireOrientationOptions: SelectItem<'white' | 'black'>[] = [
+    { label: 'White Repertoire', value: 'white' },
+    { label: 'Black Repertoire', value: 'black' },
+  ];
+
+  settingsName = signal('');
+  settingsVisibility = signal<'public' | 'unlisted' | 'private'>('public');
+  settingsEngineVisibility = signal<'everyone' | 'owner'>('everyone');
+  settingsExportVisibility = signal<'everyone' | 'owner'>('owner');
+  settingsCategory = signal<'general' | 'opening_repertoire' | 'middlegame' | 'endgame'>('general');
+  settingsOrientation = signal<'white' | 'black'>('white');
+  settingsPreviewFen = signal('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+  settingsPreviewLastMove = signal<string | null>(null);
+
+  isConfirmingDeleteStudy = signal(false);
+  deleteStudyConfirmText = signal('');
+  isChatCleared = signal(false);
+
+  constructor() {
+    effect(() => {
+      const s = this.study();
+      if (s) {
+        this.settingsName.set(s.name || '');
+        this.settingsVisibility.set(s.visibility || 'public');
+        this.settingsEngineVisibility.set(s.engine_visibility || 'everyone');
+        this.settingsExportVisibility.set(s.export_visibility || 'owner');
+        this.settingsCategory.set(s.category || 'general');
+        this.settingsOrientation.set(s.orientation || 'white');
+        this.settingsPreviewFen.set(s.preview_fen || 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1');
+        this.settingsPreviewLastMove.set(s.preview_last_move || null);
+      }
     });
   }
 
-  handleChatCleared() {
+
+  clearChat() {
     const s = this.study();
     if (!s) return;
     this.studyService.clearStudyChat(s.id).subscribe({
       next: () => {
         this.studyService.emitClearChat();
+        this.isChatCleared.set(true);
         this.toastService.show('Chat history cleared', 'success');
       },
-      error: () => this.toastService.show('Failed to clear chat', 'error')
+      error: () => this.toastService.show('Failed to clear chat', 'error'),
     });
   }
 
-  handleStudyDeleted() {
+  onDeleteStudy() {
     if (!this.isOwner()) return;
     const s = this.study();
     if (!s) return;
@@ -119,94 +124,30 @@ export class StudySettingsDialogComponent {
         this.dialogRef.close();
         this.router.navigate(['/study']);
       },
-      error: () => this.toastService.show('Failed to delete study', 'error')
+      error: () => this.toastService.show('Failed to delete study', 'error'),
     });
   }
 
-  addMember() {
-    if (!this.isOwner()) return;
-    const dialogRef = this.dialog.open<AddMemberResult>(AddMemberDialogComponent, {
-      width: '450px',
-      maxWidth: '95vw',
-      backdropClass: ['bg-black/60'],
-    });
-    dialogRef.closed.subscribe((result) => {
-      if (result) {
-        const canEdit = result.role === 'collaborator';
-        this.studyService.addCollaborator(this.study()!.id, result.user.uid, canEdit).subscribe({
-          next: () => {
-            const roleName = result.role === 'collaborator' ? 'Collaborator' : 'Member';
-            this.toastService.show(`${roleName} added successfully`, 'success');
-            this.studyService.getStudy(this.study()!.id);
-          }
-        });
-      }
-    });
-  }
-
-  removeMember(userId: string) {
-    if (!this.isOwner()) return;
+  onSubmit() {
     const s = this.study();
-    if (!s) return;
+    if (!s || !this.settingsName().trim()) return;
 
-    const confirmRef = this.dialog.open<boolean>(ConfirmDeleteDialogComponent, {
-      data: {
-        title: 'Remove member',
-        message: 'Are you sure you want to remove this member?',
-        confirmText: 'Remove'
-      }
-    });
-
-    confirmRef.closed.subscribe((confirmed) => {
-      if (confirmed) {
-        this.studyService.removeCollaborator(s.id, userId).subscribe({
-          next: () => {
-            this.toastService.show('Member removed successfully', 'success');
-            this.studyService.getStudy(s.id);
-          }
-        });
-      }
-    });
-  }
-
-  toggleMemberPermission(userId: string, canEdit: boolean) {
-    if (!this.isOwner()) return;
-    this.studyService.updateCollaboratorPermission(this.study()!.id, userId, canEdit).subscribe({
+    this.studyService.updateStudy(s.id, {
+      name: this.settingsName().trim(),
+      visibility: this.settingsVisibility(),
+      engine_visibility: this.settingsEngineVisibility(),
+      export_visibility: this.settingsExportVisibility(),
+      category: this.settingsCategory(),
+      orientation: this.settingsCategory() === 'opening_repertoire' ? this.settingsOrientation() : 'white',
+      preview_fen: this.settingsPreviewFen(),
+      preview_last_move: this.settingsPreviewLastMove() || undefined,
+    }).subscribe({
       next: () => {
-        this.toastService.show('Member permissions updated', 'success');
-        this.studyService.getStudy(this.study()!.id);
-      }
+        this.toastService.show('Study settings updated', 'success');
+        this.studyService.getStudy(s.id);
+        this.dialogRef.close();
+      },
+      error: () => this.toastService.show('Failed to update settings', 'error'),
     });
-  }
-
-  grantBoardControl(userId: string) {
-    this.studyService.grantBoardControl(userId);
-  }
-
-  revokeBoardControl() {
-    this.studyService.revokeBoardControl();
-  }
-
-  handleExport(payload: { option: 'current' | 'all' | 'selected'; selectedIds: Set<number> }) {
-    const s = this.study();
-    if (!s) return;
-
-    if (payload.option === 'current') {
-      const current = this.currentChapter();
-      if (current) {
-        this.studyService.exportPgn(s.id, [current.id]);
-      } else {
-        this.toastService.show('No active chapter to export', 'error');
-      }
-    } else if (payload.option === 'all') {
-      this.studyService.exportPgn(s.id);
-    } else if (payload.option === 'selected') {
-      const ids = Array.from(payload.selectedIds);
-      if (ids.length > 0) {
-        this.studyService.exportPgn(s.id, ids);
-      } else {
-        this.toastService.show('Please select at least one chapter to export', 'error');
-      }
-    }
   }
 }

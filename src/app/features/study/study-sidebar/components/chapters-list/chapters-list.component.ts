@@ -8,14 +8,14 @@ import {
   effect
 } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroCog6ToothSolid } from '@ng-icons/heroicons/solid';
+import { heroCog6ToothSolid, heroArrowDownTraySolid, heroUsersSolid } from '@ng-icons/heroicons/solid';
 import { Study, StudyChapter } from '../../../models/study.model';
 
 @Component({
   selector: 'app-study-chapters-list',
   standalone: true,
   imports: [NgIconComponent],
-  providers: [provideIcons({ heroCog6ToothSolid })],
+  providers: [provideIcons({ heroCog6ToothSolid, heroArrowDownTraySolid, heroUsersSolid })],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chapters-list.component.html'
 })
@@ -25,11 +25,14 @@ export class ChaptersListComponent {
   study = input.required<Study | null>();
   currentChapter = input.required<StudyChapter | null>();
   canEdit = input.required<boolean>();
+  isExportAllowed = input<boolean>(true);
 
   // Outputs
   chapterSelected = output<StudyChapter>();
   chapterEditClicked = output<{ event: MouseEvent; chapter: StudyChapter }>();
   addChapterClicked = output<void>();
+  exportClicked = output<void>();
+  membersClicked = output<void>();
   settingsClicked = output<void>();
 
   // Pagination Constants & State

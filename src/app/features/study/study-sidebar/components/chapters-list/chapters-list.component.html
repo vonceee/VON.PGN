@@ -12,6 +12,16 @@
       </svg>
     </button>
     }
+    @if (isExportAllowed()) {
+    <button type="button" (click)="exportClicked.emit()" title="Export PGN"
+      class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
+      <ng-icon name="heroArrowDownTraySolid" class="size-4"></ng-icon>
+    </button>
+    }
+    <button type="button" (click)="membersClicked.emit()" title="Study Members"
+      class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
+      <ng-icon name="heroUsersSolid" class="size-4"></ng-icon>
+    </button>
     <button type="button" (click)="settingsClicked.emit()" title="Study Settings"
       class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
       <ng-icon name="heroCog6ToothSolid" class="size-4"></ng-icon>

@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, model, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TextAreaComponent } from '../../../../../shared/components/ui/text-area/text-area.component';
 
 export interface PgnEditingBoardData {
   boardNumber: number;
@@ -14,7 +15,7 @@ export interface PgnEditingBoardData {
 @Component({
   selector: 'app-pcap-admin-pgn-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TextAreaComponent],
   templateUrl: './pcap-admin-pgn-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

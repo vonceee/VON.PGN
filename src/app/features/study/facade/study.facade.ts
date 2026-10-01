@@ -73,6 +73,7 @@ export class StudyFacade {
   lastMoveSquares = this.nav.lastMoveSquares;
   isOwner = this.nav.isOwner;
   canEdit = this.nav.canEdit;
+  isExportAllowed = this.studyService.isExportAllowed;
   boardInteractive = this.nav.boardInteractive;
   openingName = this.nav.openingName;
   openingEco = this.nav.openingEco;

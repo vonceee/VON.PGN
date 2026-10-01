@@ -1,42 +1,23 @@
 <div class="bg-white rounded-4xl max-w-xl flex flex-col gap-1.5 relative">
-  <div class="p-6 pb-0 flex items-center justify-between shrink-0">
+  <div class="p-9 pb-0 flex items-center shrink-0">
     <h2 class="text-2xl">Create new study</h2>
   </div>
 
   <div class="flex-1 p-8 pt-6 flex flex-col gap-6">
 
     <!-- Study Name -->
-    <app-text-input
-      id="study_name"
-      label="Study name"
-      [(ngModel)]="name"
-      [maxlength]="100"
-      placeholder="e.g. My Openings Analysis"
-      [autofocus]="true"
-      (enter)="onSubmit()"
-      class="w-full" />
+    <app-text-input id="study_name" label="Study name" [(ngModel)]="name" [maxlength]="100"
+      placeholder="e.g. My Openings Analysis" [autofocus]="true" (enter)="onSubmit()" class="w-full" />
 
     <!-- Visibility -->
-    <app-select
-      label="Visibility"
-      [items]="visibilityOptions"
-      [(value)]="visibility"
-      class="w-full" />
+    <app-select label="Visibility" [items]="visibilityOptions" [(value)]="visibility" class="w-full" />
 
     <!-- Category Selection -->
-    <app-select
-      label="Category"
-      [items]="categoryOptions"
-      [(value)]="category"
-      class="w-full" />
+    <app-select label="Category" [items]="categoryOptions" [(value)]="category" class="w-full" />
 
     <!-- Repertoire Orientation Selector (Only visible for Opening Repertoires) -->
     @if (category() === 'opening_repertoire') {
-      <app-select
-        label="Repertoire For?"
-        [items]="orientationOptions"
-        [(value)]="orientation"
-        class="w-full" />
+    <app-select label="Repertoire For?" [items]="orientationOptions" [(value)]="orientation" class="w-full" />
     }
   </div>
 

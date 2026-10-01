@@ -29,7 +29,7 @@ const PRIMARY_TAG_KEYS = new Set<string>([
   template: `
     <div class="bg-white rounded-4xl w-full max-h-[90vh] flex flex-col relative overflow-hidden">
       <!-- Dialog Header -->
-      <div class="p-6 pb-0 flex items-center justify-between shrink-0">
+      <div class="p-6 pb-0 flex items-center shrink-0">
         <h2 class="text-2xl font-serif">edit metadata</h2>
       </div>
 

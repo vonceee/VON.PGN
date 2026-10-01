@@ -11,8 +11,7 @@
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse text-xs">
         <thead>
-          <tr
-            class="border-b border-slate-200 text-slate-600 font-semibold tracking-wider text-[11px] bg-slate-50/50">
+          <tr class="border-b border-slate-200 text-slate-600 font-semibold tracking-wider text-[11px] bg-slate-50/50">
             <th class="px-4 py-3 text-center w-12">#</th>
             <th class="px-4 py-3">Team</th>
             <th class="px-3 py-3 text-center">MP</th>
@@ -44,7 +43,7 @@
             <td class="px-4 py-3 text-center font-extrabold text-blue-700">{{ item.matchPoints }}</td>
             <td class="px-4 py-3 text-right">
               <button type="button" (click)="editStanding.emit(item)"
-                class="px-2 py-1 rounded text-xs font-semibold text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer">
+                class="px-2 py-1 text-xs text-blue-600 underline cursor-pointer">
                 Edit Row
               </button>
             </td>
@@ -67,8 +66,7 @@
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse text-xs">
         <thead>
-          <tr
-            class="border-b border-slate-200 text-slate-600 font-semibold tracking-wider text-[11px] bg-slate-50/50">
+          <tr class="border-b border-slate-200 text-slate-600 font-semibold tracking-wider text-[11px] bg-slate-50/50">
             <th class="px-4 py-3 text-center w-12">#</th>
             <th class="px-4 py-3">Team</th>
             <th class="px-3 py-3 text-center">MP</th>
@@ -100,7 +98,7 @@
             <td class="px-4 py-3 text-center font-extrabold text-purple-700">{{ item.matchPoints }}</td>
             <td class="px-4 py-3 text-right">
               <button type="button" (click)="editStanding.emit(item)"
-                class="px-2 py-1 rounded text-xs font-semibold text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer">
+                class="px-2 py-1 text-xs text-blue-600 underline cursor-pointer">
                 Edit Row
               </button>
             </td>

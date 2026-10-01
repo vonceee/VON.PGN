@@ -39,7 +39,7 @@ import { ChessWebGLSceneComponent } from '../chess-webgl-scene/chess-webgl-scene
           <div
             class="relative py-4 sm:py-5 after:absolute after:bottom-0 after:h-px after:bg-slate-200/90 after:left-[-100vw] after:right-[-100vw] md:after:right-0 after:pointer-events-none">
             <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-lg">
-              A deliberate practice platform packed with features like <span class="text-blue-600 font-medium">openings</span>, <span class="text-blue-600 font-medium">woodpecker</span>, and <span class="text-blue-600 font-medium">engine sparring</span> composed to build mastery directly into your play.
+              a chess practice platform with features for studying <span class="text-blue-600 font-medium">openings</span>, <span class="text-blue-600 font-medium">puzzles</span>, composed to build mastery directly into your play.
             </p>
           </div>
         </div>

@@ -12,10 +12,13 @@
   <!-- Top Panel: Chapters List -->
   <div class="flex-1 flex flex-col min-h-0 relative">
     <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s"
-      [currentChapter]="currentChapter()" [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
+      [currentChapter]="currentChapter()" [canEdit]="canEdit()" [isExportAllowed]="isExportAllowed()"
+      (chapterSelected)="selectChapter($event)"
       (chapterEditClicked)="onEditChapter($event.event, $event.chapter)"
       (addChapterClicked)="selectSection('add-chapter')"
-      (settingsClicked)="openSettingsDialog('general')">
+      (exportClicked)="openExportDialog()"
+      (membersClicked)="openMembersDialog()"
+      (settingsClicked)="openSettingsDialog()">
     </app-study-chapters-list>
   </div>
 
@@ -55,7 +58,7 @@
       }
     } @else {
       <button type="button"
-        (click)="isOwner() ? openSettingsDialog('members') : null"
+        (click)="isOwner() ? openMembersDialog() : null"
         [title]="isOwner() ? 'Viewers: ' + facade.viewerCount() + ' (Click to manage)' : 'Viewers: ' + facade.viewerCount()"
         [class.cursor-pointer]="isOwner()"
         [class.hover:text-slate-700]="isOwner()"
@@ -155,10 +158,12 @@
   <app-study-chat class="flex-1 overflow-hidden min-h-0"></app-study-chat>
   } @else if (displayMode() === 'chapters') {
   <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [currentChapter]="currentChapter()"
-    [canEdit]="canEdit()" (chapterSelected)="selectChapter($event)"
+    [canEdit]="canEdit()" [isExportAllowed]="isExportAllowed()" (chapterSelected)="selectChapter($event)"
     (chapterEditClicked)="onEditChapter($event.event, $event.chapter)"
     (addChapterClicked)="selectSection('add-chapter')"
-    (settingsClicked)="openSettingsDialog('general')">
+    (exportClicked)="openExportDialog()"
+    (membersClicked)="openMembersDialog()"
+    (settingsClicked)="openSettingsDialog()">
   </app-study-chapters-list>
   <div class="border-t border-slate-200/90"></div>
   <app-study-metadata class="flex-1 flex flex-col min-h-0 min-w-0" [canEdit]="canEdit()"

@@ -47,6 +47,21 @@ export class StudyService {
     return !!(myUid && studyOwnerId && String(myUid) === String(studyOwnerId));
   });
 
+  /**
+   * Computed permission state determining if PGN export is permitted for the current user.
+   *
+   * WHY: Respects study privacy/visibility setting (`export_visibility`). When restricted to
+   *      'owner', guests and collaborators cannot download the study PGN.
+   */
+  isExportAllowed = computed(() => {
+    const s = this.currentStudy();
+    if (!s) return false;
+    if (s.export_visibility === 'owner') {
+      return this.isOwner();
+    }
+    return true;
+  });
+
   hasBoardControl = computed(() => {
     if (!this.isClassActive()) return true;
     if (this.isOwner()) return true;
