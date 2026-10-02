@@ -10,6 +10,12 @@
       class="max-w-lg px-2 text-[2.5rem]/10 font-medium tracking-tighter text-balance max-sm:px-4 2xl:mt-0 text-slate-900 mb-2">
       Fixtures & Board Results
     </h2>
+
+    <!-- Division Dropdown -->
+    <div class="flex items-center mb-3 sm:mb-2">
+      <app-select class="w-48 sm:w-56" label="Division" [items]="conferenceOptions" [value]="currentConference()"
+        (itemSelected)="setConference($event.value!)" />
+    </div>
   </div>
 
   <!-- Architectural Bleeding Filter Toolbar (Underline Tabs + Conference Dropdown) -->
@@ -39,223 +45,217 @@
         Upcoming
       </button>
     </nav>
-
-    <!-- Division Dropdown with Floating Label -->
-    <div class="flex items-center mb-3 sm:mb-2">
-      <app-select class="w-48 sm:w-56" label="Division" [items]="conferenceOptions" [value]="currentConference()"
-        (itemSelected)="setConference($event.value!)" />
-    </div>
   </div>
 
-  <!-- Continuous Matchday Ledger Frame (Spacious) -->
-  <div class="border border-slate-200 divide-y divide-slate-200 bg-white shadow-2xs">
-    @for (match of matches(); track match.id) {
-    <div class="flex flex-col">
+  <!-- Collapsible Round Groups -->
+  @for (group of roundGroups(); track group.round) {
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden transition-all">
+    <!-- Clickable Collapsible Round Header -->
+    <button type="button" (click)="toggleRound(group.round)"
+      class="w-full px-5 py-3.5 bg-slate-50/80 hover:bg-slate-100/70 border-b border-slate-200 flex items-center justify-between text-left cursor-pointer transition-colors select-none">
+      <div class="flex items-center gap-3">
+        <!-- Chevron -->
+        <svg class="w-4 h-4 text-slate-500 transition-transform duration-200 shrink-0"
+          [class.rotate-90]="isRoundExpanded(group.round)" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
 
-      <!-- Match Header Info Strip -->
-      <div
-        class="px-6 md:px-8 py-3 bg-slate-50/70 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 text-xs">
-        <div class="flex items-center gap-2.5 text-slate-700">
-          <span class="font-bold text-slate-900">ROUND {{ match.round }}</span>
-          <span class="text-slate-300">/</span>
-          <span class="text-slate-500">{{ match.season }}</span>
-          <span class="text-slate-300">/</span>
-          <span class="uppercase tracking-wider text-slate-700 font-bold">Division {{ match.conference }}</span>
-        </div>
-
-        <div>
-          @if (match.status === 'completed') {
-          <span class="px-2.5 py-1 rounded text-[11px] font-bold bg-slate-100 text-slate-700">
-            FINAL SCORE
+        <div class="flex flex-wrap items-baseline gap-2">
+          <span class="text-sm font-bold text-slate-900">
+            Round {{ group.round }}
           </span>
-          } @else {
-          <span class="px-2.5 py-1 rounded text-[11px] font-bold bg-blue-50 text-blue-700">
-            SCHEDULED
+          <span class="text-slate-300">•</span>
+          <span class="text-xs text-slate-600 font-medium">
+            {{ group.season || '2026 Season • Wesley So Cup' }}
+          </span>
+          @if (group.date || group.time) {
+          <span class="text-slate-300">•</span>
+          <span class="text-xs text-slate-500">
+            {{ group.date }}{{ group.date && group.time ? ' - ' : '' }}{{ group.time }}
           </span>
           }
         </div>
       </div>
 
-      <!-- Match Scoreboard Display (Spacious) -->
-      <div class="p-8 md:p-10 hover:bg-slate-50/20 transition-colors">
-        <div class="grid grid-cols-1 md:grid-cols-5 items-center gap-6 md:gap-8">
+      <!-- Match count badge -->
+      <span
+        class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-white text-slate-600 border border-slate-200 shadow-2xs">
+        {{ group.matches.length }} {{ group.matches.length === 1 ? 'match' : 'matches' }}
+      </span>
+    </button>
 
-          <!-- Team A -->
-          <div class="md:col-span-2 flex items-center gap-4 min-w-0">
+    <!-- Collapsible Match Fixture Tables -->
+    @if (isRoundExpanded(group.round)) {
+    <div class="divide-y divide-slate-200">
+      @for (match of group.matches; track match.id) {
+      <div class="flex flex-col bg-white">
+
+        <!-- Compact Matchup Header Bar with Integrated Scores -->
+        <div
+          class="px-4 sm:px-6 py-3 bg-slate-50/70 border-b border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+
+          <!-- Team A Side -->
+          <div class="flex items-center gap-3 min-w-0 flex-1">
             <div
-              class="w-14 h-14 md:w-16 md:h-16 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs p-1.5 overflow-hidden">
+              class="w-9 h-9 rounded-lg bg-white border border-slate-200/90 flex items-center justify-center shrink-0 p-1 shadow-2xs overflow-hidden">
               @if (getPcapTeamLogo(match.teamA.id); as logoA) {
               <img [src]="logoA" [alt]="match.teamA.name" class="w-full h-full object-contain" />
               } @else {
-              <div
-                class="w-full h-full rounded-lg bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs md:text-sm">
-                {{ getPcapTeamMonogram(match.teamA.id, match.teamA.name) }}
-              </div>
+              <span class="font-bold text-slate-500 text-[10px]">{{ getPcapTeamMonogram(match.teamA.id,
+                match.teamA.name) }}</span>
               }
             </div>
             <div class="min-w-0 flex-1">
-              <h4 class="font-black text-slate-900 text-lg md:text-xl lg:text-2xl leading-tight tracking-tight truncate"
-                [title]="match.teamA.name">
-                {{ match.teamA.name }}
-              </h4>
-              <span class="text-xs md:text-sm text-slate-500 font-medium capitalize mt-0.5 block truncate">
-                {{ match.teamA.conference }} Conference
+              <div class="flex items-center gap-2">
+                <h4 class="font-black text-slate-900 text-sm sm:text-base leading-tight truncate"
+                  [title]="match.teamA.name">
+                  {{ match.teamA.name }}
+                </h4>
+                @if (match.status === 'completed' && match.scoreA > match.scoreB) {
+                <span
+                  class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 shrink-0">WIN</span>
+                }
+              </div>
+              <span class="text-[11px] text-slate-500 font-medium capitalize block truncate">
+                {{ match.teamA.conference }} Division
               </span>
             </div>
+            @if (match.status === 'completed') {
+            <span class="text-xl sm:text-2xl font-black shrink-0" [class.text-blue-600]="match.scoreA > match.scoreB"
+              [class.text-slate-800]="match.scoreA <= match.scoreB">
+              {{ match.scoreA }}
+            </span>
+            }
           </div>
 
-          <!-- Score Center -->
-          <div class="md:col-span-1 text-center py-2 shrink-0">
-            @if (match.status === 'upcoming') {
-            <div
-              class="inline-block px-5 py-2.5 rounded-lg bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold">
-              {{ match.time }}
+          <!-- Center Match Status / Segment Breakdown -->
+          <div
+            class="shrink-0 flex sm:flex-col items-center justify-center gap-1.5 px-3 py-1 bg-white/80 rounded-lg border border-slate-200/80 sm:border-0 sm:bg-transparent">
+            @if (match.status === 'completed') {
+            <div class="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+              <span class="text-[10px] uppercase tracking-wider font-semibold text-slate-500">FINAL</span>
+              @if (hasSegmentBreakdown(match)) {
+              <span class="text-slate-300">•</span>
+              <span class="text-[11px] text-slate-600">B: {{ match.blitzScoreA }}-{{ match.blitzScoreB }}</span>
+              <span class="text-slate-300">•</span>
+              <span class="text-[11px] text-blue-700">R: {{ match.rapidScoreA }}-{{ match.rapidScoreB }}</span>
+              }
             </div>
             } @else {
-            <div class="flex items-center justify-center gap-3">
-              <span class="text-4xl md:text-5xl font-black text-slate-900"
-                [class.text-blue-600]="match.scoreA > match.scoreB">
-                {{ match.scoreA }}
+            <div class="flex items-center gap-2">
+              <span
+                class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 uppercase tracking-wider">
+                SCHEDULED
               </span>
-              <span class="text-2xl font-bold text-slate-300">-</span>
-              <span class="text-4xl md:text-5xl font-black text-slate-900"
-                [class.text-blue-600]="match.scoreB > match.scoreA">
-                {{ match.scoreB }}
-              </span>
-            </div>
-
-            <!-- Blitz & Rapid Breakdown Subtext -->
-            <div class="flex flex-col items-center justify-center gap-1.5 mt-3 text-xs font-semibold text-slate-500">
-              @if (hasSegmentBreakdown(match)) {
-              <span class="px-3 py-1 rounded bg-slate-100 border border-slate-200/70 whitespace-nowrap">
-                Blitz: {{ match.blitzScoreA }} - {{ match.blitzScoreB }}
-              </span>
-              <span class="px-3 py-1 rounded bg-slate-100 border border-slate-200/70 whitespace-nowrap">
-                Rapid: {{ match.rapidScoreA }} - {{ match.rapidScoreB }}
-              </span>
-              } @else {
-              <span class="px-3 py-1 rounded bg-slate-100 border border-slate-200/70 whitespace-nowrap"
-                title="Blitz points breakdown not yet recorded">
-                Blitz: —
-              </span>
-              <span class="px-3 py-1 rounded bg-slate-100 border border-slate-200/70 whitespace-nowrap"
-                title="Rapid points breakdown not yet recorded">
-                Rapid: —
-              </span>
-              }
+              <span class="text-xs font-semibold text-slate-600">{{ match.time || 'TBA' }}</span>
             </div>
             }
           </div>
 
-          <!-- Team B -->
-          <div class="md:col-span-2 flex items-center justify-start md:justify-end gap-4 min-w-0">
-            <div class="text-left md:text-right order-2 md:order-1 min-w-0 flex-1">
-              <h4 class="font-black text-slate-900 text-lg md:text-xl lg:text-2xl leading-tight tracking-tight truncate"
-                [title]="match.teamB.name">
-                {{ match.teamB.name }}
-              </h4>
-              <span class="text-xs md:text-sm text-slate-500 font-medium capitalize mt-0.5 block truncate">
-                {{ match.teamB.conference }} Conference
+          <!-- Team B Side -->
+          <div class="flex items-center justify-end gap-3 min-w-0 flex-1">
+            @if (match.status === 'completed') {
+            <span class="text-xl sm:text-2xl font-black shrink-0" [class.text-blue-600]="match.scoreB > match.scoreA"
+              [class.text-slate-800]="match.scoreB <= match.scoreA">
+              {{ match.scoreB }}
+            </span>
+            }
+            <div class="min-w-0 flex-1 text-right">
+              <div class="flex items-center justify-end gap-2">
+                @if (match.status === 'completed' && match.scoreB > match.scoreA) {
+                <span
+                  class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60 shrink-0">WIN</span>
+                }
+                <h4 class="font-black text-slate-900 text-sm sm:text-base leading-tight truncate"
+                  [title]="match.teamB.name">
+                  {{ match.teamB.name }}
+                </h4>
+              </div>
+              <span class="text-[11px] text-slate-500 font-medium capitalize block truncate">
+                {{ match.teamB.conference }} Division
               </span>
             </div>
             <div
-              class="w-14 h-14 md:w-16 md:h-16 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center shrink-0 order-1 md:order-2 shadow-2xs p-1.5 overflow-hidden">
+              class="w-9 h-9 rounded-lg bg-white border border-slate-200/90 flex items-center justify-center shrink-0 p-1 shadow-2xs overflow-hidden">
               @if (getPcapTeamLogo(match.teamB.id); as logoB) {
               <img [src]="logoB" [alt]="match.teamB.name" class="w-full h-full object-contain" />
               } @else {
-              <div
-                class="w-full h-full rounded-lg bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs md:text-sm">
-                {{ getPcapTeamMonogram(match.teamB.id, match.teamB.name) }}
-              </div>
+              <span class="font-bold text-slate-500 text-[10px]">{{ getPcapTeamMonogram(match.teamB.id,
+                match.teamB.name) }}</span>
               }
             </div>
           </div>
 
         </div>
-      </div>
 
-      <!-- Collapsible 7-Board Match Sheet Bar -->
-      @if (match.boards && match.boards.length > 0) {
-      <div class="px-6 md:px-8 py-3 bg-slate-50/60 border-t border-slate-100">
-        <button (click)="toggleMatchBoards(match.id)"
-          class="flex items-center justify-center gap-2 w-full text-xs font-bold uppercase tracking-wider text-blue-600 hover:text-blue-700 py-1.5 cursor-pointer">
-          <span>{{ expandedMatchId() === match.id ? 'Hide 7-Board Match Sheet' : 'View Full 7-Board Match Sheet'
-            }}</span>
-          <ng-icon [name]="expandedMatchId() === match.id ? 'heroChevronUp' : 'heroChevronDown'"
-            class="w-4 h-4"></ng-icon>
-        </button>
-
-        @if (expandedMatchId() === match.id) {
+        <!-- 7-Board Match Sheet or Pending Placeholder -->
         @if (hasBoardLineups(match)) {
-        <div class="mt-4 pt-4 border-t border-slate-200 overflow-x-auto">
-          <table class="w-full text-left text-sm min-w-[700px] border border-slate-200 bg-white">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm min-w-[700px] border-b border-slate-200 bg-white">
             <thead>
-              <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider border-b border-slate-200">
-                <th class="py-3 px-4 w-14 text-center">#</th>
-                <th class="py-3 px-4 text-left">
+              <tr class="bg-slate-50/70 text-slate-500 text-[11px] uppercase tracking-wider border-b border-slate-200">
+                <th class="py-2.5 px-4 w-12 text-center">#</th>
+                <th class="py-2.5 px-4 text-left">
                   <div class="flex items-center gap-2 min-w-0">
-                    @if (getPcapTeamLogo(match.teamA.id); as lA) {
-                    <img [src]="lA" [alt]="match.teamA.name" class="w-5 h-5 object-contain shrink-0" />
-                    }
                     <span class="truncate max-w-[200px]" [title]="match.teamA.name">{{ match.teamA.name }}</span>
                   </div>
                 </th>
-                <th class="py-3 px-4 text-center w-32">Blitz (1 pt)</th>
-                <th class="py-3 px-4 text-center w-32">Rapid (2 pts)</th>
-                <th class="py-3 px-4 text-left">
+                <th class="py-2.5 px-4 text-center w-28">Blitz</th>
+                <th class="py-2.5 px-4 text-center w-28">Rapid</th>
+                <th class="py-2.5 px-4 text-left">
                   <div class="flex items-center gap-2 min-w-0">
-                    @if (getPcapTeamLogo(match.teamB.id); as lB) {
-                    <img [src]="lB" [alt]="match.teamB.name" class="w-5 h-5 object-contain shrink-0" />
-                    }
                     <span class="truncate max-w-[200px]" [title]="match.teamB.name">{{ match.teamB.name }}</span>
                   </div>
                 </th>
-                <th class="py-3 px-4 text-center w-28">Games</th>
+                <th class="py-2.5 px-4 text-center w-24">Games</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
               @for (b of match.boards; track b.boardNumber) {
               <tr class="hover:bg-slate-50/80 transition-colors">
-                <td class="py-3.5 px-4 text-center font-bold text-slate-400 text-xs">{{ b.boardNumber }}</td>
-                <td class="py-3.5 px-4 font-semibold text-slate-900">
+                <td class="py-3 px-4 text-center font-bold text-slate-400 text-xs">{{ b.boardNumber }}</td>
+                <td class="py-3 px-4 font-semibold text-slate-900">
                   <div class="flex items-center gap-2">
                     @if (b.playerA.title) {
-                    <span class="px-1.5 py-0.5 rounded text-[10px] {{ getTitleBadgeClass(b.playerA.title) }}">
+                    <span class="text-xs font-bold text-amber-700 shrink-0">
                       {{ b.playerA.title }}
                     </span>
                     }
-                    <span class="font-bold">{{ b.playerA.name }}</span>
+                    <span class="font-bold text-xs sm:text-sm">{{ b.playerA.name }}</span>
                     <span class="text-slate-400 text-xs">({{ b.playerA.rating }})</span>
                   </div>
                 </td>
-                <td class="py-3.5 px-4 text-center font-bold">
-                  <span class="px-2.5 py-1 text-slate-800 text-xs font-bold">
+                <td class="py-3 px-4 text-center font-bold">
+                  <span
+                    class="px-2 py-0.5 text-slate-800 text-xs font-bold rounded bg-slate-50 border border-slate-200/60">
                     {{ b.blitzScoreA }} - {{ b.blitzScoreB }}
                   </span>
                 </td>
-                <td class="py-3.5 px-4 text-center font-bold">
-                  <span class="px-2.5 py-1 text-blue-800 text-xs font-bold">
+                <td class="py-3 px-4 text-center font-bold">
+                  <span
+                    class="px-2 py-0.5 text-blue-800 text-xs font-bold rounded bg-blue-50/60 border border-blue-200/60">
                     {{ b.rapidScoreA }} - {{ b.rapidScoreB }}
                   </span>
                 </td>
-                <td class="py-3.5 px-4 text-left font-semibold text-slate-900">
+                <td class="py-3 px-4 text-left font-semibold text-slate-900">
                   <div class="flex items-center gap-2">
                     @if (b.playerB.title) {
-                    <span class="px-1.5 py-0.5 rounded text-[10px] {{ getTitleBadgeClass(b.playerB.title) }}">
+                    <span class="text-xs font-bold text-amber-700 shrink-0">
                       {{ b.playerB.title }}
                     </span>
                     }
-                    <span class="font-bold">{{ b.playerB.name }}</span>
+                    <span class="font-bold text-xs sm:text-sm">{{ b.playerB.name }}</span>
                     <span class="text-slate-400 text-xs">({{ b.playerB.rating }})</span>
                   </div>
                 </td>
-                <td class="py-3.5 px-4 text-center">
+                <td class="py-3 px-4 text-center">
                   @if (b.rapidPgn || b.blitzPgn) {
                   <a [routerLink]="['/pcap/game', match.id, b.boardNumber, b.rapidPgn ? 'rapid' : 'blitz']"
                     target="_blank" rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1 px-3 py-1.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-colors shadow-2xs">
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-colors shadow-2xs border border-blue-200/60">
                     <span>PGN</span>
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                   </a>
@@ -269,41 +269,31 @@
           </table>
         </div>
         } @else {
-        <div class="mt-4 pt-4 border-t border-slate-200">
-          <div class="p-6 text-center bg-slate-50/80 border border-slate-200 rounded-xl max-w-lg mx-auto">
-            <div class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 mb-2">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h5 class="text-xs font-bold uppercase tracking-wider text-slate-800">
-              Lineups & Game Sheets Pending
-            </h5>
-            <p class="text-xs text-slate-500 mt-1">
-              The match result score has been officially recorded. Individual board rosters and games will be published
-              once available.
-            </p>
-          </div>
+        <div class="px-6 py-4 text-center bg-slate-50/40 text-xs text-slate-400 flex items-center justify-center gap-2">
+          <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>Lineups to be announced</span>
         </div>
         }
-        }
+
       </div>
       }
-
-    </div>
-    } @empty {
-    <div class="p-16 text-center text-slate-500">
-      <div class="w-12 h-12 rounded-full bg-slate-100 mx-auto flex items-center justify-center text-slate-400 mb-3">
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      </div>
-      <p class="font-bold text-slate-700 text-base mb-1">No Matches Scheduled Yet</p>
-      <p class="text-xs text-slate-400">Fixtures will appear here once scheduled from the PCAP Admin Management tab.</p>
     </div>
     }
   </div>
+  } @empty {
+  <div class="p-16 text-center text-slate-500 bg-white rounded-2xl border border-slate-200">
+    <div class="w-12 h-12 rounded-full bg-slate-100 mx-auto flex items-center justify-center text-slate-400 mb-3">
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    </div>
+    <p class="font-bold text-slate-700 text-base mb-1">No Matches Scheduled Yet</p>
+    <p class="text-xs text-slate-400">Fixtures will appear here once scheduled from the PCAP Admin Management tab.</p>
+  </div>
+  }
 
 </div>

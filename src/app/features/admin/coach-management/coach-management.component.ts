@@ -69,7 +69,7 @@ import { ToastService } from '../../../core/services/toast.service';
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       @if (coach.title) {
-                        <span class="px-1.5 py-0.5 bg-red-600 text-white text-xs font-semibold rounded shrink-0">
+                        <span class="text-xs font-bold text-amber-700 shrink-0">
                           {{ coach.title }}
                         </span>
                       }

@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PcapService } from '../../../core/services/pcap.service';
@@ -52,9 +52,14 @@ import {
   templateUrl: './pcap-management.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PcapManagementComponent {
+export class PcapManagementComponent implements OnInit {
   readonly pcapService = inject(PcapService);
   private readonly toast = inject(ToastService);
+
+  ngOnInit(): void {
+    // Admin management always forces an up-to-date sync from the database
+    this.pcapService.syncFromBackend(true);
+  }
 
   // Master titles and federations for team roster editor
   readonly chessFederations = CHESS_FEDERATIONS;
@@ -222,15 +227,20 @@ export class PcapManagementComponent {
       team.id = team.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     }
 
-    if (this.isEditingTeam()) {
-      this.pcapService.updateTeam(team.id, team);
-      this.toast.show(`Team "${team.name}" updated successfully!`, 'success');
-    } else {
-      this.pcapService.addTeam(team);
-      this.toast.show(`Team "${team.name}" created successfully!`, 'success');
-    }
+    const op$ = this.isEditingTeam()
+      ? this.pcapService.updateTeam(team.id, team)
+      : this.pcapService.addTeam(team);
 
-    this.closeTeamModal();
+    op$.subscribe({
+      next: (saved) => {
+        this.toast.show(`Team "${saved.name}" ${this.isEditingTeam() ? 'updated' : 'created'} successfully!`, 'success');
+        this.closeTeamModal();
+      },
+      error: (err) => {
+        const errorMsg = err?.error?.message || 'Failed to save team to database';
+        this.toast.show(errorMsg, 'error');
+      }
+    });
   }
 
   requestDeleteTeam(team: PcapTeam): void {
@@ -382,15 +392,20 @@ export class PcapManagementComponent {
       match.id = `match-${Date.now().toString(36)}`;
     }
 
-    if (this.isEditingMatch()) {
-      this.pcapService.updateMatch(match.id, match);
-      this.toast.show(`Match #${match.round} updated successfully!`, 'success');
-    } else {
-      this.pcapService.addMatch(match);
-      this.toast.show(`Match #${match.round} scheduled successfully!`, 'success');
-    }
+    const op$ = this.isEditingMatch()
+      ? this.pcapService.updateMatch(match.id, match)
+      : this.pcapService.addMatch(match);
 
-    this.closeMatchModal();
+    op$.subscribe({
+      next: (saved) => {
+        this.toast.show(`Match #${saved.round} ${this.isEditingMatch() ? 'updated' : 'scheduled'} successfully!`, 'success');
+        this.closeMatchModal();
+      },
+      error: (err) => {
+        const errorMsg = err?.error?.message || 'Failed to save match to database';
+        this.toast.show(errorMsg, 'error');
+      }
+    });
   }
 
   requestDeleteMatch(match: PcapMatch): void {
@@ -402,8 +417,15 @@ export class PcapManagementComponent {
   }
 
   quickSetStatus(match: PcapMatch, status: PcapMatchStatus): void {
-    this.pcapService.updateMatch(match.id, { status });
-    this.toast.show(`Match status updated to "${status.toUpperCase()}"`, 'success');
+    this.pcapService.updateMatch(match.id, { status }).subscribe({
+      next: () => {
+        this.toast.show(`Match status updated to "${status.toUpperCase()}"`, 'success');
+      },
+      error: (err) => {
+        const errorMsg = err?.error?.message || 'Failed to update match status';
+        this.toast.show(errorMsg, 'error');
+      }
+    });
   }
 
   // --- PGN MANAGEMENT FOR BOARDS ---
@@ -489,9 +511,16 @@ export class PcapManagementComponent {
     s.matchPoints = (s.won || 0) * 3 + (s.drawn || 0) * 1;
     s.boardPointsDiff = Number(((s.boardPointsFor || 0) - (s.boardPointsAgainst || 0)).toFixed(1));
 
-    this.pcapService.updateStanding(s.teamId, s);
-    this.toast.show(`Standing for ${s.teamName} updated!`, 'success');
-    this.closeStandingModal();
+    this.pcapService.updateStanding(s.teamId, s).subscribe({
+      next: () => {
+        this.toast.show(`Standing for ${s.teamName} updated!`, 'success');
+        this.closeStandingModal();
+      },
+      error: (err) => {
+        const errorMsg = err?.error?.message || 'Failed to update standing in database';
+        this.toast.show(errorMsg, 'error');
+      }
+    });
   }
 
   recalculateStandings(): void {
@@ -517,14 +546,28 @@ export class PcapManagementComponent {
     if (!item) return;
 
     if (item.type === 'team') {
-      this.pcapService.deleteTeam(item.id);
-      this.toast.show(`Team "${item.name}" deleted`, 'success');
+      this.pcapService.deleteTeam(item.id).subscribe({
+        next: () => {
+          this.toast.show(`Team "${item.name}" deleted successfully`, 'success');
+          this.deleteConfirmation.set(null);
+        },
+        error: (err) => {
+          const errorMsg = err?.error?.message || 'Failed to delete team from database';
+          this.toast.show(errorMsg, 'error');
+        }
+      });
     } else if (item.type === 'match') {
-      this.pcapService.deleteMatch(item.id);
-      this.toast.show(`Match "${item.name}" deleted`, 'success');
+      this.pcapService.deleteMatch(item.id).subscribe({
+        next: () => {
+          this.toast.show(`Match "${item.name}" deleted successfully`, 'success');
+          this.deleteConfirmation.set(null);
+        },
+        error: (err) => {
+          const errorMsg = err?.error?.message || 'Failed to delete match from database';
+          this.toast.show(errorMsg, 'error');
+        }
+      });
     }
-
-    this.deleteConfirmation.set(null);
   }
 
   cancelDelete(): void {

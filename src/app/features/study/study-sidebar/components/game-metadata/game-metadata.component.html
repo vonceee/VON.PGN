@@ -8,8 +8,7 @@
         <div class="flex flex-col min-w-0">
           <div class="flex items-center gap-1.5 min-w-0">
             @if (whitePlayer().title) {
-            <span
-              class="text-[10px] font-semibold rounded bg-slate-100 shrink-0 px-1 py-0.2 border border-slate-200 text-slate-700">
+            <span class="text-xs font-bold text-amber-700 shrink-0">
               {{ whitePlayer().title }}
             </span>
             }
@@ -40,8 +39,7 @@
         <div class="flex flex-col min-w-0">
           <div class="flex items-center gap-1.5 min-w-0">
             @if (blackPlayer().title) {
-            <span
-              class="text-[10px] font-semibold rounded bg-slate-100 shrink-0 px-1 py-0.2 border border-slate-200 text-slate-700">
+            <span class="text-xs font-bold text-amber-700 shrink-0">
               {{ blackPlayer().title }}
             </span>
             }

@@ -31,25 +31,14 @@
 
         <!-- 3-Column Studio Grid: Left Match/Board Switcher | Center Board | Right Notation -->
         <div
-          class="w-full h-full flex-1 flex flex-col md:grid min-h-0 md:grid-cols-[260px_1fr_300px] lg:grid-cols-[300px_1fr_340px] xl:grid-cols-[340px_1fr_380px] bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden">
+          class="w-full h-full flex-1 flex flex-col md:grid min-h-0 md:grid-cols-[260px_1fr_300px] lg:grid-cols-[300px_1fr_340px] xl:grid-cols-[340px_1fr_380px] bg-white border border-slate-200 overflow-hidden">
           <div
             class="order-2 md:order-1 h-full flex flex-col min-h-0 bg-white border-b md:border-b-0 md:border-r border-slate-200/90 z-20 max-md:max-h-[260px]">
 
 
             <!-- Match Info Header & Format Switcher (No Match Scores) -->
             @if (currentMatch(); as match) {
-            <div class="px-3.5 pt-3 pb-0 border-b border-slate-200/90 bg-slate-50/70 space-y-2.5 shrink-0">
-              <div class="flex items-center justify-between text-[11px] text-slate-500">
-                <span>ROUND {{ match.round }}</span>
-              </div>
-
-              <!-- Matchup Title (Without score) -->
-              <div class="flex items-center justify-between gap-1 text-xs font-bold text-slate-800">
-                <span class="truncate flex-1" [title]="match.teamA.name">{{ match.teamA.name }}</span>
-                <span class="text-[10px] text-slate-400 px-1 shrink-0">vs</span>
-                <span class="truncate flex-1 text-right" [title]="match.teamB.name">{{ match.teamB.name }}</span>
-              </div>
-
+            <div class="px-3.5 pt-3 pb-0 border-b border-slate-200/90 space-y-2.5 shrink-0">
               <!-- Format Switcher Underlined Tabs (Rapid / Blitz) -->
               <nav class="-mb-px flex items-center gap-5" aria-label="Game format switcher">
                 <button type="button" (click)="setFormat('rapid')"
@@ -134,9 +123,28 @@
               </div>
               }
             </div>
+            } @else if (pcapService.isLoading()) {
+            <div class="p-4 space-y-4 animate-pulse">
+              <div class="h-4 bg-slate-200 rounded w-24"></div>
+              <div class="h-5 bg-slate-200 rounded w-full"></div>
+              <div class="flex gap-4 border-b border-slate-200 pb-2">
+                <div class="h-4 bg-slate-200 rounded w-16"></div>
+                <div class="h-4 bg-slate-200 rounded w-16"></div>
+              </div>
+              <div class="space-y-3 pt-2">
+                @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
+                <div class="h-10 bg-slate-100 rounded-lg"></div>
+                }
+              </div>
+            </div>
             } @else {
-            <div class="p-6 text-center text-xs text-slate-400">
-              Match not found or loading...
+            <div class="p-6 text-center space-y-3 my-auto">
+              <div class="text-sm font-semibold">Match fixture not found</div>
+              <p class="text-xs text-slate-400">The requested PCAP match could not be found.</p>
+              <a routerLink="/pcap" [queryParams]="{ tab: 'matches' }"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                <span>← Back to Matches</span>
+              </a>
             </div>
             }
           </div>
@@ -144,55 +152,45 @@
           <!-- ======================================================== -->
           <!-- CENTER COLUMN: CHESSBOARD & PLAYER BADGES               -->
           <!-- ======================================================== -->
-          <div
-            #centerColumn
+          <div #centerColumn
             class="order-1 md:order-2 flex-1 flex flex-col items-center justify-center min-h-0 h-full relative z-20 overflow-hidden bg-slate-50/80 bg-[radial-gradient(#cbd5e1_1.25px,transparent_1.25px)] [background-size:20px_20px] p-2 sm:p-4">
 
             <!-- Integrated Board Stage (Banners + Chessboard scaled as a single cohesive unit) -->
             <div class="flex flex-col items-center justify-center m-auto min-h-0 select-none max-w-full"
               [style.width.px]="boardSize()">
 
-              <!-- Top Player Banner (Black if Normal Orientation) -->
-              <div
-                class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg bg-white/95 backdrop-blur-xs border border-slate-200 shadow-2xs mb-1.5 shrink-0 transition-all">
-                <div class="flex items-center gap-2 min-w-0">
-                  <div
-                    class="w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs"
-                    [ngClass]="topPlayerColor() === 'white' ? 'bg-white border border-slate-300 text-slate-900' : 'bg-slate-900 text-white'">
-                    {{ topPlayerColor() === 'white' ? '♔' : '♚' }}
-                  </div>
-                  <div class="flex items-center gap-1.5 min-w-0">
-                    <span class="text-xs shrink-0" [title]="topPlayer().name">
-                      {{ getPlayerFederation(topPlayer().name) }}
-                    </span>
-                    @if (topPlayer().title) {
-                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-600 text-white shadow-2xs shrink-0">
-                      {{ topPlayer().title }}
-                    </span>
-                    }
-                    <span class="font-bold text-xs text-slate-900 truncate" [title]="topPlayer().name">
-                      {{ topPlayer().name }}
-                    </span>
-                  </div>
+              <!-- Top Player Banner -->
+              <div class="w-full flex items-center justify-between bg-white shrink-0 transition-all">
+                <div class="px-4 py-2 flex items-center gap-1.5 min-w-0">
+                  <span class="text-xs shrink-0" [title]="topPlayer().name">
+                    {{ getPlayerFederation(topPlayer().name) }}
+                  </span>
+                  @if (topPlayer().title) {
+                  <span class="text-xs font-bold text-amber-700 shrink-0">
+                    {{ topPlayer().title }}
+                  </span>
+                  }
+                  <span class="font-bold text-xs text-slate-900 truncate" [title]="topPlayer().name">
+                    {{ topPlayer().name }}
+                  </span>
+                  @if (topPlayer().rating) {
+                  <span class="text-xs text-slate-400 font-normal shrink-0">
+                    ({{ topPlayer().rating }})
+                  </span>
+                  }
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
-                  @if (topPlayer().rating) {
-                  <span class="text-[11px] text-slate-500 font-semibold px-2 py-0.5 rounded bg-slate-100 shrink-0">
-                    {{ topPlayer().rating }}
-                  </span>
-                  }
                   @if (topClock()) {
                   <div
-                    class="flex items-center gap-1.5 py-0.5 px-2 rounded font-mono text-xs font-semibold shrink-0 transition-all border shadow-2xs"
-                    [class.bg-slate-900]="isTopPlayerTurn()"
-                    [class.text-white]="isTopPlayerTurn()"
-                    [class.border-slate-800]="isTopPlayerTurn()"
-                    [class.bg-slate-100]="!isTopPlayerTurn()"
-                    [class.text-slate-500]="!isTopPlayerTurn()"
-                    [class.border-slate-200]="!isTopPlayerTurn()">
-                    <svg class="w-3 h-3 shrink-0" [class.opacity-90]="isTopPlayerTurn()" [class.opacity-45]="!isTopPlayerTurn()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    class="flex items-center gap-1.5 py-0.5 px-2 rounded text-sm font-semibold shrink-0 transition-all border"
+                    [class.bg-slate-900]="isTopPlayerTurn()" [class.text-white]="isTopPlayerTurn()"
+                    [class.border-slate-800]="isTopPlayerTurn()" [class.bg-slate-100]="!isTopPlayerTurn()"
+                    [class.text-slate-500]="!isTopPlayerTurn()" [class.border-slate-200]="!isTopPlayerTurn()">
+                    <svg class="w-3 h-3 shrink-0" [class.opacity-90]="isTopPlayerTurn()"
+                      [class.opacity-45]="!isTopPlayerTurn()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>{{ topClock() }}</span>
                   </div>
@@ -201,71 +199,45 @@
               </div>
 
               <!-- Chess Board Area -->
-              <div
-                class="relative z-10 shadow-md rounded-xl overflow-hidden border border-slate-300/90 bg-white shrink-0"
-                [style.width.px]="boardSize()"
+              <div class="relative z-10 overflow-hidden bg-white shrink-0" [style.width.px]="boardSize()"
                 [style.height.px]="boardSize()">
-                @if (activePgn()) {
                 <app-chess-board [fluid]="true" [resizable]="false" [fen]="currentFen()"
                   [orientation]="boardOrientation()" [interactive]="false"
                   [lastMove]="lastMoveSquares()"></app-chess-board>
-                } @else {
-                <div
-                  class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-white text-slate-400">
-                  <svg class="w-10 h-10 text-slate-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  <p class="text-sm font-semibold text-slate-700">No PGN Recorded</p>
-                  <p class="text-xs text-slate-400 mt-1 max-w-xs">
-                    No game score sheet has been uploaded for Board {{ activeBoardNumber() }} ({{ activeGameType() |
-                    uppercase }}).
-                  </p>
-                </div>
-                }
               </div>
 
               <!-- Bottom Player Banner (White if Normal Orientation) -->
-              <div
-                class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg bg-white/95 backdrop-blur-xs border border-slate-200 shadow-2xs mt-1.5 shrink-0 transition-all">
-                <div class="flex items-center gap-2 min-w-0">
-                  <div
-                    class="w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs"
-                    [ngClass]="bottomPlayerColor() === 'white' ? 'bg-white border border-slate-300 text-slate-900' : 'bg-slate-900 text-white'">
-                    {{ bottomPlayerColor() === 'white' ? '♔' : '♚' }}
-                  </div>
-                  <div class="flex items-center gap-1.5 min-w-0">
-                    <span class="text-xs shrink-0" [title]="bottomPlayer().name">
-                      {{ getPlayerFederation(bottomPlayer().name) }}
-                    </span>
-                    @if (bottomPlayer().title) {
-                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-600 text-white shadow-2xs shrink-0">
-                      {{ bottomPlayer().title }}
-                    </span>
-                    }
-                    <span class="font-bold text-xs text-slate-900 truncate" [title]="bottomPlayer().name">
-                      {{ bottomPlayer().name }}
-                    </span>
-                  </div>
+              <div class="w-full flex items-center justify-between bg-white shrink-0 transition-all">
+                <div class="px-4 py-2 flex items-center gap-1.5 min-w-0">
+                  <span class="text-xs shrink-0" [title]="bottomPlayer().name">
+                    {{ getPlayerFederation(bottomPlayer().name) }}
+                  </span>
+                  @if (bottomPlayer().title) {
+                  <span class="text-xs font-bold text-amber-700 shrink-0">
+                    {{ bottomPlayer().title }}
+                  </span>
+                  }
+                  <span class="font-bold text-xs text-slate-900 truncate" [title]="bottomPlayer().name">
+                    {{ bottomPlayer().name }}
+                  </span>
+                  @if (bottomPlayer().rating) {
+                  <span class="text-xs text-slate-400 font-normal shrink-0">
+                    ({{ bottomPlayer().rating }})
+                  </span>
+                  }
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
-                  @if (bottomPlayer().rating) {
-                  <span class="text-[11px] text-slate-500 font-semibold px-2 py-0.5 rounded bg-slate-100 shrink-0">
-                    {{ bottomPlayer().rating }}
-                  </span>
-                  }
                   @if (bottomClock()) {
                   <div
-                    class="flex items-center gap-1.5 py-0.5 px-2 rounded font-mono text-xs font-semibold shrink-0 transition-all border shadow-2xs"
-                    [class.bg-slate-900]="isBottomPlayerTurn()"
-                    [class.text-white]="isBottomPlayerTurn()"
-                    [class.border-slate-800]="isBottomPlayerTurn()"
-                    [class.bg-slate-100]="!isBottomPlayerTurn()"
-                    [class.text-slate-500]="!isBottomPlayerTurn()"
-                    [class.border-slate-200]="!isBottomPlayerTurn()">
-                    <svg class="w-3 h-3 shrink-0" [class.opacity-90]="isBottomPlayerTurn()" [class.opacity-45]="!isBottomPlayerTurn()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    class="flex items-center gap-1.5 py-0.5 px-2 rounded text-sm font-semibold shrink-0 transition-all border"
+                    [class.bg-slate-900]="isBottomPlayerTurn()" [class.text-white]="isBottomPlayerTurn()"
+                    [class.border-slate-800]="isBottomPlayerTurn()" [class.bg-slate-100]="!isBottomPlayerTurn()"
+                    [class.text-slate-500]="!isBottomPlayerTurn()" [class.border-slate-200]="!isBottomPlayerTurn()">
+                    <svg class="w-3 h-3 shrink-0" [class.opacity-90]="isBottomPlayerTurn()"
+                      [class.opacity-45]="!isBottomPlayerTurn()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>{{ bottomClock() }}</span>
                   </div>
@@ -297,8 +269,8 @@
             <div class="flex-1 flex flex-col relative min-h-0">
               <!-- Move Notation (Grid Layout identical to Study) -->
               <app-move-notation class="flex-1 overflow-y-auto" layout="grid" [moveTree]="moveTree()"
-                [currentFen]="currentFen()" [currentPly]="currentPly()" [showNavigation]="false"
-                [result]="gameResult()" (nodeClicked)="onNodeClicked($event)"></app-move-notation>
+                [currentFen]="currentFen()" [currentPly]="currentPly()" [showNavigation]="false" [result]="gameResult()"
+                (nodeClicked)="onNodeClicked($event)"></app-move-notation>
 
               <!-- Stockfish Engine Analysis Section (Identical to Study) -->
               <app-study-analysis [isEngineActive]="isEngineActive()" [isEngineError]="isEngineError()"
@@ -311,24 +283,26 @@
               <div class="p-2 flex items-center justify-between select-none shrink-0 px-4 text-slate-900 w-full">
                 <!-- Left Group: Flip Board -->
                 <button type="button" (click)="flipBoard()" title="Flip Board"
-                  class="font-mono text-xs text-slate-400 select-none transition-colors cursor-pointer hover:text-slate-700">
+                  class="text-xs text-slate-400 select-none transition-colors cursor-pointer hover:text-slate-700">
                   <span>Flip Board</span>
                 </button>
 
                 <!-- Center Group: Navigation Buttons -->
                 <div class="flex items-center gap-1">
                   <!-- First Move -->
-                  <button type="button" (click)="goToFirst()" [disabled]="currentPly() === 0" title="First Move (ArrowUp)"
+                  <button type="button" (click)="goToFirst()" [disabled]="currentPly() === 0"
+                    title="First Move (ArrowUp)"
                     class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-slate-400 hover:text-slate-700">
                     <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
                     </svg>
                   </button>
                   <!-- Previous Move -->
-                  <button type="button" (click)="prevMove()" [disabled]="currentPly() === 0" title="Previous Move (ArrowLeft)"
+                  <button type="button" (click)="prevMove()" [disabled]="currentPly() === 0"
+                    title="Previous Move (ArrowLeft)"
                     class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-slate-400 hover:text-slate-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                      class="size-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="size-5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                   </button>
@@ -348,15 +322,17 @@
                     }
                   </button>
                   <!-- Next Move -->
-                  <button type="button" (click)="nextMove()" [disabled]="currentPly() >= maxPly()" title="Next Move (ArrowRight)"
+                  <button type="button" (click)="nextMove()" [disabled]="currentPly() >= maxPly()"
+                    title="Next Move (ArrowRight)"
                     class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-slate-400 hover:text-slate-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                      class="size-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="size-5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
                   </button>
                   <!-- Last Move -->
-                  <button type="button" (click)="goToLast()" [disabled]="currentPly() >= maxPly()" title="Last Move (ArrowDown)"
+                  <button type="button" (click)="goToLast()" [disabled]="currentPly() >= maxPly()"
+                    title="Last Move (ArrowDown)"
                     class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-slate-400 hover:text-slate-700">
                     <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />

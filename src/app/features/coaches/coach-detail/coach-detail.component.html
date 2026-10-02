@@ -18,8 +18,7 @@
                 <div>
                     <h1 class="text-3xl font-semibold flex items-center gap-3">
                         @if (coach()!.title) {
-                        <span class="px-2 py-1 bg-red-600 text-white text-sm/6 font-semibold rounded">{{ coach()!.title
-                            }}</span>
+                        <span class="text-xs font-bold text-amber-700 shrink-0">{{ coach()!.title }}</span>
                         }
                         {{ coach()!.name }}
                     </h1>

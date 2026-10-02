@@ -11,6 +11,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const publicPaths = [
     '/courses',
     '/activity-logs',
+    '/pcap',
   ];
 
   const relativeUrl = req.url.replace(environment.apiUrl, '');

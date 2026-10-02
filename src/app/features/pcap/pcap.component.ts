@@ -45,6 +45,9 @@ export class PcapComponent implements OnInit {
   leagueStats = this.pcapService.leagueStats;
 
   ngOnInit(): void {
+    // Ensure fresh PCAP data is fetched from the database whenever visiting the PCAP page
+    this.pcapService.syncFromBackend();
+
     this.route.queryParamMap.subscribe((params) => {
       const tabParam = params.get('tab') as PcapTab;
       if (tabParam && ['overview', 'teams', 'matches', 'standings'].includes(tabParam)) {

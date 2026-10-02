@@ -4,7 +4,7 @@
   <div class="relative mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
     <div>
       <span
-        class="font-mono text-sm font-semibold tracking-widest uppercase max-2xl:mb-4 max-2xl:px-2 max-sm:px-4 sm:text-xs 2xl:absolute 2xl:-translate-full 2xl:-rotate-90 2xl:text-right text-blue-600 block">
+        class="text-sm font-semibold tracking-widest uppercase max-2xl:mb-4 max-2xl:px-2 max-sm:px-4 sm:text-xs 2xl:absolute 2xl:-translate-full 2xl:-rotate-90 2xl:text-right text-blue-600 block">
         Franchises
       </span>
       <h2
@@ -36,7 +36,7 @@
         [class.text-slate-500]="currentConference() !== 'all'"
         class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
         <span>All</span>
-        <span class="px-2 py-0.5 text-xs rounded-full font-bold font-mono transition-colors"
+        <span class="px-2 py-0.5 text-xs rounded-full font-bold transition-colors"
           [class.bg-blue-50]="currentConference() === 'all'" [class.text-blue-700]="currentConference() === 'all'"
           [class.bg-slate-100]="currentConference() !== 'all'" [class.text-slate-600]="currentConference() !== 'all'">
           {{ leagueStats().totalTeams }}
@@ -48,7 +48,7 @@
         [class.text-slate-500]="currentConference() !== 'alpha'"
         class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
         <span>Division Alpha</span>
-        <span class="px-2 py-0.5 text-xs rounded-full font-bold font-mono transition-colors"
+        <span class="px-2 py-0.5 text-xs rounded-full font-bold transition-colors"
           [class.bg-blue-50]="currentConference() === 'alpha'" [class.text-blue-700]="currentConference() === 'alpha'"
           [class.bg-slate-100]="currentConference() !== 'alpha'"
           [class.text-slate-600]="currentConference() !== 'alpha'">
@@ -61,7 +61,7 @@
         [class.text-slate-500]="currentConference() !== 'omega'"
         class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
         <span>Division Omega</span>
-        <span class="px-2 py-0.5 text-xs rounded-full font-bold font-mono transition-colors"
+        <span class="px-2 py-0.5 text-xs rounded-full font-bold transition-colors"
           [class.bg-blue-50]="currentConference() === 'omega'" [class.text-blue-700]="currentConference() === 'omega'"
           [class.bg-slate-100]="currentConference() !== 'omega'"
           [class.text-slate-600]="currentConference() !== 'omega'">
@@ -72,36 +72,39 @@
   </div>
 
   <!-- Dedicated Board Category Legend Sub-Bar -->
-  <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-50/80 rounded-xl border border-slate-200/80 text-xs shadow-2xs">
+  <div class="flex flex-wrap items-center gap-3 text-sm">
     <div class="flex flex-wrap items-center gap-2">
-      <span class="font-bold text-slate-400 uppercase tracking-wider text-[10px] flex items-center gap-1.5 mr-1">
-        <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        Board Legend:
-      </span>
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-amber-50 text-amber-800 border-amber-200/70 font-mono text-[11px]" title="Open Board (B1-B2)">
+      <span
+        class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-amber-50 text-amber-800 border-amber-200/70"
+        title="Open Board (B1-B2)">
         <b class="font-black">O</b> Open B1/B2
       </span>
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-rose-50 text-rose-800 border-rose-200/70 font-mono text-[11px]" title="Lady Board (B3)">
+      <span
+        class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-rose-50 text-rose-800 border-rose-200/70"
+        title="Lady Board (B3)">
         <b class="font-black">L</b> Lady B3
       </span>
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-purple-50 text-purple-800 border-purple-200/70 font-mono text-[11px]" title="Senior Board (B4)">
+      <span
+        class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-purple-50 text-purple-800 border-purple-200/70"
+        title="Senior Board (B4)">
         <b class="font-black">S</b> Senior B4
       </span>
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-emerald-50 text-emerald-800 border-emerald-200/70 font-mono text-[11px]" title="Homegrown Board (B5-B7)">
+      <span
+        class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-emerald-50 text-emerald-800 border-emerald-200/70"
+        title="Homegrown Board (B5-B7)">
         <b class="font-black">HG</b> Homegrown B5-B7
       </span>
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-teal-50 text-teal-800 border-teal-200/70 font-mono text-[11px]" title="Homegrown / Senior Eligibility (B4-B7)">
+      <span
+        class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-teal-50 text-teal-800 border-teal-200/70"
+        title="Homegrown / Senior Eligibility (B4-B7)">
         <b class="font-black">HG/S</b> Homegrown / Senior
       </span>
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-pink-50 text-pink-800 border-pink-200/70 font-mono text-[11px]" title="Homegrown / Lady Eligibility (B3, B5-B7)">
+      <span
+        class="inline-flex items-center gap-1 px-2 py-0.5 rounded border bg-pink-50 text-pink-800 border-pink-200/70"
+        title="Homegrown / Lady Eligibility (B3, B5-B7)">
         <b class="font-black">HG/L</b> Homegrown / Lady
       </span>
     </div>
-    <span class="text-[11px] text-slate-400 font-mono hidden md:inline select-none">
-      Select team to inspect official roster
-    </span>
   </div>
 
   @if (pcapService.isLoading() && teams().length === 0) {
@@ -123,8 +126,11 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-slate-200">
     @for (team of teams(); track team.id) {
     <div
-      class="group relative border-r border-b border-slate-200 flex flex-col justify-between hover:bg-slate-50/40 transition-colors overflow-hidden bg-white h-full">
-      
+      class="group relative border-r border-b border-slate-200 flex flex-col justify-between hover:bg-slate-50/40 transition-colors overflow-hidden bg-white h-full"
+      [class.ring-2]="expandedTeamId() === team.id"
+      [class.ring-blue-500]="expandedTeamId() === team.id"
+      [class.z-20]="expandedTeamId() === team.id">
+
       <!-- Whole Card Themed Ambient Backdrop Matching Logo Colors -->
       <div
         class="absolute inset-0 bg-gradient-to-br {{ getTeamBackdropClass(team.id) }} pointer-events-none transition-opacity duration-300"
@@ -141,42 +147,33 @@
           <!-- Logo Cluster: Solid Logo Layered On Top of Subtle Watermark -->
           <div class="shrink-0 relative flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 select-none">
             <!-- Subtle Watermark Logo (Expanded in the background) -->
-            <img
-              [src]="logoUrl"
-              alt=""
-              aria-hidden="true"
+            <img [src]="logoUrl" alt="" aria-hidden="true"
               class="absolute -right-3 -top-3 w-28 h-28 sm:w-32 sm:h-32 max-w-none object-contain opacity-20 scale-100 group-hover:scale-115 group-hover:opacity-35 transition-all duration-500 pointer-events-none"
-              loading="lazy"
-            />
+              loading="lazy" />
 
             <!-- Solid Logo Badge (Sharp on top) -->
             <div
               class="relative z-10 w-13 h-13 sm:w-15 sm:h-15 rounded-xl overflow-hidden flex items-center justify-center p-1 bg-white/90 backdrop-blur-xs shadow-xs border border-slate-200/80 group-hover:shadow-md group-hover:border-slate-300 transition-all duration-300">
-              <img
-                [src]="logoUrl"
-                [alt]="team.name + ' logo'"
-                class="w-full h-full object-contain"
-                loading="lazy"
-              />
+              <img [src]="logoUrl" [alt]="team.name + ' logo'" class="w-full h-full object-contain" loading="lazy" />
             </div>
           </div>
           } @else {
           <!-- Monogram Crest Fallback: Solid Badge Layered On Top of Subtle Watermark Initials -->
           <div class="shrink-0 relative flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 select-none">
             <!-- Subtle Watermark Monogram (Expanded in background) -->
-            <span
-              aria-hidden="true"
-              class="absolute -right-2 -top-4 font-black text-6xl sm:text-7xl text-slate-900/[0.05] group-hover:text-slate-900/[0.1] group-hover:scale-110 transition-all duration-500 pointer-events-none select-none font-mono">
+            <span aria-hidden="true"
+              class="absolute -right-2 -top-4 font-black text-6xl sm:text-7xl text-slate-900/[0.05] group-hover:text-slate-900/[0.1] group-hover:scale-110 transition-all duration-500 pointer-events-none select-none">
               {{ getTeamMonogram(team.id, team.name) }}
             </span>
 
             <!-- Solid Crest Badge (Matching logo badge dimensions exactly) -->
             <div
               class="relative z-10 w-13 h-13 sm:w-15 sm:h-15 rounded-xl overflow-hidden flex flex-col items-center justify-center p-1 bg-white/90 backdrop-blur-xs shadow-xs border border-slate-200/80 group-hover:shadow-md group-hover:border-slate-300 transition-all duration-300">
-              <span class="text-xs sm:text-sm font-black tracking-wider text-slate-800 font-mono">
+              <span class="text-xs sm:text-sm font-black tracking-wider text-slate-800">
                 {{ getTeamMonogram(team.id, team.name) }}
               </span>
-              <span class="text-[8px] sm:text-[9px] uppercase font-bold text-slate-400 tracking-widest -mt-0.5">PCAP</span>
+              <span
+                class="text-[8px] sm:text-[9px] uppercase font-bold text-slate-400 tracking-widest -mt-0.5">PCAP</span>
             </div>
           </div>
           }
@@ -188,62 +185,41 @@
         <div
           class="grid grid-cols-3 divide-x divide-slate-100 border-t border-slate-100 text-center py-3.5 bg-slate-50/40 backdrop-blur-xs">
           <div class="px-2">
-            <span class="text-xs uppercase font-mono font-bold text-slate-400 block mb-0.5">Record</span>
+            <span class="text-xs uppercase font-bold text-slate-400 block mb-0.5">Record</span>
             <span class="text-sm md:text-base font-black text-slate-900">{{ team.wins }}W - {{ team.losses }}L</span>
           </div>
           <div class="px-2">
-            <span class="text-xs uppercase font-mono font-bold text-slate-400 block mb-0.5">Match Pts</span>
+            <span class="text-xs uppercase font-bold text-slate-400 block mb-0.5">Match Pts</span>
             <span class="text-sm md:text-base font-black text-blue-600">{{ team.matchPoints }}</span>
           </div>
           <div class="px-2">
-            <span class="text-xs uppercase font-mono font-bold text-slate-400 block mb-0.5">Board Pts</span>
+            <span class="text-xs uppercase font-bold text-slate-400 block mb-0.5">Board Pts</span>
             <span class="text-sm md:text-base font-black text-emerald-600">{{ team.boardPointsFor }}</span>
           </div>
         </div>
 
-        <!-- Cell Footer: Toggle Lineup -->
+        <!-- Cell Footer: Permanent Roster Ledger -->
         <div class="border-t border-slate-200 p-4 bg-white/70 backdrop-blur-xs">
           @if (team.roster.length > 0) {
-          <button (click)="toggleTeamRoster(team.id)"
-            class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 text-xs font-bold uppercase tracking-wider text-slate-700 transition-colors cursor-pointer"
-            [class.border-blue-400]="isTeamExpanded(team.id)"
-            [class.bg-blue-50/60]="isTeamExpanded(team.id)"
-            [class.text-blue-700]="isTeamExpanded(team.id)">
-            <span>{{ isTeamExpanded(team.id) ? 'Hide Team Roster' : 'View Team Roster (' + team.roster.length + ')' }}</span>
-            <ng-icon [name]="isTeamExpanded(team.id) ? 'heroChevronUp' : 'heroChevronDown'"
-              class="w-3.5 h-3.5"></ng-icon>
-          </button>
-          } @else {
-          <div
-            class="py-2.5 px-4 rounded-lg border border-dashed border-slate-200 bg-slate-50/60 flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
-            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span class="font-semibold">Roster: To Be Announced</span>
-          </div>
-          }
-
-          <!-- Expanded Lineup Ledger -->
-          @if (isTeamExpanded(team.id)) {
-          <div class="mt-4 pt-3 border-t border-slate-200 divide-y divide-slate-100 animate-in fade-in duration-200 max-h-80 overflow-y-auto pr-1">
+          <div class="divide-y divide-slate-100 max-h-80 overflow-y-auto pr-1">
             @for (player of team.roster; track player.id) {
             <div class="flex items-center justify-between py-2.5 px-1 text-sm hover:bg-slate-50/80 transition-colors">
               <div class="flex items-center gap-2 min-w-0">
                 @if (player.category) {
                 <span
-                  class="px-1.5 py-0.5 rounded text-[10px] font-bold font-mono border cursor-help shrink-0 {{ getCategoryBadgeClass(player.category) }}"
+                  class="px-1.5 py-0.5 rounded text-[10px] font-bold border cursor-help shrink-0 {{ getCategoryBadgeClass(player.category) }}"
                   [title]="getCategoryTooltip(player.category)">
                   {{ player.category }}
                 </span>
                 } @else {
-                <span class="w-6 text-center font-bold text-slate-400 text-xs font-mono">#{{ $index + 1 }}</span>
+                <span class="w-6 text-center font-bold text-slate-400 text-xs">#{{ $index + 1 }}</span>
                 }
                 @if (player.federation) {
-                <span class="text-sm select-none" [title]="player.federation">{{ getFederationFlag(player.federation) }}</span>
+                <span class="text-sm select-none" [title]="player.federation">{{ getFederationFlag(player.federation)
+                  }}</span>
                 }
                 @if (player.title) {
-                <span class="px-1.5 py-0.5 rounded text-[10px] {{ getTitleBadgeClass(player.title) }}">
+                <span class="text-xs font-bold text-amber-700 shrink-0">
                   {{ player.title }}
                 </span>
                 }
@@ -251,13 +227,24 @@
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 @if (player.rating) {
-                <span class="text-xs text-slate-600 font-semibold font-mono">{{ player.rating }}</span>
+                <span class="text-xs text-slate-600 font-semibold">{{ player.rating }}</span>
                 } @else {
-                <span class="text-xs font-semibold font-mono text-slate-400 bg-slate-50 border border-slate-200/80 px-1.5 py-0.5 rounded" title="Rating to be announced">(?)</span>
+                <span
+                  class="text-xs font-semibold text-slate-400 bg-slate-50 border border-slate-200/80 px-1.5 py-0.5 rounded"
+                  title="Rating to be announced">(?)</span>
                 }
               </div>
             </div>
             }
+          </div>
+          } @else {
+          <div
+            class="py-2.5 px-4 rounded-lg border border-dashed border-slate-200 bg-slate-50/60 flex items-center justify-center gap-2 text-xs text-slate-400">
+            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="font-semibold">Roster: To Be Announced</span>
           </div>
           }
         </div>

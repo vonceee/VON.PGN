@@ -24,6 +24,23 @@ export interface SelectItem<T = any> {
 
 export type DropdownItem<T = any> = SelectItem<T>;
 
+/**
+ * Line Select Dropdown Component.
+ *
+ * WHY:
+ * Provides a clean, minimalist line-style select input (bottom border only, transparent background)
+ * that eliminates the boxed container and overlapping label notch hack (`bg-white`), blending seamlessly
+ * into modals, panels, and toolbars across the application.
+ *
+ * ARCHITECTURAL CHOICE:
+ * Uses an unboxed bottom underline (`border-0 border-b border-slate-200`) with an active blue underline accent
+ * (`border-b-2 border-blue-600`) without focus rings, paired with a stacked block label above.
+ * The floating CDK connected overlay retains an opaque white surface (`bg-white`) for contrast and legibility.
+ *
+ * ASSUMPTIONS & EDGE CASES:
+ * - Zero horizontal padding (`px-0`) aligns label and select text flush with adjacent form controls.
+ * - Compensates 1px border shift on active state with `-mb-px` to prevent layout jumps.
+ */
 @Component({
   selector: 'app-select',
   standalone: true,
@@ -41,10 +58,10 @@ export type DropdownItem<T = any> = SelectItem<T>;
       #containerRef
       cdkOverlayOrigin
       #trigger="cdkOverlayOrigin">
-      <!-- Overlapping Label -->
+      <!-- Label -->
       @if (label()) {
         <label
-          class="absolute -top-2 left-3 z-10 inline-block bg-white px-1.5 text-xs font-medium transition-colors duration-150 pointer-events-none select-none"
+          class="block text-xs font-medium transition-colors duration-150 select-none mb-1"
           [class.text-slate-600]="!isOpen() && !error() && !disabled()"
           [class.text-blue-600]="isOpen() && !error() && !disabled()"
           [class.text-red-600]="error() && !disabled()"
@@ -63,10 +80,10 @@ export type DropdownItem<T = any> = SelectItem<T>;
         (click)="toggle()"
         [attr.aria-expanded]="isOpen()"
         aria-haspopup="menu"
-        class="inline-flex w-full items-center justify-between gap-x-2 rounded-xl bg-white px-3.5 py-2.5 text-sm/6 font-medium text-gray-900 border border-slate-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600/30 cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        class="inline-flex w-full items-center justify-between gap-x-2 bg-transparent px-0 py-2 text-sm/6 font-medium text-gray-900 border-0 border-b border-slate-200 hover:border-slate-400 focus:outline-none cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        [class.border-b-2]="isOpen() || error()"
+        [class.-mb-px]="isOpen() || error()"
         [class.border-blue-600]="isOpen() && !error()"
-        [class.ring-2]="isOpen() && !error()"
-        [class.ring-blue-600/30]="isOpen() && !error()"
         [class.border-red-500]="error()"
         [class]="buttonClass()">
         <span class="truncate">{{ displayLabel() }}</span>
@@ -131,7 +148,7 @@ export type DropdownItem<T = any> = SelectItem<T>;
 
       <!-- Helper / Error Message -->
       @if (error()) {
-        <p class="mt-1.5 text-xs text-red-600 ml-1 flex items-center gap-1">
+        <p class="mt-1 text-xs text-red-600 flex items-center gap-1">
           <svg class="size-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
             <path
               fill-rule="evenodd"
@@ -141,7 +158,7 @@ export type DropdownItem<T = any> = SelectItem<T>;
           <span>{{ error() }}</span>
         </p>
       } @else if (hint()) {
-        <p class="mt-1.5 text-xs text-slate-500 ml-1">{{ hint() }}</p>
+        <p class="mt-1 text-xs text-slate-500">{{ hint() }}</p>
       }
     </div>
   `,

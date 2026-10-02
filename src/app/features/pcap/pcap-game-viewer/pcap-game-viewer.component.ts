@@ -14,7 +14,7 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ChessBoardComponent, MoveNotationComponent } from '@shared/chess';
 import { Chess } from '@von/chess';
 import { buildTreeFromMoves, findPathToFen } from '../../../core/utils/chess-tree.utils';
@@ -30,6 +30,7 @@ import { PcapMatch, PcapBoardMatchup, getFederationFlag } from '../../../core/mo
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     ChessBoardComponent,
     MoveNotationComponent,
     StudyAnalysisComponent
@@ -40,7 +41,7 @@ import { PcapMatch, PcapBoardMatchup, getFederationFlag } from '../../../core/mo
 export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly pcapService = inject(PcapService);
+  public readonly pcapService = inject(PcapService);
   private readonly toast = inject(ToastService);
   private readonly platformId = inject(PLATFORM_ID);
   readonly engineService = inject(EngineService);
@@ -194,7 +195,7 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
 
   readonly gameResult = computed(() => {
     const h = this.headers();
-    return h['Result'] && h['Result'] !== '*' ? h['Result'] : 'In Progress';
+    return h['Result'] && h['Result'] !== '*' ? h['Result'] : '';
   });
 
   // Active Path in MoveTree for clock and node tracking
@@ -304,9 +305,16 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
         }
       }
     });
+
+    effect(() => {
+      const pgn = this.activePgn();
+      this.loadGame(pgn);
+    });
   }
 
   ngOnInit(): void {
+    this.pcapService.syncFromBackend();
+
     this.route.paramMap.subscribe(params => {
       const mId = params.get('matchId') || '';
       const bNum = Number(params.get('boardNumber')) || 1;
@@ -316,7 +324,9 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
       this.activeBoardNumber.set(bNum);
       this.activeGameType.set(type);
 
-      this.loadGame();
+      if (mId && !this.pcapService.getMatchById(mId)) {
+        this.pcapService.getMatch(mId).subscribe();
+      }
     });
   }
 
@@ -370,9 +380,9 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
     this.boardSize.set(calculatedSize);
   }
 
-  private loadGame(): void {
+  private loadGame(rawPgn?: string): void {
     this.stopAutoplay();
-    const pgn = this.activePgn();
+    const pgn = rawPgn !== undefined ? rawPgn : this.activePgn();
 
     if (!pgn || !pgn.trim()) {
       // Empty state
@@ -410,7 +420,6 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
 
       this.timeline.set(newTimeline);
       this.moveHistory.set(moves);
-      this.currentPly.set(newTimeline.length - 1); // Start at final position or ply 0? Users usually prefer starting position or ending. Starting at ply 0 is standard for playback.
       this.currentPly.set(0);
 
       // Build tree for MoveNotationComponent

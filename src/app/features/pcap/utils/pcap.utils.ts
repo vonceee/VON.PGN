@@ -92,11 +92,6 @@ export function getPcapRoleLabel(role: string): string {
   }
 }
 
-export function getPcapTitleBadgeClass(title?: string): string {
-  if (!title) return 'bg-slate-100 text-slate-600';
-  return 'bg-blue-600 text-white font-bold shadow-2xs';
-}
-
 /**
  * Team Logo asset mappings (WebP format)
  */

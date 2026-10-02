@@ -1,32 +1,8 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
+import { Observable, forkJoin, of, catchError, map, tap, finalize, shareReplay } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PcapTeam, PcapMatch, PcapStanding, PcapConference, PcapMatchStatus } from '../models/pcap.model';
-
-const STORAGE_KEYS = {
-  TEAMS: 'pcap_teams_v5',
-  MATCHES: 'pcap_matches_v5',
-  STANDINGS: 'pcap_standings_v5',
-};
-
-// Clean legacy mock seed data from v1, v2, v3, and v4
-if (typeof window !== 'undefined' && window.localStorage) {
-  try {
-    localStorage.removeItem('pcap_teams_v1');
-    localStorage.removeItem('pcap_matches_v1');
-    localStorage.removeItem('pcap_standings_v1');
-    localStorage.removeItem('pcap_teams_v2');
-    localStorage.removeItem('pcap_matches_v2');
-    localStorage.removeItem('pcap_standings_v2');
-    localStorage.removeItem('pcap_teams_v3');
-    localStorage.removeItem('pcap_matches_v3');
-    localStorage.removeItem('pcap_standings_v3');
-    localStorage.removeItem('pcap_teams_v4');
-    localStorage.removeItem('pcap_matches_v4');
-    localStorage.removeItem('pcap_standings_v4');
-  } catch {}
-}
 
 @Injectable({
   providedIn: 'root'
@@ -37,25 +13,52 @@ export class PcapService {
 
   readonly isLoading = signal<boolean>(true);
 
-  private readonly _teams = signal<PcapTeam[]>(this.loadInitialTeams());
-  private readonly _matches = signal<PcapMatch[]>(this.loadInitialMatches());
-  private readonly _standings = signal<PcapStanding[]>(this.loadInitialStandings());
+  private readonly _teams = signal<PcapTeam[]>([]);
+  private readonly _matches = signal<PcapMatch[]>([]);
+  private readonly _standings = signal<PcapStanding[]>([]);
 
-  constructor() {
-    this.syncFromBackend();
-  }
+  private lastSyncedAt = 0;
+  private readonly CACHE_TTL_MS = 3 * 60 * 1000;
+  private activeSync$?: Observable<boolean>;
 
-  /**
-   * Fetch latest PCAP data from the PostgreSQL database API (Single Source of Truth).
-   */
-  syncFromBackend(): void {
+  syncFromBackend(force: boolean = false): Observable<boolean> {
+    const isFresh = (Date.now() - this.lastSyncedAt) < this.CACHE_TTL_MS;
+    if (!force && this.lastSyncedAt > 0 && isFresh) {
+      this.isLoading.set(false);
+      return of(true);
+    }
+
+    if (!force && this.activeSync$) {
+      return this.activeSync$;
+    }
+
     this.isLoading.set(true);
-    forkJoin({
-      teams: this.http.get<{ success: boolean; data: PcapTeam[] }>(`${this.apiUrl}/teams`),
-      matches: this.http.get<{ success: boolean; data: PcapMatch[] }>(`${this.apiUrl}/matches`),
-      standings: this.http.get<{ success: boolean; data: PcapStanding[] }>(`${this.apiUrl}/standings`)
-    }).subscribe({
-      next: ({ teams, matches, standings }) => {
+
+    const headers: Record<string, string> = force
+      ? { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      : {};
+
+    const sync$ = forkJoin({
+      teams: this.http.get<{ success: boolean; data: PcapTeam[] }>(`${this.apiUrl}/teams`, { headers }).pipe(
+        catchError((err) => {
+          console.warn('PcapService: Failed to fetch teams from backend', err);
+          return of(null);
+        })
+      ),
+      matches: this.http.get<{ success: boolean; data: PcapMatch[] }>(`${this.apiUrl}/matches`, { headers }).pipe(
+        catchError((err) => {
+          console.warn('PcapService: Failed to fetch matches from backend', err);
+          return of(null);
+        })
+      ),
+      standings: this.http.get<{ success: boolean; data: PcapStanding[] }>(`${this.apiUrl}/standings`, { headers }).pipe(
+        catchError((err) => {
+          console.warn('PcapService: Failed to fetch standings from backend', err);
+          return of(null);
+        })
+      )
+    }).pipe(
+      map(({ teams, matches, standings }) => {
         if (teams?.data && Array.isArray(teams.data)) {
           this._teams.set(teams.data);
         }
@@ -65,27 +68,34 @@ export class PcapService {
         if (standings?.data && Array.isArray(standings.data)) {
           this._standings.set(standings.data);
         }
-        this.saveToStorage();
+        this.lastSyncedAt = Date.now();
+        return true;
+      }),
+      catchError((e) => {
+        console.warn('PcapService: Backend sync error, keeping current state', e);
+        return of(false);
+      }),
+      finalize(() => {
         this.isLoading.set(false);
-      },
-      error: (e) => {
-        console.warn('PcapService: Backend offline or unreachable, using local cache', e);
-        this.isLoading.set(false);
-      }
-    });
+        this.activeSync$ = undefined;
+      }),
+      shareReplay(1)
+    );
+
+    this.activeSync$ = sync$;
+    sync$.subscribe();
+
+    return sync$;
   }
 
-  // Filter signals
   readonly conferenceFilter = signal<PcapConference | 'all'>('all');
   readonly statusFilter = signal<PcapMatchStatus | 'all'>('all');
   readonly searchQuery = signal<string>('');
 
-  // Public state signals
   readonly allTeams = this._teams.asReadonly();
   readonly allMatches = this._matches.asReadonly();
   readonly allStandings = this._standings.asReadonly();
 
-  // Computed division teams
   readonly alphaTeams = computed(() =>
     this._teams().filter(t => t.conference === 'alpha')
   );
@@ -94,11 +104,9 @@ export class PcapService {
     this._teams().filter(t => t.conference === 'omega')
   );
 
-  // Backward-compatible aliases
   readonly northTeams = this.alphaTeams;
   readonly southTeams = this.omegaTeams;
 
-  // Computed division standings
   readonly alphaStandings = computed(() =>
     this._standings()
       .filter(s => s.conference === 'alpha')
@@ -113,7 +121,6 @@ export class PcapService {
       .map((s, idx) => ({ ...s, rank: idx + 1 }))
   );
 
-  // Backward-compatible aliases
   readonly northStandings = this.alphaStandings;
   readonly southStandings = this.omegaStandings;
 
@@ -125,7 +132,6 @@ export class PcapService {
     this._matches().filter(m => m.status === 'completed')
   );
 
-  // Dynamic filter for Teams tab
   readonly filteredTeams = computed(() => {
     const conf = this.conferenceFilter();
     const query = this.searchQuery().toLowerCase().trim();
@@ -146,7 +152,6 @@ export class PcapService {
     });
   });
 
-  // Dynamic filter for Matches tab
   readonly filteredMatches = computed(() => {
     const conf = this.conferenceFilter();
     const status = this.statusFilter();
@@ -164,7 +169,6 @@ export class PcapService {
     });
   });
 
-  // Overview statistics
   readonly leagueStats = computed(() => {
     const teams = this._teams();
     const matches = this._matches();
@@ -205,121 +209,150 @@ export class PcapService {
     return this._matches().find(m => m.id === id);
   }
 
-  // --- CRUD & Mutation Methods for Admin ---
-
-  addTeam(team: PcapTeam): void {
-    this._teams.update(teams => [team, ...teams]);
-    const existingStanding = this._standings().find(s => s.teamId === team.id);
-    if (!existingStanding) {
-      const newStanding: PcapStanding = {
-        teamId: team.id,
-        teamName: team.name,
-        conference: team.conference,
-        matchesPlayed: 0,
-        won: 0,
-        drawn: 0,
-        lost: 0,
-        matchPoints: 0,
-        boardPointsFor: 0,
-        boardPointsAgainst: 0,
-        boardPointsDiff: 0,
-        form: [],
-        rank: 99
-      };
-      this._standings.update(standings => [...standings, newStanding]);
+  getMatch(id: string): Observable<PcapMatch | null> {
+    const cached = this._matches().find(m => m.id === id);
+    if (cached) {
+      return of(cached);
     }
-    this.saveToStorage();
-
-    // Persist to backend database
-    this.http.post(`${this.apiUrl}/teams`, team).subscribe({
-      error: (e) => console.warn('Failed to persist new team to backend', e)
-    });
+    return this.http.get<{ success: boolean; data: PcapMatch }>(`${this.apiUrl}/matches/${id}`).pipe(
+      map(res => res.data || null),
+      tap(match => {
+        if (match) {
+          this._matches.update(matches => {
+            const index = matches.findIndex(m => m.id === match.id);
+            if (index >= 0) {
+              const updated = [...matches];
+              updated[index] = match;
+              return updated;
+            }
+            return [...matches, match];
+          });
+        }
+      }),
+      catchError(err => {
+        console.warn(`PcapService: Failed to fetch match ${id}`, err);
+        return of(null);
+      })
+    );
   }
 
-  updateTeam(id: string, updates: Partial<PcapTeam>): void {
-    this._teams.update(teams =>
-      teams.map(t => (t.id === id ? { ...t, ...updates } : t))
-    );
-    this._standings.update(standings =>
-      standings.map(s => {
-        if (s.teamId === id) {
-          return {
-            ...s,
-            teamName: updates.name ?? s.teamName,
-            conference: updates.conference ?? s.conference
+
+  addTeam(team: PcapTeam): Observable<PcapTeam> {
+    return this.http.post<{ success: boolean; data: PcapTeam }>(`${this.apiUrl}/teams`, team).pipe(
+      map(res => res.data || team),
+      tap(persistedTeam => {
+        this._teams.update(teams => [persistedTeam, ...teams.filter(t => t.id !== persistedTeam.id)]);
+        const existingStanding = this._standings().find(s => s.teamId === persistedTeam.id);
+        if (!existingStanding) {
+          const newStanding: PcapStanding = {
+            teamId: persistedTeam.id,
+            teamName: persistedTeam.name,
+            conference: persistedTeam.conference,
+            matchesPlayed: 0,
+            won: 0,
+            drawn: 0,
+            lost: 0,
+            matchPoints: 0,
+            boardPointsFor: 0,
+            boardPointsAgainst: 0,
+            boardPointsDiff: 0,
+            form: [],
+            rank: 99
           };
+          this._standings.update(standings => [...standings, newStanding]);
         }
-        return s;
+        this.lastSyncedAt = 0;
       })
     );
-    this.saveToStorage();
-
-    // Persist to backend database
-    this.http.put(`${this.apiUrl}/teams/${id}`, updates).subscribe({
-      error: (e) => console.warn('Failed to update team on backend', e)
-    });
   }
 
-  deleteTeam(id: string): void {
-    this._teams.update(teams => teams.filter(t => t.id !== id));
-    this._standings.update(standings => standings.filter(s => s.teamId !== id));
-    this.saveToStorage();
-
-    // Persist to backend database
-    this.http.delete(`${this.apiUrl}/teams/${id}`).subscribe({
-      error: (e) => console.warn('Failed to delete team on backend', e)
-    });
-  }
-
-  addMatch(match: PcapMatch): void {
-    this._matches.update(matches => [match, ...matches]);
-    this.saveToStorage();
-
-    // Persist to backend database
-    this.http.post(`${this.apiUrl}/matches`, match).subscribe({
-      error: (e) => console.warn('Failed to persist match to backend', e)
-    });
-  }
-
-  updateMatch(id: string, updates: Partial<PcapMatch>): void {
-    this._matches.update(matches =>
-      matches.map(m => (m.id === id ? { ...m, ...updates } : m))
-    );
-    this.saveToStorage();
-
-    // Persist to backend database
-    this.http.put(`${this.apiUrl}/matches/${id}`, updates).subscribe({
-      error: (e) => console.warn('Failed to update match on backend', e)
-    });
-  }
-
-  deleteMatch(id: string): void {
-    this._matches.update(matches => matches.filter(m => m.id !== id));
-    this.saveToStorage();
-
-    // Persist to backend database
-    this.http.delete(`${this.apiUrl}/matches/${id}`).subscribe({
-      error: (e) => console.warn('Failed to delete match on backend', e)
-    });
-  }
-
-  updateStanding(teamId: string, updates: Partial<PcapStanding>): void {
-    this._standings.update(standings =>
-      standings.map(s => {
-        if (s.teamId === teamId) {
-          const updated = { ...s, ...updates };
-          updated.boardPointsDiff = Number((updated.boardPointsFor - updated.boardPointsAgainst).toFixed(1));
-          return updated;
-        }
-        return s;
+  updateTeam(id: string, updates: Partial<PcapTeam>): Observable<PcapTeam> {
+    return this.http.put<{ success: boolean; data: PcapTeam }>(`${this.apiUrl}/teams/${id}`, updates).pipe(
+      map(res => res.data),
+      tap(updatedTeam => {
+        const teamData = updatedTeam || updates;
+        this._teams.update(teams =>
+          teams.map(t => (t.id === id ? { ...t, ...teamData } : t))
+        );
+        this._standings.update(standings =>
+          standings.map(s => {
+            if (s.teamId === id) {
+              return {
+                ...s,
+                teamName: teamData.name ?? s.teamName,
+                conference: teamData.conference ?? s.conference
+              };
+            }
+            return s;
+          })
+        );
+        this.lastSyncedAt = 0;
       })
     );
-    this.saveToStorage();
+  }
 
-    // Persist to backend database
-    this.http.put(`${this.apiUrl}/standings/${teamId}`, updates).subscribe({
-      error: (e) => console.warn('Failed to update standing on backend', e)
-    });
+  deleteTeam(id: string): Observable<boolean> {
+    return this.http.delete<{ success: boolean }>(`${this.apiUrl}/teams/${id}`).pipe(
+      map(res => res.success ?? true),
+      tap(() => {
+        this._teams.update(teams => teams.filter(t => t.id !== id));
+        this._standings.update(standings => standings.filter(s => s.teamId !== id));
+        this.lastSyncedAt = 0;
+      })
+    );
+  }
+
+  addMatch(match: PcapMatch): Observable<PcapMatch> {
+    return this.http.post<{ success: boolean; data: PcapMatch }>(`${this.apiUrl}/matches`, match).pipe(
+      map(res => res.data || match),
+      tap(persistedMatch => {
+        this._matches.update(matches => [persistedMatch, ...matches.filter(m => m.id !== persistedMatch.id)]);
+        this.lastSyncedAt = 0;
+      })
+    );
+  }
+
+  updateMatch(id: string, updates: Partial<PcapMatch>): Observable<PcapMatch> {
+    return this.http.put<{ success: boolean; data: PcapMatch }>(`${this.apiUrl}/matches/${id}`, updates).pipe(
+      map(res => res.data),
+      tap(updatedMatch => {
+        const matchData = updatedMatch || updates;
+        this._matches.update(matches =>
+          matches.map(m => (m.id === id ? { ...m, ...matchData } : m))
+        );
+        this.lastSyncedAt = 0;
+      })
+    );
+  }
+
+  deleteMatch(id: string): Observable<boolean> {
+    return this.http.delete<{ success: boolean }>(`${this.apiUrl}/matches/${id}`).pipe(
+      map(res => res.success ?? true),
+      tap(() => {
+        this._matches.update(matches => matches.filter(m => m.id !== id));
+        this.lastSyncedAt = 0;
+      })
+    );
+  }
+
+  updateStanding(teamId: string, updates: Partial<PcapStanding>): Observable<PcapStanding> {
+    return this.http.put<{ success: boolean; data: PcapStanding }>(`${this.apiUrl}/standings/${teamId}`, updates).pipe(
+      map(res => res.data),
+      tap(updatedStanding => {
+        const standingData = updatedStanding || updates;
+        this._standings.update(standings =>
+          standings.map(s => {
+            if (s.teamId === teamId) {
+              const updated = { ...s, ...standingData };
+              updated.boardPointsDiff = Number((updated.boardPointsFor - updated.boardPointsAgainst).toFixed(1));
+              return updated;
+            }
+            return s;
+          })
+        );
+        this.lastSyncedAt = 0;
+      })
+    );
   }
 
   recalculateStandingsFromMatches(): void {
@@ -379,28 +412,20 @@ export class PcapService {
     });
 
     this._standings.set(updatedStandings);
-    this.saveToStorage();
+    this.lastSyncedAt = 0;
   }
 
   clearAllData(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.removeItem(STORAGE_KEYS.TEAMS);
-      localStorage.removeItem(STORAGE_KEYS.MATCHES);
-      localStorage.removeItem(STORAGE_KEYS.STANDINGS);
-      localStorage.removeItem('pcap_teams_v1');
-      localStorage.removeItem('pcap_matches_v1');
-      localStorage.removeItem('pcap_standings_v1');
-    }
     this._teams.set([]);
     this._matches.set([]);
     this._standings.set([]);
+    this.lastSyncedAt = 0;
   }
 
   resetToDefaults(): void {
     this.isLoading.set(true);
-    // Reset database on PostgreSQL backend and re-sync
     this.http.post<{ success: boolean; message: string }>(`${this.apiUrl}/reset`, {}).subscribe({
-      next: () => this.syncFromBackend(),
+      next: () => this.syncFromBackend(true),
       error: (e) => {
         console.warn('Failed to reset backend PCAP database', e);
         this.isLoading.set(false);
@@ -410,72 +435,5 @@ export class PcapService {
 
   loadSampleData(): void {
     this.resetToDefaults();
-  }
-
-  // --- LocalStorage persistence helpers ---
-
-  private loadInitialTeams(): PcapTeam[] {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEYS.TEAMS);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return (parsed as PcapTeam[]).map(t => ({
-              ...t,
-              roster: (t.roster || []).map(p => ({
-                ...p,
-                federation: p.federation || 'PHI'
-              }))
-            }));
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to parse stored PCAP teams', e);
-      }
-    }
-    return [];
-  }
-
-  private loadInitialMatches(): PcapMatch[] {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEYS.MATCHES);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) return parsed;
-        }
-      } catch (e) {
-        console.warn('Failed to parse stored PCAP matches', e);
-      }
-    }
-    return [];
-  }
-
-  private loadInitialStandings(): PcapStanding[] {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEYS.STANDINGS);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch (e) {
-        console.warn('Failed to parse stored PCAP standings', e);
-      }
-    }
-    return [];
-  }
-
-  private saveToStorage(): void {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        localStorage.setItem(STORAGE_KEYS.TEAMS, JSON.stringify(this._teams()));
-        localStorage.setItem(STORAGE_KEYS.MATCHES, JSON.stringify(this._matches()));
-        localStorage.setItem(STORAGE_KEYS.STANDINGS, JSON.stringify(this._standings()));
-      } catch (e) {
-        console.warn('Failed to persist PCAP data to localStorage', e);
-      }
-    }
   }
 }

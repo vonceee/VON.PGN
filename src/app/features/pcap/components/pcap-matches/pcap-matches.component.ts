@@ -1,18 +1,23 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroChevronDown, heroChevronUp } from '@ng-icons/heroicons/outline';
 import { PcapService } from '../../../../core/services/pcap.service';
-import { PcapConference, PcapMatchStatus } from '../../../../core/models/pcap.model';
+import { PcapConference, PcapMatch, PcapMatchStatus } from '../../../../core/models/pcap.model';
 import { SelectComponent, SelectItem } from '../../../../shared/components/ui/select/select.component';
 import {
-  getPcapTitleBadgeClass,
   getPcapTeamLogo,
   getPcapTeamMonogram,
   getPcapTeamBackdropClass
 } from '../../utils/pcap.utils';
+
+export interface PcapRoundGroup {
+  round: number;
+  season?: string;
+  date?: string;
+  time?: string;
+  matches: PcapMatch[];
+}
 
 @Component({
   selector: 'app-pcap-matches',
@@ -21,14 +26,7 @@ import {
     CommonModule,
     FormsModule,
     RouterModule,
-    NgIconComponent,
     SelectComponent
-  ],
-  providers: [
-    provideIcons({
-      heroChevronDown,
-      heroChevronUp
-    })
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pcap-matches.component.html'
@@ -36,8 +34,8 @@ import {
 export class PcapMatchesComponent {
   public pcapService = inject(PcapService);
 
-  // Expanded match ID for board-by-board match sheet
-  expandedMatchId = signal<string | null>('match-rd13-1');
+  // User manual collapse/expand overrides by round number
+  private readonly collapsedMap = signal<Record<number, boolean>>({});
 
   // Service signals
   matches = this.pcapService.filteredMatches;
@@ -52,8 +50,62 @@ export class PcapMatchesComponent {
     { label: 'Division Omega', value: 'omega' }
   ];
 
+  // Group matches by round
+  readonly roundGroups = computed<PcapRoundGroup[]>(() => {
+    const map = new Map<number, PcapRoundGroup>();
+    for (const m of this.matches()) {
+      const r = m.round || 1;
+      if (!map.has(r)) {
+        map.set(r, {
+          round: r,
+          season: m.season,
+          date: m.date,
+          time: m.time,
+          matches: []
+        });
+      }
+      map.get(r)!.matches.push(m);
+    }
+    return Array.from(map.values()).sort((a, b) => a.round - b.round);
+  });
+
+  isRoundExpanded(round: number): boolean {
+    const custom = this.collapsedMap()[round];
+    if (custom !== undefined) {
+      return custom;
+    }
+    // Default: latest/active round is expanded, earlier rounds collapsed
+    const groups = this.roundGroups();
+    if (groups.length === 0) return true;
+    const maxRound = Math.max(...groups.map(g => g.round));
+    return round === maxRound;
+  }
+
+  toggleRound(round: number): void {
+    const current = this.isRoundExpanded(round);
+    this.collapsedMap.update(map => ({
+      ...map,
+      [round]: !current
+    }));
+  }
+
+  readonly areAllExpanded = computed(() => {
+    const groups = this.roundGroups();
+    if (groups.length === 0) return false;
+    return groups.every(g => this.isRoundExpanded(g.round));
+  });
+
+  toggleExpandAll(): void {
+    const allExp = this.areAllExpanded();
+    const nextVal = !allExp;
+    const newMap: Record<number, boolean> = {};
+    for (const g of this.roundGroups()) {
+      newMap[g.round] = nextVal;
+    }
+    this.collapsedMap.set(newMap);
+  }
+
   // Utility references for template
-  getTitleBadgeClass = getPcapTitleBadgeClass;
   getPcapTeamLogo = getPcapTeamLogo;
   getPcapTeamMonogram = getPcapTeamMonogram;
   getPcapTeamBackdropClass = getPcapTeamBackdropClass;
@@ -64,14 +116,6 @@ export class PcapMatchesComponent {
 
   setConference(conf: PcapConference | 'all') {
     this.pcapService.conferenceFilter.set(conf);
-  }
-
-  toggleMatchBoards(matchId: string) {
-    if (this.expandedMatchId() === matchId) {
-      this.expandedMatchId.set(null);
-    } else {
-      this.expandedMatchId.set(matchId);
-    }
   }
 
   hasBoardLineups(match: any): boolean {
@@ -92,3 +136,5 @@ export class PcapMatchesComponent {
     );
   }
 }
+
+
