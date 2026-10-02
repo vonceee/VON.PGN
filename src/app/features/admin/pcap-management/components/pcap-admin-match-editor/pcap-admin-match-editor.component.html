@@ -26,7 +26,7 @@
   <!-- Fixture Details Card -->
   <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
     <div class="border-b border-slate-100 pb-3">
-      <h3 class="text-sm">Fixture Details</h3>
+      <h3 class="text-sm font-bold">Fixture Details</h3>
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -117,7 +117,7 @@
   <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
       <div class="flex items-center gap-2">
-        <h3 class="text-sm font-bold text-slate-900">Board Match Scoresheet</h3>
+        <h3 class="text-sm font-bold">Board Match Scoresheet</h3>
         <span class="text-xs text-slate-400">•</span>
         <span class="text-xs text-slate-500">7 Boards (Blitz 1 pt + Rapid 2 pts)</span>
       </div>
@@ -160,31 +160,62 @@
                   'Senior' : 'HG' }}
                 </span>
               </td>
-              <td class="px-3 py-2">
-                <select [ngModel]="board.playerA.name" (ngModelChange)="onRosterSelect(board, 'playerA', $event)"
-                  class="w-full px-2 py-1 text-xs rounded-lg border-0 bg-transparent hover:bg-slate-100/60 focus:bg-white font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 cursor-pointer truncate transition-colors">
-                  <option value="">-- Unassigned --</option>
-                  @if (getEligiblePlayers(board.boardNumber, 'teamA').length > 0) {
-                  <optgroup [label]="getEligibleGroupLabel(board.boardNumber)">
-                    @for (p of getEligiblePlayers(board.boardNumber, 'teamA'); track p.id) {
-                    <option [value]="p.name" [disabled]="getAssignedBoard(p.name, board.boardNumber, 'teamA') !== null">
-                      {{ formatPlayerOption(p) }}
-                    </option>
-                    }
-                  </optgroup>
+              <td class="px-3 py-2 align-top">
+                <div class="space-y-1.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] font-bold text-slate-400 shrink-0 uppercase tracking-wider">Blitz:</span>
+                    <select [ngModel]="board.playerA.name" (ngModelChange)="onRosterSelect(board, 'playerA', $event)"
+                      class="w-full px-2 py-1 text-xs rounded-lg border-0 bg-transparent hover:bg-slate-100/60 focus:bg-white font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 cursor-pointer truncate transition-colors">
+                      <option value="">-- Unassigned --</option>
+                      @if (getEligiblePlayers(board.boardNumber, 'teamA').length > 0) {
+                      <optgroup [label]="getEligibleGroupLabel(board.boardNumber)">
+                        @for (p of getEligiblePlayers(board.boardNumber, 'teamA'); track p.id) {
+                        <option [value]="p.name">
+                          {{ formatPlayerOption(p) }}
+                        </option>
+                        }
+                      </optgroup>
+                      }
+                      @if (getOtherPlayers(board.boardNumber, 'teamA').length > 0) {
+                      <optgroup label="Other Team Roster Players">
+                        @for (p of getOtherPlayers(board.boardNumber, 'teamA'); track p.id) {
+                        <option [value]="p.name">
+                          {{ formatPlayerOption(p) }}
+                        </option>
+                        }
+                      </optgroup>
+                      }
+                    </select>
+                  </div>
+
+                  @if (hasRapidSub(board, 'teamA')) {
+                  <div class="flex items-center gap-1.5 py-1">
+                    <span class="text-[10px] font-bold shrink-0 uppercase tracking-wider">Rapid</span>
+                    <select [ngModel]="board.rapidPlayerA?.name || ''"
+                      (ngModelChange)="onRapidSubSelect(board, 'teamA', $event)"
+                      class="flex-1 min-w-0 px-1 py-0.5 text-xs rounded border-0 bg-transparent font-medium text-blue-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-300 cursor-pointer truncate">
+                      <option value="">-- Select Substitute --</option>
+                      @for (p of getRosterPlayers('teamA'); track p.id) {
+                      <option [value]="p.name">{{ formatPlayerOption(p) }}</option>
+                      }
+                    </select>
+                    <button type="button" (click)="removeRapidSub(board, 'teamA')"
+                      class="text-slate-400 hover:text-red-600 text-xs px-1 font-bold cursor-pointer"
+                      title="Remove substitute (use starter for Rapid)">
+                      ✕
+                    </button>
+                  </div>
+                  } @else {
+                  <div>
+                    <button type="button" (click)="enableRapidSub(board, 'teamA')"
+                      class="inline-flex items-center gap-1 text-[10px] font-medium text-slate-400 hover:text-blue-600 transition-colors cursor-pointer">
+                      <span>+ Sub for Rapid</span>
+                    </button>
+                  </div>
                   }
-                  @if (getOtherPlayers(board.boardNumber, 'teamA').length > 0) {
-                  <optgroup label="Other Team Roster Players">
-                    @for (p of getOtherPlayers(board.boardNumber, 'teamA'); track p.id) {
-                    <option [value]="p.name" [disabled]="getAssignedBoard(p.name, board.boardNumber, 'teamA') !== null">
-                      {{ formatPlayerOption(p) }}
-                    </option>
-                    }
-                  </optgroup>
-                  }
-                </select>
+                </div>
               </td>
-              <td class="px-2 py-2">
+              <td class="px-2 py-2 align-top">
                 <select [ngModel]="getBlitzValue(board)" (ngModelChange)="onBlitzChange(board, $event)"
                   class="w-full px-2 py-1 text-xs text-center rounded-lg border-0 bg-transparent hover:bg-slate-100/60 focus:bg-white font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 cursor-pointer transition-colors">
                   @for (opt of blitzOptions; track opt.value) {
@@ -192,7 +223,7 @@
                   }
                 </select>
               </td>
-              <td class="px-2 py-2">
+              <td class="px-2 py-2 align-top">
                 <select [ngModel]="getRapidValue(board)" (ngModelChange)="onRapidChange(board, $event)"
                   class="w-full px-2 py-1 text-xs text-center rounded-lg border-0 bg-transparent hover:bg-slate-100/60 focus:bg-white font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 cursor-pointer transition-colors">
                   @for (opt of rapidOptions; track opt.value) {
@@ -200,29 +231,60 @@
                   }
                 </select>
               </td>
-              <td class="px-3 py-2">
-                <select [ngModel]="board.playerB.name" (ngModelChange)="onRosterSelect(board, 'playerB', $event)"
-                  class="w-full px-2 py-1 text-xs rounded-lg border-0 bg-transparent hover:bg-slate-100/60 focus:bg-white font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 cursor-pointer truncate transition-colors">
-                  <option value="">-- Unassigned --</option>
-                  @if (getEligiblePlayers(board.boardNumber, 'teamB').length > 0) {
-                  <optgroup [label]="getEligibleGroupLabel(board.boardNumber)">
-                    @for (p of getEligiblePlayers(board.boardNumber, 'teamB'); track p.id) {
-                    <option [value]="p.name" [disabled]="getAssignedBoard(p.name, board.boardNumber, 'teamB') !== null">
-                      {{ formatPlayerOption(p) }}
-                    </option>
-                    }
-                  </optgroup>
+              <td class="px-3 py-2 align-top">
+                <div class="space-y-1.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] font-bold text-slate-400 shrink-0 uppercase tracking-wider">Blitz:</span>
+                    <select [ngModel]="board.playerB.name" (ngModelChange)="onRosterSelect(board, 'playerB', $event)"
+                      class="w-full px-2 py-1 text-xs rounded-lg border-0 bg-transparent hover:bg-slate-100/60 focus:bg-white font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-300 cursor-pointer truncate transition-colors">
+                      <option value="">-- Unassigned --</option>
+                      @if (getEligiblePlayers(board.boardNumber, 'teamB').length > 0) {
+                      <optgroup [label]="getEligibleGroupLabel(board.boardNumber)">
+                        @for (p of getEligiblePlayers(board.boardNumber, 'teamB'); track p.id) {
+                        <option [value]="p.name">
+                          {{ formatPlayerOption(p) }}
+                        </option>
+                        }
+                      </optgroup>
+                      }
+                      @if (getOtherPlayers(board.boardNumber, 'teamB').length > 0) {
+                      <optgroup label="Other Team Roster Players">
+                        @for (p of getOtherPlayers(board.boardNumber, 'teamB'); track p.id) {
+                        <option [value]="p.name">
+                          {{ formatPlayerOption(p) }}
+                        </option>
+                        }
+                      </optgroup>
+                      }
+                    </select>
+                  </div>
+
+                  @if (hasRapidSub(board, 'teamB')) {
+                  <div class="flex items-center gap-1.5 py-1">
+                    <span class="text-[10px] font-bold shrink-0 uppercase tracking-wider">Rapid</span>
+                    <select [ngModel]="board.rapidPlayerB?.name || ''"
+                      (ngModelChange)="onRapidSubSelect(board, 'teamB', $event)"
+                      class="flex-1 min-w-0 px-1 py-0.5 text-xs rounded border-0 bg-transparent font-medium text-blue-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-300 cursor-pointer truncate">
+                      <option value="">-- Select Substitute --</option>
+                      @for (p of getRosterPlayers('teamB'); track p.id) {
+                      <option [value]="p.name">{{ formatPlayerOption(p) }}</option>
+                      }
+                    </select>
+                    <button type="button" (click)="removeRapidSub(board, 'teamB')"
+                      class="text-slate-400 hover:text-red-600 text-xs px-1 font-bold cursor-pointer"
+                      title="Remove substitute (use starter for Rapid)">
+                      ✕
+                    </button>
+                  </div>
+                  } @else {
+                  <div>
+                    <button type="button" (click)="enableRapidSub(board, 'teamB')"
+                      class="inline-flex items-center gap-1 text-[10px] font-medium text-slate-400 hover:text-blue-600 transition-colors cursor-pointer">
+                      <span>+ Sub for Rapid</span>
+                    </button>
+                  </div>
                   }
-                  @if (getOtherPlayers(board.boardNumber, 'teamB').length > 0) {
-                  <optgroup label="Other Team Roster Players">
-                    @for (p of getOtherPlayers(board.boardNumber, 'teamB'); track p.id) {
-                    <option [value]="p.name" [disabled]="getAssignedBoard(p.name, board.boardNumber, 'teamB') !== null">
-                      {{ formatPlayerOption(p) }}
-                    </option>
-                    }
-                  </optgroup>
-                  }
-                </select>
+                </div>
               </td>
               <td class="px-2 py-2 text-center">
                 <button type="button" (click)="openPgn.emit(board)"

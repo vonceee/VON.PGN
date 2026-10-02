@@ -167,28 +167,54 @@ export interface PcapTeam {
   roster: PcapRosterPlayer[];
 }
 
+export interface PcapBoardPlayer {
+  name: string;
+  title?: string;
+  rating: number;
+  chesscomUsername?: string;
+}
+
 export interface PcapBoardMatchup {
   boardNumber: number;
   role: PcapPlayerRole;
   roleLabel: string;
-  playerA: {
-    name: string;
-    title?: string;
-    rating: number;
-    chesscomUsername?: string;
-  };
-  playerB: {
-    name: string;
-    title?: string;
-    rating: number;
-    chesscomUsername?: string;
-  };
+  playerA: PcapBoardPlayer;
+  playerB: PcapBoardPlayer;
+  rapidPlayerA?: PcapBoardPlayer;
+  rapidPlayerB?: PcapBoardPlayer;
   blitzScoreA: number; // 1, 0.5, 0
   blitzScoreB: number;
   rapidScoreA: number; // 2, 1, 0
   rapidScoreB: number;
   blitzPgn?: string;
   rapidPgn?: string;
+}
+
+/**
+ * Returns the effective player on a board for a given side and time control segment.
+ * Falls back to playerA / playerB starter if no rapid substitute is specified.
+ */
+export function getBoardPlayer(
+  board: PcapBoardMatchup,
+  side: 'teamA' | 'teamB',
+  format: 'blitz' | 'rapid' = 'blitz'
+): PcapBoardPlayer {
+  if (format === 'rapid') {
+    const sub = side === 'teamA' ? board.rapidPlayerA : board.rapidPlayerB;
+    if (sub && sub.name && sub.name.trim()) {
+      return sub;
+    }
+  }
+  return side === 'teamA' ? board.playerA : board.playerB;
+}
+
+/**
+ * Checks whether either team fielded a substitute player for the Rapid portion.
+ */
+export function hasBoardSubstitute(board: PcapBoardMatchup): boolean {
+  const hasSubA = !!(board.rapidPlayerA?.name && board.rapidPlayerA.name.trim() && board.rapidPlayerA.name.trim().toLowerCase() !== board.playerA?.name?.trim().toLowerCase());
+  const hasSubB = !!(board.rapidPlayerB?.name && board.rapidPlayerB.name.trim() && board.rapidPlayerB.name.trim().toLowerCase() !== board.playerB?.name?.trim().toLowerCase());
+  return hasSubA || hasSubB;
 }
 
 export type PcapMatchStatus = 'upcoming' | 'completed';

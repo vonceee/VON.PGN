@@ -18,7 +18,6 @@ import {
   getFederationFlag
 } from '../../../core/models/pcap.model';
 
-import { TextInputComponent } from '../../../shared/components/ui/text-input/text-input.component';
 import { SelectComponent, SelectItem } from '../../../shared/components/ui/select/select.component';
 import {
   PcapAdminTeamsTableComponent,
@@ -38,7 +37,6 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    TextInputComponent,
     SelectComponent,
     PcapAdminTeamsTableComponent,
     PcapAdminMatchesListComponent,
@@ -69,8 +67,7 @@ export class PcapManagementComponent implements OnInit {
   // Active view tab
   readonly activeTab = signal<'teams' | 'matches' | 'standings'>('teams');
 
-  // Search & Filter
-  readonly searchQuery = signal<string>('');
+  // Filter
   readonly conferenceFilter = signal<PcapConference | 'all'>('all');
   readonly statusFilter = signal<PcapMatchStatus | 'all'>('all');
 
@@ -102,14 +99,10 @@ export class PcapManagementComponent implements OnInit {
 
   // Filtered teams computed
   readonly teamsList = computed(() => {
-    const q = this.searchQuery().toLowerCase().trim();
     const conf = this.conferenceFilter();
 
     return this.pcapService.allTeams().filter(t => {
-      const matchConf = conf === 'all' || t.conference === conf;
-      if (!matchConf) return false;
-      if (!q) return true;
-      return t.name.toLowerCase().includes(q);
+      return conf === 'all' || t.conference === conf;
     });
   });
 
@@ -123,7 +116,6 @@ export class PcapManagementComponent implements OnInit {
 
   // Filtered matches computed
   readonly matchesList = computed(() => {
-    const q = this.searchQuery().toLowerCase().trim();
     const conf = this.conferenceFilter();
     const st = this.statusFilter();
 
@@ -135,15 +127,7 @@ export class PcapManagementComponent implements OnInit {
         m.teamB.conference === conf;
       const matchStatus = st === 'all' || m.status === st;
 
-      if (!matchConf || !matchStatus) return false;
-      if (!q) return true;
-
-      return (
-        m.teamA.name.toLowerCase().includes(q) ||
-        m.teamB.name.toLowerCase().includes(q) ||
-        `round ${m.round}`.includes(q) ||
-        m.season.toLowerCase().includes(q)
-      );
+      return matchConf && matchStatus;
     });
   });
 

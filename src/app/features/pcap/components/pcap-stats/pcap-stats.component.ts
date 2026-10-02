@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@a
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PcapService } from '../../../../core/services/pcap.service';
-import { PcapConference, PcapPlayerCategory, getFederationFlag } from '../../../../core/models/pcap.model';
+import { PcapConference, PcapPlayerCategory, getFederationFlag, getBoardPlayer } from '../../../../core/models/pcap.model';
 import { SelectComponent, SelectItem } from '../../../../shared/components/ui/select/select.component';
 import {
   getPcapCategoryBadgeClass,
@@ -242,17 +242,20 @@ export class PcapStatsComponent {
           return entry;
         };
 
-        const entryA = getOrInitPlayer(pA, match.teamA, board.boardNumber, board.role);
-        const entryB = getOrInitPlayer(pB, match.teamB, board.boardNumber, board.role);
+        // 2a. Rapid Game Processing
+        const rPlayerA = getBoardPlayer(board, 'teamA', 'rapid');
+        const rPlayerB = getBoardPlayer(board, 'teamB', 'rapid');
+        const hasRapidResult = !!(rPlayerA?.name && rPlayerB?.name) && (
+          match.status === 'completed' || !!board.rapidPgn ||
+          (board.rapidScoreA !== undefined && board.rapidScoreB !== undefined && (board.rapidScoreA > 0 || board.rapidScoreB > 0))
+        );
 
-        entryA.matchIds.add(match.id);
-        entryB.matchIds.add(match.id);
+        if (hasRapidResult && rPlayerA?.name && rPlayerB?.name) {
+          const entryA = getOrInitPlayer(rPlayerA, match.teamA, board.boardNumber, board.role);
+          const entryB = getOrInitPlayer(rPlayerB, match.teamB, board.boardNumber, board.role);
+          entryA.matchIds.add(match.id);
+          entryB.matchIds.add(match.id);
 
-        // Rapid Game
-        const hasRapidResult = match.status === 'completed' || !!board.rapidPgn ||
-          (board.rapidScoreA !== undefined && board.rapidScoreB !== undefined && (board.rapidScoreA > 0 || board.rapidScoreB > 0));
-
-        if (hasRapidResult) {
           const scoreA = board.rapidScoreA ?? 0;
           const scoreB = board.rapidScoreB ?? 0;
 
@@ -286,9 +289,9 @@ export class PcapStatsComponent {
             maxScore: 2,
             resultDisplay: scoreA === 2 ? '1 - 0' : (scoreA === 1 ? '½ - ½' : '0 - 1'),
             resultBadge: scoreA === 2 ? 'win' : (scoreA === 1 ? 'draw' : 'loss'),
-            opponentName: pB.name,
-            opponentTitle: pB.title,
-            opponentRating: pB.rating,
+            opponentName: rPlayerB.name,
+            opponentTitle: rPlayerB.title,
+            opponentRating: rPlayerB.rating,
             opponentTeamName: match.teamB.name,
             opponentTeamId: match.teamB.id,
             pgn: board.rapidPgn
@@ -308,20 +311,29 @@ export class PcapStatsComponent {
             maxScore: 2,
             resultDisplay: scoreB === 2 ? '1 - 0' : (scoreB === 1 ? '½ - ½' : '0 - 1'),
             resultBadge: scoreB === 2 ? 'win' : (scoreB === 1 ? 'draw' : 'loss'),
-            opponentName: pA.name,
-            opponentTitle: pA.title,
-            opponentRating: pA.rating,
+            opponentName: rPlayerA.name,
+            opponentTitle: rPlayerA.title,
+            opponentRating: rPlayerA.rating,
             opponentTeamName: match.teamA.name,
             opponentTeamId: match.teamA.id,
             pgn: board.rapidPgn
           });
         }
 
-        // Blitz Game
-        const hasBlitzResult = match.status === 'completed' || !!board.blitzPgn ||
-          (board.blitzScoreA !== undefined && board.blitzScoreB !== undefined && (board.blitzScoreA > 0 || board.blitzScoreB > 0));
+        // 2b. Blitz Game Processing
+        const bPlayerA = getBoardPlayer(board, 'teamA', 'blitz');
+        const bPlayerB = getBoardPlayer(board, 'teamB', 'blitz');
+        const hasBlitzResult = !!(bPlayerA?.name && bPlayerB?.name) && (
+          match.status === 'completed' || !!board.blitzPgn ||
+          (board.blitzScoreA !== undefined && board.blitzScoreB !== undefined && (board.blitzScoreA > 0 || board.blitzScoreB > 0))
+        );
 
-        if (hasBlitzResult) {
+        if (hasBlitzResult && bPlayerA?.name && bPlayerB?.name) {
+          const entryA = getOrInitPlayer(bPlayerA, match.teamA, board.boardNumber, board.role);
+          const entryB = getOrInitPlayer(bPlayerB, match.teamB, board.boardNumber, board.role);
+          entryA.matchIds.add(match.id);
+          entryB.matchIds.add(match.id);
+
           const scoreA = board.blitzScoreA ?? 0;
           const scoreB = board.blitzScoreB ?? 0;
 
@@ -355,9 +367,9 @@ export class PcapStatsComponent {
             maxScore: 1,
             resultDisplay: scoreA === 1 ? '1 - 0' : (scoreA === 0.5 ? '½ - ½' : '0 - 1'),
             resultBadge: scoreA === 1 ? 'win' : (scoreA === 0.5 ? 'draw' : 'loss'),
-            opponentName: pB.name,
-            opponentTitle: pB.title,
-            opponentRating: pB.rating,
+            opponentName: bPlayerB.name,
+            opponentTitle: bPlayerB.title,
+            opponentRating: bPlayerB.rating,
             opponentTeamName: match.teamB.name,
             opponentTeamId: match.teamB.id,
             pgn: board.blitzPgn
@@ -377,9 +389,9 @@ export class PcapStatsComponent {
             maxScore: 1,
             resultDisplay: scoreB === 1 ? '1 - 0' : (scoreB === 0.5 ? '½ - ½' : '0 - 1'),
             resultBadge: scoreB === 1 ? 'win' : (scoreB === 0.5 ? 'draw' : 'loss'),
-            opponentName: pA.name,
-            opponentTitle: pA.title,
-            opponentRating: pA.rating,
+            opponentName: bPlayerA.name,
+            opponentTitle: bPlayerA.title,
+            opponentRating: bPlayerA.rating,
             opponentTeamName: match.teamA.name,
             opponentTeamId: match.teamA.id,
             pgn: board.blitzPgn

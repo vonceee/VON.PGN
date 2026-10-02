@@ -213,6 +213,113 @@
             </thead>
             <tbody class="divide-y divide-slate-100">
               @for (b of match.boards; track b.boardNumber) {
+              @if (hasBoardSubstitute(b)) {
+              <!-- Blitz sub-row -->
+              <tr class="hover:bg-slate-50/80 transition-colors">
+                <td class="py-2.5 px-4 text-center">
+                  <div class="font-bold text-slate-800 text-xs">#{{ b.boardNumber }}</div>
+                  <span class="inline-block mt-0.5 px-1.5 py-0.2 text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-200/60 rounded">Blitz</span>
+                </td>
+                <td class="py-2.5 px-4 font-semibold text-slate-900">
+                  <div class="flex items-center gap-2">
+                    @if (b.playerA.title) {
+                    <span class="text-xs font-bold text-amber-700 shrink-0">{{ b.playerA.title }}</span>
+                    }
+                    <span class="font-bold text-xs sm:text-sm">{{ b.playerA.name }}</span>
+                    <span class="text-slate-400 text-xs">({{ b.playerA.rating }})</span>
+                  </div>
+                </td>
+                <td class="py-2.5 px-4 text-center font-bold">
+                  <span class="px-2 py-0.5 text-slate-800 text-xs font-bold rounded bg-slate-50 border border-slate-200/60">
+                    {{ b.blitzScoreA }} - {{ b.blitzScoreB }}
+                  </span>
+                </td>
+                <td class="py-2.5 px-4 text-center text-slate-300 text-xs font-normal">
+                  —
+                </td>
+                <td class="py-2.5 px-4 text-left font-semibold text-slate-900">
+                  <div class="flex items-center gap-2">
+                    @if (b.playerB.title) {
+                    <span class="text-xs font-bold text-amber-700 shrink-0">{{ b.playerB.title }}</span>
+                    }
+                    <span class="font-bold text-xs sm:text-sm">{{ b.playerB.name }}</span>
+                    <span class="text-slate-400 text-xs">({{ b.playerB.rating }})</span>
+                  </div>
+                </td>
+                <td class="py-2.5 px-4 text-center">
+                  @if (b.blitzPgn) {
+                  <a [routerLink]="['/pcap/game', match.id, b.boardNumber, 'blitz']"
+                    target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold transition-colors shadow-2xs border border-amber-200/60"
+                    title="View Blitz Game">
+                    <span>PGN</span>
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                  } @else {
+                  <span class="text-xs text-slate-400">—</span>
+                  }
+                </td>
+              </tr>
+              <!-- Rapid sub-row -->
+              <tr class="hover:bg-blue-50/40 bg-blue-50/20 transition-colors">
+                <td class="py-2.5 px-4 text-center">
+                  <div class="font-bold text-slate-800 text-xs">#{{ b.boardNumber }}</div>
+                  <span class="inline-block mt-0.5 px-1.5 py-0.2 text-[9px] font-bold text-blue-700 bg-blue-100/70 border border-blue-200/80 rounded">Rapid</span>
+                </td>
+                <td class="py-2.5 px-4 font-semibold text-slate-900">
+                  @let rPlayerA = getBoardPlayer(b, 'teamA', 'rapid');
+                  <div class="flex items-center gap-2">
+                    @if (rPlayerA.title) {
+                    <span class="text-xs font-bold text-amber-700 shrink-0">{{ rPlayerA.title }}</span>
+                    }
+                    <span class="font-bold text-xs sm:text-sm">{{ rPlayerA.name }}</span>
+                    <span class="text-slate-400 text-xs">({{ rPlayerA.rating }})</span>
+                    @if (isPlayerSubstituted(b, 'teamA')) {
+                    <span class="px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider text-blue-700 bg-blue-100 rounded border border-blue-200">Sub</span>
+                    }
+                  </div>
+                </td>
+                <td class="py-2.5 px-4 text-center text-slate-300 text-xs font-normal">
+                  —
+                </td>
+                <td class="py-2.5 px-4 text-center font-bold">
+                  <span class="px-2 py-0.5 text-blue-800 text-xs font-bold rounded bg-blue-50/60 border border-blue-200/60">
+                    {{ b.rapidScoreA }} - {{ b.rapidScoreB }}
+                  </span>
+                </td>
+                <td class="py-2.5 px-4 text-left font-semibold text-slate-900">
+                  @let rPlayerB = getBoardPlayer(b, 'teamB', 'rapid');
+                  <div class="flex items-center gap-2">
+                    @if (rPlayerB.title) {
+                    <span class="text-xs font-bold text-amber-700 shrink-0">{{ rPlayerB.title }}</span>
+                    }
+                    <span class="font-bold text-xs sm:text-sm">{{ rPlayerB.name }}</span>
+                    <span class="text-slate-400 text-xs">({{ rPlayerB.rating }})</span>
+                    @if (isPlayerSubstituted(b, 'teamB')) {
+                    <span class="px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-wider text-blue-700 bg-blue-100 rounded border border-blue-200">Sub</span>
+                    }
+                  </div>
+                </td>
+                <td class="py-2.5 px-4 text-center">
+                  @if (b.rapidPgn) {
+                  <a [routerLink]="['/pcap/game', match.id, b.boardNumber, 'rapid']"
+                    target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-colors shadow-2xs border border-blue-200/60"
+                    title="View Rapid Game">
+                    <span>PGN</span>
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                  } @else {
+                  <span class="text-xs text-slate-400">—</span>
+                  }
+                </td>
+              </tr>
+              } @else {
+              <!-- Standard single row when no substitution -->
               <tr class="hover:bg-slate-50/80 transition-colors">
                 <td class="py-3 px-4 text-center font-bold text-slate-400 text-xs">{{ b.boardNumber }}</td>
                 <td class="py-3 px-4 font-semibold text-slate-900">
@@ -264,6 +371,7 @@
                   }
                 </td>
               </tr>
+              }
               }
             </tbody>
           </table>

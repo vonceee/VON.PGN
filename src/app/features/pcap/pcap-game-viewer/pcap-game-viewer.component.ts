@@ -23,7 +23,7 @@ import { PcapService } from '../../../core/services/pcap.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { EngineService } from '../../../core/services/engine.service';
 import { StudyAnalysisComponent } from '../../study/study-analysis/study-analysis.component';
-import { PcapMatch, PcapBoardMatchup, getFederationFlag } from '../../../core/models/pcap.model';
+import { PcapMatch, PcapBoardMatchup, getFederationFlag, getBoardPlayer } from '../../../core/models/pcap.model';
 
 @Component({
   selector: 'app-pcap-game-viewer',
@@ -173,9 +173,10 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
     if (board) {
       // In PCAP, odd boards White is Team A, even boards White is Team B
       const isOdd = board.boardNumber % 2 !== 0;
-      const p = isOdd ? board.playerA : board.playerB;
+      const type = this.activeGameType();
+      const p = isOdd ? getBoardPlayer(board, 'teamA', type) : getBoardPlayer(board, 'teamB', type);
       if (p?.name) {
-        return { name: p.name, rating: '', title: p.title || '' };
+        return { name: p.name, rating: p.rating ? String(p.rating) : '', title: p.title || '' };
       }
     }
     const h = this.headers();
@@ -187,9 +188,10 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
     const board = this.activeBoard();
     if (board) {
       const isOdd = board.boardNumber % 2 !== 0;
-      const p = isOdd ? board.playerB : board.playerA;
+      const type = this.activeGameType();
+      const p = isOdd ? getBoardPlayer(board, 'teamB', type) : getBoardPlayer(board, 'teamA', type);
       if (p?.name) {
-        return { name: p.name, rating: '', title: p.title || '' };
+        return { name: p.name, rating: p.rating ? String(p.rating) : '', title: p.title || '' };
       }
     }
     const h = this.headers();
@@ -549,11 +551,11 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
 
   getBoardRowData(board: PcapBoardMatchup) {
     const isOdd = board.boardNumber % 2 !== 0;
-    const playerA = board.playerA || { name: 'Player A', title: undefined, rating: 0 };
-    const playerB = board.playerB || { name: 'Player B', title: undefined, rating: 0 };
+    const type = this.activeGameType();
+    const playerA = getBoardPlayer(board, 'teamA', type) || { name: 'Player A', title: undefined, rating: 0 };
+    const playerB = getBoardPlayer(board, 'teamB', type) || { name: 'Player B', title: undefined, rating: 0 };
     const white = isOdd ? playerA : playerB;
     const black = isOdd ? playerB : playerA;
-    const type = this.activeGameType();
 
     const scoreWhiteRaw = isOdd
       ? (type === 'blitz' ? (board.blitzScoreA ?? 0) : (board.rapidScoreA ?? 0))

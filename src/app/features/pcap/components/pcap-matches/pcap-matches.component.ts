@@ -3,7 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { PcapService } from '../../../../core/services/pcap.service';
-import { PcapConference, PcapMatch, PcapMatchStatus } from '../../../../core/models/pcap.model';
+import {
+  PcapConference,
+  PcapMatch,
+  PcapMatchStatus,
+  PcapBoardMatchup,
+  hasBoardSubstitute,
+  getBoardPlayer
+} from '../../../../core/models/pcap.model';
 import { SelectComponent, SelectItem } from '../../../../shared/components/ui/select/select.component';
 import {
   getPcapTeamLogo,
@@ -134,6 +141,15 @@ export class PcapMatchesComponent {
       (match.blitzScoreA > 0 || match.blitzScoreB > 0) ||
       (match.rapidScoreA > 0 || match.rapidScoreB > 0)
     );
+  }
+
+  hasBoardSubstitute = hasBoardSubstitute;
+  getBoardPlayer = getBoardPlayer;
+
+  isPlayerSubstituted(board: PcapBoardMatchup, side: 'teamA' | 'teamB'): boolean {
+    const sub = side === 'teamA' ? board.rapidPlayerA : board.rapidPlayerB;
+    const starter = side === 'teamA' ? board.playerA : board.playerB;
+    return !!(sub?.name && sub.name.trim() && sub.name.trim().toLowerCase() !== starter?.name?.trim().toLowerCase());
   }
 }
 

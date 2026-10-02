@@ -112,16 +112,32 @@ export class PcapAdminMatchEditorComponent implements OnInit {
     const teamB = this.getTeam('teamB');
 
     for (const b of match.boards) {
-      if (b.playerA?.name && !b.playerA.chesscomUsername && teamA?.roster) {
-        const p = teamA.roster.find(r => r.name.trim().toLowerCase() === b.playerA.name.trim().toLowerCase());
+      const nameA = b.playerA?.name?.trim().toLowerCase();
+      if (nameA && !b.playerA.chesscomUsername && teamA?.roster) {
+        const p = teamA.roster.find(r => r.name.trim().toLowerCase() === nameA);
         if (p?.chesscomUsername) {
           b.playerA.chesscomUsername = p.chesscomUsername;
         }
       }
-      if (b.playerB?.name && !b.playerB.chesscomUsername && teamB?.roster) {
-        const p = teamB.roster.find(r => r.name.trim().toLowerCase() === b.playerB.name.trim().toLowerCase());
+      const rapidNameA = b.rapidPlayerA?.name?.trim().toLowerCase();
+      if (rapidNameA && b.rapidPlayerA && !b.rapidPlayerA.chesscomUsername && teamA?.roster) {
+        const p = teamA.roster.find(r => r.name.trim().toLowerCase() === rapidNameA);
+        if (p?.chesscomUsername) {
+          b.rapidPlayerA.chesscomUsername = p.chesscomUsername;
+        }
+      }
+      const nameB = b.playerB?.name?.trim().toLowerCase();
+      if (nameB && !b.playerB.chesscomUsername && teamB?.roster) {
+        const p = teamB.roster.find(r => r.name.trim().toLowerCase() === nameB);
         if (p?.chesscomUsername) {
           b.playerB.chesscomUsername = p.chesscomUsername;
+        }
+      }
+      const rapidNameB = b.rapidPlayerB?.name?.trim().toLowerCase();
+      if (rapidNameB && b.rapidPlayerB && !b.rapidPlayerB.chesscomUsername && teamB?.roster) {
+        const p = teamB.roster.find(r => r.name.trim().toLowerCase() === rapidNameB);
+        if (p?.chesscomUsername) {
+          b.rapidPlayerB.chesscomUsername = p.chesscomUsername;
         }
       }
     }
@@ -352,24 +368,151 @@ export class PcapAdminMatchEditorComponent implements OnInit {
     return `${titlePart}${p.name}${ratingPart}`;
   }
 
+  private clearBoardScoresAndPgns(board: PcapBoardMatchup): void {
+    board.blitzScoreA = 0;
+    board.blitzScoreB = 0;
+    board.rapidScoreA = 0;
+    board.rapidScoreB = 0;
+    board.blitzPgn = undefined;
+    board.rapidPgn = undefined;
+  }
+
   onRosterSelect(board: PcapBoardMatchup, playerField: 'playerA' | 'playerB', selectedName: string): void {
     if (!board[playerField]) {
       board[playerField] = { name: '', rating: 2000 };
     }
     if (!selectedName) {
       board[playerField].name = '';
+      board[playerField].title = '';
+      board[playerField].rating = 2000;
+      board[playerField].chesscomUsername = '';
       return;
     }
+
     const side = playerField === 'playerA' ? 'teamA' : 'teamB';
     const team = this.getTeam(side);
-    const rosterPlayer = team?.roster?.find(p => p.name === selectedName);
-    if (rosterPlayer) {
-      board[playerField].name = rosterPlayer.name;
-      board[playerField].title = rosterPlayer.title || '';
-      board[playerField].rating = rosterPlayer.rating || 2000;
-      board[playerField].chesscomUsername = rosterPlayer.chesscomUsername || '';
+    const targetName = selectedName.trim().toLowerCase();
+
+    // Check if the selected player is already assigned to a different board on this side
+    const otherBoard = this.match().boards.find(b =>
+      b.boardNumber !== board.boardNumber &&
+      b[playerField]?.name?.trim().toLowerCase() === targetName
+    );
+
+    if (otherBoard) {
+      // SWAP: The selected player is already on another board
+      // 1. Snapshot previous player from current board
+      const prevPlayer = {
+        name: board[playerField]?.name || '',
+        title: board[playerField]?.title || '',
+        rating: board[playerField]?.rating || 2000,
+        chesscomUsername: board[playerField]?.chesscomUsername || ''
+      };
+
+      // 2. Put selected player onto current board
+      const rosterPlayer = team?.roster?.find(p => p.name.trim().toLowerCase() === targetName);
+      if (rosterPlayer) {
+        board[playerField].name = rosterPlayer.name;
+        board[playerField].title = rosterPlayer.title || '';
+        board[playerField].rating = rosterPlayer.rating || 2000;
+        board[playerField].chesscomUsername = rosterPlayer.chesscomUsername || '';
+      } else if (otherBoard[playerField]) {
+        board[playerField].name = otherBoard[playerField].name;
+        board[playerField].title = otherBoard[playerField].title || '';
+        board[playerField].rating = otherBoard[playerField].rating || 2000;
+        board[playerField].chesscomUsername = otherBoard[playerField].chesscomUsername || '';
+      }
+
+      // 3. Put current board's previous player onto the other board
+      if (!otherBoard[playerField]) {
+        otherBoard[playerField] = { name: '', rating: 2000 };
+      }
+      otherBoard[playerField].name = prevPlayer.name;
+      otherBoard[playerField].title = prevPlayer.title;
+      otherBoard[playerField].rating = prevPlayer.rating;
+      otherBoard[playerField].chesscomUsername = prevPlayer.chesscomUsername;
+
+      // 4. Clear scores and PGNs for both swapped boards
+      this.clearBoardScoresAndPgns(board);
+      this.clearBoardScoresAndPgns(otherBoard);
+
+      // 5. Automatically recalculate match score totals
+      this.autoSumBoardScores();
     } else {
-      board[playerField].name = selectedName;
+      // Normal single assignment
+      const rosterPlayer = team?.roster?.find(p => p.name === selectedName);
+      if (rosterPlayer) {
+        board[playerField].name = rosterPlayer.name;
+        board[playerField].title = rosterPlayer.title || '';
+        board[playerField].rating = rosterPlayer.rating || 2000;
+        board[playerField].chesscomUsername = rosterPlayer.chesscomUsername || '';
+      } else {
+        board[playerField].name = selectedName;
+      }
+    }
+  }
+
+  getRosterPlayers(side: 'teamA' | 'teamB'): PcapRosterPlayer[] {
+    const team = this.getTeam(side);
+    return team?.roster || [];
+  }
+
+  hasRapidSub(board: PcapBoardMatchup, side: 'teamA' | 'teamB'): boolean {
+    const sub = side === 'teamA' ? board.rapidPlayerA : board.rapidPlayerB;
+    return sub !== undefined;
+  }
+
+  enableRapidSub(board: PcapBoardMatchup, side: 'teamA' | 'teamB'): void {
+    const starter = side === 'teamA' ? board.playerA : board.playerB;
+    const initialSub = {
+      name: '',
+      title: '',
+      rating: starter?.rating || 2000,
+      chesscomUsername: ''
+    };
+    if (side === 'teamA') {
+      board.rapidPlayerA = initialSub;
+    } else {
+      board.rapidPlayerB = initialSub;
+    }
+  }
+
+  removeRapidSub(board: PcapBoardMatchup, side: 'teamA' | 'teamB'): void {
+    if (side === 'teamA') {
+      delete board.rapidPlayerA;
+    } else {
+      delete board.rapidPlayerB;
+    }
+    this.autoSumBoardScores();
+  }
+
+  onRapidSubSelect(board: PcapBoardMatchup, side: 'teamA' | 'teamB', selectedName: string): void {
+    const team = this.getTeam(side);
+    if (!selectedName) {
+      if (side === 'teamA' && board.rapidPlayerA) {
+        board.rapidPlayerA.name = '';
+        board.rapidPlayerA.title = '';
+        board.rapidPlayerA.chesscomUsername = '';
+      } else if (side === 'teamB' && board.rapidPlayerB) {
+        board.rapidPlayerB.name = '';
+        board.rapidPlayerB.title = '';
+        board.rapidPlayerB.chesscomUsername = '';
+      }
+      return;
+    }
+
+    const rosterPlayer = team?.roster?.find(p => p.name.trim().toLowerCase() === selectedName.trim().toLowerCase());
+    const subObj = {
+      name: rosterPlayer ? rosterPlayer.name : selectedName,
+      title: rosterPlayer?.title || '',
+      rating: rosterPlayer?.rating || 2000,
+      chesscomUsername: rosterPlayer?.chesscomUsername || ''
+    };
+
+    if (side === 'teamA') {
+      board.rapidPlayerA = subObj;
+    } else {
+      board.rapidPlayerB = subObj;
     }
   }
 
@@ -388,58 +531,124 @@ export class PcapAdminMatchEditorComponent implements OnInit {
     this.syncBoardUsernames();
 
     let successCount = 0;
-    let skippedCount = 0;
     const warnings: string[] = [];
 
     const teamA = this.getTeam('teamA');
     const teamB = this.getTeam('teamB');
 
     for (const board of match.boards) {
-      // Resolve handles directly or fall back to team roster
-      let uA = board.playerA?.chesscomUsername?.trim();
-      if (!uA && board.playerA?.name && teamA?.roster) {
+      // 1. Resolve Blitz handles
+      let uBlitzA = board.playerA?.chesscomUsername?.trim();
+      if (!uBlitzA && board.playerA?.name && teamA?.roster) {
         const pA = teamA.roster.find(r => r.name.trim().toLowerCase() === board.playerA.name.trim().toLowerCase());
-        uA = pA?.chesscomUsername?.trim();
-        if (uA) board.playerA.chesscomUsername = uA;
+        uBlitzA = pA?.chesscomUsername?.trim();
+        if (uBlitzA) board.playerA.chesscomUsername = uBlitzA;
       }
 
-      let uB = board.playerB?.chesscomUsername?.trim();
-      if (!uB && board.playerB?.name && teamB?.roster) {
+      let uBlitzB = board.playerB?.chesscomUsername?.trim();
+      if (!uBlitzB && board.playerB?.name && teamB?.roster) {
         const pB = teamB.roster.find(r => r.name.trim().toLowerCase() === board.playerB.name.trim().toLowerCase());
-        uB = pB?.chesscomUsername?.trim();
-        if (uB) board.playerB.chesscomUsername = uB;
+        uBlitzB = pB?.chesscomUsername?.trim();
+        if (uBlitzB) board.playerB.chesscomUsername = uBlitzB;
       }
 
-      if (!uA || !uB) {
-        skippedCount++;
-        const pAName = board.playerA?.name || 'Player A';
-        const pBName = board.playerB?.name || 'Player B';
-        warnings.push(`Board ${board.boardNumber} (${pAName} vs ${pBName}): Missing Chess.com handle in Team Roster`);
-        continue;
+      // 2. Resolve Rapid handles (substitute or fallback to starter)
+      const rapidA = (board.rapidPlayerA?.name?.trim()) ? board.rapidPlayerA : board.playerA;
+      let uRapidA = rapidA?.chesscomUsername?.trim();
+      if (!uRapidA && rapidA?.name && teamA?.roster) {
+        const pA = teamA.roster.find(r => r.name.trim().toLowerCase() === rapidA.name.trim().toLowerCase());
+        uRapidA = pA?.chesscomUsername?.trim();
+        if (uRapidA) rapidA.chesscomUsername = uRapidA;
       }
 
-      try {
-        const res = await firstValueFrom(this.chesscomService.findHeadToHeadGames(uA, uB, date));
-        if (res.success) {
-          if (res.blitzGame) {
-            board.blitzPgn = res.blitzGame.pgn;
-            board.blitzScoreA = res.blitzScoreA ?? board.blitzScoreA;
-            board.blitzScoreB = res.blitzScoreB ?? board.blitzScoreB;
-          }
-          if (res.rapidGame) {
-            board.rapidPgn = res.rapidGame.pgn;
-            board.rapidScoreA = res.rapidScoreA ?? board.rapidScoreA;
-            board.rapidScoreB = res.rapidScoreB ?? board.rapidScoreB;
-          }
-          successCount++;
-        } else {
-          warnings.push(`Board ${board.boardNumber} (${uA} vs ${uB}): ${res.message}`);
+      const rapidB = (board.rapidPlayerB?.name?.trim()) ? board.rapidPlayerB : board.playerB;
+      let uRapidB = rapidB?.chesscomUsername?.trim();
+      if (!uRapidB && rapidB?.name && teamB?.roster) {
+        const pB = teamB.roster.find(r => r.name.trim().toLowerCase() === rapidB.name.trim().toLowerCase());
+        uRapidB = pB?.chesscomUsername?.trim();
+        if (uRapidB) rapidB.chesscomUsername = uRapidB;
+      }
+
+      let boardHadSuccess = false;
+
+      // Case A: Identical handles for Blitz and Rapid (No substitutions)
+      if (uBlitzA === uRapidA && uBlitzB === uRapidB) {
+        if (!uBlitzA || !uBlitzB) {
+          const pAName = board.playerA?.name || 'Player A';
+          const pBName = board.playerB?.name || 'Player B';
+          warnings.push(`Board ${board.boardNumber} (${pAName} vs ${pBName}): Missing Chess.com handle in Team Roster`);
+          continue;
         }
-      } catch (e) {
-        warnings.push(`Board ${board.boardNumber} (${uA} vs ${uB}): Request error`);
+
+        try {
+          const res = await firstValueFrom(this.chesscomService.findHeadToHeadGames(uBlitzA, uBlitzB, date));
+          if (res.success) {
+            if (res.blitzGame) {
+              board.blitzPgn = res.blitzGame.pgn;
+              board.blitzScoreA = res.blitzScoreA ?? board.blitzScoreA;
+              board.blitzScoreB = res.blitzScoreB ?? board.blitzScoreB;
+            }
+            if (res.rapidGame) {
+              board.rapidPgn = res.rapidGame.pgn;
+              board.rapidScoreA = res.rapidScoreA ?? board.rapidScoreA;
+              board.rapidScoreB = res.rapidScoreB ?? board.rapidScoreB;
+            }
+            if (res.blitzGame || res.rapidGame) {
+              boardHadSuccess = true;
+            }
+          } else {
+            warnings.push(`Board ${board.boardNumber} (${uBlitzA} vs ${uBlitzB}): ${res.message}`);
+          }
+        } catch (e) {
+          warnings.push(`Board ${board.boardNumber} (${uBlitzA} vs ${uBlitzB}): Request error`);
+        }
+      } else {
+        // Case B: Substitution fielded! Fetch Blitz and Rapid separately
+        // Fetch Blitz segment
+        if (uBlitzA && uBlitzB) {
+          try {
+            const resBlitz = await firstValueFrom(this.chesscomService.findHeadToHeadGames(uBlitzA, uBlitzB, date));
+            if (resBlitz.success && resBlitz.blitzGame) {
+              board.blitzPgn = resBlitz.blitzGame.pgn;
+              board.blitzScoreA = resBlitz.blitzScoreA ?? board.blitzScoreA;
+              board.blitzScoreB = resBlitz.blitzScoreB ?? board.blitzScoreB;
+              boardHadSuccess = true;
+            } else if (!resBlitz.success) {
+              warnings.push(`Board ${board.boardNumber} Blitz (${uBlitzA} vs ${uBlitzB}): ${resBlitz.message}`);
+            }
+          } catch (e) {
+            warnings.push(`Board ${board.boardNumber} Blitz: Request error`);
+          }
+          await new Promise(resolve => setTimeout(resolve, 250));
+        } else {
+          warnings.push(`Board ${board.boardNumber} Blitz: Missing handle for ${board.playerA?.name || 'A'} or ${board.playerB?.name || 'B'}`);
+        }
+
+        // Fetch Rapid segment
+        if (uRapidA && uRapidB) {
+          try {
+            const resRapid = await firstValueFrom(this.chesscomService.findHeadToHeadGames(uRapidA, uRapidB, date));
+            if (resRapid.success && resRapid.rapidGame) {
+              board.rapidPgn = resRapid.rapidGame.pgn;
+              board.rapidScoreA = resRapid.rapidScoreA ?? board.rapidScoreA;
+              board.rapidScoreB = resRapid.rapidScoreB ?? board.rapidScoreB;
+              boardHadSuccess = true;
+            } else if (!resRapid.success) {
+              warnings.push(`Board ${board.boardNumber} Rapid (${uRapidA} vs ${uRapidB}): ${resRapid.message}`);
+            }
+          } catch (e) {
+            warnings.push(`Board ${board.boardNumber} Rapid: Request error`);
+          }
+        } else {
+          warnings.push(`Board ${board.boardNumber} Rapid: Missing handle for ${rapidA?.name || 'A'} or ${rapidB?.name || 'B'}`);
+        }
       }
 
-      // Small 300ms pause between board calls to prevent Chess.com rate-limiting (429)
+      if (boardHadSuccess) {
+        successCount++;
+      }
+
+      // 300ms pause between boards to prevent Chess.com rate limits
       await new Promise(resolve => setTimeout(resolve, 300));
     }
 
