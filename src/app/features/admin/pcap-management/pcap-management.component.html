@@ -93,18 +93,18 @@
       <div class="mb-2">
         @if (activeTab() === 'teams') {
         <button type="button" (click)="openNewTeamModal()"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm underline cursor-pointer">
-          <span>Add New Team</span>
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm text-blue-600 underline cursor-pointer">
+          <span>+ Add New Team</span>
         </button>
         } @else if (activeTab() === 'matches') {
         <button type="button" (click)="openNewMatchModal()"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm underline cursor-pointer">
-          <span>Schedule Fixture</span>
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm text-blue-600 underline cursor-pointer">
+          <span>+ Schedule Fixture</span>
         </button>
         } @else if (activeTab() === 'standings') {
         <button type="button" (click)="recalculateStandings()"
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm underline cursor-pointer">
-          <span>Recalculate from Matches</span>
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 text-sm text-blue-600 underline cursor-pointer">
+          <span>+ Recalculate from Matches</span>
         </button>
         }
       </div>

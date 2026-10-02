@@ -1,15 +1,10 @@
 <div #pageContainer appFloatingCursorContainer
   class="w-full 2xl:max-w-7xl mx-auto flex justify-center min-h-screen relative selection:bg-blue-600 selection:text-white overflow-x-hidden">
 
-  <!-- Ambient Hero Lighting Halo -->
-  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-    <div class="tailwind-hero-glow"></div>
-  </div>
 
   <div
     class="w-full grid grid-cols-1 md:grid-cols-[2rem_minmax(0,1fr)_2rem] lg:grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] xl:grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] relative">
 
-    <!-- COLUMN 1: LEFT STRUCTURAL GUTTER RAIL (Architectural Diagonal Lines) -->
     <aside
       class="hidden md:block md:col-start-1 md:col-end-2 border-x border-slate-200/90 relative pointer-events-none select-none z-10 w-full h-full overflow-hidden"
       aria-hidden="true">
@@ -91,6 +86,18 @@
             </svg>
             Standings
           </button>
+
+          <button (click)="setTab('stats')" [class.border-blue-600]="activeTab() === 'stats'"
+            [class.text-blue-600]="activeTab() === 'stats'" [class.border-transparent]="activeTab() !== 'stats'"
+            [class.text-slate-500]="activeTab() !== 'stats'"
+            class="px-3 pb-3.5 text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-1.5 hover:text-slate-900 hover:border-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-4">
+              <path fill-rule="evenodd"
+                d="M3 3a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1H4V4a1 1 0 0 0-1-1Zm14.707 4.293a1 1 0 0 0-1.414 0L12 11.586 9.707 9.293a1 1 0 0 0-1.414 1.414l3 3a1 1 0 0 0 1.414 0l5-5a1 1 0 0 0 0-1.414Z"
+                clip-rule="evenodd" />
+            </svg>
+            Stats
+          </button>
         </nav>
       </div>
 
@@ -107,6 +114,9 @@
       }
       @case ('standings') {
       <app-pcap-standings />
+      }
+      @case ('stats') {
+      <app-pcap-stats />
       }
       }
     </main>

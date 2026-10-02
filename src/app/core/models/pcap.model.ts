@@ -151,6 +151,7 @@ export interface PcapRosterPlayer {
   federation?: string;
   hometown?: string;
   winLossRecord?: string;
+  chesscomUsername?: string;
 }
 
 export interface PcapTeam {
@@ -174,11 +175,13 @@ export interface PcapBoardMatchup {
     name: string;
     title?: string;
     rating: number;
+    chesscomUsername?: string;
   };
   playerB: {
     name: string;
     title?: string;
     rating: number;
+    chesscomUsername?: string;
   };
   blitzScoreA: number; // 1, 0.5, 0
   blitzScoreB: number;

@@ -173,11 +173,6 @@
                   <span class="font-bold text-xs text-slate-900 truncate" [title]="topPlayer().name">
                     {{ topPlayer().name }}
                   </span>
-                  @if (topPlayer().rating) {
-                  <span class="text-xs text-slate-400 font-normal shrink-0">
-                    ({{ topPlayer().rating }})
-                  </span>
-                  }
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
@@ -220,11 +215,6 @@
                   <span class="font-bold text-xs text-slate-900 truncate" [title]="bottomPlayer().name">
                     {{ bottomPlayer().name }}
                   </span>
-                  @if (bottomPlayer().rating) {
-                  <span class="text-xs text-slate-400 font-normal shrink-0">
-                    ({{ bottomPlayer().rating }})
-                  </span>
-                  }
                 </div>
 
                 <div class="flex items-center gap-2 shrink-0">
@@ -283,7 +273,7 @@
               <div class="p-2 flex items-center justify-between select-none shrink-0 px-4 text-slate-900 w-full">
                 <!-- Left Group: Flip Board -->
                 <button type="button" (click)="flipBoard()" title="Flip Board"
-                  class="text-xs text-slate-400 select-none transition-colors cursor-pointer hover:text-slate-700">
+                  class="font-mono text-xs text-slate-400 select-none transition-colors cursor-pointer hover:text-slate-700">
                   <span>Flip Board</span>
                 </button>
 

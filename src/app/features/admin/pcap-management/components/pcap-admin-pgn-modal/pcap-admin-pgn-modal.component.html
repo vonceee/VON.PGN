@@ -1,41 +1,44 @@
 @if (isOpen() && boardData(); as item) {
 <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
   <div
-    class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 my-8 space-y-5 animate-in fade-in zoom-in-95 duration-150">
+    class="bg-white rounded-2xl max-w-2xl w-full p-6 border border-slate-200 my-8 space-y-5 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] flex flex-col">
     <!-- Header -->
-    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3 shrink-0">
       <div class="flex items-center gap-2">
         <h3 class="text-base font-bold text-slate-900">
           Board {{ item.boardNumber }} PGN
         </h3>
-        <span class="text-xs text-slate-400">•</span>
-        <span class="text-xs text-slate-600 font-medium">
+        <span class="text-sm">•</span>
+        <span class="text-sm font-medium">
           {{ item.playerA || 'Player A' }} vs {{ item.playerB || 'Player B' }}
         </span>
       </div>
     </div>
 
-    <!-- Blitz PGN Section -->
-    <div>
-      <app-text-area label="Blitz Game PGN" [(ngModel)]="item.blitzPgn" [rows]="5" placeholder="Paste Blitz PGN here..."
-        class="w-full">
-      </app-text-area>
-    </div>
+    <!-- Scrollable Body -->
+    <div class="flex-1 overflow-y-auto space-y-4 pr-1">
+      <!-- Blitz PGN Section -->
+      <div>
+        <app-text-area label="Blitz Game PGN (3+2)" [(ngModel)]="item.blitzPgn" [rows]="4"
+          placeholder="Paste Blitz PGN here or use Auto-Fetch above..." class="w-full">
+        </app-text-area>
+      </div>
 
-    <!-- Rapid PGN Section -->
-    <div>
-      <app-text-area label="Rapid Game PGN" [(ngModel)]="item.rapidPgn" [rows]="5" placeholder="Paste Rapid PGN here..."
-        class="w-full">
-      </app-text-area>
+      <!-- Rapid PGN Section -->
+      <div>
+        <app-text-area label="Rapid Game PGN (15+0)" [(ngModel)]="item.rapidPgn" [rows]="4"
+          placeholder="Paste Rapid PGN here or use Auto-Fetch above..." class="w-full">
+        </app-text-area>
+      </div>
     </div>
 
     <!-- Footer -->
-    <div class="flex items-center justify-end">
-      <button type="button" (click)="close.emit()" class="px-2 py-1 text-red-600 underline cursor-pointer">
+    <div class="flex items-center justify-end gap-2 border-t border-slate-100 pt-3 shrink-0">
+      <button type="button" (click)="close.emit()" class="px-3 py-1.5 text-sm text-red-600 underline cursor-pointer">
         Cancel
       </button>
-      <button type="button" (click)="save.emit()" class="px-2 py-1 underline cursor-pointer">
-        Save
+      <button type="button" (click)="save.emit()" class="px-3 py-1.5 text-sm text-blue-600 underline cursor-pointer">
+        Save Board PGNs
       </button>
     </div>
   </div>

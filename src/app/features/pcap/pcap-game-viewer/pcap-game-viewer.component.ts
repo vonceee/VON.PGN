@@ -167,29 +167,33 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
     return undefined;
   });
 
-  // Player Names & Titles
+  // Player Names & Titles (Prioritizes official PCAP team roster names over imported PGN in-game names)
   readonly whitePlayer = computed(() => {
-    const h = this.headers();
     const board = this.activeBoard();
-    if (h['White']) return { name: h['White'], rating: h['WhiteElo'] || '', title: '' };
     if (board) {
       // In PCAP, odd boards White is Team A, even boards White is Team B
       const isOdd = board.boardNumber % 2 !== 0;
       const p = isOdd ? board.playerA : board.playerB;
-      return { name: p.name, rating: p.rating ? String(p.rating) : '', title: p.title || '' };
+      if (p?.name) {
+        return { name: p.name, rating: '', title: p.title || '' };
+      }
     }
+    const h = this.headers();
+    if (h['White']) return { name: h['White'], rating: '', title: '' };
     return { name: 'White', rating: '', title: '' };
   });
 
   readonly blackPlayer = computed(() => {
-    const h = this.headers();
     const board = this.activeBoard();
-    if (h['Black']) return { name: h['Black'], rating: h['BlackElo'] || '', title: '' };
     if (board) {
       const isOdd = board.boardNumber % 2 !== 0;
       const p = isOdd ? board.playerB : board.playerA;
-      return { name: p.name, rating: p.rating ? String(p.rating) : '', title: p.title || '' };
+      if (p?.name) {
+        return { name: p.name, rating: '', title: p.title || '' };
+      }
     }
+    const h = this.headers();
+    if (h['Black']) return { name: h['Black'], rating: '', title: '' };
     return { name: 'Black', rating: '', title: '' };
   });
 

@@ -40,7 +40,8 @@ export class PcapAdminTeamEditorComponent {
       rating: null,
       category: 'HG',
       federation: 'PHI',
-      hometown: ''
+      hometown: '',
+      chesscomUsername: ''
     };
 
     this.team.set({

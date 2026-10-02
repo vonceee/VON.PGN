@@ -2,7 +2,7 @@
   <!-- Header with Back navigation & Save button -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
     <div class="flex items-center gap-3">
-      <button type="button" (click)="cancel.emit()" class="underline cursor-pointer">
+      <button type="button" (click)="cancel.emit()" class="text-sm underline cursor-pointer">
         Back to PCAP Management
       </button>
       <div class="h-4 w-px bg-slate-200"></div>
@@ -14,11 +14,11 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <button type="button" (click)="cancel.emit()" class="px-2 py-1 text-red-600 underline cursor-pointer">
+      <button type="button" (click)="cancel.emit()" class="px-2 py-1 text-sm text-red-600 underline cursor-pointer">
         Cancel
       </button>
-      <button type="button" (click)="save.emit()" class="px-2 py-1 underline cursor-pointer">
-        Save Match Fixture
+      <button type="button" (click)="save.emit()" class="px-2 py-1 text-sm text-blue-600 underline cursor-pointer">
+        Save
       </button>
     </div>
   </div>
@@ -42,10 +42,10 @@
         (itemSelected)="match().status = $event.value!" class="w-full">
       </app-select>
 
-      <app-text-input label="Date" placeholder="YYYY-MM-DD" [(ngModel)]="match().date" class="w-full">
+      <app-text-input label="Date" type="date" [(ngModel)]="match().date" class="w-full">
       </app-text-input>
 
-      <app-text-input label="Time" placeholder="7:00 PM PHT" [(ngModel)]="match().time" class="w-full">
+      <app-text-input label="Time" type="time" [(ngModel)]="match().time" class="w-full">
       </app-text-input>
     </div>
   </div>
@@ -117,8 +117,24 @@
   <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
       <div class="flex items-center gap-2">
-        <h3 class="text-sm">Board Match Scoresheet</h3>
+        <h3 class="text-sm font-bold text-slate-900">Board Match Scoresheet</h3>
+        <span class="text-xs text-slate-400">•</span>
+        <span class="text-xs text-slate-500">7 Boards (Blitz 1 pt + Rapid 2 pts)</span>
       </div>
+      <button type="button" (click)="fetchAllBoardsFromChesscom()" [disabled]="isBatchFetching()"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition-colors cursor-pointer disabled:opacity-50 shadow-2xs">
+        @if (isBatchFetching()) {
+        <svg class="animate-spin -ml-0.5 mr-1 h-3.5 w-3.5 text-emerald-700" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        <span>Fetching 7 Boards...</span>
+        } @else {
+        <span>Auto-Fetch All 7 Boards from Chess.com</span>
+        }
+      </button>
     </div>
 
     <div class="border border-slate-200 rounded-xl overflow-hidden">
@@ -210,11 +226,10 @@
               </td>
               <td class="px-2 py-2 text-center">
                 <button type="button" (click)="openPgn.emit(board)"
-                  class="inline-flex items-center cursor-pointer hover:underline"
-                  [ngClass]="(board.blitzPgn || board.rapidPgn)" title="Manage Board PGNs">
+                  class="inline-flex items-center gap-1.5 underline cursor-pointer" title="Manage Board PGNs">
                   <span>PGN</span>
                   @if (board.blitzPgn || board.rapidPgn) {
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
                   }
                 </button>
               </td>
@@ -229,11 +244,11 @@
   <!-- Bottom Actions -->
   <div class="flex items-center justify-between border-t border-slate-200 pt-4">
     <div class="flex items-center gap-2">
-      <button type="button" (click)="cancel.emit()" class="text-red-600 underline cursor-pointer">
+      <button type="button" (click)="cancel.emit()" class="px-2 py-1 text-sm text-red-600 underline cursor-pointer">
         Cancel
       </button>
-      <button type="button" (click)="save.emit()" class="text-blue-600 underline cursor-pointer">
-        Save Match Fixture
+      <button type="button" (click)="save.emit()" class="px-2 py-1text-sm text-blue-600 underline cursor-pointer">
+        Save
       </button>
     </div>
   </div>

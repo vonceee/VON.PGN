@@ -1,0 +1,534 @@
+<div class="space-y-6">
+
+  <!-- Section Header -->
+  <div class="relative mb-6">
+    <span
+      class="text-xs font-bold tracking-widest uppercase max-2xl:mb-4 max-2xl:px-2 max-sm:px-4 2xl:absolute 2xl:-translate-full 2xl:-rotate-90 2xl:text-right text-blue-600 block">
+      Analytics
+    </span>
+    <h2
+      class="max-w-lg px-2 text-[2.5rem]/10 font-medium tracking-tighter text-balance max-sm:px-4 2xl:mt-0 text-slate-900 mb-2">
+      Player Leaderboard & Stats
+    </h2>
+    <p class="text-xs sm:text-sm text-slate-500 px-2 max-sm:px-4">
+      Official player rankings, individual board performance, rapid & blitz point tallies, and game archives.
+    </p>
+  </div>
+
+  <!-- Filter & Search Toolbar -->
+  <div
+    class="border-b border-slate-200 pb-4 flex flex-col md:flex-row gap-4 items-stretch md:items-end justify-between">
+    <!-- Division Underline Tabs -->
+    <nav class="-mb-px flex items-center gap-6 overflow-x-auto" aria-label="Player Division Filter">
+      <button type="button" (click)="setConference('all')" [class.border-blue-600]="selectedConference() === 'all'"
+        [class.text-blue-600]="selectedConference() === 'all'"
+        [class.border-transparent]="selectedConference() !== 'all'"
+        [class.text-slate-500]="selectedConference() !== 'all'"
+        class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+        All Divisions
+      </button>
+      <button type="button" (click)="setConference('alpha')" [class.border-blue-600]="selectedConference() === 'alpha'"
+        [class.text-blue-600]="selectedConference() === 'alpha'"
+        [class.border-transparent]="selectedConference() !== 'alpha'"
+        [class.text-slate-500]="selectedConference() !== 'alpha'"
+        class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+        Division Alpha
+      </button>
+      <button type="button" (click)="setConference('omega')" [class.border-blue-600]="selectedConference() === 'omega'"
+        [class.text-blue-600]="selectedConference() === 'omega'"
+        [class.border-transparent]="selectedConference() !== 'omega'"
+        [class.text-slate-500]="selectedConference() !== 'omega'"
+        class="pb-3 px-1 text-xs sm:text-sm font-semibold border-b-2 cursor-pointer transition-colors whitespace-nowrap flex items-center gap-2 hover:text-slate-900 hover:border-slate-300">
+        Division Omega
+      </button>
+    </nav>
+
+    <!-- Category Dropdown Filter -->
+    <div class="flex items-center">
+      <app-select class="w-44 sm:w-52" label="Category" [items]="categoryOptions" [value]="selectedCategory()"
+        (itemSelected)="setCategory($event.value!)" />
+    </div>
+  </div>
+
+  <!-- Continuous Leaderboard Ledger Container -->
+  <div class="border border-slate-200 bg-white shadow-2xs overflow-hidden">
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm min-w-[850px]">
+        <thead class="bg-slate-50 text-slate-600 text-xs uppercase font-bold border-b border-slate-200 select-none">
+          <tr>
+            <th class="py-3 px-4 w-14 text-center">#</th>
+            <th class="py-3 px-4">Player</th>
+            <th class="py-3 px-4">Franchise</th>
+            <th class="py-3 px-3 text-center">Board Category</th>
+            <th class="py-3 px-3 text-center">GP</th>
+            <th class="py-3 px-3 text-center">Rapid</th>
+            <th class="py-3 px-3 text-center">Blitz</th>
+            <th class="py-3 px-4 text-center font-black text-blue-600">PTS</th>
+            <th class="py-3 px-4 text-center">Win %</th>
+            <th class="py-3 px-4 w-12 text-center"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (player of paginatedPlayerStats(); track player.id) {
+          <!-- Main Player Row -->
+          <tr (click)="togglePlayer(player.id)" class="hover:bg-slate-50/80 cursor-pointer transition-colors"
+            [class.bg-blue-50/20]="expandedPlayerId() === player.id"
+            [class.border-l-4]="expandedPlayerId() === player.id"
+            [class.border-l-blue-600]="expandedPlayerId() === player.id">
+
+            <!-- Rank Badge -->
+            <td class="py-3.5 px-4 text-center">
+              <span class="w-6 h-6 rounded inline-flex items-center justify-center text-xs font-bold"
+                [class.bg-amber-400]="player.rank === 1 && player.totalPoints > 0"
+                [class.text-amber-950]="player.rank === 1 && player.totalPoints > 0"
+                [class.bg-slate-300]="player.rank === 2 && player.totalPoints > 0"
+                [class.text-slate-900]="player.rank === 2 && player.totalPoints > 0"
+                [class.bg-amber-700]="player.rank === 3 && player.totalPoints > 0"
+                [class.text-white]="player.rank === 3 && player.totalPoints > 0"
+                [class.bg-blue-50]="player.rank > 3 && player.rank <= 10 && player.totalPoints > 0"
+                [class.text-blue-700]="player.rank > 3 && player.rank <= 10 && player.totalPoints > 0"
+                [class.border]="player.rank > 3 && player.rank <= 10 && player.totalPoints > 0"
+                [class.border-blue-200]="player.rank > 3 && player.rank <= 10 && player.totalPoints > 0"
+                [class.bg-slate-100]="player.rank > 10 || player.totalPoints === 0"
+                [class.text-slate-600]="player.rank > 10 || player.totalPoints === 0">
+                {{ player.rank }}
+              </span>
+            </td>
+
+            <!-- Player Name & Title -->
+            <td class="py-3.5 px-4">
+              <div class="flex items-center gap-2">
+                <span class="text-base select-none shrink-0" [title]="player.federation || 'PHI'">{{
+                  getFedFlag(player.federation) }}</span>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    @if (player.title) {
+                    <span
+                      class="px-1.5 py-0.2 rounded text-[10px] font-extrabold bg-amber-50 text-amber-800 border border-amber-200/80 shrink-0">
+                      {{ player.title }}
+                    </span>
+                    }
+                    <span class="font-bold text-slate-900 hover:text-blue-600 transition-colors truncate">
+                      {{ player.name }}
+                    </span>
+                  </div>
+                  @if (player.rating) {
+                  <span class="text-[11px] text-slate-400 font-medium">Rating: {{ player.rating }}</span>
+                  }
+                </div>
+              </div>
+            </td>
+
+            <!-- Team Franchise (Clean text without logo overhead) -->
+            <td class="py-3.5 px-4">
+              <span class="font-bold text-slate-800 truncate block max-w-[200px]" [title]="player.teamName">
+                {{ player.teamName }}
+              </span>
+            </td>
+
+            <!-- Board Category -->
+            <td class="py-3.5 px-3 text-center">
+              @if (player.category) {
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold border shrink-0 inline-block"
+                [ngClass]="getCategoryBadgeClass(player.category)">
+                {{ player.category }}
+              </span>
+              } @else {
+              <span class="text-slate-300 text-xs">—</span>
+              }
+            </td>
+
+            <!-- Games Played -->
+            <td class="py-3.5 px-3 text-center font-semibold text-slate-700">
+              {{ player.gamesPlayed }}
+            </td>
+
+            <!-- Rapid Points -->
+            <td class="py-3.5 px-3 text-center">
+              <span class="text-xs font-semibold text-slate-600">
+                {{ player.rapidPoints }}
+              </span>
+              <span class="text-[10px] text-slate-400 block font-normal">({{ player.rapidGamesPlayed }}g)</span>
+            </td>
+
+            <!-- Blitz Points -->
+            <td class="py-3.5 px-3 text-center">
+              <span class="text-xs font-semibold text-slate-600">
+                {{ player.blitzPoints }}
+              </span>
+              <span class="text-[10px] text-slate-400 block font-normal">({{ player.blitzGamesPlayed }}g)</span>
+            </td>
+
+            <!-- Total Points -->
+            <td class="py-3.5 px-4 text-center">
+              <span class="text-base font-black text-blue-600">
+                {{ player.totalPoints }}
+              </span>
+              <span class="text-[10px] text-slate-400 block">/ {{ player.maxPossiblePoints }} max</span>
+            </td>
+
+            <!-- Win Rate % -->
+            <td class="py-3.5 px-4 text-center">
+              <div class="inline-flex flex-col items-center">
+                <span class="text-xs font-bold" [class.text-emerald-700]="player.winRate >= 70"
+                  [class.text-blue-700]="player.winRate >= 50 && player.winRate < 70"
+                  [class.text-slate-600]="player.winRate < 50">
+                  {{ player.winRate }}%
+                </span>
+                <div class="w-12 bg-slate-100 rounded-full h-1.5 mt-1 overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-300"
+                    [class.bg-emerald-500]="player.winRate >= 70"
+                    [class.bg-blue-600]="player.winRate >= 50 && player.winRate < 70"
+                    [class.bg-slate-400]="player.winRate < 50" [style.width.%]="player.winRate"></div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Accordion Chevron Button -->
+            <td class="py-3.5 px-4 text-center">
+              <button type="button" class="text-slate-400 hover:text-slate-600 transition-transform duration-200"
+                [class.rotate-180]="expandedPlayerId() === player.id">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Expandable Accordion Row: Player Info Card + Match History Ledger -->
+          @if (expandedPlayerId() === player.id) {
+          <tr class="bg-slate-50/70 border-b border-slate-200">
+            <td colspan="10" class="p-4 sm:p-6 lg:p-8">
+              <div class="space-y-6">
+
+                <!-- 1. CHESS-RESULTS STYLE PLAYER INFO CARD -->
+                <div class="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-2xs">
+                  <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                      <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      Player Information
+                    </h4>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr] gap-6 items-start">
+
+                    <!-- Flag & Portrait Badge -->
+                    <div class="flex md:flex-col items-center gap-3">
+                      <div
+                        class="w-16 h-12 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-3xl shadow-2xs select-none">
+                        {{ getFedFlag(player.federation) }}
+                      </div>
+                      <span class="text-xs font-bold text-slate-600 uppercase">{{ player.federation || 'PHI' }}</span>
+                    </div>
+
+                    <!-- Column A: Bio Details -->
+                    <div class="space-y-2 text-xs sm:text-sm">
+                      <div class="flex items-baseline gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Name</span>
+                        <span class="font-black text-slate-900 text-base">
+                          @if (player.title) {
+                          <span
+                            class="text-xs font-extrabold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200/80 mr-1.5">
+                            {{ player.title }}
+                          </span>
+                          }
+                          {{ player.name }}
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Franchise</span>
+                        <div class="flex items-center gap-1.5">
+                          <span class="font-bold text-slate-800">{{ player.teamName }}</span>
+                          <span class="text-[10px] text-slate-400 uppercase font-semibold">({{ player.conference
+                            }})</span>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">League Rank</span>
+                        <span class="font-extrabold text-blue-600">#{{ player.rank }}</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Rating</span>
+                        <span class="font-semibold text-slate-700">{{ player.rating || 'Unrated / Active' }}</span>
+                      </div>
+                      @if (player.hometown) {
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Hometown</span>
+                        <span class="text-slate-700 font-medium">{{ player.hometown }}</span>
+                      </div>
+                      }
+                    </div>
+
+                    <!-- Column B: Scoring Record & Efficiency -->
+                    <div class="space-y-2 text-xs sm:text-sm">
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Board Category</span>
+                        <span class="px-2 py-0.5 rounded text-xs font-bold border"
+                          [ngClass]="getCategoryBadgeClass(player.category)">
+                          {{ player.categoryLabel || 'Open Board' }}
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Total Points</span>
+                        <span class="font-black text-slate-900 text-sm">
+                          {{ player.totalPoints }} <span class="text-slate-400 font-normal">/ {{
+                            player.maxPossiblePoints }} pts</span>
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Scoring Split</span>
+                        <span class="text-slate-700 font-medium">
+                          Rapid: <strong class="text-slate-900">{{ player.rapidPoints }}</strong> • Blitz: <strong
+                            class="text-slate-900">{{ player.blitzPoints }}</strong>
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Match Record</span>
+                        <div class="flex items-center gap-1.5 font-bold text-xs">
+                          <span
+                            class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">{{
+                            player.wins }}W</span>
+                          <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">{{
+                            player.draws }}D</span>
+                          <span class="px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200">{{
+                            player.losses }}L</span>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-slate-400 w-28 shrink-0 font-medium">Win Rate</span>
+                        <span class="font-extrabold text-blue-600">{{ player.winRate }}%</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- 2. GAME HISTORY LEDGER -->
+                <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
+                  <div
+                    class="p-4 bg-slate-50/90 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      <h4 class="font-bold text-slate-900 text-sm sm:text-base">
+                        Game History Ledger
+                      </h4>
+                      <span class="text-xs text-slate-500 font-medium">
+                        ({{ player.history.length }} {{ player.history.length === 1 ? 'game' : 'games' }})
+                      </span>
+                    </div>
+                    <span class="text-[11px] text-slate-400">
+                      Rapid (2-1-0) • Blitz (1-½-0) • Official board archives
+                    </span>
+                  </div>
+
+                  @if (player.history.length > 0) {
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm min-w-[700px]">
+                      <thead
+                        class="bg-slate-50 text-slate-500 text-[11px] uppercase font-bold border-b border-slate-200">
+                        <tr>
+                          <th class="py-2.5 px-3 text-center w-12">Rd.</th>
+                          <th class="py-2.5 px-3 text-center w-12">Bo.</th>
+                          <th class="py-2.5 px-3 text-center w-20">Type</th>
+                          <th class="py-2.5 px-3 text-center w-14">Color</th>
+                          <th class="py-2.5 px-4 text-left">Opponent</th>
+                          <th class="py-2.5 px-4 text-left">Opponent Franchise</th>
+                          <th class="py-2.5 px-3 text-center w-24">Result</th>
+                          <th class="py-2.5 px-4 text-right w-28">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-100">
+                        @for (game of player.history; track game.id) {
+                        <tr class="hover:bg-slate-50/60 transition-colors">
+
+                          <!-- Round -->
+                          <td class="py-3 px-3 text-center font-bold text-slate-700">
+                            {{ game.round }}
+                          </td>
+
+                          <!-- Board -->
+                          <td class="py-3 px-3 text-center font-bold text-slate-400">
+                            B{{ game.boardNumber }}
+                          </td>
+
+                          <!-- Game Type (Rapid vs Blitz) -->
+                          <td class="py-3 px-3 text-center">
+                            @if (game.gameType === 'rapid') {
+                            <span
+                              class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/80">
+                              Rapid
+                            </span>
+                            } @else {
+                            <span
+                              class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80">
+                              Blitz
+                            </span>
+                            }
+                          </td>
+
+                          <!-- Piece Color Square Indicator -->
+                          <td class="py-3 px-3 text-center">
+                            <span class="w-3.5 h-3.5 rounded-xs inline-block align-middle shadow-2xs"
+                              [title]="game.color === 'white' ? 'White' : 'Black'"
+                              [class.bg-white]="game.color === 'white'" [class.border]="game.color === 'white'"
+                              [class.border-slate-400]="game.color === 'white'"
+                              [class.bg-slate-900]="game.color === 'black'"></span>
+                          </td>
+
+                          <!-- Opponent -->
+                          <td class="py-3 px-4">
+                            <div class="flex items-center gap-1.5">
+                              @if (game.opponentTitle) {
+                              <span
+                                class="text-[10px] font-extrabold text-amber-700 bg-amber-50 px-1 rounded border border-amber-200/60 shrink-0">
+                                {{ game.opponentTitle }}
+                              </span>
+                              }
+                              <span class="font-bold text-slate-900 truncate">{{ game.opponentName }}</span>
+                              @if (game.opponentRating) {
+                              <span class="text-slate-400 text-xs">({{ game.opponentRating }})</span>
+                              }
+                            </div>
+                          </td>
+
+                          <!-- Opponent Franchise -->
+                          <td class="py-3 px-4">
+                            <span class="text-slate-600 font-medium truncate block max-w-[160px]"
+                              [title]="game.opponentTeamName">
+                              {{ game.opponentTeamName }}
+                            </span>
+                          </td>
+
+                          <!-- Result -->
+                          <td class="py-3 px-3 text-center">
+                            @switch (game.resultBadge) {
+                            @case ('win') {
+                            <span
+                              class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              {{ game.resultDisplay }}
+                              <span class="text-[10px] font-normal text-emerald-600">(+{{ game.score }})</span>
+                            </span>
+                            }
+                            @case ('draw') {
+                            <span
+                              class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-black bg-slate-100 text-slate-700 border border-slate-200">
+                              {{ game.resultDisplay }}
+                              <span class="text-[10px] font-normal text-slate-500">(+{{ game.score }})</span>
+                            </span>
+                            }
+                            @case ('loss') {
+                            <span
+                              class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-black bg-rose-50 text-rose-700 border border-rose-200">
+                              {{ game.resultDisplay }}
+                              <span class="text-[10px] font-normal text-rose-500">(0)</span>
+                            </span>
+                            }
+                            }
+                          </td>
+
+                          <!-- Actions: View Interactive Game -->
+                          <td class="py-3 px-4 text-right">
+                            <a [routerLink]="['/pcap/game', game.matchId, game.boardNumber, game.gameType]"
+                              target="_blank" rel="noopener noreferrer"
+                              class="inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 shadow-2xs transition-colors">
+                              <span>PGN</span>
+                            </a>
+                          </td>
+
+                        </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                  } @else {
+                  <div class="py-8 px-4 text-center text-xs text-slate-400">
+                    No individual match encounters recorded yet for this player in completed rounds.
+                  </div>
+                  }
+                </div>
+
+              </div>
+            </td>
+          </tr>
+          }
+
+          } @empty {
+          <tr>
+            <td colspan="10" class="py-12 px-4 text-center text-slate-400 text-sm">
+              No players found matching your filter criteria.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer Toolbar -->
+    @if (totalPages() > 1 || filteredPlayerStats().length > 25) {
+    <div
+      class="px-4 sm:px-6 py-4 border-t border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+
+      <!-- Range Text -->
+      <div class="text-xs text-slate-600">
+        <span>
+          Showing <strong class="text-slate-900 font-bold">{{ paginationInfo().start }}</strong> to
+          <strong class="text-slate-900 font-bold">{{ paginationInfo().end }}</strong> of
+          <strong class="text-slate-900 font-bold">{{ paginationInfo().total }}</strong> players
+        </span>
+      </div>
+
+      <!-- Page Number Controls -->
+      @if (totalPages() > 1) {
+      <div class="flex items-center gap-1 select-none">
+        <!-- Previous Button -->
+        <button type="button" (click)="prevPage()" [disabled]="currentPage() === 1"
+          [class.opacity-40]="currentPage() === 1" [class.cursor-not-allowed]="currentPage() === 1"
+          class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer flex items-center gap-1 shadow-2xs">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span class="hidden sm:inline">Prev</span>
+        </button>
+
+        <!-- Page Number Buttons -->
+        @for (p of visiblePages(); track $index) {
+        @if (p === '...') {
+        <span class="px-2 py-1 text-xs text-slate-400 font-bold">...</span>
+        } @else {
+        <button type="button" (click)="setPage(+p)"
+          class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-xs font-bold transition-colors cursor-pointer flex items-center justify-center shadow-2xs"
+          [class.bg-blue-600]="currentPage() === p" [class.text-white]="currentPage() === p"
+          [class.bg-white]="currentPage() !== p" [class.text-slate-700]="currentPage() !== p"
+          [class.border]="currentPage() !== p" [class.border-slate-200]="currentPage() !== p"
+          [class.hover:bg-slate-50]="currentPage() !== p">
+          {{ p }}
+        </button>
+        }
+        }
+
+        <!-- Next Button -->
+        <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+          [class.opacity-40]="currentPage() === totalPages()"
+          [class.cursor-not-allowed]="currentPage() === totalPages()"
+          class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer flex items-center gap-1 shadow-2xs">
+          <span class="hidden sm:inline">Next</span>
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+      }
+
+    </div>
+    }
+
+  </div>
+
+</div>

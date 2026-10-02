@@ -9,10 +9,11 @@ import {
   PcapOverviewComponent,
   PcapTeamsComponent,
   PcapMatchesComponent,
-  PcapStandingsComponent
+  PcapStandingsComponent,
+  PcapStatsComponent
 } from './components';
 
-export type PcapTab = 'overview' | 'teams' | 'matches' | 'standings';
+export type PcapTab = 'overview' | 'teams' | 'matches' | 'standings' | 'stats';
 
 @Component({
   selector: 'app-pcap',
@@ -25,7 +26,8 @@ export type PcapTab = 'overview' | 'teams' | 'matches' | 'standings';
     PcapOverviewComponent,
     PcapTeamsComponent,
     PcapMatchesComponent,
-    PcapStandingsComponent
+    PcapStandingsComponent,
+    PcapStatsComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pcap.component.html'
@@ -50,7 +52,7 @@ export class PcapComponent implements OnInit {
 
     this.route.queryParamMap.subscribe((params) => {
       const tabParam = params.get('tab') as PcapTab;
-      if (tabParam && ['overview', 'teams', 'matches', 'standings'].includes(tabParam)) {
+      if (tabParam && ['overview', 'teams', 'matches', 'standings', 'stats'].includes(tabParam)) {
         this.activeTab.set(tabParam);
       }
 

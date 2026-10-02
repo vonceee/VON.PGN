@@ -1,8 +1,11 @@
-import { Component, ChangeDetectionStrategy, input, model, output, computed, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, model, output, computed, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 import { SelectComponent, SelectItem } from '../../../../../shared/components/ui/select/select.component';
 import { TextInputComponent } from '../../../../../shared/components/ui/text-input/text-input.component';
+import { ChesscomService } from '../../../../../core/services/chesscom.service';
+import { ToastService } from '../../../../../core/services/toast.service';
 import {
   PcapMatch,
   PcapTeam,
@@ -27,9 +30,14 @@ export interface ScoreOption {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PcapAdminMatchEditorComponent implements OnInit {
+  private readonly chesscomService = inject(ChesscomService);
+  private readonly toast = inject(ToastService);
+
   readonly match = model.required<PcapMatch>();
   readonly isEditing = input<boolean>(false);
   readonly allTeams = input.required<PcapTeam[]>();
+
+  readonly isBatchFetching = signal<boolean>(false);
 
   readonly divisionOptions: SelectItem<PcapConference | 'interconference'>[] = [
     { label: 'Division Alpha', value: 'alpha' },
@@ -90,9 +98,33 @@ export class PcapAdminMatchEditorComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    // Automatically prefill players if boards have empty entries
+    this.syncBoardUsernames();
     this.prefillIfEmpty('teamA');
     this.prefillIfEmpty('teamB');
+  }
+
+  /**
+   * Syncs Chess.com handles from team rosters onto boards that lack them.
+   */
+  syncBoardUsernames(): void {
+    const match = this.match();
+    const teamA = this.getTeam('teamA');
+    const teamB = this.getTeam('teamB');
+
+    for (const b of match.boards) {
+      if (b.playerA?.name && !b.playerA.chesscomUsername && teamA?.roster) {
+        const p = teamA.roster.find(r => r.name.trim().toLowerCase() === b.playerA.name.trim().toLowerCase());
+        if (p?.chesscomUsername) {
+          b.playerA.chesscomUsername = p.chesscomUsername;
+        }
+      }
+      if (b.playerB?.name && !b.playerB.chesscomUsername && teamB?.roster) {
+        const p = teamB.roster.find(r => r.name.trim().toLowerCase() === b.playerB.name.trim().toLowerCase());
+        if (p?.chesscomUsername) {
+          b.playerB.chesscomUsername = p.chesscomUsername;
+        }
+      }
+    }
   }
 
   private prefillIfEmpty(side: 'teamA' | 'teamB'): void {
@@ -157,7 +189,8 @@ export class PcapAdminMatchEditorComponent implements OnInit {
         b[playerField] = {
           name: selected.name,
           title: selected.title || '',
-          rating: selected.rating || 2000
+          rating: selected.rating || 2000,
+          chesscomUsername: selected.chesscomUsername || ''
         };
       }
     }
@@ -334,8 +367,92 @@ export class PcapAdminMatchEditorComponent implements OnInit {
       board[playerField].name = rosterPlayer.name;
       board[playerField].title = rosterPlayer.title || '';
       board[playerField].rating = rosterPlayer.rating || 2000;
+      board[playerField].chesscomUsername = rosterPlayer.chesscomUsername || '';
     } else {
       board[playerField].name = selectedName;
+    }
+  }
+
+  /**
+   * Batch fetch games from Chess.com for all 7 boards of this match fixture.
+   */
+  async fetchAllBoardsFromChesscom(): Promise<void> {
+    const match = this.match();
+    const date = match.date; // e.g. '2026-09-26'
+    if (!date) {
+      this.toast.show('Please select a Match Date in Fixture Details first', 'error');
+      return;
+    }
+
+    this.isBatchFetching.set(true);
+    this.syncBoardUsernames();
+
+    let successCount = 0;
+    let skippedCount = 0;
+    const warnings: string[] = [];
+
+    const teamA = this.getTeam('teamA');
+    const teamB = this.getTeam('teamB');
+
+    for (const board of match.boards) {
+      // Resolve handles directly or fall back to team roster
+      let uA = board.playerA?.chesscomUsername?.trim();
+      if (!uA && board.playerA?.name && teamA?.roster) {
+        const pA = teamA.roster.find(r => r.name.trim().toLowerCase() === board.playerA.name.trim().toLowerCase());
+        uA = pA?.chesscomUsername?.trim();
+        if (uA) board.playerA.chesscomUsername = uA;
+      }
+
+      let uB = board.playerB?.chesscomUsername?.trim();
+      if (!uB && board.playerB?.name && teamB?.roster) {
+        const pB = teamB.roster.find(r => r.name.trim().toLowerCase() === board.playerB.name.trim().toLowerCase());
+        uB = pB?.chesscomUsername?.trim();
+        if (uB) board.playerB.chesscomUsername = uB;
+      }
+
+      if (!uA || !uB) {
+        skippedCount++;
+        const pAName = board.playerA?.name || 'Player A';
+        const pBName = board.playerB?.name || 'Player B';
+        warnings.push(`Board ${board.boardNumber} (${pAName} vs ${pBName}): Missing Chess.com handle in Team Roster`);
+        continue;
+      }
+
+      try {
+        const res = await firstValueFrom(this.chesscomService.findHeadToHeadGames(uA, uB, date));
+        if (res.success) {
+          if (res.blitzGame) {
+            board.blitzPgn = res.blitzGame.pgn;
+            board.blitzScoreA = res.blitzScoreA ?? board.blitzScoreA;
+            board.blitzScoreB = res.blitzScoreB ?? board.blitzScoreB;
+          }
+          if (res.rapidGame) {
+            board.rapidPgn = res.rapidGame.pgn;
+            board.rapidScoreA = res.rapidScoreA ?? board.rapidScoreA;
+            board.rapidScoreB = res.rapidScoreB ?? board.rapidScoreB;
+          }
+          successCount++;
+        } else {
+          warnings.push(`Board ${board.boardNumber} (${uA} vs ${uB}): ${res.message}`);
+        }
+      } catch (e) {
+        warnings.push(`Board ${board.boardNumber} (${uA} vs ${uB}): Request error`);
+      }
+
+      // Small 300ms pause between board calls to prevent Chess.com rate-limiting (429)
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+
+    this.autoSumBoardScores();
+    this.isBatchFetching.set(false);
+
+    if (successCount === match.boards.length && match.boards.length > 0) {
+      this.toast.show(`Successfully fetched games for all ${successCount} boards!`, 'success');
+    } else if (successCount > 0) {
+      this.toast.show(`Fetched games for ${successCount} board(s). (${warnings.length} unplayed/missing)`, 'achievement');
+    } else {
+      const errorMsg = warnings[0] || 'No games found for the selected match date.';
+      this.toast.show(errorMsg, 'error');
     }
   }
 }

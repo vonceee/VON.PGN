@@ -431,13 +431,36 @@ export class PcapManagementComponent implements OnInit {
   // --- PGN MANAGEMENT FOR BOARDS ---
 
   openPgnDrawer(board: PcapBoardMatchup): void {
+    const match = this.editingMatch();
+
+    let uA = board.playerA.chesscomUsername;
+    if (!uA && match?.teamA?.id) {
+      const fullTeam = this.pcapService.allTeams().find(t => t.id === match.teamA.id);
+      const p = fullTeam?.roster?.find(r => r.name === board.playerA.name);
+      uA = p?.chesscomUsername;
+    }
+
+    let uB = board.playerB.chesscomUsername;
+    if (!uB && match?.teamB?.id) {
+      const fullTeam = this.pcapService.allTeams().find(t => t.id === match.teamB.id);
+      const p = fullTeam?.roster?.find(r => r.name === board.playerB.name);
+      uB = p?.chesscomUsername;
+    }
+
     this.pgnEditingBoard.set({
       boardNumber: board.boardNumber,
       roleLabel: board.roleLabel,
       playerA: board.playerA.name,
       playerB: board.playerB.name,
+      chesscomUsernameA: uA || '',
+      chesscomUsernameB: uB || '',
+      matchDate: match?.date || '',
       blitzPgn: board.blitzPgn || '',
-      rapidPgn: board.rapidPgn || ''
+      rapidPgn: board.rapidPgn || '',
+      blitzScoreA: board.blitzScoreA,
+      blitzScoreB: board.blitzScoreB,
+      rapidScoreA: board.rapidScoreA,
+      rapidScoreB: board.rapidScoreB
     });
     this.pgnDrawerOpen.set(true);
   }
@@ -456,12 +479,39 @@ export class PcapManagementComponent implements OnInit {
       if (b.boardNumber === data.boardNumber) {
         return {
           ...b,
+          playerA: {
+            ...b.playerA,
+            chesscomUsername: data.chesscomUsernameA?.trim() || b.playerA.chesscomUsername
+          },
+          playerB: {
+            ...b.playerB,
+            chesscomUsername: data.chesscomUsernameB?.trim() || b.playerB.chesscomUsername
+          },
           blitzPgn: data.blitzPgn.trim() || undefined,
-          rapidPgn: data.rapidPgn.trim() || undefined
+          rapidPgn: data.rapidPgn.trim() || undefined,
+          blitzScoreA: data.blitzScoreA !== undefined ? data.blitzScoreA : b.blitzScoreA,
+          blitzScoreB: data.blitzScoreB !== undefined ? data.blitzScoreB : b.blitzScoreB,
+          rapidScoreA: data.rapidScoreA !== undefined ? data.rapidScoreA : b.rapidScoreA,
+          rapidScoreB: data.rapidScoreB !== undefined ? data.rapidScoreB : b.rapidScoreB,
         };
       }
       return b;
     });
+
+    // Auto-sum match scores if board scores were updated
+    let bA = 0, bB = 0, rA = 0, rB = 0;
+    current.boards.forEach(b => {
+      bA += Number(b.blitzScoreA || 0);
+      bB += Number(b.blitzScoreB || 0);
+      rA += Number(b.rapidScoreA || 0);
+      rB += Number(b.rapidScoreB || 0);
+    });
+    current.blitzScoreA = Number(bA.toFixed(1));
+    current.blitzScoreB = Number(bB.toFixed(1));
+    current.rapidScoreA = Number(rA.toFixed(1));
+    current.rapidScoreB = Number(rB.toFixed(1));
+    current.scoreA = Number((current.blitzScoreA + current.rapidScoreA).toFixed(1));
+    current.scoreB = Number((current.blitzScoreB + current.rapidScoreB).toFixed(1));
 
     this.editingMatch.set(current);
     this.closePgnDrawer();
