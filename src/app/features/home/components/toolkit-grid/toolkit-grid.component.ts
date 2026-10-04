@@ -221,6 +221,34 @@ export type ToolkitCategory = 'all' | 'openings' | 'tactics' | 'analysis' | 'tou
         </div>
         }
 
+        <!-- Card: PCAP League -->
+        @if (activeCategory() === 'all' || activeCategory() === 'tournaments') {
+        <div routerLink="/pcap" appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"
+          class="skew-on-scroll group bg-slate-900 border border-white/10 rounded-3xl p-7 flex flex-col justify-between min-h-[220px] md:h-60 cursor-none shadow-sm hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-900/20 transition-all duration-300 will-change-transform">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div
+                class="w-11 h-11 rounded-2xl bg-white/10 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                <ng-icon name="heroTrophy" size="1.6rem" color="white" class="text-white shrink-0"></ng-icon>
+              </div>
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/20 text-xs font-medium text-blue-300 border border-blue-500/30">
+                Pro League
+              </span>
+            </div>
+            <h3 class="text-xl font-medium mb-1.5 text-white group-hover:text-blue-200 transition-colors">PCAP League</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              Follow Southeast Asia's premier pro league — conference standings, team rosters, and Grandmaster games.
+            </p>
+          </div>
+          <div class="flex items-center justify-between text-xs font-medium text-blue-400 group-hover:text-blue-300">
+            <span>League Hub</span>
+            <ng-icon name="heroArrowRight" size="0.9rem"
+              class="group-hover:translate-x-1 transition-transform"></ng-icon>
+          </div>
+        </div>
+        }
+
         <!-- Card 6: Interactive Study Board -->
         @if (activeCategory() === 'all' || activeCategory() === 'analysis') {
         <div routerLink="/study" appFloatingCursorTrigger="Explore" cursorIcon="heroPlay"

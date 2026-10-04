@@ -24,6 +24,7 @@ import { ToastService } from '../../../core/services/toast.service';
 import { EngineService } from '../../../core/services/engine.service';
 import { StudyAnalysisComponent } from '../../study/study-analysis/study-analysis.component';
 import { PcapMatch, PcapBoardMatchup, getFederationFlag, getBoardPlayer } from '../../../core/models/pcap.model';
+import { SeoService } from '../../../core/services/seo.service';
 
 @Component({
   selector: 'app-pcap-game-viewer',
@@ -42,6 +43,7 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   public readonly pcapService = inject(PcapService);
+  private readonly seo = inject(SeoService);
   private readonly toast = inject(ToastService);
   private readonly platformId = inject(PLATFORM_ID);
   readonly engineService = inject(EngineService);
@@ -315,6 +317,63 @@ export class PcapGameViewerComponent implements OnInit, AfterViewInit, OnDestroy
     effect(() => {
       const pgn = this.activePgn();
       this.loadGame(pgn);
+    });
+
+    effect(() => {
+      const match = this.currentMatch();
+      const boardNum = this.activeBoardNumber();
+      const format = this.activeGameType();
+      const white = this.whitePlayer();
+      const black = this.blackPlayer();
+      const mId = this.matchId();
+
+      if (match && mId) {
+        const whiteName = white.name && white.name !== 'White' ? white.name : 'White';
+        const blackName = black.name && black.name !== 'Black' ? black.name : 'Black';
+        const formatLabel = format === 'blitz' ? 'Blitz' : 'Rapid';
+        const teamAName = match.teamA.name;
+        const teamBName = match.teamB.name;
+        const pageTitle = `${whiteName} vs ${blackName} (${formatLabel}) - ${teamAName} vs ${teamBName} Board ${boardNum} | PCAP League`;
+        const description = `Watch the PCAP League ${formatLabel} game on Board ${boardNum} between ${whiteName} and ${blackName} (${teamAName} vs ${teamBName}). Interactive board, Stockfish evaluation, and PGN replay.`;
+        const pageUrl = `https://vonchess.net/pcap/game/${mId}/${boardNum}/${format}`;
+
+        this.seo.update({
+          title: pageTitle,
+          description,
+          url: pageUrl,
+          keywords: [whiteName, blackName, teamAName, teamBName, 'PCAP', 'PCAP chess', `Board ${boardNum}`, formatLabel, 'Philippine chess'],
+          jsonLd: [
+            {
+              '@context': 'https://schema.org',
+              '@type': 'SportsEvent',
+              name: `${whiteName} vs ${blackName} - Board ${boardNum} (${formatLabel})`,
+              sport: 'Chess',
+              competitor: [
+                { '@type': 'Person', name: whiteName },
+                { '@type': 'Person', name: blackName }
+              ],
+              location: {
+                '@type': 'VirtualLocation',
+                name: 'vonchess.net'
+              },
+              parentEvent: {
+                '@type': 'SportsEvent',
+                name: `${teamAName} vs ${teamBName} - Round ${match.round}`
+              }
+            },
+            {
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://vonchess.net/' },
+                { '@type': 'ListItem', position: 2, name: 'PCAP League', item: 'https://vonchess.net/pcap' },
+                { '@type': 'ListItem', position: 3, name: 'Matches', item: 'https://vonchess.net/pcap?tab=matches' },
+                { '@type': 'ListItem', position: 4, name: `Board ${boardNum} (${formatLabel})`, item: pageUrl }
+              ]
+            }
+          ]
+        });
+      }
     });
   }
 

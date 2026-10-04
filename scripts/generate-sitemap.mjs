@@ -11,6 +11,11 @@ const DIST_DIR = path.join(__dirname, '../dist/von-pgn/browser');
 
 const routes = [
   { path: '', priority: 1.0, changefreq: 'daily' },
+  { path: 'pcap', priority: 0.9, changefreq: 'daily' },
+  { path: 'pcap?tab=teams', priority: 0.8, changefreq: 'weekly' },
+  { path: 'pcap?tab=matches', priority: 0.8, changefreq: 'daily' },
+  { path: 'pcap?tab=standings', priority: 0.8, changefreq: 'daily' },
+  { path: 'pcap?tab=stats', priority: 0.7, changefreq: 'weekly' },
   { path: 'tactics', priority: 0.9, changefreq: 'daily' },
   { path: 'tactics/leaderboard', priority: 0.7, changefreq: 'weekly' },
   { path: 'explorer', priority: 0.8, changefreq: 'weekly' },
@@ -32,11 +37,15 @@ const routes = [
 function generateXml(routes) {
   const xmlEntries = routes
     .map(
-      (r) => `  <url>
-    <loc>${BASE_URL}/${r.path}</loc>
+      (r) => {
+        const fullUrl = `${BASE_URL}/${r.path}`.replace(/\/$/, BASE_URL.endsWith('/') ? '' : '/');
+        const escapedUrl = (r.path ? `${BASE_URL}/${r.path}` : BASE_URL).replace(/&/g, '&amp;');
+        return `  <url>
+    <loc>${escapedUrl}</loc>
     <changefreq>${r.changefreq}</changefreq>
     <priority>${r.priority.toFixed(1)}</priority>
-  </url>`
+  </url>`;
+      }
     )
     .join('\n');
 
