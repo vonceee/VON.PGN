@@ -24,7 +24,7 @@ export class StudySocketService {
   private authService = inject(AuthService);
   private platformId = inject(PLATFORM_ID);
 
-  private socketUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
+  private socketUrl = environment.chessMicroserviceUrl || 'http://localhost:3000';
   private socket: Socket | null = null;
 
   isConnected = signal(false);

@@ -19,7 +19,7 @@ export interface CanvasGame {
 })
 export class TvService implements OnDestroy {
   private http = inject(HttpClient);
-  private microserviceUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
+  private microserviceUrl = environment.chessMicroserviceUrl || 'http://localhost:3000';
   
   ongoingGames = signal<CanvasGame[]>([]);
   private pollInterval: any;

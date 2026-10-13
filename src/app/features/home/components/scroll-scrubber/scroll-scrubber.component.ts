@@ -1,14 +1,13 @@
 import {
   Component,
   ChangeDetectionStrategy,
-  input,
   output,
 } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroArrowUp } from '@ng-icons/heroicons/outline';
 
 /**
- * Scroll progress indicator and quick scroll-to-top scrubber.
+ * Floating quick scroll-to-top button.
  */
 @Component({
   selector: 'app-scroll-scrubber',
@@ -16,13 +15,7 @@ import { heroArrowUp } from '@ng-icons/heroicons/outline';
   imports: [NgIconComponent],
   providers: [provideIcons({ heroArrowUp })],
   template: `
-    <!-- Slim Scroll-Bound Top Progress Line -->
-    <div
-      class="fixed top-0 left-0 h-[2.5px] bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-400 z-50 pointer-events-none transition-all duration-75 ease-out"
-      [style.width.%]="scrollPercent()">
-    </div>
-
-    <!-- Floating Circular Scroll Progress Scrubber & Scroll to Top -->
+    <!-- Floating Circular Scroll to Top -->
     <div class="fixed bottom-6 right-6 z-40 flex items-center gap-2">
       <button
         type="button"
@@ -36,6 +29,5 @@ import { heroArrowUp } from '@ng-icons/heroicons/outline';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScrollScrubberComponent {
-  public readonly scrollPercent = input<number>(0);
   public readonly scrollToTop = output<void>();
 }

@@ -1,10 +1,9 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://192.168.254.146:8000/api',
-  chessMicroserviceUrl: 'http://192.168.254.146:3006',
-  lichessToken: '', // Set your Lichess personal access token here (https://lichess.org/account/oauth/token)
+  apiUrl: 'http://localhost:8000/api',
+  chessMicroserviceUrl: 'http://localhost:3000',
   reverbKey: 'von-chess-key',
-  reverbHost: '192.168.254.146',
+  reverbHost: 'localhost',
   reverbPort: 8080,
   reverbScheme: 'ws',
 };

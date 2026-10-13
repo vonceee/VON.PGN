@@ -15,7 +15,7 @@ export interface PresenceUpdate {
 export class PresenceService {
   private http = inject(HttpClient);
   private gameService = inject(GameService);
-  private microserviceUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
+  private microserviceUrl = environment.chessMicroserviceUrl || 'http://localhost:3000';
 
   // State: userId -> isOnline
   private presenceMap = signal<Map<string, boolean>>(new Map());

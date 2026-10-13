@@ -1,29 +1,29 @@
 <div
-  class="relative w-full px-3 py-2 flex items-center justify-between shrink-0 before:absolute before:top-0 before:h-px before:left-[-100vw] before:right-0 before:bg-slate-200/90 before:pointer-events-none after:absolute after:bottom-0 after:h-px after:left-[-100vw] after:right-0 after:bg-slate-200/90 after:pointer-events-none">
+  class="relative w-full flex items-center justify-between shrink-0 before:absolute before:top-0 before:h-px before:left-[-100vw] before:right-0 before:bg-slate-200/90 before:pointer-events-none after:absolute after:bottom-0 after:h-px after:left-[-100vw] after:right-0 after:bg-slate-200/90 after:pointer-events-none">
 
-  <span class="mx-2 font-mono text-sm/7 font-medium tracking-widest text-gray-500 uppercase">Chapters</span>
+  <span class="mx-4 font-mono text-sm/7 font-medium tracking-widest text-gray-500 uppercase">Chapters</span>
   <div class="flex items-center gap-1">
     @if (canEdit()) {
     <button type="button" (click)="addChapterClicked.emit()" title="Add chapter"
-      class="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium hover:bg-slate-100 hover:text-slate-900 rounded cursor-pointer transition-colors">
+      class="p-1.5 transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-        class="size-3.5">
+        class="size-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
       </svg>
     </button>
     }
     @if (isExportAllowed()) {
     <button type="button" (click)="exportClicked.emit()" title="Export PGN"
-      class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
+      class="p-1.5 transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
       <ng-icon name="heroArrowDownTraySolid" class="size-4"></ng-icon>
     </button>
     }
     <button type="button" (click)="membersClicked.emit()" title="Study Members"
-      class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
+      class="p-1.5 transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
       <ng-icon name="heroUsersSolid" class="size-4"></ng-icon>
     </button>
     <button type="button" (click)="settingsClicked.emit()" title="Study Settings"
-      class="p-1.5 rounded-md transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
+      class="p-1.5 transition-colors cursor-pointer hover:bg-slate-100 flex items-center justify-center text-slate-600 hover:text-slate-900">
       <ng-icon name="heroCog6ToothSolid" class="size-4"></ng-icon>
     </button>
   </div>

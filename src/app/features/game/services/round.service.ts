@@ -1,4 +1,4 @@
-﻿import { Injectable, inject, signal, NgZone, PLATFORM_ID, DestroyRef } from '@angular/core';
+import { Injectable, inject, signal, NgZone, PLATFORM_ID, DestroyRef } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { io, Socket } from 'socket.io-client';
 import { Subject } from 'rxjs';
@@ -95,7 +95,7 @@ export class RoundService {
   readonly transient  = new TransientMoveService();
 
   private socket: Socket | null = null;
-  private socketUrl = environment.chessMicroserviceUrl || 'http://localhost:3006';
+  private socketUrl = environment.chessMicroserviceUrl || 'http://localhost:3000';
 
   // ── Game state signals ───────────────────────────────────────────────────
   data         = signal<RoundData | null>(null);

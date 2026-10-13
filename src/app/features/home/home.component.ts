@@ -2,7 +2,6 @@ import {
   Component,
   inject,
   OnInit,
-  signal,
   OnDestroy,
   PLATFORM_ID,
   viewChild,
@@ -79,10 +78,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Modular Component Child References
   public readonly interactiveTimeline = viewChild(InteractiveTimelineComponent);
-
-  /** Real-time scroll percentage (0 to 100) for progress indicators */
-  public readonly scrollPercent = signal<number>(0);
-
 
   // Animation instances
   private lenis?: Lenis;
@@ -195,15 +190,12 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
     }
 
-    // 2. Map real-time scroll velocity to card skew and progress updates
+    // 2. Map real-time scroll velocity to card skew
     this.lenis.on('scroll', (e: any) => {
       ScrollTrigger.update();
 
       const velocity = e.velocity || 0;
       this.handleVelocitySkew(velocity, gsap);
-
-      const progress = e.progress !== undefined ? e.progress : 0;
-      this.scrollPercent.set(Math.round(progress * 100));
     });
 
     // 3. RAF Ticker

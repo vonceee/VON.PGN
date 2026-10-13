@@ -3,8 +3,7 @@ import { Injectable, signal } from '@angular/core';
 /**
  * Monitors and maintains the database connectivity status (e.g. Supabase connection).
  * 
- * WHY: Decoupled from NetworkStatusService to avoid circular dependency path:
- *      NetworkStatusService -> GameService -> AuthService -> HttpClient -> Interceptor -> NetworkStatusService.
+ * WHY: Provides a dedicated reactive signal for database-level outage overlays.
  */
 @Injectable({
   providedIn: 'root'
