@@ -17,25 +17,23 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/f
 let nextUniqueId = 0;
 
 /**
- * Reusable Form Input with Modern Overlapping Label Styling.
+ * Line Text Input Component.
  *
  * WHY:
- * Provides a clean, modern "overlapping label" aesthetic where the field label sits
- * directly over the top border with a matching background (`bg-white`), creating a crisp
- * notch effect without layout shifts. Replaces fragmented inline input patterns across dialogs.
+ * Provides a clean, minimalist line-style text input (bottom border only, transparent background)
+ * matching the visual language of `SelectComponent`. Eliminates boxed containers and overlapping
+ * label notch hacks (`bg-white`), blending seamlessly across modals, panels, and toolbars.
  *
  * ARCHITECTURAL CHOICE:
- * Implements both modern Angular Signals (`model<string>()`) and `ControlValueAccessor`.
- * This allows full interoperability with:
- *   1. Signal two-way binding: `[(value)]="mySignal"`
- *   2. Template-driven forms: `[(ngModel)]="myValue"`
- *   3. Reactive forms: `[formControl]="myControl"` or `formControlName="myField"`
+ * Uses an unboxed bottom underline (`border-0 border-b border-slate-200`) with an active blue underline accent
+ * (`border-b-2 border-blue-600`) without focus rings, paired with a stacked block label above.
+ * Implements both modern Angular Signals (`model<string>()`) and `ControlValueAccessor` for seamless
+ * interoperability with signal two-way binding, Reactive Forms, and Template-Driven forms.
  *
  * ASSUMPTIONS & EDGE CASES:
- * - Assumes a solid/card container background (defaults to `bg-white`).
- * - Generates an accessible, unique HTML `id` fallback when `id` input is not provided.
- * - Handles `autofocus` gracefully in `AfterViewInit` without layout flashing.
- * - Supports prefix and suffix icon/button projections via `<ng-content>`.
+ * - Zero horizontal padding (`px-0`) aligns label and input text flush with adjacent line components like `app-select`.
+ * - Compensates 1px border shift on active state with `-mb-px` to prevent layout jumps.
+ * - Handles optional prefix and suffix icon slots while retaining full underline width and flexible input layout.
  */
 @Component({
   selector: 'app-text-input',
@@ -43,29 +41,42 @@ let nextUniqueId = 0;
   imports: [CommonModule, FormsModule],
   host: { class: 'block' },
   template: `
-    <div class="w-full flex flex-col" [class]="containerClass()">
-      <div class="relative w-full">
-        <!-- Overlapping Label -->
-        @if (label()) {
-          <label
-            [for]="computedId()"
-            class="absolute -top-2 left-3 z-10 inline-block bg-white px-1.5 text-xs font-medium transition-colors duration-150 pointer-events-none select-none"
-            [class.text-slate-600]="!error() && !isDisabled()"
-            [class.peer-focus:text-blue-600]="!error() && !isDisabled()"
-            [class.text-red-600]="error() && !isDisabled()"
-            [class.text-slate-400]="isDisabled()"
-            [class]="labelClass()">
-            {{ label() }}
-            @if (required()) {
-              <span class="text-red-500 ml-0.5">*</span>
-            }
-          </label>
-        }
+    <div class="relative w-full text-left" [class]="containerClass()">
+      <!-- Label -->
+      @if (label()) {
+        <label
+          [for]="computedId()"
+          class="block text-xs font-medium transition-colors duration-150 select-none mb-1 cursor-pointer"
+          [class.text-slate-600]="!isFocused() && !error() && !isDisabled()"
+          [class.text-blue-600]="isFocused() && !error() && !isDisabled()"
+          [class.text-red-600]="error() && !isDisabled()"
+          [class.text-slate-400]="isDisabled()"
+          [class.cursor-not-allowed]="isDisabled()"
+          [class]="labelClass()">
+          {{ label() }}
+          @if (required()) {
+            <span class="text-red-500 ml-0.5">*</span>
+          }
+        </label>
+      }
 
+      <div
+        class="inline-flex w-full items-center gap-x-2 bg-transparent px-0 py-2 text-sm/6 font-medium text-gray-900 border-0 border-b border-slate-200 hover:border-slate-400 transition-colors"
+        [class.border-b-2]="isFocused() || error()"
+        [class.-mb-px]="isFocused() || error()"
+        [class.border-blue-600]="isFocused() && !error()"
+        [class.border-red-500]="error()"
+        [class.opacity-50]="isDisabled()"
+        [class.cursor-not-allowed]="isDisabled()"
+        [class.cursor-text]="!isDisabled()"
+        [class]="lineClass()"
+        (click)="onContainerClick($event)">
         <!-- Optional Prefix Slot -->
-        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
-          <ng-content select="[prefix]" />
-        </div>
+        @if (hasPrefix()) {
+          <div class="shrink-0 flex items-center text-gray-400">
+            <ng-content select="[prefix]" />
+          </div>
+        }
 
         <!-- Input Field -->
         <input
@@ -85,34 +96,20 @@ let nextUniqueId = 0;
           (focus)="onFocus($event)"
           (blur)="onBlur($event)"
           (keydown.enter)="onEnter($event)"
-          class="peer block w-full rounded-xl border bg-white py-2.5 text-sm/6 text-slate-900 placeholder:text-muted transition-all duration-150 focus:outline-none"
-          [class.pl-3.5]="!hasPrefix()"
-          [class.pl-10]="hasPrefix()"
-          [class.pr-3.5]="!hasSuffix()"
-          [class.pr-10]="hasSuffix()"
-          [class.border-slate-200]="!error()"
-          [class.focus:border-blue-600]="!error()"
-          [class.focus:ring-2]="!error()"
-          [class.focus:ring-blue-600/30]="!error()"
-          [class.border-red-500]="error()"
-          [class.focus:border-red-600]="error()"
-          [class.focus:ring-2]="error()"
-          [class.focus:ring-red-500/30]="error()"
-          [class.disabled:bg-slate-50]="isDisabled()"
-          [class.disabled:text-slate-400]="isDisabled()"
-          [class.disabled:border-slate-200]="isDisabled()"
-          [class.disabled:cursor-not-allowed]="isDisabled()"
+          class="w-full min-w-0 bg-transparent p-0 border-0 text-sm/6 font-medium text-gray-900 placeholder:text-gray-400 placeholder:font-normal focus:outline-none disabled:cursor-not-allowed"
           [class]="inputClass()" />
 
         <!-- Optional Suffix Slot -->
-        <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center z-10">
-          <ng-content select="[suffix]" />
-        </div>
+        @if (hasSuffix()) {
+          <div class="shrink-0 flex items-center text-gray-400">
+            <ng-content select="[suffix]" />
+          </div>
+        }
       </div>
 
       <!-- Helper / Error Message -->
       @if (error()) {
-        <p class="mt-1.5 text-xs text-red-600 ml-1 flex items-center gap-1">
+        <p class="mt-1 text-xs text-red-600 flex items-center gap-1">
           <svg class="size-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
             <path
               fill-rule="evenodd"
@@ -122,7 +119,7 @@ let nextUniqueId = 0;
           <span>{{ error() }}</span>
         </p>
       } @else if (hint()) {
-        <p class="mt-1.5 text-xs text-slate-500 ml-1">{{ hint() }}</p>
+        <p class="mt-1 text-xs text-slate-500">{{ hint() }}</p>
       }
     </div>
   `,
@@ -157,6 +154,7 @@ export class TextInputComponent implements ControlValueAccessor, AfterViewInit {
   // Styling inputs
   containerClass = input<string>('');
   inputClass = input<string>('');
+  lineClass = input<string>('');
   labelClass = input<string>('');
 
   // Slots presence flags
@@ -172,6 +170,7 @@ export class TextInputComponent implements ControlValueAccessor, AfterViewInit {
   enter = output<KeyboardEvent>();
 
   // Internal State
+  readonly isFocused = signal(false);
   private readonly internalId = `app-text-input-${++nextUniqueId}`;
   readonly computedId = computed(() => this.id() || this.internalId);
 
@@ -194,6 +193,14 @@ export class TextInputComponent implements ControlValueAccessor, AfterViewInit {
 
   // --- Event Handlers ---
 
+  onContainerClick(event: MouseEvent): void {
+    if (this.isDisabled()) return;
+    const target = event.target as HTMLElement;
+    if (!target.closest('button, a')) {
+      this.focusInput();
+    }
+  }
+
   onInput(event: Event): void {
     const target = event.target as HTMLInputElement;
     const newValue = target.value;
@@ -202,10 +209,12 @@ export class TextInputComponent implements ControlValueAccessor, AfterViewInit {
   }
 
   onFocus(event: FocusEvent): void {
+    this.isFocused.set(true);
     this.focus.emit(event);
   }
 
   onBlur(event: FocusEvent): void {
+    this.isFocused.set(false);
     this.onTouched();
     this.blur.emit(event);
   }

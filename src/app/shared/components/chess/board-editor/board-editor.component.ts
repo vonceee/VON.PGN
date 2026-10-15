@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChessBoardComponent } from '../chess-board/chess-board.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark, heroHandRaised } from '@ng-icons/heroicons/outline';
+import { heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark, heroHandRaised, heroPhoto } from '@ng-icons/heroicons/outline';
 import { dragNewPiece } from 'chessground/drag';
 import { Role, Color, Key } from 'chessground/types';
+import { ChessVisionService } from '../../../../core/services/chess-vision.service';
 
 export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
@@ -13,7 +14,7 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
   selector: 'app-board-editor',
   standalone: true,
   imports: [CommonModule, FormsModule, ChessBoardComponent, NgIconComponent],
-  providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark, heroHandRaised })],
+  providers: [provideIcons({ heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark, heroHandRaised, heroPhoto })],
   template: `
     @if (mainBoard) {
       <!-- Dedicated Right-Column Editor Tools Stack -->
@@ -106,6 +107,15 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
           >
             <ng-icon name="heroTrash" class="text-xl"></ng-icon>
           </button>
+          <div class="h-6 w-px bg-slate-300 mx-1"></div>
+          <button 
+            title="From image (Upload, drag-drop, or Ctrl+V)"
+            class="w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+            (click)="imageFileInput.click()"
+          >
+            <ng-icon name="heroPhoto" class="text-xl"></ng-icon>
+          </button>
+          <input #imageFileInput type="file" accept="image/*" class="hidden" (change)="onImageFileSelected($event)">
         </div>
 
         <!-- Turn Selection -->
@@ -283,6 +293,15 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
             >
               <ng-icon name="heroTrash" class="text-xl"></ng-icon>
             </button>
+            <div class="h-6 w-px bg-slate-300 mx-1"></div>
+            <button 
+              title="From image (Upload, drag-drop, or Ctrl+V)"
+              class="w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
+              (click)="imageFileInput2.click()"
+            >
+              <ng-icon name="heroPhoto" class="text-xl"></ng-icon>
+            </button>
+            <input #imageFileInput2 type="file" accept="image/*" class="hidden" (change)="onImageFileSelected($event)">
           </div>
 
           <!-- Turn Selection -->
@@ -349,6 +368,8 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
   `]
 })
 export class BoardEditorComponent implements AfterViewInit {
+  private visionService = inject(ChessVisionService);
+
   @Input() mainBoard?: ChessBoardComponent;
   @ViewChild('board') private innerBoardComponent?: ChessBoardComponent;
 
@@ -423,6 +444,24 @@ export class BoardEditorComponent implements AfterViewInit {
       this.blackKingside.set(castling.includes('k'));
       this.blackQueenside.set(castling.includes('q'));
     }
+  }
+
+  async onImageFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+      await this.analyzeImageFile(file);
+    } finally {
+      input.value = '';
+    }
+  }
+
+  async analyzeImageFile(file: File) {
+    const fen = await this.visionService.analyzeImage(file);
+    this.loadFen(fen);
+    this.emitChange();
   }
 
   setTurn(color: 'w' | 'b') {

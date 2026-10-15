@@ -1,56 +1,84 @@
 <div class="flex flex-col min-h-0 h-full">
   <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
     <!-- Chapter Name -->
-    <app-text-input
-      id="chapter_name"
-      label="Chapter name"
-      [(ngModel)]="newChapterName"
-      placeholder="e.g. Opening Analysis"
-      class="w-full" />
+    <app-text-input id="chapter_name" label="Chapter name" [(ngModel)]="newChapterName"
+      placeholder="e.g. Opening Analysis" class="w-full" />
 
     <!-- Orientation (Hidden for PGN) -->
     @if (newChapterActiveTab() !== 'pgn') {
-      <app-select
-        label="Orientation"
-        [items]="orientationOptions"
-        [(value)]="newChapterOrientation"
-        class="w-full" />
+    <app-select label="Orientation" [items]="orientationOptions" [(value)]="newChapterOrientation" class="w-full" />
     }
 
     <!-- Chapter Source (Type) Dropdown -->
-    <app-select
-      label="Type"
-      [items]="chapterTabOptions"
-      [(value)]="newChapterActiveTab"
-      class="w-full" />
+    <app-select label="Type" [items]="chapterTabOptions" [(value)]="newChapterActiveTab" class="w-full" />
 
     <!-- Tab Content Area -->
+    @if (newChapterActiveTab() === 'editor') {
+    <div class="p-4 rounded-2xl bg-blue-50/50 border border-blue-100 flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold uppercase tracking-wider text-blue-900">Board Editor</span>
+      </div>
+      <p class="text-xs text-slate-500 leading-relaxed">
+        Arrange pieces on the board or click <strong>From image</strong> (or paste / drag & drop) to detect the position
+        automatically.
+      </p>
+    </div>
+    }
+
     @if (newChapterActiveTab() === 'fen') {
-      <app-text-input
-        label="FEN"
-        placeholder="Paste FEN..."
-        [(ngModel)]="newChapterFen"
-        class="w-full" />
+    <div class="space-y-2">
+      <app-text-input label="FEN" placeholder="Paste FEN..." [(ngModel)]="newChapterFen" class="w-full" />
+      <div class="flex justify-end">
+        <button type="button" (click)="fenImageInput.click()"
+          class="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline inline-flex items-center gap-1 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75"
+            stroke="currentColor" class="size-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+          </svg>
+          from image
+        </button>
+        <input #fenImageInput type="file" accept="image/*" class="hidden" (change)="onImageFileSelected($event)">
+      </div>
+    </div>
     }
 
     @if (newChapterActiveTab() === 'pgn') {
-    <div class="space-y-3">
-      <div class="flex justify-between items-center">
-        <input #fileInput type="file" multiple (change)="onNewChapterFilesSelected($event)" class="hidden"
-          accept=".pgn">
-        <button class="text-sm/6 text-purple-500 underline cursor-pointer font-medium" (click)="fileInput.click()"
-          [disabled]="isReadingFiles()">
+    <div class="space-y-2">
+      <textarea [ngModel]="newChapterPgn()" (ngModelChange)="newChapterPgn.set($event)" rows="8"
+        placeholder="Paste PGN here..."
+        class="w-full min-h-[160px] p-3 rounded-xl text-sm border border-slate-200 bg-white outline-none resize-y placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 transition-all"></textarea>
+      <div class="flex items-center justify-between">
+        @if (fileSummary()) {
+        <span class="text-xs text-emerald-600 font-medium">{{ fileSummary() }}</span>
+        } @else {
+        <span></span>
+        }
+        <button type="button"
+          class="text-xs text-blue-600 hover:text-blue-800 font-medium hover:underline inline-flex items-center gap-1 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+          (click)="fileInput.click()" [disabled]="isReadingFiles()">
           @if (isReadingFiles()) {
-          Loading...
+          <svg class="animate-spin size-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 0 1 4 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          Parsing PGN
           } @else {
-          Upload .pgn files
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75"
+            stroke="currentColor" class="size-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+          </svg>
+          upload files
           }
         </button>
+        <input #fileInput type="file" multiple (change)="onNewChapterFilesSelected($event)" class="hidden"
+          accept=".pgn">
       </div>
-
-      <textarea [ngModel]="newChapterPgn()" (ngModelChange)="newChapterPgn.set($event)" rows="4"
-        placeholder="Paste PGN here..."
-        class="w-full px-3 py-2 rounded-md text-sm/6 border border-slate-200 bg-white outline-none resize-none placeholder:text-gray-500"></textarea>
     </div>
     }
   </div>

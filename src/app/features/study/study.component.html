@@ -66,6 +66,9 @@
                   [style.width.px]="effectiveBoardSize()" [style.maxWidth.px]="maxBoardSize()"
                   [style.maxHeight.px]="maxBoardSize()"
                   [style.cursor]="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.getBoardCursor() || 'default' : 'default'"
+                  [class.ring-4]="isDraggingImageOver()" [class.ring-blue-500]="isDraggingImageOver()"
+                  [class.ring-offset-2]="isDraggingImageOver()" (dragover)="onBoardDragOver($event)"
+                  (dragleave)="onBoardDragLeave($event)" (drop)="onBoardDrop($event)"
                   (mousedown)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseDown($event) : null"
                   (mousemove)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseMove($event) : null"
                   (mouseup)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardMouseUp() : null"
@@ -78,8 +81,8 @@
                     (fenChange)="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.setEditorFen($event) : null"
                     (moveMade)="onMoveMade($event)" (shapeDrawn)="facade.onShapeDrawn($event)"
                     (prevMove)="facade.onPrevMove()" (nextMove)="facade.onNextMove()"
-                    [syncedShapes]="facade.mergedShapes()" [eraseOnClick]="true"
-                    [lastMove]="facade.lastMoveSquares()"></app-chess-board>
+                    [syncedShapes]="facade.mergedShapes()" [eraseOnClick]="true" [lastMove]="facade.lastMoveSquares()"
+                    [glyphs]="facade.activeGlyphs()"></app-chess-board>
                 </div>
               </div>
 
@@ -108,7 +111,7 @@
                 <!-- Opening Info -->
                 @if (facade.openingName(); as name) {
                 <div
-                  class="px-3.5 py-2.5 flex items-center justify-between shrink-0 select-text min-h-[38px] bg-slate-50/60 relative after:absolute after:bottom-0 after:h-px after:left-0 after:-right-[100vw] after:bg-slate-200/90 after:pointer-events-none">
+                  class="px-3.5 py-2.5 flex items-center justify-between shrink-0 select-text min-h-[38px] relative after:absolute after:bottom-0 after:h-px after:left-0 after:-right-[100vw] after:bg-slate-200/90 after:pointer-events-none">
                   <div class="flex items-center gap-2 overflow-hidden min-w-0">
                     <span
                       class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-200/80 text-slate-700 shrink-0 font-mono">

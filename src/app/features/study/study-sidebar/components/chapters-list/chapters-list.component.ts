@@ -54,23 +54,17 @@ export class ChaptersListComponent {
     return this.allChapters().slice(start, start + this.PAGE_SIZE);
   });
 
-  pageOptions = computed(() => Array.from({ length: this.totalPages() }, (_, i) => i + 1));
-
-  activeChapterIndex = computed(() => {
-    const cur = this.currentChapter();
-    if (!cur) return -1;
-    return this.allChapters().findIndex(c => c.id === cur.id);
-  });
-
-  activeChapterPage = computed(() => {
-    const idx = this.activeChapterIndex();
-    return idx !== -1 ? Math.floor(idx / this.PAGE_SIZE) + 1 : null;
-  });
-
-  isCurrentChapterOnActivePage = computed(() => {
-    const activePage = this.activeChapterPage();
-    return activePage !== null && activePage === this.currentPage();
-  });
+  pageOptions = computed(() =>
+    Array.from({ length: this.totalPages() }, (_, i) => {
+      const page = i + 1;
+      const start = i * this.PAGE_SIZE + 1;
+      const end = page * this.PAGE_SIZE;
+      return {
+        page,
+        label: `${start}-${end}`
+      };
+    })
+  );
 
   constructor() {
     effect(() => {
@@ -127,12 +121,5 @@ export class ChaptersListComponent {
   goToPage(page: number) {
     const target = Math.max(1, Math.min(page, this.totalPages()));
     this.currentPage.set(target);
-  }
-
-  jumpToActiveChapter() {
-    const targetPage = this.activeChapterPage();
-    if (targetPage) {
-      this.goToPage(targetPage);
-    }
   }
 }

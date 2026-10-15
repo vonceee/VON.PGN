@@ -14,9 +14,13 @@
   --color-border-base: hsl(220 13% 91%);
 
   /* Annotation Glyphs */
-  --color-annotation-good: hsl(142 71% 45%);
-  --color-annotation-bad: hsl(346 84% 61%);
-  --color-annotation-interesting: hsl(48 96% 53%);
+  --color-annotation-brilliant: hsl(188 94% 43%);
+  --color-annotation-good: hsl(263 88% 54%);
+  --color-annotation-interesting: hsl(330 81% 60%);
+  --color-annotation-dubious: hsl(38 92% 50%);
+  --color-annotation-mistake: hsl(25 95% 53%);
+  --color-annotation-blunder: hsl(348 83% 54%);
+  --color-annotation-bad: hsl(348 83% 54%);
 
   /* Chess Board Coordinates */
   --color-board-coord-dark: #4b5563;

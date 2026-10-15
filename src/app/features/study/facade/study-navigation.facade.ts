@@ -15,7 +15,7 @@ import { AudioService } from '../../../core/services/audio.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { OpeningService } from '../../../core/services/opening.service';
-import { MoveNode, StudyChapter, StudySyncedPayload } from '../models/study.model';
+import { MoveNode, StudyChapter, StudySyncedPayload, GLYPH_MAPPING } from '../models/study.model';
 import {
   buildTreeFromMoves,
   updateNodeInTree,
@@ -260,6 +260,21 @@ export class StudyNavigationFacade {
     const node = this.currentNode();
     if (!node || !node.uci || node.uci.length < 4) return undefined;
     return [node.uci.slice(0, 2), node.uci.slice(2, 4)] as any[];
+  });
+
+  activeGlyphs = computed(() => {
+    const node = this.currentNode();
+    if (!node || !node.glyphs || node.glyphs.length === 0 || !node.uci || node.uci.length < 4) {
+      return [];
+    }
+    const moveGlyphId = node.glyphs.find(id => [1, 2, 3, 4, 5, 6].includes(Number(id)));
+    if (!moveGlyphId || !GLYPH_MAPPING[moveGlyphId]) return [];
+    const meta = GLYPH_MAPPING[moveGlyphId];
+    return [{
+      square: node.uci.slice(2, 4),
+      symbol: meta.symbol,
+      class: meta.class,
+    }];
   });
 
   isOwner = this.studyService.isOwner;
@@ -966,10 +981,6 @@ export class StudyNavigationFacade {
     if (currentIndex !== -1 && currentIndex < s.chapters.length - 1) {
       const nextChap = s.chapters[currentIndex + 1];
       this.selectChapter(nextChap);
-      this.toastService.show(`Switched to chapter: ${nextChap.name}`, 'success');
-      this.audioService.playNavigationSound();
-    } else {
-      this.toastService.show('Already on the last chapter.', 'success');
     }
   }
 
@@ -982,10 +993,6 @@ export class StudyNavigationFacade {
     if (currentIndex > 0) {
       const prevChap = s.chapters[currentIndex - 1];
       this.selectChapter(prevChap);
-      this.toastService.show(`Switched to chapter: ${prevChap.name}`, 'success');
-      this.audioService.playNavigationSound();
-    } else {
-      this.toastService.show('Already on the first chapter.', 'success');
     }
   }
 

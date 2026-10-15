@@ -18,8 +18,7 @@
       </svg>
     </aside>
 
-    <main
-      class="relative z-10 w-full min-w-0 col-start-1 md:col-start-2 md:col-end-3 px-4 sm:px-6 md:px-8 lg:px-12 flex flex-col">
+    <main class="relative z-10 w-full min-w-0 col-start-1 md:col-start-2 md:col-end-3 px-4 flex flex-col">
 
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
@@ -86,7 +85,7 @@
           <!-- Create Study Button (Inline with Search) -->
           @if (isLoggedIn()) {
           <button
-            class="inline-flex items-center justify-center w-11 h-11 shrink-0 rounded-xl cursor-pointer border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
+            class="inline-flex items-center justify-center w-11 h-11 shrink-0 rounded-xl cursor-pointer border border-slate-200 hover:bg-slate-50 transition-colors"
             (click)="createNewStudy()" title="Create study">
             <ng-icon name="heroPlus" size="1.25rem" class="shrink-0"></ng-icon>
           </button>
@@ -94,18 +93,17 @@
         </div>
       </div>
 
-      <!-- MID SYSTEM DIVIDER (Between Filters & Studies Content) -->
       <div class="structural-divider" aria-hidden="true">
         <div class="structural-divider-line"></div>
       </div>
 
       <!-- Studies Content Area -->
-      <div class="relative min-h-[400px] py-8 flex-1">
+      <div class="relative min-h-[400px] py-4 flex-1">
         <div class="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-6">
           @for (study of studies(); track study.id) {
           <div [appFloatingCursorTrigger]="getCategoryLabel(study.category)"
             [cursorIcon]="getCategoryIcon(study.category)" [routerLink]="'/study/' + study.id"
-            class="bg-slate-900 text-white border border-white/10 rounded-xl flex flex-col md:flex-row-reverse overflow-hidden hover:border-white/30 transition-all duration-200 cursor-pointer md:cursor-none group">
+            class="bg-slate-900 text-white border rounded-md flex flex-col md:flex-row-reverse overflow-hidden hover:border-white/30 transition-all duration-200 cursor-pointer md:cursor-none group">
             <!-- Chess Board Preview Container (Desktop Only) -->
             <div
               class="hidden md:block board-container-parent md:w-50 aspect-square shrink-0 bg-surface relative overflow-hidden pointer-events-none">

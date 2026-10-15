@@ -71,6 +71,7 @@ export class StudyFacade {
   mergedShapes = this.nav.mergedShapes;
   initialPly = this.nav.initialPly;
   lastMoveSquares = this.nav.lastMoveSquares;
+  activeGlyphs = this.nav.activeGlyphs;
   isOwner = this.nav.isOwner;
   canEdit = this.nav.canEdit;
   isExportAllowed = this.studyService.isExportAllowed;

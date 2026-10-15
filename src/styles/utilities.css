@@ -3,16 +3,28 @@
   Context-aware utility classes for chess-specific annotations.
 */
 
-.good, .brilliant {
+.good {
   color: var(--color-annotation-good) !important;
 }
 
-.mistake, .blunder {
-  color: var(--color-annotation-bad) !important;
+.brilliant {
+  color: var(--color-annotation-brilliant) !important;
 }
 
-.interesting, .dubious {
+.mistake {
+  color: var(--color-annotation-mistake) !important;
+}
+
+.blunder {
+  color: var(--color-annotation-blunder) !important;
+}
+
+.interesting {
   color: var(--color-annotation-interesting) !important;
+}
+
+.dubious {
+  color: var(--color-annotation-dubious) !important;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

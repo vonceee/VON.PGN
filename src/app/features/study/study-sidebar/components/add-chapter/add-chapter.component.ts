@@ -1,8 +1,9 @@
-import { Component, input, output, signal, effect, model } from '@angular/core';
+import { Component, input, output, signal, effect, model, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Study } from '../../../models/study.model';
 import { SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
+import { ChessVisionService } from '../../../../../core/services/chess-vision.service';
 
 export type ChapterTab = 'empty' | 'editor' | 'fen' | 'pgn';
 
@@ -13,6 +14,8 @@ export type ChapterTab = 'empty' | 'editor' | 'fen' | 'pgn';
   templateUrl: './add-chapter.component.html'
 })
 export class AddChapterComponent {
+  private visionService = inject(ChessVisionService);
+
   study = input.required<Study | null>();
   canEdit = input.required<boolean>();
 
@@ -33,17 +36,17 @@ export class AddChapterComponent {
   ];
 
   readonly chapterTabOptions: SelectItem<ChapterTab>[] = [
-    { label: 'Empty board (Standard game)', value: 'empty' },
-    { label: 'Board editor (Set pieces manually)', value: 'editor' },
-    { label: 'FEN input (Load custom position)', value: 'fen' },
-    { label: 'PGN file/text (Import games)', value: 'pgn' },
+    { label: 'Empty board', value: 'empty' },
+    { label: 'Board editor', value: 'editor' },
+    { label: 'FEN input', value: 'fen' },
+    { label: 'PGN file/text', value: 'pgn' },
   ];
 
   addChapterTabs: { id: ChapterTab; label: string }[] = [
-    { id: 'empty', label: 'Empty board (Standard game)' },
-    { id: 'editor', label: 'Board editor (Set pieces manually)' },
-    { id: 'fen', label: 'FEN input (Load custom position)' },
-    { id: 'pgn', label: 'PGN file/text (Import games)' },
+    { id: 'empty', label: 'Empty board' },
+    { id: 'editor', label: 'Board editor' },
+    { id: 'fen', label: 'FEN input' },
+    { id: 'pgn', label: 'PGN file/text' },
   ];
 
   constructor() {
@@ -95,6 +98,21 @@ export class AddChapterComponent {
       console.error('Error reading files:', err);
       this.isReadingFiles.set(false);
     });
+  }
+
+  async onImageFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+      const fen = await this.visionService.analyzeImage(file);
+      this.newChapterFen.set(fen);
+    } catch (err) {
+      console.error('Vision analysis error:', err);
+    } finally {
+      input.value = '';
+    }
   }
 
   submitNewChapter() {

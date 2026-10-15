@@ -200,7 +200,7 @@ export class StudyComponent implements OnInit, OnDestroy {
    */
   openExportDialog() {
     this.dialog.open(ExportStudyDialogComponent, {
-      width: '450px',
+      width: '480px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/60']
     });
@@ -380,6 +380,41 @@ export class StudyComponent implements OnInit, OnDestroy {
 
 
 
+
+  isDraggingImageOver = signal(false);
+
+  onBoardDragOver(event: DragEvent) {
+    if (!this.sidebar?.isBoardEditorActive()) return;
+    const items = Array.from(event.dataTransfer?.items || []);
+    if (items.some(item => item.type.startsWith('image/'))) {
+      event.preventDefault();
+      this.isDraggingImageOver.set(true);
+    }
+  }
+
+  onBoardDragLeave(_event: DragEvent) {
+    this.isDraggingImageOver.set(false);
+  }
+
+  onBoardDrop(event: DragEvent) {
+    this.isDraggingImageOver.set(false);
+    if (!this.sidebar?.isBoardEditorActive()) return;
+    const file = Array.from(event.dataTransfer?.files || []).find(f => f.type.startsWith('image/'));
+    if (file) {
+      event.preventDefault();
+      this.rightEditor?.analyzeImageFile(file);
+    }
+  }
+
+  @HostListener('window:paste', ['$event'])
+  onPaste(event: ClipboardEvent) {
+    if (!this.sidebar?.isBoardEditorActive()) return;
+    const file = Array.from(event.clipboardData?.files || []).find(f => f.type.startsWith('image/'));
+    if (file) {
+      event.preventDefault();
+      this.rightEditor?.analyzeImageFile(file);
+    }
+  }
 
   @HostListener('window:beforeunload')
   onBeforeUnload() {

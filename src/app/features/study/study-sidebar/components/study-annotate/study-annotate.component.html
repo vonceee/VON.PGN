@@ -14,11 +14,8 @@
             <div class="grid grid-cols-5 gap-2 pt-1">
                 @for (glyph of glyphs; track glyph.id; let idx = $index) {
                 <button (click)="toggleGlyph(glyph.id)" [attr.aria-label]="glyph.name"
-                    class="w-full aspect-square flex items-center justify-center rounded-xl cursor-pointer group relative text-base font-medium border transition-colors"
-                    [class.bg-slate-900]="isSelected(glyph.id)" [class.text-white]="isSelected(glyph.id)"
-                    [class.border-slate-900]="isSelected(glyph.id)" [class.bg-white]="!isSelected(glyph.id)"
-                    [class.text-slate-800]="!isSelected(glyph.id)" [class.border-slate-200]="!isSelected(glyph.id)"
-                    [class.hover:bg-slate-100]="!isSelected(glyph.id)">
+                    class="w-full aspect-square flex items-center justify-center rounded-xl cursor-pointer group relative text-base font-semibold border transition-all duration-150"
+                    [class]="getGlyphButtonClasses(glyph)">
                     <span>{{ glyph.symbol }}</span>
                 </button>
                 }

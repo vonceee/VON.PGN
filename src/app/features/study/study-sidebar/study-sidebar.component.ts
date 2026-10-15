@@ -105,7 +105,7 @@ export class StudySidebarComponent {
    */
   openExportDialog() {
     this.dialog.open(ExportStudyDialogComponent, {
-      width: '450px',
+      width: '480px',
       maxWidth: '95vw',
       backdropClass: ['bg-black/60']
     });

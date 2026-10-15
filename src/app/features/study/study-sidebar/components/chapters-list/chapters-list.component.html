@@ -63,22 +63,11 @@
 @if (totalPages() > 1) {
 <footer
   class="border-t border-slate-200/90 bg-slate-50/60 px-2.5 py-1.5 flex items-center justify-between gap-1 text-xs shrink-0 select-none">
-  <!-- Left Side: Range or Jump to Active -->
+  <!-- Left Side: Range Display -->
   <div class="flex items-center min-w-0">
-    @if (!isCurrentChapterOnActivePage() && activeChapterPage() !== null) {
-    <button (click)="jumpToActiveChapter()"
-      class="flex items-center gap-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-1.5 py-0.5 rounded cursor-pointer transition-colors"
-      title="Jump to current active chapter (Page {{ activeChapterPage() }})">
-      <svg class="size-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m15 15-6-6m0 0 6-6m-6 6h12" />
-      </svg>
-      <span class="truncate">Active (p.{{ activeChapterPage() }})</span>
-    </button>
-    } @else {
     <span class="text-[11px] text-gray-500 font-medium truncate">
       {{ pageOffset() + 1 }}–{{ Math.min(pageOffset() + PAGE_SIZE, totalChapters()) }} of {{ totalChapters() }}
     </span>
-    }
   </div>
 
   <!-- Right Side: Pagination Navigation Controls -->
@@ -94,8 +83,8 @@
     <div class="relative inline-flex items-center">
       <select [value]="currentPage()" (change)="onPageSelect($event)"
         class="text-xs bg-white border border-slate-200 rounded px-1.5 py-0.5 text-slate-700 cursor-pointer focus:outline-none focus:border-blue-600 font-medium">
-        @for (p of pageOptions(); track p) {
-        <option [value]="p">Page {{ p }}/{{ totalPages() }}</option>
+        @for (opt of pageOptions(); track opt.page) {
+        <option [value]="opt.page">{{ opt.label }}</option>
         }
       </select>
     </div>

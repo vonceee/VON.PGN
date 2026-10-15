@@ -54,6 +54,29 @@ export class StudyAnnotateComponent {
     return this.selectedGlyphs().includes(id);
   }
 
+  getGlyphButtonClasses(glyph: { id: number; symbol: string; name: string; class: string }): string {
+    const selected = this.isSelected(glyph.id);
+    if (!selected) {
+      return 'bg-white text-slate-800 border-slate-200 hover:bg-slate-50 hover:border-slate-300';
+    }
+    switch (glyph.class) {
+      case 'brilliant':
+        return 'bg-gradient-to-br from-cyan-500 to-cyan-600 text-white border-cyan-400 shadow-md shadow-cyan-500/30 ring-2 ring-cyan-400/50 scale-105';
+      case 'good':
+        return 'bg-gradient-to-br from-violet-600 to-indigo-700 text-white border-violet-400 shadow-md shadow-violet-500/30 ring-2 ring-violet-400/50 scale-105';
+      case 'interesting':
+        return 'bg-gradient-to-br from-pink-500 to-rose-600 text-white border-pink-400 shadow-md shadow-pink-500/30 ring-2 ring-pink-400/50 scale-105';
+      case 'dubious':
+        return 'bg-gradient-to-br from-amber-500 to-amber-600 text-white border-amber-400 shadow-md shadow-amber-500/30 ring-2 ring-amber-400/50 scale-105';
+      case 'mistake':
+        return 'bg-gradient-to-br from-orange-500 to-orange-600 text-white border-orange-400 shadow-md shadow-orange-500/30 ring-2 ring-orange-400/50 scale-105';
+      case 'blunder':
+        return 'bg-gradient-to-br from-rose-500 to-rose-600 text-white border-rose-400 shadow-md shadow-rose-500/30 ring-2 ring-rose-400/50 scale-105';
+      default:
+        return 'bg-slate-900 text-white border-slate-900 shadow-sm scale-105';
+    }
+  }
+
   onSave() {
     if (!this.canEdit()) return;
     const activeNode = this.node();

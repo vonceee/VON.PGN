@@ -22,6 +22,14 @@ export class ToastService {
     }, durationMs);
   }
 
+  success(message: string, durationMs = 4000) {
+    this.show(message, 'success', durationMs);
+  }
+
+  error(message: string, durationMs = 4000) {
+    this.show(message, 'error', durationMs);
+  }
+
   remove(id: string) {
     this.toasts.update(currentToasts => currentToasts.filter(t => t.id !== id));
   }

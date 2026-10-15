@@ -21,6 +21,55 @@ import { AudioService } from '../../../../core/services/audio.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './move-notation.component.html',
+  styles: [
+    `
+      .notation-glyph-badge {
+        min-width: 20px;
+        height: 18px;
+        padding: 0 4px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Outfit', 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 11px;
+        font-weight: 900;
+        font-style: italic;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        color: #ffffff;
+        transform: skewX(-4deg);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        user-select: none;
+        flex-shrink: 0;
+      }
+
+      .notation-glyph-badge.glyph-brilliant {
+        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+        background-color: #0891b2;
+      }
+      .notation-glyph-badge.glyph-good {
+        background: linear-gradient(135deg, #7028ff 0%, #5218d6 100%);
+        background-color: #6320ee;
+      }
+      .notation-glyph-badge.glyph-interesting {
+        background: linear-gradient(135deg, #f43f5e 0%, #d946ef 100%);
+        background-color: #ec4899;
+      }
+      .notation-glyph-badge.glyph-dubious {
+        background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+        background-color: #f59e0b;
+      }
+      .notation-glyph-badge.glyph-mistake {
+        background: linear-gradient(135deg, #ff8a00 0%, #ea580c 100%);
+        background-color: #ff7a00;
+      }
+      .notation-glyph-badge.glyph-blunder {
+        background: linear-gradient(135deg, #ff3366 0%, #dc2626 100%);
+        background-color: #ef4444;
+      }
+    `,
+  ],
   host: {
     class: 'flex flex-col min-h-0 h-full',
   },
@@ -33,6 +82,21 @@ export class MoveNotationComponent {
 
   getGlyph(id: number) {
     return (this.glyphMapping as any)[id];
+  }
+
+
+  getMoveQualityGlyph(glyphs?: number[]): { symbol: string; name: string; class: string } | null {
+    if (!glyphs || glyphs.length === 0) return null;
+    const gId = glyphs.find(id => [1, 2, 3, 4, 5, 6].includes(Number(id)));
+    if (!gId || !this.glyphMapping[gId]) return null;
+    return this.glyphMapping[gId];
+  }
+
+  getSecondaryGlyphs(glyphs?: number[]): { symbol: string; name: string; class: string }[] {
+    if (!glyphs || glyphs.length === 0) return [];
+    return glyphs
+      .filter(id => ![1, 2, 3, 4, 5, 6].includes(Number(id)) && this.glyphMapping[id])
+      .map(id => this.glyphMapping[id]);
   }
 
   // Advanced Move Tree (Used by Study)

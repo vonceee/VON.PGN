@@ -51,6 +51,7 @@
           <!-- White Move Column -->
           <div class="flex items-center w-full">
             @if (turn.white; as node) {
+            @let qualityGlyph = getMoveQualityGlyph(node.glyphs);
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
                         ? 'active-move bg-slate-900 text-main font-medium'
@@ -58,22 +59,25 @@
                           ? 'bg-amber-500/10 transition-all'
                           : 'hover:bg-slate-200 transition-colors'
                     " class="w-full text-left select-none active-move-target px-3 py-1.5 rounded-4xl cursor-pointer">
-              <span class="flex items-center justify-between w-full gap-1.5 pr-12">
+              <span class="flex items-center justify-between w-full gap-1.5 pr-2">
                 <span class="inline-flex items-center gap-1">
                   {{ node.san }}
-                  @if (node.glyphs && node.glyphs.length > 0) {
-                  @for (glyphId of node.glyphs; track glyphId) {
-                  @if (getGlyph(glyphId); as glyph) {
-                  <span class="font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
-                  }
-                  }
+                  @for (sg of getSecondaryGlyphs(node.glyphs); track sg.symbol) {
+                    <span class="text-xs text-gray-400 font-medium ml-0.5" [title]="sg.name">{{ sg.symbol }}</span>
                   }
                 </span>
-                @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
-                <span
-                  [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-white/80' : 'bg-blue-600/70')"
-                  title="Has annotation"></span>
-                }
+                <span class="inline-flex items-center gap-1.5">
+                  @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
+                  <span
+                    [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-white/80' : 'bg-blue-600/70')"
+                    title="Has annotation"></span>
+                  }
+                  @if (qualityGlyph) {
+                    <span class="notation-glyph-badge" [class]="'glyph-' + qualityGlyph.class" [title]="qualityGlyph.name">
+                      {{ qualityGlyph.symbol }}
+                    </span>
+                  }
+                </span>
               </span>
             </button>
             } @else if (turn.showWhiteEllipsis) {
@@ -86,6 +90,7 @@
           <!-- Black Move Column -->
           <div class="flex items-center w-full">
             @if (turn.black; as node) {
+            @let qualityGlyph = getMoveQualityGlyph(node.glyphs);
             <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, true)" [class]="
                       currentFen() === node.fen
                         ? 'active-move bg-slate-900 text-main font-medium'
@@ -96,19 +101,22 @@
               <span class="flex items-center justify-between w-full gap-1.5 pr-2">
                 <span class="inline-flex items-center gap-1">
                   {{ node.san }}
-                  @if (node.glyphs && node.glyphs.length > 0) {
-                  @for (glyphId of node.glyphs; track glyphId) {
-                  @if (getGlyph(glyphId); as glyph) {
-                  <span class="font-medium" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol }}</span>
-                  }
-                  }
+                  @for (sg of getSecondaryGlyphs(node.glyphs); track sg.symbol) {
+                    <span class="text-xs text-gray-400 font-medium ml-0.5" [title]="sg.name">{{ sg.symbol }}</span>
                   }
                 </span>
-                @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
-                <span
-                  [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-white/80' : 'bg-blue-600/70')"
-                  title="Has annotation"></span>
-                }
+                <span class="inline-flex items-center gap-1.5">
+                  @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
+                  <span
+                    [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-white/80' : 'bg-blue-600/70')"
+                    title="Has annotation"></span>
+                  }
+                  @if (qualityGlyph) {
+                    <span class="notation-glyph-badge" [class]="'glyph-' + qualityGlyph.class" [title]="qualityGlyph.name">
+                      {{ qualityGlyph.symbol }}
+                    </span>
+                  }
+                </span>
               </span>
             </button>
             } @else if (turn.showBlackEllipsis) {
@@ -201,6 +209,7 @@
       }
 
       <!-- Move Button -->
+      @let qualityGlyph = getMoveQualityGlyph(node.glyphs);
       <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, isMainline)" [class]="
             currentFen() === node.fen
               ? 'active-move bg-slate-900 text-main font-medium'
@@ -209,16 +218,15 @@
                 : (isMainline ? 'hover:bg-slate-200 transition-colors' : 'text-gray-500 hover:bg-slate-200 transition-colors')
           " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm/6]="!isMainline"
         class="text-left hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
-        <span class="inline-flex items-center gap-0.5">
+        <span class="inline-flex items-center gap-1">
           {{ node.san }}
-          <!-- Glyph Rendering -->
-          @if (node.glyphs && node.glyphs.length > 0) {
-          @for (glyphId of node.glyphs; track glyphId) {
-          @if (getGlyph(glyphId); as glyph) {
-          <span class="font-medium text-xs" [class]="glyph.class" [title]="glyph.name">{{ glyph.symbol
-            }}</span>
+          @for (sg of getSecondaryGlyphs(node.glyphs); track sg.symbol) {
+            <span class="text-[10px] text-gray-400 font-medium" [title]="sg.name">{{ sg.symbol }}</span>
           }
-          }
+          @if (qualityGlyph) {
+            <span class="notation-glyph-badge text-[10px] h-4 min-w-4 px-1" [class]="'glyph-' + qualityGlyph.class" [title]="qualityGlyph.name">
+              {{ qualityGlyph.symbol }}
+            </span>
           }
           @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
           <span

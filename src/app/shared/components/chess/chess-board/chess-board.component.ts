@@ -87,18 +87,25 @@ import { BoardThemeService } from '../../../../core/services/board-theme.service
           }
 
           <!-- Glyphs Layer -->
-          <div class="absolute inset-0 pointer-events-none z-20">
+          <div class="absolute inset-0 pointer-events-none z-20 overflow-visible">
             @for (g of glyphs(); track g.square + g.symbol) {
               <div 
-                class="w-[30px] h-[30px] aspect-square rounded-full border-2 border-white  text-white -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center box-border    absolute"
-                [class.bg-[var(--color-annotation-good)]]="g.class === 'good' || g.class === 'brilliant'"
-                [class.bg-[var(--color-annotation-bad)]]="g.class === 'mistake' || g.class === 'blunder'"
-                [class.bg-[var(--color-annotation-interesting)]]="g.class === 'interesting' || g.class === 'dubious' || g.class === 'only-move' || g.class === 'zugzwang'"
-                [style]="getGlyphStyle(g.square)"
+                class="glyph-square-container"
+                [style]="getGlyphSquareStyle(g.square)"
               >
-                <span class="text-[14px]  [text-shadow:_0_1px_2px_rgba(0,0,0,0.2)]">
-                  {{ g.symbol }}
-                </span>
+                <!-- Destination Square Highlight Tint -->
+                <div [class]="'take-square-tint tint-' + g.class"></div>
+
+                <!-- TakeTakeTake Squircle Badge Anchor -->
+                <div class="take-glyph-anchor">
+                  <div 
+                    [class]="'take-glyph-badge glyph-' + g.class"
+                  >
+                    <span class="take-glyph-symbol">
+                      {{ g.symbol }}
+                    </span>
+                  </div>
+                </div>
               </div>
             }
           </div>
@@ -182,6 +189,130 @@ import { BoardThemeService } from '../../../../core/services/board-theme.service
         }
       }
 
+      /* TakeTakeTake Board Markings */
+      .glyph-square-container {
+        position: absolute;
+        pointer-events: none;
+        box-sizing: border-box;
+        z-index: 25;
+      }
+
+      .take-square-tint {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        border-radius: 2px;
+      }
+
+      .take-square-tint.tint-good {
+        background-color: rgba(99, 32, 238, 0.22);
+      }
+      .take-square-tint.tint-brilliant {
+        background-color: rgba(6, 182, 212, 0.25);
+      }
+      .take-square-tint.tint-interesting {
+        background-color: rgba(236, 72, 153, 0.22);
+      }
+      .take-square-tint.tint-dubious {
+        background-color: rgba(245, 158, 11, 0.22);
+      }
+      .take-square-tint.tint-mistake {
+        background-color: rgba(249, 115, 22, 0.22);
+      }
+      .take-square-tint.tint-blunder {
+        background-color: rgba(239, 68, 68, 0.25);
+      }
+
+      .take-glyph-anchor {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(var(--badge-tx, 38%), var(--badge-ty, -38%));
+        pointer-events: none;
+        z-index: 30;
+      }
+
+      .take-glyph-badge {
+        width: clamp(26px, 5.2cqi, 40px);
+        height: clamp(26px, 5.2cqi, 40px);
+        aspect-ratio: 1 / 1;
+        border-radius: 26%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        border: 2.5px solid #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.28), 0 1px 3px rgba(0, 0, 0, 0.15);
+        animation: take-badge-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        transform-origin: center center;
+        user-select: none;
+      }
+
+      .take-glyph-symbol {
+        font-family: 'Outfit', 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: clamp(15px, 3.2cqi, 24px);
+        font-weight: 900;
+        font-style: italic;
+        letter-spacing: -0.04em;
+        line-height: 1;
+        color: #ffffff;
+        transform: skewX(-4deg);
+        display: inline-block;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+      }
+
+      @keyframes take-badge-pop {
+        0% {
+          transform: scale(0.2);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.15);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Classification Gradients and Shadows */
+      .take-glyph-badge.glyph-brilliant {
+        background: linear-gradient(135deg, #00e5ff 0%, #0099cc 100%);
+        box-shadow: 0 4px 12px rgba(0, 212, 255, 0.45), 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .take-glyph-badge.glyph-good {
+        background: linear-gradient(135deg, #7028ff 0%, #5218d6 100%);
+        box-shadow: 0 4px 12px rgba(99, 32, 238, 0.45), 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .take-glyph-badge.glyph-interesting {
+        background: linear-gradient(135deg, #f43f5e 0%, #d946ef 100%);
+        box-shadow: 0 4px 12px rgba(236, 72, 153, 0.45), 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .take-glyph-badge.glyph-dubious {
+        background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.45), 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .take-glyph-badge.glyph-mistake {
+        background: linear-gradient(135deg, #ff8a00 0%, #ea580c 100%);
+        box-shadow: 0 4px 12px rgba(255, 122, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .take-glyph-badge.glyph-blunder {
+        background: linear-gradient(135deg, #ff3366 0%, #dc2626 100%);
+        box-shadow: 0 4px 12px rgba(255, 46, 84, 0.45), 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      .take-glyph-badge.glyph-novelty,
+      .take-glyph-badge:not([class*='glyph-']) {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.45), 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
     `,
   ],
   host: {
@@ -731,24 +862,43 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
     }
   }
 
-  getGlyphStyle(square: string) {
+  getGlyphSquareStyle(square: string) {
     if (!square || square.length < 2) return {};
-    const file = square.charCodeAt(0) - 97; // a=0
-    const rank = parseInt(square[1]) - 1; // 1=0
+    const file = square.charCodeAt(0) - 97; // a=0..h=7
+    const rank = parseInt(square[1], 10) - 1; // 1=0..8=7
 
-    let left, top;
+    let left: number;
+    let top: number;
+    let isRightEdge: boolean;
+    let isTopEdge: boolean;
+
     if (this.orientation === 'white') {
-      left = (file + 1) * 12.5;
+      left = file * 12.5;
       top = (7 - rank) * 12.5;
+      isRightEdge = file === 7;
+      isTopEdge = rank === 7;
     } else {
-      left = (7 - file + 1) * 12.5;
+      left = (7 - file) * 12.5;
       top = rank * 12.5;
+      isRightEdge = file === 0;
+      isTopEdge = rank === 0;
     }
+
+    const tx = isRightEdge ? '5%' : '40%';
+    const ty = isTopEdge ? '-5%' : '-40%';
 
     return {
       left: `${left}%`,
-      top: `${top}%`
+      top: `${top}%`,
+      width: '12.5%',
+      height: '12.5%',
+      '--badge-tx': tx,
+      '--badge-ty': ty
     };
+  }
+
+  getGlyphStyle(square: string) {
+    return this.getGlyphSquareStyle(square);
   }
 
   resetBoard() {
