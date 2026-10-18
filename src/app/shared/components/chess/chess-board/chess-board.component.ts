@@ -93,9 +93,6 @@ import { BoardThemeService } from '../../../../core/services/board-theme.service
                 class="glyph-square-container"
                 [style]="getGlyphSquareStyle(g.square)"
               >
-                <!-- Destination Square Highlight Tint -->
-                <div [class]="'take-square-tint tint-' + g.class"></div>
-
                 <!-- TakeTakeTake Squircle Badge Anchor -->
                 <div class="take-glyph-anchor">
                   <div 
@@ -195,33 +192,6 @@ import { BoardThemeService } from '../../../../core/services/board-theme.service
         pointer-events: none;
         box-sizing: border-box;
         z-index: 25;
-      }
-
-      .take-square-tint {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 1;
-        border-radius: 2px;
-      }
-
-      .take-square-tint.tint-good {
-        background-color: rgba(99, 32, 238, 0.22);
-      }
-      .take-square-tint.tint-brilliant {
-        background-color: rgba(6, 182, 212, 0.25);
-      }
-      .take-square-tint.tint-interesting {
-        background-color: rgba(236, 72, 153, 0.22);
-      }
-      .take-square-tint.tint-dubious {
-        background-color: rgba(245, 158, 11, 0.22);
-      }
-      .take-square-tint.tint-mistake {
-        background-color: rgba(249, 115, 22, 0.22);
-      }
-      .take-square-tint.tint-blunder {
-        background-color: rgba(239, 68, 68, 0.25);
       }
 
       .take-glyph-anchor {
@@ -563,7 +533,7 @@ export class ChessBoardComponent implements AfterViewInit, OnChanges, OnDestroy 
           }
         }
       }
-    if (changes['interactive'] || changes['possibleMoves']) {
+    if (changes['interactive'] || changes['possibleMoves'] || changes['isEditor']) {
       this.syncBoard();
     }
       if (changes['configOverride']) {

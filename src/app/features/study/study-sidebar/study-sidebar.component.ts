@@ -254,6 +254,28 @@ export class StudySidebarComponent {
       });
   }
 
+  handleChaptersReordered(newChapters: StudyChapter[]) {
+    const s = this.study();
+    if (!s) return;
+
+    const previousChapters = s.chapters || [];
+    // Optimistic UI update
+    this.studyService.currentStudy.update(curr => curr ? { ...curr, chapters: newChapters } : curr);
+
+    const chapterIds = newChapters.map(c => Number(c.id));
+    this.studyService.reorderChapters(s.id, chapterIds).subscribe({
+      next: () => {
+        // Auto-saved cleanly
+      },
+      error: (err) => {
+        console.error('Failed to reorder chapters:', err);
+        this.toastService.show('Failed to save chapter order.', 'error');
+        // Rollback on failure
+        this.studyService.currentStudy.update(curr => curr ? { ...curr, chapters: previousChapters } : curr);
+      }
+    });
+  }
+
   handleChapterCreated(payload: { name: string; type: ChapterTab; fen: string; pgn: string; orientation: 'white' | 'black' }) {
     const s = this.study();
     if (!s) return;
@@ -272,7 +294,14 @@ export class StudySidebarComponent {
         }
       });
     } else {
-      const fen = payload.type === 'empty' ? undefined : payload.fen;
+      let fen = payload.type === 'empty' ? undefined : payload.fen;
+      if (fen) {
+        const parts = fen.trim().split(/\s+/);
+        if (parts.length < 3) {
+          const defaults = ['w', 'KQkq', '-', '0', '1'];
+          fen = parts.concat(defaults.slice(parts.length - 1)).join(' ');
+        }
+      }
       this.studyService.addChapter(s.id, payload.name, fen, payload.orientation).subscribe({
         next: (res) => {
           const newChapter = res.data ?? res;

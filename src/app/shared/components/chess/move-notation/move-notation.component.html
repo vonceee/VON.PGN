@@ -210,27 +210,30 @@
 
       <!-- Move Button -->
       @let qualityGlyph = getMoveQualityGlyph(node.glyphs);
+      @let isCurrentMove = currentFen() === node.fen;
       <button (click)="onMoveClick(node)" (contextmenu)="onContextMenu($event, node, isMainline)" [class]="
-            currentFen() === node.fen
+            isCurrentMove
               ? 'active-move bg-slate-900 text-main font-medium'
               : activeContinuationSet().has(node.fen + '_' + node.ply)
                 ? 'bg-amber-500/10 !text-amber-800'
-                : (isMainline ? 'hover:bg-slate-200 transition-colors' : 'text-gray-500 hover:bg-slate-200 transition-colors')
+                : (isMainline ? 'hover:bg-slate-200 transition-colors' : (!qualityGlyph ? 'text-gray-500 hover:bg-slate-200 transition-colors' : 'hover:bg-slate-200 transition-colors'))
           " [class.px-1]="true" [class.py-0.5]="true" [class.text-sm/6]="!isMainline"
         class="text-left hover:cursor-pointer select-none active-move-target rounded transition-all duration-200">
-        <span class="inline-flex items-center gap-1">
-          {{ node.san }}
+        <span class="inline-flex items-center">
+          <span [class]="!isMainline && qualityGlyph && !isCurrentMove ? ('font-medium glyph-text-' + qualityGlyph.class) : ''">
+            {{ node.san }}@if (!isMainline && qualityGlyph) {<span class="font-bold ml-px" [class]="'glyph-text-' + qualityGlyph.class" [title]="qualityGlyph.name">{{ qualityGlyph.symbol }}</span>}
+          </span>
           @for (sg of getSecondaryGlyphs(node.glyphs); track sg.symbol) {
-            <span class="text-[10px] text-gray-400 font-medium" [title]="sg.name">{{ sg.symbol }}</span>
+            <span class="text-[10px] text-gray-400 font-medium ml-1" [title]="sg.name">{{ sg.symbol }}</span>
           }
-          @if (qualityGlyph) {
-            <span class="notation-glyph-badge text-[10px] h-4 min-w-4 px-1" [class]="'glyph-' + qualityGlyph.class" [title]="qualityGlyph.name">
+          @if (isMainline && qualityGlyph) {
+            <span class="notation-glyph-badge text-[10px] h-4 min-w-4 px-1 ml-1" [class]="'glyph-' + qualityGlyph.class" [title]="qualityGlyph.name">
               {{ qualityGlyph.symbol }}
             </span>
           }
           @if ((node.comments && node.comments.length > 0) || (node.preComments && node.preComments.length > 0)) {
           <span
-            [class]="'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentFen() === node.fen ? 'bg-white/80' : 'bg-blue-600/70')"
+            [class]="'w-1.5 h-1.5 rounded-full shrink-0 ml-1.5 ' + (isCurrentMove ? 'bg-white/80' : 'bg-blue-600/70')"
             title="Has annotation"></span>
           }
         </span>

@@ -14,6 +14,7 @@
     <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s"
       [currentChapter]="currentChapter()" [canEdit]="canEdit()" [isExportAllowed]="isExportAllowed()"
       (chapterSelected)="selectChapter($event)" (chapterEditClicked)="onEditChapter($event.event, $event.chapter)"
+      (chaptersReordered)="handleChaptersReordered($event)"
       (addChapterClicked)="selectSection('add-chapter')" (exportClicked)="openExportDialog()"
       (membersClicked)="openMembersDialog()" (settingsClicked)="openSettingsDialog()">
     </app-study-chapters-list>
@@ -154,6 +155,7 @@
   <app-study-chapters-list class="flex-1 flex flex-col min-h-0 min-w-0" [study]="s" [currentChapter]="currentChapter()"
     [canEdit]="canEdit()" [isExportAllowed]="isExportAllowed()" (chapterSelected)="selectChapter($event)"
     (chapterEditClicked)="onEditChapter($event.event, $event.chapter)"
+    (chaptersReordered)="handleChaptersReordered($event)"
     (addChapterClicked)="selectSection('add-chapter')" (exportClicked)="openExportDialog()"
     (membersClicked)="openMembersDialog()" (settingsClicked)="openSettingsDialog()">
   </app-study-chapters-list>

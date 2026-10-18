@@ -7,6 +7,13 @@ import {
   computed,
   effect
 } from '@angular/core';
+import {
+  CdkDragDrop,
+  CdkDrag,
+  CdkDropList,
+  CdkDragHandle,
+  moveItemInArray
+} from '@angular/cdk/drag-drop';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroCog6ToothSolid, heroArrowDownTraySolid, heroUsersSolid } from '@ng-icons/heroicons/solid';
 import { Study, StudyChapter } from '../../../models/study.model';
@@ -14,10 +21,11 @@ import { Study, StudyChapter } from '../../../models/study.model';
 @Component({
   selector: 'app-study-chapters-list',
   standalone: true,
-  imports: [NgIconComponent],
+  imports: [NgIconComponent, CdkDropList, CdkDrag, CdkDragHandle],
   providers: [provideIcons({ heroCog6ToothSolid, heroArrowDownTraySolid, heroUsersSolid })],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './chapters-list.component.html'
+  templateUrl: './chapters-list.component.html',
+  styleUrl: './chapters-list.component.css'
 })
 export class ChaptersListComponent {
 
@@ -30,6 +38,7 @@ export class ChaptersListComponent {
   // Outputs
   chapterSelected = output<StudyChapter>();
   chapterEditClicked = output<{ event: MouseEvent; chapter: StudyChapter }>();
+  chaptersReordered = output<StudyChapter[]>();
   addChapterClicked = output<void>();
   exportClicked = output<void>();
   membersClicked = output<void>();
@@ -96,6 +105,19 @@ export class ChaptersListComponent {
 
   onEditChapter(event: MouseEvent, chap: StudyChapter) {
     this.chapterEditClicked.emit({ event, chapter: chap });
+  }
+
+  onDrop(event: CdkDragDrop<StudyChapter[]>) {
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    const chapters = [...this.allChapters()];
+    const fromIndex = this.pageOffset() + event.previousIndex;
+    const toIndex = this.pageOffset() + event.currentIndex;
+
+    moveItemInArray(chapters, fromIndex, toIndex);
+    this.chaptersReordered.emit(chapters);
   }
 
   prevPage() {

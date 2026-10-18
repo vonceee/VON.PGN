@@ -78,7 +78,7 @@
                     [orientation]="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.getEditorOrientation() : facade.boardOrientation()"
                     [interactive]="(sidebar && sidebar.isBoardEditorActive()) ? true : facade.boardInteractive()"
                     [isEditor]="(sidebar && sidebar.isBoardEditorActive()) || false"
-                    (fenChange)="(sidebar && sidebar.isBoardEditorActive()) ? sidebar.setEditorFen($event) : null"
+                    (fenChange)="(sidebar && sidebar.isBoardEditorActive()) ? rightEditor?.onBoardFenChange($event) : null"
                     (moveMade)="onMoveMade($event)" (shapeDrawn)="facade.onShapeDrawn($event)"
                     (prevMove)="facade.onPrevMove()" (nextMove)="facade.onNextMove()"
                     [syncedShapes]="facade.mergedShapes()" [eraseOnClick]="true" [lastMove]="facade.lastMoveSquares()"
@@ -113,8 +113,7 @@
                 <div
                   class="px-3.5 py-2.5 flex items-center justify-between shrink-0 select-text min-h-[38px] relative after:absolute after:bottom-0 after:h-px after:left-0 after:-right-[100vw] after:bg-slate-200/90 after:pointer-events-none">
                   <div class="flex items-center gap-2 overflow-hidden min-w-0">
-                    <span
-                      class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-200/80 text-slate-700 shrink-0 font-mono">
+                    <span class="text-xs font-medium shrink-0 font-mono">
                       {{ facade.openingEco() || 'ECO' }}
                     </span>
                     <span class="text-xs font-medium truncate text-slate-800" [title]="name">

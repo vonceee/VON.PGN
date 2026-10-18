@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, signal, computed, ViewChild, effect, inject, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed, ViewChild, effect, inject, AfterViewInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChessBoardComponent } from '../chess-board/chess-board.component';
@@ -6,7 +7,9 @@ import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroArrowPath, heroTrash, heroFlag, heroPlay, heroXMark, heroHandRaised, heroPhoto } from '@ng-icons/heroicons/outline';
 import { dragNewPiece } from 'chessground/drag';
 import { Role, Color, Key } from 'chessground/types';
+import { Dialog } from '@angular/cdk/dialog';
 import { ChessVisionService } from '../../../../core/services/chess-vision.service';
+import { BoardImageDialogComponent } from './dialogs/board-image-dialog/board-image-dialog.component';
 
 export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
 
@@ -109,13 +112,12 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
           </button>
           <div class="h-6 w-px bg-slate-300 mx-1"></div>
           <button 
-            title="From image (Upload, drag-drop, or Ctrl+V)"
+            title="From image (Paste screenshot, drag-drop, or upload)"
             class="w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
-            (click)="imageFileInput.click()"
+            (click)="openFromImageDialog()"
           >
             <ng-icon name="heroPhoto" class="text-xl"></ng-icon>
           </button>
-          <input #imageFileInput type="file" accept="image/*" class="hidden" (change)="onImageFileSelected($event)">
         </div>
 
         <!-- Turn Selection -->
@@ -295,13 +297,12 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
             </button>
             <div class="h-6 w-px bg-slate-300 mx-1"></div>
             <button 
-              title="From image (Upload, drag-drop, or Ctrl+V)"
+              title="From image (Paste screenshot, drag-drop, or upload)"
               class="w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 flex items-center justify-center transition-colors hover:bg-slate-100 cursor-pointer"
-              (click)="imageFileInput2.click()"
+              (click)="openFromImageDialog()"
             >
               <ng-icon name="heroPhoto" class="text-xl"></ng-icon>
             </button>
-            <input #imageFileInput2 type="file" accept="image/*" class="hidden" (change)="onImageFileSelected($event)">
           </div>
 
           <!-- Turn Selection -->
@@ -367,10 +368,25 @@ export type SelectedTool = 'hand' | 'trash' | { color: Color, role: Role };
     .black.king { background-image: url('/pieces/cburnett/bK.svg'); }
   `]
 })
-export class BoardEditorComponent implements AfterViewInit {
+export class BoardEditorComponent implements AfterViewInit, OnDestroy {
   private visionService = inject(ChessVisionService);
+  private dialog = inject(Dialog);
+  private mainBoardSub?: Subscription;
+  private _mainBoard?: ChessBoardComponent;
 
-  @Input() mainBoard?: ChessBoardComponent;
+  @Input() set mainBoard(board: ChessBoardComponent | undefined) {
+    this._mainBoard = board;
+    this.mainBoardSub?.unsubscribe();
+    if (board) {
+      this.mainBoardSub = board.fenChange.subscribe((boardFen) => {
+        this.onBoardFenChange(boardFen);
+      });
+    }
+  }
+  get mainBoard(): ChessBoardComponent | undefined {
+    return this._mainBoard;
+  }
+
   @ViewChild('board') private innerBoardComponent?: ChessBoardComponent;
 
   get boardComponent(): ChessBoardComponent | undefined {
@@ -380,6 +396,9 @@ export class BoardEditorComponent implements AfterViewInit {
   @Input() set fen(value: string) {
     if (value && value !== this.fullFen()) {
       this.loadFen(value);
+      if (value.trim().split(/\s+/).length < 3) {
+        this.emitChange();
+      }
     }
   }
   @Input() orientation: 'white' | 'black' = 'white';
@@ -431,6 +450,10 @@ export class BoardEditorComponent implements AfterViewInit {
     }, 300);
   }
 
+  ngOnDestroy() {
+    this.mainBoardSub?.unsubscribe();
+  }
+
   loadFen(fen: string) {
     if (!fen) return;
     const parts = fen.trim().split(/\s+/);
@@ -444,6 +467,20 @@ export class BoardEditorComponent implements AfterViewInit {
       this.blackKingside.set(castling.includes('k'));
       this.blackQueenside.set(castling.includes('q'));
     }
+  }
+
+  openFromImageDialog() {
+    const dialogRef = this.dialog.open<File>(BoardImageDialogComponent, {
+      width: '440px',
+      maxWidth: '92vw',
+      backdropClass: ['bg-black/60']
+    });
+
+    dialogRef.closed.subscribe(file => {
+      if (file) {
+        this.analyzeImageFile(file);
+      }
+    });
   }
 
   async onImageFileSelected(event: Event) {

@@ -45,28 +45,50 @@ import { AudioService } from '../../../../core/services/audio.service';
       }
 
       .notation-glyph-badge.glyph-brilliant {
-        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-        background-color: #0891b2;
+        background: #0891b2;
       }
       .notation-glyph-badge.glyph-good {
-        background: linear-gradient(135deg, #7028ff 0%, #5218d6 100%);
-        background-color: #6320ee;
+        background: #6320ee;
       }
       .notation-glyph-badge.glyph-interesting {
-        background: linear-gradient(135deg, #f43f5e 0%, #d946ef 100%);
-        background-color: #ec4899;
+        background: #db2777;
       }
       .notation-glyph-badge.glyph-dubious {
-        background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
-        background-color: #f59e0b;
+        background: #d97706;
       }
       .notation-glyph-badge.glyph-mistake {
-        background: linear-gradient(135deg, #ff8a00 0%, #ea580c 100%);
-        background-color: #ff7a00;
+        background: #ea580c;
       }
       .notation-glyph-badge.glyph-blunder {
-        background: linear-gradient(135deg, #ff3366 0%, #dc2626 100%);
-        background-color: #ef4444;
+        background: #dc2626;
+      }
+      .notation-glyph-badge.glyph-novelty,
+      .notation-glyph-badge:not([class*='glyph-']) {
+        background: #2563eb;
+      }
+
+      /* Inline tree/variation glyph text colors */
+      .glyph-text-brilliant {
+        color: #0891b2;
+      }
+      .glyph-text-good {
+        color: #538d4e;
+      }
+      .glyph-text-interesting {
+        color: #db2777;
+      }
+      .glyph-text-dubious {
+        color: #d97706;
+      }
+      .glyph-text-mistake {
+        color: #b45309;
+      }
+      .glyph-text-blunder {
+        color: #dc2626;
+      }
+      .glyph-text-novelty,
+      .glyph-text-default {
+        color: #2563eb;
       }
     `,
   ],

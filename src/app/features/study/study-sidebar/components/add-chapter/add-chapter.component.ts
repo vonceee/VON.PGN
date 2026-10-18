@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Study } from '../../../models/study.model';
 import { SelectComponent, SelectItem, TextInputComponent } from '@shared/ui';
-import { ChessVisionService } from '../../../../../core/services/chess-vision.service';
 
 export type ChapterTab = 'empty' | 'editor' | 'fen' | 'pgn';
 
@@ -14,7 +13,6 @@ export type ChapterTab = 'empty' | 'editor' | 'fen' | 'pgn';
   templateUrl: './add-chapter.component.html'
 })
 export class AddChapterComponent {
-  private visionService = inject(ChessVisionService);
 
   study = input.required<Study | null>();
   canEdit = input.required<boolean>();
@@ -98,21 +96,6 @@ export class AddChapterComponent {
       console.error('Error reading files:', err);
       this.isReadingFiles.set(false);
     });
-  }
-
-  async onImageFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-
-    try {
-      const fen = await this.visionService.analyzeImage(file);
-      this.newChapterFen.set(fen);
-    } catch (err) {
-      console.error('Vision analysis error:', err);
-    } finally {
-      input.value = '';
-    }
   }
 
   submitNewChapter() {

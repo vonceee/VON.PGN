@@ -30,9 +30,22 @@
 </div>
 
 <nav #scrollContainer class="flex flex-col flex-1 overflow-y-auto min-h-[160px]">
-  <div class="flex-1 flex flex-col divide-y divide-slate-200/90">
+  <div
+    cdkDropList
+    [cdkDropListDisabled]="!canEdit()"
+    (cdkDropListDropped)="onDrop($event)"
+    class="flex-1 flex flex-col divide-y divide-slate-200/90">
     @for (chap of paginatedChapters(); track chap.id; let idx = $index) {
-    <button (click)="selectChapter(chap)" class="px-3 py-2 relative flex items-center justify-between cursor-pointer group text-left transition-colors
+    <div
+      cdkDrag
+      [cdkDragData]="chap"
+      [cdkDragDisabled]="!canEdit()"
+      role="button"
+      tabindex="0"
+      (keydown.enter)="selectChapter(chap)"
+      (keydown.space)="selectChapter(chap)"
+      (click)="selectChapter(chap)"
+      class="chapter-row px-3 py-2 relative flex items-center justify-between cursor-pointer group text-left transition-colors select-none
             {{
               currentChapter()?.id === chap.id
                 ? 'bg-blue-50/50 text-slate-900 font-medium'
@@ -41,7 +54,18 @@
       @if (currentChapter()?.id === chap.id) {
       <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-600"></div>
       }
-      <div class="flex items-center gap-2 min-w-0">
+      <div class="flex items-center gap-1.5 min-w-0">
+        @if (canEdit()) {
+        <div
+          cdkDragHandle
+          (click)="$event.stopPropagation()"
+          class="cursor-grab active:cursor-grabbing p-1 -ml-1 text-slate-400 hover:text-slate-700 sm:opacity-0 sm:group-hover:opacity-100 opacity-60 transition-opacity flex items-center justify-center shrink-0"
+          title="Drag to reorder chapter">
+          <svg class="size-3.5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-12a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z" />
+          </svg>
+        </div>
+        }
         <span class="text-xs font-medium text-slate-400 shrink-0 select-none w-5 text-right">
           {{ pageOffset() + idx + 1 }}.
         </span>
@@ -52,10 +76,10 @@
 
       <div class="flex items-center gap-4 shrink-0 ml-2">
         @if (canEdit()) {
-        <button (click)="onEditChapter($event, chap)" class="text-xs hover:underline cursor-pointer">Edit</button>
+        <button type="button" (click)="onEditChapter($event, chap)" class="text-xs hover:underline cursor-pointer text-slate-500 hover:text-slate-800">Edit</button>
         }
       </div>
-    </button>
+    </div>
     }
   </div>
 </nav>
